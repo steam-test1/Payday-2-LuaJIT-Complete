@@ -1,4 +1,5 @@
 local tmp_vec1 = Vector3()
+
 QuickSmokeGrenade = QuickSmokeGrenade or class()
 
 function QuickSmokeGrenade:init(unit)
@@ -10,7 +11,7 @@ end
 
 function QuickSmokeGrenade:update(unit, t, dt)
 	if self._remove_t then
-		if self._remove_t < t then
+		if t > self._remove_t then
 			self._unit:set_slot(0)
 		end
 
@@ -75,6 +76,7 @@ function QuickSmokeGrenade:detonate()
 end
 
 function QuickSmokeGrenade:sound_playback_complete_clbk(event_instance, sound_source, event_type, sound_source_again)
+	return
 end
 
 function QuickSmokeGrenade:preemptive_kill()
@@ -115,6 +117,7 @@ function QuickSmokeGrenade:_play_sound_and_effects()
 		self._unit:sound_source():post_event("grenade_gas_explode")
 
 		local parent = self._unit:orientation_object()
+
 		self._smoke_effect = World:effect_manager():spawn({
 			effect = Idstring("effects/particles/explosions/smoke_grenade_smoke"),
 			parent = parent

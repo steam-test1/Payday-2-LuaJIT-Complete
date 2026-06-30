@@ -9,6 +9,7 @@ end
 function GageModifierMaxThrowables:modify_value(id, value)
 	if id == "PlayerManager:GetThrowablesMaxAmount" then
 		local new_val = math.floor(value * self:get_amount_multiplier())
+
 		new_val = math.max(new_val, value + 1)
 
 		return new_val

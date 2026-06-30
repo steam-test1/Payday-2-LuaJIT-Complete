@@ -8,10 +8,10 @@ ControllerWrapperXB1.CONTROLLER_TYPE_LIST = {
 }
 
 function ControllerWrapperXB1:init(manager, id, name, controller, setup, debug, skip_virtual_controller)
-	local func_map = {
-		confirm = callback(self, self, "virtual_connect_confirm"),
-		cancel = callback(self, self, "virtual_connect_cancel")
-	}
+	local func_map = {}
+
+	func_map.confirm = callback(self, self, "virtual_connect_confirm")
+	func_map.cancel = callback(self, self, "virtual_connect_cancel")
 
 	ControllerWrapperXB1.super.init(self, manager, id, name, {
 		xb1pad = controller

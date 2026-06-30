@@ -9,9 +9,10 @@ function TeamAILogicSurrender.enter(data, new_logic_name, enter_params)
 
 	local old_internal_data = data.internal_data
 	local my_data = {
-		unit = data.unit,
-		enemy_detect_slotmask = managers.slot:get_mask("enemies")
+		unit = data.unit
 	}
+
+	my_data.enemy_detect_slotmask = managers.slot:get_mask("enemies")
 
 	if old_internal_data then
 		if old_internal_data.nearest_cover then
@@ -24,9 +25,9 @@ function TeamAILogicSurrender.enter(data, new_logic_name, enter_params)
 	end
 
 	local action_data = {
-		variant = "tied",
 		body_part = 1,
-		type = "act"
+		type = "act",
+		variant = "tied"
 	}
 
 	data.unit:brain():action_request(action_data)
@@ -53,6 +54,7 @@ function TeamAILogicSurrender.exit(data, new_logic_name, enter_params)
 	TeamAILogicBase.exit(data, new_logic_name, enter_params)
 
 	local my_data = data.internal_data
+
 	my_data.exiting = true
 
 	if my_data.nearest_cover then
@@ -72,9 +74,11 @@ function TeamAILogicSurrender.exit(data, new_logic_name, enter_params)
 end
 
 function TeamAILogicSurrender.action_complete_clbk(data, action)
+	return
 end
 
 function TeamAILogicSurrender.can_activate()
+	return
 end
 
 function TeamAILogicSurrender.on_detected_enemy_destroyed(data, enemy_unit)
@@ -82,4 +86,5 @@ function TeamAILogicSurrender.on_detected_enemy_destroyed(data, enemy_unit)
 end
 
 function TeamAILogicSurrender.is_available_for_assignment(data)
+	return
 end

@@ -5,12 +5,11 @@ PrefHud.CONFIG_FILE_PATH = "core/settings/prefhud"
 PrefHud.CONFIG_FILE_EXTENSION = "prefhud"
 
 function PrefHud:init()
-	self._const = {
-		_bar_y = 14,
-		_bar_space = 5,
-		_bar_bg_x = 400,
-		_bar_bg_y = 200
-	}
+	self._const = {}
+	self._const._bar_y = 14
+	self._const._bar_space = 5
+	self._const._bar_bg_x = 400
+	self._const._bar_bg_y = 200
 	self._const._bar_x = self._const._bar_bg_x - self._const._bar_space * 2
 	self._upd_interval = 0.1
 
@@ -47,6 +46,7 @@ function PrefHud:load_config()
 	assert(DB:has(self.CONFIG_FILE_EXTENSION, self.CONFIG_FILE_PATH), "[CorePrefHud] Can't open \"" .. tostring(self.CONFIG_FILE_PATH) .. "." .. tostring(self.CONFIG_FILE_EXTENSION) .. "\".")
 
 	local data = PackageManager:script_data(Idstring(self.CONFIG_FILE_EXTENSION), Idstring(self.CONFIG_FILE_PATH))
+
 	self._counters = {}
 
 	for _, sub_data in ipairs(data) do
@@ -71,13 +71,14 @@ function PrefHud:build_gui()
 	self._workspace = Overlay:newgui():create_sub_screen_workspace(1000, 1000, res.x * safe_rect, res.y * safe_rect)
 	self._gui = self._workspace:panel():gui(Idstring("core/guis/core_prefhud"))
 	self._panel = self._gui:panel()
+
 	local c = self._const
 
 	self._gui:child("bar_bg"):set_shape(0, 0, c._bar_bg_x, table.size(self._counters) * (c._bar_y + c._bar_space) + c._bar_space * 2)
 	self._panel:set_size(c._bar_bg_x, table.size(self._counters) * (c._bar_y + c._bar_space) + c._bar_space * 2)
 
 	local i = 0
-	local s, v, k = nil
+	local s, v, k
 
 	while i < table.size(self._counters) do
 		for it_k, it_v in pairs(self._counters) do
@@ -129,7 +130,7 @@ function PrefHud:toggle()
 end
 
 function PrefHud:update_bars(t, dt)
-	if self._upd_interval <= (self._prev_upd or self._upd_interval) then
+	if (self._prev_upd or self._upd_interval) >= self._upd_interval then
 		self._prev_upd = 0
 
 		for k, v in pairs(self._counters) do
@@ -140,20 +141,22 @@ function PrefHud:update_bars(t, dt)
 			end
 
 			v._raw_value = raw_value
+
 			local value = math.clamp(raw_value, 0, v._max)
+
 			v._current_value = value
 
 			if v._inv then
 				value = v._max - value
 			end
 
-			if v._max <= value then
+			if value >= v._max then
 				if v._inv_colors then
 					v._obj:set_color(Color(0.8, 0, 0))
 				else
 					v._obj:set_color(Color(0, 0.8, 0))
 				end
-			elseif v._mid <= value and value <= v._max then
+			elseif value >= v._mid and value <= v._max then
 				local t = (value - v._mid) / (v._max - v._mid)
 
 				if v._inv_colors then
@@ -161,7 +164,7 @@ function PrefHud:update_bars(t, dt)
 				else
 					v._obj:set_color(math.lerp(Color(0.8, 0.8, 0), Color(0, 0.8, 0), t))
 				end
-			elseif v._min <= value and value <= v._mid then
+			elseif value >= v._min and value <= v._mid then
 				local t = (value - v._min) / (v._mid - v._min)
 
 				if v._inv_colors then
@@ -191,6 +194,7 @@ local ids_f1 = Idstring("f1")
 local is_win32 = SystemInfo:platform() == ids_win32
 
 function PrefHud:update_keys()
+	return
 end
 
 function PrefHud:update(t, dt)

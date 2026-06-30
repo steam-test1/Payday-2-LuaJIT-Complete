@@ -51,8 +51,8 @@ function EnableUnitUnitElement:update_selected()
 			self._units[id] = nil
 		else
 			local params = {
-				g = 1,
 				b = 0,
+				g = 1,
 				r = 0,
 				from_unit = self._unit,
 				to_unit = unit
@@ -87,8 +87,8 @@ function EnableUnitUnitElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._units) do
 		local params = {
-			g = 0.5,
 			b = 0,
+			g = 0.5,
 			r = 0,
 			from_unit = self._unit,
 			to_unit = unit

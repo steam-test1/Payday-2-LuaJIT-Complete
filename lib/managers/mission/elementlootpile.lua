@@ -6,6 +6,7 @@ function ElementLootPile:init(...)
 	ElementLootPile.super.init(self, ...)
 
 	local max_loot = self:value("max_loot")
+
 	self._remaining_loot = max_loot > 0 and max_loot or 10000000
 	self._steal_SO_data = {}
 end
@@ -65,7 +66,7 @@ function ElementLootPile:register_steal_SO()
 
 	managers.navigation:destroy_nav_tracker(tracker_pickup)
 
-	local drop_pos, drop_nav_seg, drop_area = nil
+	local drop_pos, drop_nav_seg, drop_area
 	local drop_point = managers.groupai:state():get_safe_enemy_loot_drop_point(pickup_nav_seg)
 
 	if drop_point then
@@ -79,49 +80,49 @@ function ElementLootPile:register_steal_SO()
 	end
 
 	local drop_objective = {
-		type = "act",
-		interrupt_health = 0.5,
 		action_duration = 2,
 		haste = "walk",
-		pose = "crouch",
 		interrupt_dis = 400,
+		interrupt_health = 0.5,
+		pose = "crouch",
+		type = "act",
 		nav_seg = drop_nav_seg,
 		pos = drop_pos,
 		area = drop_area,
 		fail_clbk = callback(self, self, "on_secure_SO_failed", loot_index),
 		complete_clbk = callback(self, self, "on_secure_SO_completed", loot_index),
 		action = {
-			variant = "untie",
 			align_sync = true,
 			body_part = 1,
-			type = "act"
+			type = "act",
+			variant = "untie"
 		}
 	}
 	local pickup_objective = {
 		destroy_clbk_key = false,
-		type = "act",
 		haste = "run",
+		interrupt_dis = 100,
 		interrupt_health = 0.5,
 		pose = "crouch",
-		interrupt_dis = 100,
+		type = "act",
 		nav_seg = pickup_nav_seg,
 		area = pickup_area,
 		pos = pickup_pos,
 		fail_clbk = callback(self, self, "on_pickup_SO_failed", loot_index),
 		complete_clbk = callback(self, self, "on_pickup_SO_completed", loot_index),
 		action = {
-			variant = "untie",
 			align_sync = true,
 			body_part = 1,
-			type = "act"
+			type = "act",
+			variant = "untie"
 		},
 		action_duration = math.lerp(1, 2.5, math.random()),
 		followup_objective = drop_objective
 	}
 	local so_descriptor = {
-		interval = 0,
 		base_chance = 1,
 		chance_inc = 0,
+		interval = 0,
 		usage_amount = 1,
 		objective = pickup_objective,
 		search_pos = pickup_objective.pos,
@@ -130,6 +131,7 @@ function ElementLootPile:register_steal_SO()
 		admin_clbk = callback(self, self, "on_pickup_SO_administered", loot_index)
 	}
 	local so_id = string.format("carrysteal_%i_pile_%s", loot_index, tostring(self._id))
+
 	self._steal_SO_data[loot_index] = {
 		SO_registered = true,
 		picked_up = false,
@@ -150,6 +152,7 @@ function ElementLootPile:unregister_steal_SO()
 			managers.groupai:state():unregister_loot(self._unit:key())
 		elseif SO_data.thief then
 			local thief = SO_data.thief
+
 			SO_data.thief = nil
 
 			if SO_data.picked_up and SO_data.loot_unit and SO_data.loot_unit:carry_data() then
@@ -171,6 +174,7 @@ function ElementLootPile:on_pickup_SO_completed(loot_index, thief)
 	end
 
 	self._steal_SO_data[loot_index].picked_up = true
+
 	local pos, rot = self:get_orientation()
 	local unit = managers.player:server_drop_carry(self:value("carry_id"), 1, true, false, 1, pos, rot, Vector3(0, 0, 0), 0, nil, nil)
 

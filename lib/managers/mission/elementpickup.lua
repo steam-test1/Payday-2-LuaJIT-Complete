@@ -7,6 +7,7 @@ function ElementPickup:init(...)
 end
 
 function ElementPickup:client_on_executed(...)
+	return
 end
 
 function ElementPickup:on_executed(instigator)
@@ -22,6 +23,7 @@ function ElementPickup:on_executed(instigator)
 		end
 	else
 		local reason = not alive(instigator) and "no instigator"
+
 		reason = reason or not instigator:character_damage() and "no character damage extension (wrong type of unit)"
 		reason = reason or instigator:character_damage():dead() and "instigator dead"
 		reason = reason or not instigator:character_damage().set_pickup and "No set_pickup function"

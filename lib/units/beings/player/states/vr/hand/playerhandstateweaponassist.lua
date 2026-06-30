@@ -11,6 +11,7 @@ function PlayerHandStateWeaponAssist:at_enter(prev_state)
 	local weapon_tweak = alive(weapon_unit) and tweak_data.vr.weapon_assist.weapons[weapon_unit:base().name_id]
 	local sequence = self._sequence
 	local other_hand = self:hsm():other_hand():current_state()
+
 	self._assist_position = other_hand:assist_position()
 
 	if other_hand:assist_grip() then

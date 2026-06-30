@@ -5,6 +5,7 @@ Renderer = Renderer or class()
 Renderer.border_height = 44
 
 function Renderer:preload()
+	return
 end
 
 function Renderer:init(logic, parameters)
@@ -30,14 +31,15 @@ function Renderer:init(logic, parameters)
 	end
 
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel({
-		valign = "scale",
 		halign = "scale",
+		valign = "scale",
 		layer = self._base_layer
 	})
 
 	self._fullscreen_ws:hide()
 
 	local safe_rect_pixels = managers.viewport:get_safe_rect_pixels()
+
 	self._main_panel = self.ws:panel():panel({
 		layer = self._base_layer
 	})
@@ -78,7 +80,7 @@ function Renderer:show_node(node, parameters)
 		previous_node_gui:set_visible(false)
 	end
 
-	local new_node_gui = nil
+	local new_node_gui
 
 	if parameters.node_gui_class then
 		new_node_gui = parameters.node_gui_class:new(node, layer + 1, parameters)

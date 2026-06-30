@@ -168,10 +168,12 @@ function SequenceManager:add_inflict_updator_body(damage_type, unit_key, body_ke
 
 	if unit_map then
 		local body_map = unit_map[unit_key] or {}
+
 		unit_map[unit_key] = body_map
 
 		if not body_map[body_key] then
 			local count_map = self._inflict_updator_body_count[damage_type]
+
 			count_map[body_key] = (count_map[body_key] or 0) + 1
 		end
 
@@ -189,8 +191,10 @@ function SequenceManager:remove_inflict_updator_body(damage_type, unit_key, body
 
 		if body_map and body_map[body_key] then
 			body_map[body_key] = nil
+
 			local count_map = self._inflict_updator_body_count[damage_type]
 			local count = count_map[body_key] - 1
+
 			count_map[body_key] = count
 
 			if count == 0 then
@@ -285,7 +289,7 @@ function SequenceManager:get_keys_as_string(key_value_list, none_string, dot_at_
 
 	for key, value in pairs(key_value_list) do
 		local last_func = func
-		local append_string = nil
+		local append_string
 
 		if only_values then
 			append_string = value
@@ -394,12 +398,13 @@ end
 
 function SequenceManager:_add_start_time_callback(element_id, env, delay, repeat_nr, sequence_name)
 	self._last_start_time_callback_id = self._last_start_time_callback_id + 1
-	local time_callback = {
-		id = self._last_start_time_callback_id,
-		element_id = element_id,
-		env = env,
-		delay = tonumber(delay) or 0
-	}
+
+	local time_callback = {}
+
+	time_callback.id = self._last_start_time_callback_id
+	time_callback.element_id = element_id
+	time_callback.env = env
+	time_callback.delay = tonumber(delay) or 0
 	time_callback.start_time = time_callback.delay
 	time_callback.repeat_nr = tonumber(repeat_nr) or 1
 	time_callback.sequence_name = sequence_name
@@ -477,6 +482,7 @@ end
 function SequenceManager:update_startup_callbacks()
 	if self._startup_callback_map then
 		local startup_callback_map_copy = self._startup_callback_map
+
 		self._startup_callback_map = nil
 
 		for _, func in pairs(startup_callback_map_copy) do
@@ -487,13 +493,14 @@ end
 
 function SequenceManager:update_start_time_callbacks(dt)
 	self._current_start_time_callback_index = 1
+
 	local time_callback = self._start_time_callback_list[self._current_start_time_callback_index]
 
 	while time_callback do
 		time_callback.start_time = time_callback.start_time - dt
 
 		if time_callback.start_time <= 0 then
-			local is_repeat = nil
+			local is_repeat
 			local env = time_callback.env
 
 			if env then
@@ -559,7 +566,7 @@ end
 
 function SequenceManager:update_retry_callbacks()
 	if next(self._retry_callback_list) then
-		local remove_retry_callback_map = nil
+		local remove_retry_callback_map
 
 		for callback_type, list in pairs(self._retry_callback_list) do
 			if not next(self._retry_callback_list[callback_type]) then
@@ -722,6 +729,7 @@ end
 function SequenceManager:remove(unit_name)
 	local unit_name_key = unit_name:key()
 	local unit_element = self._unit_elements[unit_name_key]
+
 	self._unit_elements[unit_name_key] = nil
 	self._sequence_file_map[unit_name_key] = nil
 
@@ -735,9 +743,7 @@ function SequenceManager:verify_material_configs(skip_unit_map, processed_unit_m
 	local unit_id = Idstring("unit")
 	local assets_path = Application:base_path() .. "../../assets/"
 
-	if managers.debug then
-		assets_path = managers.debug.macro:get_cleaned_path(assets_path) or assets_path
-	end
+	assets_path = managers.debug and managers.debug.macro:get_cleaned_path(assets_path) or assets_path
 
 	cat_print("debug", "Verifying " .. #unit_list .. " units...")
 
@@ -874,7 +880,7 @@ function SequenceManager:test_unit_variations(unit)
 				unit:position(),
 				math.DOWN,
 				0,
-				Vector3()
+				(Vector3())
 			}
 
 			for _, name in ipairs(variation_list) do
@@ -968,6 +974,7 @@ end
 
 function SequenceManager:load(data)
 	local state = data.CoreSequenceManager
+
 	SequenceEnvironment.g_save_data = {}
 	self._start_time_callback_list = {}
 	self._last_start_time_callback_id = 0
@@ -999,9 +1006,9 @@ end
 
 function SequenceManager:save_global_save_data(data)
 	if next(SequenceEnvironment.g_save_data) then
-		local state = {
-			g_save_data = table.map_copy(SequenceEnvironment.g_save_data)
-		}
+		local state = {}
+
+		state.g_save_data = table.map_copy(SequenceEnvironment.g_save_data)
 		data.SequenceEnvironment = state
 
 		return true
@@ -1057,6 +1064,7 @@ function SequenceManager:_safe_save_map(map, visited_map)
 			end
 		elseif value_type == "table" then
 			local is_sequence_env = getmetatable(value) == SequenceEnvironment
+
 			value = self:_safe_save_map(value, visited_map)
 
 			if is_sequence_env then
@@ -1072,8 +1080,10 @@ end
 
 function SequenceManager:safe_load_map(data_map)
 	data_map = table.deep_map_copy(data_map)
+
 	local wait_unit_load_map = {}
 	local done_callback_func = callback(self, self, "_safe_load_map_done", data_map)
+
 	data_map.is_corrupt = true
 
 	self:_safe_load_map(data_map, wait_unit_load_map, done_callback_func, {})
@@ -1131,7 +1141,9 @@ function SequenceManager:_safe_load_map(state, wait_unit_load_map, done_callback
 					wait_unit_load_map = wait_unit_load_map,
 					done_callback_func = done_callback_func
 				}
+
 				wait_unit_load_map[id] = (wait_unit_load_map[id] or 0) + 1
+
 				local unit = managers.worlddefinition:get_unit_on_load(id, callback(self, self, "_on_load_unit_done_callback", data))
 
 				if unit ~= nil then
@@ -1208,7 +1220,7 @@ function SequenceManager:do_area_damage(damage_type, attack_unit, pos, range, co
 	local damaged_being_map = {}
 	local killed_being_map = {}
 	local hit_being_map = {}
-	local ray_caller, ignore_unit_key = nil
+	local ray_caller, ignore_unit_key
 
 	if alive(ignore_unit) then
 		ray_caller = attack_unit
@@ -1226,13 +1238,14 @@ function SequenceManager:do_area_damage(damage_type, attack_unit, pos, range, co
 
 		if unit and unit_key ~= ignore_unit_key then
 			local body_extension = body:extension()
+
 			body_extension = body_extension and body_extension.damage
 
 			if body_extension then
 				local hit_pos = body:center_of_mass()
 				local dir = (hit_pos - pos):normalized()
 				local unit_extension = unit:damage()
-				local body_damage = nil
+				local body_damage
 
 				if get_damage_func then
 					body_damage = get_damage_func(unit, body, dir, hit_pos, damage_type, attack_unit, pos, range, constant_damage, damage, velocity, ignore_unit, direct_attack_unit, ignore_mask)
@@ -1246,6 +1259,7 @@ function SequenceManager:do_area_damage(damage_type, attack_unit, pos, range, co
 
 				if not checked_unit_map[unit_key] then
 					local dead, damage = self:do_area_damage_on_unit(unit, body, unit_extension, damage_type, attack_unit, -dir, pos, dir, body_damage, velocity, velocity, ignore_unit, direct_attack_unit)
+
 					hit_prop_map[unit_key] = unit
 
 					if damage then
@@ -1277,7 +1291,7 @@ function SequenceManager:do_area_damage(damage_type, attack_unit, pos, range, co
 
 			if hit then
 				local dir = (unit:position() - pos):normalized()
-				local unit_damage = nil
+				local unit_damage
 
 				if get_damage_func then
 					unit_damage = get_damage_func(unit, nil, dir, hit_pos, damage_type, attack_unit, pos, range, constant_damage, damage, velocity, ignore_unit, direct_attack_unit, ignore_mask)
@@ -1288,6 +1302,7 @@ function SequenceManager:do_area_damage(damage_type, attack_unit, pos, range, co
 				end
 
 				local dead, damage = self:do_area_damage_on_unit(unit, nil, unit_extension, damage_type, attack_unit, -dir, pos, dir, unit_damage, velocity, ignore_unit, direct_attack_unit)
+
 				hit_being_map[unit_key] = unit
 
 				if damage then
@@ -1337,7 +1352,7 @@ function SequenceManager:do_area_damage_on_unit(unit, body, unit_extension, dama
 end
 
 function SequenceManager:is_hit_by_area_damage(dest_unit, position, ray_caller, ignore_unit)
-	local ray = nil
+	local ray
 	local had_target_object = false
 
 	if dest_unit:unit_data() and dest_unit:unit_data().target_objects then
@@ -1480,6 +1495,7 @@ function SequenceEnvironment:init(endurance_type, source_unit, dest_unit, dest_b
 	self.params = params or {}
 	self.__run_params = CoreTable.clone(self.params)
 	self.dest_unit = dest_unit
+
 	local ext = damage_ext or dest_unit:damage()
 
 	if ext then
@@ -1502,6 +1518,7 @@ function SequenceEnvironment:init_static_env()
 	self.dir = Vector3(0, 0, -1)
 	self.damage = 0
 	self.velocity = Vector3()
+
 	local global_core_unit_element = managers.sequence:get_global_core_unit_element()
 
 	if global_core_unit_element then
@@ -1850,7 +1867,7 @@ function SequenceEnvironment.dir_side(obj, dir)
 end
 
 function SequenceEnvironment.within_box(pos, box_pos1, box_pos2)
-	return (box_pos1.x <= box_pos2.x and box_pos1.x <= pos.x and pos.x <= box_pos1.x or box_pos2.x <= pos.x and pos.x <= box_pos2.x) and (box_pos1.y <= box_pos2.y and box_pos1.y <= pos.x and pos.x <= box_pos1.y or box_pos2.y <= pos.y and pos.y <= box_pos2.y) and (box_pos1.z <= box_pos2.z and box_pos1.z <= pos.z and pos.z <= box_pos1.z or box_pos2.z <= pos.z and pos.z <= box_pos2.z)
+	return (box_pos1.x <= box_pos2.x and pos.x >= box_pos1.x and pos.x <= box_pos1.x or pos.x >= box_pos2.x and pos.x <= box_pos2.x) and (box_pos1.y <= box_pos2.y and pos.x >= box_pos1.y and pos.x <= box_pos1.y or pos.y >= box_pos2.y and pos.y <= box_pos2.y) and (box_pos1.z <= box_pos2.z and pos.z >= box_pos1.z and pos.z <= box_pos1.z or pos.z >= box_pos2.z and pos.z <= box_pos2.z)
 end
 
 function SequenceEnvironment.light_mul(light_name)
@@ -1921,6 +1938,7 @@ end
 
 function SequenceEnvironment.set_unique_save_data(id, save_value)
 	local global_id = SequenceEnvironment.get_unique_save_data_id(id)
+
 	SequenceEnvironment.g_save_data[global_id] = save_value
 end
 
@@ -1950,18 +1968,19 @@ end
 
 BaseElement = BaseElement or class()
 BaseElement.BASE_ATTRIBUTE_MAP = BaseElement.BASE_ATTRIBUTE_MAP or {
-	repeat_nr = true,
-	start_time_id_var = true,
-	start_time_element_id = true,
-	filter = true,
 	delayed_filter = true,
-	start_time = true
+	filter = true,
+	repeat_nr = true,
+	start_time = true,
+	start_time_element_id = true,
+	start_time_id_var = true
 }
 BaseElement.SAVE_STATE = true
 
 function BaseElement:init(node, unit_element)
 	self._unit_element = unit_element
-	local __filter_name, __delayed_filter_name = nil
+
+	local __filter_name, __delayed_filter_name
 
 	if node then
 		self._node_file = self:retrieve_node_file(node)
@@ -2042,20 +2061,21 @@ function BaseElement:get(name, set_function)
 end
 
 function BaseElement:get_static(name, value, set_function, node)
-	local __func = nil
+	local __func
 
 	if value ~= nil then
-		local error_msg = nil
+		local error_msg
+
 		__func, error_msg = loadstring("return " .. tostring(value))
 
 		if __func then
 			if set_function then
-				return function (env, ...)
+				return function(env, ...)
 					setfenv(__func, env)
 					set_function(self, env, __func(), ...)
 				end
 			else
-				return function (env, ...)
+				return function(env, ...)
 					setfenv(__func, env)
 
 					return __func(env, ...)
@@ -2145,6 +2165,7 @@ function BaseElement:delayed_filter_callback(env)
 end
 
 function BaseElement:activate_callback(env)
+	return
 end
 
 function BaseElement:set_state(unit, data)
@@ -2161,7 +2182,9 @@ function BaseElement:set_cat_state(unit, category, cat_data)
 
 	if extension then
 		extension._state = extension._state or {}
+
 		local data = extension._state[self.NAME] or {}
+
 		data[category] = cat_data
 		extension._state[self.NAME] = data
 	end
@@ -2172,8 +2195,10 @@ function BaseElement:set_cat_state2(unit, category1, category2, cat_data)
 
 	if extension then
 		extension._state = extension._state or {}
+
 		local data = extension._state[self.NAME] or {}
 		local key = type(category1) == "userdata" and category1:key() or category1
+
 		data[key] = data[key] or {}
 		data[key][category2] = cat_data
 		extension._state[self.NAME] = data
@@ -2203,11 +2228,13 @@ function BaseElement:print_attribute_error(attribute_name, attribute_value, vali
 end
 
 function BaseElement:print_error(msg, recoverable, env_to_print, node)
+	return
 end
 
 function BaseElement:get_xml_origin(node)
 	local file = node and self:retrieve_node_file(node) or self:get_model_xml_file()
 	local line = node and self:retrieve_node_line(node) or self._node_line
+
 	file = string.gsub(tostring(managers.database and managers.database:base_path() or "") .. tostring(file), "(.-)[/\\]+(.-)", "%1\\%2")
 
 	return "File: \"" .. tostring(file or "N/A") .. "\" (Line: " .. tostring(line or "N/A, remove .xmb file") .. ")\nUnit: \"" .. tostring(self._unit_element and self._unit_element:get_name():t() or "[None]") .. "\"\nElement: " .. self:get_xml_element_string(node)
@@ -2304,6 +2331,7 @@ function UnitElement:init(node, name, is_global)
 			if element_name == "variables" then
 				for _, v_data in ipairs(data) do
 					local name = v_data._meta
+
 					self._set_variables = self._set_variables or {}
 					self._set_variables[name] = self:get_static("value", v_data.value, nil, data)
 
@@ -2314,6 +2342,7 @@ function UnitElement:init(node, name, is_global)
 			elseif element_name == "global_variables" then
 				for _, v_data in ipairs(data) do
 					local name = v_data._meta
+
 					self._global_vars = self._global_vars or {}
 					self._global_vars[name] = self:get_static("value", v_data.value, nil, data)
 
@@ -2333,14 +2362,17 @@ function UnitElement:init(node, name, is_global)
 
 			if element_name == "trigger" then
 				local trigger = TriggerDeclarationElement:new(data, self)
+
 				self._triggers = self._triggers or {}
 				self._triggers[trigger._name] = trigger
 			elseif element_name == "filter" then
 				local filter = FilterElement:new(data, self)
+
 				self._filters = self._filters or {}
 				self._filters[filter._name] = filter
 			elseif element_name == "sequence" then
 				local name = self:get_static("name", data.name, nil, data)
+
 				name = name and name(SequenceEnvironment)
 
 				if not name then
@@ -2415,7 +2447,7 @@ function UnitElement:_register_start_time_callback(id, element, node)
 end
 
 function UnitElement:get_startup_sequence_map(unit, damage_ext)
-	local env, map = nil
+	local env, map
 
 	for name, sequence in pairs(self._sequence_elements) do
 		local startup = sequence._startup
@@ -2437,7 +2469,7 @@ function UnitElement:get_startup_sequence_map(unit, damage_ext)
 end
 
 function UnitElement:get_editor_startup_sequence_map(unit, damage_ext)
-	local env, map = nil
+	local env, map
 
 	for name, sequence in pairs(self._sequence_elements) do
 		local editor_startup = sequence._editor_startup
@@ -2679,6 +2711,7 @@ function FilterElement:init(node, unit_element)
 	self._allow = self:get("allow")
 	self._check_all = self:get("check_all")
 	self._elements = {}
+
 	local filter_element_class_map = managers.sequence:get_filter_element_class_map()
 
 	for _, data in ipairs(node) do
@@ -2777,6 +2810,7 @@ function ZoneFilterElement:init(node, unit_element)
 	BaseElement.init(self, node, unit_element)
 
 	local name = self:get("name")
+
 	name = name and name(SequenceEnvironment)
 	self._ref_object = self:get("ref_object")
 
@@ -2785,6 +2819,7 @@ function ZoneFilterElement:init(node, unit_element)
 	end
 
 	self._func_list = {}
+
 	local negative = false
 
 	for i = 1, #name do
@@ -2793,7 +2828,7 @@ function ZoneFilterElement:init(node, unit_element)
 		if __chr == "-" then
 			negative = true
 		elseif __chr == "x" or __chr == "y" or __chr == "z" then
-			local func = nil
+			local func
 
 			if negative then
 				function func(zone_vector)
@@ -2930,6 +2965,7 @@ function ProximityTypeElement:init(node, unit_element)
 	end
 
 	local proximity_type = self:get("type")
+
 	proximity_type = proximity_type and proximity_type(SequenceEnvironment)
 	self._slotmask = proximity_type and managers.sequence:get_proximity_mask(proximity_type)
 
@@ -3247,7 +3283,7 @@ function RootBodyElement:init(node, unit_element)
 
 	for _, data in ipairs(node) do
 		local name = data._meta
-		local element = nil
+		local element
 
 		if name == "inflict" then
 			if self._inflict_element then
@@ -3267,7 +3303,7 @@ function RootBodyElement:init(node, unit_element)
 				else
 					local next_element = self._first_endurance[k]
 
-					while next_element._next[k] and next_element._next[k]._endurance[k] <= v do
+					while next_element._next[k] and v >= next_element._next[k]._endurance[k] do
 						next_element = next_element._next[k]
 					end
 
@@ -3336,6 +3372,7 @@ function RootInflictElement:init(node, unit_element)
 	BaseElement.init(self, node, unit_element)
 
 	self._element_list = {}
+
 	local inflict_element_class_map = managers.sequence:get_inflict_element_class_map()
 
 	for _, child_node in ipairs(node) do
@@ -3343,6 +3380,7 @@ function RootInflictElement:init(node, unit_element)
 
 		if element_class then
 			local element = element_class:new(child_node, unit_element)
+
 			self._element_list[element._element_name] = element
 		else
 			self:check_invalid_node(child_node, inflict_element_class_map)
@@ -3591,9 +3629,10 @@ function EnduranceElement:damage(env)
 
 	if new_damage >= 0 then
 		local extension = env.dest_body:extension().damage
+
 		extension._damage[env.damage_type] = extension._damage[env.damage_type] + new_damage
 
-		if self._endurance[env.damage_type] <= extension._damage[env.damage_type] then
+		if extension._damage[env.damage_type] >= self._endurance[env.damage_type] then
 			local old_damage = extension._damage[env.damage_type]
 
 			self:activate(env)
@@ -3603,9 +3642,11 @@ end
 
 function EnduranceElement:activate(env)
 	local extension = env.dest_body:extension().damage
+
 	extension._endurance[env.damage_type] = self._next[env.damage_type]
+
 	local next_endurance_element = self._next[env.damage_type]
-	local skip = next_endurance_element and self._can_skip and next_endurance_element._endurance[env.damage_type] <= extension._damage[env.damage_type]
+	local skip = next_endurance_element and self._can_skip and extension._damage[env.damage_type] >= next_endurance_element._endurance[env.damage_type]
 
 	if not skip then
 		self:activate_elements(env)
@@ -3613,7 +3654,7 @@ function EnduranceElement:activate(env)
 		next_endurance_element = self._next[env.damage_type]
 	end
 
-	if next_endurance_element and next_endurance_element._endurance[env.damage_type] <= extension._damage[env.damage_type] then
+	if next_endurance_element and extension._damage[env.damage_type] >= next_endurance_element._endurance[env.damage_type] then
 		next_endurance_element:activate(env)
 
 		local unit_map = managers.sequence:get_inflict_updator_unit_map(env.damage_type)
@@ -3672,7 +3713,7 @@ function AnimationGroupElement:play(env, name)
 	if not once or not env.dest_unit:anim_is_playing(ids_name) then
 		local duration = self:run_parsed_func(env, self._duration)
 		local speed = self:run_parsed_func(env, self._speed) or 1
-		local end_time = nil
+		local end_time
 		local loop = self:run_parsed_func(env, self._loop)
 
 		if duration and speed < 0 then
@@ -3785,11 +3826,10 @@ function AreaDamageElement:init(node, unit_element)
 	self._mass = self:get("mass")
 	self._falloff = self:get("falloff")
 	self._ignore_mask = self:get("ignore_mask")
-	self._falloff_func_map = {
-		linear = nil,
-		keys = "get_falloff_key_damage",
-		preset1 = "get_falloff_preset1_damage"
-	}
+	self._falloff_func_map = {}
+	self._falloff_func_map.linear = nil
+	self._falloff_func_map.keys = "get_falloff_key_damage"
+	self._falloff_func_map.preset1 = "get_falloff_preset1_damage"
 	self._key_list = {}
 
 	for child_node in node:children() do
@@ -3826,13 +3866,15 @@ function AreaDamageElement:activate_callback(env)
 				local mass = self:run_parsed_func(env, self._mass)
 				local falloff = self:run_parsed_func(env, self._falloff)
 				local damage_callback_func_name = falloff and self._falloff_func_map[falloff]
-				local damage_callback_func = nil
+				local damage_callback_func
 				local ignore_mask = self:run_parsed_func(env, self._ignore_mask)
+
 				ignore_mask = ignore_mask and managers.slot:get_mask(ignore_mask)
 
 				if #self._key_list == 0 then
 					if falloff == "keys" then
-						falloff, damage_callback_func_name = nil
+						falloff = nil
+						damage_callback_func_name = nil
 					end
 				else
 					damage_callback_func_name = damage_callback_func_name or self._falloff_func_map.keys
@@ -3840,6 +3882,7 @@ function AreaDamageElement:activate_callback(env)
 
 				if damage_callback_func_name then
 					local params = self:get_params(env)
+
 					damage_callback_func = callback(self, self, damage_callback_func_name, params)
 				end
 
@@ -3850,17 +3893,17 @@ function AreaDamageElement:activate_callback(env)
 end
 
 function AreaDamageElement:get_params(env)
-	local params = {
-		env = env,
-		parsed_key_list = {}
-	}
+	local params = {}
+
+	params.env = env
+	params.parsed_key_list = {}
 
 	for _, key in ipairs(self._key_list) do
 		local parsed_key = key:get_parsed_key(env)
-		local index = nil
+		local index
 
 		for current_index, current_parsed_key in ipairs(params.parsed_key_list) do
-			if current_parsed_key:get_variable("range") < parsed_key:get_variable("range") then
+			if parsed_key:get_variable("range") > current_parsed_key:get_variable("range") then
 				index = current_index
 
 				break
@@ -3879,10 +3922,10 @@ end
 
 function AreaDamageElement:get_falloff_key_damage(params, unit, body, dir, hit_pos, damage_type, attack_unit, pos, range, constant_damage, damage, velocity, ignore_unit, direct_attack_unit, ignore_mask)
 	local distance = self:get_distance(body, hit_pos, pos)
-	local key, index = nil
+	local key, index
 
 	for current_index, current_key in ipairs(params.parsed_key_list) do
-		if current_key:get_variable("range") < distance then
+		if distance > current_key:get_variable("range") then
 			if not key then
 				key = current_key
 				index = current_index
@@ -3897,14 +3940,14 @@ function AreaDamageElement:get_falloff_key_damage(params, unit, body, dir, hit_p
 
 	if key then
 		local prev_key = params.parsed_key_list[index + 1]
-		local prev_key_damage, prev_key_range = nil
+		local prev_key_damage, prev_key_range
 
 		if prev_key then
 			prev_key_damage = prev_key:get_variable("damage")
 			prev_key_range = prev_key:get_variable("range")
 
 			prev_key:get_key_element():activate(params.env, unit, body, hit_pos, distance, range)
-		elseif key:get_variable("range") <= distance then
+		elseif distance >= key:get_variable("range") then
 			prev_key_damage = key:get_variable("damage")
 			prev_key_range = key:get_variable("range")
 		else
@@ -3938,9 +3981,8 @@ function AreaDamageKeyElement:init(node, unit_element)
 	self._falloff_type = self:get("falloff")
 	self._physic_effect = self:get("physic_effect")
 	self._mass = self:get("mass")
-	self._falloff_func_map = {
-		linear = self.get_linear_damage
-	}
+	self._falloff_func_map = {}
+	self._falloff_func_map.linear = self.get_linear_damage
 end
 
 function AreaDamageKeyElement:get_parsed_key(env)
@@ -3973,6 +4015,7 @@ end
 
 function AreaDamageKeyElement:activate(env, unit, body, pos, distance, total_range)
 	SequenceEnvironment.element = self
+
 	local physic_effect = self:run_parsed_func(env, self._physic_effect)
 
 	if physic_effect then
@@ -3988,7 +4031,7 @@ end
 
 function AreaDamageKeyElement:get_linear_damage(distance, range, damage, prev_key_range, prev_key_damage)
 	local diff = range - prev_key_range
-	local offset = nil
+	local offset
 
 	if diff > 0 then
 		offset = math.clamp(distance - prev_key_range, 0, diff) / diff
@@ -4021,20 +4064,20 @@ end
 BodyElement = BodyElement or class(BaseElement)
 BodyElement.NAME = "body"
 BodyElement.VALID_MOTION_MAP = BodyElement.VALID_MOTION_MAP or {
-	keyframed = "set_keyframed",
 	dynamic = "set_dynamic",
-	fixed = "set_fixed"
+	fixed = "set_fixed",
+	keyframed = "set_keyframed"
 }
 BodyElement.FUNC_MAP = BodyElement.FUNC_MAP or {
-	mover = "set_mover",
+	add_ray_type = "add_ray_type",
 	body_collision = "set_body_collision",
 	enabled = "set_enabled",
-	remove_ray_type = "remove_ray_type",
-	pushed_by_mover = "set_pushed_by_mover",
-	motion = "set_motion",
-	add_ray_type = "add_ray_type",
 	interpolate = "interpolate",
-	mover_collision = "set_mover_collision"
+	motion = "set_motion",
+	mover = "set_mover",
+	mover_collision = "set_mover_collision",
+	pushed_by_mover = "set_pushed_by_mover",
+	remove_ray_type = "remove_ray_type"
 }
 BodyElement.VALID_MOVER_MAP = BodyElement.VALID_MOVER_MAP or {
 	callback = "callback",
@@ -4329,6 +4372,7 @@ function AttentionElement:activate_callback(env)
 		_G.debug_pause_unit(env.dest_unit, "AttentionElement:activate_callback: unit missing attention extension", env.dest_unit)
 	elseif operation == "add" then
 		local attention_setting = _G.PlayerMovement._create_attention_setting_from_descriptor(self, _G.tweak_data.attention.settings[preset_name], preset_name)
+
 		attention_setting.giveaway = giveaway
 
 		env.dest_unit:attention():add_attention(attention_setting)
@@ -4453,12 +4497,13 @@ function EffectElement:activate_callback(env)
 			end
 		end
 
-		local param_map = {
-			effect = name:id(),
-			parent = parent,
-			position = position,
-			velocity = self:run_parsed_func(env, self._velocity) or Vector3()
-		}
+		local param_map = {}
+
+		param_map.effect = name:id()
+		param_map.parent = parent
+		param_map.position = position
+		param_map.velocity = self:run_parsed_func(env, self._velocity) or Vector3()
+
 		local align = self:run_parsed_func(env, self._align)
 
 		if align then
@@ -4512,6 +4557,7 @@ function EffectSpawnerElement:init(node, unit_element)
 
 	self._name = self:get("name")
 	self._set_function_list = {}
+
 	local enabled = self:get("enabled", self.set_enabled)
 
 	if enabled then
@@ -4646,7 +4692,7 @@ function FunctionElement:activate_callback(env)
 	local func = function_name and target[function_name]
 
 	if func then
-		self:_function(env, target, func)
+		self._function(self, env, target, func)
 	else
 		self:print_attribute_error("function", function_name, nil, true, env, nil)
 	end
@@ -4748,6 +4794,7 @@ function LightElement:init(node, unit_element)
 
 	self._name = self:get("name")
 	self._set_functions = {}
+
 	local enabled = self:get("enabled", self.set_enabled)
 
 	if enabled then
@@ -4918,19 +4965,19 @@ MaterialElement = MaterialElement or class(BaseElement)
 MaterialElement.NAME = "material"
 MaterialElement.MATERIAL_ATTRIBUTE_MAP = MaterialElement.MATERIAL_ATTRIBUTE_MAP or {
 	diffuse_color = true,
-	name = true,
-	diffuse_color_alpha = true
+	diffuse_color_alpha = true,
+	name = true
 }
 MaterialElement.FUNC_MAP = MaterialElement.FUNC_MAP or {
-	time = "set_time",
-	state = "set_material_state",
+	glossiness = "set_glossiness",
 	render_template = "set_render_template",
-	glossiness = "set_glossiness"
+	state = "set_material_state",
+	time = "set_time"
 }
 MaterialElement.TIMER_STATE_MAP = MaterialElement.TIMER_STATE_MAP or {
-	stop = 0,
+	pause = 0,
 	play = 1,
-	pause = 0
+	stop = 0
 }
 
 function MaterialElement:init(node, unit_element)
@@ -4943,7 +4990,7 @@ function MaterialElement:init(node, unit_element)
 
 	for key, value in pairs(self._parameters) do
 		local func_name = self.FUNC_MAP[key]
-		local func = nil
+		local func
 
 		if func_name then
 			func = self:get(key, self[func_name])
@@ -5000,6 +5047,7 @@ end
 
 function MaterialElement:set_material_state(env, state, material)
 	local args = string.split(state, " ")
+
 	state = args[1]
 
 	table.remove(args, 1)
@@ -5091,6 +5139,7 @@ function ObjectElement:init(node, unit_element)
 
 	self._set_function_list = {}
 	self._name = self:get("name")
+
 	local visible = self:get("enabled", self.set_visibility)
 
 	if visible then
@@ -5134,25 +5183,17 @@ function ObjectElement:set_visibility(env, visible, object_list, local_scope)
 end
 
 function ObjectElement:set_position(env, position, object_list, local_scope)
-	local func_name = nil
+	local func_name
 
-	if local_scope then
-		func_name = "set_local_position"
-	else
-		func_name = "set_position"
-	end
+	func_name = local_scope and "set_local_position" or "set_position"
 
 	self:set_object(env.dest_unit, object_list, func_name, position)
 end
 
 function ObjectElement:set_rotation(env, rotation, object_list, local_scope)
-	local func_name = nil
+	local func_name
 
-	if local_scope then
-		func_name = "set_local_rotation"
-	else
-		func_name = "set_rotation"
-	end
+	func_name = local_scope and "set_local_rotation" or "set_rotation"
 
 	self:set_object(env.dest_unit, object_list, func_name, rotation)
 end
@@ -5242,6 +5283,7 @@ function PhysicEffectElement:activate_callback(env)
 	local target = self:run_parsed_func(env, self._target)
 	local param_list = self:run_parsed_func_list(env, self._param_list)
 	local store_id_var = self:run_parsed_func(env, self._store_id_var) or "last_physic_effect_id"
+
 	env.vars[store_id_var] = World:play_physic_effect(Idstring(name), target, unpack(param_list))
 end
 
@@ -5280,6 +5322,7 @@ function ProjectDecalElement:activate_callback(env)
 		self:print_attribute_error("slotmask", slotmask, supported_values, true, env)
 	else
 		direction = direction:normalized()
+
 		local ray_distance = self:run_parsed_func(env, self._ray_distance)
 		local normal = self:run_parsed_func(env, self._normal)
 		local ignore_unit = self:run_parsed_func(env, self._ignore_unit)
@@ -5362,6 +5405,7 @@ function RunSequenceElement:activate_callback(env)
 
 		if sequence then
 			local old_params = env.params
+
 			env.params = CoreTable.clone(env.params)
 
 			for k, v in pairs(self._params) do
@@ -5499,6 +5543,7 @@ function SetExtensionVarElement:activate_callback(env)
 			self:print_attribute_error("variable", variable, nil, true, env)
 		else
 			local value = self:run_parsed_func(env, self._value)
+
 			extension[variable] = value
 		end
 	end
@@ -5565,16 +5610,15 @@ function SetInflictElement:init(node, unit_element)
 
 	self._body_name = self:get("body")
 	self._damage_type = self:get("type")
-	self._set_func_list = {
-		damage = self:get("damage"),
-		interval = self:get("interval"),
-		instant = self:get("instant"),
-		enabled = self:get("enabled"),
-		fire_object = self:get("fire_object"),
-		fire_height = self:get("fire_height"),
-		velocity = self:get("velocity"),
-		falloff = self:get("falloff")
-	}
+	self._set_func_list = {}
+	self._set_func_list.damage = self:get("damage")
+	self._set_func_list.interval = self:get("interval")
+	self._set_func_list.instant = self:get("instant")
+	self._set_func_list.enabled = self:get("enabled")
+	self._set_func_list.fire_object = self:get("fire_object")
+	self._set_func_list.fire_height = self:get("fire_height")
+	self._set_func_list.velocity = self:get("velocity")
+	self._set_func_list.falloff = self:get("falloff")
 end
 
 function SetInflictElement:activate_callback(env)
@@ -5660,6 +5704,7 @@ function SetProximityElement:init(node, unit_element)
 
 	self._name = self:get("name")
 	self._set_func_list = {}
+
 	local enabled = self:get("enabled", self.set_enabled)
 
 	if enabled then
@@ -5942,13 +5987,18 @@ function SetWaterElement:activate_callback(env)
 
 	if name then
 		local damage_ext = env.dest_unit:damage()
-		local enabled = nil
+		local enabled
 		local interval = tonumber(self:run_parsed_func(env, self._interval)) or 1
 		local ref_object_name = self:run_parsed_func(env, self._ref_object_name)
 		local ref_body_name = self:run_parsed_func(env, self._ref_body_name)
 		local body_depth = tonumber(self:run_parsed_func(env, self._body_depth)) or 0
 		local physic_effect = self:run_parsed_func(env, self._physic_effect)
-		enabled = (not self._enabled or self:run_parsed_func(env, self._enabled)) and (damage_ext:is_water_check_active(name) or not damage_ext:exists_water_check(name))
+
+		if self._enabled then
+			enabled = self:run_parsed_func(env, self._enabled)
+		else
+			enabled = damage_ext:is_water_check_active(name) or not damage_ext:exists_water_check(name)
+		end
 
 		damage_ext:set_water_check(name, enabled, interval, ref_object_name, ref_body_name, body_depth, physic_effect)
 	else
@@ -6009,6 +6059,7 @@ function SlotElement:activate_callback(env)
 
 		data._body_index = 1
 		data._bodies = {}
+
 		local body_count = env.dest_unit:num_bodies()
 
 		for i = 0, body_count - 1 do
@@ -6024,11 +6075,9 @@ function SlotElement:activate_callback(env)
 		if self.SAVE_STATE then
 			self:set_state(env.dest_unit, tonumber(self:run_parsed_func(env, self._slot)))
 		end
-
-		return
+	else
+		self:activate_element(env)
 	end
-
-	self:activate_element(env)
 end
 
 function SlotElement:activate_element(env)
@@ -6200,7 +6249,7 @@ end
 function WwiseElement:_get_sound_source(env)
 	local source = self:run_parsed_func(env, self._source)
 	local object = self:run_parsed_func(env, self._object)
-	local sound_source = nil
+	local sound_source
 
 	if source then
 		if source == "" then
@@ -6262,12 +6311,12 @@ function SoundElement:play(env)
 
 	if cue ~= nil then
 		local obj_name = self:run_parsed_func(env, self._target)
-		local param_map = {
-			gain_abs = self:run_parsed_func(env, self._gain_abs),
-			pitch_abs = self:run_parsed_func(env, self._pitch_abs),
-			crossfade = self:run_parsed_func(env, self._crossfade),
-			t = self:run_parsed_func(env, self._t)
-		}
+		local param_map = {}
+
+		param_map.gain_abs = self:run_parsed_func(env, self._gain_abs)
+		param_map.pitch_abs = self:run_parsed_func(env, self._pitch_abs)
+		param_map.crossfade = self:run_parsed_func(env, self._crossfade)
+		param_map.t = self:run_parsed_func(env, self._t)
 
 		if obj_name then
 			if env.dest_unit:get_object(obj_name:id()) then
@@ -6296,17 +6345,17 @@ end
 SpawnUnitElement = SpawnUnitElement or class(BaseElement)
 SpawnUnitElement.NAME = "spawn_unit"
 SpawnUnitElement.SPAWN_UNIT_ATTRIBUTE_MAP = SpawnUnitElement.SPAWN_UNIT_ATTRIBUTE_MAP or {
-	position = true,
-	name = true,
-	from_trigger_sequence = true,
-	to_trigger_sequence = true,
-	src_link_obj = true,
-	run_sequence = true,
 	dest_link_obj = true,
-	transfer_velocity = true,
 	from_trigger = true,
+	from_trigger_sequence = true,
+	name = true,
+	position = true,
 	rotation = true,
-	to_trigger = true
+	run_sequence = true,
+	src_link_obj = true,
+	to_trigger = true,
+	to_trigger_sequence = true,
+	transfer_velocity = true
 }
 
 function SpawnUnitElement:init(node, unit_element)
@@ -6348,7 +6397,7 @@ function SpawnUnitElement:activate_callback(env)
 	elseif not rotation then
 		self:print_attribute_error("rotation", rotation, nil, true, env)
 	else
-		local unit = nil
+		local unit
 		local dest_damage_ext = env.dest_unit:damage()
 
 		if MassUnitManager:can_spawn_unit(Idstring(name)) then
@@ -6399,7 +6448,7 @@ function SpawnUnitElement:activate_callback(env)
 			if not unit then
 				self:print_error("Spawned mass unit must be enabled to be able to transfer velocity \"" .. tostring(transfer_velocity) .. "\".", false, env)
 			else
-				local velocity = nil
+				local velocity
 
 				if getmetatable(transfer_velocity) == Vector3 then
 					velocity = transfer_velocity
@@ -6412,7 +6461,7 @@ function SpawnUnitElement:activate_callback(env)
 				end
 
 				local ang_velocity = self:run_parsed_func(env, self._transfer_ang_velocity)
-				local physic_effect_name = nil
+				local physic_effect_name
 
 				if ang_velocity then
 					if getmetatable(ang_velocity) ~= Vector3 then
@@ -6441,7 +6490,7 @@ function SpawnUnitElement:activate_callback(env)
 			end
 		end
 
-		local params = nil
+		local params
 
 		if run_sequence and run_sequence ~= "" then
 			if not unit then

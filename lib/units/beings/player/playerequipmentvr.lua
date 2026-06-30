@@ -1,4 +1,5 @@
 PlayerEquipmentVR = PlayerEquipment
+
 local IDS_BODY = Idstring("body")
 
 function PlayerEquipmentVR:_m_deploy_rot()
@@ -49,6 +50,7 @@ function PlayerEquipmentVR:valid_look_at_placement(equipment_data)
 
 				if block_ray then
 					local distance = mvector3.distance(ray.position, block_ray.position)
+
 					ray = distance <= (deploy_check_settings.block_ray_tolerance or 20) and ray
 				end
 			end
@@ -93,6 +95,7 @@ function PlayerEquipmentVR:valid_shape_placement(equipment_id, equipment_data)
 	if ray then
 		local pos = ray.position
 		local rot = active_hand:rotation()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		if not alive(self._dummy_unit) then
@@ -105,7 +108,8 @@ function PlayerEquipmentVR:valid_shape_placement(equipment_id, equipment_data)
 		self._dummy_unit:set_rotation(rot)
 
 		valid = valid and math.dot(ray.normal, math.UP) > 0.25
-		local find_start_pos, find_end_pos, find_radius = nil
+
+		local find_start_pos, find_end_pos, find_radius
 
 		if equipment_id == "ammo_bag" then
 			find_start_pos = pos + math.UP * 20

@@ -6,10 +6,12 @@ function ElementUnitDamage:init(...)
 	ElementUnitDamage.super.init(self, ...)
 
 	self._units = {}
+
 	local dmg_filter = self:value("damage_types")
 
 	if dmg_filter and dmg_filter ~= "" then
 		self._allow_damage_types = {}
+
 		local dmgs = string.split(dmg_filter, " ")
 
 		for _, dmg_type in ipairs(dmgs) do
@@ -19,9 +21,11 @@ function ElementUnitDamage:init(...)
 end
 
 function ElementUnitDamage:destroy()
+	return
 end
 
 function MissionScriptElement:on_created()
+	return
 end
 
 function ElementUnitDamage:on_script_activated()
@@ -91,6 +95,7 @@ function ElementUnitDamage:on_executed(instigator, damage_type, damage)
 end
 
 function ElementUnitDamage:client_on_executed(...)
+	return
 end
 
 function ElementUnitDamage:save(data)

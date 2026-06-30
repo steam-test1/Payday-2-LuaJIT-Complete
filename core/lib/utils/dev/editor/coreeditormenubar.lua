@@ -2,7 +2,9 @@ core:import("CoreEngineAccess")
 
 function CoreEditor:build_menubar()
 	local menu_bar = EWS:MenuBar()
+
 	self._menu_bar = menu_bar
+
 	local file_menu = EWS:Menu("")
 
 	file_menu:append_item("NEW", "New\t" .. self:ctrl_menu_binding("new"), "Create new file")
@@ -37,6 +39,7 @@ function CoreEditor:build_menubar()
 	Global.frame:connect("EXIT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_close"), "")
 
 	local layers_menu = EWS:Menu("")
+
 	self._disable_layer_menu = EWS:Menu("")
 	self._hide_layer_menu = EWS:Menu("")
 	self._unhide_layer_menu = EWS:Menu("")
@@ -105,16 +108,16 @@ function CoreEditor:build_menubar()
 	self._edit_menu:append_check_item("TB_SURFACE_MOVE", "Surface Move\t(" .. self:ctrl_binding("surface_move_toggle") .. ")", "Toggle surface move on and off")
 	self._edit_menu:set_checked("TB_SURFACE_MOVE", self._use_surface_move)
 	Global.frame:connect("TB_SURFACE_MOVE", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "menu_toolbar_toggle"), {
-		value = "_use_surface_move",
+		menu = "_edit_menu",
 		toolbar = "_toolbar",
-		menu = "_edit_menu"
+		value = "_use_surface_move"
 	})
 	self._edit_menu:append_check_item("TB_SNAPPOINTS", "Use Snappoints\t(" .. self:ctrl_binding("use_snappoints_toggle") .. ")", "Toggle use of snappoints on and off")
 	self._edit_menu:set_checked("TB_SNAPPOINTS", self._use_snappoints)
 	Global.frame:connect("TB_SNAPPOINTS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "menu_toolbar_toggle"), {
-		value = "_use_snappoints",
+		menu = "_edit_menu",
 		toolbar = "_toolbar",
-		menu = "_edit_menu"
+		value = "_use_snappoints"
 	})
 	self._edit_menu:append_separator()
 
@@ -175,8 +178,8 @@ function CoreEditor:build_menubar()
 	Global.frame:connect("GROUP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "group"), nil)
 	Global.frame:connect("UNGROUP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "ungroup"), nil)
 	Global.frame:connect("DEBUG_DRAW_GROUPS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "menu_toolbar_toggle"), {
-		value = "_debug_draw_groups",
-		menu = "_group_menu"
+		menu = "_group_menu",
+		value = "_debug_draw_groups"
 	})
 	Global.frame:connect("SAVE_GROUP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "save_group"), nil)
 	Global.frame:connect("LOAD_GROUP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "load_group"), nil)
@@ -223,8 +226,8 @@ function CoreEditor:build_menubar()
 	self._mission_menu:append_check_item("MISSION_DEBUG_DRAW_AREAS", "Draw areas during simulation", "Will draw areas while running simulation")
 	self._mission_menu:set_checked("MISSION_DEBUG_DRAW_AREAS", self._simulation_debug_areas)
 	Global.frame:connect("MISSION_DEBUG_DRAW_AREAS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "menu_toolbar_toggle"), {
-		value = "_simulation_debug_areas",
-		menu = "_mission_menu"
+		menu = "_mission_menu",
+		value = "_simulation_debug_areas"
 	})
 	self._mission_menu:append_separator()
 	self._mission_menu:append_item("CONNECT_SLAVE", "Connect Slave System", "Full Client Sync")
@@ -262,32 +265,34 @@ function CoreEditor:build_menubar()
 	view_menu:append_separator()
 
 	local post_processor_effects_menu = EWS:Menu("")
+
 	self._post_processor_effects_menu = post_processor_effects_menu
+
 	local post_effects = {
 		{
-			text = "None",
+			help = "No post effects",
 			id = "POSTFX_none",
-			help = "No post effects"
+			text = "None"
 		},
 		{
-			text = "Default",
+			help = "Default post effects",
 			id = "POSTFX_default",
-			help = "Default post effects"
+			text = "Default"
 		},
 		{
-			text = "Bloom",
+			help = "Bloom",
 			id = "POSTFX_bloom",
-			help = "Bloom"
+			text = "Bloom"
 		},
 		{
-			text = "Anti aliasing",
+			help = "Anti aliasing",
 			id = "POSTFX_aa",
-			help = "Anti aliasing"
+			text = "Anti aliasing"
 		},
 		{
-			text = "SSAO",
+			help = "SSAO",
 			id = "POSTFX_ssao",
-			help = "SSAO"
+			text = "SSAO"
 		}
 	}
 
@@ -380,8 +385,8 @@ function CoreEditor:build_menubar()
 		vis = true
 	})
 	Global.frame:connect("HIDE HELPERS EXCEPT LIGHTS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_hide_helper_units"), {
-		vis = false,
-		skip_lights = true
+		skip_lights = true,
+		vis = false
 	})
 	Global.frame:connect("RENDER_EFFECTS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "toggle_render_effects"), {
 		hide_menu,
@@ -446,9 +451,9 @@ function CoreEditor:build_menubar()
 	Global.frame:connect("CHECK DUALITY", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_check_duality"), "")
 	Global.frame:connect("TB_MAKE_SCREENSHOT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_make_screenshot"), "")
 	Global.frame:connect("TB_DRAW_OCCLUDERS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "menu_toolbar_toggle"), {
-		value = "_draw_occluders",
+		menu = "_debug_menu",
 		toolbar = "_left_upper_toolbar",
-		menu = "_debug_menu"
+		value = "_draw_occluders"
 	})
 	Global.frame:connect("SHOW_UNIT_COUNT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_show_unit_breakdown"), "")
 	self:_project_add_menubar()
@@ -642,6 +647,7 @@ function CoreEditor:on_close(custom_data, event_object)
 end
 
 function CoreEditor:_project_add_menubar()
+	return
 end
 
 function CoreEditor:on_enable_all_layers()
@@ -959,18 +965,22 @@ end
 
 function CoreEditor:on_check_duality()
 	local units = {}
-	local collisions = {
-		only_positions = {},
-		complete = {}
-	}
+	local collisions = {}
+
+	collisions.only_positions = {}
+	collisions.complete = {}
 
 	for _, unit in ipairs(World:find_units_quick("all")) do
 		local pos = unit:position()
+
 		pos = pos:with_x(math.floor(pos.x))
 		pos = pos:with_y(math.floor(pos.y))
 		pos = pos:with_z(math.floor(pos.z))
+
 		local rot = unit:rotation()
+
 		rot = Vector3(math.floor(rot:yaw()), math.floor(rot:pitch()), math.floor(rot:roll()))
+
 		local unit_name = units[unit:name():s()]
 
 		if unit_name then
@@ -1008,7 +1018,7 @@ function CoreEditor:on_check_duality()
 		end
 	end
 
-	local pos = nil
+	local pos
 
 	if self._unit_duality then
 		pos = self._unit_duality:position()
@@ -1048,7 +1058,7 @@ function CoreEditor:on_hide_helper_units(data)
 					self:set_unit_visible(unit, cache[u_key].vis_state)
 				end
 			else
-				local vis_state, affected = nil
+				local vis_state, affected
 
 				if unit:unit_data().only_visible_in_editor or unit:unit_data().only_exists_in_editor or unit:has_material_assigned(leveltools_ids) then
 					vis_state = data.vis or data.skip_lights and CoreEditorUtils.has_editable_lights(unit)
@@ -1078,6 +1088,7 @@ function CoreEditor:toggle_show_markers(data)
 end
 
 function CoreEditor:on_using_the_editor()
+	return
 end
 
 function CoreEditor:on_video_tutorials()
@@ -1085,12 +1096,5 @@ function CoreEditor:on_video_tutorials()
 end
 
 function CoreEditor:on_about()
-	EWS:MessageDialog(Global.frame_panel, self._editor_name .. [[
-
-
-"And the Earth Was Without Form and Void.."
-
-Copyright 2007-~ GRiN, Inc.
-
-http://ganon/ or http://www.grin.se]], "About...", "OK,ICON_INFORMATION"):show_modal()
+	EWS:MessageDialog(Global.frame_panel, self._editor_name .. "\n\n\"And the Earth Was Without Form and Void..\"\n\nCopyright 2007-~ GRiN, Inc.\n\nhttp://ganon/ or http://www.grin.se", "About...", "OK,ICON_INFORMATION"):show_modal()
 end

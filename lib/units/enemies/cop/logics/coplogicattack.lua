@@ -10,6 +10,7 @@ local mvec3_norm = mvector3.normalize
 local temp_vec1 = Vector3()
 local temp_vec2 = Vector3()
 local temp_vec3 = Vector3()
+
 CopLogicAttack = class(CopLogicBase)
 CopLogicAttack.on_alert = CopLogicIdle.on_alert
 CopLogicAttack.on_intimidated = CopLogicIdle.on_intimidated
@@ -22,6 +23,7 @@ function CopLogicAttack.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.combat
 
@@ -35,7 +37,9 @@ function CopLogicAttack.enter(data, new_logic_name, enter_params)
 	end
 
 	my_data.cover_test_step = 1
+
 	local key_str = tostring(data.key)
+
 	my_data.detection_task_key = "CopLogicAttack._upd_enemy_detection" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicAttack._upd_enemy_detection, data, data.t)
@@ -58,9 +62,11 @@ function CopLogicAttack.enter(data, new_logic_name, enter_params)
 		return
 	end
 
-	if data.objective and (data.objective.action_duration or data.objective.action_timeout_t and data.t < data.objective.action_timeout_t) then
+	if data.objective and (data.objective.action_duration or data.objective.action_timeout_t and data.objective.action_timeout_t > data.t) then
 		my_data.action_timeout_clbk_id = "CopLogicIdle_action_timeout" .. tostring(data.key)
+
 		local action_timeout_t = data.objective.action_timeout_t or data.t + data.objective.action_duration
+
 		data.objective.action_timeout_t = action_timeout_t
 
 		CopLogicBase.add_delayed_clbk(my_data, my_data.action_timeout_clbk_id, callback(CopLogicIdle, CopLogicIdle, "clbk_action_timeout", data), action_timeout_t)
@@ -123,7 +129,7 @@ function CopLogicAttack.update(data)
 		end
 	end
 
-	if AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+	if data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
 		my_data.want_to_take_cover = CopLogicAttack._chk_wants_to_take_cover(data, my_data)
 
 		CopLogicAttack._update_cover(data)
@@ -160,8 +166,10 @@ function CopLogicAttack._upd_combat_movement(data)
 	local alert_soft = data.is_suppressed
 	local action_taken = data.logic.action_taken(data, my_data)
 	local want_to_take_cover = my_data.want_to_take_cover
+
 	action_taken = action_taken or CopLogicAttack._upd_pose(data, my_data)
-	local move_to_cover, want_flank_cover = nil
+
+	local move_to_cover, want_flank_cover
 
 	if my_data.cover_test_step ~= 1 and not enemy_visible_softer and (action_taken or want_to_take_cover or not in_cover) then
 		my_data.cover_test_step = 1
@@ -181,6 +189,7 @@ function CopLogicAttack._upd_combat_movement(data)
 		if data.tactics and data.tactics.charge and data.objective and data.objective.grp_objective and data.objective.grp_objective.charge and (not my_data.charge_path_failed_t or data.t - my_data.charge_path_failed_t > 6) then
 			if my_data.charge_path then
 				local path = my_data.charge_path
+
 				my_data.charge_path = nil
 				action_taken = CopLogicAttack._chk_request_action_walk_to_cover_shoot_pos(data, my_data, path)
 			elseif not my_data.charge_path_search_id and data.attention_obj.nav_tracker then
@@ -198,13 +207,9 @@ function CopLogicAttack._upd_combat_movement(data)
 			end
 		elseif in_cover then
 			if my_data.cover_test_step <= 2 then
-				local height = nil
+				local height
 
-				if in_cover[4] then
-					height = 150
-				else
-					height = 80
-				end
+				height = in_cover[4] and 150 or 80
 
 				local my_tracker = unit:movement():nav_tracker()
 				local shoot_from_pos = CopLogicAttack._peek_for_pos_sideways(data, my_data, my_tracker, focus_enemy.m_head_pos, height)
@@ -214,6 +219,7 @@ function CopLogicAttack._upd_combat_movement(data)
 						my_tracker:position(),
 						shoot_from_pos
 					}
+
 					action_taken = CopLogicAttack._chk_request_action_walk_to_cover_shoot_pos(data, my_data, path, math.random() < 0.5 and "run" or "walk")
 				else
 					my_data.cover_test_step = my_data.cover_test_step + 1
@@ -225,7 +231,7 @@ function CopLogicAttack._upd_combat_movement(data)
 		elseif my_data.walking_to_cover_shoot_pos then
 			-- Nothing
 		elseif my_data.at_cover_shoot_pos then
-			if my_data.stay_out_time < t then
+			if t > my_data.stay_out_time then
 				move_to_cover = true
 			end
 		else
@@ -252,6 +258,7 @@ function CopLogicAttack._upd_combat_movement(data)
 		if not my_data.flank_cover then
 			local sign = math.random() < 0.5 and -1 or 1
 			local step = 30
+
 			my_data.flank_cover = {
 				step = step,
 				angle = step * sign,
@@ -268,7 +275,7 @@ function CopLogicAttack._upd_combat_movement(data)
 		end
 
 		if not action_taken and focus_enemy.is_person and focus_enemy.dis < 2000 and (data.group and data.group.size > 1 or math.random() < 0.5) then
-			local dodge = nil
+			local dodge
 
 			if focus_enemy.is_local_player then
 				local e_movement_state = focus_enemy.unit:movement():current_state()
@@ -310,14 +317,15 @@ function CopLogicAttack._chk_start_action_move_back(data, my_data, focus_enemy, 
 			CopLogicAttack._cancel_cover_pathing(data, my_data)
 
 			local new_action_data = {
-				variant = "walk",
 				body_part = 2,
 				type = "walk",
+				variant = "walk",
 				nav_path = {
 					from_pos,
 					retreat_to
 				}
 			}
+
 			my_data.advancing = data.unit:brain():action_request(new_action_data)
 
 			if my_data.advancing then
@@ -353,6 +361,7 @@ end
 
 function CopLogicAttack.queued_update(data)
 	local my_data = data.internal_data
+
 	data.t = TimerManager:game():time()
 
 	CopLogicAttack.update(data)
@@ -380,29 +389,35 @@ function CopLogicAttack._peek_for_pos_sideways(data, my_data, from_racker, peek_
 		pos_to = back_pos
 	}
 	local ray_res = managers.navigation:raycast(ray_params)
+
 	back_pos = ray_params.trace[1]
+
 	local back_polar = (back_pos - my_pos):to_polar()
 	local right_polar = back_polar:with_spin(back_polar.spin + 90):with_r(100 + 80 * my_data.cover_test_step)
 	local right_vec = right_polar:to_vector()
 	local right_pos = back_pos + right_vec
+
 	ray_params.pos_to = right_pos
+
 	local ray_res = managers.navigation:raycast(ray_params)
-	local shoot_from_pos, found_shoot_from_pos = nil
+	local shoot_from_pos, found_shoot_from_pos
 	local ray_softness = 150
 	local stand_ray = World:raycast("ray", ray_params.trace[1] + math.UP * height, enemy_pos, "slot_mask", data.visibility_slotmask, "ray_type", "ai_vision")
 
-	if not stand_ray or mvector3.distance(stand_ray.position, enemy_pos) < ray_softness then
+	if not stand_ray or ray_softness > mvector3.distance(stand_ray.position, enemy_pos) then
 		shoot_from_pos = ray_params.trace[1]
 		found_shoot_from_pos = true
 	end
 
 	if not found_shoot_from_pos then
 		local left_pos = back_pos - right_vec
+
 		ray_params.pos_to = left_pos
+
 		local ray_res = managers.navigation:raycast(ray_params)
 		local stand_ray = World:raycast("ray", ray_params.trace[1] + math.UP * height, enemy_pos, "slot_mask", data.visibility_slotmask, "ray_type", "ai_vision")
 
-		if not stand_ray or mvector3.distance(stand_ray.position, enemy_pos) < ray_softness then
+		if not stand_ray or ray_softness > mvector3.distance(stand_ray.position, enemy_pos) then
 			shoot_from_pos = ray_params.trace[1]
 			found_shoot_from_pos = true
 		end
@@ -467,11 +482,11 @@ function CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, my_pos,
 	local error_spin = target_vec:to_polar_with_reference(fwd, math.UP).spin
 
 	if math.abs(error_spin) > 27 then
-		local new_action_data = {
-			type = "turn",
-			body_part = 2,
-			angle = error_spin
-		}
+		local new_action_data = {}
+
+		new_action_data.type = "turn"
+		new_action_data.body_part = 2
+		new_action_data.angle = error_spin
 
 		if data.unit:brain():action_request(new_action_data) then
 			my_data.turning = new_action_data.angle
@@ -504,29 +519,24 @@ end
 function CopLogicAttack._chk_request_action_walk_to_cover(data, my_data)
 	CopLogicAttack._correct_path_start_pos(data, my_data.cover_path)
 
-	local haste = nil
+	local haste
 
-	if (not data.attention_obj or data.attention_obj.reaction < AIAttentionObject.REACT_COMBAT or data.attention_obj.dis > 500) and mvector3.distance_sq(my_data.cover_path[#my_data.cover_path], data.m_pos) < 90000 then
-		haste = "run"
-	elseif data.attention_obj and AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction and math.lerp(my_data.weapon_range.optimal, my_data.weapon_range.far, 0.75) < data.attention_obj.dis then
-		haste = "run"
-	else
-		haste = "walk"
-	end
+	haste = (not data.attention_obj or data.attention_obj.reaction < AIAttentionObject.REACT_COMBAT or data.attention_obj.dis > 500) and mvector3.distance_sq(my_data.cover_path[#my_data.cover_path], data.m_pos) < 90000 and "run" or data.attention_obj and data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT and data.attention_obj.dis > math.lerp(my_data.weapon_range.optimal, my_data.weapon_range.far, 0.75) and "run" or "walk"
 
-	local end_pose = nil
+	local end_pose
 
 	if my_data.moving_to_cover and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.crouch) then
 		end_pose = "crouch"
 	end
 
 	local new_action_data = {
-		type = "walk",
 		body_part = 2,
+		type = "walk",
 		nav_path = my_data.cover_path,
 		variant = haste,
 		end_pose = end_pose
 	}
+
 	my_data.cover_path = nil
 	my_data.advancing = data.unit:brain():action_request(new_action_data)
 
@@ -559,6 +569,7 @@ function CopLogicAttack._chk_request_action_walk_to_cover_shoot_pos(data, my_dat
 		nav_path = path,
 		variant = speed or "walk"
 	}
+
 	my_data.cover_path = nil
 	my_data.advancing = data.unit:brain():action_request(new_action_data)
 
@@ -606,7 +617,7 @@ function CopLogicAttack._update_cover(data)
 	local satisfied = true
 	local my_pos = data.m_pos
 
-	if data.attention_obj and data.attention_obj.nav_tracker and AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+	if data.attention_obj and data.attention_obj.nav_tracker and data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
 		local find_new = not my_data.moving_to_cover and not my_data.walking_to_cover_shoot_pos and not my_data.surprised
 
 		if find_new then
@@ -626,6 +637,7 @@ function CopLogicAttack._update_cover(data)
 						end
 
 						satisfied = true
+
 						local better_cover = {
 							found_cover
 						}
@@ -643,7 +655,7 @@ function CopLogicAttack._update_cover(data)
 			else
 				local want_to_take_cover = my_data.want_to_take_cover
 				local flank_cover = my_data.flank_cover
-				local min_dis, max_dis = nil
+				local min_dis, max_dis
 
 				if want_to_take_cover then
 					min_dis = math.max(data.attention_obj.dis * 0.9, data.attention_obj.dis - 200)
@@ -651,6 +663,7 @@ function CopLogicAttack._update_cover(data)
 
 				if not my_data.processing_cover_path and not my_data.charge_path_search_id and (not best_cover or flank_cover or not CopLogicAttack._verify_cover(best_cover[1], threat_pos, min_dis, max_dis)) then
 					satisfied = false
+
 					local my_vec = my_pos - threat_pos
 
 					if flank_cover then
@@ -658,7 +671,7 @@ function CopLogicAttack._update_cover(data)
 					end
 
 					local optimal_dis = my_vec:length()
-					local max_dis = nil
+					local max_dis
 
 					if want_to_take_cover then
 						if optimal_dis < my_data.weapon_range.far then
@@ -699,7 +712,7 @@ function CopLogicAttack._update_cover(data)
 						end
 					end
 
-					local min_threat_dis, cone_angle = nil
+					local min_threat_dis, cone_angle
 
 					if flank_cover then
 						cone_angle = flank_cover.step
@@ -707,7 +720,7 @@ function CopLogicAttack._update_cover(data)
 						cone_angle = math.lerp(90, 60, math.min(1, optimal_dis / 3000))
 					end
 
-					local search_nav_seg = nil
+					local search_nav_seg
 
 					if data.objective and data.objective.type == "defend_area" then
 						search_nav_seg = data.objective.area and data.objective.area.nav_segs or data.objective.nav_seg
@@ -717,6 +730,7 @@ function CopLogicAttack._update_cover(data)
 
 					if found_cover and (not best_cover or CopLogicAttack._verify_cover(found_cover, threat_pos, min_dis, max_dis)) then
 						satisfied = true
+
 						local better_cover = {
 							found_cover
 						}
@@ -738,6 +752,7 @@ function CopLogicAttack._update_cover(data)
 
 		if in_cover then
 			local threat_pos = data.attention_obj.verified_pos
+
 			in_cover[3], in_cover[4] = CopLogicAttack._chk_covered(data, my_pos, threat_pos, data.visibility_slotmask)
 		end
 	elseif best_cover and cover_release_dis_sq < mvector3.distance_sq(best_cover[1][1], my_pos) then
@@ -779,7 +794,7 @@ function CopLogicAttack._chk_covered(data, cover_pos, threat_pos, slotmask)
 	mvector3.step(ray_to_pos, ray_from, threat_pos, 300)
 
 	local low_ray = World:raycast("ray", ray_from, ray_to_pos, "slot_mask", slotmask)
-	local high_ray = nil
+	local high_ray
 
 	if low_ray then
 		mvector3.set_z(ray_from, ray_from.z + 60)
@@ -797,7 +812,9 @@ function CopLogicAttack._process_pathing_results(data, my_data)
 	end
 
 	local pathing_results = data.pathing_results
+
 	data.pathing_results = nil
+
 	local path = pathing_results[my_data.cover_path_search_id]
 
 	if path then
@@ -842,6 +859,7 @@ function CopLogicAttack._upd_enemy_detection(data, is_synchronous)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local delay = CopLogicBase._upd_attention_obj_detection(data, nil, nil)
 	local new_attention, new_prio_slot, new_reaction = CopLogicIdle._get_priority_attention(data, data.detected_attention_objects, nil)
@@ -920,7 +938,9 @@ function CopLogicAttack._find_retreat_position(from_pos, threat_pos, threat_head
 	local step = 180 / nr_rays
 	local offset = math.random(step)
 	local dir = math.random() < 0.5 and -1 or 1
+
 	step = step * dir
+
 	local step_rot = Rotation(step)
 	local offset_rot = Rotation(offset)
 	local offset_vec = mvector3.copy(threat_pos)
@@ -930,7 +950,7 @@ function CopLogicAttack._find_retreat_position(from_pos, threat_pos, threat_head
 	mvector3.multiply(offset_vec, ray_dis)
 	mvector3.rotate_with(offset_vec, Rotation((90 + offset) * dir))
 
-	local to_pos = nil
+	local to_pos
 	local from_tracker = nav_manager:create_nav_tracker(from_pos)
 	local ray_params = {
 		trace = true,
@@ -939,7 +959,7 @@ function CopLogicAttack._find_retreat_position(from_pos, threat_pos, threat_head
 	local rsrv_desc = {
 		radius = 60
 	}
-	local fail_position = nil
+	local fail_position
 
 	repeat
 		to_pos = mvector3.copy(from_pos)
@@ -947,10 +967,12 @@ function CopLogicAttack._find_retreat_position(from_pos, threat_pos, threat_head
 		mvector3.add(to_pos, offset_vec)
 
 		ray_params.pos_to = to_pos
+
 		local ray_res = nav_manager:raycast(ray_params)
 
 		if ray_res then
 			rsrv_desc.position = ray_params.trace[1]
+
 			local is_free = nav_manager:is_pos_free(rsrv_desc)
 
 			if is_free and (not vis_required or CopLogicAttack._confirm_retreat_position(ray_params.trace[1], threat_pos, threat_head_pos, threat_tracker)) then
@@ -960,6 +982,7 @@ function CopLogicAttack._find_retreat_position(from_pos, threat_pos, threat_head
 			end
 		elseif not fail_position then
 			rsrv_desc.position = ray_params.trace[1]
+
 			local is_free = nav_manager:is_pos_free(rsrv_desc)
 
 			if is_free then
@@ -1030,14 +1053,14 @@ function CopLogicAttack.action_complete_clbk(data, action)
 end
 
 function CopLogicAttack._upd_aim(data, my_data)
-	local shoot, aim, expected_pos = nil
+	local shoot, aim, expected_pos
 	local focus_enemy = data.attention_obj
 
-	if focus_enemy and AIAttentionObject.REACT_AIM <= focus_enemy.reaction then
+	if focus_enemy and focus_enemy.reaction >= AIAttentionObject.REACT_AIM then
 		local last_sup_t = data.unit:character_damage():last_suppression_t()
 
 		if focus_enemy.verified or focus_enemy.nearly_visible then
-			if data.unit:anim_data().run and math.lerp(my_data.weapon_range.close, my_data.weapon_range.optimal, 0) < focus_enemy.dis then
+			if data.unit:anim_data().run and focus_enemy.dis > math.lerp(my_data.weapon_range.close, my_data.weapon_range.optimal, 0) then
 				local walk_to_pos = data.unit:movement():get_walk_to_pos()
 
 				if walk_to_pos then
@@ -1053,8 +1076,8 @@ function CopLogicAttack._upd_aim(data, my_data)
 				end
 			end
 
-			if aim == nil and AIAttentionObject.REACT_AIM <= focus_enemy.reaction then
-				if AIAttentionObject.REACT_SHOOT <= focus_enemy.reaction then
+			if aim == nil and focus_enemy.reaction >= AIAttentionObject.REACT_AIM then
+				if focus_enemy.reaction >= AIAttentionObject.REACT_SHOOT then
 					local running = my_data.advancing and not my_data.advancing:stopping() and my_data.advancing:haste() == "run"
 					local firing_range = 500
 
@@ -1066,7 +1089,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 
 					if last_sup_t and data.t - last_sup_t < 7 * (running and 0.3 or 1) * (focus_enemy.verified and 1 or focus_enemy.vis_ray and firing_range < focus_enemy.vis_ray.distance and 0.5 or 0.2) then
 						shoot = true
-					elseif focus_enemy.verified and data.internal_data.weapon_range and focus_enemy.verified_dis < firing_range then
+					elseif focus_enemy.verified and data.internal_data.weapon_range and firing_range > focus_enemy.verified_dis then
 						shoot = true
 					elseif focus_enemy.verified and focus_enemy.criminal_record and focus_enemy.criminal_record.assault_t and data.t - focus_enemy.criminal_record.assault_t < 2 then
 						shoot = true
@@ -1074,7 +1097,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 
 					if not shoot and my_data.attitude == "engage" then
 						if focus_enemy.verified then
-							if focus_enemy.verified_dis < firing_range or focus_enemy.reaction == AIAttentionObject.REACT_SHOOT then
+							if firing_range > focus_enemy.verified_dis or focus_enemy.reaction == AIAttentionObject.REACT_SHOOT then
 								shoot = true
 							end
 						else
@@ -1090,14 +1113,14 @@ function CopLogicAttack._upd_aim(data, my_data)
 
 					aim = aim or shoot
 
-					if not aim and focus_enemy.verified_dis < firing_range then
+					if not aim and firing_range > focus_enemy.verified_dis then
 						aim = true
 					end
 				else
 					aim = true
 				end
 			end
-		elseif AIAttentionObject.REACT_AIM <= focus_enemy.reaction then
+		elseif focus_enemy.reaction >= AIAttentionObject.REACT_AIM then
 			local time_since_verification = focus_enemy.verified_t and data.t - focus_enemy.verified_t
 			local running = my_data.advancing and not my_data.advancing:stopping() and my_data.advancing:haste() == "run"
 			local same_z = math.abs(focus_enemy.verified_pos.z - data.m_pos.z) < 250
@@ -1110,7 +1133,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 				aim = true
 			end
 
-			if aim and my_data.shooting and AIAttentionObject.REACT_SHOOT <= focus_enemy.reaction and time_since_verification and time_since_verification < (running and 2 or 3) then
+			if aim and my_data.shooting and focus_enemy.reaction >= AIAttentionObject.REACT_SHOOT and time_since_verification and time_since_verification < (running and 2 or 3) then
 				shoot = true
 			end
 
@@ -1153,7 +1176,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 		end
 	end
 
-	if not aim and data.char_tweak.always_face_enemy and focus_enemy and AIAttentionObject.REACT_COMBAT <= focus_enemy.reaction then
+	if not aim and data.char_tweak.always_face_enemy and focus_enemy and focus_enemy.reaction >= AIAttentionObject.REACT_COMBAT then
 		aim = true
 	end
 
@@ -1198,7 +1221,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 		end
 	else
 		if my_data.shooting then
-			local new_action = nil
+			local new_action
 
 			if data.unit:anim_data().reload then
 				new_action = {
@@ -1256,7 +1279,7 @@ function CopLogicAttack._get_cover_offset_pos(data, cover_data, threat_pos)
 
 	local threat_polar = threat_vec:to_polar_with_reference(cover_data[1][2], math.UP)
 	local threat_spin = threat_polar.spin
-	local rot = nil
+	local rot
 
 	if threat_spin < -20 then
 		rot = Rotation(90)
@@ -1297,7 +1320,7 @@ function CopLogicAttack._find_flank_pos(data, my_data, flank_tracker, max_dist)
 
 	if accross_positions then
 		local optimal_dis = max_dis
-		local best_error_dis, best_pos, best_is_hit, best_is_miss, best_has_too_much_error = nil
+		local best_error_dis, best_pos, best_is_hit, best_is_miss, best_has_too_much_error
 
 		for _, accross_pos in ipairs(accross_positions) do
 			local error_dis = math.abs(mvector3.distance(accross_pos[1], pos) - optimal_dis)
@@ -1507,10 +1530,10 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 	end
 
 	local expected_path = my_data.expected_pos_path
-	local from_nav_seg, to_nav_seg = nil
+	local from_nav_seg, to_nav_seg
 
 	if expected_path then
-		local i_from_seg = nil
+		local i_from_seg
 
 		for i, k in ipairs(expected_path) do
 			if k[1] == my_nav_seg then
@@ -1523,7 +1546,7 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 		if i_from_seg then
 			local function _find_aim_pos(from_nav_seg, to_nav_seg)
 				local closest_dis = 1000000000
-				local closest_door = nil
+				local closest_door
 				local min_point_dis_sq = 10000
 				local found_doors = managers.navigation:find_segment_doors(from_nav_seg, callback(CopLogicAttack, CopLogicAttack, "_chk_is_right_segment", to_nav_seg))
 
@@ -1559,10 +1582,11 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 			while i > 0 do
 				if expected_path[i][1] == e_nav_seg then
 					to_nav_seg = expected_path[math.clamp(i, i_from_seg - 1, i_from_seg + 1)][1]
+
 					local aim_pos, too_close = _find_aim_pos(my_nav_seg, to_nav_seg)
 
 					if aim_pos then
-						return aim_pos
+						do return aim_pos end
 
 						break
 					end
@@ -1572,6 +1596,7 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 
 						if next_nav_seg ~= to_nav_seg then
 							local from_nav_seg = to_nav_seg
+
 							to_nav_seg = next_nav_seg
 							aim_pos = _find_aim_pos(from_nav_seg, to_nav_seg)
 						end
@@ -1740,7 +1765,7 @@ function MarshalLogicAttack.update(data)
 		end
 	end
 
-	if AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+	if data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
 		my_data.want_to_take_cover = MarshalLogicAttack._chk_wants_to_take_cover(data, my_data)
 
 		MarshalLogicAttack._update_cover(data)

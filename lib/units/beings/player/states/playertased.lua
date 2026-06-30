@@ -5,7 +5,9 @@ function PlayerTased:init(...)
 	PlayerTased.super.init(self, ...)
 
 	self._single_shot_autofire = nil
+
 	local pm = managers.player
+
 	self._resist_tase = pm:has_category_upgrade("player", "resist_firing_tased")
 	self._non_lethal_tase_time_mul = pm:upgrade_value("player", "electrocution_resistance_multiplier", 1)
 	self._escape_tase_t = pm:has_category_upgrade("player", "escape_taser") and pm:upgrade_value("player", "escape_taser", 2)
@@ -37,14 +39,18 @@ function PlayerTased:enter(state_data, enter_data)
 
 	if non_lethal then
 		state_data.non_lethal_electrocution = nil
+
 		local recover_time = TimerManager:game():time() + tweak_data.player.damage.TASED_TIME * self._non_lethal_tase_time_mul * (state_data.electrocution_duration_multiplier or 1)
+
 		state_data.electrocution_duration_multiplier = nil
 		self._recover_delayed_clbk = "PlayerTased_recover_delayed_clbk"
 
 		managers.enemy:add_delayed_clbk(self._recover_delayed_clbk, callback(self, self, "clbk_exit_to_std"), recover_time)
 	else
 		self._fatal_delayed_clbk = "PlayerTased_fatal_delayed_clbk"
+
 		local tased_time = tweak_data.player.damage.TASED_TIME
+
 		tased_time = managers.modifiers:modify_value("PlayerTased:TasedTime", tased_time)
 
 		managers.enemy:add_delayed_clbk(self._fatal_delayed_clbk, callback(self, self, "clbk_exit_to_fatal"), TimerManager:game():time() + tased_time)
@@ -152,13 +158,13 @@ function PlayerTased:_update_check_actions(t, dt)
 		self._camera_unit:base():recoil_kick(-5, 5, -5, 5)
 	end
 
-	if self._unequip_weapon_expire_t and self._unequip_weapon_expire_t <= t then
+	if self._unequip_weapon_expire_t and t >= self._unequip_weapon_expire_t then
 		self._unequip_weapon_expire_t = nil
 
 		self:_start_action_equip_weapon(t)
 	end
 
-	if self._equip_weapon_expire_t and self._equip_weapon_expire_t <= t then
+	if self._equip_weapon_expire_t and t >= self._equip_weapon_expire_t then
 		self._equip_weapon_expire_t = nil
 	end
 
@@ -170,17 +176,17 @@ function PlayerTased:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
+	local new_action
 
 	self:_check_action_interact(t, input)
 
-	local new_action = nil
+	local new_action
 end
 
 function PlayerTased:_check_action_shock(t, input)
 	self._next_shock = self._next_shock or 0.5
 
-	if self._next_shock < t then
+	if t > self._next_shock then
 		self._num_shocks = self._num_shocks or 0
 		self._num_shocks = self._num_shocks + 1
 		self._next_shock = t + 0.25 + math.rand(1)
@@ -211,7 +217,7 @@ function PlayerTased:_check_action_shock(t, input)
 			input.btn_primary_attack_state = true
 		end
 
-		if self._recoil_t < t then
+		if t > self._recoil_t then
 			self._recoil_t = nil
 
 			self._camera_unit:base():stop_shooting()
@@ -221,7 +227,7 @@ end
 
 PlayerTased._primary_action_funcs = deep_clone(PlayerTased.super._primary_action_funcs)
 PlayerTased._primary_action_funcs.start_fire = {
-	default = function (self, t, input, params, weap_unit, weap_base)
+	default = function(self, t, input, params, weap_unit, weap_base)
 		weap_base:start_shooting()
 		self._camera_unit:base():start_shooting()
 
@@ -233,7 +239,7 @@ PlayerTased._primary_action_funcs.start_fire = {
 	end
 }
 PlayerTased._primary_action_funcs.sync_blank = {
-	default = function (self, t, input, params, weap_unit, weap_base, impact)
+	default = function(self, t, input, params, weap_unit, weap_base, impact)
 		self._ext_network:send("shot_blank", impact, 0)
 
 		return true
@@ -242,7 +248,7 @@ PlayerTased._primary_action_funcs.sync_blank = {
 PlayerTased._primary_action_get_value = deep_clone(PlayerTased.super._primary_action_get_value)
 
 function PlayerTased._primary_action_get_value.fired:single(t, input, params, weap_unit, weap_base, start_shooting, fire_on_release, ...)
-	local result, trigger_pressed = nil
+	local result, trigger_pressed
 
 	if start_shooting then
 		trigger_pressed = input.btn_primary_attack_press
@@ -284,7 +290,7 @@ function PlayerTased._primary_action_get_value.chk_start_fire:single(t, input, p
 end
 
 PlayerTased._primary_action_get_value.check_stop_shooting_volley = {
-	volley = function (self, t, input, params, weap_unit, weap_base)
+	volley = function(self, t, input, params, weap_unit, weap_base)
 		weap_base:stop_shooting()
 		self._camera_unit:base():stop_shooting()
 
@@ -302,20 +308,21 @@ function PlayerTased:_chk_action_stop_shooting(new_action)
 end
 
 function PlayerTased:_check_action_primary_attack(t, input)
-	local params = {
-		no_shake = true,
-		no_rumble = true,
-		no_reload = true,
-		no_running = true,
-		no_steelsight = true,
-		no_recharge_clbk = true,
-		no_recoil_anim_redirect = true,
-		no_start_fire_on_release = true,
-		no_check_stop_shooting_early = true
-	}
+	local params = {}
+
+	params.no_shake = true
+	params.no_rumble = true
+	params.no_reload = true
+	params.no_running = true
+	params.no_steelsight = true
+	params.no_recharge_clbk = true
+	params.no_recoil_anim_redirect = true
+	params.no_start_fire_on_release = true
+	params.no_check_stop_shooting_early = true
 
 	if self._num_shocks > 1 then
 		local weap_base = self._equipped_unit and self._equipped_unit:base()
+
 		params.block_fire = weap_base and weap_base.can_refire_while_tased and not weap_base:can_refire_while_tased()
 	end
 
@@ -334,7 +341,7 @@ function PlayerTased:_end_action_charging_weapon(t)
 end
 
 function PlayerTased:_check_action_interact(t, input)
-	if input.btn_interact_press and (not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t) and not self._countering_tase then
+	if input.btn_interact_press and (not self._intimidate_t or t - self._intimidate_t > tweak_data.player.movement_state.interaction_delay) and not self._countering_tase then
 		if _G.IS_VR then
 			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
@@ -347,15 +354,13 @@ end
 
 function PlayerTased:call_teammate(line, t, no_gesture, skip_alert)
 	local voice_type, plural, prime_target = self:_get_unit_intimidation_action(true, false, false, true, false)
-	local interact_type, queue_name = nil
+	local interact_type, queue_name
 
 	if voice_type == "stop_cop" or voice_type == "mark_cop" then
 		local prime_target_tweak = tweak_data.character[prime_target.unit:base()._tweak_table]
 		local shout_sound = prime_target_tweak.priority_shout
 
-		if managers.groupai:state():whisper_mode() then
-			shout_sound = prime_target_tweak.silent_priority_shout or shout_sound
-		end
+		shout_sound = managers.groupai:state():whisper_mode() and prime_target_tweak.silent_priority_shout or shout_sound
 
 		if shout_sound then
 			interact_type = "cmd_point"
@@ -397,24 +402,25 @@ function PlayerTased:_register_revive_SO()
 	end
 
 	local objective = {
-		scan = true,
-		destroy_clbk_key = false,
-		type = "follow",
 		called = true,
+		destroy_clbk_key = false,
+		scan = true,
+		type = "follow",
 		follow_unit = self._unit,
 		nav_seg = self._unit:movement():nav_tracker():nav_segment()
 	}
 	local so_descriptor = {
-		interval = 6,
-		chance_inc = 0,
-		search_dis_sq = 25000000,
-		base_chance = 1,
-		usage_amount = 1,
 		AI_group = "friendlies",
+		base_chance = 1,
+		chance_inc = 0,
+		interval = 6,
+		search_dis_sq = 25000000,
+		usage_amount = 1,
 		objective = objective,
 		search_pos = self._unit:position()
 	}
 	local so_id = "PlayerTased_assistance"
+
 	self._SO_id = so_id
 
 	managers.groupai:state():add_special_objective(so_id, so_descriptor)
@@ -499,13 +505,13 @@ function PlayerTased:give_shock_to_taser()
 		return
 	end
 
-	return
+	do return end
 
 	self:_give_shock_to_taser(self._counter_taser_unit)
 end
 
 function PlayerTased:_give_shock_to_taser(taser_unit)
-	return
+	do return end
 
 	local action_data = {
 		variant = "counter_tased",
@@ -531,6 +537,7 @@ function PlayerTased:give_shock_to_taser_no_damage()
 	end
 
 	self._countering_tase = true
+
 	local pos = mvector3.copy(taser_unit:movement():m_head_pos())
 	local damage_info = {
 		damage = 0,
@@ -542,8 +549,8 @@ function PlayerTased:give_shock_to_taser_no_damage()
 			position = pos
 		},
 		result = {
-			variant = "counter_tased",
-			type = "counter_tased"
+			type = "counter_tased",
+			variant = "counter_tased"
 		}
 	}
 
@@ -567,21 +574,24 @@ function PlayerTased:_on_malfunction_to_taser_event()
 	end
 
 	local pos = mvector3.copy(taser_unit:movement():m_head_pos())
-	local inv_ext = taser_unit:inventory()
-	local weapon = inv_ext and inv_ext.equipped_unit and inv_ext:equipped_unit()
-	local fire_obj = alive(weapon) and weapon:get_object(Idstring("fire"))
 
-	if fire_obj then
-		World:effect_manager():spawn({
-			effect = Idstring("effects/payday2/particles/character/taser_stop"),
-			parent = fire_obj
-		})
-	else
-		World:effect_manager():spawn({
-			effect = Idstring("effects/payday2/particles/character/taser_stop"),
-			position = pos,
-			normal = math.UP
-		})
+	do
+		local inv_ext = taser_unit:inventory()
+		local weapon = inv_ext and inv_ext.equipped_unit and inv_ext:equipped_unit()
+		local fire_obj = alive(weapon) and weapon:get_object(Idstring("fire"))
+
+		if fire_obj then
+			World:effect_manager():spawn({
+				effect = Idstring("effects/payday2/particles/character/taser_stop"),
+				parent = fire_obj
+			})
+		else
+			World:effect_manager():spawn({
+				effect = Idstring("effects/payday2/particles/character/taser_stop"),
+				position = pos,
+				normal = math.UP
+			})
+		end
 	end
 
 	local damage_info = {
@@ -594,8 +604,8 @@ function PlayerTased:_on_malfunction_to_taser_event()
 			position = pos
 		},
 		result = {
-			variant = "melee",
-			type = "knock_down"
+			type = "knock_down",
+			variant = "melee"
 		}
 	}
 

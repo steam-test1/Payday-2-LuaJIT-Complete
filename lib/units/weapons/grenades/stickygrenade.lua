@@ -1,6 +1,7 @@
 require("lib/units/weapons/grenades/FragGrenade")
 
 StickyGrenade = StickyGrenade or class(FragGrenade)
+
 local mvec1 = Vector3()
 local mvec2 = Vector3()
 local mvec3 = Vector3()
@@ -14,6 +15,7 @@ local mrot1 = Rotation()
 function StickyGrenade:_setup_from_tweak_data(projectile_entry)
 	local projectile_entry = self._tweak_projectile_entry or "frag"
 	local tweak_entry = tweak_data.projectiles[projectile_entry]
+
 	self._tweak_projectile_entry = projectile_entry
 	self._slot_mask = managers.slot:get_mask("explosion_targets")
 	self._mass_look_up_modifier = tweak_entry.mass_look_up_modifier
@@ -31,7 +33,9 @@ function StickyGrenade:_setup_from_tweak_data(projectile_entry)
 	self._effect_name = tweak_entry.effect_name or "effects/payday2/particles/explosions/grenade_explosion"
 	self._idstr_decal = tweak_entry.idstr_decal
 	self._idstr_effect = tweak_entry.idstr_effect
+
 	local sound_event = tweak_entry.sound_event or "grenade_explode"
+
 	self._custom_params = {
 		camera_shake_max_mul = 4,
 		sound_muffle_effect = true,
@@ -46,6 +50,7 @@ function StickyGrenade:_setup_from_tweak_data(projectile_entry)
 end
 
 function StickyGrenade:_setup_server_data()
+	return
 end
 
 function StickyGrenade:throw(params)
@@ -164,7 +169,7 @@ function StickyGrenade:_attach_to_hit_unit(is_remote)
 	self:_set_body_enabled(false)
 
 	local hit_unit = self._col_ray.unit
-	local parent_obj, child_obj, parent_body = nil
+	local parent_obj, child_obj, parent_body
 	local global_pos = mvec1
 	local local_pos = mvec2
 	local collision_to_parent = mvec3
@@ -194,6 +199,7 @@ function StickyGrenade:_attach_to_hit_unit(is_remote)
 
 					local segment_dist = mvector3.direction(segment_dir, parent_pos, child_pos)
 					local projected_dist = mvector3.dot(collision_to_parent, segment_dir)
+
 					projected_dist = math.clamp(projected_dist, 0, segment_dist)
 
 					mvector3.set(projected_pos, segment_dir)
@@ -209,7 +215,9 @@ function StickyGrenade:_attach_to_hit_unit(is_remote)
 						local parent_impact_distance = damage_ext.impact_body_distance[parent_key] or 10
 						local child_impact_distance = damage_ext.impact_body_distance[child_key] or 10
 						local alpha = segment_dist > 0 and projected_dist / segment_dist or 0
+
 						max_dist_from_segment = math.lerp(parent_impact_distance, child_impact_distance, alpha)
+
 						local ray_impact_distance = body_key and damage_ext.impact_body_distance[body_key]
 
 						if ray_impact_distance then
@@ -251,7 +259,7 @@ function StickyGrenade:_attach_to_hit_unit(is_remote)
 			mvector3.rotate_with(local_pos, rot)
 		end
 
-		local has_destroy_listener = nil
+		local has_destroy_listener
 		local listener_class = hit_unit:base()
 
 		if listener_class and listener_class.add_destroy_listener then
@@ -281,11 +289,10 @@ function StickyGrenade:_attach_to_hit_unit(is_remote)
 	end
 
 	if alive(hit_unit) and parent_body then
-		self._attached_body_disabled_clbk_data = {
-			clbk = callback(self, self, "clbk_attached_body_disabled"),
-			unit = hit_unit,
-			body = parent_body
-		}
+		self._attached_body_disabled_clbk_data = {}
+		self._attached_body_disabled_clbk_data.clbk = callback(self, self, "clbk_attached_body_disabled")
+		self._attached_body_disabled_clbk_data.unit = hit_unit
+		self._attached_body_disabled_clbk_data.body = parent_body
 
 		hit_unit:add_body_enabled_callback(self._attached_body_disabled_clbk_data.clbk)
 	end
@@ -310,28 +317,27 @@ function StickyGrenade:_attach_to_hit_unit(is_remote)
 			local id = hit_unit:editor_id()
 
 			if id ~= -1 then
-				self._sync_attach_data = {
-					parent_unit = hit_unit,
-					parent_unit_id = id,
-					parent_body = parent_body,
-					local_pos = local_pos or self._unit:position(),
-					dir = dir
-				}
+				self._sync_attach_data = {}
+				self._sync_attach_data.parent_unit = hit_unit
+				self._sync_attach_data.parent_unit_id = id
+				self._sync_attach_data.parent_body = parent_body
+				self._sync_attach_data.local_pos = local_pos or self._unit:position()
+				self._sync_attach_data.dir = dir
 			end
 		elseif hit_unit:id() ~= -1 then
-			self._sync_attach_data = {
-				character = true,
-				parent_unit = hit_unit,
-				parent_obj = parent_obj,
-				parent_body = parent_body,
-				local_pos = local_pos,
-				dir = dir
-			}
+			self._sync_attach_data = {}
+			self._sync_attach_data.character = true
+			self._sync_attach_data.parent_unit = hit_unit
+			self._sync_attach_data.parent_obj = parent_obj
+			self._sync_attach_data.parent_body = parent_body
+			self._sync_attach_data.local_pos = local_pos
+			self._sync_attach_data.dir = dir
 		end
 	end
 
 	if self._unit:id() ~= -1 then
 		local tweak_entry = tweak_data.projectiles[self._tweak_projectile_entry]
+
 		self._timer = tweak_entry.detonate_timer or 3
 	else
 		self._timer = nil
@@ -339,9 +345,7 @@ function StickyGrenade:_attach_to_hit_unit(is_remote)
 end
 
 function StickyGrenade:sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_obj, local_pos, dir, drop_in)
-	if parent_body then
-		parent_obj = parent_body:root_object() or parent_obj
-	end
+	parent_obj = parent_body and parent_body:root_object() or parent_obj
 
 	local world_position = Vector3()
 
@@ -530,9 +534,8 @@ function StickyGrenade:save(data)
 
 			managers.enemy:add_delayed_clbk("delay_sync_attach" .. tostring(self._unit:key()), callback(self, self, "_delay_sync_attach", peer), TimerManager:game():time() + 0.1)
 		else
-			state.sync_attach_data = {
-				parent_unit_id = self._sync_attach_data.parent_unit_id
-			}
+			state.sync_attach_data = {}
+			state.sync_attach_data.parent_unit_id = self._sync_attach_data.parent_unit_id
 
 			if self._sync_attach_data.parent_body then
 				state.sync_attach_data.parent_body_index = self._sync_attach_data.parent_unit:get_body_index(self._sync_attach_data.parent_body:name())
@@ -558,6 +561,7 @@ function StickyGrenade:load(data)
 		local function _dropin_attach(parent_unit)
 			local parent_body = parent_unit:body(state.sync_attach_data.parent_body_index)
 			local parent_obj = parent_body:root_object()
+
 			self._drop_in_sync_data = {
 				f = 2,
 				parent_unit = parent_unit,

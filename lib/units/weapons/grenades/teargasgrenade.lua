@@ -23,8 +23,11 @@ function TearGasGrenade:set_properties(props)
 		end
 
 		local sync_damage = props.damage and math.round(props.damage * 100) or 0
+
 		self.damage = sync_damage * 0.01
+
 		local sync_duration = props.duration and math.round(props.duration * 10) or 0
+
 		self.duration = sync_duration * 0.1
 
 		managers.network:session():send_to_peers_synched("sync_tear_gas_grenade_properties", self._unit, sync_diameter, sync_damage, sync_duration)
@@ -36,13 +39,14 @@ function TearGasGrenade:set_properties(props)
 end
 
 function TearGasGrenade:update(unit, t, dt)
-	if self._damage_t and self._damage_t < t then
+	if self._damage_t and t > self._damage_t then
 		self._damage_t = self._damage_t + 1
+
 		local player = managers.player:player_unit()
 
 		if player then
 			local radius_sq = self.radius * self.radius
-			local in_range = player and mvector3.distance_sq(player:position(), self._unit:position()) <= radius_sq
+			local in_range = player and radius_sq >= mvector3.distance_sq(player:position(), self._unit:position())
 
 			if in_range then
 				player:character_damage():damage_killzone({
@@ -62,7 +66,7 @@ function TearGasGrenade:update(unit, t, dt)
 		end
 	end
 
-	if self._remove_t and self._remove_t < t then
+	if self._remove_t and t > self._remove_t then
 		self._remove_t = nil
 		self._damage_t = nil
 
@@ -76,7 +80,9 @@ function TearGasGrenade:detonate()
 	end
 
 	self._detonated = true
+
 	local now = TimerManager:game():time()
+
 	self._remove_t = now + self.duration
 	self._damage_t = now + 1
 
@@ -91,11 +97,13 @@ function TearGasGrenade:detonate()
 	})
 
 	local parent = self._unit:orientation_object()
+
 	self._smoke_effect = World:effect_manager():spawn({
 		effect = Idstring("effects/payday2/environment/cs_gas_damage_area"),
 		parent = parent
 	})
 	self._set_blurzone = true
+
 	local blurzone_radius = self.radius * 1.3
 
 	managers.environment_controller:set_blurzone(self._unit:key(), 1, position, blurzone_radius, 0, true)
@@ -138,6 +146,7 @@ function TearGasGrenade:save(data)
 		my_save_data.hide = true
 	elseif self._detonated or self._remove_t or self.radius ~= 0 or self.damage ~= 0 or self.duration ~= 0 then
 		local t = TimerManager:game():time()
+
 		my_save_data.detonated = self._detonated and true or nil
 		my_save_data.radius = self.radius ~= 0 and self.radius or nil
 		my_save_data.damage = self.damage ~= 0 and self.damage or nil
@@ -166,7 +175,7 @@ function TearGasGrenade:load(data)
 
 			self:set_properties(props)
 
-			local enable_upd = nil
+			local enable_upd
 
 			if state.detonated then
 				enable_upd = true

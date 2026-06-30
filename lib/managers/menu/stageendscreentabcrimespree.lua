@@ -1,4 +1,5 @@
 CrimeSpreeResultTabItem = CrimeSpreeResultTabItem or class(StatsTabItem)
+
 local padding = 10
 
 function CrimeSpreeResultTabItem:init(panel, tab_panel, text, i)
@@ -8,14 +9,16 @@ function CrimeSpreeResultTabItem:init(panel, tab_panel, text, i)
 		h = self._main_panel:h() - 70
 	})
 	self._index = i
+
 	local prev_item_title_text = tab_panel:child("tab_text_" .. tostring(i - 1))
 	local offset = prev_item_title_text and prev_item_title_text:right() or 0
+
 	self._tab_text = tab_panel:text({
-		vertical = "center",
-		h = 32,
-		blend_mode = "add",
 		align = "center",
+		blend_mode = "add",
+		h = 32,
 		layer = 1,
+		vertical = "center",
 		name = "tab_text_" .. tostring(self._index),
 		text = text,
 		x = offset + 5,
@@ -23,14 +26,15 @@ function CrimeSpreeResultTabItem:init(panel, tab_panel, text, i)
 		font = tweak_data.menu.pd2_medium_font,
 		color = tweak_data.screen_colors.button_stage_3
 	})
+
 	local x, y, w, h = self._tab_text:text_rect()
 
 	self._tab_text:set_size(w + 15, h + 10)
 
 	self._select_rect = tab_panel:bitmap({
+		layer = 0,
 		texture = "guis/textures/pd2/shared_tab_box",
 		visible = false,
-		layer = 0,
 		name = "tab_select_rect_" .. tostring(self._index),
 		color = tweak_data.screen_colors.text
 	})
@@ -49,6 +53,7 @@ function CrimeSpreeResultTabItem:_setup()
 		x = padding,
 		y = padding
 	})
+
 	local total_w = 0.75
 
 	self:_create_level(total_w)
@@ -62,6 +67,7 @@ end
 
 function CrimeSpreeResultTabItem:_create_level(total_w)
 	self._level_panel = self._cs_panel:panel({})
+
 	local level_gain = managers.crime_spree:mission_completion_gain()
 	local gain_x = self._level_panel:w() * (1 - total_w) * 0.5
 	local gain_y = self._level_panel:h() * 0.25
@@ -75,13 +81,13 @@ function CrimeSpreeResultTabItem:_create_level(total_w)
 	end
 
 	local gain = self._level_panel:text({
-		w = 200,
-		vertical = "center",
-		name = "gain",
 		align = "center",
-		blend_mode = "add",
 		alpha = 0,
+		blend_mode = "add",
 		layer = 10,
+		name = "gain",
+		vertical = "center",
+		w = 200,
 		text = gain_text,
 		h = tweak_data.menu.pd2_large_font_size,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -96,17 +102,18 @@ function CrimeSpreeResultTabItem:_create_level(total_w)
 		gain = gain,
 		bonuses = {}
 	}
+
 	local bonus_i = 0
 
 	local function add_bonus(text, level, color)
 		local font = tweak_data.menu.pd2_small_font
 		local font_size = tweak_data.menu.pd2_small_font_size
 		local bonus = self._level_panel:text({
-			blend_mode = "add",
-			vertical = "center",
-			alpha = 0,
 			align = "center",
+			alpha = 0,
+			blend_mode = "add",
 			layer = 10,
+			vertical = "center",
 			text = text or "",
 			h = font_size,
 			font_size = font_size,
@@ -118,16 +125,16 @@ function CrimeSpreeResultTabItem:_create_level(total_w)
 		bonus:set_center_x(gain_x)
 		bonus:set_top(gain:bottom() + 10)
 
-		local bonus_amt = nil
+		local bonus_amt
 
 		if level ~= nil then
 			bonus_amt = self._level_panel:text({
-				vertical = "center",
-				blend_mode = "add",
-				w = 200,
 				align = "center",
 				alpha = 0,
+				blend_mode = "add",
 				layer = 10,
+				vertical = "center",
+				w = 200,
 				text = "+" .. managers.localization:text("menu_cs_level", {
 					level = level or 0
 				}),
@@ -168,6 +175,7 @@ function CrimeSpreeResultTabItem:_create_timeline(total_w)
 		h = self._cs_panel:h() * 0.5,
 		y = self._cs_panel:h() * 0.5
 	})
+
 	local start_level = self:success() and managers.crime_spree:mission_start_spree_level() or managers.crime_spree:spree_level()
 	local modifier_levels = {}
 	local max_step = 0
@@ -234,12 +242,12 @@ function CrimeSpreeResultTabItem:_create_timeline(total_w)
 		color = tweak_data.screen_colors.crime_spree_risk
 	})
 	local current_level_ticket = self._timeline_panel:text({
+		align = "center",
+		blend_mode = "add",
+		h = 32,
+		layer = 12,
 		name = "current_level_ticket",
 		vertical = "center",
-		h = 32,
-		blend_mode = "add",
-		align = "center",
-		layer = 12,
 		text = managers.localization:get_default_macro("BTN_SPREE_TICKET"),
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		font = tweak_data.menu.pd2_medium_font,
@@ -251,12 +259,12 @@ function CrimeSpreeResultTabItem:_create_timeline(total_w)
 	current_level_ticket:set_bottom(timeline_y)
 
 	local current_level = self._timeline_panel:text({
+		align = "center",
+		blend_mode = "add",
+		h = 32,
+		layer = 12,
 		name = "current_level",
 		vertical = "center",
-		h = 32,
-		blend_mode = "add",
-		align = "center",
-		layer = 12,
 		text = managers.experience:cash_string(start_level, ""),
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		font = tweak_data.menu.pd2_medium_font,
@@ -282,12 +290,12 @@ function CrimeSpreeResultTabItem:_create_timeline(total_w)
 		local cy = timeline_y + timeline_h + 3
 		local marker_w = 3
 		local ticket = self._timeline_panel:text({
-			vertical = "center",
-			h = 32,
-			alpha = 0.7,
 			align = "center",
+			alpha = 0.7,
 			blend_mode = "add",
+			h = 32,
 			layer = 11,
+			vertical = "center",
 			name = "ticket" .. tostring(marker_i),
 			text = managers.localization:get_default_macro("BTN_SPREE_TICKET"),
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -300,12 +308,12 @@ function CrimeSpreeResultTabItem:_create_timeline(total_w)
 		ticket:set_top(cy)
 
 		local marker = self._timeline_panel:text({
-			vertical = "center",
-			h = 32,
-			alpha = 0.7,
 			align = "center",
+			alpha = 0.7,
 			blend_mode = "add",
+			h = 32,
 			layer = 11,
+			vertical = "center",
 			name = "marker" .. tostring(marker_i),
 			text = text,
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -351,10 +359,11 @@ function CrimeSpreeResultTabItem:_create_timeline(total_w)
 	end
 
 	local markers = {}
-	local previous_marker = nil
+	local previous_marker
 
 	for _, level in ipairs(modifier_levels) do
 		local marker = add_modifier_marker(level, managers.experience:cash_string(level, ""), previous_marker)
+
 		previous_marker = marker
 
 		table.insert(markers, {
@@ -380,14 +389,15 @@ function CrimeSpreeResultTabItem:_create_rewards(total_w)
 		w = self._cs_panel:w() * total_w - padding * 2,
 		h = self._cs_panel:h() * 0.5
 	})
+
 	local w = self._reward_panel:w() / #tweak_data.crime_spree.rewards
 
 	local function create_card(idx, panel, icon, rotation)
 		local scale = 0.65
 		local texture, rect, coords = tweak_data.hud_icons:get_icon_data(idx == 1 and (icon or tweak_data.lootdrop.type_to_card_fallback) or tweak_data.lootdrop.type_to_card_fallback)
 		local upcard = panel:bitmap({
-			name = "upcard",
 			halign = "scale",
+			name = "upcard",
 			valign = "scale",
 			texture = texture,
 			w = math.round(0.7111111111111111 * panel:h() * scale),
@@ -413,6 +423,7 @@ function CrimeSpreeResultTabItem:_create_rewards(total_w)
 	end
 
 	self._rewards = {}
+
 	local count = 0
 
 	for i, data in ipairs(tweak_data.crime_spree.rewards) do
@@ -429,7 +440,7 @@ function CrimeSpreeResultTabItem:_create_rewards(total_w)
 				w = w,
 				x = count * w
 			})
-			local card = nil
+			local card
 			local rotation = math.rand(-10, 10)
 			local num_cards = 1
 
@@ -441,13 +452,13 @@ function CrimeSpreeResultTabItem:_create_rewards(total_w)
 			end
 
 			local reward_amount = panel:text({
-				vertical = "center",
-				h = 32,
-				wrap = true,
 				align = "center",
-				word_wrap = true,
 				blend_mode = "add",
+				h = 32,
 				layer = 11,
+				vertical = "center",
+				word_wrap = true,
+				wrap = true,
 				name = "reward" .. tostring(i),
 				text = managers.experience:cash_string(amount, data.cash_string or ""),
 				w = panel:w(),
@@ -483,9 +494,11 @@ function CrimeSpreeResultTabItem:make_fine_text(text)
 end
 
 function CrimeSpreeResultTabItem:set_stats(stats_data)
+	return
 end
 
 function CrimeSpreeResultTabItem:feed_statistics(stats_data)
+	return
 end
 
 CrimeSpreeResultTabItem.stages = {
@@ -538,7 +551,7 @@ function CrimeSpreeResultTabItem:update(t, dt)
 end
 
 function CrimeSpreeResultTabItem.animate_modifier_unlock(o)
-	over(0.6, function (p)
+	over(0.6, function(p)
 		o:set_alpha(math.lerp(0.4, 1, p * 2))
 	end)
 end
@@ -548,7 +561,7 @@ function CrimeSpreeResultTabItem:fade_in(element, duration, delay)
 		wait(delay)
 	end
 
-	over(duration, function (p)
+	over(duration, function(p)
 		element:set_alpha(math.lerp(0, 1, p))
 	end)
 end
@@ -558,7 +571,7 @@ function CrimeSpreeResultTabItem:fade_out(element, duration, delay)
 		wait(delay)
 	end
 
-	over(duration, function (p)
+	over(duration, function(p)
 		element:set_alpha(math.lerp(1, 0, p))
 	end)
 end
@@ -571,7 +584,7 @@ function CrimeSpreeResultTabItem:count_text(element, cash_string, start_val, end
 	local v = start_val
 
 	managers.menu_component:post_event("count_1")
-	over(duration, function (p)
+	over(duration, function(p)
 		v = math.lerp(start_val, end_val, p)
 
 		element:set_text(managers.localization:text("menu_cs_level", {
@@ -643,17 +656,18 @@ function CrimeSpreeResultTabItem:_update_level_gain(t, dt)
 	end
 
 	local duration = 2
+
 	self._update._t = (self._update._t or 0) + dt
 
 	managers.menu:post_event("count_1")
 
 	local s = managers.crime_spree:mission_start_spree_level()
 	local p = 1 / ((self._timeline.end_val - s) / (managers.crime_spree:spree_level() - s))
-	local target_w = self._timeline.width * p * self._update._t / duration
+	local target_w = self._timeline.width * p * (self._update._t / duration)
 
 	self._timeline.bar:set_w(target_w)
 
-	local lp = math.floor(managers.crime_spree:mission_start_spree_level() + (managers.crime_spree:spree_level() - managers.crime_spree:mission_start_spree_level()) * self._update._t / duration)
+	local lp = math.floor(managers.crime_spree:mission_start_spree_level() + (managers.crime_spree:spree_level() - managers.crime_spree:mission_start_spree_level()) * (self._update._t / duration))
 
 	self._timeline.level_text:set_text(managers.experience:cash_string(lp, ""))
 	self:make_fine_text(self._timeline.level_text)
@@ -661,7 +675,7 @@ function CrimeSpreeResultTabItem:_update_level_gain(t, dt)
 	self._timeline.level_text:set_right(self._timeline.level_ticket:left() - 1)
 
 	for i, data in ipairs(self._timeline.markers) do
-		if data[1] <= lp and not data[3] then
+		if lp >= data[1] and not data[3] then
 			data[2][1]:animate(CrimeSpreeResultTabItem.animate_modifier_unlock)
 			data[2][2]:animate(CrimeSpreeResultTabItem.animate_modifier_unlock)
 
@@ -685,7 +699,7 @@ end
 
 function CrimeSpreeResultTabItem.animate_card_panel(o, reward_num)
 	wait(reward_num * 0.5)
-	over(0.5, function (p)
+	over(0.5, function(p)
 		o:set_alpha(math.lerp(0, 1, p))
 	end)
 end
@@ -705,7 +719,7 @@ function CrimeSpreeResultTabItem.flip_card(card, reward_num)
 	card:show()
 	card:set_w(0)
 	managers.menu_component:post_event("loot_flip_card")
-	over(0.25, function (p)
+	over(0.25, function(p)
 		card:set_rotation(start_rotation + math.sin(p * 45 + 45) * diff)
 
 		if card:rotation() == 0 then
@@ -720,7 +734,7 @@ end
 function CrimeSpreeResultTabItem.animate_card(o, reward_num, card_idx)
 	wait(reward_num * 0.5 + 0.5)
 	o:show()
-	over(0.25, function (p)
+	over(0.25, function(p)
 		o:set_rotation(o:rotation() + 0.375 * card_idx * (1 - p * p))
 	end)
 end

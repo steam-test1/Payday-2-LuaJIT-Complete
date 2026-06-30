@@ -5,6 +5,7 @@ function FineText:init(parent, config)
 	config.font_size = config.font_size or tweak_data.menu.pd2_medium_font_size
 	config.font = config.font or tweak_data.menu.pd2_medium_font
 	config.color = config.color or tweak_data.screen_colors.text
+
 	local text_obj = parent:text(config)
 
 	FineText.super.init(self, text_obj)

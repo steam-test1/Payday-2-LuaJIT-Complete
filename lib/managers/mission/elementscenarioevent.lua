@@ -9,6 +9,7 @@ function ElementScenarioEvent:init(...)
 end
 
 function ElementScenarioEvent:client_on_executed(...)
+	return
 end
 
 function ElementScenarioEvent:on_executed(instigator)

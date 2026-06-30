@@ -8,6 +8,7 @@ function PrepareStartSimulation:init()
 	PrepareStartSimulation.super.init(self)
 
 	local factory = self.game_state._session_manager._factory
+
 	self._level_handler = factory:create_level_handler()
 
 	self.game_state:player_slots():enter_level_handler(self._level_handler)

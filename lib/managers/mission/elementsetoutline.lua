@@ -7,6 +7,7 @@ function ElementSetOutline:init(...)
 end
 
 function ElementSetOutline:client_on_executed(...)
+	return
 end
 
 function ElementSetOutline:on_executed(instigator)

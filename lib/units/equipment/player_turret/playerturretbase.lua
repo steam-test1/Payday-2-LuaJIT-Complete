@@ -1,4 +1,5 @@
 local ids_base = Idstring("base")
+
 PlayerTurretBase = PlayerTurretBase or class(RaycastWeaponBase)
 PlayerTurretBase.INTERACTION_PREFIX = "interact_"
 PlayerTurretBase.INTERACT_INVALID = 0
@@ -73,7 +74,9 @@ function PlayerTurretBase:init(unit)
 	self._damage = 0
 	self._autohit_data = nil
 	self._autohit_current = nil
+
 	local weap_tweak = self:weapon_tweak_data()
+
 	self._bullet_class = InstantBulletBase
 	self._bullet_slotmask = self._bullet_class:bullet_slotmask()
 	self._blank_slotmask = self._bullet_class:blank_slotmask()
@@ -97,6 +100,7 @@ function PlayerTurretBase:init(unit)
 	self._sound_fire:link(self._unit:orientation_object())
 
 	local trail_effect_ids = weap_tweak.trail_effect and Idstring(weap_tweak.trail_effect) or self.TRAIL_EFFECT
+
 	self._trail_effect_table = {
 		effect = trail_effect_ids,
 		position = Vector3(),
@@ -122,6 +126,7 @@ function PlayerTurretBase:init(unit)
 
 	if self._tweak_data.bullet_objects then
 		self._bullet_objects = {}
+
 		local prefix = self._tweak_data.bullet_objects.prefix
 
 		for i = 1, self._tweak_data.bullet_objects.amount do
@@ -155,6 +160,7 @@ end
 
 function PlayerTurretBase:post_init()
 	local unit = self._unit
+
 	self._ext_movement = unit:movement()
 	self._ext_brain = unit:brain()
 	self._ext_interaction = unit:interaction()
@@ -175,19 +181,19 @@ function PlayerTurretBase:post_init()
 	self._ext_movement:post_init()
 	self._ext_brain:post_init()
 
-	local setup_data = {
-		user_unit = nil,
-		ignore_units = {
-			self._unit
-		},
-		autoaim = true,
-		expend_ammo = true,
-		hit_slotmask = managers.slot:get_mask("bullet_impact_targets"),
-		hit_player = false,
-		user_sound_variant = nil,
-		alert_AI = true,
-		alert_filter = nil
+	local setup_data = {}
+
+	setup_data.user_unit = nil
+	setup_data.ignore_units = {
+		self._unit
 	}
+	setup_data.autoaim = true
+	setup_data.expend_ammo = true
+	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets")
+	setup_data.hit_player = false
+	setup_data.user_sound_variant = nil
+	setup_data.alert_AI = true
+	setup_data.alert_filter = nil
 
 	self:setup(setup_data)
 end
@@ -251,12 +257,12 @@ function PlayerTurretBase:get_turret_tweak_data()
 end
 
 function PlayerTurretBase:change_state(state)
-	if state == self._current_state or state <= PlayerTurretBase.STATE_INVALID or PlayerTurretBase.STATE_IN_USE < state then
+	if state == self._current_state or state <= PlayerTurretBase.STATE_INVALID or state > PlayerTurretBase.STATE_IN_USE then
 		return false
 	end
 
-	local seqeunce_order_index = self._current_state < state and 1 or 2
-	local dir_i = self._current_state < state and 1 or -1
+	local seqeunce_order_index = state > self._current_state and 1 or 2
+	local dir_i = state > self._current_state and 1 or -1
 	local start_i = self._current_state + dir_i
 	local end_i = state
 
@@ -283,6 +289,7 @@ end
 
 function PlayerTurretBase:get_state_from_action(action)
 	local state = PlayerTurretBase.STATE_ACTIONS[self._current_state]
+
 	state = state and state[action]
 
 	return state or PlayerTurretBase.STATE_INVALID
@@ -459,6 +466,7 @@ function PlayerTurretBase:auto_trigger_held(direction)
 		if fired then
 			local weap_tweak = self:weapon_tweak_data()
 			local fire_rate = weap_tweak and weap_tweak.auto and weap_tweak.auto.fire_rate
+
 			fire_rate = fire_rate or 0.1
 			self._next_fire_allowed = self._next_fire_allowed + fire_rate
 		end
@@ -485,8 +493,8 @@ function PlayerTurretBase:auto_fire_blank(direction)
 	local up = direction:cross(right):normalized()
 	local spread_x, spread_y = self:_get_spread()
 	local theta = math.random() * 360
-	local ax = math.sin(theta) * math.random() * spread_x
-	local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
+	local ax = math.sin(theta) * (math.random() * spread_x)
+	local ay = math.cos(theta) * (math.random() * (spread_y or spread_x))
 
 	mvector3.set(mspread, direction)
 	mvector3.add(mspread, right * math.rad(ax))
@@ -502,7 +510,7 @@ function PlayerTurretBase:auto_fire_blank(direction)
 		mvector3.set(self._trail_effect_table.normal, mspread)
 	end
 
-	local trail = nil
+	local trail
 
 	if not self:weapon_tweak_data().no_trail then
 		trail = alive(self._obj_fire) and (not col_ray or col_ray.distance > 650) and World:effect_manager():spawn(self._trail_effect_table) or nil
@@ -554,6 +562,7 @@ function PlayerTurretBase:update_damage()
 	local damage_modifier = weapon_stats.stats_modifiers and weapon_stats.stats_modifiers.damage or 1
 	local stats = tweak_data.weapon[self._name_id].stats
 	local base_damage = (stats and weapon_stats.damage[stats.damage] or 0) * damage_modifier
+
 	self._damage = (base_damage + self:damage_addend()) * self:damage_multiplier()
 end
 
@@ -578,6 +587,7 @@ end
 
 function PlayerTurretBase:save(save_data)
 	local my_save_data = {}
+
 	save_data.base = my_save_data
 	my_save_data.state = self._current_state
 	my_save_data.is_shooting = self:shooting()
@@ -599,7 +609,7 @@ function PlayerTurretBase:sync_net_event(state)
 		self._next_fire_allowed = math.max(self._next_fire_allowed, self._unit:timer():time())
 	elseif state == PlayerTurretBase.SYNC_STOP_FIRE then
 		self._shooting = false
-	elseif PlayerTurretBase.STATE_INVALID < state and state <= PlayerTurretBase.STATE_IN_USE then
+	elseif state > PlayerTurretBase.STATE_INVALID and state <= PlayerTurretBase.STATE_IN_USE then
 		self:change_state(state)
 	end
 end

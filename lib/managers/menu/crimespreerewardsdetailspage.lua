@@ -1,22 +1,23 @@
 CrimeSpreeRewardsDetailsPage = CrimeSpreeRewardsDetailsPage or class(CrimeSpreeDetailsPage)
+
 local padding = 10
 
 function CrimeSpreeRewardsDetailsPage:init(...)
 	CrimeSpreeRewardsDetailsPage.super.init(self, ...)
 	self:panel():bitmap({
-		texture = "guis/textures/test_blur_df",
-		layer = -1,
-		halign = "scale",
 		alpha = 1,
+		halign = "scale",
+		layer = -1,
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = self:panel():w(),
 		h = self:panel():h()
 	})
 	self:panel():rect({
 		alpha = 0.5,
-		valign = "scale",
 		halign = "scale",
+		valign = "scale",
 		color = Color.black
 	})
 
@@ -51,13 +52,13 @@ function CrimeSpreeRewardsDetailsPage:init(...)
 			end
 
 			local reward_name = panel:text({
-				vertical = "center",
-				h = 32,
-				wrap = true,
 				align = "center",
-				word_wrap = true,
 				blend_mode = "add",
+				h = 32,
 				layer = 11,
+				vertical = "center",
+				word_wrap = true,
+				wrap = true,
 				name = "reward" .. tostring(i),
 				text = managers.localization:to_upper_text(data.name_id or ""),
 				w = panel:w(),
@@ -73,13 +74,13 @@ function CrimeSpreeRewardsDetailsPage:init(...)
 			reward_name:set_h(h)
 
 			local reward_amount = panel:text({
-				vertical = "center",
-				h = 32,
-				wrap = true,
 				align = "center",
-				word_wrap = true,
 				blend_mode = "add",
+				h = 32,
 				layer = 11,
+				vertical = "center",
+				word_wrap = true,
+				wrap = true,
 				name = "reward" .. tostring(i),
 				text = managers.experience:cash_string(amount, data.cash_string or ""),
 				w = panel:w(),
@@ -98,7 +99,7 @@ function CrimeSpreeRewardsDetailsPage:init(...)
 		end
 	end
 
-	local warning_title, warning_text = nil
+	local warning_title, warning_text
 
 	if managers.crime_spree:server_spree_level() < managers.crime_spree:spree_level() then
 		warning_title = "menu_cs_rewards_suspended"
@@ -118,20 +119,20 @@ function CrimeSpreeRewardsDetailsPage:init(...)
 		})
 
 		level_panel:bitmap({
-			texture = "guis/textures/pd2/cs_warning_background",
-			name = "background",
 			h = 128,
 			layer = 10,
+			name = "background",
+			texture = "guis/textures/pd2/cs_warning_background",
 			color = Color.white,
 			w = level_panel:w()
 		})
 
 		local suspend_text = level_panel:text({
-			word_wrap = true,
-			vertical = "left",
-			wrap = true,
 			align = "left",
 			layer = 20,
+			vertical = "left",
+			word_wrap = true,
+			wrap = true,
 			text = warning_title and managers.localization:to_upper_text(warning_title) or "",
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			font = tweak_data.menu.pd2_medium_font,
@@ -144,13 +145,13 @@ function CrimeSpreeRewardsDetailsPage:init(...)
 
 		local w_multi = 0.75
 		local suspend_desc_text = level_panel:text({
+			align = "left",
+			layer = 20,
 			vertical = "top",
 			word_wrap = true,
 			wrap = true,
-			align = "left",
-			layer = 20,
 			text = warning_text and managers.localization:text(warning_text) or "",
-			x = self:panel():w() * (1 - w_multi) * 0.5,
+			x = self:panel():w() * ((1 - w_multi) * 0.5),
 			w = self:panel():w() * w_multi,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			font = tweak_data.menu.pd2_small_font,
@@ -185,8 +186,9 @@ function CrimeSpreeRewardsDetailsPage:create_card(panel, icon, layer, rotation_a
 	local upcard = self:_create_card(panel, icon, scale, layer, rotation, wiggle_x, wiggle_y)
 
 	if outline then
-		local outline_card = nil
+		local outline_card
 		local color = Color.black:with_alpha(0.4)
+
 		outline_card = self:_create_card(panel, icon, scale, layer - 1, rotation, wiggle_x + 1, wiggle_y + 1)
 
 		outline_card:set_color(color)
@@ -202,8 +204,8 @@ end
 function CrimeSpreeRewardsDetailsPage:_create_card(panel, icon, scale, layer, rotation, wiggle_x, wiggle_y)
 	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(icon or tweak_data.lootdrop.type_to_card_fallback)
 	local upcard = panel:bitmap({
-		name = "upcard",
 		halign = "scale",
+		name = "upcard",
 		valign = "scale",
 		texture = texture,
 		w = math.round(0.7111111111111111 * panel:h() * scale),

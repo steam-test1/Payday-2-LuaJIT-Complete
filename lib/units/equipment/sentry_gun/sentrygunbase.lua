@@ -17,6 +17,7 @@ SentryGunBase.SPREAD_MUL = {
 	1,
 	0.5
 }
+
 local sentry_uid = 1
 
 function SentryGunBase:init(unit)
@@ -125,7 +126,7 @@ function SentryGunBase.spawn(owner, pos, rot, peer_id, verify_equipment, unit_id
 		return
 	end
 
-	local sentry_owner = nil
+	local sentry_owner
 
 	if owner and owner:base().upgrade_value then
 		sentry_owner = owner
@@ -133,7 +134,7 @@ function SentryGunBase.spawn(owner, pos, rot, peer_id, verify_equipment, unit_id
 
 	local player_skill = PlayerSkill
 	local ammo_multiplier = player_skill.skill_data("sentry_gun", "extra_ammo_multiplier", 1, sentry_owner)
-	local armor_multiplier = 1 + player_skill.skill_data("sentry_gun", "armor_multiplier", 1, sentry_owner) - 1 + player_skill.skill_data("sentry_gun", "armor_multiplier2", 1, sentry_owner) - 1
+	local armor_multiplier = 1 + (player_skill.skill_data("sentry_gun", "armor_multiplier", 1, sentry_owner) - 1) + (player_skill.skill_data("sentry_gun", "armor_multiplier2", 1, sentry_owner) - 1)
 	local spread_level = player_skill.skill_data("sentry_gun", "spread_multiplier", 1, sentry_owner)
 	local rot_speed_level = player_skill.skill_data("sentry_gun", "rot_speed_multiplier", 1, sentry_owner)
 	local ap_bullets = player_skill.has_skill("sentry_gun", "ap_bullets", sentry_owner)
@@ -163,7 +164,7 @@ function SentryGunBase.spawn(owner, pos, rot, peer_id, verify_equipment, unit_id
 		managers.network:session():send_to_peers_synched("sync_fire_mode_interaction", unit, fire_mode_unit, owner_id)
 	end
 
-	local team = nil
+	local team
 
 	if owner then
 		team = owner:movement():team()
@@ -193,8 +194,10 @@ function SentryGunBase:spawn_from_sequence(align_obj_name, module_id)
 		return
 	end
 
-	local unit = nil
+	local unit
+
 	unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_sentry/gen_equipment_sentry_placement"), pos, rot)
+
 	local rot_mul = SentryGunBase.ROTATION_SPEED_MUL[2]
 	local spread_mul = SentryGunBase.SPREAD_MUL[2]
 	local ammo_mul = SentryGunBase.AMMO_MUL[2]
@@ -224,7 +227,7 @@ function SentryGunBase:spawn_from_sequence_new(align_obj_name, module_id, sentry
 		return
 	end
 
-	local unit = nil
+	local unit
 
 	if sentrygun_unit then
 		unit = World:spawn_unit(Idstring(sentrygun_unit), pos, rot)
@@ -249,6 +252,7 @@ end
 
 function SentryGunBase:activate_as_module(team_type, tweak_table_id)
 	self._tweak_table_id = tweak_table_id
+
 	local team_id = tweak_data.levels:get_default_team_ID(team_type)
 	local team_data = managers.groupai:state():team_data(team_id)
 
@@ -256,10 +260,10 @@ function SentryGunBase:activate_as_module(team_type, tweak_table_id)
 	self._unit:movement():on_activated(tweak_table_id)
 
 	local weapon_setup_data = {
+		alert_AI = false,
 		auto_reload = true,
 		expend_ammo = true,
 		spread_mul = 1,
-		alert_AI = false,
 		ignore_units = {
 			self._unit
 		},
@@ -343,9 +347,9 @@ function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, spread_mu
 	self._unit:movement():set_team(owner:movement():team())
 
 	local setup_data = {
-		expend_ammo = true,
-		creates_alerts = true,
 		alert_AI = true,
+		creates_alerts = true,
+		expend_ammo = true,
 		user_unit = self._owner,
 		ignore_units = {
 			self._unit,
@@ -501,9 +505,10 @@ end
 function SentryGunBase._attach(pos, rot, sentrygun_unit)
 	pos = pos or sentrygun_unit:position()
 	rot = rot or sentrygun_unit:rotation()
+
 	local from_pos = pos + rot:z() * 10
 	local to_pos = pos + rot:z() * -20
-	local ray = nil
+	local ray
 
 	if sentrygun_unit then
 		ray = sentrygun_unit:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("world_geometry"))
@@ -513,8 +518,8 @@ function SentryGunBase._attach(pos, rot, sentrygun_unit)
 
 	if ray then
 		local attached_data = {
-			max_index = 3,
 			index = 1,
+			max_index = 3,
 			body = ray.body,
 			position = ray.body:position(),
 			rotation = ray.body:rotation(),
@@ -601,14 +606,15 @@ function SentryGunBase:get_net_event_id(player)
 	end
 
 	ammo_got = ammo_got / math.max(i, 1)
+
 	local ammo_wanted = ammo_needed
-	local wanted_event_id = nil
+	local wanted_event_id
 	local index = 1
 
 	repeat
 		if not refill_ratios[index] then
 			break
-		elseif refill_ratios[index] <= ammo_wanted then
+		elseif ammo_wanted >= refill_ratios[index] then
 			wanted_event_id = index
 		end
 
@@ -616,13 +622,13 @@ function SentryGunBase:get_net_event_id(player)
 	until wanted_event_id
 
 	local ammo_possible = ammo_got / sentry_gun_reload_ratio
-	local possible_event_id = nil
+	local possible_event_id
 	local index = 1
 
 	repeat
 		if not refill_ratios[index] then
 			break
-		elseif refill_ratios[index] <= ammo_possible then
+		elseif ammo_possible >= refill_ratios[index] then
 			possible_event_id = index
 		end
 
@@ -640,6 +646,7 @@ end
 
 function SentryGunBase:add_string_macros(macroes)
 	local event_id, wanted_event_id, possible_event_id = self:get_net_event_id(managers.player:local_player())
+
 	macroes.AMMO = wanted_event_id and string.format("%2.f%%", (1 - refill_ratios[wanted_event_id]) * 100) or "100%"
 end
 
@@ -681,6 +688,7 @@ function SentryGunBase:sync_net_event(event_id, peer)
 
 				if leftover > 0 and ammo_left > 0 then
 					local extra_ammo = ammo_left < leftover and ammo_left or leftover
+
 					leftover = leftover - extra_ammo
 					data.amount = data.amount + extra_ammo
 				end
@@ -757,6 +765,7 @@ end
 
 function SentryGunBase:save(save_data)
 	local my_save_data = {}
+
 	save_data.base = my_save_data
 	my_save_data.tweak_table_id = self._tweak_table_id
 	my_save_data.is_module = self._is_module
@@ -769,7 +778,9 @@ end
 
 function SentryGunBase:load(save_data)
 	self._was_dropin = true
+
 	local my_save_data = save_data.base
+
 	self._tweak_table_id = my_save_data.tweak_table_id
 	self._is_module = my_save_data.is_module
 

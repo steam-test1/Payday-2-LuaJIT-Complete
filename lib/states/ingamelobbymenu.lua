@@ -87,7 +87,7 @@ function IngameLobbyMenuState:_continue_blocked()
 		return true
 	end
 
-	if Application:time() < self._continue_block_timer then
+	if self._continue_block_timer > Application:time() then
 		return true
 	end
 
@@ -123,7 +123,7 @@ function IngameLobbyMenuState:update(t, dt)
 
 			if not Global.game_settings.single_player and managers.network:session() then
 				local lootdrop_string = string.format("%d %d %d", lootdrops.coins or 0, lootdrops.cash or 0, lootdrops.xp or 0)
-				local global_index = nil
+				local global_index
 				local global_values = tweak_data.lootdrop.global_value_list_map
 
 				for _, item in ipairs(lootdrops.items or {}) do
@@ -245,6 +245,7 @@ end
 
 function IngameLobbyMenuState:make_lootdrop()
 	self._mass_drop_data = nil
+
 	local mass_drop_class = self:get_mass_drop_class()
 
 	if mass_drop_class then
@@ -291,7 +292,7 @@ function IngameLobbyMenuState:_clbk_inventory_reward(error, tradable_list)
 		Application:error("[IngameLobbyMenuState:_clbk_inventory_reward] Failed to reward tradable item (" .. tostring(error) .. ")")
 	end
 
-	local drop_category, drop_entry = nil
+	local drop_category, drop_entry
 
 	managers.network.account:inventory_repair_list(tradable_list)
 
@@ -322,8 +323,9 @@ function IngameLobbyMenuState:set_lootdrop(drop_category, drop_item_id)
 		return
 	end
 
-	local global_value, item_category, item_id, max_pc, item_pc = nil
+	local global_value, item_category, item_id, max_pc, item_pc
 	local allow_loot_drop = true
+
 	allow_loot_drop = not managers.crime_spree:is_active()
 
 	if drop_item_id and drop_category then

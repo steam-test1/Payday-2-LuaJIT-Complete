@@ -2,6 +2,7 @@ require("core/lib/utils/dev/tools/cutscene_editor/CoreCutsceneClipMetadata")
 require("core/lib/managers/cutscene/CoreCutsceneKeys")
 
 local CAMERA_ICON_IMAGE_COUNT = 30
+
 CoreCutsceneFootage = CoreCutsceneFootage or class()
 
 function CoreCutsceneFootage:init(cutscene)
@@ -71,21 +72,21 @@ end
 function CoreCutsceneFootage:colour()
 	if self._colour == nil then
 		local precision = 255
-		local r = 26
-		local g = 52
-		local b = 78
+		local r, g, b = 26, 52, 78
 		local name = self._cutscene:name()
 		local len = string.len(name)
 
 		for i = 1, len do
 			local byte = string.byte(name, i)
+
 			r = math.fmod(r * 33 + byte, precision + 1)
 			g = math.fmod(g * 33 + byte, precision + 1)
 			b = math.fmod(b * 33 + byte, precision + 1)
 		end
 
 		local black_value = 0.7
-		local divisor = precision * 1 / (1 - black_value)
+		local divisor = precision * (1 / (1 - black_value))
+
 		self._colour = Color(black_value + r / divisor, black_value + g / divisor, black_value + b / divisor)
 	end
 
@@ -94,6 +95,7 @@ end
 
 function CoreCutsceneFootage:camera_icon_index(camera_name, image_count)
 	image_count = image_count or CAMERA_ICON_IMAGE_COUNT + 1
+
 	local name_without_prefix = string.match(camera_name, "camera_(.+)")
 	local icon_index = tonumber(name_without_prefix) or table.get_vector_index(self:camera_names(), camera_name) or 0
 
@@ -108,7 +110,7 @@ function CoreCutsceneFootage:_camera_cuts()
 	local cuts = self:_camera_cut_list()
 	local index = 0
 
-	return function ()
+	return function()
 		index = index + 1
 
 		return unpack(cuts[index] or {})

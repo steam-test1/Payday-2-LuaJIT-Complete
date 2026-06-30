@@ -124,7 +124,7 @@ function ControllerWrapperSettings:validate()
 				local unselectable_input = self._unselectable_input_map[input_name]
 
 				if unselectable_input then
-					local invalid = nil
+					local invalid
 
 					if #input_name_list > 1 and not connection:get_any_input() then
 						invalid = unselectable_input:get_multi()
@@ -145,7 +145,7 @@ end
 
 function ControllerWrapperSettings:populate_data(data)
 	local sub_data = {}
-	local connection_list = nil
+	local connection_list
 
 	for _, connection in pairs(self._connection_map) do
 		if not connection_list then
@@ -159,7 +159,7 @@ function ControllerWrapperSettings:populate_data(data)
 		connection:populate_data(connection_list)
 	end
 
-	local editable_list = nil
+	local editable_list
 
 	for _, editable in pairs(self._editable_connection_map) do
 		if not editable_list then
@@ -173,7 +173,7 @@ function ControllerWrapperSettings:populate_data(data)
 		editable:populate_data(editable_list)
 	end
 
-	local unselectable_list = nil
+	local unselectable_list
 
 	for _, unselectable in pairs(self._unselectable_input_map) do
 		if not unselectable_list then
@@ -256,7 +256,8 @@ ControllerWrapperConnection.DEFAULT_CONNECT_DEST_TYPE = "button"
 function ControllerWrapperConnection:init(node)
 	if node then
 		self._name = node.name
-		local input_name = nil
+
+		local input_name
 		local attribute = "input"
 		local count = 1
 
@@ -302,6 +303,7 @@ function ControllerWrapperConnection:init(node)
 
 			if child_name == ControllerWrapperDelayConnection.TYPE then
 				local delay_connection = ControllerWrapperDelayConnection:new(child)
+
 				self._delay_connection_list = self._delay_connection_list or {}
 
 				table.insert(self._delay_connection_list, delay_connection)
@@ -825,11 +827,12 @@ end
 
 function ControllerWrapperEditable:populate_data(data)
 	local sub_data = {
-		_meta = self.TYPE,
-		name = self._connection_name,
-		caption = self._caption,
-		locale_id = self._locale_id
+		_meta = self.TYPE
 	}
+
+	sub_data.name = self._connection_name
+	sub_data.caption = self._caption
+	sub_data.locale_id = self._locale_id
 
 	table.insert(data, sub_data)
 end
@@ -887,9 +890,10 @@ end
 
 function ControllerWrapperUnselectable:populate_data(data)
 	local sub_data = {
-		_meta = self.TYPE,
-		name = self._input_name
+		_meta = self.TYPE
 	}
+
+	sub_data.name = self._input_name
 
 	if not self._single then
 		sub_data.single = not not self._single

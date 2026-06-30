@@ -4,7 +4,9 @@ function ServerStatusBoxGui:init(ws, title, text, content_data, config)
 	config = config or {}
 	config.h = config.h or 130
 	config.w = config.w or 280
+
 	local x, y = ws:size()
+
 	config.x = config.x or 0
 	config.y = config.y or 1
 	config.no_close_legend = true
@@ -17,6 +19,7 @@ function ServerStatusBoxGui:init(ws, title, text, content_data, config)
 end
 
 function ServerStatusBoxGui:update(t, dt)
+	return
 end
 
 function ServerStatusBoxGui:_make_nice_text(text)
@@ -32,30 +35,30 @@ function ServerStatusBoxGui:_create_text_box(ws, title, text, content_data, conf
 	local server_peer = managers.network:session() and (is_server and managers.network:session():local_peer() or managers.network:session():server_peer()) or nil
 	local server_name = server_peer and server_peer:name() or ""
 	local server_panel = self._scroll_panel:panel({
-		name = "server_panel",
 		h = 60,
-		x = 0,
 		layer = 1,
+		name = "server_panel",
+		x = 0,
 		w = self._scroll_panel:w()
 	})
 	local font_size = tweak_data.menu.lobby_info_font_size
 	local server_title = server_panel:text({
+		align = "left",
+		layer = 1,
 		name = "server_title",
 		vertical = "center",
 		w = 256,
-		align = "left",
-		layer = 1,
 		text = string.upper(managers.localization:text("menu_lobby_server_title")),
 		font = tweak_data.menu.default_font,
 		font_size = font_size,
 		h = font_size
 	})
 	local server_text = server_panel:text({
-		vertical = "center",
-		name = "server_text",
-		w = 256,
 		align = "left",
 		layer = 1,
+		name = "server_text",
+		vertical = "center",
+		w = 256,
 		text = string.upper("" .. server_name),
 		font = tweak_data.menu.default_font,
 		color = tweak_data.hud.prime_color,
@@ -63,22 +66,22 @@ function ServerStatusBoxGui:_create_text_box(ws, title, text, content_data, conf
 		h = font_size
 	})
 	local server_state_title = server_panel:text({
+		align = "left",
+		layer = 1,
 		name = "server_state_title",
 		vertical = "center",
 		w = 256,
-		align = "left",
-		layer = 1,
 		text = string.upper(managers.localization:text("menu_lobby_server_state_title")),
 		font = tweak_data.menu.default_font,
 		font_size = font_size,
 		h = font_size
 	})
 	local server_state_text = server_panel:text({
-		vertical = "center",
-		name = "server_state_text",
-		w = 256,
 		align = "left",
 		layer = 1,
+		name = "server_state_text",
+		vertical = "center",
+		w = 256,
 		text = string.upper(managers.localization:text(self._server_state_string_id or "menu_lobby_server_state_in_lobby")),
 		font = tweak_data.menu.default_font,
 		color = tweak_data.hud.prime_color,
@@ -113,7 +116,7 @@ function ServerStatusBoxGui:mouse_moved(x, y)
 		return
 	end
 
-	local pointer = nil
+	local pointer
 
 	return false, pointer
 end

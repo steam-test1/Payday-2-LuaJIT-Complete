@@ -35,8 +35,8 @@ function CoreMotionPathOperatorUnitElement:draw_links(t, dt, selected_unit, all_
 
 		if draw then
 			self:_draw_link({
-				g = 0.25,
 				b = 0.25,
+				g = 0.25,
 				r = 0.75,
 				from_unit = self._unit,
 				to_unit = unit
@@ -50,8 +50,8 @@ function CoreMotionPathOperatorUnitElement:draw_links(t, dt, selected_unit, all_
 
 		if draw and alive(unit) and alive(self._unit) then
 			self:_draw_link({
-				g = 0.55,
 				b = 0.05,
+				g = 0.55,
 				r = 0.95,
 				from_unit = self._unit,
 				to_unit = unit
@@ -99,6 +99,7 @@ end
 
 function CoreMotionPathOperatorUnitElement:_motion_path_markers()
 	self._hed.marker_ids = {}
+
 	local motion_path_markers = {
 		"none"
 	}
@@ -179,8 +180,8 @@ function CoreMotionPathTriggerUnitElement:draw_links(t, dt, selected_unit, all_u
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = unit,
 				to_unit = self._unit

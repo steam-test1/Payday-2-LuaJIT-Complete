@@ -1,6 +1,7 @@
 DoctorBagBase = DoctorBagBase or class(UnitBase)
 DoctorBagBase.amount_upgrade_lvl_shift = 2
 DoctorBagBase.damage_reduce_lvl_shift = 4
+
 local IDS_MEDIC_BAG = Idstring("units/payday2/equipment/gen_equipment_medicbag/gen_equipment_medicbag")
 
 function DoctorBagBase.spawn(pos, rot, bits, peer_id)
@@ -70,8 +71,11 @@ end
 
 function DoctorBagBase:setup(bits)
 	local amount_upgrade_lvl, dmg_reduction_lvl = self:_get_upgrade_levels(bits)
+
 	self._damage_reduction_upgrade = dmg_reduction_lvl ~= 0
+
 	local doctor_bag_amount_increase = managers.player:upgrade_value_by_level("doctor_bag", "amount_increase", amount_upgrade_lvl)
+
 	self._amount = tweak_data.upgrades.doctor_bag_base + doctor_bag_amount_increase
 
 	self:_set_visual_stage()
@@ -82,13 +86,12 @@ function DoctorBagBase:setup(bits)
 		local ray = self._unit:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("world_geometry"))
 
 		if ray then
-			self._attached_data = {
-				body = ray.body,
-				position = ray.body:position(),
-				rotation = ray.body:rotation(),
-				index = 1,
-				max_index = 3
-			}
+			self._attached_data = {}
+			self._attached_data.body = ray.body
+			self._attached_data.position = ray.body:position()
+			self._attached_data.rotation = ray.body:rotation()
+			self._attached_data.index = 1
+			self._attached_data.max_index = 3
 
 			self._unit:set_extension_update_enabled(Idstring("base"), true)
 		end
@@ -171,6 +174,7 @@ end
 
 function DoctorBagBase:_take(unit)
 	local taken = 1
+
 	self._amount = self._amount - taken
 
 	unit:character_damage():recover_health()
@@ -208,6 +212,7 @@ end
 
 function DoctorBagBase:_set_empty()
 	self._empty = true
+
 	local unit = self._unit
 
 	if Network:is_server() or unit:id() == -1 then
@@ -233,15 +238,16 @@ function DoctorBagBase:_get_upgrade_levels(bits)
 end
 
 function DoctorBagBase:save(data)
-	local state = {
-		amount = self._amount,
-		is_dynamic = self._is_dynamic
-	}
+	local state = {}
+
+	state.amount = self._amount
+	state.is_dynamic = self._is_dynamic
 	data.DoctorBagBase = state
 end
 
 function DoctorBagBase:load(data)
 	local state = data.DoctorBagBase
+
 	self._amount = state.amount
 
 	if state.is_dynamic then

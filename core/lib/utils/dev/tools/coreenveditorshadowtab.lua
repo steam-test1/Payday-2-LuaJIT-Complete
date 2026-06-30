@@ -41,15 +41,17 @@ function CoreEnvEditor:load_shadow_data(block)
 end
 
 function CoreEnvEditor:parse_shadow_data()
-	local values = {
-		slice0 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice0Feeder.DATA_PATH_KEY),
-		slice1 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice1Feeder.DATA_PATH_KEY),
-		slice2 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice2Feeder.DATA_PATH_KEY),
-		slice3 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice3Feeder.DATA_PATH_KEY),
-		shadow_slice_overlap = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSliceOverlapFeeder.DATA_PATH_KEY),
-		shadow_slice_depths = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSliceDepthsFeeder.DATA_PATH_KEY)
-	}
+	local values = {}
+
+	values.slice0 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice0Feeder.DATA_PATH_KEY)
+	values.slice1 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice1Feeder.DATA_PATH_KEY)
+	values.slice2 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice2Feeder.DATA_PATH_KEY)
+	values.slice3 = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSlice3Feeder.DATA_PATH_KEY)
+	values.shadow_slice_overlap = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSliceOverlapFeeder.DATA_PATH_KEY)
+	values.shadow_slice_depths = managers.viewport:get_environment_value(self._env_path, CoreEnvironmentFeeder.PostShadowSliceDepthsFeeder.DATA_PATH_KEY)
+
 	local block = self:convert_to_block(values)
+
 	self._shadow_blocks[self._env_path] = block
 
 	self:load_shadow_data(block)
@@ -104,6 +106,7 @@ function CoreEnvEditor:shadow_feed_params(feed_params)
 	local s3 = Vector3(d2 - o3, d3, 0)
 	local shadow_slice_depths = Vector3(d0, d1, d2)
 	local shadow_slice_overlaps = Vector3(o1, o2, o3)
+
 	feed_params.slice0 = s0
 	feed_params.slice1 = s1
 	feed_params.slice2 = s2
@@ -125,6 +128,7 @@ function CoreEnvEditor:create_shadow_tab()
 
 	local box = EWS:BoxSizer("VERTICAL")
 	local settings_box = EWS:StaticBoxSizer(scrolled_window, "VERTICAL", "Settings")
+
 	self._shadow_params.d0 = self:add_post_processors_param("shadow_processor", "shadow_rendering", "shadow_modifier", "d0", SingelSlider:new(self, scrolled_window, "First slice depth start", nil, 1, 10000, 1, 1, true))
 
 	settings_box:add(self._shadow_params.d0._box, 0, 0, "EXPAND")

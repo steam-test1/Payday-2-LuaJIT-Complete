@@ -9,6 +9,7 @@ function SmallLootBase:init(unit)
 end
 
 function SmallLootBase:_setup()
+	return
 end
 
 function SmallLootBase:take(unit)

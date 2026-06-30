@@ -5,7 +5,9 @@ function DebugStringsBoxGui:init(ws, title, text, content_data, config, file)
 	config = config or {}
 	config.h = 300
 	config.w = 300
+
 	local x, y = ws:size()
+
 	config.x = x - config.w
 	config.y = y - config.h - CoreMenuRenderer.Renderer.border_height + 10
 	config.no_close_legend = true
@@ -32,9 +34,9 @@ function DebugStringsBoxGui:_create_text_box(ws, title, text, content_data, conf
 
 	local strings_panel = self._scroll_panel:panel({
 		h = 600,
+		layer = 1,
 		name = "strings_panel",
-		x = 0,
-		layer = 1
+		x = 0
 	})
 	local y = 0
 	local i = 0
@@ -57,33 +59,33 @@ function DebugStringsBoxGui:_create_text_box(ws, title, text, content_data, conf
 		})
 
 		string_panel:rect({
-			name = "bg",
-			layer = 1,
 			halign = "grow",
+			layer = 1,
+			name = "bg",
 			color = (even and Color.white / 1.5 or Color.white / 2):with_alpha(0.25)
 		})
 
 		local text_id = string_panel:text({
-			y = 0,
-			name = "id",
-			vertical = "center",
 			align = "left",
 			halign = "left",
-			x = 16,
 			layer = 2,
+			name = "id",
+			vertical = "center",
+			x = 16,
+			y = 0,
 			text = id,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			color = Color.white
 		})
 		local text = string_panel:text({
+			align = "left",
+			layer = 2,
 			name = "text",
 			vertical = "top",
 			word_wrap = true,
 			wrap = true,
-			align = "left",
 			y = 0,
-			layer = 2,
 			text = localized,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -107,6 +109,7 @@ function DebugStringsBoxGui:_create_text_box(ws, title, text, content_data, conf
 end
 
 function DebugStringsBoxGui:mouse_moved(x, y)
+	return
 end
 
 function DebugStringsBoxGui:_check_scroll_indicator_states()

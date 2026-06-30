@@ -7,6 +7,7 @@ function ElementDisableShout:init(...)
 end
 
 function ElementDisableShout:client_on_executed(...)
+	return
 end
 
 function ElementDisableShout.sync_function(unit, state)

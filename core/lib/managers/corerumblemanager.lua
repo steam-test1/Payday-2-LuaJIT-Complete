@@ -51,6 +51,7 @@ function RumbleManager:register_controller(controller, pos_callback)
 	if self._rumbling_controller_types[controller.TYPE] then
 		local ctrl = controller:get_controller()
 		local key = ctrl:key()
+
 		self._registered_controllers[key] = ctrl
 		self._registered_controller_count[key] = (self._registered_controller_count[key] or 0) + 1
 		self._registered_controller_pos_callback_list[key] = self._registered_controller_pos_callback_list[key] or {}
@@ -63,6 +64,7 @@ end
 function RumbleManager:unregister_controller(controller, pos_callback)
 	local ctrl = controller:get_controller()
 	local key = ctrl:key()
+
 	self._registered_controller_count[key] = (self._registered_controller_count[key] or 0) - 1
 
 	if self._registered_controller_count[key] <= 0 then
@@ -96,22 +98,24 @@ function RumbleManager:play(name, controller_wrapper, multiplier_data, custom_da
 		return false
 	end
 
-	local rumble_controllers = nil
+	local rumble_controllers
 
 	if not controller_wrapper then
 		rumble_controllers = self._registered_controllers
 	elseif self._rumbling_controller_types[controller_wrapper.TYPE] then
 		local ctrl = controller_wrapper:get_controller()
+
 		rumble_controllers[ctrl:key()] = ctrl
 	end
 
 	local effect = self._preset_rumbles[name]
 
 	if effect then
-		local rumble_id = {
-			controllers = rumble_controllers,
-			name = name
-		}
+		local rumble_id = {}
+
+		rumble_id.controllers = rumble_controllers
+		rumble_id.name = name
+
 		local custom_peak = custom_data and custom_data.peak
 		local custom_attack = custom_data and custom_data.attack
 		local custom_sustain = custom_data and custom_data.sustain
@@ -193,7 +197,7 @@ end
 
 function RumbleManager:mult_distance_lerp(pos_func_list, params)
 	if pos_func_list then
-		local closest_pos = nil
+		local closest_pos
 
 		for pos_func in pairs(pos_func_list) do
 			local next_closest_pos = pos_func(params)
@@ -208,6 +212,7 @@ function RumbleManager:mult_distance_lerp(pos_func_list, params)
 			local zero_dis = params.zero_dis or 1000 - full_dis
 			local mult = params.multiplier or 1
 			local source = params.source
+
 			mult = mult * (zero_dis - math.clamp((source - closest_pos):length() - full_dis, 0, zero_dis)) / zero_dis
 
 			return mult

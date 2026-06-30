@@ -3,6 +3,7 @@ core:module("CoreSessionGenericState")
 State = State or class()
 
 function State:init()
+	return
 end
 
 function State:_set_stable_for_loading()

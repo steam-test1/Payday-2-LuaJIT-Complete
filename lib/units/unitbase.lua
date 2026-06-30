@@ -21,6 +21,7 @@ function UnitBase:remove_destroy_listener(key)
 end
 
 function UnitBase:save(data)
+	return
 end
 
 function UnitBase:load(data)

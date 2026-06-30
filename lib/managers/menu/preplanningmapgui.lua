@@ -31,6 +31,7 @@ local mvec2 = Vector3()
 local mvec3 = Vector3()
 local mvec4 = Vector3()
 local mrot = Rotation()
+
 PrePlanningPoint = PrePlanningPoint or class()
 PrePlanningPoint.WIDTH = 48
 PrePlanningPoint.HEIGHT = 48
@@ -38,11 +39,13 @@ PrePlanningPoint.HEIGHT = 48
 function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node, location_index)
 	local width = PrePlanningPoint.WIDTH
 	local height = PrePlanningPoint.HEIGHT
+
 	self._width = width
 	self._height = height
 	self._map_width = map_panel:width()
 	self._map_height = map_panel:height()
 	self._current_size_mod = 1
+
 	local element_position, element_rotation = element:get_orientation()
 	local lx = mvector3.x(element_position)
 	local ly = mvector3.y(element_position)
@@ -51,6 +54,7 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 	local raw_y = 1 - (ly - y) / h - 0.5
 	local ax = math.cos(rotation) * raw_x - math.sin(rotation) * raw_y + 0.5
 	local ay = math.sin(rotation) * raw_x + math.cos(rotation) * raw_y + 0.5
+
 	self._active_node = active_node
 	self._x = ax
 	self._y = ay
@@ -66,10 +70,10 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 	self._panel:set_center(self._x * self._map_panel:w(), self._y * self._map_panel:h())
 
 	self._info_box = self._panel:panel({
-		w = 100,
-		halign = "center",
 		alpha = 0,
+		halign = "center",
 		valign = "center",
+		w = 100,
 		h = self._panel:h() * 2
 	})
 
@@ -78,13 +82,14 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 
 	self._extras_panel = map_panel:panel({
 		halign = "scale",
-		valign = "scale",
-		layer = 11
+		layer = 11,
+		valign = "scale"
 	})
 
 	self._extras_panel:set_center(self._panel:center())
 
 	self._extras = {}
+
 	local yaw = mrotation.yaw(element_rotation)
 
 	local function add_extra_func(type, key)
@@ -97,11 +102,11 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 				local length = value.length or 1
 				local look_cone = self._extras[type]:polygon({
 					blend_mode = "add",
-					name = "look_cone",
-					valign = "scale",
 					halign = "scale",
-					rotation = 0,
 					layer = 0,
+					name = "look_cone",
+					rotation = 0,
+					valign = "scale",
 					color = Color.white
 				})
 
@@ -134,14 +139,14 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 				local vote_panel = self._extras[type]:panel({
 					name = "plan"
 				})
-				local new_icon = nil
+				local new_icon
 				local x = 0
 
 				for i = 1, managers.criminals.MAX_NR_CRIMINALS do
 					new_icon = vote_panel:bitmap({
-						texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_voting",
 						blend_mode = "normal",
 						h = 18,
+						texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_voting",
 						w = 18,
 						x = x,
 						texture_rect = {
@@ -175,9 +180,9 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 				end
 
 				local panel = self._extras[type]:panel({
-					valign = "scale",
+					halign = "scale",
 					name = "wall_rect",
-					halign = "scale"
+					valign = "scale"
 				})
 				local wall = panel:rect({
 					blend_mode = "add",
@@ -199,8 +204,6 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 				elseif value.y or value.top then
 					wall:set_top(panel:h() / 2 + (value.y or value.top))
 				end
-			elseif false then
-				-- Nothing
 			end
 		end
 	end
@@ -208,8 +211,8 @@ function PrePlanningPoint:init(map_panel, element, shape, rotation, active_node,
 	for _, type in ipairs(element:value("allowed_types")) do
 		self._extras[type] = self._extras_panel:panel({
 			alpha = 0,
-			valign = "scale",
 			halign = "scale",
+			valign = "scale",
 			name = type
 		})
 
@@ -227,13 +230,14 @@ function PrePlanningPoint:add_properties(category, type, index)
 	if not self._properties then
 		local texture_atlas = tweak_data.preplanning.gui.category_icons_path
 		local texture_rect = tweak_data.preplanning:get_category_texture_rect(tweak_data:get_raw_value("preplanning", "gui", "category_icons_bg") or 42)
+
 		self._bg = self._panel:bitmap({
-			valign = "scale",
 			alpha = 0.5,
-			layer = 2,
 			blend_mode = "add",
 			halign = "scale",
+			layer = 2,
 			rotation = 360,
+			valign = "scale",
 			texture = texture_atlas,
 			texture_rect = texture_rect,
 			w = self._panel:w() * 2,
@@ -244,11 +248,11 @@ function PrePlanningPoint:add_properties(category, type, index)
 
 		texture_rect = tweak_data.preplanning:get_category_texture_rect(tweak_data:get_raw_value("preplanning", "categories", category, "icon") or 32)
 		self._box = self._panel:bitmap({
-			valign = "scale",
-			layer = 3,
 			blend_mode = "add",
 			halign = "scale",
+			layer = 3,
 			rotation = 360,
+			valign = "scale",
 			texture = texture_atlas,
 			texture_rect = texture_rect,
 			w = self._panel:w(),
@@ -268,11 +272,11 @@ function PrePlanningPoint:add_properties(category, type, index)
 
 			if texture then
 				self._plan_icon = self._panel:bitmap({
-					halign = "scale",
-					valign = "scale",
 					blend_mode = "add",
-					rotation = 360,
+					halign = "scale",
 					layer = 4,
+					rotation = 360,
+					valign = "scale",
 					texture = texture,
 					texture_rect = texture_rect,
 					x = self._panel:w() * 0.25,
@@ -287,10 +291,10 @@ function PrePlanningPoint:add_properties(category, type, index)
 
 				self._info_box:clear()
 				self._info_box:text({
-					vertical = "center",
 					align = "left",
-					rotation = 360,
 					blend_mode = "add",
+					rotation = 360,
+					vertical = "center",
 					text = managers.localization:to_upper_text(tostring(type_data.name_id)),
 					font = tweak_data.menu.pd2_small_font,
 					font_size = tweak_data.menu.pd2_small_font_size,
@@ -343,7 +347,7 @@ function PrePlanningPoint:set_state(...)
 
 	debug_assert(#states % 2 == 0, "[PrePlanningPoint:set_state] State is missing value", inspect(states))
 
-	local state, value = nil
+	local state, value
 
 	for i = 1, #states - 1, 2 do
 		state = states[i]
@@ -409,6 +413,7 @@ function PrePlanningPoint:_update_reserved()
 
 	if not self._active_node.current_viewing and self._reserved_data ~= reserved_data then
 		self._reserved_data = reserved_data
+
 		local type = self._reserved_data and self._reserved_data.pack[1]
 		local peer_id = self._reserved_data and self._reserved_data.peer_id
 
@@ -425,11 +430,11 @@ function PrePlanningPoint:_update_reserved()
 
 			if texture then
 				self._reserved_icon = self._panel:bitmap({
-					halign = "scale",
-					valign = "scale",
 					blend_mode = "add",
-					rotation = 360,
+					halign = "scale",
 					layer = 4,
+					rotation = 360,
+					valign = "scale",
 					texture = texture,
 					texture_rect = texture_rect,
 					x = self._panel:w() * 0.25,
@@ -441,10 +446,10 @@ function PrePlanningPoint:_update_reserved()
 
 			self._info_box:clear()
 			self._info_box:text({
-				vertical = "center",
 				align = "left",
-				rotation = 360,
 				blend_mode = "add",
+				rotation = 360,
+				vertical = "center",
 				text = managers.localization:to_upper_text(tostring(type_data.name_id)),
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -466,6 +471,7 @@ function PrePlanningPoint:_update_reserved()
 				local type_data = tweak_data:get_raw_value("preplanning", "types", type) or {}
 				local texture = tweak_data.preplanning.gui.type_icons_path
 				local texture_rect = tweak_data.preplanning:get_type_texture_rect(type_data.icon)
+
 				self._reserved_data = {
 					peer_id = 1,
 					pack = {
@@ -483,11 +489,11 @@ function PrePlanningPoint:_update_reserved()
 
 				if texture then
 					self._reserved_icon = self._panel:bitmap({
-						halign = "scale",
-						valign = "scale",
 						blend_mode = "add",
-						rotation = 360,
+						halign = "scale",
 						layer = 4,
+						rotation = 360,
+						valign = "scale",
 						texture = texture,
 						texture_rect = texture_rect,
 						x = self._panel:w() * 0.25,
@@ -500,10 +506,10 @@ function PrePlanningPoint:_update_reserved()
 				self._bg:set_color(tweak_data.preplanning_peer_colors[1])
 				self._info_box:clear()
 				self._info_box:text({
-					vertical = "center",
 					align = "left",
-					rotation = 360,
 					blend_mode = "add",
+					rotation = 360,
+					vertical = "center",
 					text = managers.localization:to_upper_text(tostring(type_data.name_id)),
 					font = tweak_data.menu.pd2_small_font,
 					font_size = tweak_data.menu.pd2_small_font_size,
@@ -519,7 +525,7 @@ end
 function PrePlanningPoint:_update_extra()
 	local alpha = 0
 	local is_selected = self._active_node.node:selected_item() and self._active_node.node:selected_item():name() == self._element:id()
-	local is_current_type, is_reserved = nil
+	local is_current_type, is_reserved
 
 	for type, extra in pairs(self._extras) do
 		alpha = 0
@@ -531,20 +537,7 @@ function PrePlanningPoint:_update_extra()
 		else
 			is_current_type = self._active_node.current_type == type
 			is_reserved = self._viewing_only or self._reserved_data and self._reserved_data.pack[1] == type
-
-			if is_selected then
-				if is_current_type then
-					alpha = 0.75
-				else
-					alpha = 0
-				end
-			elseif is_reserved then
-				alpha = 0.5
-			elseif is_current_type then
-				alpha = 0.1
-			else
-				alpha = 0
-			end
+			alpha = is_selected and (is_current_type and 0.75 or 0) or is_reserved and 0.5 or is_current_type and 0.1 or 0
 		end
 
 		extra:set_alpha(alpha)
@@ -610,7 +603,7 @@ function PrePlanningPoint:update_me()
 end
 
 function PrePlanningPoint:animate_size_mod(o)
-	local dt, step, diff = nil
+	local dt, step, diff
 	local done = false
 
 	while not done do
@@ -624,7 +617,7 @@ function PrePlanningPoint:animate_size_mod(o)
 
 		if self._current_size_mod ~= self._size_mod then
 			diff = self._size_mod - self._current_size_mod
-			self._current_size_mod = math.abs(diff) <= step and self._size_mod or math.lerp(self._current_size_mod, self._size_mod, step)
+			self._current_size_mod = step >= math.abs(diff) and self._size_mod or math.lerp(self._current_size_mod, self._size_mod, step)
 
 			self:_update_position()
 		end
@@ -747,6 +740,7 @@ end
 
 function PrePlanningPoint:_update_state()
 	local selected = self._active_node.node:selected_item() and self._active_node.node:selected_item():name() == self._element:id()
+
 	self._selected = selected
 
 	if self._plan_icon then
@@ -770,6 +764,7 @@ function PrePlanningPoint:_update_state()
 		end
 
 		self._has_majority = has_majority
+
 		local selectable = self._active_node.current_plan and (self._properties.category[self._active_node.current_plan] or self._plan_icon:visible())
 
 		if has_majority then
@@ -848,25 +843,23 @@ function PrePlanningPoint:_chk_mouse_pos(x, y)
 end
 
 function PrePlanningPoint:select_mouse_over()
-	if not self._active_node.current_type then
-		if self._active_node.current_plan then
-			-- Nothing
-		elseif self._active_node.current_category then
-			if self._reserved_data then
-				MenuCallbackHandler:select_preplanning_item_by_id(self._reserved_data.pack[1])
-			end
-		elseif not self._active_node.current_viewing and not self._active_node.current_custom then
-			local id = nil
+	if self._active_node.current_type or self._active_node.current_plan then
+		-- Nothing
+	elseif self._active_node.current_category then
+		if self._reserved_data then
+			MenuCallbackHandler:select_preplanning_item_by_id(self._reserved_data.pack[1])
+		end
+	elseif not self._active_node.current_viewing and not self._active_node.current_custom then
+		local id
 
-			if self._reserved_data then
-				id = tweak_data:get_raw_value("preplanning", "types", self._reserved_data.pack[1], "category")
-			elseif self._plan_type then
-				id = tweak_data:get_raw_value("preplanning", "types", self._plan_type, "plan")
-			end
+		if self._reserved_data then
+			id = tweak_data:get_raw_value("preplanning", "types", self._reserved_data.pack[1], "category")
+		elseif self._plan_type then
+			id = tweak_data:get_raw_value("preplanning", "types", self._plan_type, "plan")
+		end
 
-			if id then
-				MenuCallbackHandler:select_preplanning_item_by_id(id)
-			end
+		if id then
+			MenuCallbackHandler:select_preplanning_item_by_id(id)
 		end
 	end
 end
@@ -946,6 +939,7 @@ PrePlanningCustomPoint = PrePlanningCustomPoint or class(PrePlanningPoint)
 function PrePlanningCustomPoint:init(map_panel, data, texture_width, texture_height, location_rotation, active_node, name)
 	local width = PrePlanningPoint.WIDTH
 	local height = PrePlanningPoint.HEIGHT
+
 	self._width = width
 	self._height = height
 	self._map_width = map_panel:width()
@@ -954,6 +948,7 @@ function PrePlanningCustomPoint:init(map_panel, data, texture_width, texture_hei
 	self._active_node = active_node
 	self._map_panel = map_panel
 	self._name = name
+
 	local icon = data.icon or 11
 	local texture_rect = tweak_data.preplanning:get_custom_texture_rect(icon)
 	local texture = tweak_data.preplanning.gui.custom_icons_path
@@ -968,11 +963,14 @@ function PrePlanningCustomPoint:init(map_panel, data, texture_width, texture_hei
 
 	local rotation = data.rotation or 0
 	local post_event = data.post_event or false
+
 	self._post_event = post_event
+
 	local raw_x = x / texture_width - 0.5
 	local raw_y = y / texture_height - 0.5
 	local ax = math.cos(location_rotation) * raw_x - math.sin(location_rotation) * raw_y + 0.5
 	local ay = math.sin(location_rotation) * raw_x + math.cos(location_rotation) * raw_y + 0.5
+
 	self._x = ax
 	self._y = ay
 	self._panel = self._map_panel:panel({
@@ -983,11 +981,11 @@ function PrePlanningCustomPoint:init(map_panel, data, texture_width, texture_hei
 	self._panel:set_center(self._map_panel:w() * self._x, self._map_panel:h() * self._y)
 
 	local gui_icon = self._panel:bitmap({
-		name = "icon",
-		valign = "scale",
 		blend_mode = "add",
 		halign = "scale",
+		name = "icon",
 		rotation = 0,
+		valign = "scale",
 		texture = texture,
 		texture_rect = texture_rect,
 		w = width,
@@ -998,8 +996,8 @@ function PrePlanningCustomPoint:init(map_panel, data, texture_width, texture_hei
 
 	self._info_box = self._panel:text({
 		blend_mode = "add",
-		name = "text",
 		halign = "center",
+		name = "text",
 		rotation = 360,
 		valign = "center",
 		text = text,
@@ -1016,12 +1014,13 @@ function PrePlanningCustomPoint:init(map_panel, data, texture_width, texture_hei
 
 	local texture = tweak_data.preplanning.gui.category_icons_path
 	local texture_rect = tweak_data.preplanning:get_category_texture_rect(32)
+
 	self._talk_icon = self._panel:bitmap({
-		name = "talk",
-		valign = "scale",
 		blend_mode = "add",
 		halign = "scale",
+		name = "talk",
 		rotation = 0,
+		valign = "scale",
 		texture = texture,
 		texture_rect = texture_rect,
 		w = width,
@@ -1037,11 +1036,13 @@ function PrePlanningCustomPoint:name()
 end
 
 function PrePlanningCustomPoint:_update_reserved()
+	return
 end
 
 function PrePlanningCustomPoint:_update_state()
 	local selected = self._mouse_selected or self._active_node.current_custom and self._active_node.node:selected_item() and self._active_node.node:selected_item():name() == self._name
 	local visible = self._active_node.current_custom == "custom_points"
+
 	self._selected = selected
 
 	if selected then
@@ -1057,6 +1058,7 @@ function PrePlanningCustomPoint:_update_state()
 end
 
 function PrePlanningCustomPoint:_update_extra()
+	return
 end
 
 function PrePlanningCustomPoint:_update_position()
@@ -1168,8 +1170,8 @@ function PrePlanningCustomPoint:start_custom_talk()
 	if self._talk_icon then
 		self._talk_icon:show()
 		self._talk_icon:set_rotation(0)
-		self._talk_icon:animate(function (o)
-			local dt = nil
+		self._talk_icon:animate(function(o)
+			local dt
 			local rotation = 0
 
 			while true do
@@ -1199,6 +1201,7 @@ PrePlanningLocation = PrePlanningLocation or class()
 function PrePlanningLocation:init(panel, index, size, active_node)
 	self._active_node = active_node
 	self._location = managers.preplanning:get_location_by_index(index)
+
 	local location_group = managers.preplanning:convert_location_index_to_group(index)
 	local location_rotation = self._location.rotation or 0
 	local map_texture = self._location.texture
@@ -1212,6 +1215,7 @@ function PrePlanningLocation:init(panel, index, size, active_node)
 	local x2 = self._location.x2 or 0
 	local y1 = self._location.y1 or 0
 	local y2 = self._location.y2 or 0
+
 	self._shape = {
 		x1,
 		y1,
@@ -1221,8 +1225,8 @@ function PrePlanningLocation:init(panel, index, size, active_node)
 	self._rotation = location_rotation == 0 and 360 or location_rotation
 	self._map_panel = panel
 	self._panel = self._map_panel:panel({
-		halign = "scale",
 		alpha = 0.9,
+		halign = "scale",
 		valign = "scale",
 		w = size * map_width,
 		h = size * map_height,
@@ -1232,9 +1236,9 @@ function PrePlanningLocation:init(panel, index, size, active_node)
 	self._panel:set_center(self._map_panel:w() / 2 + map_x * size * 1, self._map_panel:h() / 2 + map_y * size * 1)
 
 	self._map = self._panel:bitmap({
-		name = "map",
 		blend_mode = "add",
 		halign = "scale",
+		name = "map",
 		rotation = 360,
 		valign = "scale",
 		texture = map_texture,
@@ -1247,8 +1251,7 @@ function PrePlanningLocation:init(panel, index, size, active_node)
 		self._map:set_rotation(0)
 	end
 
-	local texture_width = self._map:texture_width()
-	local texture_height = self._map:texture_height()
+	local texture_width, texture_height = self._map:texture_width(), self._map:texture_height()
 	local rot_cos = math.cos(-self._rotation)
 	local rot_sin = math.sin(-self._rotation)
 	local tl_x = 1 - (rot_cos * 0.5 - rot_sin * 0.5 + 0.5)
@@ -1373,7 +1376,7 @@ function PrePlanningLocation:add_custom_point(custom_point, index)
 end
 
 function PrePlanningLocation:set_active(active)
-	return
+	do return end
 
 	active = not not active
 
@@ -1493,14 +1496,13 @@ function PrePlanningLocation:_get_active_points()
 end
 
 function PrePlanningLocation:mouse_moved(x, y)
-	local used, icon, eused, eicon, eother, remember_point = nil
+	local used, icon, eused, eicon, eother, remember_point
 
 	for _, point in ipairs(self:_get_active_points()) do
 		eused, eicon, eother, remember_point = point:mouse_moved(x, y, used)
 
 		if eused and not used then
-			icon = eicon
-			used = eused
+			used, icon = eused, eicon
 
 			if remember_point and self._selected_point ~= point then
 				self._selected_point = point
@@ -1579,10 +1581,10 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	local full_16_9 = managers.gui_data:full_16_9_size()
 
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		name = "blur_top",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		x = 0,
 		w = self._fullscreen_root_panel:w(),
 		h = full_16_9.convert_y * 2,
@@ -1590,10 +1592,10 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 		layer = tweak_data.gui.CRIMENET_CHAT_LAYER + 1
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		name = "blur_right",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		y = 0,
 		w = full_16_9.convert_x * 2,
 		h = self._fullscreen_root_panel:h(),
@@ -1601,10 +1603,10 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 		layer = tweak_data.gui.CRIMENET_CHAT_LAYER + 1
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		name = "blur_bottom",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		x = 0,
 		w = self._fullscreen_root_panel:w(),
 		h = full_16_9.convert_y * 2,
@@ -1612,10 +1614,10 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 		layer = tweak_data.gui.CRIMENET_CHAT_LAYER + 1
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		name = "blur_left",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		y = 0,
 		w = full_16_9.convert_x * 2,
 		h = self._fullscreen_root_panel:h(),
@@ -1624,70 +1626,70 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	})
 	self._panel:rect({
 		blend_mode = "add",
-		name = "top_line",
 		h = 2,
-		y = 0,
-		x = 0,
 		layer = 1000,
+		name = "top_line",
+		x = 0,
+		y = 0,
 		w = self._panel:w(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	self._panel:rect({
 		blend_mode = "add",
-		name = "bottom_line",
 		h = 2,
-		y = 0,
-		x = 0,
 		layer = 1000,
+		name = "bottom_line",
+		x = 0,
+		y = 0,
 		w = self._panel:w(),
 		color = tweak_data.screen_colors.crimenet_lines
 	}):set_bottom(self._panel:h())
 	self._panel:rect({
 		blend_mode = "add",
+		layer = 1000,
 		name = "right_line",
-		y = 0,
 		w = 2,
 		x = 0,
-		layer = 1000,
+		y = 0,
 		h = self._panel:h(),
 		color = tweak_data.screen_colors.crimenet_lines
 	}):set_right(self._panel:w())
 	self._panel:rect({
 		blend_mode = "add",
+		layer = 1000,
 		name = "left_line",
-		y = 0,
 		w = 2,
 		x = 0,
-		layer = 1000,
+		y = 0,
 		h = self._panel:h(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	self._fullscreen_panel:rect({
-		name = "bg",
 		alpha = 0.95,
 		layer = -10,
+		name = "bg",
 		color = Color.black
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/map_vignette",
+		blend_mode = "mul",
+		layer = 6,
 		name = "vignette",
 		rotation = 360,
-		blend_mode = "mul",
-		y = -5,
+		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/map_vignette",
 		x = -5,
-		layer = 6,
+		y = -5,
 		color = Color(0.2, 1, 1, 1),
 		w = self._fullscreen_panel:w() + 10,
 		h = self._fullscreen_panel:h() + 10
 	})
 
 	self._scanline = self._fullscreen_panel:bitmap({
-		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/scanline",
-		name = "scanline",
-		h = 128,
-		wrap_mode = "wrap",
-		layer = 7,
 		blend_mode = "add",
+		h = 128,
+		layer = 7,
+		name = "scanline",
+		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/scanline",
+		wrap_mode = "wrap",
 		texture_rect = {
 			0,
 			0,
@@ -1699,11 +1701,11 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	self._scanline:set_bottom(-math.random(100))
 
 	local title_text = self._panel:text({
-		name = "title_text",
 		blend_mode = "add",
-		y = 10,
-		x = 10,
 		layer = 15,
+		name = "title_text",
+		x = 10,
+		y = 10,
 		text = managers.localization:to_upper_text("menu_preplanning_title", {
 			level = managers.localization:text(managers.job:current_level_data().name_id)
 		}),
@@ -1718,10 +1720,10 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 
 	local current_budget, total_budget = managers.preplanning:get_current_budget()
 	local budget_text = self._panel:text({
-		name = "budget_text",
 		blend_mode = "add",
-		x = 10,
 		layer = 15,
+		name = "budget_text",
+		x = 10,
 		text = managers.localization:to_upper_text("menu_pp_budget", {
 			current = string.format("%.2d", total_budget - current_budget),
 			total = string.format("%.2d", total_budget)
@@ -1736,9 +1738,9 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	budget_text:set_position(10, title_text:top())
 
 	local total_cost = self._panel:text({
-		name = "total_cost",
 		blend_mode = "add",
 		layer = 15,
+		name = "total_cost",
 		text = managers.localization:to_upper_text("menu_pp_total_cost", {
 			money = managers.experience:cash_string(managers.money:get_preplanning_total_cost())
 		}),
@@ -1751,14 +1753,15 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	total_cost:set_position(10, budget_text:bottom())
 
 	local button = self:create_text_button({
-		special_button = "menu_toggle_pp_breakdown",
 		left = 10,
+		special_button = "menu_toggle_pp_breakdown",
 		top = total_cost:bottom() + 10,
 		clbk = callback(self, self, "toggle_breakdown"),
 		text = managers.localization:to_upper_text("menu_pp_show_breakdown", {
 			BTN_X = managers.localization:btn_macro("menu_toggle_pp_breakdown")
 		})
 	})
+
 	self._breakdown_button = button
 
 	self._breakdown_button:hide()
@@ -1769,21 +1772,21 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	})
 
 	breakdown_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur",
 		halign = "scale",
 		layer = -1,
+		name = "blur",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = breakdown_panel:w(),
 		h = breakdown_panel:h()
 	})
 	breakdown_panel:rect({
 		alpha = 0.3,
-		valign = "scale",
 		halign = "scale",
-		rotation = 360,
 		layer = 0,
+		rotation = 360,
+		valign = "scale",
 		color = Color.black
 	})
 	BoxGuiObject:new(breakdown_panel, {
@@ -1802,8 +1805,8 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	self._map_size = math.max(self._panel:w(), self._panel:h()) * 20
 	self._map_panel = self._panel:panel({
 		alpha = 0.9,
-		name = "map",
 		layer = 0,
+		name = "map",
 		w = self._map_size,
 		h = self._map_size
 	})
@@ -1812,12 +1815,17 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 
 	self._map_x, self._map_y = self._map_panel:position()
 	self._map_zoom = 1
+
 	local location_data = managers.preplanning:current_location_data()
+
 	self._post_event_prefix = (location_data.post_event_prefix or "gus") .. "_"
+
 	local location_indexed = {}
+
 	self._locations = {}
 	self._current_location = false
-	local button_panel, bleft, bright, btop, bbottom, new_location = nil
+
+	local button_panel, bleft, bright, btop, bbottom, new_location
 
 	for i = 1, managers.preplanning:num_active_locations() do
 		new_location = PrePlanningLocation:new(self._map_panel, i, self._location_size, self._active_node)
@@ -1829,7 +1837,7 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	end
 
 	local types = managers.preplanning:types_with_mission_elements()
-	local location_group, location, category = nil
+	local location_group, location, category
 
 	for _, type in ipairs(types) do
 		category = tweak_data:get_raw_value("preplanning", "types", type, "category") or "default"
@@ -1857,7 +1865,7 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	local grid_height = 1
 	local center_x = self._map_panel:w() / 2
 	local center_y = self._map_panel:h() / 2
-	local x, y, w, h = nil
+	local x, y, w, h
 	local a = 2
 	local gw = 0
 	local gh = 0
@@ -1876,27 +1884,35 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 
 	gw = li > 0 and gw / li or 0
 	gh = li > 0 and gh / li or 0
+
 	local gw_mul = location_data.grid_width_mul or 1.5
 	local gh_mul = location_data.grid_height_mul or 0.5
+
 	grid_width = grid_width * 2 + gw * gw_mul
 	grid_height = grid_height * 2 + gh * gh_mul
-	local tx, ty, tw, th = nil
+
+	local tx, ty, tw, th
 	local M = grid_width
 	local L = self._location_size
 	local C = 1280
+
 	tw = M * C / L
 	tx = -(tw - C) / 2
+
 	local M = grid_height
 	local L = self._location_size
 	local C = 1280
+
 	th = M * C / L
 	ty = -(th - C) / 2
+
 	local grid_texture_rect = {
 		tx,
 		ty,
 		tw,
 		th
 	}
+
 	self._grid_width = grid_width
 	self._grid_height = grid_height
 	self._grid_panel = self._panel:panel({
@@ -1907,17 +1923,18 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	self._grid_panel:set_center(self._map_panel:center())
 
 	self._map_grid = self._grid_panel:bitmap({
-		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/bg_grid",
-		layer = -1,
-		valign = "scale",
-		wrap_mode = "wrap",
 		blend_mode = "add",
 		halign = "scale",
+		layer = -1,
 		rotation = 0,
+		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/bg_grid",
+		valign = "scale",
+		wrap_mode = "wrap",
 		w = self._grid_width,
 		h = self._grid_height,
 		texture_rect = grid_texture_rect
 	})
+
 	local ratio = self._fullscreen_panel:w() / self._fullscreen_panel:h()
 	local safe_scaled_size = managers.gui_data:corner_scaled_size()
 	local min_zoom = location_data.min_zoom or 1
@@ -1940,20 +1957,22 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 		self._peer_draw_line_index[i] = false
 
 		self._grid_panel:panel({
-			valign = "scale",
 			halign = "scale",
+			valign = "scale",
 			name = tostring(i)
 		})
 	end
 
 	self._enabled = false
 	self._drawing_panel = self._panel:panel({
-		w = 400,
-		layer = 15,
 		h = 100,
-		visible = false
+		layer = 15,
+		visible = false,
+		w = 400
 	})
+
 	local cx, cy, cw, ch = managers.menu_component:get_game_chat_button_shape()
+
 	self._drawboard_button = self:create_text_button({
 		special_button = "menu_toggle_pp_drawboard",
 		left = cx and cx + cw + 5 or 10,
@@ -1967,10 +1986,10 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	self._drawboard_button:hide()
 
 	local drawing_tooltip = self._drawing_panel:text({
-		text = " ",
-		name = "tooltip",
 		blend_mode = "add",
 		layer = 1,
+		name = "tooltip",
+		text = " ",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
@@ -1980,11 +1999,11 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	self._drawing_panel:set_h(35 + drawing_tooltip:h())
 
 	local offset = 0
-	local button = nil
+	local button
 	local texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/drawtools_atlas"
 	local params = {
-		top = 0,
 		layer = 1,
+		top = 0,
 		texture = texture,
 		panel = self._drawing_panel,
 		mouse_over_clbk = callback(self, self, "set_draw_tooltip_clbk")
@@ -2044,7 +2063,9 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	params.name = managers.localization:text("menu_pp_draw_undo")
 	button = self:create_text_button(params)
 	self._undo_button = button
-	local button_index = nil
+
+	local button_index
+
 	offset = 10
 	self._peer_buttons = {}
 
@@ -2080,27 +2101,27 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	drawing_tooltip:set_bottom(self._drawing_panel:h())
 
 	local drawing_ink = self._drawing_panel:rect({
-		blend_mode = "add",
-		name = "draw_ink",
-		h = 4,
 		alpha = 0.9,
+		blend_mode = "add",
+		h = 4,
 		layer = 1,
+		name = "draw_ink",
 		w = self._drawing_panel:w(),
 		color = Color.white
 	})
 	local drawing_bg = self._drawing_panel:rect({
-		name = "draw_bg",
-		h = 4,
 		alpha = 0.4,
+		h = 4,
 		layer = 0,
+		name = "draw_bg",
 		w = self._drawing_panel:w(),
 		color = Color.white
 	})
 	local drawing_end = self._drawing_panel:rect({
-		w = 2,
-		name = "draw_end",
 		h = 4,
 		layer = 2,
+		name = "draw_end",
+		w = 2,
 		color = Color.white
 	})
 
@@ -2124,6 +2145,7 @@ function PrePlanningMapGui:_setup_blackborders()
 	end
 
 	self._blackborder_workspace = managers.gui_data:create_fullscreen_workspace()
+
 	local top_border = self._blackborder_workspace:panel():rect({
 		name = "top_border",
 		rotation = 360,
@@ -2216,7 +2238,7 @@ function PrePlanningMapGui:toggle_drawboard(button)
 end
 
 function PrePlanningMapGui:_update_drawboard()
-	local drawing_panel, button, peer = nil
+	local drawing_panel, button, peer
 
 	for peer_id, index in ipairs(self._peer_buttons) do
 		button = self._text_buttons[index]
@@ -2312,7 +2334,7 @@ function PrePlanningMapGui:_update_breakdown()
 	local current_plans, current_types = managers.preplanning:get_current_preplan()
 	local width = 0
 	local height = 0
-	local title_text, last_text, text, t = nil
+	local title_text, last_text, text, t
 
 	if current_plans and #current_plans > 0 then
 		for _, data in ipairs(current_plans) do
@@ -2349,7 +2371,7 @@ function PrePlanningMapGui:_update_breakdown()
 		end
 	end
 
-	local category, ct = nil
+	local category, ct
 
 	if current_types and #current_types > 0 then
 		t = {}
@@ -2367,7 +2389,7 @@ function PrePlanningMapGui:_update_breakdown()
 			table.insert(ct[category], type)
 		end
 
-		local count = nil
+		local count
 
 		for category, types in pairs(ct) do
 			title_text = breakdown_panel:text({
@@ -2409,21 +2431,21 @@ function PrePlanningMapGui:_update_breakdown()
 
 	breakdown_panel:set_size(width + 10, height + 10)
 	breakdown_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur",
 		halign = "scale",
 		layer = -2,
+		name = "blur",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = breakdown_panel:w(),
 		h = breakdown_panel:h()
 	})
 	breakdown_panel:rect({
 		alpha = 0.3,
-		valign = "scale",
 		halign = "scale",
-		rotation = 360,
 		layer = -1,
+		rotation = 360,
+		valign = "scale",
 		color = Color.black
 	})
 	BoxGuiObject:new(breakdown_panel, {
@@ -2454,7 +2476,7 @@ function PrePlanningMapGui:sync_draw_point(peer_id, x, y)
 				if #points >= 4 then
 					if not data.gui then
 						local line_points = {}
-						local px, py = nil
+						local px, py
 
 						for i = 1, #points - 1, 2 do
 							px = points[i] * self._grid_panel:w()
@@ -2465,8 +2487,8 @@ function PrePlanningMapGui:sync_draw_point(peer_id, x, y)
 
 						data.gui = self._grid_panel:child(tostring(peer_id)):polyline({
 							blend_mode = "add",
-							layer = 2,
 							halign = "scale",
+							layer = 2,
 							valign = "scale",
 							points = line_points,
 							line_width = data.line_width,
@@ -2530,6 +2552,7 @@ end
 
 function PrePlanningMapGui:set_num_draw_points(num)
 	self._num_draw_points = num
+
 	local ink = self._drawing_panel:child("draw_ink")
 
 	if alive(ink) then
@@ -2568,7 +2591,7 @@ function PrePlanningMapGui:erase_drawing()
 end
 
 function PrePlanningMapGui:start_drawing()
-	if tweak_data.preplanning.gui.MAX_DRAW_POINTS <= self._num_draw_points then
+	if self._num_draw_points >= tweak_data.preplanning.gui.MAX_DRAW_POINTS then
 		return
 	end
 
@@ -2577,6 +2600,7 @@ function PrePlanningMapGui:start_drawing()
 	if not self._draw_mode and alive(self._grid_panel:child(tostring(peer_id))) and self._grid_panel:child(tostring(peer_id)):visible() then
 		self._draw_mode = true
 		self._last_draw_t = nil
+
 		local line_width = 2
 		local line_color_index = peer_id
 
@@ -2590,6 +2614,7 @@ function PrePlanningMapGui:end_drawing()
 	if self._draw_mode then
 		self._draw_mode = false
 		self._last_draw_t = nil
+
 		local peer_id = managers.network:session():local_peer():id()
 
 		managers.network:session():send_to_peers_synched("draw_preplanning_event", 2, 1, 1)
@@ -2600,7 +2625,7 @@ end
 
 function PrePlanningMapGui:_draw_point(x, y)
 	if self._mouse_moved then
-		if tweak_data.preplanning.gui.MAX_DRAW_POINTS <= self._num_draw_points then
+		if self._num_draw_points >= tweak_data.preplanning.gui.MAX_DRAW_POINTS then
 			self:end_drawing()
 
 			return
@@ -2609,6 +2634,7 @@ function PrePlanningMapGui:_draw_point(x, y)
 		local px = (x - self._grid_panel:x()) / self._grid_panel:w()
 		local py = (y - self._grid_panel:y()) / self._grid_panel:h()
 		local sync_step = 10000
+
 		px = math.round(px * sync_step) / sync_step
 		py = math.round(py * sync_step) / sync_step
 		px = math.clamp(px, 0, 1)
@@ -2647,10 +2673,12 @@ local seconds_per_draw = 0.016666666666666666
 function PrePlanningMapGui:update_drawing(t, dt)
 	if self._draw_mode then
 		self._last_draw_t = self._last_draw_t or t - seconds_per_draw
+
 		local time_diff = t - self._last_draw_t
 
-		if seconds_per_draw < time_diff then
+		if time_diff > seconds_per_draw then
 			self._last_draw_t = t
+
 			local mx, my = managers.mouse_pointer:modified_mouse_pos()
 
 			self:_draw_point(mx, my)
@@ -2665,7 +2693,8 @@ function PrePlanningMapGui:set_drawings(peer_draw_lines, peer_draw_line_index)
 
 	self._peer_draw_lines = peer_draw_lines
 	self._peer_draw_line_index = peer_draw_line_index
-	local points = nil
+
+	local points
 
 	for peer_id, lines in pairs(self._peer_draw_lines) do
 		for _, data in ipairs(lines) do
@@ -2673,7 +2702,7 @@ function PrePlanningMapGui:set_drawings(peer_draw_lines, peer_draw_line_index)
 
 			if #points >= 4 then
 				local line_points = {}
-				local px, py = nil
+				local px, py
 
 				for i = 1, #points - 1, 2 do
 					px = points[i] * self._grid_panel:w()
@@ -2685,8 +2714,8 @@ function PrePlanningMapGui:set_drawings(peer_draw_lines, peer_draw_line_index)
 				if not data.gui then
 					data.gui = self._grid_panel:child(tostring(peer_id)):polyline({
 						blend_mode = "add",
-						layer = 2,
 						halign = "scale",
+						layer = 2,
 						valign = "scale",
 						points = line_points,
 						line_width = data.line_width,
@@ -2715,6 +2744,7 @@ end
 
 function PrePlanningMapGui._flash_anim(text, start_color)
 	start_color = start_color or tweak_data.screen_colors.text
+
 	local s = 0
 
 	local function f(t)
@@ -2848,7 +2878,7 @@ function PrePlanningMapGui:set_selected_element_item(item)
 end
 
 function PrePlanningMapGui:set_selected_element_index(index)
-	return
+	do return end
 
 	for i, data in ipairs(self._elements) do
 		if data.gui:set_selected(i == index) then
@@ -2921,21 +2951,21 @@ function PrePlanningMapGui:create_text_button(params)
 		visible = not disabled
 	})
 	local gui_blur = button_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "button_blur",
 		halign = "scale",
-		valign = "scale",
-		render_template = "VertexColorTexturedBlur3D",
 		layer = -1,
+		name = "button_blur",
+		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
+		valign = "scale",
 		visible = not hide_blur
 	})
-	local gui_text, gui_icon = nil
+	local gui_text, gui_icon
 
 	if text then
 		gui_text = button_panel:text({
-			name = "button_text",
 			blend_mode = "add",
 			layer = 0,
+			name = "button_text",
 			text = text,
 			font = font,
 			font_size = font_size,
@@ -3010,9 +3040,9 @@ function PrePlanningMapGui:set_active_node(node)
 				self._panel:text({
 					alpha = 0.9,
 					blend_mode = "add",
-					y = 10,
-					x = 10,
 					layer = 15,
+					x = 10,
+					y = 10,
 					text = managers.localization:to_upper_text("menu_preplanning_heist_started"),
 					font = tweak_data.menu.pd2_small_font,
 					font_size = tweak_data.menu.pd2_small_font_size,
@@ -3148,13 +3178,15 @@ function PrePlanningMapGui:update(t, dt)
 		end
 	end
 
-	local size_min, width_padding, height_padding, left, right, top, bottom, mleft, mright, mtop, mbottom = nil
+	local size_min, width_padding, height_padding, left, right, top, bottom, mleft, mright, mtop, mbottom
 
 	if self._released_map or not self._grabbed_map then
 		size_min = math.min(self._panel:w(), self._panel:h())
 		width_padding = (self._panel:w() - size_min) / 2
 		height_padding = (self._panel:h() - size_min) / 2
+
 		local safe_scaled_size = managers.gui_data:corner_scaled_size()
+
 		left = self._panel:w() * 0
 		right = self._panel:w() * 1
 		top = self._panel:h() * 0
@@ -3179,8 +3211,8 @@ function PrePlanningMapGui:update(t, dt)
 			local dy = self._lerp_map.y - self._map_y
 
 			if dx ~= 0 or dy ~= 0 then
-				local mx = math.abs(dx) <= step and dx or math.lerp(0, dx, step)
-				local my = math.abs(dy) <= step and dy or math.lerp(0, dy, step)
+				local mx = step >= math.abs(dx) and dx or math.lerp(0, dx, step)
+				local my = step >= math.abs(dy) and dy or math.lerp(0, dy, step)
 
 				self:_move_map_position(mx, my)
 
@@ -3203,7 +3235,7 @@ function PrePlanningMapGui:update(t, dt)
 			local dz = self._lerp_zoom - self._map_zoom
 
 			if dz ~= 0 then
-				local mz = math.abs(dz) <= step and self._lerp_zoom or math.lerp(self._map_zoom, self._lerp_zoom, step)
+				local mz = step >= math.abs(dz) and self._lerp_zoom or math.lerp(self._map_zoom, self._lerp_zoom, step)
 
 				self:_set_zoom(mz, self._panel:w() / 2, self._panel:h() / 2)
 			else
@@ -3386,13 +3418,16 @@ end
 function PrePlanningMapGui:_set_zoom(zoom, x, y, ignore_update)
 	local min = self._min_zoom or 1
 	local max = self._max_zoom or 5
+
 	self._lerp_map = nil
+
 	local new_zoom = math.clamp(zoom, min, max)
 
 	if self._map_zoom ~= new_zoom then
 		local w1, h1 = self._map_panel:size()
 		local wx1 = (x - self._map_x) / w1
 		local wy1 = (y - self._map_y) / h1
+
 		self._map_zoom = new_zoom
 
 		self._map_panel:set_size(self._map_size * self._map_zoom, self._map_size * self._map_zoom)
@@ -3458,8 +3493,7 @@ function PrePlanningMapGui:mouse_moved(o, x, y)
 	end
 
 	local fx, fy = managers.gui_data:safe_to_full_16_9(x, y)
-	local used = false
-	local icon = "arrow"
+	local used, icon = false, "arrow"
 
 	if self._panel:inside(x, y) then
 		local tooltip_mouse_over = false
@@ -3481,13 +3515,12 @@ function PrePlanningMapGui:mouse_moved(o, x, y)
 						end
 
 						if button.mouse_over_clbk then
-							button:mouse_over_clbk()
+							button.mouse_over_clbk(button)
 						end
 					end
 
 					tooltip_mouse_over = true
-					icon = "link"
-					used = true
+					used, icon = true, "link"
 				elseif button.highlighted then
 					button.highlighted = false
 
@@ -3507,7 +3540,7 @@ function PrePlanningMapGui:mouse_moved(o, x, y)
 		end
 
 		if not used then
-			local eused, eicon = nil
+			local eused, eicon
 
 			for i, location in pairs(self._locations) do
 				eused, eicon = location:mouse_moved(x, y)
@@ -3515,17 +3548,16 @@ function PrePlanningMapGui:mouse_moved(o, x, y)
 				if eused then
 					self:set_selected_element_index(i)
 
-					icon = eicon
-					used = eused
+					used, icon = eused, eicon
 				end
 			end
 		end
 	end
 
 	if not used and self._grabbed_map then
-		local left = self._grabbed_map.x < x
+		local left = x > self._grabbed_map.x
 		local right = not left
-		local up = self._grabbed_map.y < y
+		local up = y > self._grabbed_map.y
 		local down = not up
 		local mx = x - self._grabbed_map.x
 		local my = y - self._grabbed_map.y
@@ -3546,8 +3578,7 @@ function PrePlanningMapGui:mouse_moved(o, x, y)
 	end
 
 	if not used and self._panel:inside(x, y) then
-		icon = "hand"
-		used = true
+		used, icon = true, "hand"
 	end
 
 	return used, icon or "arrow"
@@ -3577,7 +3608,7 @@ function PrePlanningMapGui:mouse_pressed(button, x, y)
 
 			for _, button in ipairs(self._text_buttons) do
 				if alive(button.panel) and button.panel:tree_visible() and button.panel:inside(x, y) then
-					if button.clbk and button:clbk() then
+					if button.clbk and button.clbk(button) then
 						managers.menu_component:post_event("menu_enter")
 					end
 
@@ -3635,8 +3666,7 @@ function PrePlanningMapGui:mouse_released(button, x, y)
 	local fx, fy = managers.gui_data:safe_to_full_16_9(x, y)
 
 	if self._grabbed_map and #self._grabbed_map.dirs > 0 then
-		local dx = 0
-		local dy = 0
+		local dx, dy = 0, 0
 
 		for _, values in ipairs(self._grabbed_map.dirs) do
 			dx = dx + values[1]
@@ -3666,13 +3696,14 @@ function PrePlanningMapGui:special_btn_pressed(button)
 	end
 
 	for _, text_button in ipairs(self._text_buttons) do
-		if text_button.panel and text_button.panel:visible() and text_button.special_button and Idstring(text_button.special_button) == button and text_button.clbk and text_button:clbk() then
+		if text_button.panel and text_button.panel:visible() and text_button.special_button and Idstring(text_button.special_button) == button and text_button.clbk and text_button.clbk(text_button) then
 			managers.menu_component:post_event("menu_enter")
 		end
 	end
 end
 
 function PrePlanningMapGui:confirm_pressed()
+	return
 end
 
 function PrePlanningMapGui:next_page()

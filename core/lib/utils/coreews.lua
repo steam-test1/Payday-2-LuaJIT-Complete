@@ -18,6 +18,7 @@ end
 
 function image_path(file_name)
 	file_name = file_name or ""
+
 	local base_path = managers.database and managers.database:base_path() or Application:base_path() .. (CoreApp.arg_value("-assetslocation") or "../../") .. "assets\\"
 	local path = base_path .. "lib\\utils\\dev\\ews\\images\\"
 
@@ -35,6 +36,7 @@ function EWSConfirmDialog:init(label, message)
 	self._no = false
 	self._cancel = false
 	self._dialog = EWS:Dialog(nil, label, "", Vector3(525, 400, 0), Vector3(250, 110, 0), "DEFAULT_DIALOG_STYLE")
+
 	local dialog_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	self._dialog:set_sizer(dialog_sizer)
@@ -241,15 +243,10 @@ end
 function verify_entered_number(params)
 	local value = tonumber(params.number_ctrlr:get_value()) or 0
 
-	if params.min and value < params.min then
-		value = params.min or value
-	end
-
-	if params.max and params.max < value then
-		value = params.max or value
-	end
-
+	value = params.min and value < params.min and params.min or value
+	value = params.max and value > params.max and params.max or value
 	params.value = value
+
 	local floats = params.floats or 0
 
 	params.number_ctrlr:change_value(string.format("%." .. floats .. "f", value))
@@ -258,6 +255,7 @@ end
 
 function change_entered_number(params, value)
 	local floats = params.floats or 0
+
 	params.value = value
 
 	params.number_ctrlr:change_value(string.format("%." .. floats .. "f", params.value))
@@ -289,12 +287,14 @@ function combobox(params)
 	local value = params.value or options[1]
 	local name_proportions = params.name_proportions or 1
 	local ctrlr_proportions = params.ctrlr_proportions or 2
+
 	params.sizer_proportions = params.sizer_proportions or 0
+
 	local tooltip = params.tooltip
 	local styles = params.styles or "CB_DROPDOWN,CB_READONLY"
 	local sorted = params.sorted
 	local ctrl_sizer = EWS:BoxSizer("HORIZONTAL")
-	local name_ctrlr = nil
+	local name_ctrlr
 
 	if name then
 		name_ctrlr = EWS:StaticText(panel, name, 0, "")
@@ -344,7 +344,7 @@ function _set_combobox_value(params)
 	params.value = params.numbers and tonumber(params.value) or params.value
 
 	if params.value_changed_cb then
-		params:value_changed_cb()
+		params.value_changed_cb(params)
 	end
 
 	if params.value then
@@ -380,7 +380,7 @@ function change_combobox_value(params, value)
 	params.ctrlr:set_value(value)
 
 	if params.value_changed_cb then
-		params:value_changed_cb()
+		params.value_changed_cb(params)
 	end
 
 	if params.value then
@@ -463,15 +463,10 @@ function verify_entered_number(params)
 	local ctrlr = params.ctrlr or params.number_ctrlr
 	local value = tonumber(ctrlr:get_value()) or 0
 
-	if params.min and value < params.min then
-		value = params.min or value
-	end
-
-	if params.max and params.max < value then
-		value = params.max or value
-	end
-
+	value = params.min and value < params.min and params.min or value
+	value = params.max and value > params.max and params.max or value
 	params.value = value
+
 	local floats = params.floats or 0
 
 	ctrlr:change_value(string.format("%." .. floats .. "f", value))
@@ -510,6 +505,7 @@ function list_selector(params)
 	_name_ctrlr(params)
 
 	local toolbar_sizer = EWS:BoxSizer("HORIZONTAL")
+
 	params.left_toolbar = EWS:ToolBar(params.panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	params.left_toolbar:add_tool("ADD_LIST", "Add from list", image_path("world_editor\\unit_by_name_list.png"), nil)
@@ -526,6 +522,7 @@ function list_selector(params)
 	params.ctrl_sizer:add(toolbar_sizer, 0, 1, "EXPAND,LEFT")
 
 	local lb_box = EWS:BoxSizer("HORIZONTAL")
+
 	params.left_list_box = EWS:ListBox(params.panel, "", "LB_SORT,LB_EXTENDED")
 
 	params.left_list_box:connect("", "EVT_COMMAND_LISTBOX_DOUBLECLICKED", callback(nil, _G, "_list_selector_on_left_box"), params)
@@ -667,6 +664,7 @@ function combobox_and_list(params)
 	params.sizer = horizontal_sizer
 	params.sizer_proportions = params.sizer_proportions or 1
 	params.tooltip = params.tooltip or "Select an option from the combobox"
+
 	local ctrlr = combobox(params)
 	local toolbar = EWS:ToolBar(params.panel, "", "TB_FLAT,TB_NODIVIDER")
 

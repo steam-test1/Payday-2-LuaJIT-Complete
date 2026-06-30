@@ -5,9 +5,9 @@ function class(...)
 		error("trying to inherit from nil", 2)
 	end
 
-	local class_table = {
-		super = super
-	}
+	local class_table = {}
+
+	class_table.super = super
 	class_table.__index = class_table
 
 	setmetatable(class_table, super)
@@ -31,20 +31,20 @@ function callback(o, base_callback_class, base_callback_func_name, base_callback
 	if base_callback_class and base_callback_func_name and base_callback_class[base_callback_func_name] then
 		if base_callback_param ~= nil then
 			if o then
-				return function (...)
+				return function(...)
 					return base_callback_class[base_callback_func_name](o, base_callback_param, ...)
 				end
 			else
-				return function (...)
+				return function(...)
 					return base_callback_class[base_callback_func_name](base_callback_param, ...)
 				end
 			end
 		elseif o then
-			return function (...)
+			return function(...)
 				return base_callback_class[base_callback_func_name](o, ...)
 			end
 		else
-			return function (...)
+			return function(...)
 				return base_callback_class[base_callback_func_name](...)
 			end
 		end
@@ -62,21 +62,27 @@ end
 CoreLoadingSetup = CoreLoadingSetup or class()
 
 function CoreLoadingSetup:init()
+	return
 end
 
 function CoreLoadingSetup:init_managers(managers)
+	return
 end
 
 function CoreLoadingSetup:init_gp()
+	return
 end
 
 function CoreLoadingSetup:post_init()
+	return
 end
 
 function CoreLoadingSetup:update(t, dt)
+	return
 end
 
 function CoreLoadingSetup:destroy()
+	return
 end
 
 function CoreLoadingSetup:__init()

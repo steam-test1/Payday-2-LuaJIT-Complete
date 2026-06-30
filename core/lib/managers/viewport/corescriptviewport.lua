@@ -216,7 +216,7 @@ function _ScriptViewport:pop_ref_fov()
 		if sh_mod and #self._ref_fov_stack > 0 then
 			local last = self._ref_fov_stack[#self._ref_fov_stack]
 
-			if not self._vp:camera() or math.rad(self._vp:camera():fov()) <= last then
+			if not self._vp:camera() or last >= math.rad(self._vp:camera():fov()) then
 				sh_mod:set_reference_fov(self._ref_fov_stack[#self._ref_fov_stack])
 				table.remove(self._ref_fov_stack, #self._ref_fov_stack)
 
@@ -256,6 +256,7 @@ function _ScriptViewport:is_rendering_scene(scene_name)
 end
 
 function _ScriptViewport:set_dof(clamp, near_focus_distance_min, near_focus_distance_max, far_focus_distance_min, far_focus_distance_max)
+	return
 end
 
 function _ScriptViewport:replace_engine_vp(vp)
@@ -315,7 +316,7 @@ function _ScriptViewport:_set_width_multiplier()
 			vp_pixel_aspect = rect.pw / rect.ph
 		end
 
-		camera:set_width_multiplier(CoreMath.width_mul(self._vpm:aspect_ratio()) * vp_pixel_aspect / screen_pixel_aspect)
+		camera:set_width_multiplier(CoreMath.width_mul(self._vpm:aspect_ratio()) * (vp_pixel_aspect / screen_pixel_aspect))
 	end
 end
 

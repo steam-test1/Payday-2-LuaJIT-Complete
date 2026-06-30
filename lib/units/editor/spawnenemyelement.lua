@@ -4,12 +4,12 @@ SpawnEnemyUnitElement = SpawnEnemyUnitElement or class(MissionElement)
 SpawnEnemyUnitElement.USES_POINT_ORIENTATION = true
 SpawnEnemyUnitElement.INSTANCE_VAR_NAMES = {
 	{
-		value = "enemy",
-		type = "enemy"
+		type = "enemy",
+		value = "enemy"
 	},
 	{
-		value = "spawn_action",
-		type = "enemy_spawn_action"
+		type = "enemy_spawn_action",
+		value = "spawn_action"
 	}
 }
 
@@ -106,6 +106,7 @@ function SpawnEnemyUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local enemy_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	panel_sizer:add(enemy_sizer, 0, 0, "EXPAND")
@@ -138,9 +139,9 @@ function SpawnEnemyUnitElement:_build_panel(panel, panel_sizer)
 		min = 0
 	}, "Used to specify how often this spawn can be used. 0 means no interval")
 	self:_build_value_number(panel, panel_sizer, "voice", {
-		min = 0,
 		floats = 0,
-		max = 5
+		max = 5,
+		min = 0
 	}, "Voice variant. 1-5. 0 for random.")
 	self:_build_value_combobox(panel, panel_sizer, "accessibility", ElementSpawnEnemyDummy.ACCESSIBILITIES, "Only units with this movement type will be spawned from this element.")
 
@@ -178,8 +179,8 @@ function SpawnEnemyUnitElement:add_to_mission_package()
 
 		for _, file in ipairs(sequence_files) do
 			managers.editor:add_to_world_package({
-				init = true,
 				category = "script_data",
+				init = true,
 				name = file:s() .. ".sequence_manager",
 				continent = self._unit:unit_data().continent
 			})

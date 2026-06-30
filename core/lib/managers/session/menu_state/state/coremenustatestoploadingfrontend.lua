@@ -7,6 +7,7 @@ StopLoadingFrontEnd = StopLoadingFrontEnd or class()
 
 function StopLoadingFrontEnd:init()
 	local menu_handler = self.menu_state._menu_handler
+
 	self._response = CoreSessionResponse.Done:new()
 
 	menu_handler:stop_loading_front_end_environment(self._response)

@@ -1,6 +1,7 @@
 ScriptLocations = ScriptLocations or class()
 
 function ScriptLocations:init(unit)
+	return
 end
 
 function ScriptLocations:setup(callback)

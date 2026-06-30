@@ -56,7 +56,9 @@ end
 
 function ModifiersManager:add_modifier(modifier, category)
 	category = category or "common"
+
 	local category_table = self._modifiers[category] or {}
+
 	self._modifiers[category] = category_table
 
 	table.insert(category_table, modifier)

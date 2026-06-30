@@ -4,6 +4,7 @@ core:import("CoreEngineAccess")
 core:import("CoreUnit")
 
 local sky_orientation_data_key = Idstring("sky_orientation/rotation"):key()
+
 CoreOldWorldDefinition = CoreOldWorldDefinition or class()
 CoreMissionElementUnit = CoreMissionElementUnit or class()
 WorldHolder = WorldHolder or class()
@@ -23,6 +24,7 @@ function WorldHolder:init(params)
 
 	local file_path = params.file_path
 	local file_type = params.file_type
+
 	self._worlds = {}
 
 	if file_path then
@@ -36,6 +38,7 @@ function WorldHolder:init(params)
 
 		local reverse = string.reverse(file_path)
 		local i = string.find(reverse, "/")
+
 		self._world_dir = string.reverse(string.sub(reverse, i))
 
 		if not DB:has(file_type, file_path) then
@@ -188,10 +191,9 @@ function CoreOldWorldDefinition:init(params)
 	self:_load_world_package()
 	managers.sequence:preload()
 
-	self._old_groups = {
-		groups = {},
-		group_names = {}
-	}
+	self._old_groups = {}
+	self._old_groups.groups = {}
+	self._old_groups.group_names = {}
 	self._portal_slot_mask = World:make_slot_mask(1)
 	self._massunit_replace_names = {}
 	self._replace_names = {}
@@ -322,6 +324,7 @@ function CoreOldWorldDefinition:parse_definitions(node)
 
 	for type in node:children() do
 		local name = type:name()
+
 		self._definitions[name] = self._definitions[name] or {}
 
 		if managers.editor then
@@ -367,6 +370,7 @@ function CoreOldWorldDefinition:parse_continents(node, t)
 
 	for continent in continents:children() do
 		local data = parse_values_node(continent)
+
 		data = data._values or {}
 
 		if not self:_continent_editor_only(data) then
@@ -403,6 +407,7 @@ end
 function CoreOldWorldDefinition:parse_values(node, t)
 	for child in node:children() do
 		local name, value = parse_value_node(child)
+
 		t[name] = value
 	end
 end
@@ -435,7 +440,7 @@ function CoreOldWorldDefinition:parse_editor_groups(node, t)
 
 		if not groups[name] then
 			local reference = tonumber(group:parameter("reference_id"))
-			local continent = nil
+			local continent
 
 			if group:has_parameter("continent") and group:parameter("continent") ~= "nil" then
 				continent = group:parameter("continent")
@@ -447,11 +452,10 @@ function CoreOldWorldDefinition:parse_editor_groups(node, t)
 				table.insert(units, tonumber(unit:parameter("id")))
 			end
 
-			groups[name] = {
-				reference = reference,
-				continent = continent,
-				units = units
-			}
+			groups[name] = {}
+			groups[name].reference = reference
+			groups[name].continent = continent
+			groups[name].units = units
 
 			table.insert(group_names, name)
 		end
@@ -464,9 +468,8 @@ end
 function CoreOldWorldDefinition:add_editor_group(name, reference)
 	table.insert(self._old_groups.group_names, name)
 
-	self._old_groups.groups[name] = {
-		reference = reference
-	}
+	self._old_groups.groups[name] = {}
+	self._old_groups.groups[name].reference = reference
 	self._old_groups.groups[name].units = self._old_groups.groups[name].units or {}
 end
 
@@ -489,7 +492,7 @@ function CoreOldWorldDefinition:parse_brush(node)
 end
 
 function CoreOldWorldDefinition:parse_sounds(node, t)
-	local path = nil
+	local path
 
 	if node:has_parameter("path") then
 		path = node:parameter("path")
@@ -508,6 +511,7 @@ function CoreOldWorldDefinition:parse_sounds(node, t)
 	end
 
 	local node = self:_load_node("world_sounds", path)
+
 	self._sounds = CoreWDSoundEnvironment:new(node)
 end
 
@@ -517,6 +521,7 @@ function CoreOldWorldDefinition:parse_mission_scripts(node, t)
 	end
 
 	t.scripts = t.scripts or {}
+
 	local values = parse_values_node(node)
 
 	for name, data in pairs(values._scripts) do
@@ -617,6 +622,7 @@ function CoreOldWorldDefinition:_create_continent_level(layer, offset)
 
 	for continent in continents:children() do
 		local data = parse_values_node(continent)
+
 		data = data._values or {}
 
 		if not self:_continent_editor_only(data) then
@@ -773,7 +779,9 @@ function CoreOldWorldDefinition:create_from_level_file(params)
 			local unit = d[1]
 			local data = d[2]
 			local wire = data.wire
+
 			unit:wire_data().slack = wire.slack
+
 			local target = unit:get_object(Idstring("a_target"))
 
 			target:set_position(wire.target_pos)
@@ -829,7 +837,8 @@ function CoreOldWorldDefinition:create_portals(portals, offset)
 		local bottom = portal.bottom
 
 		if top == 0 and bottom == 0 then
-			top, bottom = nil
+			top = nil
+			bottom = nil
 		end
 
 		managers.portal:add_portal(t, bottom, top)
@@ -878,9 +887,10 @@ end
 function CoreOldWorldDefinition:create_environment(data, offset)
 	managers.viewport:set_default_environment(data.environment, nil, nil)
 
-	self._environment_modifier_id = managers.viewport:create_global_environment_modifier(sky_orientation_data_key, true, function ()
+	self._environment_modifier_id = managers.viewport:create_global_environment_modifier(sky_orientation_data_key, true, function()
 		return data.sky_rot
 	end)
+
 	local wind = data.wind
 
 	Wind:set_direction(wind.angle, wind.angle_var, 5)
@@ -918,6 +928,7 @@ function CoreOldWorldDefinition:load_massunit(path, offset)
 				managers.editor:output("Unit " .. name:s() .. " does not exist")
 
 				local old_name = name:s()
+
 				name = managers.editor:show_replace_massunit()
 
 				if name and DB:has(Idstring("unit"), name:id()) then
@@ -944,6 +955,7 @@ function CoreOldWorldDefinition:parse_replace_unit()
 		for unit in node:children() do
 			local old_name = unit:name()
 			local replace_with = unit:parameter("replace_with")
+
 			self._replace_names[old_name] = replace_with
 
 			if is_editor then
@@ -966,6 +978,7 @@ function CoreOldWorldDefinition:preload_unit(name)
 		end
 
 		local old_name = name
+
 		name = managers.editor:show_replace_unit()
 		self._replace_names[old_name] = name
 
@@ -984,7 +997,7 @@ function CoreOldWorldDefinition:make_unit(name, data, offset)
 		name = self._replace_names[name]
 	end
 
-	local unit = nil
+	local unit
 
 	if name then
 		if MassUnitManager:can_spawn_unit(Idstring(name)) and not is_editor then
@@ -1269,17 +1282,17 @@ function CoreWDSoundEnvironment:parse_ambience(node)
 end
 
 function CoreWDSoundEnvironment:parse_sound_environment(node)
-	local t = {
-		environment = node:parameter("environment"),
-		ambience_event = node:parameter("ambience_event"),
-		ambience_soundbank = node:parameter("ambience_soundbank"),
-		position = math.string_to_vector(node:parameter("position")),
-		rotation = math.string_to_rotation(node:parameter("rotation")),
-		width = tonumber(node:parameter("width")),
-		depth = tonumber(node:parameter("depth")),
-		height = tonumber(node:parameter("height")),
-		name = node:parameter("name")
-	}
+	local t = {}
+
+	t.environment = node:parameter("environment")
+	t.ambience_event = node:parameter("ambience_event")
+	t.ambience_soundbank = node:parameter("ambience_soundbank")
+	t.position = math.string_to_vector(node:parameter("position"))
+	t.rotation = math.string_to_rotation(node:parameter("rotation"))
+	t.width = tonumber(node:parameter("width"))
+	t.depth = tonumber(node:parameter("depth"))
+	t.height = tonumber(node:parameter("height"))
+	t.name = node:parameter("name")
 
 	table.insert(self._sound_environments, t)
 end
@@ -1296,6 +1309,7 @@ function CoreWDSoundEnvironment:parse_sound_area_emitter(node)
 	for shape in node:children() do
 		for value in shape:children() do
 			local name, vt = parse_value_node(value)
+
 			t = vt
 		end
 
@@ -1367,12 +1381,11 @@ function CoreEnvironment:parse_value(node)
 end
 
 function CoreEnvironment:parse_wind(node)
-	self._wind = {
-		wind_angle = tonumber(node:parameter("angle")),
-		wind_dir_var = tonumber(node:parameter("angle_var")),
-		wind_tilt = tonumber(node:parameter("tilt")),
-		wind_tilt_var = tonumber(node:parameter("tilt_var"))
-	}
+	self._wind = {}
+	self._wind.wind_angle = tonumber(node:parameter("angle"))
+	self._wind.wind_dir_var = tonumber(node:parameter("angle_var"))
+	self._wind.wind_tilt = tonumber(node:parameter("tilt"))
+	self._wind.wind_tilt_var = tonumber(node:parameter("tilt_var"))
 
 	if node:has_parameter("speed") then
 		self._wind.wind_speed = tonumber(node:parameter("speed"))
@@ -1384,7 +1397,7 @@ function CoreEnvironment:parse_wind(node)
 end
 
 function CoreEnvironment:parse_unit_effect(node)
-	local pos, rot = nil
+	local pos, rot
 
 	for o in node:children() do
 		pos = math.string_to_vector(o:parameter("pos"))
@@ -1416,10 +1429,10 @@ function CoreEnvironment:parse_unit(node)
 		return
 	end
 
-	local t = {
-		name = node:parameter("name"),
-		generic = Generic:new(node)
-	}
+	local t = {}
+
+	t.name = node:parameter("name")
+	t.generic = Generic:new(node)
 
 	table.insert(self._units_data, t)
 end
@@ -1434,7 +1447,7 @@ function CoreEnvironment:create(offset)
 	end
 
 	if not Application:editor() then
-		self._environment_modifier_id = self._environment_modifier_id or managers.viewport:create_global_environment_modifier(sky_orientation_data_key, true, function ()
+		self._environment_modifier_id = self._environment_modifier_id or managers.viewport:create_global_environment_modifier(sky_orientation_data_key, true, function()
 			return self:sky_rotation_modifier()
 		end)
 	end
@@ -1488,12 +1501,14 @@ function CorePortal:parse_portal_list(node)
 	local top = tonumber(node:parameter("top")) or 0
 	local bottom = tonumber(node:parameter("bottom")) or 0
 	local draw_base = tonumber(node:parameter("draw_base")) or 0
+
 	self._portal_shapes[name] = {
 		portal = {},
 		top = top,
 		bottom = bottom,
 		draw_base = draw_base
 	}
+
 	local portal = self._portal_shapes[name].portal
 
 	for o in node:children() do
@@ -1529,7 +1544,8 @@ function CorePortal:create(offset)
 			local bottom = portal.bottom
 
 			if top == 0 and bottom == 0 then
-				top, bottom = nil
+				top = nil
+				bottom = nil
 			end
 
 			managers.portal:add_portal(t, bottom, top)
@@ -1559,7 +1575,9 @@ end
 
 function CoreWire:parse_wire(node)
 	self._target_pos = math.string_to_vector(node:parameter("target_pos"))
+
 	local rot = math.string_to_vector(node:parameter("target_rot"))
+
 	self._target_rot = Rotation(rot.x, rot.y, rot.z)
 	self._slack = tonumber(node:parameter("slack"))
 end
@@ -1569,6 +1587,7 @@ function CoreWire:create_unit(offset)
 
 	if self._unit then
 		self._unit:wire_data().slack = self._slack
+
 		local target = self._unit:get_object(Idstring("a_target"))
 
 		target:set_position(self._target_pos)
@@ -1668,12 +1687,13 @@ function MissionElementValues:set_values(unit)
 end
 
 function CoreOldWorldDefinition:make_generic_data(in_data)
-	local data = {
-		_name_id = "none",
-		_lights = {},
-		_triggers = {},
-		_exists_in_stages = {}
-	}
+	local data = {}
+
+	data._name_id = "none"
+	data._lights = {}
+	data._triggers = {}
+	data._exists_in_stages = {}
+
 	local generic = in_data.generic
 	local lights = in_data.lights
 	local variation = in_data.variation
@@ -1755,7 +1775,9 @@ end
 
 function Generic:parse_orientation(node)
 	self._position = math.string_to_vector(node:parameter("pos"))
+
 	local rot = math.string_to_vector(node:parameter("rot"))
+
 	self._rotation = Rotation(rot.x, rot.y, rot.z)
 end
 
@@ -1792,7 +1814,7 @@ function Generic:parse_light(node)
 	local far_range = tonumber(node:parameter("far_range"))
 	local enable = toboolean(node:parameter("enabled"))
 	local color = math.string_to_vector(node:parameter("color"))
-	local angle_start, angle_end, multiplier, falloff_exponent = nil
+	local angle_start, angle_end, multiplier, falloff_exponent
 
 	if node:has_parameter("angle_start") then
 		angle_start = tonumber(node:parameter("angle_start"))
@@ -1856,13 +1878,13 @@ function Generic:parse_exists_in_stage(node)
 end
 
 function Generic:parse_trigger(node)
-	local trigger = {
-		name = node:parameter("name"),
-		id = tonumber(node:parameter("id")),
-		notify_unit_id = tonumber(node:parameter("notify_unit_id")),
-		time = tonumber(node:parameter("time")),
-		notify_unit_sequence = node:parameter("notify_unit_sequence")
-	}
+	local trigger = {}
+
+	trigger.name = node:parameter("name")
+	trigger.id = tonumber(node:parameter("id"))
+	trigger.notify_unit_id = tonumber(node:parameter("notify_unit_id"))
+	trigger.time = tonumber(node:parameter("time"))
+	trigger.notify_unit_sequence = node:parameter("notify_unit_sequence")
 
 	table.insert(self._triggers, trigger)
 end
@@ -1879,6 +1901,7 @@ function Generic:parse_editable_gui(node)
 	local word_wrap = node:parameter("word_wrap") == "on"
 	local alpha = tonumber(node:parameter("alpha"))
 	local shape = string.split(node:parameter("shape"), " ")
+
 	self._editable_gui = {
 		text = text,
 		font_color = font_color,

@@ -1,4 +1,5 @@
 local json = require("lib/utils/accelbyte/json")
+
 PerpetualEventManager = PerpetualEventManager or class()
 
 function PerpetualEventManager:init()
@@ -17,13 +18,12 @@ end
 
 function PerpetualEventManager:_setup()
 	if not Global.perpetual_manager then
-		Global.perpetual_manager = {
-			active_event = false,
-			event_fetched = false,
-			packages_ready = false,
-			tweak_data_func_name = false,
-			loaded_packages = {}
-		}
+		Global.perpetual_manager = {}
+		Global.perpetual_manager.active_event = false
+		Global.perpetual_manager.event_fetched = false
+		Global.perpetual_manager.packages_ready = false
+		Global.perpetual_manager.tweak_data_func_name = false
+		Global.perpetual_manager.loaded_packages = {}
 
 		self:_setup_events()
 	end
@@ -34,114 +34,111 @@ end
 
 function PerpetualEventManager:_setup_events()
 	local events = {}
+
 	Global.perpetual_manager.events = events
-	events.anniversary = {
-		has_gamemode_event = true,
-		mutator_name = "MutatorPiggyRevenge",
-		xp_bonuses = {
-			bonus_piggyrevenge = {
-				color = tweak_data.screen_colors.event_color,
-				title = managers.localization:to_upper_text("menu_piggybank_exp_bonus")
-			}
-		},
-		upgrades = {
-			"money",
-			"bessy",
-			"piggy_hammer"
-		},
-		menu_scene = {
-			presents = true,
-			confetti = true,
-			money_effect = false
-		},
-		packages = {
-			"packages/pevent_anniversary"
-		},
-		date = {
-			start = {
-				day = 13,
-				month = 8
-			},
-			stop = {
-				day = 20,
-				month = 8
-			}
+	events.anniversary = {}
+	events.anniversary.has_gamemode_event = true
+	events.anniversary.mutator_name = "MutatorPiggyRevenge"
+	events.anniversary.xp_bonuses = {
+		bonus_piggyrevenge = {
+			color = tweak_data.screen_colors.event_color,
+			title = managers.localization:to_upper_text("menu_piggybank_exp_bonus")
 		}
 	}
-	events.winter_snow = {
-		menu_scene = {
-			xmas_snow = true,
-			money_effect = false
+	events.anniversary.upgrades = {
+		"money",
+		"bessy",
+		"piggy_hammer"
+	}
+	events.anniversary.menu_scene = {
+		confetti = true,
+		money_effect = false,
+		presents = true
+	}
+	events.anniversary.packages = {
+		"packages/pevent_anniversary"
+	}
+	events.anniversary.date = {
+		start = {
+			day = 13,
+			month = 8
 		},
-		packages = {
-			"packages/pevent_winter_snow"
-		},
-		date = {
-			start = {
-				day = 1,
-				month = 12
-			},
-			stop = {
-				day = 31,
-				month = 1
-			}
-		},
-		tweak_data_func_name = "tweak_christmas_heists",
-		upgrades = {
-			"xmas_snowball"
+		stop = {
+			day = 20,
+			month = 8
 		}
 	}
-	events.xmas_snow = {
-		menu_scene = {
-			xmas_snow = true,
-			xmas_tree = true,
-			money_effect = false
+	events.winter_snow = {}
+	events.winter_snow.menu_scene = {
+		money_effect = false,
+		xmas_snow = true
+	}
+	events.winter_snow.packages = {
+		"packages/pevent_winter_snow"
+	}
+	events.winter_snow.date = {
+		start = {
+			day = 1,
+			month = 12
 		},
-		packages = {
-			"packages/pevent_xmas_snow"
-		},
-		date = {
-			start = {
-				day = 23,
-				month = 12
-			},
-			stop = {
-				day = 12,
-				month = 1
-			}
-		},
-		santa_hats = true,
-		holiday_tactics = "BTN_XMAS",
-		tweak_data_func_name = "tweak_xmas",
-		upgrades = {
-			"xmas_snowball"
+		stop = {
+			day = 31,
+			month = 1
 		}
 	}
-	events.xmas_gifts = {
-		menu_scene = {
-			presents = true,
-			xmas_tree = true,
-			money_effect = false
+	events.winter_snow.tweak_data_func_name = "tweak_christmas_heists"
+	events.winter_snow.upgrades = {
+		"xmas_snowball"
+	}
+	events.xmas_snow = {}
+	events.xmas_snow.menu_scene = {
+		money_effect = false,
+		xmas_snow = true,
+		xmas_tree = true
+	}
+	events.xmas_snow.packages = {
+		"packages/pevent_xmas_snow"
+	}
+	events.xmas_snow.date = {
+		start = {
+			day = 23,
+			month = 12
 		},
-		packages = {
-			"packages/pevent_xmas_gifts"
-		},
-		date = {
-			start = {
-				day = 24,
-				month = 12
-			},
-			stop = {
-				day = 25,
-				month = 12
-			}
-		},
-		santa_hats = true,
-		holiday_tactics = "BTN_XMAS",
-		tweak_data_func_name = "tweak_xmas",
-		upgrades = {
-			"xmas_snowball"
+		stop = {
+			day = 12,
+			month = 1
 		}
+	}
+	events.xmas_snow.santa_hats = true
+	events.xmas_snow.holiday_tactics = "BTN_XMAS"
+	events.xmas_snow.tweak_data_func_name = "tweak_xmas"
+	events.xmas_snow.upgrades = {
+		"xmas_snowball"
+	}
+	events.xmas_gifts = {}
+	events.xmas_gifts.menu_scene = {
+		money_effect = false,
+		presents = true,
+		xmas_tree = true
+	}
+	events.xmas_gifts.packages = {
+		"packages/pevent_xmas_gifts"
+	}
+	events.xmas_gifts.date = {
+		start = {
+			day = 24,
+			month = 12
+		},
+		stop = {
+			day = 25,
+			month = 12
+		}
+	}
+	events.xmas_gifts.santa_hats = true
+	events.xmas_gifts.holiday_tactics = "BTN_XMAS"
+	events.xmas_gifts.tweak_data_func_name = "tweak_xmas"
+	events.xmas_gifts.upgrades = {
+		"xmas_snowball"
 	}
 
 	for event_name, event_data in pairs(events) do
@@ -193,6 +190,7 @@ function PerpetualEventManager:fetch_event()
 
 	local login_time = managers.network.matchmake:login_time()
 	local login_date = string.split(os.date("%m %d", login_time), " ")
+
 	self._global.event_fetched = true
 
 	self:_set_active_event_by_date(tonumber(login_date[1]), tonumber(login_date[2]))
@@ -201,7 +199,7 @@ end
 function PerpetualEventManager:_set_active_event_by_date(target_month, target_day)
 	local active_event = false
 	local target_time = target_month * 100 + target_day
-	local active_event_time_diff, event_time_diff, start_month, start_day, stop_month, stop_day = nil
+	local active_event_time_diff, event_time_diff, start_month, start_day, stop_month, stop_day
 
 	for event_name, event_data in pairs(self._global.events) do
 		start_month = event_data.date.start.month
@@ -241,6 +239,7 @@ function PerpetualEventManager:_set_active_event(active_event)
 	end
 
 	self._global.active_event = active_event
+
 	local wanted_packages = {}
 
 	if self._global.active_event then
@@ -290,7 +289,9 @@ function PerpetualEventManager:apply_event()
 	end
 
 	local active_event = self:get_active_event()
+
 	self._global.tweak_data_func_name = active_event and active_event.tweak_data_func_name or false
+
 	local tweak_data_func = PerpetualEventManager.get_tweak_func()
 
 	if tweak_data_func then

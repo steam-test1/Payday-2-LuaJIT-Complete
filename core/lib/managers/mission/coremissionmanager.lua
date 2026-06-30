@@ -51,7 +51,7 @@ function MissionManager:_resolution_changed()
 end
 
 function MissionManager:parse(params, stage_name, offset, file_type)
-	local file_path, activate_mission = nil
+	local file_path, activate_mission
 
 	if CoreClass.type_name(params) == "table" then
 		file_path = params.file_path
@@ -75,6 +75,7 @@ function MissionManager:parse(params, stage_name, offset, file_type)
 	local i = string.find(reverse, "/")
 	local file_dir = string.reverse(string.sub(reverse, i))
 	local continent_files = self:_serialize_to_script(file_type, file_path)
+
 	continent_files._meta = nil
 
 	for name, data in pairs(continent_files) do
@@ -103,6 +104,7 @@ end
 function MissionManager:_load_mission_file(file_dir, data)
 	local file_path = file_dir .. data.file
 	local scripts = self:_serialize_to_script("mission", file_path)
+
 	scripts._meta = nil
 
 	for name, data in pairs(scripts) do
@@ -190,10 +192,10 @@ function MissionManager:add_runned_unit_sequence_trigger(id, sequence, callback)
 			}
 		end
 	else
-		local t = {
-			[sequence] = {
-				callback
-			}
+		local t = {}
+
+		t[sequence] = {
+			callback
 		}
 		self._runned_unit_sequences_callbacks[id] = t
 	end
@@ -206,6 +208,7 @@ function MissionManager:runned_unit_sequence(unit, sequence, params)
 
 	if alive(unit) and unit:unit_data() then
 		local id = unit:unit_data().unit_id
+
 		id = id ~= 0 and id or unit:editor_id()
 
 		if self._runned_unit_sequences_callbacks[id] and self._runned_unit_sequences_callbacks[id][sequence] then
@@ -286,6 +289,7 @@ function MissionManager:add_fading_debug_output(debug, color, as_subtitle)
 			" |",
 			" /"
 		}
+
 		self._fade_index = (self._fade_index or 0) + 1
 		self._fade_index = self._fade_index > #stuff and self._fade_index and 1 or self._fade_index
 
@@ -295,13 +299,13 @@ end
 
 function MissionManager:_show_debug_subtitle(debug, color)
 	self._debug_subtitle_text = self._debug_subtitle_text or self._workspace:panel():text({
-		font_size = 20,
-		wrap = true,
-		word_wrap = true,
 		align = "center",
 		font = "core/fonts/diesel",
+		font_size = 20,
 		halign = "center",
 		valign = "center",
+		word_wrap = true,
+		wrap = true,
 		text = debug,
 		color = color or Color.white
 	})
@@ -318,7 +322,7 @@ function MissionManager:_show_debug_subtitle(debug, color)
 	self._debug_subtitle_text:set_color(color or Color.white)
 	self._debug_subtitle_text:set_alpha(1)
 	self._debug_subtitle_text:stop()
-	self._debug_subtitle_text:animate(function (o)
+	self._debug_subtitle_text:animate(function(o)
 		_G.wait(subtitle_time)
 		self._debug_subtitle_text:set_alpha(0)
 	end)
@@ -393,6 +397,7 @@ end
 
 function MissionScript.import(module_name)
 	MissionScript.imported_modules[module_name] = true
+
 	local module = core:import(module_name)
 
 	return module
@@ -464,6 +469,7 @@ function MissionScript:_create_elements(elements)
 	for _, element in ipairs(elements) do
 		local class = element.class
 		local new_element = self:_element_class(element.module, class):new(self, element)
+
 		self._elements[element.id] = new_element
 		new_elements[element.id] = new_element
 		self._element_groups[class] = self._element_groups[class] or {}
@@ -489,6 +495,7 @@ function MissionScript:_element_class(module_name, class_name)
 
 	if not element_class and module_name and module_name ~= "none" then
 		local raw_module = rawget(_G, "CoreMissionManager")[module_name]
+
 		element_class = raw_module and raw_module[class_name] or MissionScript.import(module_name)[class_name]
 	end
 

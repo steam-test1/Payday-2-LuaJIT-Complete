@@ -25,14 +25,14 @@ function HuskCopInventory:add_unit_by_name(new_unit_name, equip)
 		end
 	end
 
-	local setup_data = {
-		user_unit = self._unit,
-		ignore_units = ignore_units,
-		expend_ammo = false,
-		hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI"),
-		hit_player = true,
-		user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice
-	}
+	local setup_data = {}
+
+	setup_data.user_unit = self._unit
+	setup_data.ignore_units = ignore_units
+	setup_data.expend_ammo = false
+	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI")
+	setup_data.hit_player = true
+	setup_data.user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice
 
 	new_unit:base():setup(setup_data)
 
@@ -73,22 +73,15 @@ end
 
 function HuskCopInventory:from_server_link_shield(shield_unit)
 	local cur_shield = self._shield_unit
+
 	self._shield_unit_name = nil
+
 	local vis_state = false
 	local enabled_state = false
 
 	if alive(cur_shield) then
-		if cur_shield:visible() then
-			vis_state = true
-		else
-			vis_state = false
-		end
-
-		if cur_shield:enabled() then
-			enabled_state = true
-		else
-			enabled_state = false
-		end
+		vis_state = cur_shield:visible() and true or false
+		enabled_state = cur_shield:enabled() and true or false
 
 		self:unequip_shield()
 
@@ -101,17 +94,8 @@ function HuskCopInventory:from_server_link_shield(shield_unit)
 		local equipped_weapon = self:equipped_unit()
 
 		if alive(equipped_weapon) then
-			if equipped_weapon:visible() then
-				vis_state = true
-			else
-				vis_state = false
-			end
-
-			if equipped_weapon:enabled() then
-				enabled_state = true
-			else
-				enabled_state = false
-			end
+			vis_state = equipped_weapon:visible() and true or false
+			enabled_state = equipped_weapon:enabled() and true or false
 		end
 	end
 

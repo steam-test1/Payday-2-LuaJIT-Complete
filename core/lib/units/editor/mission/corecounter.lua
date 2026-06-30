@@ -3,8 +3,8 @@ CoreCounterUnitElement.SAVE_UNIT_POSITION = false
 CoreCounterUnitElement.SAVE_UNIT_ROTATION = false
 CoreCounterUnitElement.INSTANCE_VAR_NAMES = {
 	{
-		value = "counter_target",
-		type = "number"
+		type = "number",
+		value = "counter_target"
 	}
 }
 CounterUnitElement = CounterUnitElement or class(CoreCounterUnitElement)
@@ -58,8 +58,8 @@ function CoreCounterUnitElement:update_selected()
 			self._digital_gui_units[id] = nil
 		else
 			local params = {
-				g = 1,
 				b = 0,
+				g = 1,
 				r = 0,
 				from_unit = self._unit,
 				to_unit = unit
@@ -94,8 +94,8 @@ function CoreCounterUnitElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._digital_gui_units) do
 		local params = {
-			g = 0.5,
 			b = 0,
+			g = 0.5,
 			r = 0,
 			from_unit = self._unit,
 			to_unit = unit
@@ -188,8 +188,8 @@ CoreCounterOperatorUnitElement.SAVE_UNIT_POSITION = false
 CoreCounterOperatorUnitElement.SAVE_UNIT_ROTATION = false
 CoreCounterOperatorUnitElement.INSTANCE_VAR_NAMES = {
 	{
-		value = "amount",
-		type = "number"
+		type = "number",
+		value = "amount"
 	}
 }
 CoreCounterOperatorUnitElement.LINK_VALUES = {
@@ -226,8 +226,8 @@ function CoreCounterOperatorUnitElement:draw_links(t, dt, selected_unit, all_uni
 
 		if draw then
 			self:_draw_link({
-				g = 0.75,
 				b = 0.25,
+				g = 0.75,
 				r = 0.75,
 				from_unit = self._unit,
 				to_unit = unit
@@ -237,12 +237,13 @@ function CoreCounterOperatorUnitElement:draw_links(t, dt, selected_unit, all_uni
 end
 
 function CoreCounterOperatorUnitElement:update_editing()
+	return
 end
 
 function CoreCounterOperatorUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("core/units/mission_elements/logic_counter/logic_counter") then
@@ -265,6 +266,7 @@ function CoreCounterOperatorUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_counter/logic_counter"
 	}
@@ -320,8 +322,8 @@ function CoreCounterTriggerUnitElement:draw_links(t, dt, selected_unit, all_unit
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = unit,
 				to_unit = self._unit
@@ -331,12 +333,13 @@ function CoreCounterTriggerUnitElement:draw_links(t, dt, selected_unit, all_unit
 end
 
 function CoreCounterTriggerUnitElement:update_editing()
+	return
 end
 
 function CoreCounterTriggerUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("core/units/mission_elements/logic_counter/logic_counter") then
@@ -359,6 +362,7 @@ function CoreCounterTriggerUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_counter/logic_counter"
 	}
@@ -417,8 +421,8 @@ function CoreCounterFilterUnitElement:draw_links(t, dt, selected_unit, all_units
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = unit,
 				to_unit = self._unit
@@ -428,12 +432,13 @@ function CoreCounterFilterUnitElement:draw_links(t, dt, selected_unit, all_units
 end
 
 function CoreCounterFilterUnitElement:update_editing()
+	return
 end
 
 function CoreCounterFilterUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("core/units/mission_elements/logic_counter/logic_counter") then
@@ -456,6 +461,7 @@ function CoreCounterFilterUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_counter/logic_counter"
 	}

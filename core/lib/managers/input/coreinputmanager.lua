@@ -6,12 +6,14 @@ InputManager = InputManager or class()
 
 function InputManager:init()
 	local settings_reader = CoreInputSettingsReader.SettingsReader:new()
+
 	self._layer_descriptions = settings_reader:layer_descriptions()
 	self._feeders = {}
 	self._input_provider_to_feeder = {}
 end
 
 function InputManager:destroy()
+	return
 end
 
 function InputManager:update(t, dt)
@@ -37,7 +39,7 @@ end
 
 function InputManager:debug_primary_input_provider_id()
 	local count = Input:num_real_controllers()
-	local best_controller = nil
+	local best_controller
 
 	for i = 1, count do
 		local controller = Input:controller(i)
@@ -61,6 +63,7 @@ end
 function InputManager:_create_input_provider_for_controller(engine_controller)
 	local feeder = CoreInputContextFeeder.Feeder:new(engine_controller, self._layer_descriptions)
 	local input_provider = feeder:input_provider()
+
 	self._input_provider_to_feeder[input_provider] = feeder
 	self._feeders[feeder] = feeder
 
@@ -69,5 +72,6 @@ end
 
 function InputManager:_destroy_input_provider(input_provider)
 	local feeder = self._input_provider_to_feeder[input_provider]
+
 	self._feeders[feeder] = nil
 end

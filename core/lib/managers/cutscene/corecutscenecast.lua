@@ -65,10 +65,12 @@ end
 function CoreCutsceneCast:set_unit_visible(unit_name, visible)
 	visible = not not visible
 	self._hidden_units = self._hidden_units or {}
+
 	local current_visibility = not self._hidden_units[unit_name]
 
 	if visible ~= current_visibility then
 		self._hidden_units[unit_name] = not visible or nil
+
 		local unit = self:unit(unit_name)
 
 		if unit then
@@ -118,7 +120,7 @@ function CoreCutsceneCast:evaluate_cutscene_at_time(cutscene, time)
 		if blob_controller:ready() then
 			if not blob_controller:is_playing() then
 				local actor_units = self:_actor_units_in_cutscene(cutscene)
-				local blend_sets = table.remap(actor_units, function (unit_name)
+				local blend_sets = table.remap(actor_units, function(unit_name)
 					return unit_name, cutscene:blend_set_for_unit(unit_name)
 				end)
 
@@ -256,7 +258,7 @@ function CoreCutsceneCast:_stop_animations_on_actor_units_in_cutscene(cutscene)
 end
 
 function CoreCutsceneCast:_state_machine_is_playing_raw_animation(machine, animation)
-	local state_names = table.collect(machine:config():states(), function (state)
+	local state_names = table.collect(machine:config():states(), function(state)
 		return state:name()
 	end)
 
@@ -274,7 +276,7 @@ function CoreCutsceneCast:_set_unit_and_children_visible(unit, visible, excluded
 	unit:set_visible(visible)
 	unit:set_enabled(visible)
 
-	excluded_units = excluded_units or table.remap(self._spawned_units or {}, function (unit_name, unit)
+	excluded_units = excluded_units or table.remap(self._spawned_units or {}, function(unit_name, unit)
 		return unit, true
 	end)
 
@@ -291,6 +293,7 @@ function CoreCutsceneCast:_animation_blob_controller(cutscene, preloading)
 	end
 
 	self._animation_blob_controllers = self._animation_blob_controllers or {}
+
 	local blob_controller = self._animation_blob_controllers[cutscene]
 
 	if blob_controller == nil then
@@ -307,6 +310,7 @@ end
 
 function CoreCutsceneCast:_actor_units_in_cutscene(cutscene)
 	self._spawned_units = self._spawned_units or {}
+
 	local result = {}
 
 	for unit_name, unit_type in pairs(cutscene:controlled_unit_types()) do

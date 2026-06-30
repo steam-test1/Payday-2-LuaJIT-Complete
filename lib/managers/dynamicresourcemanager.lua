@@ -3,6 +3,7 @@ DynamicResourceManager.DYN_RESOURCES_PACKAGE = "packages/dyn_resources"
 DynamicResourceManager.listener_events = {
 	file_streamer_workload = 1
 }
+
 local ids_unit = Idstring("unit")
 
 function DynamicResourceManager:init()
@@ -10,8 +11,8 @@ function DynamicResourceManager:init()
 		Global.dyn_resource_manager_data = {
 			streaming_settings = {
 				chunk_size_kb = 4096,
-				sleep_time = 3,
-				chunk_size_mul = 1
+				chunk_size_mul = 1,
+				sleep_time = 3
 			},
 			dyn_resources = {}
 		}
@@ -207,6 +208,7 @@ function DynamicResourceManager:clbk_resource_loaded(status, resource_type, reso
 	end
 
 	local callbacks = entry.callbacks
+
 	entry.callbacks = nil
 
 	for _, clbk in ipairs(callbacks) do
@@ -265,6 +267,7 @@ end
 function DynamicResourceManager:_set_file_streamer_settings(chunk_size_kb, sleep_time)
 	self._streaming_settings.chunk_size_kb = chunk_size_kb
 	self._streaming_settings.sleep_time = sleep_time
+
 	local chunk_size_kb_end_value = chunk_size_kb * 1024 * self._streaming_settings.chunk_size_mul
 
 	Application:set_file_streamer_settings(chunk_size_kb_end_value, sleep_time)

@@ -54,7 +54,7 @@ function CoreCutsceneCompiler:_create_optimizer_for_project(project)
 
 	optimizer:set_compression_enabled("win32", project:export_type() == "in_game_use")
 
-	local exported_clip_descriptors = table.find_all_values(project:film_clips(), function (clip)
+	local exported_clip_descriptors = table.find_all_values(project:film_clips(), function(clip)
 		return clip.track_index == 1
 	end)
 

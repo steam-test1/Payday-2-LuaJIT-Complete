@@ -1,6 +1,6 @@
 local function redirect_to_member(class, member_name, functions)
 	for _, name in pairs(functions) do
-		class[name] = function (self, ...)
+		class[name] = function(self, ...)
 			local member = self[member_name]
 
 			return member[name](member, ...)
@@ -16,7 +16,7 @@ local function redirect_to_panel(class, blacklist)
 	function class.__index(table, key)
 		for k, func in pairs(Panel) do
 			if not blacklist[k] and not rawget(class, k) then
-				class[k] = function (self, ...)
+				class[k] = function(self, ...)
 					return func(self._panel, ...)
 				end
 			end
@@ -240,6 +240,7 @@ end
 
 function ExtendedPanel.scale_font_to_fit(text, w_limit, h_limit, smallest_allowed)
 	smallest_allowed = smallest_allowed or 8
+
 	local size = text:font_size()
 	local start_w = text:w()
 
@@ -261,6 +262,7 @@ end
 function ExtendedPanel:fine_text(config)
 	config.w = config.w or type(config.keep_w) == "number" and config.keep_w or nil
 	config.h = config.h or type(config.keep_h) == "number" and config.keep_h or nil
+
 	local rtn = self:text(config)
 
 	self.make_fine_text(rtn, config.keep_w, config.keep_h)
@@ -275,6 +277,7 @@ function ExtendedPanel:fit_bitmap(config, target_w, target_h)
 	config.h = nil
 	config.width = nil
 	config.height = nil
+
 	local rtn = self:bitmap(config)
 
 	self.make_bitmap_fit(rtn, target_w, target_h)
@@ -285,8 +288,10 @@ end
 function ExtendedPanel.make_bitmap_fit(bitmap, target_w, target_h)
 	local start_width = bitmap:w()
 	local start_height = bitmap:h()
+
 	target_w = target_w or bitmap:parent():w()
 	target_h = target_h or bitmap:parent():h()
+
 	local aspect = target_w / target_h
 	local sw = math.max(start_width, start_height * aspect)
 	local sh = math.max(start_height, start_width / aspect)
@@ -354,7 +359,7 @@ function ExtendedPanel:mouse_moved(o, x, y)
 		return
 	end
 
-	local hover, cursor_type = nil
+	local hover, cursor_type
 
 	for v, _ in pairs(self._input_components_set) do
 		if v.mouse_moved and v:allow_input() then

@@ -50,7 +50,7 @@ end
 function PrevisCamera:update(unit, t, dt)
 	if self._playing then
 		if self._wait_t then
-			if self._wait_t < t then
+			if t > self._wait_t then
 				self._wait_t = nil
 
 				self:stop()

@@ -3,10 +3,10 @@ VehicleBoardingElement.SAVE_UNIT_POSITION = false
 VehicleBoardingElement.SAVE_UNIT_ROTATION = false
 VehicleBoardingElement.LINK_VALUES = {
 	{
-		value = "vehicle",
-		output = true,
 		layer = "Statics",
-		type = "operator"
+		output = true,
+		type = "operator",
+		value = "vehicle"
 	}
 }
 
@@ -24,6 +24,7 @@ function VehicleBoardingElement:init(unit)
 end
 
 function VehicleBoardingElement:update_editing()
+	return
 end
 
 function VehicleBoardingElement:add_element()
@@ -57,8 +58,8 @@ function VehicleBoardingElement:add_element()
 	end
 
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and string.find(ray.unit:name():s(), "point_teleport_player", 1, true) then
@@ -120,8 +121,8 @@ function VehicleBoardingElement:draw_links(t, dt, selected_unit, all_units)
 
 		if draw then
 			self:_draw_link({
-				g = 0.75,
 				b = 0,
+				g = 0.75,
 				r = 0,
 				from_unit = self._unit,
 				to_unit = vehicle_unit
@@ -134,8 +135,8 @@ function VehicleBoardingElement:draw_links(t, dt, selected_unit, all_units)
 
 			if draw then
 				self:_draw_link({
-					g = 0.15,
 					b = 0.75,
+					g = 0.15,
 					r = 0,
 					from_unit = self._unit,
 					to_unit = teleport_unit
@@ -199,7 +200,7 @@ end
 
 function VehicleBoardingElement:_move_seat_in_direction(direction)
 	local seat_index = self._seats_list:selected_index() + 1
-	local swap_index = nil
+	local swap_index
 
 	if direction == "up" then
 		swap_index = seat_index - 1
@@ -216,6 +217,7 @@ function VehicleBoardingElement:_move_seat_in_direction(direction)
 	end
 
 	local temp = self._hed.seats_order[swap_index]
+
 	self._hed.seats_order[swap_index] = self._hed.seats_order[seat_index]
 	self._hed.seats_order[seat_index] = temp
 
@@ -230,7 +232,7 @@ function VehicleBoardingElement:_populate_teleport_points_list()
 		return
 	end
 
-	local first_empty_slot = nil
+	local first_empty_slot
 
 	for seat_id = 1, #self._hed.seats_order do
 		local point_id = self._hed.teleport_points[seat_id]
@@ -238,6 +240,7 @@ function VehicleBoardingElement:_populate_teleport_points_list()
 
 		if point_id then
 			local unit = managers.editor:unit_with_id(point_id)
+
 			name_id = unit and unit:unit_data() and unit:unit_data().name_id or point_id
 		else
 			first_empty_slot = first_empty_slot or seat_id
@@ -255,6 +258,7 @@ end
 
 function VehicleBoardingElement:_teleport_remove_clicked(button, event)
 	local seat_id = self._teleport_points_list:selected_index() + 1
+
 	self._hed.teleport_points[seat_id] = nil
 
 	self:_populate_teleport_points_list()
@@ -285,7 +289,7 @@ function VehicleBoardingElement:_move_teleport_in_direction(direction)
 	end
 
 	local seat_id = self._teleport_points_list:selected_index() + 1
-	local swap_index = nil
+	local swap_index
 
 	if direction == "up" then
 		swap_index = seat_id - 1
@@ -302,6 +306,7 @@ function VehicleBoardingElement:_move_teleport_in_direction(direction)
 	end
 
 	local temp = self._hed.teleport_points[swap_index]
+
 	self._hed.teleport_points[swap_index] = self._hed.teleport_points[seat_id]
 	self._hed.teleport_points[seat_id] = temp
 
@@ -314,7 +319,8 @@ function VehicleBoardingElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
-	local names = nil
+
+	local names
 
 	self:_build_value_combobox(panel, panel_sizer, "operation", {
 		"embark",

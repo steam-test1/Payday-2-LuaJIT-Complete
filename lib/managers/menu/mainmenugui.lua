@@ -29,11 +29,12 @@ function MainMenuGui:init(ws, fullscreen_ws, node)
 	self._enabled = true
 	self._update_boxes = {}
 	self._data = node:parameters().menu_component_data or {
-		selected_box = "play",
-		current_state = "default"
+		current_state = "default",
+		selected_box = "play"
 	}
 	self._node:parameters().menu_component_data = self._data
 	self._input_focus = 1
+
 	local boxes, layout = self:_get_current_box_layout()
 
 	for id, data in pairs(boxes) do
@@ -49,13 +50,13 @@ function MainMenuGui:init(ws, fullscreen_ws, node)
 
 	self._legends_panel:set_rightbottom(self._panel:w(), self._panel:h())
 	self._legends_panel:text({
-		text = "",
-		name = "text",
-		vertical = "bottom",
 		align = "right",
 		blend_mode = "add",
 		halign = "right",
+		name = "text",
+		text = "",
 		valign = "bottom",
+		vertical = "bottom",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
@@ -88,7 +89,7 @@ function MainMenuGui:_get_current_box_layout(override_layout)
 end
 
 function MainMenuGui:layout_boxes(layout)
-	local box, align_box, right_align, left_align, top_align, bottom_align, x_offset, y_offset = nil
+	local box, align_box, right_align, left_align, top_align, bottom_align, x_offset, y_offset
 
 	for _, data in ipairs(layout or {}) do
 		box = data.box and self._boxes_by_name[data.box]
@@ -215,8 +216,10 @@ function MainMenuGui:create_box(params, index)
 
 	local select_anim = params.select_anim or false
 	local unselect_anim = params.unselect_anim or false
+
 	w = math.max(w, border_padding * 2 + 1)
 	h = math.max(h, border_padding * 2 + 1)
+
 	local panel = self._panel:panel({
 		name = name,
 		x = x,
@@ -226,7 +229,7 @@ function MainMenuGui:create_box(params, index)
 		alpha = alpha,
 		layer = layer * 10
 	})
-	local text_object, info_text_object, image_objects, borders_object, bg_object, select_object = nil
+	local text_object, info_text_object, image_objects, borders_object, bg_object, select_object
 
 	if text then
 		local align = params.text_align or false
@@ -267,7 +270,7 @@ function MainMenuGui:create_box(params, index)
 
 			if w < needed_width then
 				if shrink_text then
-					gui_object:set_font_size(font_size * w / needed_width)
+					gui_object:set_font_size(font_size * (w / needed_width))
 					make_fine_text(gui_object)
 				elseif adept_width then
 					w = needed_width
@@ -276,6 +279,7 @@ function MainMenuGui:create_box(params, index)
 
 					if keep_box_ratio then
 						local ratio = w / h
+
 						h = panel:w() / ratio
 
 						panel:set_h(h)
@@ -359,17 +363,19 @@ function MainMenuGui:create_box(params, index)
 		select_object = panel:panel(select_area)
 	else
 		select_object = panel:panel({
-			halign = "scale",
 			align = "scale",
-			vertical = "scale",
-			valign = "scale"
+			halign = "scale",
+			valign = "scale",
+			vertical = "scale"
 		})
 	end
 
 	if images then
 		local text_vertical = params.text_vertical or "top"
 		local async_loading = true
+
 		image_objects = {}
+
 		local requested_textures = {}
 		local requested_indices = {}
 
@@ -460,7 +466,7 @@ function MainMenuGui:create_box(params, index)
 		local unselected_blend_mode = params.bg_unselected_blend_mode or params.bg_blend_mode or params.blend_mode or "add"
 		local bg_select_area = params.bg_select_area or false
 		local bg_rotation = params.bg_rotation or false
-		local gui_object = nil
+		local gui_object
 
 		if background_image then
 			gui_object = (bg_select_area and select_object or panel):bitmap({
@@ -552,7 +558,7 @@ end
 function MainMenuGui:_box_in_state(box, state)
 	state = state or self._data.current_state
 
-	return box.states and not not box.states[state]
+	return not not box.states and not not box.states[state]
 end
 
 function MainMenuGui:update_box(box, params, skip_update_other)
@@ -562,6 +568,7 @@ function MainMenuGui:update_box(box, params, skip_update_other)
 
 	local selected = box.selected
 	local box_params = box.params
+
 	box_params.links = box.links
 
 	if params then
@@ -604,6 +611,7 @@ function MainMenuGui:update_box(box, params, skip_update_other)
 
 	self._boxes[box_index] = nil
 	self._boxes_by_name[box_params.name] = nil
+
 	local panel, new_box = self:create_box(box_params, box_index)
 
 	panel:set_visible(visible)
@@ -687,7 +695,7 @@ function MainMenuGui:update(t, dt)
 		return
 	end
 
-	local box = nil
+	local box
 
 	for _, box_name in ipairs(self._update_boxes or {}) do
 		box = self._boxes_by_name[box_name]
@@ -768,7 +776,7 @@ function MainMenuGui:_set_variables_on_gui_hierarchy(gui, variables)
 end
 
 function MainMenuGui:_update_box_status(box, selected)
-	local box_object = nil
+	local box_object
 
 	local function _update_box_object(object)
 		local variables = {
@@ -836,7 +844,7 @@ function MainMenuGui:_update_box_status(box, selected)
 
 			if w < needed_width then
 				if shrink_text then
-					gui_object:set_font_size(font_size * w / needed_width)
+					gui_object:set_font_size(font_size * (w / needed_width))
 					make_fine_text(gui_object)
 				elseif box.params and adept_width then
 					panel:set_w(needed_width)
@@ -908,13 +916,13 @@ function MainMenuGui:_update_legends(name)
 		local show_back = self._data.current_state ~= "default"
 
 		if not managers.menu:is_pc_controller() then
-			local legends = {
-				[#legends + 1] = {
-					string_id = "menu_legend_rotate"
-				},
-				[#legends + 1] = {
-					string_id = "menu_legend_preview_move"
-				}
+			local legends = {}
+
+			legends[#legends + 1] = {
+				string_id = "menu_legend_rotate"
+			}
+			legends[#legends + 1] = {
+				string_id = "menu_legend_preview_move"
 			}
 
 			if show_select then
@@ -933,6 +941,7 @@ function MainMenuGui:_update_legends(name)
 
 			for i, legend in ipairs(legends) do
 				local spacing = i > 1 and "  |  " or ""
+
 				legend_text = legend_text .. spacing .. managers.localization:to_upper_text(legend.string_id, {
 					BTN_UPDATE = managers.localization:btn_macro("menu_update"),
 					BTN_BACK = managers.localization:btn_macro("back")
@@ -950,6 +959,7 @@ function MainMenuGui:set_selected_box(selected)
 
 		if new_box and new_box.panel:tree_visible() then
 			local selected_box = self:_get_selected_box()
+
 			selected_box.selected = false
 
 			self:_update_box_status(selected_box, false)
@@ -1019,7 +1029,7 @@ function MainMenuGui:mouse_moved(o, x, y)
 
 	local used = false
 	local pointer = "arrow"
-	local mouse_over_selected_box = nil
+	local mouse_over_selected_box
 
 	for i = self._max_layer, 1, -1 do
 		if self._boxes_by_layer[i] then
@@ -1146,7 +1156,7 @@ function MainMenuGui:set_enabled(enabled)
 end
 
 function MainMenuGui:unretrieve_box_textures(box)
-	local object = nil
+	local object
 
 	for _, object_name in ipairs(box_objects) do
 		object = box[object_name]

@@ -4,14 +4,14 @@ TankCopActionWalk._walk_anim_velocities = {
 		cbt = {
 			walk = {
 				bwd = 112.85,
-				l = 118.53,
 				fwd = 144,
+				l = 118.53,
 				r = 122.48
 			},
 			run = {
 				bwd = 357.23,
-				l = 287.43,
 				fwd = 361.5,
+				l = 287.43,
 				r = 318.33
 			}
 		}
@@ -26,14 +26,14 @@ TankCopActionWalk._walk_anim_lengths = {
 		cbt = {
 			walk = {
 				bwd = 40,
-				l = 40,
 				fwd = 34,
+				l = 40,
 				r = 38
 			},
 			run = {
 				bwd = 21,
-				l = 20,
 				fwd = 20,
+				l = 20,
 				r = 21
 			}
 		}

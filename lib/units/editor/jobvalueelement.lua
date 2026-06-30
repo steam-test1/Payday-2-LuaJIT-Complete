@@ -19,6 +19,7 @@ function JobValueUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local key_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	panel_sizer:add(key_sizer, 0, 0, "EXPAND")
@@ -97,9 +98,10 @@ function JobValueFilterUnitElement:_build_panel(panel, panel_sizer)
 
 	local help = {
 		panel = panel,
-		sizer = panel_sizer,
-		text = "Key is what to check. Value is what it is supposed to be to pass the filter. Different check types can be used i the value is known to be a number, for example, greater_then checks if the stored value is greater then the input value."
+		sizer = panel_sizer
 	}
+
+	help.text = "Key is what to check. Value is what it is supposed to be to pass the filter. Different check types can be used i the value is known to be a number, for example, greater_then checks if the stored value is greater then the input value."
 
 	self:add_help_text(help)
 end
@@ -124,6 +126,7 @@ function ApplyJobValueUnitElement:init(unit)
 end
 
 function ApplyJobValueUnitElement:update_editing()
+	return
 end
 
 function ApplyJobValueUnitElement:draw_links(t, dt, selected_unit, all_units)
@@ -135,8 +138,8 @@ function ApplyJobValueUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = self._unit,
 				to_unit = unit
@@ -147,8 +150,8 @@ end
 
 function ApplyJobValueUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit then
@@ -171,7 +174,8 @@ function ApplyJobValueUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
-	local names = nil
+
+	local names
 
 	self:_build_add_remove_unit_from_list(panel, panel_sizer, self._hed.elements, names)
 

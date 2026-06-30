@@ -12,7 +12,9 @@ function CivilianLogicTravel.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
+
 	local is_cool = data.unit:movement():cool()
 
 	if is_cool then
@@ -64,7 +66,7 @@ function CivilianLogicTravel.enter(data, new_logic_name, enter_params)
 		my_data.warp_pos = objective.pos
 	end
 
-	local attention_settings = nil
+	local attention_settings
 
 	if is_cool then
 		attention_settings = {
@@ -132,8 +134,7 @@ function CivilianLogicTravel._optimize_path(path)
 	local opt_path = {
 		path[1]
 	}
-	local i = 1
-	local count = 1
+	local i, count = 1, 1
 	local up = math.UP * 4
 
 	while i < #path do
@@ -201,7 +202,7 @@ function CivilianLogicTravel.update(data)
 			my_data.advance_path = CivilianLogicTravel._optimize_path(my_data.advance_path)
 		end
 
-		local end_rot = nil
+		local end_rot
 
 		if my_data.coarse_path_index == #my_data.coarse_path - 1 then
 			end_rot = objective and objective.rot
@@ -209,12 +210,13 @@ function CivilianLogicTravel.update(data)
 
 		local haste = objective and objective.haste or "walk"
 		local new_action_data = {
-			type = "walk",
 			body_part = 2,
+			type = "walk",
 			nav_path = my_data.advance_path,
 			variant = haste,
 			end_rot = end_rot
 		}
+
 		my_data.starting_advance_action = true
 		my_data.advancing = unit:brain():action_request(new_action_data)
 		my_data.starting_advance_action = false
@@ -226,7 +228,7 @@ function CivilianLogicTravel.update(data)
 		end
 	elseif objective then
 		if not my_data.coarse_path then
-			local nav_seg = nil
+			local nav_seg
 
 			if objective.follow_unit then
 				nav_seg = objective.follow_unit:movement():nav_tracker():nav_segment()
@@ -242,7 +244,7 @@ function CivilianLogicTravel.update(data)
 			local cur_index = my_data.coarse_path_index
 			local total_nav_points = #coarse_path
 
-			if cur_index >= total_nav_points then
+			if total_nav_points <= cur_index then
 				objective.in_place = true
 
 				if objective.type ~= "escort" and objective.type ~= "act" and objective.type ~= "follow" and not objective.action_duration then
@@ -255,10 +257,11 @@ function CivilianLogicTravel.update(data)
 			else
 				data.brain:rem_pos_rsrv("path")
 
-				local to_pos = nil
+				local to_pos
 
 				if cur_index == total_nav_points - 1 then
 					local end_pos = CivilianLogicTravel._determine_exact_destination(data, objective)
+
 					to_pos = end_pos
 				else
 					to_pos = coarse_path[cur_index + 1][2]
@@ -278,6 +281,7 @@ end
 
 function CivilianLogicTravel._on_destination_reached(data)
 	local objective = data.objective
+
 	objective.in_place = true
 
 	if objective.type == "free" then
@@ -346,6 +350,7 @@ end
 
 function CivilianLogicTravel._chk_has_old_action(data, my_data)
 	local anim_data = data.unit:anim_data()
+
 	my_data.has_old_action = anim_data.to_idle or anim_data.act and anim_data.needs_idle
 end
 

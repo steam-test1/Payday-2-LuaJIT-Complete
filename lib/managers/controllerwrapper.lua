@@ -11,7 +11,7 @@ end
 function ControllerWrapper:reset_cache(check_time)
 	local reset_cache_time = TimerManager:wall_running():time()
 
-	if (not check_time or self._reset_cache_time < reset_cache_time) and next(self._input_released_cache) then
+	if (not check_time or reset_cache_time > self._reset_cache_time) and next(self._input_released_cache) then
 		self._input_released_cache = {}
 	end
 

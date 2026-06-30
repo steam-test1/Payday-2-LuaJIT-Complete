@@ -35,9 +35,9 @@ function MilestoneItem:init(parent, data, black_bg)
 		icon:set_color(Color.white:with_alpha(0.1))
 
 		local lock = self:fit_bitmap({
+			h = 36,
 			texture = "guis/dlcs/trk/textures/pd2/lock",
-			w = 36,
-			h = 36
+			w = 36
 		})
 		local cx, cy = icon:center()
 
@@ -128,14 +128,15 @@ AchievementMilestoneGui = AchievementMilestoneGui or class(GrowPanel)
 
 function AchievementMilestoneGui:init(parent, back_callback)
 	AchievementMilestoneGui.super.init(self, parent, {
-		padding = 10,
-		layer = 50,
 		border = 10,
 		fixed_w = 550,
-		input = true
+		input = true,
+		layer = 50,
+		padding = 10
 	})
 
 	self._back_callback = back_callback
+
 	local main_placer = self:placer()
 
 	main_placer:add_row(self:fine_text({
@@ -145,10 +146,10 @@ function AchievementMilestoneGui:init(parent, back_callback)
 	}))
 
 	self._list = main_placer:add_row(ScrollableList:new(self, {
-		scrollbar_padding = 10,
-		h = 350,
 		bar_minimum_size = 16,
+		h = 350,
 		input = true,
+		scrollbar_padding = 10,
 		w = self:row_w() + 10
 	}))
 
@@ -161,17 +162,18 @@ function AchievementMilestoneGui:init(parent, back_callback)
 		text_id = "menu_back",
 		font = medium_font,
 		font_size = medium_font_size
-	}, function ()
+	}, function()
 		self._back_callback()
 	end))
 
 	back:set_world_right(canvas:world_right())
 
 	local black_bg = false
-	local last_passed = nil
+	local last_passed
 
 	for _, v in ipairs(managers.achievment:milestones()) do
 		local item = placer:add_row(MilestoneItem:new(canvas, v, black_bg))
+
 		black_bg = not black_bg
 
 		if item._passed then

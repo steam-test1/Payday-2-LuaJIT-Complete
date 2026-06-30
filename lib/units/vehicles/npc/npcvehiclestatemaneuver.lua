@@ -22,6 +22,7 @@ function NpcVehicleStateManeuver:on_exit(npc_driving_ext)
 end
 
 function NpcVehicleStateManeuver:update(npc_driving_ext, t, dt)
+	return
 end
 
 function NpcVehicleStateManeuver:name()
@@ -29,6 +30,7 @@ function NpcVehicleStateManeuver:name()
 end
 
 function NpcVehicleStateManeuver:change_state(npc_driving_ext)
+	return
 end
 
 function NpcVehicleStateManeuver:is_maneuvering()

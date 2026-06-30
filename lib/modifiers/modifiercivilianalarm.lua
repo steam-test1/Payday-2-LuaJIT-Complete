@@ -12,7 +12,7 @@ function ModifierCivilianAlarm:OnCivilianKilled()
 
 	self._body_count = (self._body_count or 0) + 1
 
-	if self:value() < self._body_count then
+	if self._body_count > self:value() then
 		self._alarmed = true
 
 		managers.groupai:state():on_police_called("civ_too_many_killed")

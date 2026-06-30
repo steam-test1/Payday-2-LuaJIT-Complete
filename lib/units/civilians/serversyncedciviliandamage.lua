@@ -1,9 +1,9 @@
 ServerSyncedCivilianDamage = ServerSyncedCivilianDamage or class(CivilianDamage)
 ServerSyncedCivilianDamage._RESULT_INDEX_TABLE = {
-	light_hurt = 2,
-	hurt = 1,
+	death = 4,
 	heavy_hurt = 3,
-	death = 4
+	hurt = 1,
+	light_hurt = 2
 }
 
 function ServerSyncedCivilianDamage:_send_bullet_attack_result(attack_data, attacker, damage_percent, body_index, hit_offset_height)

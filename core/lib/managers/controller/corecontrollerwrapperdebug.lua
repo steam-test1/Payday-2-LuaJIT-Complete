@@ -60,6 +60,7 @@ function ControllerWrapperDebug:rebind_connections(setup, setup_map)
 end
 
 function ControllerWrapperDebug:setup(...)
+	return
 end
 
 function ControllerWrapperDebug:get_any_input(...)
@@ -121,7 +122,7 @@ function ControllerWrapperDebug:get_input_axis(...)
 		if controller_wrapper:connection_exist(...) then
 			local next_input_axis = controller_wrapper:get_input_axis(...)
 
-			if input_axis:length() < next_input_axis:length() then
+			if next_input_axis:length() > input_axis:length() then
 				input_axis = next_input_axis
 			end
 		end

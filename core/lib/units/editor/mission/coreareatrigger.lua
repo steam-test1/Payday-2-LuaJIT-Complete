@@ -76,8 +76,8 @@ function CoreAreaTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 		if self:_should_draw_link(selected_unit, unit) then
 			self:_draw_link({
-				g = 0,
 				b = 0,
+				g = 0,
 				r = 0.75,
 				from_unit = self._unit,
 				to_unit = unit
@@ -92,8 +92,8 @@ function CoreAreaTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 			if alive(unit) then
 				if self:_should_draw_link(selected_unit, unit) then
 					self:_draw_link({
-						g = 0.5,
 						b = 0.75,
+						g = 0.5,
 						r = 0,
 						from_unit = unit,
 						to_unit = self._unit
@@ -168,12 +168,13 @@ function CoreAreaTriggerUnitElement:_check_removed_units(all_units)
 end
 
 function CoreAreaTriggerUnitElement:update_editing()
+	return
 end
 
 function CoreAreaTriggerUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit then
@@ -189,6 +190,7 @@ function CoreAreaTriggerUnitElement:add_element()
 
 		if ray.unit:name():s() == "core/units/mission_elements/trigger_area/trigger_area" or string.find(ray.unit:name():s(), "point_shape", 1, true) then
 			self._hed.use_shape_element_ids = self._hed.use_shape_element_ids or {}
+
 			local id = ray.unit:unit_data().unit_id
 
 			if table.contains(self._hed.use_shape_element_ids, id) then
@@ -204,6 +206,7 @@ function CoreAreaTriggerUnitElement:add_element()
 
 		if string.find(ray.unit:name():s(), "data_instigator_rule", 1, true) then
 			self._hed.rules_element_ids = self._hed.rules_element_ids or {}
+
 			local id = ray.unit:unit_data().unit_id
 
 			if table.contains(self._hed.rules_element_ids, id) then
@@ -219,12 +222,13 @@ function CoreAreaTriggerUnitElement:add_element()
 	end
 
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "body editor",
-		mask = 1
+		mask = 1,
+		ray_type = "body editor"
 	})
 
 	if ray and ray.unit then
 		self._hed.unit_ids = self._hed.unit_ids or {}
+
 		local id = ray.unit:unit_data().unit_id
 
 		if table.contains(self._hed.unit_ids, id) then
@@ -293,6 +297,7 @@ function CoreAreaTriggerUnitElement:_set_shape_type()
 	local is_box = self._hed.shape_type == "box"
 	local is_cylinder = self._hed.shape_type == "cylinder"
 	local uses_external = self._hed.use_shape_element_ids
+
 	is_box = not uses_external and is_box
 	is_cylinder = not uses_external and is_cylinder
 
@@ -362,6 +367,7 @@ function CoreAreaTriggerUnitElement:create_values_ctrlrs(panel, panel_sizer, dis
 
 	if not disable or not disable.instigator then
 		local instigator, _ = self:_build_value_combobox(panel, panel_sizer, "instigator", managers.mission:area_instigator_categories(), "Select an instigator type for the area")
+
 		self._instigator_ctrlr = instigator
 
 		self._instigator_ctrlr:set_enabled(not self._hed.unit_ids)
@@ -406,6 +412,7 @@ function CoreAreaTriggerUnitElement:_build_panel(panel, panel_sizer, disable_par
 		"box",
 		"cylinder"
 	}, "Select shape for area")
+
 	self._shape_type_params = shape_type_params
 
 	if not self._shape then
@@ -422,12 +429,12 @@ function CoreAreaTriggerUnitElement:_build_panel(panel, panel_sizer, disable_par
 	self._width_params = width_params
 
 	width:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "width",
-		property = "width"
+		property = "width",
+		value = "width"
 	})
 	width:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "width",
-		property = "width"
+		property = "width",
+		value = "width"
 	})
 
 	local depth, depth_params = self:_build_value_number(panel, panel_sizer, "depth", {
@@ -440,12 +447,12 @@ function CoreAreaTriggerUnitElement:_build_panel(panel, panel_sizer, disable_par
 	self._depth_params = depth_params
 
 	depth:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "depth",
-		property = "depth"
+		property = "depth",
+		value = "depth"
 	})
 	depth:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "depth",
-		property = "depth"
+		property = "depth",
+		value = "depth"
 	})
 
 	local height, height_params = self:_build_value_number(panel, panel_sizer, "height", {
@@ -458,12 +465,12 @@ function CoreAreaTriggerUnitElement:_build_panel(panel, panel_sizer, disable_par
 	self._height_params = height_params
 
 	height:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "height",
-		property = "height"
+		property = "height",
+		value = "height"
 	})
 	height:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "height",
-		property = "height"
+		property = "height",
+		value = "height"
 	})
 
 	local radius, radius_params = self:_build_value_number(panel, panel_sizer, "radius", {
@@ -476,12 +483,12 @@ function CoreAreaTriggerUnitElement:_build_panel(panel, panel_sizer, disable_par
 	self._radius_params = radius_params
 
 	radius:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "radius",
-		property = "radius"
+		property = "radius",
+		value = "radius"
 	})
 	radius:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "radius",
-		property = "radius"
+		property = "radius",
+		value = "radius"
 	})
 	self:scale_slider(panel, panel_sizer, width_params, "width", "Width scale:")
 	self:scale_slider(panel, panel_sizer, depth_params, "depth", "Depth scale:")
@@ -596,8 +603,8 @@ function CoreAreaOperatorUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 		if draw then
 			self:_draw_link({
-				g = 0.75,
 				b = 0.25,
+				g = 0.75,
 				r = 0.75,
 				from_unit = self._unit,
 				to_unit = unit
@@ -607,12 +614,13 @@ function CoreAreaOperatorUnitElement:draw_links(t, dt, selected_unit, all_units)
 end
 
 function CoreAreaOperatorUnitElement:update_editing()
+	return
 end
 
 function CoreAreaOperatorUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name():s() == "core/units/mission_elements/trigger_area/trigger_area" then
@@ -635,6 +643,7 @@ function CoreAreaOperatorUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local exact_names = {
 		"core/units/mission_elements/trigger_area/trigger_area"
 	}

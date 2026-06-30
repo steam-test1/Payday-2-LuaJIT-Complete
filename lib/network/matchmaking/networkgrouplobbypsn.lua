@@ -36,16 +36,17 @@ function NetworkGroupLobbyPSN:_session_destroyed_cb(room_id)
 end
 
 function NetworkGroupLobbyPSN:destroy()
+	return
 end
 
 function NetworkGroupLobbyPSN:update(time)
-	if self._time_to_leave and self._time_to_leave < TimerManager:wall():time() then
+	if self._time_to_leave and TimerManager:wall():time() > self._time_to_leave then
 		self._time_to_leave = nil
 
 		self:leave_group_lobby_cb()
 	end
 
-	if self._try_time and self._try_time < TimerManager:wall():time() then
+	if self._try_time and TimerManager:wall():time() > self._try_time then
 		self._try_time = nil
 
 		self:leave_group_lobby_cb("join_failed")
@@ -56,6 +57,7 @@ function NetworkGroupLobbyPSN:create_group_lobby()
 	cat_print("lobby", "NetworkGroupLobbyPSN:create_group_lobby()")
 
 	self._players = {}
+
 	local world_list = PSN:get_world_list()
 
 	local function session_created(roomid)
@@ -136,7 +138,8 @@ function NetworkGroupLobbyPSN:_handle_returned_players()
 		cat_print("lobby", "We now have a return callback so now handling players")
 
 		for index, playerid in pairs(self._returned_players) do
-			local v, k = nil
+			local v, k
+
 			k, v = self:find(playerid)
 
 			if k then
@@ -270,9 +273,9 @@ function NetworkGroupLobbyPSN:send_group_lobby_invite(network_friend)
 	if friends then
 		for k, v in pairs(friends) do
 			if tostring(v.friend) == tostring(network_friend) and v.status == 2 and v.info and v.info == managers.platform:presence() then
-				local msg = {
-					join_invite = true
-				}
+				local msg = {}
+
+				msg.join_invite = true
 
 				if not Global.psn_invite_id then
 					Global.psn_invite_id = 1
@@ -291,7 +294,8 @@ function NetworkGroupLobbyPSN:send_group_lobby_invite(network_friend)
 end
 
 function NetworkGroupLobbyPSN:kick_player(player_id, timeout)
-	local v, k, rpc = nil
+	local v, k, rpc
+
 	k, v = self:find(player_id)
 
 	if k and v.rpc then
@@ -330,6 +334,7 @@ function NetworkGroupLobbyPSN:start_game()
 end
 
 function NetworkGroupLobbyPSN:end_game()
+	return
 end
 
 function NetworkGroupLobbyPSN:ingame_start_game()
@@ -420,32 +425,32 @@ function NetworkGroupLobbyPSN:resync_screen()
 	managers.network:bind_port()
 
 	if self:is_group_leader() then
-		local playerinfo = {
-			name = managers.network.account:username(),
-			player_id = managers.network.account:player_id(),
-			group_id = tostring(self._room_id),
-			rpc = Network:self("TCP_IP")
-		}
+		local playerinfo = {}
+
+		playerinfo.name = managers.network.account:username()
+		playerinfo.player_id = managers.network.account:player_id()
+		playerinfo.group_id = tostring(self._room_id)
+		playerinfo.rpc = Network:self("TCP_IP")
 
 		self:_call_callback("player_joined", playerinfo)
 	else
-		local playerinfo = {
-			name = managers.network.account:username(),
-			player_id = managers.network.account:player_id(),
-			group_id = tostring(self._room_id),
-			rpc = Network:self("TCP_IP")
-		}
+		local playerinfo = {}
+
+		playerinfo.name = managers.network.account:username()
+		playerinfo.player_id = managers.network.account:player_id()
+		playerinfo.group_id = tostring(self._room_id)
+		playerinfo.rpc = Network:self("TCP_IP")
 
 		self:_call_callback("player_joined", playerinfo)
 	end
 
 	for k, v in pairs(self._players) do
-		local playerinfo = {
-			name = v.name,
-			player_id = v.pnid,
-			group_id = v.group,
-			rpc = v.rpc
-		}
+		local playerinfo = {}
+
+		playerinfo.name = v.name
+		playerinfo.player_id = v.pnid
+		playerinfo.group_id = v.group
+		playerinfo.rpc = v.rpc
 
 		self:_call_callback("player_joined", playerinfo)
 	end
@@ -473,15 +478,14 @@ function NetworkGroupLobbyPSN:_save_global()
 		Global.psn = {}
 	end
 
-	Global.psn.group = {
-		room_id = self._room_id,
-		inlobby = self._inlobby,
-		is_server = self._is_server_var,
-		is_client = self._is_client_var,
-		players = self._players,
-		server_rpc = self._server_rpc,
-		_returned_players = self._returned_players
-	}
+	Global.psn.group = {}
+	Global.psn.group.room_id = self._room_id
+	Global.psn.group.inlobby = self._inlobby
+	Global.psn.group.is_server = self._is_server_var
+	Global.psn.group.is_client = self._is_client_var
+	Global.psn.group.players = self._players
+	Global.psn.group.server_rpc = self._server_rpc
+	Global.psn.group._returned_players = self._returned_players
 end
 
 function NetworkGroupLobbyPSN:_call_callback(name, ...)
@@ -527,7 +531,8 @@ function NetworkGroupLobbyPSN:_created_group_lobby(room_id)
 		return
 	end
 
-	PSN:set_matchmaking_callback("session_created", function ()
+	PSN:set_matchmaking_callback("session_created", function()
+		return
 	end)
 	self:_call_callback("created_group")
 	cat_print("lobby", "NetworkGroupLobbyPSN:_created_group_lobby()")
@@ -544,18 +549,19 @@ function NetworkGroupLobbyPSN:_created_group_lobby(room_id)
 	managers.network:bind_port()
 	managers.network.voice_chat:open_session(self._room_id)
 
-	local playerinfo = {
-		name = managers.network.account:username(),
-		player_id = managers.network.account:player_id(),
-		group_id = tostring(room_id),
-		rpc = Network:self("TCP_IP")
-	}
+	local playerinfo = {}
+
+	playerinfo.name = managers.network.account:username()
+	playerinfo.player_id = managers.network.account:player_id()
+	playerinfo.group_id = tostring(room_id)
+	playerinfo.rpc = Network:self("TCP_IP")
 
 	self:_call_callback("player_joined", playerinfo)
 end
 
 function NetworkGroupLobbyPSN:_clear_psn_callback(cb)
 	local function f()
+		return
 	end
 
 	PSN:set_matchmaking_callback(cb, f)
@@ -596,17 +602,18 @@ function NetworkGroupLobbyPSN:_server_alive(server)
 end
 
 function NetworkGroupLobbyPSN:_register_player(name, pnid, group, rpc, is_server)
-	if self.OPEN_SLOTS <= #self._players + 1 then
+	if #self._players + 1 >= self.OPEN_SLOTS then
 		return
 	end
 
 	self._try_time = nil
-	local new_player = {
-		name = name,
-		pnid = pnid,
-		playerid = pnid,
-		group = group
-	}
+
+	local new_player = {}
+
+	new_player.name = name
+	new_player.pnid = pnid
+	new_player.playerid = pnid
+	new_player.group = group
 
 	if self:_is_server() then
 		new_player.rpc = rpc
@@ -640,12 +647,12 @@ function NetworkGroupLobbyPSN:_register_player(name, pnid, group, rpc, is_server
 		MPFriendsScreen.instance:reset_list()
 	end
 
-	local playerinfo = {
-		name = name,
-		player_id = pnid,
-		group_id = group,
-		rpc = rpc
-	}
+	local playerinfo = {}
+
+	playerinfo.name = name
+	playerinfo.player_id = pnid
+	playerinfo.group_id = group
+	playerinfo.rpc = rpc
 
 	self:_call_callback("player_joined", playerinfo)
 end

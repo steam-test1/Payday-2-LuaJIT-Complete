@@ -16,37 +16,37 @@ local function HUDBGBox_create_ex(panel, config)
 	local blend_mode = config and config.blend_mode
 
 	box_panel:rect({
-		blend_mode = "normal",
-		name = "bg",
-		halign = "grow",
 		alpha = 0.4,
+		blend_mode = "normal",
+		halign = "grow",
 		layer = -1,
+		name = "bg",
 		valign = "grow",
 		color = bg_color
 	})
 
 	local left_top = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "left_top",
-		visible = true,
-		layer = 0,
-		y = 0,
 		halign = "left",
-		x = 0,
+		layer = 0,
+		name = "left_top",
+		texture = "guis/textures/pd2/hud_corner",
 		valign = "top",
+		visible = true,
+		x = 0,
+		y = 0,
 		color = color,
 		blend_mode = blend_mode
 	})
 	local left_bottom = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "left_bottom",
-		visible = true,
+		halign = "left",
 		layer = 0,
+		name = "left_bottom",
+		rotation = -90,
+		texture = "guis/textures/pd2/hud_corner",
+		valign = "bottom",
+		visible = true,
 		x = 0,
 		y = 0,
-		halign = "left",
-		rotation = -90,
-		valign = "bottom",
 		color = color,
 		blend_mode = blend_mode
 	})
@@ -54,15 +54,15 @@ local function HUDBGBox_create_ex(panel, config)
 	left_bottom:set_bottom(box_panel:h())
 
 	local right_top = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "right_top",
-		visible = true,
+		halign = "right",
 		layer = 0,
+		name = "right_top",
+		rotation = 90,
+		texture = "guis/textures/pd2/hud_corner",
+		valign = "top",
+		visible = true,
 		x = 0,
 		y = 0,
-		halign = "right",
-		rotation = 90,
-		valign = "top",
 		color = color,
 		blend_mode = blend_mode
 	})
@@ -70,15 +70,15 @@ local function HUDBGBox_create_ex(panel, config)
 	right_top:set_right(box_panel:w())
 
 	local right_bottom = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "right_bottom",
-		visible = true,
+		halign = "right",
 		layer = 0,
+		name = "right_bottom",
+		rotation = 180,
+		texture = "guis/textures/pd2/hud_corner",
+		valign = "bottom",
+		visible = true,
 		x = 0,
 		y = 0,
-		halign = "right",
-		rotation = 180,
-		valign = "bottom",
 		color = color,
 		blend_mode = blend_mode
 	})
@@ -105,6 +105,7 @@ local function animate_open(panel, done_cb)
 		coroutine.yield()
 
 		local dt = TimerManager:main():delta_time()
+
 		t = t - dt
 
 		panel:set_w((1 - t / TOTAL_T) * target_w)
@@ -124,6 +125,7 @@ local function animate_close(panel, done_cb)
 		coroutine.yield()
 
 		local dt = TimerManager:main():delta_time()
+
 		t = t - dt
 
 		panel:set_w(t / TOTAL_T * cw)
@@ -136,10 +138,11 @@ end
 local function wait_global(seconds)
 	local t = 0
 
-	while seconds > t do
+	while t < seconds do
 		coroutine.yield()
 
 		local dt = TimerManager:main():delta_time()
+
 		t = t + dt
 	end
 end
@@ -182,6 +185,7 @@ function HudChallengeNotification:init(title, text, icon, rewards, queue)
 
 	self._queue = queue or {}
 	self._top = ExtendedPanel:new(self)
+
 	local title = self._top:fine_text({
 		layer = 1,
 		text = title or "ACHIEVEMENT UNLOCKED!",
@@ -199,12 +203,14 @@ function HudChallengeNotification:init(title, text, icon, rewards, queue)
 	})
 
 	local box_size = (icon and self.ICON_SIZE * 2 or self.ICON_SIZE) + math.max(180, self._top:w())
+
 	self._box = GrowPanel:new(self, {
-		padding = 4,
 		border = 4,
+		padding = 4,
 		w = box_size,
 		y = self._top:bottom()
 	})
+
 	local placer = self._box:placer()
 	local icon_texture, icon_texture_rect = tweak_data.hud_icons:get_icon_or(icon, nil)
 
@@ -221,8 +227,8 @@ function HudChallengeNotification:init(title, text, icon, rewards, queue)
 	end
 
 	local description = self._box:fine_text({
-		wrap = true,
 		word_wrap = true,
+		wrap = true,
 		text = text,
 		font = medium_font,
 		font_size = medium_font_size,
@@ -240,8 +246,8 @@ function HudChallengeNotification:init(title, text, icon, rewards, queue)
 			y = description:bottom() + (i - 1) * 32
 		})
 		local reward_icon = reward_panel:bitmap({
-			w = 32,
 			h = 32,
+			w = 32,
 			texture = reward.texture
 		})
 		local reward_text = managers.localization:text(reward.name_id)
@@ -275,11 +281,11 @@ function HudChallengeNotification:init(title, text, icon, rewards, queue)
 	self._box_bg:set_shape(self._box:shape())
 	HUDBGBox_create_ex(self._box_bg)
 	self._box:set_visible(false)
-	self._box_bg:animate(animate_open, function ()
+	self._box_bg:animate(animate_open, function()
 		self._box:set_visible(true)
 		wait_global(2)
 		self._box:set_visible(false)
-		self._box_bg:animate(animate_close, function ()
+		self._box_bg:animate(animate_close, function()
 			self:close()
 		end)
 	end)

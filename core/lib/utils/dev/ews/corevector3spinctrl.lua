@@ -15,11 +15,15 @@ function Vector3SpinCtrl:init(parent, min, max, step, value, name, dec, style)
 	self._value = value or self._min
 	self._name = name or ""
 	self._style = style or ""
+
 	local s = string.find(self._style, "V3_VERTICAL")
 	local layout = s and "VERTICAL" or "HORIZONTAL"
 	local vec_3_type = not string.find(self._style, "VECTOR2TYPE")
+
 	self._panel = EWS:Panel(parent)
+
 	local box = EWS:StaticBoxSizer(self._panel, layout, self._name)
+
 	self._x = CoreFloatSpinCtrl.FloatSpinCtrl:new(self._panel, self._min.x, self._max.x, self._step, self._value.x, self._dec, self._style)
 
 	self._x:connect("", "EVT_FLOAT_SPIN_CTRL_UPDATED", callback(self, self, "_updated"), "")

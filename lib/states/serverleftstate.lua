@@ -31,6 +31,7 @@ function ServerLeftState:at_enter(...)
 end
 
 function ServerLeftState:on_server_left()
+	return
 end
 
 function ServerLeftState:_create_server_left_dialog()

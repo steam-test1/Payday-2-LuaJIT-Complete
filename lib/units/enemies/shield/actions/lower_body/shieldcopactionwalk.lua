@@ -4,20 +4,20 @@ ShieldCopActionWalk._walk_anim_velocities = {
 		cbt = {
 			walk = {
 				bwd = 208,
-				l = 227.5,
 				fwd = 242.75,
+				l = 227.5,
 				r = 208.75
 			},
 			run = {
 				bwd = 281.88,
-				l = 364.29,
 				fwd = 342.5,
+				l = 364.29,
 				r = 361.25
 			},
 			sprint = {
 				bwd = 451,
-				l = 582.86,
 				fwd = 548,
+				l = 582.86,
 				r = 578
 			}
 		}
@@ -32,26 +32,26 @@ ShieldCopActionWalk._walk_anim_lengths = {
 		cbt = {
 			walk = {
 				bwd = 24,
-				l = 26,
 				fwd = 28,
+				l = 26,
 				r = 26
 			},
 			run = {
 				bwd = 16,
-				l = 21,
 				fwd = 18,
+				l = 21,
 				r = 21
 			},
 			sprint = {
 				bwd = 16,
-				l = 21,
 				fwd = 18,
+				l = 21,
 				r = 21
 			},
 			run_start = {
 				bwd = 26,
-				l = 27,
 				fwd = 31,
+				l = 27,
 				r = 29
 			},
 			run_start_turn = {
@@ -61,8 +61,8 @@ ShieldCopActionWalk._walk_anim_lengths = {
 			},
 			run_stop = {
 				bwd = 29,
-				l = 34,
 				fwd = 28,
+				l = 34,
 				r = 30
 			}
 		}

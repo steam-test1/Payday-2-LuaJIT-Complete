@@ -4,546 +4,547 @@ function GuiTweakData:init(tweak_data)
 	local is_win_32 = SystemInfo:platform() == Idstring("WIN32")
 	local is_nextgen = SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1")
 	local soundtrack = {
-		store = 254260,
-		name_id = "menu_content_soundtrack",
-		id = "soundtrack",
 		date_id = "menu_content_soundtrack_date",
+		desc_id = "menu_content_soundtrack_desc",
+		id = "soundtrack",
 		image = "guis/textures/pd2/content_updates/soundtrack",
-		desc_id = "menu_content_soundtrack_desc"
+		name_id = "menu_content_soundtrack",
+		store = 254260
 	}
 	local diamond_store = {
-		store = 274160,
-		name_id = "menu_content_diamond_store",
-		id = "diamond_store",
 		date_id = "menu_content_diamond_store_date",
+		desc_id = "menu_content_diamond_store_desc",
+		id = "diamond_store",
 		image = "guis/textures/pd2/content_updates/diamond_store",
-		desc_id = "menu_content_diamond_store_desc"
+		name_id = "menu_content_diamond_store",
+		store = 274160
 	}
 	local birthday = {
-		webpage = "https://www.paydaythegame.com/static/payday2/birthday/",
-		name_id = "menu_content_birthday",
-		id = "birthday",
 		date_id = "menu_content_birthday_date",
+		desc_id = "menu_content_birthday_desc",
+		id = "birthday",
 		image = "guis/textures/pd2/content_updates/birthday",
-		desc_id = "menu_content_birthday_desc"
+		name_id = "menu_content_birthday",
+		webpage = "https://www.paydaythegame.com/static/payday2/birthday/"
 	}
 	local halloween = {
-		webpage = "https://www.paydaythegame.com/static/payday2/helltopay/",
-		name_id = "menu_content_halloween",
-		id = "halloween",
 		date_id = "menu_content_halloween_date",
+		desc_id = "menu_content_halloween_desc",
+		id = "halloween",
 		image = "guis/textures/pd2/content_updates/halloween",
-		desc_id = "menu_content_halloween_desc"
+		name_id = "menu_content_halloween",
+		webpage = "https://www.paydaythegame.com/static/payday2/helltopay/"
 	}
 	local armored_transport = {
-		store = 264610,
-		name_id = "menu_content_armored_transport",
-		id = "armored_transport",
 		date_id = "menu_content_armored_transport_date",
+		desc_id = "menu_content_armored_transport_desc",
+		id = "armored_transport",
 		image = "guis/textures/pd2/content_updates/armored_transport",
-		desc_id = "menu_content_armored_transport_desc"
+		name_id = "menu_content_armored_transport",
+		store = 264610
 	}
 	local gage_pack = {
-		store = 267380,
-		name_id = "menu_content_gage_pack",
-		id = "gage_pack",
 		date_id = "menu_content_gage_pack_date",
+		desc_id = "menu_content_gage_pack_desc",
+		id = "gage_pack",
 		image = "guis/textures/pd2/content_updates/gage_pack",
-		desc_id = "menu_content_gage_pack_desc"
+		name_id = "menu_content_gage_pack",
+		store = 267380
 	}
 	local charliesierra = {
-		store = 271110,
-		name_id = "menu_content_charliesierra",
-		id = "charliesierra",
 		date_id = "menu_content_charliesierra_date",
+		desc_id = "menu_content_charliesierra_desc",
+		id = "charliesierra",
 		image = "guis/textures/pd2/content_updates/charliesierra",
-		desc_id = "menu_content_charliesierra_desc"
+		name_id = "menu_content_charliesierra",
+		store = 271110
 	}
 	local christmas = {
-		store = 267381,
-		name_id = "menu_content_christmas",
-		id = "christmas",
 		date_id = "menu_content_christmas_date",
+		desc_id = "menu_content_christmas_desc",
+		id = "christmas",
 		image = "guis/textures/pd2/content_updates/christmas",
-		desc_id = "menu_content_christmas_desc"
+		name_id = "menu_content_christmas",
+		store = 267381
 	}
 	local infamy = {
-		store = 274161,
-		name_id = "menu_content_infamy",
-		id = "infamy",
 		date_id = "menu_content_infamy_date",
+		desc_id = "menu_content_infamy_desc",
+		id = "infamy",
 		image = "guis/textures/pd2/content_updates/infamy_introduction",
-		desc_id = "menu_content_infamy_desc"
+		name_id = "menu_content_infamy",
+		store = 274161
 	}
 	local gage_pack_lmg = {
-		store = 275590,
-		name_id = "menu_content_gage_pack_lmg",
-		id = "gage_pack_lmg",
 		date_id = "menu_content_gage_pack_lmg_date",
+		desc_id = "menu_content_gage_pack_lmg_desc",
+		id = "gage_pack_lmg",
 		image = "guis/textures/pd2/content_updates/gage_pack_lmg",
-		desc_id = "menu_content_gage_pack_lmg_desc"
+		name_id = "menu_content_gage_pack_lmg",
+		store = 275590
 	}
 	local deathwish = {
-		store = 284430,
-		name_id = "menu_content_deathwish",
-		id = "deathwish",
 		date_id = "menu_content_deathwish_date",
+		desc_id = "menu_content_deathwish_desc",
+		id = "deathwish",
 		image = "guis/textures/pd2/content_updates/deathwish",
-		desc_id = "menu_content_deathwish_desc"
+		name_id = "menu_content_deathwish",
+		store = 284430
 	}
 	local election_day = {
-		store = 288900,
-		name_id = "menu_content_election_day",
-		id = "election_day",
 		date_id = "menu_content_election_day_date",
+		desc_id = "menu_content_election_day_desc",
+		id = "election_day",
 		image = "guis/textures/pd2/content_updates/election_day",
-		desc_id = "menu_content_election_day_desc"
+		name_id = "menu_content_election_day",
+		store = 288900
 	}
 	local gage_pack_jobs = {
-		store = 259381,
-		name_id = "menu_content_gage_pack_jobs",
-		id = "gage_pack_jobs",
 		date_id = "menu_content_gage_pack_jobs_date",
+		desc_id = "menu_content_gage_pack_jobs_desc",
+		id = "gage_pack_jobs",
 		image = "guis/textures/pd2/content_updates/gage_pack_jobs",
-		desc_id = "menu_content_gage_pack_jobs_desc"
+		name_id = "menu_content_gage_pack_jobs",
+		store = 259381
 	}
 	local gage_pack_snp = {
-		store = 259380,
-		name_id = "menu_content_gage_pack_snp",
-		id = "gage_pack_snp",
 		date_id = "menu_content_gage_pack_snp_date",
+		desc_id = "menu_content_gage_pack_snp_desc",
+		id = "gage_pack_snp",
 		image = "guis/textures/pd2/content_updates/gage_pack_snp",
-		desc_id = "menu_content_gage_pack_snp_desc"
+		name_id = "menu_content_gage_pack_snp",
+		store = 259380
 	}
 	local kosugi = {
-		store = 267382,
-		name_id = "menu_content_kosugi",
-		id = "kosugi",
 		date_id = "menu_content_kosugi_date",
+		desc_id = "menu_content_kosugi_desc",
+		id = "kosugi",
 		image = "guis/textures/pd2/content_updates/kosugi",
-		desc_id = "menu_content_kosugi_desc"
+		name_id = "menu_content_kosugi",
+		store = 267382
 	}
 	local big_bank = {
-		store = 306690,
-		name_id = "menu_content_big_bank",
-		id = "big_bank",
 		date_id = "menu_content_big_bank_date",
+		desc_id = "menu_content_big_bank_desc",
+		id = "big_bank",
 		image = "guis/dlcs/big_bank/textures/pd2/content_updates/big_bank",
-		desc_id = "menu_content_big_bank_desc"
+		name_id = "menu_content_big_bank",
+		store = 306690
 	}
 	local gage_pack_shotgun = {
-		store = 311050,
-		name_id = "menu_content_gage_pack_shotgun",
-		id = "gage_pack_shotgun",
 		date_id = "menu_content_gage_pack_shotgun_date",
+		desc_id = "menu_content_gage_pack_shotgun_desc",
+		id = "gage_pack_shotgun",
 		image = "guis/dlcs/gage_pack_shotgun/textures/pd2/content_updates/gage_pack_shotgun",
-		desc_id = "menu_content_gage_pack_shotgun_desc"
+		name_id = "menu_content_gage_pack_shotgun",
+		store = 311050
 	}
 	local gage_pack_assault = {
-		store = 320030,
-		name_id = "menu_content_gage_pack_assault",
-		id = "gage_pack_assault",
 		date_id = "menu_content_gage_pack_assault_date",
+		desc_id = "menu_content_gage_pack_assault_desc",
+		id = "gage_pack_assault",
 		image = "guis/dlcs/gage_pack_assault/textures/pd2/content_updates/gage_pack_assault",
-		desc_id = "menu_content_gage_pack_assault_desc"
+		name_id = "menu_content_gage_pack_assault",
+		store = 320030
 	}
 	local jukebox = {
-		webpage = "https://www.paydaythegame.com/static/payday2/bigfatmusicupdate/",
-		name_id = "menu_content_jukebox",
-		id = "jukebox",
 		date_id = "menu_content_jukebox_date",
+		desc_id = "menu_content_jukebox_desc",
+		id = "jukebox",
 		image = "guis/textures/pd2/content_updates/jukebox",
-		desc_id = "menu_content_jukebox_desc"
+		name_id = "menu_content_jukebox",
+		webpage = "https://www.paydaythegame.com/static/payday2/bigfatmusicupdate/"
 	}
 	local hl_miami = {
-		store = 323500,
-		name_id = "menu_content_hl_miami",
-		id = "hl_miami",
 		date_id = "menu_content_hl_miami_date",
+		desc_id = "menu_content_hl_miami_desc",
+		id = "hl_miami",
 		image = "guis/dlcs/hl_miami/textures/pd2/content_updates/hl_miami",
-		desc_id = "menu_content_hl_miami_desc"
+		name_id = "menu_content_hl_miami",
+		store = 323500
 	}
 	local crimefest = {
-		webpage = "https://www.paydaythegame.com/static/payday2/crimefest/mrated.html",
-		name_id = "menu_content_crimefest",
-		id = "crimefest",
 		date_id = "menu_content_crimefest_date",
+		desc_id = "menu_content_crimefest_desc",
+		id = "crimefest",
 		image = "guis/textures/pd2/content_updates/crimefest",
-		desc_id = "menu_content_crimefest_desc"
+		name_id = "menu_content_crimefest",
+		webpage = "https://www.paydaythegame.com/static/payday2/crimefest/mrated.html"
 	}
 	local jowi = {
-		store = 330010,
-		name_id = "menu_content_jowi",
-		id = "jowi",
 		date_id = "menu_content_jowi_date",
+		desc_id = "menu_content_jowi_desc",
+		id = "jowi",
 		image = "guis/textures/pd2/content_updates/jowi",
-		desc_id = "menu_content_jowi_desc"
+		name_id = "menu_content_jowi",
+		store = 330010
 	}
 	local hoxton_char = {
-		store = 330490,
-		name_id = "menu_content_hoxton_char",
-		id = "hoxton_char",
 		date_id = "menu_content_hoxton_char_date",
+		desc_id = "menu_content_hoxton_char_desc",
+		id = "hoxton_char",
 		image = "guis/textures/pd2/content_updates/hoxton_char",
-		desc_id = "menu_content_hoxton_char_desc"
+		name_id = "menu_content_hoxton_char",
+		store = 330490
 	}
 	local hoxton_job = {
-		store = 330491,
-		name_id = "menu_content_hoxton_job",
-		id = "hoxton_job",
 		date_id = "menu_content_hoxton_job_date",
+		desc_id = "menu_content_hoxton_job_desc",
+		id = "hoxton_job",
 		image = "guis/textures/pd2/content_updates/hoxton_job",
-		desc_id = "menu_content_hoxton_job_desc"
+		name_id = "menu_content_hoxton_job",
+		store = 330491
 	}
 	local halloween_2014 = {
-		webpage = "https://www.paydaythegame.com/static/payday2/halloween/",
-		name_id = "menu_content_halloween_2014",
-		id = "halloween_2014",
 		date_id = "menu_content_halloween_2014_date",
+		desc_id = "menu_content_halloween_2014_desc",
+		id = "halloween_2014",
 		image = "guis/textures/pd2/content_updates/halloween_2014",
-		desc_id = "menu_content_halloween_2014_desc"
+		name_id = "menu_content_halloween_2014",
+		webpage = "https://www.paydaythegame.com/static/payday2/halloween/"
 	}
 	local gage_pack_historical = {
-		store = 331900,
-		name_id = "menu_content_gage_pack_historical",
-		id = "gage_pack_historical",
 		date_id = "menu_content_gage_pack_historical_date",
+		desc_id = "menu_content_gage_pack_historical_desc",
+		id = "gage_pack_historical",
 		image = "guis/dlcs/gage_pack_historical/textures/pd2/content_updates/gage_pack_historical",
-		desc_id = "menu_content_gage_pack_historical_desc"
+		name_id = "menu_content_gage_pack_historical",
+		store = 331900
 	}
 	local christmas_2014 = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/whitechristmas/",
-		name_id = "menu_content_christmas_2014",
-		id = "christmas_2014",
 		date_id = "menu_content_christmas_2014_date",
+		desc_id = "menu_content_christmas_2014_desc",
+		id = "christmas_2014",
 		image = "guis/dlcs/pines/textures/pd2/content_updates/christmas_2014",
-		desc_id = "menu_content_christmas_2014_desc"
+		name_id = "menu_content_christmas_2014",
+		webpage = "https://www.paydaythegame.com/payday2/updates/whitechristmas/"
 	}
 	local character_pack_clover = {
-		store = 337661,
-		name_id = "menu_content_character_pack_clover",
-		id = "character_pack_clover",
 		date_id = "menu_content_character_pack_clover_date",
+		desc_id = "menu_content_character_pack_clover_desc",
+		id = "character_pack_clover",
 		image = "guis/dlcs/character_pack_clover/textures/pd2/content_updates/character_pack_clover",
-		desc_id = "menu_content_character_pack_clover_desc"
+		name_id = "menu_content_character_pack_clover",
+		store = 337661
 	}
 	local hope_diamond = {
-		store = 337660,
-		name_id = "menu_content_hope_diamond",
-		id = "hope_diamond",
 		date_id = "menu_content_hope_diamond_date",
+		desc_id = "menu_content_hope_diamond_desc",
+		id = "hope_diamond",
 		image = "guis/dlcs/character_pack_clover/textures/pd2/content_updates/hope_diamond",
-		desc_id = "menu_content_hope_diamond_desc"
+		name_id = "menu_content_hope_diamond",
+		store = 337660
 	}
 	local hw_boxing = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/happynewyear/",
-		name_id = "menu_content_hw_boxing",
-		id = "hw_boxing",
 		date_id = "menu_content_hw_boxing_date",
+		desc_id = "menu_content_hw_boxing_desc",
+		id = "hw_boxing",
 		image = "guis/dlcs/pd2_hw_boxing/textures/pd2/content_updates/hw_boxing",
-		desc_id = "menu_content_hw_boxing_desc"
+		name_id = "menu_content_hw_boxing",
+		webpage = "https://www.paydaythegame.com/payday2/updates/happynewyear/"
 	}
 	local character_pack_dragan = {
-		store = 344140,
-		name_id = "menu_content_character_pack_dragan",
-		id = "character_pack_dragan",
 		date_id = "menu_content_character_pack_dragan_date",
+		desc_id = "menu_content_character_pack_dragan_desc",
+		id = "character_pack_dragan",
 		image = "guis/dlcs/character_pack_dragan/textures/pd2/content_updates/dragan",
-		desc_id = "menu_content_character_pack_dragan_desc"
+		name_id = "menu_content_character_pack_dragan",
+		store = 344140
 	}
 	local the_bomb = {
-		store = 339480,
-		name_id = "menu_content_the_bomb",
-		id = "the_bomb",
 		date_id = "menu_content_the_bomb_date",
+		desc_id = "menu_content_the_bomb_desc",
+		id = "the_bomb",
 		image = "guis/dlcs/the_bomb/textures/pd2/content_updates/the_bomb",
-		desc_id = "menu_content_the_bomb_desc"
+		name_id = "menu_content_the_bomb",
+		store = 339480
 	}
 	local akm4_pack = {
-		store = 351890,
-		name_id = "menu_content_akm4_pack",
-		id = "akm4_pack",
 		date_id = "menu_content_akm4_pack_date",
+		desc_id = "menu_content_akm4_pack_desc",
+		id = "akm4_pack",
 		image = "guis/dlcs/dlc_akm4/textures/pd2/content_updates/akm4_pack",
-		desc_id = "menu_content_akm4_pack_desc"
+		name_id = "menu_content_akm4_pack",
+		store = 351890
 	}
 	local infamy_2_0 = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/infamy2/",
-		name_id = "menu_content_infamy_2_0",
-		id = "infamy_2_0",
 		date_id = "menu_content_infamy_2_0_date",
+		desc_id = "menu_content_infamy_2_0_desc",
+		id = "infamy_2_0",
 		image = "guis/dlcs/infamous/textures/pd2/content_updates/infamy_2_0",
-		desc_id = "menu_content_infamy_2_0_desc"
+		name_id = "menu_content_infamy_2_0",
+		webpage = "https://www.paydaythegame.com/payday2/updates/infamy2/"
 	}
 	local overkill_pack = {
-		store = 348090,
-		name_id = "menu_content_overkill_pack",
-		id = "overkill_pack",
 		date_id = "menu_content_overkill_pack_date",
+		desc_id = "menu_content_overkill_pack_desc",
+		id = "overkill_pack",
 		image = "guis/dlcs/dlc_pack_overkill/textures/pd2/content_updates/overkill_pack",
-		desc_id = "menu_content_overkill_pack_desc"
+		name_id = "menu_content_overkill_pack",
+		store = 348090
 	}
 	local complete_overkill_pack = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/thehypetrain/",
-		name_id = "menu_content_complete_overkill_pack",
-		id = "complete_overkill_pack",
 		date_id = "menu_content_complete_overkill_pack_date",
+		desc_id = "menu_content_complete_overkill_pack_desc",
+		id = "complete_overkill_pack",
 		image = "guis/dlcs/dlc_pack_overkill/textures/pd2/content_updates/complete_overkill_pack",
-		desc_id = "menu_content_complete_overkill_pack_desc"
+		name_id = "menu_content_complete_overkill_pack",
+		webpage = "https://www.paydaythegame.com/payday2/updates/thehypetrain/"
 	}
 	local hlm2 = {
-		store = 274170,
-		name_id = "menu_content_hlm2",
-		id = "hlm2",
 		date_id = "menu_content_hlm2_date",
+		desc_id = "menu_content_hlm2_desc",
+		id = "hlm2",
 		image = "guis/dlcs/hlm2/textures/pd2/content_updates/hlm2",
-		desc_id = "menu_content_hlm2_desc"
+		name_id = "menu_content_hlm2",
+		store = 274170
 	}
 	local hlm2_deluxe = {
-		store = 274170,
-		name_id = "menu_content_hlm2_deluxe",
-		id = "hlm2_deluxe",
 		date_id = "menu_content_hlm2_deluxe_date",
+		desc_id = "menu_content_hlm2_deluxe_desc",
+		id = "hlm2_deluxe",
 		image = "guis/dlcs/hlm2/textures/pd2/content_updates/hlm2_deluxe",
-		desc_id = "menu_content_hlm2_deluxe_desc"
+		name_id = "menu_content_hlm2_deluxe",
+		store = 274170
 	}
 	local bbq = {
-		store = 337661,
-		name_id = "menu_content_bbq",
-		id = "bbq",
-		webpage = "https://www.paydaythegame.com/payday2/updates/bbq/",
 		date_id = "menu_content_bbq_date",
+		desc_id = "menu_content_bbq_desc",
+		id = "bbq",
 		image = "guis/textures/pd2/content_updates/bbq",
-		desc_id = "menu_content_bbq_desc"
+		name_id = "menu_content_bbq",
+		store = 337661,
+		webpage = "https://www.paydaythegame.com/payday2/updates/bbq/"
 	}
 	local springbreak = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/springbreak/",
-		name_id = "menu_content_springbreak",
-		id = "springbreak",
 		date_id = "menu_content_springbreak_date",
+		desc_id = "menu_content_springbreak_desc",
+		id = "springbreak",
 		image = "guis/textures/pd2/content_updates/springbreak",
-		desc_id = "menu_content_springbreak_desc"
+		name_id = "menu_content_springbreak",
+		webpage = "https://www.paydaythegame.com/payday2/updates/springbreak/"
 	}
 	local bbq = {
-		store = 358150,
-		name_id = "menu_content_bbq",
-		id = "bbq",
 		date_id = "menu_content_bbq_date",
+		desc_id = "menu_content_bbq_desc",
+		id = "bbq",
 		image = "guis/dlcs/bbq/textures/pd2/content_updates/bbq",
-		desc_id = "menu_content_bbq_desc"
+		name_id = "menu_content_bbq",
+		store = 358150
 	}
 	local fpsanimation = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/animations-update/",
-		name_id = "menu_content_fpsanimation",
-		id = "fpsanimation",
 		date_id = "menu_content_fpsanimation_date",
+		desc_id = "menu_content_fpsanimation_desc",
+		id = "fpsanimation",
 		image = "guis/textures/pd2/content_updates/fpsanimation",
-		desc_id = "menu_content_fpsanimation_desc"
+		name_id = "menu_content_fpsanimation",
+		webpage = "https://www.paydaythegame.com/payday2/updates/animations-update/"
 	}
 	local springcleaning = {
-		webpage = "https://steamcommunity.com/games/218620/announcements/detail/177107167839449807",
-		name_id = "menu_content_springcleaning",
-		id = "springcleaning",
 		date_id = "menu_content_springcleaning_date",
+		desc_id = "menu_content_springcleaning_desc",
+		id = "springcleaning",
 		image = "guis/textures/pd2/content_updates/springcleaning",
-		desc_id = "menu_content_springcleaning_desc"
+		name_id = "menu_content_springcleaning",
+		webpage = "https://steamcommunity.com/games/218620/announcements/detail/177107167839449807"
 	}
 	local west = {
-		store = 349830,
-		name_id = "menu_content_west",
-		id = "west",
 		date_id = "menu_content_west_date",
+		desc_id = "menu_content_west_desc",
+		id = "west",
 		image = "guis/dlcs/west/textures/pd2/content_updates/west",
-		desc_id = "menu_content_west_desc"
+		name_id = "menu_content_west",
+		store = 349830
 	}
 	local bsides = {
-		store = 368870,
-		name_id = "menu_content_bsides",
-		id = "bsides",
 		date_id = "menu_content_bsides_date",
+		desc_id = "menu_content_bsides_desc",
+		id = "bsides",
 		image = "guis/textures/pd2/content_updates/bsides",
-		desc_id = "menu_content_bsides_desc"
+		name_id = "menu_content_bsides",
+		store = 368870
 	}
 	local shoutout = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/meltdown/",
-		name_id = "menu_content_shoutout",
-		id = "shoutout",
 		date_id = "menu_content_shoutout_date",
+		desc_id = "menu_content_shoutout_desc",
+		id = "shoutout",
 		image = "guis/textures/pd2/content_updates/shoutout",
-		desc_id = "menu_content_shoutout_desc"
+		name_id = "menu_content_shoutout",
+		webpage = "https://www.paydaythegame.com/payday2/updates/meltdown/"
 	}
 	local arena = {
-		store = 366660,
-		name_id = "menu_content_arena",
-		id = "arena",
 		date_id = "menu_content_arena_date",
+		desc_id = "menu_content_arena_desc",
+		id = "arena",
 		image = "guis/dlcs/dlc_arena/textures/pd2/content_updates/arena",
-		desc_id = "menu_content_arena_desc"
+		name_id = "menu_content_arena",
+		store = 366660
 	}
 	local character_pack_sokol = {
-		store = 374301,
-		name_id = "menu_content_character_pack_sokol",
-		id = "character_pack_sokol",
 		date_id = "menu_content_character_pack_sokol_date",
+		desc_id = "menu_content_character_pack_sokol_desc",
+		id = "character_pack_sokol",
 		image = "guis/dlcs/character_pack_sokol/textures/pd2/content_updates/sokol",
-		desc_id = "menu_content_character_pack_sokol_desc"
+		name_id = "menu_content_character_pack_sokol",
+		store = 374301
 	}
 	local kenaz = {
-		store = 374300,
-		name_id = "menu_content_kenaz",
-		id = "kenaz",
 		date_id = "menu_content_kenaz_date",
+		desc_id = "menu_content_kenaz_desc",
+		id = "kenaz",
 		image = "guis/dlcs/kenaz/textures/pd2/content_updates/kenaz",
-		desc_id = "menu_content_kenaz_desc"
+		name_id = "menu_content_kenaz",
+		store = 374300
 	}
 	local turtles = {
-		store = 384021,
-		name_id = "menu_content_turtles",
-		id = "turtles",
 		date_id = "menu_content_turtles_date",
+		desc_id = "menu_content_turtles_desc",
+		id = "turtles",
 		image = "guis/dlcs/turtles/textures/pd2/content_updates/turtles",
-		desc_id = "menu_content_turtles_desc"
+		name_id = "menu_content_turtles",
+		store = 384021
 	}
 	local dragon = {
-		store = 384020,
-		name_id = "menu_content_dragon",
-		id = "dragon",
 		date_id = "menu_content_dragon_date",
+		desc_id = "menu_content_dragon_desc",
+		id = "dragon",
 		image = "guis/dlcs/dragon/textures/pd2/content_updates/dragon",
-		desc_id = "menu_content_dragon_desc"
+		name_id = "menu_content_dragon",
+		store = 384020
 	}
 	local steel = {
-		store = 401650,
-		name_id = "menu_content_steel",
-		id = "steel",
 		date_id = "menu_content_steel_date",
+		desc_id = "menu_content_steel_desc",
+		id = "steel",
 		image = "guis/dlcs/steel/textures/pd2/content_updates/steel",
-		desc_id = "menu_content_steel_desc"
+		name_id = "menu_content_steel",
+		store = 401650
 	}
 	local gordon = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/fbifiles/",
-		name_id = "menu_content_gordon",
-		id = "gordon",
 		date_id = "menu_content_gordon_date",
+		desc_id = "menu_content_gordon_desc",
+		id = "gordon",
 		image = "guis/dlcs/gordon/textures/pd2/content_updates/gordon",
-		desc_id = "menu_content_gordon_desc"
+		name_id = "menu_content_gordon",
+		webpage = "https://www.paydaythegame.com/payday2/updates/fbifiles/"
 	}
 	local rip = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/pointbreak/",
-		name_id = "menu_content_rip",
-		id = "rip",
 		date_id = "menu_content_rip_date",
+		desc_id = "menu_content_rip_desc",
+		id = "rip",
 		image = "guis/dlcs/rip/textures/pd2/content_updates/rip",
-		desc_id = "menu_content_rip_desc"
+		name_id = "menu_content_rip",
+		webpage = "https://www.paydaythegame.com/payday2/updates/pointbreak/"
 	}
 	local berry = {
-		store = 422400,
-		name_id = "menu_content_berry",
-		id = "berry",
 		date_id = "menu_content_berry_date",
+		desc_id = "menu_content_berry_desc",
+		id = "berry",
 		image = "guis/dlcs/berry/textures/pd2/content_updates/berry",
-		desc_id = "menu_content_berry_desc"
+		name_id = "menu_content_berry",
+		store = 422400
 	}
 	local cane = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/christmas2015/",
-		name_id = "menu_content_cane",
-		id = "cane",
 		date_id = "menu_content_cane_date",
+		desc_id = "menu_content_cane_desc",
+		id = "cane",
 		image = "guis/textures/pd2/content_updates/xmas2015",
-		desc_id = "menu_content_cane_desc"
+		name_id = "menu_content_cane",
+		webpage = "https://www.paydaythegame.com/payday2/updates/christmas2015/"
 	}
 	local peta = {
-		store = 433730,
-		name_id = "menu_content_peta",
-		id = "peta",
 		date_id = "menu_content_peta_date",
+		desc_id = "menu_content_peta_desc",
+		id = "peta",
 		image = "guis/dlcs/peta/textures/pd2/content_updates/peta",
-		desc_id = "menu_content_peta_desc"
+		name_id = "menu_content_peta",
+		store = 433730
 	}
 	local pal = {
-		store = 441600,
-		name_id = "menu_content_pal",
-		id = "pal",
 		date_id = "menu_content_pal_date",
+		desc_id = "menu_content_pal_desc",
+		id = "pal",
 		image = "guis/dlcs/lupus/textures/pd2/content_updates/lupus",
-		desc_id = "menu_content_pal_desc"
+		name_id = "menu_content_pal",
+		store = 441600
 	}
 	local coco = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/hardcorehenry/",
-		name_id = "menu_content_coco",
-		id = "coco",
 		date_id = "menu_content_coco_date",
+		desc_id = "menu_content_coco_desc",
+		id = "coco",
 		image = "guis/dlcs/coco/textures/pd2/content_updates/coco",
-		desc_id = "menu_content_coco_desc"
+		name_id = "menu_content_coco",
+		webpage = "https://www.paydaythegame.com/payday2/updates/hardcorehenry/"
 	}
 	local mad = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/hardcorehenry/",
-		name_id = "menu_content_mad",
-		id = "mad",
 		date_id = "menu_content_mad_date",
+		desc_id = "menu_content_mad_desc",
+		id = "mad",
 		image = "guis/dlcs/mad/textures/pd2/content_updates/mad",
-		desc_id = "menu_content_mad_desc"
+		name_id = "menu_content_mad",
+		webpage = "https://www.paydaythegame.com/payday2/updates/hardcorehenry/"
 	}
 	local opera = {
-		store = 468410,
-		name_id = "menu_content_opera",
-		id = "opera",
 		date_id = "menu_content_opera_date",
+		desc_id = "menu_content_opera_desc",
+		id = "opera",
 		image = "guis/dlcs/opera/textures/pd2/content_updates/opera",
-		desc_id = "menu_content_opera_desc"
+		name_id = "menu_content_opera",
+		store = 468410
 	}
 	local update100 = {
-		webpage = "https://www.paydaythegame.com/payday2/updates/update100/",
-		name_id = "menu_content_update100",
-		id = "update100",
 		date_id = "menu_content_update100_date",
+		desc_id = "menu_content_update100_desc",
+		id = "update100",
 		image = "guis/textures/pd2/content_updates/update100",
-		desc_id = "menu_content_update100_desc"
+		name_id = "menu_content_update100",
+		webpage = "https://www.paydaythegame.com/payday2/updates/update100/"
 	}
 	local tutorial = {
-		webpage = "https://steamcommunity.com/app/218620/allnews/",
-		name_id = "menu_content_tutorial",
-		id = "tutorial",
 		date_id = "menu_content_tutorial_date",
+		desc_id = "menu_content_tutorial_desc",
+		id = "tutorial",
 		image = "guis/textures/pd2/content_updates/tutorial",
-		desc_id = "menu_content_tutorial_desc"
+		name_id = "menu_content_tutorial",
+		webpage = "https://steamcommunity.com/app/218620/allnews/"
 	}
 	local wild = {
-		store = 450660,
-		name_id = "menu_content_wild",
-		id = "wild",
 		date_id = "menu_content_wild_date",
+		desc_id = "menu_content_wild_desc",
+		id = "wild",
 		image = "guis/dlcs/wild/textures/pd2/content_updates/wild",
-		desc_id = "menu_content_wild_desc"
+		name_id = "menu_content_wild",
+		store = 450660
 	}
 	local born = {
-		store = 487210,
-		name_id = "menu_content_born",
-		id = "born",
 		date_id = "menu_content_born_date",
+		desc_id = "menu_content_born_desc",
+		id = "born",
 		image = "guis/dlcs/born/textures/pd2/content_updates/born",
-		desc_id = "menu_content_born_desc"
+		name_id = "menu_content_born",
+		store = 487210
 	}
 	local pim = {
-		store = 545100,
-		name_id = "menu_content_pim",
-		id = "pim",
 		date_id = "menu_content_pim_date",
+		desc_id = "menu_content_pim_desc",
+		id = "pim",
 		image = "guis/dlcs/pim/textures/pd2/content_updates/pim",
-		desc_id = "menu_content_pim_desc"
+		name_id = "menu_content_pim",
+		store = 545100
 	}
 	local tango = {
-		store = 487210,
-		name_id = "menu_content_tango",
-		id = "tango",
 		date_id = "menu_content_tango_date",
+		desc_id = "menu_content_tango_desc",
+		id = "tango",
 		image = "guis/dlcs/tango/textures/pd2/content_updates/tango",
-		desc_id = "menu_content_tango_desc"
+		name_id = "menu_content_tango",
+		store = 487210
 	}
+
 	self.content_updates = {
-		title_id = "menu_content_updates",
+		choice_id = "menu_content_updates_previous",
 		num_items = 6,
-		choice_id = "menu_content_updates_previous"
+		title_id = "menu_content_updates"
 	}
 	self.store_page = "https://store.steampowered.com/app/218620"
 
@@ -634,12 +635,12 @@ function GuiTweakData:init(tweak_data)
 	end
 
 	self.fav_videos = {
-		title_id = "menu_fav_videos",
-		num_items = 3,
 		db_url = "https://www.paydaythegame.com/static/payday2/birthday/",
+		num_items = 3,
+		title_id = "menu_fav_videos",
 		button = {
-			url = "https://www.paydaythegame.com/static/payday2/birthday/",
-			text_id = "menu_fav_video_homepage"
+			text_id = "menu_fav_video_homepage",
+			url = "https://www.paydaythegame.com/static/payday2/birthday/"
 		},
 		item_list = {
 			{
@@ -671,35 +672,35 @@ function GuiTweakData:init(tweak_data)
 		"skulloverkillplus"
 	}
 	self.blackscreen_risk_textures = {
-		sm_wish = "guis/textures/pd2/risklevel_deathwish_sm_blackscreen",
+		easy_wish = "guis/textures/pd2/risklevel_deathwish_easywish_blackscreen",
 		overkill_290 = "guis/textures/pd2/risklevel_deathwish_blackscreen",
-		easy_wish = "guis/textures/pd2/risklevel_deathwish_easywish_blackscreen"
+		sm_wish = "guis/textures/pd2/risklevel_deathwish_sm_blackscreen"
 	}
-	self.suspicion_to_visibility = {
-		{}
-	}
+	self.suspicion_to_visibility = {}
+	self.suspicion_to_visibility[1] = {}
 	self.suspicion_to_visibility[1].name_id = "bm_menu_concealment_low"
 	self.suspicion_to_visibility[1].max_index = 9
-	self.suspicion_to_visibility[2] = {
-		name_id = "bm_menu_concealment_medium",
-		max_index = 20
-	}
-	self.suspicion_to_visibility[3] = {
-		name_id = "bm_menu_concealment_high",
-		max_index = 30
-	}
-	self.mouse_pointer = {
-		controller = {}
-	}
+	self.suspicion_to_visibility[2] = {}
+	self.suspicion_to_visibility[2].name_id = "bm_menu_concealment_medium"
+	self.suspicion_to_visibility[2].max_index = 20
+	self.suspicion_to_visibility[3] = {}
+	self.suspicion_to_visibility[3].name_id = "bm_menu_concealment_high"
+	self.suspicion_to_visibility[3].max_index = 30
+	self.mouse_pointer = {}
+	self.mouse_pointer.controller = {}
 	self.mouse_pointer.controller.acceleration_speed = 4
 	self.mouse_pointer.controller.max_acceleration = 3
 	self.mouse_pointer.controller.mouse_pointer_speed = 125
+
 	local min_amount_masks = 320
+
 	self.MASK_ROWS_PER_PAGE = 4
 	self.MASK_COLUMNS_PER_PAGE = 4
 	self.MAX_MASK_PAGES = math.ceil(min_amount_masks / (self.MASK_ROWS_PER_PAGE * self.MASK_COLUMNS_PER_PAGE))
 	self.MAX_MASK_SLOTS = self.MAX_MASK_PAGES * self.MASK_ROWS_PER_PAGE * self.MASK_COLUMNS_PER_PAGE
+
 	local min_amount_weapons = 320
+
 	self.WEAPON_ROWS_PER_PAGE = 4
 	self.WEAPON_COLUMNS_PER_PAGE = 4
 	self.MAX_WEAPON_PAGES = math.ceil(min_amount_weapons / (self.WEAPON_ROWS_PER_PAGE * self.WEAPON_COLUMNS_PER_PAGE))
@@ -709,26 +710,23 @@ function GuiTweakData:init(tweak_data)
 	self.sbz_account_webpage = "https://www.paydaythegame.com/account/register/"
 	self.privacy_webpage = "https://pd2.link/PrivacyPolicy"
 	self.license_webpage = "https://pd2.link/TermsOfService"
-	self.crime_net = {
-		controller = {}
-	}
+	self.crime_net = {}
+	self.crime_net.controller = {}
 	self.crime_net.controller.snap_distance = 50
 	self.crime_net.controller.snap_speed = 5
-	self.crime_net.job_vars = {
-		max_active_jobs = 10,
-		active_job_time = 25,
-		new_job_min_time = 1.5,
-		new_job_max_time = 3.5,
-		refresh_servers_time = SystemInfo:platform() == Idstring("PS4") and 10 or 5,
-		total_active_jobs = 40,
-		max_active_server_jobs = 100
-	}
-	self.crime_net.debug_options = {
-		regions = false,
-		mass_spawn = false,
-		mass_spawn_limit = 100,
-		mass_spawn_timer = 0.04
-	}
+	self.crime_net.job_vars = {}
+	self.crime_net.job_vars.max_active_jobs = 10
+	self.crime_net.job_vars.active_job_time = 25
+	self.crime_net.job_vars.new_job_min_time = 1.5
+	self.crime_net.job_vars.new_job_max_time = 3.5
+	self.crime_net.job_vars.refresh_servers_time = SystemInfo:platform() == Idstring("PS4") and 10 or 5
+	self.crime_net.job_vars.total_active_jobs = 40
+	self.crime_net.job_vars.max_active_server_jobs = 100
+	self.crime_net.debug_options = {}
+	self.crime_net.debug_options.regions = false
+	self.crime_net.debug_options.mass_spawn = false
+	self.crime_net.debug_options.mass_spawn_limit = 100
+	self.crime_net.debug_options.mass_spawn_timer = 0.04
 	self.rename_max_letters = 20
 	self.rename_skill_set_max_letters = 15
 	self.mod_preview_min_fov = -19
@@ -736,65 +734,69 @@ function GuiTweakData:init(tweak_data)
 	self.stats_present_multiplier = 10
 	self.armor_damage_shake_base = 1.1
 	self.buy_weapon_category_aliases = {
-		flamethrower = "wpn_special",
-		grenade_launcher = "wpn_special",
 		bow = "wpn_special",
 		crossbow = "wpn_special",
 		dartgun = "wpn_special",
+		flamethrower = "wpn_special",
+		grenade_launcher = "wpn_special",
 		minigun = "wpn_special",
 		saw = "wpn_special"
 	}
-	self.buy_weapon_categories = {
-		primaries = {
-			{
-				"assault_rifle"
-			},
-			{
-				"shotgun"
-			},
-			{
-				"lmg"
-			},
-			{
-				"snp"
-			},
-			{
-				"akimbo",
-				"pistol"
-			},
-			{
-				"akimbo",
-				"smg"
-			},
-			{
-				"akimbo",
-				"shotgun"
-			},
-			{
-				"wpn_special"
-			}
+	self.buy_weapon_categories = {}
+	self.buy_weapon_categories.primaries = {
+		{
+			"assault_rifle"
 		},
-		secondaries = {
-			{
-				"pistol"
-			},
-			{
-				"smg"
-			},
-			{
-				"wpn_special"
-			},
-			{
-				"shotgun"
-			},
-			{
-				"snp"
-			}
+		{
+			"shotgun"
+		},
+		{
+			"lmg"
+		},
+		{
+			"snp"
+		},
+		{
+			"akimbo",
+			"pistol"
+		},
+		{
+			"akimbo",
+			"smg"
+		},
+		{
+			"akimbo",
+			"shotgun"
+		},
+		{
+			"wpn_special"
+		}
+	}
+	self.buy_weapon_categories.secondaries = {
+		{
+			"pistol"
+		},
+		{
+			"smg"
+		},
+		{
+			"wpn_special"
+		},
+		{
+			"shotgun"
+		},
+		{
+			"snp"
 		}
 	}
 	self.LONGEST_CHAR_NAME = "JOHN WICK"
 	self.crime_net.regions = {
 		{
+			text = {
+				title_id = "cn_menu_georgetown_title",
+				x = 348,
+				y = 310
+			},
 			{
 				-10,
 				270,
@@ -949,12 +951,7 @@ function GuiTweakData:init(tweak_data)
 				412,
 				412
 			},
-			closed = true,
-			text = {
-				title_id = "cn_menu_georgetown_title",
-				x = 348,
-				y = 310
-			}
+			closed = true
 		},
 		{
 			{
@@ -1081,6 +1078,11 @@ function GuiTweakData:init(tweak_data)
 			closed = true
 		},
 		{
+			text = {
+				title_id = "cn_menu_westend_title",
+				x = 789,
+				y = 418
+			},
 			{
 				519,
 				530,
@@ -1289,14 +1291,14 @@ function GuiTweakData:init(tweak_data)
 				31,
 				-10
 			},
-			closed = true,
-			text = {
-				title_id = "cn_menu_westend_title",
-				x = 789,
-				y = 418
-			}
+			closed = true
 		},
 		{
+			text = {
+				title_id = "cn_menu_foggy_bottom_title",
+				x = 858,
+				y = 704
+			},
 			{
 				1031,
 				1052,
@@ -1379,12 +1381,7 @@ function GuiTweakData:init(tweak_data)
 				657,
 				636
 			},
-			closed = false,
-			text = {
-				title_id = "cn_menu_foggy_bottom_title",
-				x = 858,
-				y = 704
-			}
+			closed = false
 		},
 		{
 			{
@@ -1489,6 +1486,11 @@ function GuiTweakData:init(tweak_data)
 			closed = true
 		},
 		{
+			text = {
+				title_id = "cn_menu_shaw_title",
+				x = 1426,
+				y = 310
+			},
 			{
 				2047,
 				1972,
@@ -1577,14 +1579,14 @@ function GuiTweakData:init(tweak_data)
 				608,
 				608
 			},
-			closed = false,
-			text = {
-				title_id = "cn_menu_shaw_title",
-				x = 1426,
-				y = 310
-			}
+			closed = false
 		},
 		{
+			text = {
+				title_id = "cn_menu_downtown_title",
+				x = 1469,
+				y = 720
+			},
 			{
 				1200,
 				1206,
@@ -1661,304 +1663,299 @@ function GuiTweakData:init(tweak_data)
 				609,
 				609
 			},
-			closed = false,
-			text = {
-				title_id = "cn_menu_downtown_title",
-				x = 1469,
-				y = 720
-			}
+			closed = false
 		}
 	}
 	self.crime_net.map_start_positions = {
 		{
 			max_level = 10,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 20,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 30,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 40,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 50,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 60,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 70,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 80,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 90,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		},
 		{
 			max_level = 100,
-			zoom = 4,
 			x = 1080,
-			y = 512
+			y = 512,
+			zoom = 4
 		}
 	}
 	self.crime_net.special_contracts = {
 		{
-			name_id = "menu_cn_gage_assignment",
-			menu_node = "crimenet_gage_assignment",
-			dlc = "gage_pack_jobs",
-			y = 910,
-			id = "gage_assignment",
-			icon = "guis/textures/pd2/crimenet_marker_gage",
 			desc_id = "menu_cn_gage_assignment_desc",
-			x = 425
+			dlc = "gage_pack_jobs",
+			icon = "guis/textures/pd2/crimenet_marker_gage",
+			id = "gage_assignment",
+			menu_node = "crimenet_gage_assignment",
+			name_id = "menu_cn_gage_assignment",
+			x = 425,
+			y = 910
 		},
 		{
-			name_id = "menu_cn_contact_info",
-			menu_node = "crimenet_contact_info",
-			x = 912,
-			y = 905,
-			id = "contact_info",
+			desc_id = "menu_cn_contact_info_desc",
 			icon = "guis/textures/pd2/crimenet_marker_codex",
-			desc_id = "menu_cn_contact_info_desc"
+			id = "contact_info",
+			menu_node = "crimenet_contact_info",
+			name_id = "menu_cn_contact_info",
+			x = 912,
+			y = 905
 		},
 		{
-			name_id = "menu_cn_casino",
-			menu_node = "crimenet_contract_casino",
-			pulse = false,
 			desc_id = "menu_cn_casino_desc",
-			unlock = "unlock_level",
-			y = 775,
-			id = "casino",
 			icon = "guis/textures/pd2/crimenet_casino",
+			id = "casino",
+			menu_node = "crimenet_contract_casino",
+			name_id = "menu_cn_casino",
+			pulse = false,
+			unlock = "unlock_level",
 			x = 385,
+			y = 775,
 			pulse_color = Color(204, 255, 209, 32) / 255
 		},
 		{
-			name_id = "menu_cn_premium_buy",
-			menu_node = "contract_broker",
-			x = 420,
-			y = 846,
-			id = "premium_buy",
+			desc_id = "menu_cn_premium_buy_desc",
 			icon = "guis/textures/pd2/crimenet_marker_buy",
-			desc_id = "menu_cn_premium_buy_desc"
+			id = "premium_buy",
+			menu_node = "contract_broker",
+			name_id = "menu_cn_premium_buy",
+			x = 420,
+			y = 846
 		},
 		{
-			name_id = "menu_cn_short",
-			menu_node = "crimenet_contract_short",
-			pulse_level = 10,
-			pulse = true,
 			desc_id = "menu_cn_short_desc",
-			y = 626,
-			id = "short",
 			icon = "guis/textures/pd2/crimenet_tutorial",
+			id = "short",
+			menu_node = "crimenet_contract_short",
+			name_id = "menu_cn_short",
+			pulse = true,
+			pulse_level = 10,
 			x = 332,
+			y = 626,
 			pulse_color = Color(204, 255, 209, 32) / 255
 		},
 		{
-			name_id = "menu_mutators",
-			menu_node = "mutators",
-			pulse_level = 10,
-			pulse = true,
 			desc_id = "menu_mutators_help",
-			y = 910,
-			id = "mutators",
 			icon = "guis/textures/pd2/crimenet_marker_mutators",
+			id = "mutators",
+			menu_node = "mutators",
+			name_id = "menu_mutators",
+			pulse = true,
+			pulse_level = 10,
 			x = 675,
+			y = 910,
 			pulse_color = Color(255, 255, 0, 255) / 255,
 			mutators_color = Color(255, 255, 0, 255) / 255
 		},
 		{
-			name_id = "cn_crime_spree",
-			menu_node = "crimenet_crime_spree_contract_host",
-			pulse_level = 10,
-			pulse = true,
 			desc_id = "cn_crime_spree_help_start",
-			mp_only = true,
-			y = 810,
-			id = "crime_spree",
 			icon = "guis/textures/pd2/crimenet_marker_crimespree",
-			x = 675,
+			id = "crime_spree",
+			menu_node = "crimenet_crime_spree_contract_host",
+			mp_only = true,
+			name_id = "cn_crime_spree",
 			no_session_only = true,
+			pulse = true,
+			pulse_level = 10,
+			x = 675,
+			y = 810,
 			pulse_color = Color(255, 255, 255, 0) / 255
 		},
 		{
-			name_id = "cn_crime_spree",
-			menu_node = "crimenet_crime_spree_contract_singleplayer",
-			pulse_level = 10,
-			pulse = true,
-			sp_only = true,
 			desc_id = "cn_crime_spree_help_start",
-			y = 810,
-			id = "crime_spree",
 			icon = "guis/textures/pd2/crimenet_marker_crimespree",
+			id = "crime_spree",
+			menu_node = "crimenet_crime_spree_contract_singleplayer",
+			name_id = "cn_crime_spree",
+			pulse = true,
+			pulse_level = 10,
+			sp_only = true,
 			x = 675,
+			y = 810,
 			pulse_color = Color(255, 255, 255, 0) / 255
 		}
 	}
 
 	if SystemInfo:platform() == Idstring("WIN32") then
 		table.insert(self.crime_net.special_contracts, {
-			name_id = "menu_cn_challenge",
-			menu_node = "crimenet_contract_challenge",
-			x = 362,
-			y = 696,
-			id = "challenge",
+			desc_id = "menu_cn_challenge_desc",
 			icon = "guis/textures/pd2/crimenet_challenge",
-			desc_id = "menu_cn_challenge_desc"
+			id = "challenge",
+			menu_node = "crimenet_contract_challenge",
+			name_id = "menu_cn_challenge",
+			x = 362,
+			y = 696
 		})
 	end
 
 	self.crime_net.sidebar = {
 		{
-			name_id = "menu_cn_shortcuts",
+			callback = "clbk_toggle_sidebar",
 			icon = "sidebar_expand",
-			show_name_while_collapsed = false,
-			callback = "clbk_toggle_sidebar"
+			name_id = "menu_cn_shortcuts",
+			show_name_while_collapsed = false
 		},
 		{
-			visible_callback = "clbk_visible_multiplayer",
 			btn_macro = "menu_toggle_filters",
 			callback = "clbk_crimenet_filters",
+			icon = "sidebar_filters",
 			name_id = "menu_cn_filters_sidebar",
-			icon = "sidebar_filters"
+			visible_callback = "clbk_visible_multiplayer"
 		},
 		{
-			visible_callback = "clbk_visible_multiplayer_epic_mm",
-			name_id = "menu_cn_search_lobby_code",
 			callback = "clbk_search_lobby_code",
+			icon = "sidebar_lobby_search",
 			id = "search_lobby_code",
-			icon = "sidebar_lobby_search"
+			name_id = "menu_cn_search_lobby_code",
+			visible_callback = "clbk_visible_multiplayer_epic_mm"
 		},
 		{
 			item_class = "CrimeNetSidebarSeparator"
 		},
 		{
-			visible_callback = "clbk_visible_not_in_lobby",
 			callback = "clbk_the_basics",
-			name_id = "menu_cn_short",
 			icon = "sidebar_basics",
-			item_class = "CrimeNetSidebarTutorialHeistsItem"
+			item_class = "CrimeNetSidebarTutorialHeistsItem",
+			name_id = "menu_cn_short",
+			visible_callback = "clbk_visible_not_in_lobby"
 		},
 		{
-			name_id = "menu_cn_quickplay",
+			callback = "clbk_open_quickplay",
 			icon = "sidebar_quickplay",
-			visible_callback = "clbk_visible_multiplayer",
-			callback = "clbk_open_quickplay"
+			name_id = "menu_cn_quickplay",
+			visible_callback = "clbk_visible_multiplayer"
 		},
 		{
-			name_id = "menu_cn_chill",
 			callback = "clbk_safehouse",
-			id = "safehouse",
 			icon = "sidebar_safehouse",
-			item_class = "CrimeNetSidebarSafehouseItem"
+			id = "safehouse",
+			item_class = "CrimeNetSidebarSafehouseItem",
+			name_id = "menu_cn_chill"
 		},
 		{
-			name_id = "menu_cn_premium_buy",
+			callback = "clbk_contract_broker",
 			icon = "sidebar_broker",
-			callback = "clbk_contract_broker"
+			name_id = "menu_cn_premium_buy"
 		},
 		{
 			item_class = "CrimeNetSidebarSeparator"
 		},
 		{
-			name_id = "menu_cn_side_jobs",
+			callback = "clbk_side_jobs",
 			icon = "sidebar_side_jobs",
-			callback = "clbk_side_jobs"
+			name_id = "menu_cn_side_jobs"
 		},
 		{
-			name_id = "menu_cn_gage_assignment",
+			callback = "clbk_gage_courier",
 			icon = "sidebar_gage",
-			callback = "clbk_gage_courier"
+			name_id = "menu_cn_gage_assignment"
 		},
 		{
-			name_id = "menu_cn_casino",
+			callback = "clbk_offshore_payday",
 			icon = "sidebar_casino",
-			callback = "clbk_offshore_payday"
+			name_id = "menu_cn_casino"
 		},
 		{
-			name_id = "menu_cn_contact_info",
+			callback = "clbk_contact_database",
 			icon = "sidebar_codex",
-			callback = "clbk_contact_database"
+			name_id = "menu_cn_contact_info"
 		},
 		{
 			item_class = "CrimeNetSidebarSeparator"
 		},
 		{
-			name_id = "menu_mutators",
 			callback = "clbk_mutators",
-			id = "mutators",
 			icon = "sidebar_mutators",
-			item_class = "CrimeNetSidebarMutatorsItem"
+			id = "mutators",
+			item_class = "CrimeNetSidebarMutatorsItem",
+			name_id = "menu_mutators"
 		},
 		{
-			visible_callback = "clbk_visible_crime_spree",
-			name_id = "cn_crime_spree",
 			callback = "clbk_crime_spree",
-			id = "crime_spree",
 			icon = "sidebar_crimespree",
-			item_class = "CrimeNetSidebarCrimeSpreeItem"
+			id = "crime_spree",
+			item_class = "CrimeNetSidebarCrimeSpreeItem",
+			name_id = "cn_crime_spree",
+			visible_callback = "clbk_visible_crime_spree"
 		},
 		{
-			visible_callback = "clbk_visible_skirmish",
-			name_id = "menu_cn_skirmish",
 			callback = "clbk_skirmish",
-			id = "skirmish",
 			icon = "sidebar_skirmish",
-			item_class = "CrimeNetSidebarSkirmishItem"
+			id = "skirmish",
+			item_class = "CrimeNetSidebarSkirmishItem",
+			name_id = "menu_cn_skirmish",
+			visible_callback = "clbk_visible_skirmish"
 		},
 		{
-			name_id = "menu_cn_leakedrecording_separator",
-			item_class = "CrimeNetSidebarSeparator"
+			item_class = "CrimeNetSidebarSeparator",
+			name_id = "menu_cn_leakedrecording_separator"
 		},
 		{
-			visible_callback = "clbk_visible_leakedrecording",
-			name_id = "menu_cn_leakedrecording",
 			callback = "clbk_leakedrecording",
-			id = "leakedrecording",
 			icon = "sidebar_leakedrecording",
-			item_class = "CrimeNetSidebarLeakedRecordingItem"
+			id = "leakedrecording",
+			item_class = "CrimeNetSidebarLeakedRecordingItem",
+			name_id = "menu_cn_leakedrecording",
+			visible_callback = "clbk_visible_leakedrecording"
 		}
 	}
 	self.crime_net.codex = {
 		{
 			{
 				{
-					video = "bain",
 					desc_id = "heist_contact_bain_description",
-					post_event = "pln_contact_bain"
+					post_event = "pln_contact_bain",
+					video = "bain"
 				},
-				name_id = "heist_contact_bain",
-				id = "bain"
+				id = "bain",
+				name_id = "heist_contact_bain"
 			},
 			{
 				{
@@ -1970,8 +1967,8 @@ function GuiTweakData:init(tweak_data)
 						"vlad3"
 					}
 				},
-				name_id = "heist_contact_vlad",
-				id = "vlad"
+				id = "vlad",
+				name_id = "heist_contact_vlad"
 			},
 			{
 				{
@@ -1983,8 +1980,8 @@ function GuiTweakData:init(tweak_data)
 						"hector3"
 					}
 				},
-				name_id = "heist_contact_hector",
-				id = "hector"
+				id = "hector",
+				name_id = "heist_contact_hector"
 			},
 			{
 				{
@@ -1996,8 +1993,8 @@ function GuiTweakData:init(tweak_data)
 						"the_elephant3"
 					}
 				},
-				name_id = "heist_contact_the_elephant",
-				id = "the_elephant"
+				id = "the_elephant",
+				name_id = "heist_contact_the_elephant"
 			},
 			{
 				{
@@ -2009,8 +2006,8 @@ function GuiTweakData:init(tweak_data)
 						"gage3"
 					}
 				},
-				name_id = "heist_contact_gage",
-				id = "gage"
+				id = "gage",
+				name_id = "heist_contact_gage"
 			},
 			{
 				{
@@ -2025,8 +2022,8 @@ function GuiTweakData:init(tweak_data)
 						"the_dentist6"
 					}
 				},
-				name_id = "heist_contact_the_dentist",
-				id = "the_dentist"
+				id = "the_dentist",
+				name_id = "heist_contact_the_dentist"
 			},
 			{
 				{
@@ -2038,8 +2035,8 @@ function GuiTweakData:init(tweak_data)
 						"the_butcher3"
 					}
 				},
-				name_id = "heist_contact_the_butcher",
-				id = "the_butcher"
+				id = "the_butcher",
+				name_id = "heist_contact_the_butcher"
 			},
 			{
 				{
@@ -2049,8 +2046,8 @@ function GuiTweakData:init(tweak_data)
 						"locke1"
 					}
 				},
-				name_id = "heist_contact_locke",
-				id = "locke"
+				id = "locke",
+				name_id = "heist_contact_locke"
 			},
 			{
 				{
@@ -2060,9 +2057,9 @@ function GuiTweakData:init(tweak_data)
 						"jimmy1"
 					}
 				},
+				dlc = "coco",
 				id = "jimmy_contact",
-				name_id = "menu_jimmy",
-				dlc = "coco"
+				name_id = "menu_jimmy"
 			},
 			{
 				{
@@ -2072,9 +2069,9 @@ function GuiTweakData:init(tweak_data)
 						"continental1"
 					}
 				},
+				dlc = "spa",
 				id = "continental_contact",
-				name_id = "menu_continental",
-				dlc = "spa"
+				name_id = "menu_continental"
 			},
 			{
 				{
@@ -2084,8 +2081,8 @@ function GuiTweakData:init(tweak_data)
 						"jiufeng1"
 					}
 				},
-				name_id = "heist_contact_jiufeng",
-				id = "jiufeng"
+				id = "jiufeng",
+				name_id = "heist_contact_jiufeng"
 			},
 			{
 				{
@@ -2095,8 +2092,8 @@ function GuiTweakData:init(tweak_data)
 						"shayu1"
 					}
 				},
-				name_id = "heist_contact_shayu",
-				id = "shayu"
+				id = "shayu",
+				name_id = "heist_contact_shayu"
 			},
 			{
 				{
@@ -2106,8 +2103,8 @@ function GuiTweakData:init(tweak_data)
 						"mcshay1"
 					}
 				},
-				name_id = "heist_contact_mcshay",
-				id = "mcshay"
+				id = "mcshay",
+				name_id = "heist_contact_mcshay"
 			},
 			{
 				{
@@ -2117,11 +2114,11 @@ function GuiTweakData:init(tweak_data)
 						"blaine1"
 					}
 				},
-				name_id = "heist_contact_blaine",
-				id = "blaine"
+				id = "blaine",
+				name_id = "heist_contact_blaine"
 			},
-			name_id = "menu_contacts",
-			id = "contacts"
+			id = "contacts",
+			name_id = "menu_contacts"
 		},
 		{
 			{
@@ -2134,8 +2131,8 @@ function GuiTweakData:init(tweak_data)
 						"dallas3"
 					}
 				},
-				name_id = "menu_russian",
-				id = "dallas"
+				id = "dallas",
+				name_id = "menu_russian"
 			},
 			{
 				{
@@ -2146,8 +2143,8 @@ function GuiTweakData:init(tweak_data)
 						"wolf2"
 					}
 				},
-				name_id = "menu_german",
-				id = "wolf"
+				id = "wolf",
+				name_id = "menu_german"
 			},
 			{
 				{
@@ -2159,8 +2156,8 @@ function GuiTweakData:init(tweak_data)
 						"chains3"
 					}
 				},
-				name_id = "menu_spanish",
-				id = "chains"
+				id = "chains",
+				name_id = "menu_spanish"
 			},
 			{
 				{
@@ -2171,8 +2168,8 @@ function GuiTweakData:init(tweak_data)
 						"old_hoxton2"
 					}
 				},
-				name_id = "menu_old_hoxton",
-				id = "old_hoxton"
+				id = "old_hoxton",
+				name_id = "menu_old_hoxton"
 			},
 			{
 				{
@@ -2185,9 +2182,9 @@ function GuiTweakData:init(tweak_data)
 						"jowi4"
 					}
 				},
+				dlc = "john_wick_character",
 				id = "jowi",
-				name_id = "menu_jowi",
-				dlc = "john_wick_character"
+				name_id = "menu_jowi"
 			},
 			{
 				{
@@ -2208,8 +2205,8 @@ function GuiTweakData:init(tweak_data)
 						"hoxton3"
 					}
 				},
-				name_id = "menu_american",
-				id = "hoxton"
+				id = "hoxton",
+				name_id = "menu_american"
 			},
 			{
 				{
@@ -2220,8 +2217,8 @@ function GuiTweakData:init(tweak_data)
 						"clover2"
 					}
 				},
-				name_id = "menu_clover",
-				id = "clover"
+				id = "clover",
+				name_id = "menu_clover"
 			},
 			{
 				{
@@ -2233,8 +2230,8 @@ function GuiTweakData:init(tweak_data)
 						"dragan3"
 					}
 				},
-				name_id = "menu_dragan",
-				id = "dragan"
+				id = "dragan",
+				name_id = "menu_dragan"
 			},
 			{
 				{
@@ -2245,8 +2242,8 @@ function GuiTweakData:init(tweak_data)
 						"jacket2"
 					}
 				},
-				name_id = "menu_jacket",
-				id = "jacket"
+				id = "jacket",
+				name_id = "menu_jacket"
 			},
 			{
 				{
@@ -2256,8 +2253,8 @@ function GuiTweakData:init(tweak_data)
 						"bonnie1"
 					}
 				},
-				name_id = "menu_bonnie",
-				id = "bonnie"
+				id = "bonnie",
+				name_id = "menu_bonnie"
 			},
 			{
 				{
@@ -2267,8 +2264,8 @@ function GuiTweakData:init(tweak_data)
 						"sokol1"
 					}
 				},
-				name_id = "menu_sokol",
-				id = "sokol"
+				id = "sokol",
+				name_id = "menu_sokol"
 			},
 			{
 				{
@@ -2278,8 +2275,8 @@ function GuiTweakData:init(tweak_data)
 						"dragon1"
 					}
 				},
-				name_id = "menu_dragon",
-				id = "dragon"
+				id = "dragon",
+				name_id = "menu_dragon"
 			},
 			{
 				{
@@ -2289,9 +2286,9 @@ function GuiTweakData:init(tweak_data)
 						"bodhi1"
 					}
 				},
+				dlc = "rvd",
 				id = "bodhi",
-				name_id = "menu_bodhi",
-				dlc = "rvd"
+				name_id = "menu_bodhi"
 			},
 			{
 				{
@@ -2301,9 +2298,9 @@ function GuiTweakData:init(tweak_data)
 						"jimmy1"
 					}
 				},
+				dlc = "coco",
 				id = "jimmy",
-				name_id = "menu_jimmy",
-				dlc = "coco"
+				name_id = "menu_jimmy"
 			},
 			{
 				{
@@ -2313,8 +2310,8 @@ function GuiTweakData:init(tweak_data)
 						"sydney1"
 					}
 				},
-				name_id = "menu_sydney",
-				id = "sydney"
+				id = "sydney",
+				name_id = "menu_sydney"
 			},
 			{
 				{
@@ -2324,8 +2321,8 @@ function GuiTweakData:init(tweak_data)
 						"wild1"
 					}
 				},
-				name_id = "menu_wild",
-				id = "wild"
+				id = "wild",
+				name_id = "menu_wild"
 			},
 			{
 				{
@@ -2335,9 +2332,9 @@ function GuiTweakData:init(tweak_data)
 						"chico1"
 					}
 				},
+				dlc = "chico",
 				id = "chico",
-				name_id = "menu_chico",
-				dlc = "chico"
+				name_id = "menu_chico"
 			},
 			{
 				{
@@ -2347,8 +2344,8 @@ function GuiTweakData:init(tweak_data)
 						"max1"
 					}
 				},
-				name_id = "menu_max",
-				id = "max"
+				id = "max",
+				name_id = "menu_max"
 			},
 			{
 				{
@@ -2358,8 +2355,8 @@ function GuiTweakData:init(tweak_data)
 						"joy1"
 					}
 				},
-				name_id = "menu_joy",
-				id = "joy"
+				id = "joy",
+				name_id = "menu_joy"
 			},
 			{
 				{
@@ -2369,8 +2366,8 @@ function GuiTweakData:init(tweak_data)
 						"myh1"
 					}
 				},
-				name_id = "menu_myh",
-				id = "myh"
+				id = "myh",
+				name_id = "menu_myh"
 			},
 			{
 				{
@@ -2380,18 +2377,20 @@ function GuiTweakData:init(tweak_data)
 						"ecp1"
 					}
 				},
-				name_id = "menu_ecp",
-				id = "ecp"
+				id = "ecp",
+				name_id = "menu_ecp"
 			},
-			name_id = "menu_playable_characters",
-			id = "playable_characters"
+			id = "playable_characters",
+			name_id = "menu_playable_characters"
 		}
 	}
+
 	local padding = 10
 	local panel_width = 900
 	local panel_height = 600
 	local text_width = 500
 	local contact_width = panel_width - text_width - 3 * padding
+
 	self.crime_net.contract_gui = {
 		width = panel_width,
 		height = panel_height,
@@ -5002,137 +5001,138 @@ function GuiTweakData:init(tweak_data)
 		print("Generating new spawn points for crimenet")
 	end
 
-	local wts = {
-		color_indexes = {
-			{
-				color = "red"
-			},
-			{
-				color = "blue",
-				dlc = "gage_pack_jobs"
-			},
-			{
-				color = "green",
-				dlc = "gage_pack_jobs"
-			},
-			{
-				color = "yellow",
-				dlc = "gage_pack_jobs"
-			}
+	local wts = {}
+
+	wts.color_indexes = {
+		{
+			color = "red"
+		},
+		{
+			color = "blue",
+			dlc = "gage_pack_jobs"
+		},
+		{
+			color = "green",
+			dlc = "gage_pack_jobs"
+		},
+		{
+			color = "yellow",
+			dlc = "gage_pack_jobs"
 		}
 	}
+
 	local dlc_1_folder = "units/pd2_dlc1/weapons/wpn_effects_textures/"
 	local butch_folder = "units/pd2_dlc_butcher_mods/weapons/wpn_effects_textures/"
-	wts.types = {
-		sight = {
-			{
-				name_id = "menu_reticle_1_s",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_s_1_il"
-			},
-			{
-				name_id = "menu_reticle_1_m",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_m_1_il"
-			},
-			{
-				name_id = "menu_reticle_1_l",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_l_1_il"
-			},
-			{
-				name_id = "menu_reticle_2",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_2_il"
-			},
-			{
-				name_id = "menu_reticle_3",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_3_il"
-			},
-			{
-				name_id = "menu_reticle_4",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_4_il"
-			},
-			{
-				name_id = "menu_reticle_5",
-				dlc = "gage_pack_jobs",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_5_il"
-			},
-			{
-				name_id = "menu_reticle_6",
-				dlc = "gage_pack_jobs",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_6_il"
-			},
-			{
-				name_id = "menu_reticle_7",
-				dlc = "gage_pack_jobs",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_7_il"
-			},
-			{
-				name_id = "menu_reticle_8",
-				dlc = "gage_pack_jobs",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_8_il"
-			},
-			{
-				name_id = "menu_reticle_9",
-				dlc = "gage_pack_jobs",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_9_il"
-			},
-			{
-				name_id = "menu_reticle_10",
-				dlc = "gage_pack_jobs",
-				texture_path = dlc_1_folder .. "wpn_sight_reticle_10_il"
-			},
-			{
-				name_id = "menu_reticle_11",
-				texture_path = butch_folder .. "wpn_sight_reticle_11_il"
-			},
-			{
-				name_id = "menu_reticle_12",
-				texture_path = butch_folder .. "wpn_sight_reticle_12_il"
-			},
-			{
-				name_id = "menu_reticle_13",
-				texture_path = butch_folder .. "wpn_sight_reticle_13_il"
-			},
-			{
-				name_id = "menu_reticle_14",
-				texture_path = butch_folder .. "wpn_sight_reticle_14_il"
-			},
-			{
-				name_id = "menu_reticle_15",
-				texture_path = butch_folder .. "wpn_sight_reticle_15_il"
-			},
-			{
-				name_id = "menu_reticle_16",
-				texture_path = butch_folder .. "wpn_sight_reticle_16_il"
-			},
-			{
-				name_id = "menu_reticle_17",
-				texture_path = butch_folder .. "wpn_sight_reticle_17_il"
-			},
-			{
-				name_id = "menu_reticle_18",
-				texture_path = butch_folder .. "wpn_sight_reticle_18_il"
-			},
-			{
-				name_id = "menu_reticle_19",
-				texture_path = butch_folder .. "wpn_sight_reticle_19_il"
-			},
-			{
-				name_id = "menu_reticle_20",
-				texture_path = butch_folder .. "wpn_sight_reticle_20_il"
-			},
-			{
-				name_id = "menu_reticle_21",
-				texture_path = butch_folder .. "wpn_sight_reticle_21_il"
-			},
-			{
-				name_id = "menu_reticle_22",
-				texture_path = butch_folder .. "wpn_sight_reticle_22_il"
-			},
-			{
-				name_id = "menu_reticle_23",
-				texture_path = butch_folder .. "wpn_sight_reticle_23_il"
-			},
-			suffix = "_il"
-		}
+
+	wts.types = {}
+	wts.types.sight = {
+		{
+			name_id = "menu_reticle_1_s",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_s_1_il"
+		},
+		{
+			name_id = "menu_reticle_1_m",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_m_1_il"
+		},
+		{
+			name_id = "menu_reticle_1_l",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_l_1_il"
+		},
+		{
+			name_id = "menu_reticle_2",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_2_il"
+		},
+		{
+			name_id = "menu_reticle_3",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_3_il"
+		},
+		{
+			name_id = "menu_reticle_4",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_4_il"
+		},
+		{
+			dlc = "gage_pack_jobs",
+			name_id = "menu_reticle_5",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_5_il"
+		},
+		{
+			dlc = "gage_pack_jobs",
+			name_id = "menu_reticle_6",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_6_il"
+		},
+		{
+			dlc = "gage_pack_jobs",
+			name_id = "menu_reticle_7",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_7_il"
+		},
+		{
+			dlc = "gage_pack_jobs",
+			name_id = "menu_reticle_8",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_8_il"
+		},
+		{
+			dlc = "gage_pack_jobs",
+			name_id = "menu_reticle_9",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_9_il"
+		},
+		{
+			dlc = "gage_pack_jobs",
+			name_id = "menu_reticle_10",
+			texture_path = dlc_1_folder .. "wpn_sight_reticle_10_il"
+		},
+		{
+			name_id = "menu_reticle_11",
+			texture_path = butch_folder .. "wpn_sight_reticle_11_il"
+		},
+		{
+			name_id = "menu_reticle_12",
+			texture_path = butch_folder .. "wpn_sight_reticle_12_il"
+		},
+		{
+			name_id = "menu_reticle_13",
+			texture_path = butch_folder .. "wpn_sight_reticle_13_il"
+		},
+		{
+			name_id = "menu_reticle_14",
+			texture_path = butch_folder .. "wpn_sight_reticle_14_il"
+		},
+		{
+			name_id = "menu_reticle_15",
+			texture_path = butch_folder .. "wpn_sight_reticle_15_il"
+		},
+		{
+			name_id = "menu_reticle_16",
+			texture_path = butch_folder .. "wpn_sight_reticle_16_il"
+		},
+		{
+			name_id = "menu_reticle_17",
+			texture_path = butch_folder .. "wpn_sight_reticle_17_il"
+		},
+		{
+			name_id = "menu_reticle_18",
+			texture_path = butch_folder .. "wpn_sight_reticle_18_il"
+		},
+		{
+			name_id = "menu_reticle_19",
+			texture_path = butch_folder .. "wpn_sight_reticle_19_il"
+		},
+		{
+			name_id = "menu_reticle_20",
+			texture_path = butch_folder .. "wpn_sight_reticle_20_il"
+		},
+		{
+			name_id = "menu_reticle_21",
+			texture_path = butch_folder .. "wpn_sight_reticle_21_il"
+		},
+		{
+			name_id = "menu_reticle_22",
+			texture_path = butch_folder .. "wpn_sight_reticle_22_il"
+		},
+		{
+			name_id = "menu_reticle_23",
+			texture_path = butch_folder .. "wpn_sight_reticle_23_il"
+		},
+		suffix = "_il"
 	}
 	wts.types.gadget = wts.types.sight
 	wts.types.sight_swap = wts.types.sight
@@ -5140,8 +5140,8 @@ function GuiTweakData:init(tweak_data)
 	self.weapon_texture_switches = wts
 	self.default_part_texture_switch = "1 3"
 	self.part_texture_switches = {
-		wpn_fps_upg_o_45rds_v2 = "1 3",
-		wpn_fps_upg_o_45rds = "1 3"
+		wpn_fps_upg_o_45rds = "1 3",
+		wpn_fps_upg_o_45rds_v2 = "1 3"
 	}
 	self.tradable_inventory_sort_list = {
 		"aquired",
@@ -5151,63 +5151,62 @@ function GuiTweakData:init(tweak_data)
 		"category",
 		"bonus"
 	}
-	self.leakedrecordings = {
-		missions = {
-			{
-				coming_soon = false,
-				briefing_track = "Play_loc_secr_01",
-				heist = "kosugi",
-				poster_icon = "guis/dlcs/lron/textures/pd2/crimenet/badforbusiness",
-				recording_track = "Play_spe_bfb_01",
-				job_value = "LRON",
-				poster_rect = {
-					0,
-					14,
-					256,
-					484
-				}
-			},
-			{
-				coming_soon = false,
-				briefing_track = "Play_loc_secr_02",
-				heist = "mex",
-				poster_icon = "guis/dlcs/lrtw/textures/pd2/crimenet/cellmates",
-				recording_track = "Play_spe_clm_01",
-				job_value = "LRTW",
-				poster_rect = {
-					0,
-					14,
-					256,
-					484
-				}
-			},
-			{
-				coming_soon = false,
-				briefing_track = "Play_loc_secr_03",
-				heist = "dah",
-				poster_icon = "guis/dlcs/lrth/textures/pd2/crimenet/garnets",
-				recording_track = "Play_spe_grt_01",
-				job_value = "LRTH",
-				poster_rect = {
-					0,
-					14,
-					256,
-					484
-				}
-			},
-			{
-				coming_soon = false,
-				briefing_track = "Play_loc_secr_04",
-				heist = "hox",
-				poster_icon = "guis/dlcs/lrfo/textures/pd2/crimenet/enemies",
-				recording_track = "Play_spe_ets_01",
-				job_value = "LRFO",
-				poster_rect = {
-					0,
-					14,
-					256,
-					484
-				}
+	self.leakedrecordings = {}
+	self.leakedrecordings.missions = {
+		{
+			briefing_track = "Play_loc_secr_01",
+			coming_soon = false,
+			heist = "kosugi",
+			job_value = "LRON",
+			poster_icon = "guis/dlcs/lron/textures/pd2/crimenet/badforbusiness",
+			recording_track = "Play_spe_bfb_01",
+			poster_rect = {
+				0,
+				14,
+				256,
+				484
+			}
+		},
+		{
+			briefing_track = "Play_loc_secr_02",
+			coming_soon = false,
+			heist = "mex",
+			job_value = "LRTW",
+			poster_icon = "guis/dlcs/lrtw/textures/pd2/crimenet/cellmates",
+			recording_track = "Play_spe_clm_01",
+			poster_rect = {
+				0,
+				14,
+				256,
+				484
+			}
+		},
+		{
+			briefing_track = "Play_loc_secr_03",
+			coming_soon = false,
+			heist = "dah",
+			job_value = "LRTH",
+			poster_icon = "guis/dlcs/lrth/textures/pd2/crimenet/garnets",
+			recording_track = "Play_spe_grt_01",
+			poster_rect = {
+				0,
+				14,
+				256,
+				484
+			}
+		},
+		{
+			briefing_track = "Play_loc_secr_04",
+			coming_soon = false,
+			heist = "hox",
+			job_value = "LRFO",
+			poster_icon = "guis/dlcs/lrfo/textures/pd2/crimenet/enemies",
+			recording_track = "Play_spe_ets_01",
+			poster_rect = {
+				0,
+				14,
+				256,
+				484
 			}
 		}
 	}
@@ -5216,9 +5215,9 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/EspionageWeaponPackE",
 		name_id = "menu_nh_esp_dlc",
 		texture_path = "guis/dlcs/esp/textures/pd2/new_heists/esp_dlc_banner",
-		epic_url = "https://pd2.link/EspionageWeaponPackE",
 		url = "https://pd2.link/EspionageWeaponPackS"
 	})
 
@@ -5226,95 +5225,95 @@ function GuiTweakData:init(tweak_data)
 
 	if distribution_id == Idstring("STEAM") then
 		table.insert(self.new_heists, {
+			epic_url = "",
 			name_id = "menu_nh_acsbzbanner_sub",
 			texture_path = "guis/dlcs/acsbzbanners/textures/pd2/new_heists/subscription_banner",
-			epic_url = "",
 			url = "https://store.steampowered.com/app/3847540/"
 		})
 	end
 
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/XM25Merch",
 		name_id = "menu_nh_xm25_01",
 		texture_path = "guis/dlcs/xm25/textures/pd2/new_heists/xm25_01",
-		epic_url = "https://pd2.link/XM25Merch",
 		url = "https://pd2.link/XM25Merch"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/XM25TeddyMoo",
 		name_id = "menu_nh_xm25_02",
 		texture_path = "guis/dlcs/xm25/textures/pd2/new_heists/xm25_02",
-		epic_url = "https://pd2.link/XM25TeddyMoo",
 		url = "https://pd2.link/XM25TeddyMoo"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://t.paydaythegame.com/c/wcxnzh",
 		name_id = "menu_nh_pda10_04",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_04",
-		epic_url = "https://t.paydaythegame.com/c/wcxnzh",
 		url = "https://t.paydaythegame.com/c/oedttw"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://t.paydaythegame.com/c/mntnol",
 		name_id = "menu_nh_dgs_02",
 		texture_path = "guis/dlcs/dgs/textures/pd2/new_heists/dgs_02",
-		epic_url = "https://t.paydaythegame.com/c/mntnol",
 		url = "https://t.paydaythegame.com/c/gsyil8"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://t.paydaythegame.com/c/20jyqr",
 		name_id = "menu_nh_pda10_03",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_03",
-		epic_url = "https://t.paydaythegame.com/c/20jyqr",
 		url = "https://t.paydaythegame.com/c/20jyqr"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://t.paydaythegame.com/c/exuz4t",
 		name_id = "menu_nh_dgs",
 		texture_path = "guis/dlcs/dgs/textures/pd2/new_heists/dgs",
-		epic_url = "https://t.paydaythegame.com/c/exuz4t",
 		url = "https://t.paydaythegame.com/c/exuz4t"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/CrudeAwakeningNebulaSL",
 		name_id = "menu_nh_pxp4_02",
 		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4_02",
-		epic_url = "https://pd2.link/CrudeAwakeningNebulaSL",
 		url = "https://pd2.link/CrudeAwakeningNebulaSL"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://t.paydaythegame.com/c/vqiyyn",
 		name_id = "menu_nh_pda10_01",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_01",
-		epic_url = "https://t.paydaythegame.com/c/vqiyyn",
 		url = "https://t.paydaythegame.com/c/vqiyyn"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://t.paydaythegame.com/c/f4yt3i",
 		name_id = "menu_nh_pda10_02",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_02",
-		epic_url = "https://t.paydaythegame.com/c/f4yt3i",
 		url = "https://t.paydaythegame.com/c/f4yt3i"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/CrudeAwakeningHeistSLE",
 		name_id = "menu_nh_deep_01",
 		texture_path = "guis/dlcs/deep/textures/pd2/new_heists/deep_01",
-		epic_url = "https://pd2.link/CrudeAwakeningHeistSLE",
 		url = "https://pd2.link/CrudeAwakeningHeistSLS"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/CrudeAwakeningBundleSLE",
 		name_id = "menu_nh_txt4_01",
 		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_01",
-		epic_url = "https://pd2.link/CrudeAwakeningBundleSLE",
 		url = "https://pd2.link/CrudeAwakeningBundleSLS"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/McShayWeaponPack4SLE",
 		name_id = "menu_nh_pxp4",
 		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4",
-		epic_url = "https://pd2.link/McShayWeaponPack4SLE",
 		url = "https://pd2.link/McShayWeaponPack4SLS"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/LawlessTailorPackSLE",
 		name_id = "menu_nh_txt4_02",
 		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_02",
-		epic_url = "https://pd2.link/LawlessTailorPackSLE",
 		url = "_https://pd2.link/LawlessTailorPackSLS"
 	})
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/HostileTakeoverBundleSLE",
 		name_id = "menu_nh_txt3_02",
 		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_02",
-		epic_url = "https://pd2.link/HostileTakeoverBundleSLE",
 		url = "https://pd2.link/HostileTakeoverBundleSLS"
 	})
 	table.insert(self.new_heists, {
@@ -5408,9 +5407,9 @@ function GuiTweakData:init(tweak_data)
 		url = "https://pd2.link/MidlandBundleSLS"
 	})
 	table.insert(self.new_heists, {
+		append_steam_id = "?playerid=",
 		name_id = "menu_nh_ranc_01",
 		texture_path = "guis/dlcs/ranc/textures/pd2/new_heists/ranc_01",
-		append_steam_id = "?playerid=",
 		url = "https://pd2.link/MidlandRanchSLS"
 	})
 	table.insert(self.new_heists, {
@@ -5419,9 +5418,9 @@ function GuiTweakData:init(tweak_data)
 		url = "https://pd2.link/Drops"
 	})
 	table.insert(self.new_heists, {
+		append_steam_id = "?playerid=",
 		name_id = "menu_nh_pxp1_02",
 		texture_path = "guis/dlcs/in40/textures/pd2/new_heists/in40_02",
-		append_steam_id = "?playerid=",
 		url = "https://pd3.link/ShapePD3"
 	})
 	table.insert(self.new_heists, {
@@ -5806,7 +5805,7 @@ function GuiTweakData:_create_location_bounding_boxes()
 		local params = location[1]
 
 		if params then
-			local min_x, max_x, min_y, max_y = nil
+			local min_x, max_x, min_y, max_y
 
 			for _, x in ipairs(params[1]) do
 				min_x = not min_x and x or math.min(min_x, x)
@@ -5852,12 +5851,14 @@ function GuiTweakData:_create_location_spawning_dots()
 			for _, location_data in ipairs(self.crime_net.locations) do
 				local location = location_data[1]
 				local bounding_box = location.bounding_box
+
 				location.dots = location.dots or {}
 
-				if bounding_box[1] <= rx and rx <= bounding_box[2] and bounding_box[3] <= ry and ry <= bounding_box[4] then
+				if rx >= bounding_box[1] and rx <= bounding_box[2] and ry >= bounding_box[3] and ry <= bounding_box[4] then
 					local vx = location[1]
 					local vy = location[2]
-					local j, c = nil
+					local j, c
+
 					j = #vx
 
 					for i = 1, #vx do
@@ -5885,14 +5886,13 @@ function GuiTweakData:_create_location_spawning_dots()
 		zig = not zig
 	end
 
-	local new_locations = {
-		{}
-	}
+	local new_locations = {}
+
+	new_locations[1] = {}
 	new_locations[1].filters = self.crime_net.locations[1].filters
-	new_locations[1][1] = {
-		dots = {},
-		weight = 100
-	}
+	new_locations[1][1] = {}
+	new_locations[1][1].dots = {}
+	new_locations[1][1].weight = 100
 
 	for i = #self.crime_net.locations, 1, -1 do
 		if self.crime_net.locations[i][1].dots then
@@ -5906,14 +5906,17 @@ function GuiTweakData:_create_location_spawning_dots()
 end
 
 function GuiTweakData:create_narrative_locations(locations)
+	return
 end
 
 function GuiTweakData:print_locations()
+	return
 end
 
 function GuiTweakData:serializeTable(val, name, skipnewlines, depth)
 	skipnewlines = skipnewlines or false
 	depth = depth or 0
+
 	local tmp = ""
 
 	if name and type(name) == "string" then
@@ -5922,6 +5925,7 @@ function GuiTweakData:serializeTable(val, name, skipnewlines, depth)
 
 	if type(val) == "table" then
 		tmp = tmp .. "{ " .. (depth == 0 and "\n" or "")
+
 		local i = 1
 
 		for k, v in pairs(val) do
@@ -5955,15 +5959,15 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 	end
 
 	if index == 1 then
-		return function (x, y)
+		return function(x, y)
 			return y < x
 		end
 	elseif index == 2 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
-		local x_item, y_item, x_td, y_td, x_loc, y_loc = nil
+		local x_item, y_item, x_td, y_td, x_loc, y_loc
 		local localization_cache = {}
 
-		return function (x, y)
+		return function(x, y)
 			x_item = inventory_tradable[x]
 			y_item = inventory_tradable[y]
 			x_td = (tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category])[x_item.entry]
@@ -5982,9 +5986,9 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 		end
 	elseif index == 3 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
-		local x_item, y_item, x_quality, y_quality = nil
+		local x_item, y_item, x_quality, y_quality
 
-		return function (x, y)
+		return function(x, y)
 			x_item = inventory_tradable[x]
 			y_item = inventory_tradable[y]
 			x_quality = tweak_data.economy.qualities[x_item.quality]
@@ -5999,7 +6003,7 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 			end
 
 			if x_quality.index ~= y_quality.index then
-				return y_quality.index < x_quality.index
+				return x_quality.index > y_quality.index
 			end
 
 			if x_item.entry ~= y_item.entry then
@@ -6010,9 +6014,9 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 		end
 	elseif index == 4 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
-		local x_item, y_item, x_td, y_td, x_rarity, y_rarity = nil
+		local x_item, y_item, x_td, y_td, x_rarity, y_rarity
 
-		return function (x, y)
+		return function(x, y)
 			x_item = inventory_tradable[x]
 			y_item = inventory_tradable[y]
 			x_td = (tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category])[x_item.entry]
@@ -6021,7 +6025,7 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 			y_rarity = tweak_data.economy.rarities[y_td.rarity or "common"]
 
 			if x_rarity.index ~= y_rarity.index then
-				return y_rarity.index < x_rarity.index
+				return x_rarity.index > y_rarity.index
 			end
 
 			if x_item.entry ~= y_item.entry then
@@ -6032,9 +6036,9 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 		end
 	elseif index == 5 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
-		local x_item, y_item = nil
+		local x_item, y_item
 
-		return function (x, y)
+		return function(x, y)
 			x_item = inventory_tradable[x]
 			y_item = inventory_tradable[y]
 
@@ -6050,9 +6054,9 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 		end
 	elseif index == 6 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
-		local x_item, y_item = nil
+		local x_item, y_item
 
-		return function (x, y)
+		return function(x, y)
 			x_item = inventory_tradable[x]
 			y_item = inventory_tradable[y]
 

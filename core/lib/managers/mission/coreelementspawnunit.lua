@@ -39,16 +39,17 @@ function ElementSpawnUnit:on_executed(instigator, ...)
 	end
 
 	if self._values.unit_name ~= "none" then
-		local amount = nil
+		local amount
 
 		if self._values.counter_id then
 			local element = self:get_mission_element(self._values.counter_id)
+
 			amount = element:counter_value()
 		else
 			amount = self._values.unit_spawn_amount or 1
 		end
 
-		local unit = nil
+		local unit
 
 		for i = 1, amount do
 			local pos, rot = self:get_orientation()

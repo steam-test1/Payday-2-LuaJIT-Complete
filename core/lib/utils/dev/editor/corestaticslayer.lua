@@ -30,7 +30,7 @@ function StaticsLayer:_on_gui_move_to_continent()
 		return
 	end
 
-	local continent = nil
+	local continent
 	local continents = table.map_keys(managers.editor:continents())
 
 	table.delete(continents, managers.editor:current_continent_name())

@@ -17,9 +17,9 @@ end
 
 function TvGui:setup()
 	self._video_panel = self._ws:panel():video({
+		layer = 10,
 		loop = true,
 		visible = true,
-		layer = 10,
 		video = self._video
 	})
 
@@ -72,10 +72,9 @@ function TvGui:destroy()
 end
 
 function TvGui:save(data)
-	data.TvGui = {
-		playing = self._playing,
-		play_position = self._video_panel:current_frame()
-	}
+	data.TvGui = {}
+	data.TvGui.playing = self._playing
+	data.TvGui.play_position = self._video_panel:current_frame()
 end
 
 function TvGui:load(data)

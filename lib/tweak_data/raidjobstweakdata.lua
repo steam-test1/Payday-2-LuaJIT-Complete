@@ -9,15 +9,15 @@ end
 
 function RaidJobsTweakData:_init_weapon_challenges(tweak_data)
 	table.insert(self.challenges, {
-		reward_id = "menu_aru_job_1_reward",
-		name_id = "menu_aru_job_1",
-		id = "aru_1",
 		desc_id = "menu_aru_job_1_desc",
+		id = "aru_1",
+		name_id = "menu_aru_job_1",
+		reward_id = "menu_aru_job_1_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("aru_1", 10, {
-				name_id = "menu_aru_job_1_obj",
-				desc_id = "menu_aru_job_1_obj_desc"
+				desc_id = "menu_aru_job_1_obj_desc",
+				name_id = "menu_aru_job_1_obj"
 			})
 		},
 		rewards = {
@@ -32,15 +32,15 @@ function RaidJobsTweakData:_init_weapon_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_aru_job_2_reward",
-		name_id = "menu_aru_job_2",
-		id = "aru_2",
 		desc_id = "menu_aru_job_2_desc",
+		id = "aru_2",
+		name_id = "menu_aru_job_2",
+		reward_id = "menu_aru_job_2_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("aru_2", 50, {
-				name_id = "menu_aru_job_2_obj",
-				desc_id = "menu_aru_job_2_obj_desc"
+				desc_id = "menu_aru_job_2_obj_desc",
+				name_id = "menu_aru_job_2_obj"
 			})
 		},
 		rewards = {
@@ -55,15 +55,15 @@ function RaidJobsTweakData:_init_weapon_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_aru_job_3_reward",
-		name_id = "menu_aru_job_3",
-		id = "aru_3",
 		desc_id = "menu_aru_job_3_desc",
+		id = "aru_3",
+		name_id = "menu_aru_job_3",
+		reward_id = "menu_aru_job_3_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("aru_3", 100, {
-				name_id = "menu_aru_job_3_obj",
-				desc_id = "menu_aru_job_3_obj_desc"
+				desc_id = "menu_aru_job_3_obj_desc",
+				name_id = "menu_aru_job_3_obj"
 			})
 		},
 		rewards = {
@@ -78,15 +78,15 @@ function RaidJobsTweakData:_init_weapon_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_aru_job_4_reward",
-		name_id = "menu_aru_job_4",
-		id = "aru_4",
 		desc_id = "menu_aru_job_4_desc",
+		id = "aru_4",
+		name_id = "menu_aru_job_4",
+		reward_id = "menu_aru_job_4_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("aru_4", 200, {
-				name_id = "menu_aru_job_4_obj",
-				desc_id = "menu_aru_job_4_obj_desc"
+				desc_id = "menu_aru_job_4_obj_desc",
+				name_id = "menu_aru_job_4_obj"
 			})
 		},
 		rewards = {
@@ -100,15 +100,15 @@ end
 
 function RaidJobsTweakData:_init_mask_challenges(tweak_data)
 	table.insert(self.challenges, {
-		reward_id = "menu_jfr_job_1_reward",
-		name_id = "menu_jfr_job_1",
-		id = "jfr_1",
 		desc_id = "menu_jfr_job_1_desc",
+		id = "jfr_1",
+		name_id = "menu_jfr_job_1",
+		reward_id = "menu_jfr_job_1_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("jfr_1", 1, {
-				name_id = "menu_jfr_job_1_case",
-				desc_id = "menu_jfr_job_1_case_desc"
+				desc_id = "menu_jfr_job_1_case_desc",
+				name_id = "menu_jfr_job_1_case"
 			})
 		},
 		rewards = {
@@ -119,15 +119,15 @@ function RaidJobsTweakData:_init_mask_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_jfr_job_2_reward",
-		name_id = "menu_jfr_job_2",
-		id = "jfr_2",
 		desc_id = "menu_jfr_job_2_desc",
+		id = "jfr_2",
+		name_id = "menu_jfr_job_2",
+		reward_id = "menu_jfr_job_2_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("jfr_2", 1, {
-				name_id = "menu_jfr_job_2_kills",
-				desc_id = "menu_jfr_job_2_kills_desc"
+				desc_id = "menu_jfr_job_2_kills_desc",
+				name_id = "menu_jfr_job_2_kills"
 			})
 		},
 		rewards = {
@@ -138,15 +138,15 @@ function RaidJobsTweakData:_init_mask_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_jfr_job_3_reward",
-		name_id = "menu_jfr_job_3",
-		id = "jfr_3",
 		desc_id = "menu_jfr_job_3_desc",
+		id = "jfr_3",
+		name_id = "menu_jfr_job_3",
+		reward_id = "menu_jfr_job_3_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("jfr_3", 1, {
-				name_id = "menu_jfr_job_3_wine",
-				desc_id = "menu_jfr_job_3_wine_desc"
+				desc_id = "menu_jfr_job_3_wine_desc",
+				name_id = "menu_jfr_job_3_wine"
 			})
 		},
 		rewards = {
@@ -157,15 +157,15 @@ function RaidJobsTweakData:_init_mask_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_jfr_job_4_reward",
-		name_id = "menu_jfr_job_4",
-		id = "jfr_4",
 		desc_id = "menu_jfr_job_4_desc",
+		id = "jfr_4",
+		name_id = "menu_jfr_job_4",
+		reward_id = "menu_jfr_job_4_reward",
 		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("jfr_4", 5, {
-				name_id = "menu_jfr_job_4_deposit",
-				desc_id = "menu_jfr_job_4_deposit_desc"
+				desc_id = "menu_jfr_job_4_deposit_desc",
+				name_id = "menu_jfr_job_4_deposit"
 			})
 		},
 		rewards = {

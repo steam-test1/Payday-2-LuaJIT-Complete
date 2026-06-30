@@ -5,9 +5,11 @@ function NetworkFriendsXBL:init()
 end
 
 function NetworkFriendsXBL:destroy()
+	return
 end
 
 function NetworkFriendsXBL:set_visible(set)
+	return
 end
 
 function NetworkFriendsXBL:get_friends_list()
@@ -54,9 +56,11 @@ function NetworkFriendsXBL:register_callback(event, callback)
 end
 
 function NetworkFriendsXBL:send_friend_request(nickname)
+	return
 end
 
 function NetworkFriendsXBL:remove_friend(id)
+	return
 end
 
 function NetworkFriendsXBL:has_builtin_screen()
@@ -64,9 +68,11 @@ function NetworkFriendsXBL:has_builtin_screen()
 end
 
 function NetworkFriendsXBL:accept_friend_request(player_id)
+	return
 end
 
 function NetworkFriendsXBL:ignore_friend_request(player_id)
+	return
 end
 
 function NetworkFriendsXBL:num_pending_friend_requests()

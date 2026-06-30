@@ -28,6 +28,7 @@ function CharacterTeamElement:draw_links(t, dt, selected_unit, all_units)
 end
 
 function CharacterTeamElement:update_editing()
+	return
 end
 
 function CharacterTeamElement:update_selected(t, dt, selected_unit, all_units)
@@ -37,8 +38,8 @@ function CharacterTeamElement:update_selected(t, dt, selected_unit, all_units)
 
 		if draw then
 			self:_draw_link({
-				g = 0.75,
 				b = 0,
+				g = 0.75,
 				r = 0,
 				from_unit = self._unit,
 				to_unit = unit
@@ -49,8 +50,8 @@ end
 
 function CharacterTeamElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and (string.find(ray.unit:name():s(), "ai_spawn_enemy", 1, true) or string.find(ray.unit:name():s(), "ai_spawn_civilian", 1, true)) then
@@ -73,6 +74,7 @@ function CharacterTeamElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"ai_spawn_enemy",
 		"ai_spawn_civilian"
@@ -100,12 +102,12 @@ function CharacterTeamElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(ignore_disabled, 0, 0, "EXPAND")
 
 	local team_params = {
+		ctrlr_proportions = 2,
 		default = "",
 		name = "Team:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select wanted team for the character.",
 		sorted = true,
+		tooltip = "Select wanted team for the character.",
 		panel = panel,
 		sizer = panel_sizer,
 		options = tweak_data.levels:get_team_names_indexed(),

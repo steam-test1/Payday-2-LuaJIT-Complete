@@ -29,6 +29,7 @@ function AreaDespawnElement:build_slots_map()
 end
 
 function AreaDespawnElement:update_editing()
+	return
 end
 
 function AreaDespawnElement:update_selected(t, dt, selected_unit, all_units)
@@ -46,8 +47,8 @@ end
 
 function AreaDespawnElement:add_shape()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if not ray then
@@ -59,6 +60,7 @@ function AreaDespawnElement:add_shape()
 	end
 
 	self._hed.shape_elements = self._hed.shape_elements or {}
+
 	local id = ray.unit:unit_data().unit_id
 
 	if table.contains(self._hed.shape_elements, id) then
@@ -136,6 +138,7 @@ end
 
 function AreaDespawnElement:new_save_values(...)
 	local save_values = AreaDespawnElement.super.new_save_values(self, ...)
+
 	save_values.slots = self._slots_map and table.map_keys(self._slots_map) or {}
 
 	return save_values
@@ -158,6 +161,7 @@ function AreaDespawnElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local _, test_type_list = self:_build_value_combobox(panel, panel_sizer, "test_type", {
 		"unit_position",
 		"intersection"
@@ -168,6 +172,7 @@ function AreaDespawnElement:_build_panel(panel, panel_sizer)
 
 	local slot_masks = table.map_keys(managers.slot._masks)
 	local _, slots_presets_list = self:_build_value_combobox(panel, panel_sizer, "", slot_masks, "", "Slots presets")
+
 	self._slots_presets_list = slots_presets_list
 
 	panel_sizer:add_spacer(0, 2)

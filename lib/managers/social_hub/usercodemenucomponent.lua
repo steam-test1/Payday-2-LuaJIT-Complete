@@ -8,14 +8,15 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 UserCodeMenuComponent = UserCodeMenuComponent or class(LobbyCodeMenuComponent)
 
 function UserCodeMenuComponent:init(ws, fullscreen_ws, node)
 	self._ws = ws
 	self._panel = self._ws:panel():panel({
-		w = 500,
-		layer = 100,
 		h = 100,
+		layer = 100,
+		w = 500,
 		y = 80
 	})
 	Global.lobby_code = Global.lobby_code or {}
@@ -24,7 +25,7 @@ function UserCodeMenuComponent:init(ws, fullscreen_ws, node)
 	self:create_hub_panel()
 	self:set_header(managers.localization:to_upper_text("menu_user_code"))
 
-	local initial_state = nil
+	local initial_state
 
 	if Global.lobby_code.state ~= nil then
 		initial_state = Global.lobby_code.state

@@ -34,7 +34,7 @@ function M79GrenadeBase:launch(params)
 end
 
 function M79GrenadeBase:update(unit, t, dt)
-	if self._auto_explode_t < t then
+	if t > self._auto_explode_t then
 		self:_detonate()
 
 		return
@@ -60,6 +60,7 @@ function M79GrenadeBase:update(unit, t, dt)
 
 	if self._hidden then
 		local safe_dis_sq = 120
+
 		safe_dis_sq = safe_dis_sq * safe_dis_sq
 
 		if safe_dis_sq < mvector3.distance_sq(self._spawn_pos, self._last_pos) then
@@ -88,6 +89,7 @@ end
 
 function M79GrenadeBase:_chk_collision()
 	local col_ray = World:raycast("ray", self._last_pos, self._new_pos, "slot_mask", self._collision_slotmask)
+
 	col_ray = col_ray or World:raycast("ray", self._last_last_pos, self._new_pos, "slot_mask", self._collision_slotmask)
 
 	if col_ray then
@@ -111,6 +113,7 @@ function M79GrenadeBase:_detonate()
 	end
 
 	self._detonated = true
+
 	local expl_normal = mvector3.copy(self._velocity)
 
 	mvector3.negate(expl_normal)

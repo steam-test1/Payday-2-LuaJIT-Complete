@@ -2,6 +2,7 @@ NewNPCFlamethrowerBase = NewNPCFlamethrowerBase or class(NewNPCRaycastWeaponBase
 NewNPCFlamethrowerBase.kill_effects = NewFlamethrowerBase.kill_effects
 NewNPCFlamethrowerBase.chk_upd_state = NewFlamethrowerBase.chk_upd_state
 NewNPCFlamethrowerBase._spawn_flame_effect = NewFlamethrowerBase._spawn_flame_effect
+
 local mvec3_set = mvector3.set
 local mvec3_set_z = mvector3.set_z
 local mvec3_add = mvector3.add
@@ -40,12 +41,13 @@ function NewNPCFlamethrowerBase:setup_default(...)
 end
 
 function NewNPCFlamethrowerBase:_spawn_muzzle_effect(from_pos, direction)
+	return
 end
 
 function NewNPCFlamethrowerBase:update(unit, t, dt)
 	local chk_shoot_expired = self._check_shooting_expired
 
-	if chk_shoot_expired and chk_shoot_expired.check_t < t then
+	if chk_shoot_expired and t > chk_shoot_expired.check_t then
 		self._check_shooting_expired = nil
 
 		self:play_tweak_data_sound("stop_fire")
@@ -71,9 +73,7 @@ function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dm
 	if col_ray then
 		local col_dis = col_ray.distance
 
-		if col_dis < damage_range then
-			damage_range = col_dis or damage_range
-		end
+		damage_range = col_dis < damage_range and col_dis or damage_range
 
 		mvec3_set(mvec_to, direction)
 		mvec3_mul(mvec_to, damage_range)
@@ -83,9 +83,8 @@ function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dm
 	self:_spawn_flame_effect(mvec_to, direction)
 
 	local hit_bodies = World:find_bodies("intersect", "capsule", from_pos, mvec_to, self._flame_radius, self._bullet_slotmask)
-	local hit_body, hit_unit, hit_u_key = nil
-	local units_hit = {}
-	local valid_hit_bodies = {}
+	local hit_body, hit_unit, hit_u_key
+	local units_hit, valid_hit_bodies = {}, {}
 	local t_contains = table.contains
 
 	for i = 1, #hit_bodies do
@@ -103,13 +102,14 @@ function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dm
 	end
 
 	local bullet_class = self:bullet_class()
-	local fake_ray_dir, fake_ray_dis, hit_base_ext = nil
+	local fake_ray_dir, fake_ray_dis, hit_base_ext
 
 	for i = 1, #valid_hit_bodies do
 		hit_body = valid_hit_bodies[i]
 		hit_unit = hit_body:unit()
 		fake_ray_dir = hit_body:center_of_mass()
 		fake_ray_dis = mvec3_dir(fake_ray_dir, from_pos, fake_ray_dir)
+
 		local hit_pos = hit_body:position()
 		local fake_ray = {
 			body = hit_body,
@@ -120,6 +120,7 @@ function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dm
 			position = hit_pos,
 			hit_position = hit_pos
 		}
+
 		hit_base_ext = hit_unit:base()
 
 		if hit_base_ext and hit_base_ext.is_local_player then
@@ -161,7 +162,7 @@ function NewNPCFlamethrowerBase:fire_blank(direction, impact, sub_id, override_d
 		chk_shoot_expired.check_t = self._timer:time() + 0.3
 	end
 
-	local m_ray_from = nil
+	local m_ray_from
 	local weap_unit = self._unit
 	local setup_data = self._setup
 	local user_unit = setup_data and setup_data.user_unit
@@ -188,7 +189,7 @@ function NewNPCFlamethrowerBase:fire_blank(direction, impact, sub_id, override_d
 	mvec3_mul(mvec_to, range)
 	mvec3_add(mvec_to, m_ray_from or mvec_from)
 
-	local hit_something = nil
+	local hit_something
 
 	if impact then
 		local ignore_units = setup_data and setup_data.ignore_units
@@ -196,11 +197,10 @@ function NewNPCFlamethrowerBase:fire_blank(direction, impact, sub_id, override_d
 
 		if col_ray then
 			hit_something = true
+
 			local col_dis = col_ray.distance
 
-			if col_dis < range then
-				range = col_dis or range
-			end
+			range = col_dis < range and col_dis or range
 
 			self:bullet_class():on_collision(col_ray, weap_unit, user_unit, self._damage, true)
 		end
@@ -225,12 +225,14 @@ function NewNPCFlamethrowerBase:_sound_autofire_start(nr_shots)
 	self._sound_fire:stop()
 
 	local sound = self._sound_fire:post_event(tweak_sound.fire, callback(self, self, "_on_auto_fire_stop"), nil, "end_of_event")
+
 	sound = sound or self._sound_fire:post_event(tweak_sound.fire)
 end
 
 function NewNPCFlamethrowerBase:_sound_autofire_end()
 	local tweak_sound = tweak_data.weapon[self._name_id].sounds or {}
 	local sound = self._sound_fire:post_event(tweak_sound.stop_fire)
+
 	sound = sound or self._sound_fire:post_event(tweak_sound.stop_fire)
 end
 
@@ -307,9 +309,7 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 		if col_ray then
 			local col_dis = col_ray.distance
 
-			if col_dis < damage_range then
-				damage_range = col_dis or damage_range
-			end
+			damage_range = col_dis < damage_range and col_dis or damage_range
 
 			mvec3_set(mvec_to, mvec_dir)
 			mvec3_mul(mvec_to, damage_range)
@@ -347,9 +347,8 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 		self:_spawn_flame_effect(mvec_to, mvec_dir, true)
 	end
 
-	local hit_body, hit_unit, hit_u_key = nil
-	local units_hit = {}
-	local valid_hit_bodies = {}
+	local hit_body, hit_unit, hit_u_key
+	local units_hit, valid_hit_bodies = {}, {}
 	local t_contains = table.contains
 
 	for _, hit_bodies in ipairs({
@@ -373,13 +372,14 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 	end
 
 	local bullet_class = self:bullet_class()
-	local fake_ray_dir, fake_ray_dis, hit_base_ext = nil
+	local fake_ray_dir, fake_ray_dis, hit_base_ext
 
 	for i = 1, #valid_hit_bodies do
 		hit_body = valid_hit_bodies[i]
 		hit_unit = hit_body:unit()
 		fake_ray_dir = hit_body:center_of_mass()
 		fake_ray_dis = mvec3_dir(fake_ray_dir, from_pos, fake_ray_dir)
+
 		local hit_pos = hit_body:position()
 		local fake_ray = {
 			body = hit_body,
@@ -390,6 +390,7 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 			position = hit_pos,
 			hit_position = hit_pos
 		}
+
 		hit_base_ext = hit_unit:base()
 
 		if hit_base_ext and hit_base_ext.is_local_player then

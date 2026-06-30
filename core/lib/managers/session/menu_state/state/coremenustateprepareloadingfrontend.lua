@@ -7,6 +7,7 @@ PrepareLoadingFrontEnd = PrepareLoadingFrontEnd or class()
 
 function PrepareLoadingFrontEnd:init()
 	self._response = CoreSessionResponse.Done:new()
+
 	local menu_handler = self.menu_state._menu_handler
 
 	menu_handler:prepare_loading_front_end(self._response)

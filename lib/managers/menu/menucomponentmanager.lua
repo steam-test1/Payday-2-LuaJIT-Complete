@@ -87,301 +87,302 @@ function MenuComponentManager:init()
 	self._resolution_changed_callback_id = managers.viewport:add_resolution_changed_func(callback(self, self, "resolution_changed"))
 	self._request_done_clbk_func = callback(self, self, "_request_done_callback")
 	self._preplanning_saved_draws = {}
+
 	local is_installing, install_progress = managers.dlc:is_installing()
+
 	self._is_game_installing = is_installing
 	self._crimenet_enabled = not is_installing
 	self._crimenet_offline_enabled = not is_installing
 	self._generated = self._generated or {}
-	self._active_components = {
-		news = {
-			create = callback(self, self, "_create_newsfeed_gui"),
-			close = callback(self, self, "close_newsfeed_gui")
-		},
-		profile = {
-			create = callback(self, self, "_create_profile_gui"),
-			close = callback(self, self, "_disable_profile_gui")
-		},
-		friends = {
-			create = callback(self, self, "_create_friends_gui"),
-			close = callback(self, self, "_disable_friends_gui")
-		},
-		chats = {
-			create = callback(self, self, "_create_chat_gui"),
-			close = callback(self, self, "_disable_chat_gui")
-		},
-		lobby_chats = {
-			create = callback(self, self, "_create_lobby_chat_gui"),
-			close = callback(self, self, "hide_lobby_chat_gui")
-		},
-		crimenet_chats = {
-			create = callback(self, self, "_create_crimenet_chats_gui"),
-			close = callback(self, self, "hide_crimenet_chat_gui")
-		},
-		preplanning_chats = {
-			create = callback(self, self, "_create_preplanning_chats_gui"),
-			close = callback(self, self, "hide_preplanning_chat_gui")
-		},
-		inventory_chats = {
-			create = callback(self, self, "_create_inventory_chats_gui"),
-			close = callback(self, self, "hide_inventory_chat_gui")
-		},
-		contract = {
-			create = callback(self, self, "_create_contract_gui"),
-			close = callback(self, self, "_disable_contract_gui")
-		},
-		server_info = {
-			create = callback(self, self, "_create_server_info_gui"),
-			close = callback(self, self, "_disable_server_info_gui")
-		},
-		debug_strings = {
-			create = callback(self, self, "_create_debug_strings_gui"),
-			close = callback(self, self, "_disable_debug_strings_gui")
-		},
-		debug_fonts = {
-			create = callback(self, self, "_create_debug_fonts_gui"),
-			close = callback(self, self, "_disable_debug_fonts_gui")
-		},
-		skilltree = {
-			create = callback(self, self, "_create_skilltree_gui"),
-			close = callback(self, self, "close_skilltree_gui")
-		},
-		infamytree = {
-			create = callback(self, self, "_create_infamytree_gui"),
-			close = callback(self, self, "close_infamytree_gui")
-		},
-		crimenet = {
-			create = callback(self, self, "_create_crimenet_gui"),
-			close = callback(self, self, "close_crimenet_gui")
-		},
-		crimenet_contract = {
-			create = callback(self, self, "_create_crimenet_contract_gui"),
-			close = callback(self, self, "close_crimenet_contract_gui")
-		},
-		crimenet_filters = {
-			create = callback(self, self, "_create_crimenet_filters_gui"),
-			close = callback(self, self, "close_crimenet_filters_gui")
-		},
-		crimenet_casino = {
-			create = callback(self, self, "_create_crimenet_casino_gui"),
-			close = callback(self, self, "close_crimenet_casino_gui")
-		},
-		lootdrop_casino = {
-			create = callback(self, self, "_create_lootdrop_casino_gui"),
-			close = callback(self, self, "close_lootdrop_casino_gui")
-		},
-		blackmarket = {
-			create = callback(self, self, "_create_blackmarket_gui"),
-			close = callback(self, self, "close_blackmarket_gui")
-		},
-		mission_briefing = {
-			create = callback(self, self, "_create_mission_briefing_gui"),
-			close = callback(self, self, "_hide_mission_briefing_gui")
-		},
-		stage_endscreen = {
-			create = callback(self, self, "_create_stage_endscreen_gui"),
-			close = callback(self, self, "_hide_stage_endscreen_gui")
-		},
-		lootdrop = {
-			create = callback(self, self, "_create_lootdrop_gui"),
-			close = callback(self, self, "_hide_lootdrop_gui")
-		},
-		menuscene_info = {
-			create = callback(self, self, "_create_menuscene_info_gui"),
-			close = callback(self, self, "_close_menuscene_info_gui")
-		},
-		player_profile = {
-			create = callback(self, self, "_create_player_profile_gui"),
-			close = callback(self, self, "close_player_profile_gui")
-		},
-		ingame_contract = {
-			create = callback(self, self, "_create_ingame_contract_gui"),
-			close = callback(self, self, "close_ingame_contract_gui")
-		},
-		ingame_waiting = {
-			create = callback(self, self, "_create_ingame_waiting_gui"),
-			close = callback(self, self, "close_ingame_waiting_gui")
-		},
-		ingame_manual = {
-			create = callback(self, self, "_create_ingame_manual_gui"),
-			close = callback(self, self, "close_ingame_manual_gui")
-		},
-		inventory_list = {
-			create = callback(self, self, "_create_inventory_list_gui"),
-			close = callback(self, self, "close_inventory_list_gui")
-		},
-		preplanning_map = {
-			create = callback(self, self, "create_preplanning_map_gui"),
-			close = callback(self, self, "close_preplanning_map_gui")
-		},
-		game_installing = {
-			create = callback(self, self, "create_game_installing_gui"),
-			close = callback(self, self, "close_game_installing_gui")
-		},
-		inventory = {
-			create = callback(self, self, "create_inventory_gui"),
-			close = callback(self, self, "close_inventory_gui")
-		},
-		skilltree_new = {
-			create = callback(self, self, "_create_skilltree_new_gui"),
-			close = callback(self, self, "close_skilltree_new_gui")
-		},
-		custom_safehouse = {
-			create = callback(self, self, "create_custom_safehouse_gui"),
-			close = callback(self, self, "close_custom_safehouse_gui")
-		},
-		custom_safehouse_no_input = {
-			create = callback(self, self, "disable_custom_safehouse_input"),
-			close = callback(self, self, "enable_custom_safehouse_input")
-		},
-		custom_safehouse_primaries = {
-			create = callback(self, self, "create_custom_safehouse_primaries"),
-			close = callback(self, self, "close_custom_safehouse_primaries")
-		},
-		custom_safehouse_secondaries = {
-			create = callback(self, self, "create_custom_safehouse_secondaries"),
-			close = callback(self, self, "close_custom_safehouse_secondaries")
-		},
-		new_heists = {
-			create = callback(self, self, "create_new_heists_gui"),
-			close = callback(self, self, "close_new_heists_gui")
-		},
-		mutators_list = {
-			create = callback(self, self, "create_mutators_list_gui"),
-			close = callback(self, self, "close_mutators_list_gui")
-		},
-		leakedrecording = {
-			create = callback(self, self, "create_leakedrecording_gui"),
-			close = callback(self, self, "close_leakedrecording_gui")
-		},
-		leakedrecording_mission = {
-			create = callback(self, self, "create_leakedrecording_mission_gui"),
-			close = callback(self, self, "close_leakedrecording_mission_gui")
-		},
-		leakedrecording_gadget = {
-			create = callback(self, self, "create_leakedrecording_gadget_gui"),
-			close = callback(self, self, "close_leakedrecording_gadget_gui")
-		},
-		crimenet_crime_spree_contract = {
-			create = callback(self, self, "create_crime_spree_contract_gui"),
-			close = callback(self, self, "close_crime_spree_contract_gui")
-		},
-		crime_spree_missions = {
-			create = callback(self, self, "create_crime_spree_missions_gui"),
-			close = callback(self, self, "close_crime_spree_missions_gui")
-		},
-		crime_spree_details = {
-			create = callback(self, self, "create_crime_spree_details_gui"),
-			close = callback(self, self, "close_crime_spree_details_gui")
-		},
-		crime_spree_modifiers = {
-			create = callback(self, self, "create_crime_spree_modifiers_gui"),
-			close = callback(self, self, "close_crime_spree_modifiers_gui")
-		},
-		crime_spree_forced_modifiers = {
-			create = callback(self, self, "create_crime_spree_forced_modifiers_gui"),
-			close = callback(self, self, "close_crime_spree_forced_modifiers_gui")
-		},
-		crime_spree_forced_modifiers_dummy = {
-			create = callback(self, self, "check_crime_spree_forced_modifiers")
-		},
-		crime_spree_rewards = {
-			create = callback(self, self, "create_crime_spree_rewards_gui"),
-			close = callback(self, self, "close_crime_spree_rewards_gui")
-		},
-		crime_spree_mission_end = {
-			create = callback(self, self, "create_crime_spree_mission_end_gui"),
-			close = callback(self, self, "close_crime_spree_mission_end_gui")
-		},
-		debug_quicklaunch = {
-			create = callback(self, self, "create_debug_quicklaunch_gui"),
-			close = callback(self, self, "close_debug_quicklaunch_gui")
-		},
-		crew_management = {
-			create = callback(self, self, "create_crew_management_gui"),
-			close = callback(self, self, "close_crew_management_gui")
-		},
-		achievement_list = self:create_component_callback("AchievementListGui", "achievement_list"),
-		story_missions = {
-			create = callback(self, self, "create_story_missions_gui"),
-			close = callback(self, self, "close_story_missions_gui")
-		},
-		crimenet_sidebar = {
-			create = callback(self, self, "create_crimenet_sidebar_gui"),
-			close = callback(self, self, "close_crimenet_sidebar_gui")
-		},
-		raid_menu = {
-			create = callback(self, self, "create_raid_menu_gui"),
-			close = callback(self, self, "close_raid_menu_gui")
-		},
-		raid_weapons_menu = {
-			create = callback(self, self, "create_raid_weapons_menu_gui"),
-			close = callback(self, self, "close_raid_weapons_menu_gui")
-		},
-		raid_preorder_menu = {
-			create = callback(self, self, "create_raid_preorder_menu_gui"),
-			close = callback(self, self, "close_raid_preorder_menu_gui")
-		},
-		raid_special_menu = {
-			create = callback(self, self, "create_raid_special_menu_gui"),
-			close = callback(self, self, "close_raid_special_menu_gui")
-		},
-		raid_weapon_preview = {
-			create = callback(self, self, "create_raid_weapon_preview_gui"),
-			close = callback(self, self, "close_raid_weapon_preview_gui")
-		},
-		contract_broker = {
-			create = callback(self, self, "create_contract_broker_gui"),
-			close = callback(self, self, "close_contract_broker_gui")
-		},
-		side_jobs = {
-			create = callback(self, self, "create_side_jobs_gui"),
-			close = callback(self, self, "close_side_jobs_gui")
-		},
-		skirmish_landing = self:create_component_callback("SkirmishLandingMenuComponent", "skirmish_landing"),
-		skirmish_contract = self:create_component_callback("SkirmishContractMenuComponent", "skirmish_contract"),
-		skirmish_weekly_contract = self:create_component_callback("SkirmishWeeklyContractMenuComponent", "skirmish_weekly_contract"),
-		skirmish_contract_join = {
-			create = callback(self, self, "create_skirmish_contract_join_gui"),
-			close = callback(self, self, "close_skirmish_contract_join_gui")
-		},
-		weekly_skirmish_rewards = self:create_component_callback("SkirmishWeeklyRewardsMenuComponent", "weekly_skirmish_rewards"),
-		skirmish_select_info = self:create_component_callback("SkirmishSelectInfoMenuComponent", "skirmish_select_info"),
-		movie_theater = {
-			create = callback(self, self, "create_movie_theater_gui"),
-			close = callback(self, self, "close_movie_theater_gui")
-		},
-		social_hub = {
-			create = callback(self, self, "create_social_hub_gui"),
-			close = callback(self, self, "close_social_hub_gui")
-		},
-		lobby_code = {
-			create = callback(self, self, "create_lobby_code_gui"),
-			close = callback(self, self, "close_lobby_code_gui")
-		},
-		ingame_lobby_code = {
-			create = callback(self, self, "create_ingame_lobby_code_gui"),
-			close = callback(self, self, "close_ingame_lobby_code_gui")
-		},
-		user_code = {
-			create = callback(self, self, "create_user_code_gui"),
-			close = callback(self, self, "close_user_code_gui")
-		},
-		socialhub_notification = {
-			create = callback(self, self, "create_socialhub_notification_gui"),
-			close = callback(self, self, "close_socialhub_notification_gui")
-		},
-		crimenet_search_lobby_code = {
-			create = callback(self, self, "create_crimenet_search_lobby_code_gui"),
-			close = callback(self, self, "close_crimenet_search_lobby_code_gui")
-		}
+	self._active_components = {}
+	self._active_components.news = {
+		create = callback(self, self, "_create_newsfeed_gui"),
+		close = callback(self, self, "close_newsfeed_gui")
+	}
+	self._active_components.profile = {
+		create = callback(self, self, "_create_profile_gui"),
+		close = callback(self, self, "_disable_profile_gui")
+	}
+	self._active_components.friends = {
+		create = callback(self, self, "_create_friends_gui"),
+		close = callback(self, self, "_disable_friends_gui")
+	}
+	self._active_components.chats = {
+		create = callback(self, self, "_create_chat_gui"),
+		close = callback(self, self, "_disable_chat_gui")
+	}
+	self._active_components.lobby_chats = {
+		create = callback(self, self, "_create_lobby_chat_gui"),
+		close = callback(self, self, "hide_lobby_chat_gui")
+	}
+	self._active_components.crimenet_chats = {
+		create = callback(self, self, "_create_crimenet_chats_gui"),
+		close = callback(self, self, "hide_crimenet_chat_gui")
+	}
+	self._active_components.preplanning_chats = {
+		create = callback(self, self, "_create_preplanning_chats_gui"),
+		close = callback(self, self, "hide_preplanning_chat_gui")
+	}
+	self._active_components.inventory_chats = {
+		create = callback(self, self, "_create_inventory_chats_gui"),
+		close = callback(self, self, "hide_inventory_chat_gui")
+	}
+	self._active_components.contract = {
+		create = callback(self, self, "_create_contract_gui"),
+		close = callback(self, self, "_disable_contract_gui")
+	}
+	self._active_components.server_info = {
+		create = callback(self, self, "_create_server_info_gui"),
+		close = callback(self, self, "_disable_server_info_gui")
+	}
+	self._active_components.debug_strings = {
+		create = callback(self, self, "_create_debug_strings_gui"),
+		close = callback(self, self, "_disable_debug_strings_gui")
+	}
+	self._active_components.debug_fonts = {
+		create = callback(self, self, "_create_debug_fonts_gui"),
+		close = callback(self, self, "_disable_debug_fonts_gui")
+	}
+	self._active_components.skilltree = {
+		create = callback(self, self, "_create_skilltree_gui"),
+		close = callback(self, self, "close_skilltree_gui")
+	}
+	self._active_components.infamytree = {
+		create = callback(self, self, "_create_infamytree_gui"),
+		close = callback(self, self, "close_infamytree_gui")
+	}
+	self._active_components.crimenet = {
+		create = callback(self, self, "_create_crimenet_gui"),
+		close = callback(self, self, "close_crimenet_gui")
+	}
+	self._active_components.crimenet_contract = {
+		create = callback(self, self, "_create_crimenet_contract_gui"),
+		close = callback(self, self, "close_crimenet_contract_gui")
+	}
+	self._active_components.crimenet_filters = {
+		create = callback(self, self, "_create_crimenet_filters_gui"),
+		close = callback(self, self, "close_crimenet_filters_gui")
+	}
+	self._active_components.crimenet_casino = {
+		create = callback(self, self, "_create_crimenet_casino_gui"),
+		close = callback(self, self, "close_crimenet_casino_gui")
+	}
+	self._active_components.lootdrop_casino = {
+		create = callback(self, self, "_create_lootdrop_casino_gui"),
+		close = callback(self, self, "close_lootdrop_casino_gui")
+	}
+	self._active_components.blackmarket = {
+		create = callback(self, self, "_create_blackmarket_gui"),
+		close = callback(self, self, "close_blackmarket_gui")
+	}
+	self._active_components.mission_briefing = {
+		create = callback(self, self, "_create_mission_briefing_gui"),
+		close = callback(self, self, "_hide_mission_briefing_gui")
+	}
+	self._active_components.stage_endscreen = {
+		create = callback(self, self, "_create_stage_endscreen_gui"),
+		close = callback(self, self, "_hide_stage_endscreen_gui")
+	}
+	self._active_components.lootdrop = {
+		create = callback(self, self, "_create_lootdrop_gui"),
+		close = callback(self, self, "_hide_lootdrop_gui")
+	}
+	self._active_components.menuscene_info = {
+		create = callback(self, self, "_create_menuscene_info_gui"),
+		close = callback(self, self, "_close_menuscene_info_gui")
+	}
+	self._active_components.player_profile = {
+		create = callback(self, self, "_create_player_profile_gui"),
+		close = callback(self, self, "close_player_profile_gui")
+	}
+	self._active_components.ingame_contract = {
+		create = callback(self, self, "_create_ingame_contract_gui"),
+		close = callback(self, self, "close_ingame_contract_gui")
+	}
+	self._active_components.ingame_waiting = {
+		create = callback(self, self, "_create_ingame_waiting_gui"),
+		close = callback(self, self, "close_ingame_waiting_gui")
+	}
+	self._active_components.ingame_manual = {
+		create = callback(self, self, "_create_ingame_manual_gui"),
+		close = callback(self, self, "close_ingame_manual_gui")
+	}
+	self._active_components.inventory_list = {
+		create = callback(self, self, "_create_inventory_list_gui"),
+		close = callback(self, self, "close_inventory_list_gui")
+	}
+	self._active_components.preplanning_map = {
+		create = callback(self, self, "create_preplanning_map_gui"),
+		close = callback(self, self, "close_preplanning_map_gui")
+	}
+	self._active_components.game_installing = {
+		create = callback(self, self, "create_game_installing_gui"),
+		close = callback(self, self, "close_game_installing_gui")
+	}
+	self._active_components.inventory = {
+		create = callback(self, self, "create_inventory_gui"),
+		close = callback(self, self, "close_inventory_gui")
+	}
+	self._active_components.skilltree_new = {
+		create = callback(self, self, "_create_skilltree_new_gui"),
+		close = callback(self, self, "close_skilltree_new_gui")
+	}
+	self._active_components.custom_safehouse = {
+		create = callback(self, self, "create_custom_safehouse_gui"),
+		close = callback(self, self, "close_custom_safehouse_gui")
+	}
+	self._active_components.custom_safehouse_no_input = {
+		create = callback(self, self, "disable_custom_safehouse_input"),
+		close = callback(self, self, "enable_custom_safehouse_input")
+	}
+	self._active_components.custom_safehouse_primaries = {
+		create = callback(self, self, "create_custom_safehouse_primaries"),
+		close = callback(self, self, "close_custom_safehouse_primaries")
+	}
+	self._active_components.custom_safehouse_secondaries = {
+		create = callback(self, self, "create_custom_safehouse_secondaries"),
+		close = callback(self, self, "close_custom_safehouse_secondaries")
+	}
+	self._active_components.new_heists = {
+		create = callback(self, self, "create_new_heists_gui"),
+		close = callback(self, self, "close_new_heists_gui")
+	}
+	self._active_components.mutators_list = {
+		create = callback(self, self, "create_mutators_list_gui"),
+		close = callback(self, self, "close_mutators_list_gui")
+	}
+	self._active_components.leakedrecording = {
+		create = callback(self, self, "create_leakedrecording_gui"),
+		close = callback(self, self, "close_leakedrecording_gui")
+	}
+	self._active_components.leakedrecording_mission = {
+		create = callback(self, self, "create_leakedrecording_mission_gui"),
+		close = callback(self, self, "close_leakedrecording_mission_gui")
+	}
+	self._active_components.leakedrecording_gadget = {
+		create = callback(self, self, "create_leakedrecording_gadget_gui"),
+		close = callback(self, self, "close_leakedrecording_gadget_gui")
+	}
+	self._active_components.crimenet_crime_spree_contract = {
+		create = callback(self, self, "create_crime_spree_contract_gui"),
+		close = callback(self, self, "close_crime_spree_contract_gui")
+	}
+	self._active_components.crime_spree_missions = {
+		create = callback(self, self, "create_crime_spree_missions_gui"),
+		close = callback(self, self, "close_crime_spree_missions_gui")
+	}
+	self._active_components.crime_spree_details = {
+		create = callback(self, self, "create_crime_spree_details_gui"),
+		close = callback(self, self, "close_crime_spree_details_gui")
+	}
+	self._active_components.crime_spree_modifiers = {
+		create = callback(self, self, "create_crime_spree_modifiers_gui"),
+		close = callback(self, self, "close_crime_spree_modifiers_gui")
+	}
+	self._active_components.crime_spree_forced_modifiers = {
+		create = callback(self, self, "create_crime_spree_forced_modifiers_gui"),
+		close = callback(self, self, "close_crime_spree_forced_modifiers_gui")
+	}
+	self._active_components.crime_spree_forced_modifiers_dummy = {
+		create = callback(self, self, "check_crime_spree_forced_modifiers")
+	}
+	self._active_components.crime_spree_rewards = {
+		create = callback(self, self, "create_crime_spree_rewards_gui"),
+		close = callback(self, self, "close_crime_spree_rewards_gui")
+	}
+	self._active_components.crime_spree_mission_end = {
+		create = callback(self, self, "create_crime_spree_mission_end_gui"),
+		close = callback(self, self, "close_crime_spree_mission_end_gui")
+	}
+	self._active_components.debug_quicklaunch = {
+		create = callback(self, self, "create_debug_quicklaunch_gui"),
+		close = callback(self, self, "close_debug_quicklaunch_gui")
+	}
+	self._active_components.crew_management = {
+		create = callback(self, self, "create_crew_management_gui"),
+		close = callback(self, self, "close_crew_management_gui")
+	}
+	self._active_components.achievement_list = self:create_component_callback("AchievementListGui", "achievement_list")
+	self._active_components.story_missions = {
+		create = callback(self, self, "create_story_missions_gui"),
+		close = callback(self, self, "close_story_missions_gui")
+	}
+	self._active_components.crimenet_sidebar = {
+		create = callback(self, self, "create_crimenet_sidebar_gui"),
+		close = callback(self, self, "close_crimenet_sidebar_gui")
+	}
+	self._active_components.raid_menu = {
+		create = callback(self, self, "create_raid_menu_gui"),
+		close = callback(self, self, "close_raid_menu_gui")
+	}
+	self._active_components.raid_weapons_menu = {
+		create = callback(self, self, "create_raid_weapons_menu_gui"),
+		close = callback(self, self, "close_raid_weapons_menu_gui")
+	}
+	self._active_components.raid_preorder_menu = {
+		create = callback(self, self, "create_raid_preorder_menu_gui"),
+		close = callback(self, self, "close_raid_preorder_menu_gui")
+	}
+	self._active_components.raid_special_menu = {
+		create = callback(self, self, "create_raid_special_menu_gui"),
+		close = callback(self, self, "close_raid_special_menu_gui")
+	}
+	self._active_components.raid_weapon_preview = {
+		create = callback(self, self, "create_raid_weapon_preview_gui"),
+		close = callback(self, self, "close_raid_weapon_preview_gui")
+	}
+	self._active_components.contract_broker = {
+		create = callback(self, self, "create_contract_broker_gui"),
+		close = callback(self, self, "close_contract_broker_gui")
+	}
+	self._active_components.side_jobs = {
+		create = callback(self, self, "create_side_jobs_gui"),
+		close = callback(self, self, "close_side_jobs_gui")
+	}
+	self._active_components.skirmish_landing = self:create_component_callback("SkirmishLandingMenuComponent", "skirmish_landing")
+	self._active_components.skirmish_contract = self:create_component_callback("SkirmishContractMenuComponent", "skirmish_contract")
+	self._active_components.skirmish_weekly_contract = self:create_component_callback("SkirmishWeeklyContractMenuComponent", "skirmish_weekly_contract")
+	self._active_components.skirmish_contract_join = {
+		create = callback(self, self, "create_skirmish_contract_join_gui"),
+		close = callback(self, self, "close_skirmish_contract_join_gui")
+	}
+	self._active_components.weekly_skirmish_rewards = self:create_component_callback("SkirmishWeeklyRewardsMenuComponent", "weekly_skirmish_rewards")
+	self._active_components.skirmish_select_info = self:create_component_callback("SkirmishSelectInfoMenuComponent", "skirmish_select_info")
+	self._active_components.movie_theater = {
+		create = callback(self, self, "create_movie_theater_gui"),
+		close = callback(self, self, "close_movie_theater_gui")
+	}
+	self._active_components.social_hub = {
+		create = callback(self, self, "create_social_hub_gui"),
+		close = callback(self, self, "close_social_hub_gui")
+	}
+	self._active_components.lobby_code = {
+		create = callback(self, self, "create_lobby_code_gui"),
+		close = callback(self, self, "close_lobby_code_gui")
+	}
+	self._active_components.ingame_lobby_code = {
+		create = callback(self, self, "create_ingame_lobby_code_gui"),
+		close = callback(self, self, "close_ingame_lobby_code_gui")
+	}
+	self._active_components.user_code = {
+		create = callback(self, self, "create_user_code_gui"),
+		close = callback(self, self, "close_user_code_gui")
+	}
+	self._active_components.socialhub_notification = {
+		create = callback(self, self, "create_socialhub_notification_gui"),
+		close = callback(self, self, "close_socialhub_notification_gui")
+	}
+	self._active_components.crimenet_search_lobby_code = {
+		create = callback(self, self, "create_crimenet_search_lobby_code_gui"),
+		close = callback(self, self, "close_crimenet_search_lobby_code_gui")
 	}
 	self._alive_components = {}
 
 	if _G.IS_VR and managers.menu._is_start_menu then
 		local vr_bg = self._fullscreen_ws:panel():bitmap({
-			texture = "guis/dlcs/vr/textures/pd2/bg",
+			layer = -2,
 			name = "vr_bg",
-			layer = -2
+			texture = "guis/dlcs/vr/textures/pd2/bg"
 		})
 		local h = self._fullscreen_ws:panel():h()
 		local dh = h / vr_bg:texture_height()
@@ -391,6 +392,7 @@ function MenuComponentManager:init()
 end
 
 function MenuComponentManager:save(data)
+	return
 end
 
 function MenuComponentManager:load(data)
@@ -409,7 +411,7 @@ function MenuComponentManager:register_component(id, component, priority)
 		component = component,
 		priority = priority or 0
 	})
-	table.sort(self._alive_components, function (a, b)
+	table.sort(self._alive_components, function(a, b)
 		return a.priority < b.priority
 	end)
 end
@@ -468,6 +470,7 @@ function MenuComponentManager:_generated_create(params, node)
 	end
 
 	local class_name, component_name = unpack(params)
+
 	self._generated[component_name] = self._generated[component_name] or _G[class_name]:new(self._ws, self._fullscreen_ws, node)
 
 	self:register_component(component_name, self._generated[component_name])
@@ -634,7 +637,9 @@ function MenuComponentManager:make_color_text(text_object, color)
 		end
 	end
 
-	if #start_ci == #end_ci then
+	if #start_ci ~= #end_ci then
+		-- Nothing
+	else
 		for i = 1, #start_ci do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)
@@ -693,7 +698,7 @@ function MenuComponentManager:update(t, dt)
 	self:_update_newsfeed_gui(t, dt)
 	self:_update_game_installing_gui(t, dt)
 
-	if self._refresh_friends_t < t then
+	if t > self._refresh_friends_t then
 		self:_update_friends_gui()
 
 		self._refresh_friends_t = t + self._REFRESH_FRIENDS_TIME
@@ -1423,8 +1428,8 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 		if button == Idstring("0") then
 			if self._profile_gui:check_minimize(x, y) then
 				local minimized_data = {
-					text = "PROFILE",
-					help_text = "MAXIMIZE PROFILE WINDOW"
+					help_text = "MAXIMIZE PROFILE WINDOW",
+					text = "PROFILE"
 				}
 
 				self._profile_gui:set_minimized(true, minimized_data)
@@ -1452,8 +1457,8 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 		if button == Idstring("0") then
 			if self._contract_gui:check_minimize(x, y) then
 				local minimized_data = {
-					text = "CONTRACT",
-					help_text = "MAXIMIZE CONTRACT WINDOW"
+					help_text = "MAXIMIZE CONTRACT WINDOW",
+					text = "CONTRACT"
 				}
 
 				self._contract_gui:set_minimized(true, minimized_data)
@@ -1481,8 +1486,8 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 		if button == Idstring("0") then
 			if self._server_info_gui:check_minimize(x, y) then
 				local minimized_data = {
-					text = "SERVER INFO",
-					help_text = "MAXIMIZE SERVER INFO WINDOW"
+					help_text = "MAXIMIZE SERVER INFO WINDOW",
+					text = "SERVER INFO"
 				}
 
 				self._server_info_gui:set_minimized(true, minimized_data)
@@ -1595,7 +1600,7 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 	if self._minimized_list and button == Idstring("0") then
 		for i, data in ipairs(self._minimized_list) do
 			if data.panel:inside(x, y) then
-				data:callback()
+				data.callback(data)
 
 				break
 			end
@@ -1683,7 +1688,7 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 		end
 	end
 
-	local used, values = nil
+	local used, values
 
 	if button == Idstring("mouse wheel down") then
 		used, values = self:run_return_on_all_live_components("mouse_wheel_down", x, y)
@@ -1831,6 +1836,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._lobby_code_gui then
 		local used, pointer = self._lobby_code_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1840,6 +1846,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._user_code_gui then
 		local used, pointer = self._user_code_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1849,6 +1856,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._ingame_lobby_code_gui then
 		local used, pointer = self._ingame_lobby_code_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1858,6 +1866,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._game_chat_gui then
 		local used, pointer = self._game_chat_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1867,6 +1876,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._skilltree_gui then
 		local used, pointer = self._skilltree_gui:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1876,6 +1886,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._infamytree_gui then
 		local used, pointer = self._infamytree_gui:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1885,6 +1896,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._blackmarket_gui then
 		local used, pointer = self._blackmarket_gui:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1894,6 +1906,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._crimenet_contract_gui then
 		local used, pointer = self._crimenet_contract_gui:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1903,6 +1916,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self:is_preplanning_enabled() then
 		local used, pointer = self._preplanning_map:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1918,6 +1932,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 		end
 
 		local used, pointer = self._friends_book:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1933,6 +1948,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 		end
 
 		local used, pointer = self._debug_strings_book:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1948,6 +1964,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 		end
 
 		local used, pointer = self._profile_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1963,6 +1980,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 		end
 
 		local used, pointer = self._contract_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1978,6 +1996,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 		end
 
 		local used, pointer = self._server_info_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1987,6 +2006,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._backdrop_gui then
 		local used, pointer = self._backdrop_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -1996,6 +2016,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._mission_briefing_gui then
 		local used, pointer = self._mission_briefing_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2005,6 +2026,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._stage_endscreen_gui then
 		local used, pointer = self._stage_endscreen_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2014,6 +2036,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._lootdrop_gui then
 		local used, pointer = self._lootdrop_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2023,6 +2046,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._lootdrop_casino_gui then
 		local used, pointer = self._lootdrop_casino_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2032,6 +2056,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._crimenet_casino_gui then
 		local used, pointer = self._crimenet_casino_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2047,6 +2072,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 		end
 
 		local used, pointer = self._lobby_profile_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2062,6 +2088,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 		end
 
 		local used, pointer = self._view_character_profile_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2097,6 +2124,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._newsfeed_gui then
 		local used, pointer = self._newsfeed_gui:mouse_moved(x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2125,6 +2153,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._player_inventory_gui then
 		local used, pointer = self._player_inventory_gui:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2142,6 +2171,7 @@ function MenuComponentManager:mouse_moved(o, x, y)
 
 	if self._crimenet_gui then
 		local used, pointer = self._crimenet_gui:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -2347,8 +2377,8 @@ function MenuComponentManager:create_weapon_box(w_id, params)
 	local text = managers.localization:text(tweak_data.weapon[w_id].description_id)
 	local stats_list = {
 		{
-			text = "DAMAGE: 32(+6)",
 			current = 32,
+			text = "DAMAGE: 32(+6)",
 			total = 50,
 			type = "bar"
 		},
@@ -2357,8 +2387,8 @@ function MenuComponentManager:create_weapon_box(w_id, params)
 			type = "empty"
 		},
 		{
-			text = "RELOAD SPEED: 4(-2)",
 			current = 4,
+			text = "RELOAD SPEED: 4(-2)",
 			total = 20,
 			type = "bar"
 		},
@@ -2367,8 +2397,8 @@ function MenuComponentManager:create_weapon_box(w_id, params)
 			type = "empty"
 		},
 		{
-			text = "RECOIL: 8 (+0)",
 			current = 8,
+			text = "RECOIL: 8 (+0)",
 			total = 10,
 			type = "bar"
 		},
@@ -2403,16 +2433,16 @@ function MenuComponentManager:create_weapon_box(w_id, params)
 			stats_list = stats_list
 		}, {
 			no_close_legend = true,
-			use_minimize_legend = true,
-			type = "weapon_stats"
+			type = "weapon_stats",
+			use_minimize_legend = true
 		})
 	else
 		self._weapon_text_box = TextBoxGui:new(self._ws, title, text, {
 			stats_list = stats_list
 		}, {
 			no_close_legend = true,
-			use_minimize_legend = true,
-			type = "weapon_stats"
+			type = "weapon_stats",
+			use_minimize_legend = true
 		})
 	end
 end
@@ -2536,13 +2566,14 @@ function MenuComponentManager:create_chat_gui()
 	self:close_chat_gui()
 
 	local config = {
-		w = 540,
-		use_minimize_legend = true,
 		h = 220,
 		header_type = "fit",
 		no_close_legend = true,
+		use_minimize_legend = true,
+		w = 540,
 		x = 290
 	}
+
 	self._chat_book = BookBoxGui:new(self._ws, nil, config)
 
 	self._chat_book:set_layer(8)
@@ -2747,6 +2778,7 @@ function MenuComponentManager:create_contract_gui()
 	self:close_contract_gui()
 
 	self._contract_gui = self:_contract_gui_class():new(self._ws, self._fullscreen_ws)
+
 	local peers_state = managers.menu:get_all_peers_state() or {}
 
 	for i = 1, tweak_data.max_players do
@@ -3326,43 +3358,37 @@ function MenuComponentManager:create_lootdrop_casino_gui(node)
 	if not self._lootdrop_casino_gui then
 		local casino_data = node:parameters().menu_component_data or {}
 		local card_secured = casino_data.secure_cards or 0
-		local card_drops = {
-			math.random(3) <= card_secured and casino_data.preferred_item
-		}
+		local card_drops = {}
 
-		if card_drops[1] then
-			card_secured = card_secured - 1
-		end
-
+		card_drops[1] = card_secured >= math.random(3) and casino_data.preferred_item
+		card_secured = card_drops[1] and card_secured - 1 or card_secured
 		card_drops[2] = card_secured == 2 and managers.lootdrop:specific_fake_loot_pc(casino_data.preferred_item) or card_secured == 1 and card_secured == math.random(3) and managers.lootdrop:specific_fake_loot_pc(casino_data.preferred_item)
-
-		if card_drops[2] then
-			card_secured = card_secured - 1
-		end
-
+		card_secured = card_drops[2] and card_secured - 1 or card_secured
 		card_drops[3] = card_secured > 0 and managers.lootdrop:specific_fake_loot_pc(casino_data.preferred_item)
+
 		local skip_types = {
-			xp = true,
-			cash = true
+			cash = true,
+			xp = true
 		}
-		local setup_lootdrop_data = {
-			preferred_type = casino_data.preferred_item,
-			preferred_type_drop = card_drops[1],
-			preferred_chance = tweak_data:get_value("casino", "prefer_chance"),
-			increase_infamous = casino_data.increase_infamous and tweak_data:get_value("casino", "infamous_chance"),
-			skip_types = skip_types,
-			disable_difficulty = true,
-			max_pcs = 1
-		}
+		local setup_lootdrop_data = {}
+
+		setup_lootdrop_data.preferred_type = casino_data.preferred_item
+		setup_lootdrop_data.preferred_type_drop = card_drops[1]
+		setup_lootdrop_data.preferred_chance = tweak_data:get_value("casino", "prefer_chance")
+		setup_lootdrop_data.increase_infamous = casino_data.increase_infamous and tweak_data:get_value("casino", "infamous_chance")
+		setup_lootdrop_data.skip_types = skip_types
+		setup_lootdrop_data.disable_difficulty = true
+		setup_lootdrop_data.max_pcs = 1
+
 		local new_lootdrop_data = {}
 
 		managers.lootdrop:new_make_drop(new_lootdrop_data, setup_lootdrop_data)
 
 		local global_values = {
-			infamous = 4,
 			exceptional = 3,
-			superior = 2,
-			normal = 1
+			infamous = 4,
+			normal = 1,
+			superior = 2
 		}
 		local peer = managers.network:session() and managers.network:session():local_peer() or false
 		local global_value = global_values[new_lootdrop_data.global_value] or 1
@@ -3370,7 +3396,9 @@ function MenuComponentManager:create_lootdrop_casino_gui(node)
 		local item_id = new_lootdrop_data.item_entry
 		local max_pc = new_lootdrop_data.total_stars
 		local item_pc = new_lootdrop_data.joker and 0 or math.ceil(new_lootdrop_data.item_payclass / 10)
+
 		skip_types.weapon_mods = not managers.lootdrop:can_drop_weapon_mods() and true or nil
+
 		local card_left_pc = card_drops[2] or managers.lootdrop:new_fake_loot_pc(nil, skip_types)
 		local card_right_pc = card_drops[3] or managers.lootdrop:new_fake_loot_pc(nil, skip_types)
 		local lootdrop_data = {
@@ -3383,10 +3411,12 @@ function MenuComponentManager:create_lootdrop_casino_gui(node)
 			card_left_pc,
 			card_right_pc
 		}
-		local selected_card = {
-			[peer and peer:id() or 1] = 2
-		}
+		local selected_card = {}
+
+		selected_card[peer and peer:id() or 1] = 2
+
 		local parent_layer = managers.menu:active_menu() and managers.menu:active_menu().renderer:selected_node() and managers.menu:active_menu().renderer:selected_node():layer() or 100
+
 		self._lootscreen_casino_hud = HUDLootScreen:new(nil, self._fullscreen_ws, nil, selected_card)
 
 		self._lootscreen_casino_hud:set_layer(parent_layer + 1)
@@ -3573,9 +3603,9 @@ function MenuComponentManager:ingame_manual_texture_done(texture_ids)
 		self._ingame_manual_gui:create_page(texture_ids)
 	else
 		local destroy_me = self._ws:panel():bitmap({
-			w = 0,
 			h = 0,
 			visible = false,
+			w = 0,
 			texture = texture_ids
 		})
 
@@ -3758,9 +3788,9 @@ function MenuComponentManager:create_view_character_profile_gui(user, x, y)
 	self:close_view_character_profile_gui()
 
 	self._view_character_profile_gui = ViewCharacterProfileBoxGui:new(self._ws, nil, nil, nil, {
+		h = 160,
 		w = 360,
 		x = 837,
-		h = 160,
 		y = 100
 	}, user)
 
@@ -3783,7 +3813,7 @@ function MenuComponentManager:close_view_character_profile_gui()
 end
 
 function MenuComponentManager:get_texture_from_mod_type(type, sub_type, gadget, silencer, is_auto, equipped, mods, types, is_a_path, weapon)
-	local texture = nil
+	local texture
 
 	if is_a_path then
 		texture = type
@@ -3807,6 +3837,7 @@ function MenuComponentManager:get_texture_from_mod_type(type, sub_type, gadget, 
 		elseif mods and #mods > 0 then
 			local weapon_factory_tweak_data = tweak_data.weapon.factory.parts
 			local part_id = mods[1][1]
+
 			type = weapon_factory_tweak_data[part_id].type
 			sub_type = weapon_factory_tweak_data[part_id].sub_type
 		end
@@ -3820,26 +3851,26 @@ function MenuComponentManager:get_texture_from_mod_type(type, sub_type, gadget, 
 		elseif mods and #mods > 0 then
 			local weapon_factory_tweak_data = tweak_data.weapon.factory.parts
 			local part_id = mods[1][1]
+
 			type = weapon_factory_tweak_data[part_id].type
 			sub_type = weapon_factory_tweak_data[part_id].sub_type
 		end
 
 		texture = "guis/textures/pd2/blackmarket/inv_mod_" .. tostring(sub_type or type)
 	elseif type == "bonus" then
-		texture = equipped and "guis/textures/pd2/blackmarket/inv_mod_" .. tostring(sub_type or type) or "guis/textures/pd2/blackmarket/inv_mod_bonus"
+		if equipped then
+			texture = "guis/textures/pd2/blackmarket/inv_mod_" .. tostring(sub_type or type)
+		else
+			texture = "guis/textures/pd2/blackmarket/inv_mod_bonus"
+		end
+
 		texture = "guis/textures/pd2/blackmarket/inv_mod_" .. tostring(sub_type or type)
 	elseif type == "vertical_grip" then
 		texture = "guis/textures/pd2/blackmarket/inv_mod_vertical_grip"
 	elseif type == "weapon_cosmetics" then
-		if sub_type == "color_skin" then
-			texture = "guis/dlcs/wcs/textures/pd2/blackmarket/inv_mod_weaponcolor"
-		else
-			texture = "guis/textures/pd2/blackmarket/inv_mod_weapon_cosmetics"
-		end
-	elseif type == "drag_handle" then
-		texture = "guis/textures/pd2/blackmarket/inv_mod_bolt"
+		texture = sub_type == "color_skin" and "guis/dlcs/wcs/textures/pd2/blackmarket/inv_mod_weaponcolor" or "guis/textures/pd2/blackmarket/inv_mod_weapon_cosmetics"
 	else
-		texture = "guis/textures/pd2/blackmarket/inv_mod_" .. type
+		texture = type == "drag_handle" and "guis/textures/pd2/blackmarket/inv_mod_bolt" or "guis/textures/pd2/blackmarket/inv_mod_" .. type
 	end
 
 	return texture
@@ -3883,9 +3914,9 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 
 		for _, data in pairs(mods) do
 			local sort_td = tweak_data.blackmarket.weapon_mods
-			local x_td, y_td, x_pc, y_pc = nil
+			local x_td, y_td, x_pc, y_pc
 
-			table.sort(data, function (x, y)
+			table.sort(data, function(x, y)
 				x_td = sort_td[x[1]]
 				y_td = sort_td[y[1]]
 				x_pc = x_td.value or x_td.pc or x_td.pcs and x_td.pcs[1] or 10
@@ -3897,7 +3928,7 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 			end)
 		end
 
-		table.sort(mods_sorted, function (x, y)
+		table.sort(mods_sorted, function(x, y)
 			return y < x
 		end)
 
@@ -3909,6 +3940,7 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 
 		if crafted.cosmetics and crafted.cosmetics.bonus then
 			local bonuses = tweak_data.economy:get_bonus_icons(tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id].bonus)
+
 			types.weapon_skin_bonuses = {}
 
 			for _, texture_path in ipairs(bonuses) do
@@ -3918,7 +3950,7 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 		end
 
 		for _, name in ipairs(mods_sorted) do
-			local gadget, silencer, equipped, sub_type = nil
+			local gadget, silencer, equipped, sub_type
 			local is_auto = tweak_data.weapon[weapon] and tweak_data.weapon[weapon].FIRE_MODE == "auto"
 			local weapon_skin_bonus = false
 
@@ -3927,6 +3959,7 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 				weapon_skin_bonus = true
 			elseif name == "weapon_cosmetics" then
 				local cosmetics = managers.blackmarket:get_weapon_cosmetics(category, slot)
+
 				equipped = not not cosmetics
 				sub_type = equipped and tweak_data.blackmarket.weapon_skins[cosmetics.id] and tweak_data.blackmarket.weapon_skins[cosmetics.id].is_a_color_skin and "color_skin" or nil
 			else
@@ -3946,6 +3979,10 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 						end
 
 						silencer = false
+
+						if false then
+							silencer = true
+						end
 
 						break
 					end
@@ -3987,6 +4024,7 @@ function MenuComponentManager:create_melee_status_icon_list(melee_weapon)
 	local function check_dot(dot_name)
 		if dot_name then
 			local dot_data = tweak_data.dot:get_dot_data(dot_name)
+
 			fire_weapon = dot_data.variant == "fire"
 			poison_weapon = dot_data.variant == "poison"
 		end
@@ -4125,6 +4163,7 @@ function MenuComponentManager:close_inventory_gui()
 		self._player_inventory_gui:close()
 
 		self._player_inventory_gui = nil
+
 		local active_menu = managers.menu:active_menu()
 
 		if active_menu then
@@ -4207,6 +4246,7 @@ function MenuComponentManager:kill_preplanning_map_gui()
 	if self._preplanning_map then
 		if Network:is_server() then
 			local peer_draw_lines, peer_draw_line_index = self._preplanning_map:get_drawings()
+
 			self._preplanning_peer_draw_lines = peer_draw_lines
 			self._preplanning_peer_draw_line_index = peer_draw_line_index
 		end
@@ -4357,6 +4397,7 @@ function MenuComponentManager:preplanning_sync_save(data)
 
 	if self._preplanning_map then
 		local peer_draw_lines, peer_draw_line_index = self._preplanning_map:get_drawings()
+
 		data.peer_draw_lines = peer_draw_lines
 		data.peer_draw_line_index = peer_draw_line_index
 	elseif self._preplanning_peer_draw_lines and self._preplanning_peer_draw_line_index then
@@ -4387,7 +4428,7 @@ function MenuComponentManager:preplanning_sync_load(data)
 end
 
 function MenuComponentManager:_set_preplanning_saved_draws(preplanning_saved_draws)
-	local clbk, vars = nil
+	local clbk, vars
 
 	for _, draw_data in ipairs(preplanning_saved_draws) do
 		clbk = draw_data.clbk
@@ -4468,6 +4509,7 @@ function MenuComponentManager:close_debug_fonts_gui()
 end
 
 function MenuComponentManager:toggle_debug_fonts_gui()
+	return
 end
 
 function MenuComponentManager:reload_debug_fonts_gui()
@@ -4490,6 +4532,7 @@ function MenuComponentManager:create_debug_strings_gui()
 	self:close_debug_strings_gui()
 
 	local gui_width, gui_height = managers.gui_data:get_base_res()
+
 	self._debug_strings_book = BookBoxGui:new(self._ws, nil, {
 		no_close_legend = true,
 		no_scroll_legend = true,
@@ -4550,21 +4593,22 @@ end
 function MenuComponentManager:add_minimized(config)
 	self._minimized_list = self._minimized_list or {}
 	self._minimized_id = (self._minimized_id or 0) + 1
+
 	local panel = self._main_panel:panel({
-		w = 100,
 		h = 20,
+		w = 100,
 		layer = tweak_data.gui.MENU_COMPONENT_LAYER
 	})
-	local text = nil
+	local text
 
 	if config.text then
 		text = panel:text({
-			vertical = "center",
-			hvertical = "center",
-			halign = "left",
-			font_size = 22,
 			align = "center",
+			font_size = 22,
+			halign = "left",
+			hvertical = "center",
 			layer = 2,
+			vertical = "center",
 			text = config.text,
 			font = tweak_data.menu.default_font
 		})
@@ -4578,12 +4622,12 @@ function MenuComponentManager:add_minimized(config)
 	end
 
 	local help_text = panel:parent():text({
-		halign = "left",
-		vertical = "center",
-		hvertical = "center",
 		align = "left",
-		visible = false,
+		halign = "left",
+		hvertical = "center",
 		layer = 3,
+		vertical = "center",
+		visible = false,
 		text = config.help_text or "CLICK TO MAXIMIZE WEAPON INFO",
 		font = tweak_data.menu.small_font,
 		font_size = tweak_data.menu.small_font_size,
@@ -4593,17 +4637,17 @@ function MenuComponentManager:add_minimized(config)
 	help_text:set_shape(help_text:text_rect())
 
 	local unselected = panel:bitmap({
-		texture = "guis/textures/menu_unselected",
-		layer = 0
+		layer = 0,
+		texture = "guis/textures/menu_unselected"
 	})
 
 	unselected:set_h(64 * panel:h() / 32)
 	unselected:set_center_y(panel:center_y())
 
 	local selected = panel:bitmap({
+		layer = 1,
 		texture = "guis/textures/menu_selected",
-		visible = false,
-		layer = 1
+		visible = false
 	})
 
 	selected:set_h(64 * panel:h() / 32)
@@ -4611,8 +4655,8 @@ function MenuComponentManager:add_minimized(config)
 	panel:set_bottom(self._main_panel:h() - CoreMenuRenderer.Renderer.border_height)
 
 	local top_line = panel:parent():bitmap({
-		texture = "guis/textures/headershadow",
 		layer = 1,
+		texture = "guis/textures/headershadow",
 		visible = false,
 		w = panel:w()
 	})
@@ -4715,9 +4759,11 @@ function MenuComponentManager:request_texture(texture, done_cb)
 	end
 
 	local index = entry.next_index
+
 	entry.owners[index] = {
 		clbk = done_cb
 	}
+
 	local next_index = index + 1
 
 	while entry.owners[next_index] do
@@ -4766,9 +4812,10 @@ function MenuComponentManager:add_colors_to_text_object(text_object, ...)
 		...
 	}
 	local default_color = #colors == 1 and colors[1] or tweak_data.screen_colors.text
-	local start_ci, end_ci, first_ci = nil
+	local start_ci, end_ci, first_ci
 	local text_dissected = utf8.characters(text)
 	local idsp = Idstring("#")
+
 	start_ci = {}
 	end_ci = {}
 	first_ci = true
@@ -4789,7 +4836,9 @@ function MenuComponentManager:add_colors_to_text_object(text_object, ...)
 		end
 	end
 
-	if #start_ci == #end_ci then
+	if #start_ci ~= #end_ci then
+		-- Nothing
+	else
 		for i = 1, #start_ci do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)
@@ -4842,6 +4891,7 @@ end
 
 function MenuComponentManager:new_post_event_instance()
 	local event_instance = MenuComponentPostEventInstance:new(self._sound_source)
+
 	self._unique_event_instances = self._unique_event_instances or {}
 
 	table.insert(self._unique_event_instances, event_instance)
@@ -4944,9 +4994,9 @@ function MenuComponentManager:play_transition(run_in_pause)
 	})
 
 	self._transition_panel:rect({
+		halign = "scale",
 		name = "fade1",
 		valign = "scale ",
-		halign = "scale",
 		color = Color.black
 	})
 
@@ -4954,7 +5004,7 @@ function MenuComponentManager:play_transition(run_in_pause)
 		local fade1 = o:child("fade1")
 		local seconds = 0.5
 		local t = 0
-		local dt, p = nil
+		local dt, p
 
 		while t < seconds do
 			dt = coroutine.yield()
@@ -4976,14 +5026,15 @@ end
 function MenuComponentManager:test_camera_shutter_tech()
 	if not self._tcst then
 		self._tcst = managers.gui_data:create_fullscreen_16_9_workspace()
+
 		local o = self._tcst:panel():panel({
 			layer = 10000
 		})
 		local b = o:rect({
-			valign = "scale",
-			name = "black",
 			halign = "scale",
 			layer = 5,
+			name = "black",
+			valign = "scale",
 			color = Color.black
 		})
 
@@ -5001,7 +5052,7 @@ function MenuComponentManager:test_camera_shutter_tech()
 	local function animate_fade(o)
 		local black = o:child("black")
 
-		over(0.5, function (p)
+		over(0.5, function(p)
 			black:set_alpha(1 - p)
 		end)
 	end
@@ -5018,6 +5069,7 @@ function MenuComponentManager:create_test_gui()
 	end
 
 	Global.test_gui = managers.gui_data:create_fullscreen_16_9_workspace()
+
 	local panel = Global.test_gui:panel()
 	local bg = panel:rect({
 		layer = 1000,
@@ -5028,11 +5080,11 @@ function MenuComponentManager:create_test_gui()
 
 	for i = 3, 3 do
 		local bitmap = panel:bitmap({
-			texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/mezzanine_test",
+			layer = 1001,
 			name = "bitmap",
-			rotation = 360,
 			render_template = "TextDistanceField",
-			layer = 1001
+			rotation = 360,
+			texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/mezzanine_test"
 		})
 
 		bitmap:set_size(bitmap:texture_width() * i, bitmap:texture_height() * i)
@@ -5064,6 +5116,7 @@ function MenuComponentManager:create_ingame_custom_safehouse_menu(node, category
 	end
 
 	category = category or "primaries"
+
 	local crafted_category = managers.blackmarket:get_crafted_category(category) or {}
 	local new_node_data = {
 		category = category
@@ -5072,11 +5125,12 @@ function MenuComponentManager:create_ingame_custom_safehouse_menu(node, category
 	local columns = tweak_data.gui.WEAPON_COLUMNS_PER_PAGE or 3
 	local max_pages = tweak_data.gui.MAX_WEAPON_PAGES or 8
 	local items_per_page = rows * columns
-	local item_data, selected_tab = nil
+	local item_data, selected_tab
 
 	for page = 1, max_pages do
 		local index = 1
 		local start_i = 1 + items_per_page * (page - 1)
+
 		item_data = {}
 
 		for i = start_i, items_per_page * page do
@@ -5092,14 +5146,14 @@ function MenuComponentManager:create_ingame_custom_safehouse_menu(node, category
 			page = tostring(page)
 		})
 		local data = {
-			prev_node_data = false,
 			allow_buy = false,
-			allow_sell = false,
-			allow_preview = false,
-			on_create_func_name = "populate_weapon_category_new",
 			allow_modify = false,
-			equip_immediately = false,
+			allow_preview = false,
+			allow_sell = false,
 			allow_skinning = false,
+			equip_immediately = false,
+			on_create_func_name = "populate_weapon_category_new",
+			prev_node_data = false,
 			name = category,
 			category = category,
 			start_i = start_i,
@@ -5137,6 +5191,7 @@ function MenuComponentManager:close_custom_safehouse_secondaries()
 end
 
 function MenuComponentManager:close_custom_safehouse_menu(category)
+	return
 end
 
 function MenuComponentManager:create_new_heists_gui(node)
@@ -5226,7 +5281,7 @@ function MenuComponentManager:close_crime_spree_details_gui(node)
 end
 
 function MenuComponentManager:refresh_crime_spree_details_gui()
-	local node = nil
+	local node
 
 	if self._crime_spree_details then
 		node = self._crime_spree_details._node
@@ -5337,9 +5392,11 @@ function MenuComponentManager:crime_spree_mission_end_gui()
 end
 
 function MenuComponentManager:create_debug_quicklaunch_gui(node)
+	return
 end
 
 function MenuComponentManager:close_debug_quicklaunch_gui()
+	return
 end
 
 function MenuComponentManager:create_crew_management_gui(node)
@@ -5524,6 +5581,7 @@ function MenuComponentManager:create_socialhub_notification_gui(node)
 end
 
 function MenuComponentManager:close_socialhub_notification_gui()
+	return
 end
 
 function MenuComponentManager:push_socialhub_notification(type, user, size)
@@ -5708,7 +5766,7 @@ function MenuComponentManager:create_skirmish_contract_join_gui(node)
 	self:close_skirmish_contract_join_gui()
 
 	local job_data = node:parameters().menu_component_data
-	local component_class = nil
+	local component_class
 
 	if job_data.skirmish == SkirmishManager.LOBBY_NORMAL then
 		component_class = SkirmishContractMenuComponent

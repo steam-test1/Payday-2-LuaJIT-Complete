@@ -15,6 +15,7 @@ function CoreCutsceneSettingsDialog:init(parent)
 	self.__window:set_sizer(sizer)
 
 	local project_settings_sizer = EWS:StaticBoxSizer(self.__window, "VERTICAL", "Properties")
+
 	self.__export_type_dropdown = EWS:ComboBox(self.__window, "", "", "CB_DROPDOWN,CB_READONLY")
 
 	for _, export_type in ipairs(get_core_or_local("CutsceneEditorProject").VALID_EXPORT_TYPES) do
@@ -27,6 +28,7 @@ function CoreCutsceneSettingsDialog:init(parent)
 	sizer:add(project_settings_sizer, 0, 5, "ALL,EXPAND")
 
 	local animation_patches_sizer = EWS:StaticBoxSizer(self.__window, "VERTICAL", "Animation Overrides when Optimizing")
+
 	self.__animation_patches = core_or_local("CutsceneAnimationPatchesPanel", self.__window)
 
 	self.__animation_patches:add_to_sizer(animation_patches_sizer, 1, 0, "EXPAND")

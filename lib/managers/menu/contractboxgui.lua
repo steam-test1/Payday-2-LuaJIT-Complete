@@ -5,10 +5,11 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 	self._fullscreen_ws = fullscreen_ws
 	self._panel = self._ws:panel():panel()
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel()
+
 	local crewpage_text = self._panel:text({
-		vertical = "top",
-		name = "crewpage_text",
 		align = "left",
+		name = "crewpage_text",
+		vertical = "top",
 		text = self:_crewpage_text(),
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
@@ -18,32 +19,34 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 
 	crewpage_text:set_size(w, h)
 
-	local wfs_text = nil
+	local wfs_text
 
 	if not Network:is_server() then
 		wfs_text = self._panel:text({
-			vertical = "bottom",
-			name = "wfs",
 			align = "right",
+			name = "wfs",
+			vertical = "bottom",
 			text = managers.localization:to_upper_text("victory_client_waiting_for_server"),
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			font = tweak_data.menu.pd2_medium_font,
 			color = tweak_data.screen_colors.text
 		})
+
 		local _, _, w, h = wfs_text:text_rect()
 
 		wfs_text:set_size(w, h)
 		wfs_text:set_rightbottom(self._panel:w(), self._panel:h())
 	elseif not managers.job:has_active_job() then
 		wfs_text = self._panel:text({
-			vertical = "bottom",
-			name = "wfs",
 			align = "right",
+			name = "wfs",
+			vertical = "bottom",
 			text = managers.localization:to_upper_text("menu_choose_new_contract"),
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			font = tweak_data.menu.pd2_medium_font,
 			color = tweak_data.screen_colors.text
 		})
+
 		local _, _, w, h = wfs_text:text_rect()
 
 		wfs_text:set_size(w, h)
@@ -51,9 +54,9 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 	end
 
 	self._bg_rect = self._fullscreen_panel:rect({
-		name = "lobby_bg",
 		alpha = 0,
 		layer = -1,
+		name = "lobby_bg",
 		color = Color.black
 	})
 
@@ -64,12 +67,12 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 	if MenuBackdropGUI then
 		if crewpage_text then
 			local bg_text = self._fullscreen_panel:text({
+				align = "left",
+				alpha = 0.4,
+				h = 90,
+				layer = 1,
 				name = "crewpage_text",
 				vertical = "top",
-				h = 90,
-				alpha = 0.4,
-				align = "left",
-				layer = 1,
 				text = self:_crewpage_text(),
 				font_size = tweak_data.menu.pd2_massive_font_size,
 				font = tweak_data.menu.pd2_massive_font,
@@ -85,11 +88,11 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 
 		if managers.menu:is_pc_controller() and wfs_text and false then
 			local bg_text = self._fullscreen_panel:text({
-				vertical = "bottom",
-				h = 90,
-				alpha = 0.4,
 				align = "right",
+				alpha = 0.4,
+				h = 90,
 				layer = 1,
+				vertical = "bottom",
 				text = wfs_text:text(),
 				font_size = tweak_data.menu.pd2_massive_font_size,
 				font = tweak_data.menu.pd2_massive_font,
@@ -109,15 +112,17 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 
 	local mutator_category = managers.mutators:get_enabled_active_mutator_category()
 	local mutator_string_id = "menu_" .. mutator_category .. "s" .. "_lobby_wait_title"
+
 	self._lobby_mutators_text = self._panel:text({
-		vertical = "top",
-		name = "mutated_text",
 		align = "left",
+		name = "mutated_text",
+		vertical = "top",
 		text = managers.localization:to_upper_text(mutator_string_id),
 		font_size = tweak_data.menu.pd2_large_font_size * 0.75,
 		font = tweak_data.menu.pd2_large_font,
 		color = managers.mutators:get_category_text_color(mutator_category)
 	})
+
 	local _, _, w, h = self._lobby_mutators_text:text_rect()
 
 	self._lobby_mutators_text:set_size(w, h)
@@ -152,22 +157,24 @@ function ContractBoxGui:create_contract_box()
 
 	self._contract_panel = nil
 	self._contract_text_header = nil
+
 	local contact_data = managers.job:current_contact_data()
 	local job_data = managers.job:current_job_data()
 	local job_chain = managers.job:current_job_chain_data()
 	local job_id = managers.job:current_job_id()
 	local job_tweak = tweak_data.levels[job_id]
+
 	self._contract_panel = self._panel:panel({
-		name = "contract_box_panel",
 		h = 100,
 		layer = 0,
+		name = "contract_box_panel",
 		w = self._panel:w() * 0.35
 	})
 
 	self._contract_panel:rect({
 		halign = "grow",
-		valign = "grow",
 		layer = -1,
+		valign = "grow",
 		color = Color(0.5, 0, 0, 0)
 	})
 
@@ -183,6 +190,7 @@ function ContractBoxGui:create_contract_box()
 			font = tweak_data.menu.pd2_medium_font,
 			color = tweak_data.screen_colors.text
 		})
+
 		local length_text_header = self._contract_panel:text({
 			text = managers.localization:to_upper_text("cn_menu_contract_length_header"),
 			font_size = font_size,
@@ -213,21 +221,25 @@ function ContractBoxGui:create_contract_box()
 
 		local w = 0
 		local _, _, tw, th = length_text_header:text_rect()
+
 		w = math.max(w, tw)
 
 		length_text_header:set_size(tw, th)
 
 		local _, _, tw, th = risk_text_header:text_rect()
+
 		w = math.max(w, tw)
 
 		risk_text_header:set_size(tw, th)
 
 		local _, _, tw, th = exp_text_header:text_rect()
+
 		w = math.max(w, tw)
 
 		exp_text_header:set_size(tw, th)
 
 		local _, _, tw, th = payout_text_header:text_rect()
+
 		w = math.max(w, tw)
 
 		payout_text_header:set_size(tw, th)
@@ -244,8 +256,8 @@ function ContractBoxGui:create_contract_box()
 		payout_text_header:set_top(exp_text_header:bottom())
 
 		local length_text = self._contract_panel:text({
-			vertical = "top",
 			align = "left",
+			vertical = "top",
 			text = managers.localization:to_upper_text("cn_menu_contract_length", {
 				stages = #job_chain
 			}),
@@ -257,6 +269,7 @@ function ContractBoxGui:create_contract_box()
 		length_text:set_position(length_text_header:right() + 5, length_text_header:top())
 
 		local _, _, tw, th = length_text:text_rect()
+
 		w = math.max(w, tw)
 
 		length_text:set_size(tw, th)
@@ -264,8 +277,8 @@ function ContractBoxGui:create_contract_box()
 		if managers.job:is_job_ghostable(managers.job:current_job_id()) then
 			local ghost_icon = self._contract_panel:bitmap({
 				blend_mode = "add",
-				texture = "guis/textures/pd2/cn_minighost",
 				h = 16,
+				texture = "guis/textures/pd2/cn_minighost",
 				w = 16,
 				color = tweak_data.screen_colors.ghost_color
 			})
@@ -362,7 +375,7 @@ function ContractBoxGui:create_contract_box()
 		risk_xp:hide()
 
 		local job_ghost_mul = managers.job:get_ghost_bonus() or 0
-		local ghost_xp_text = nil
+		local ghost_xp_text
 
 		if job_ghost_mul ~= 0 then
 			local job_ghost = math.round(job_ghost_mul * 100)
@@ -375,6 +388,7 @@ function ContractBoxGui:create_contract_box()
 
 			local text_prefix = job_ghost_mul < 0 and "-" or "+"
 			local text_string = " (" .. text_prefix .. job_ghost_string .. "%)"
+
 			ghost_xp_text = self._contract_panel:text({
 				blend_mode = "add",
 				font = font,
@@ -382,6 +396,7 @@ function ContractBoxGui:create_contract_box()
 				text = text_string,
 				color = ghost_color
 			})
+
 			local _, _, tw, th = ghost_xp_text:text_rect()
 
 			ghost_xp_text:set_size(tw, th)
@@ -390,10 +405,11 @@ function ContractBoxGui:create_contract_box()
 
 		local job_heat = managers.job:current_job_heat() or 0
 		local job_heat_mul = managers.job:heat_to_experience_multiplier(job_heat) - 1
-		local heat_xp_text = nil
+		local heat_xp_text
 
 		if job_heat_mul ~= 0 then
 			job_heat = math.round(job_heat_mul * 100)
+
 			local job_heat_string = tostring(math.abs(job_heat))
 			local heat_color = managers.job:current_job_heat_color()
 
@@ -403,6 +419,7 @@ function ContractBoxGui:create_contract_box()
 
 			local text_prefix = job_heat_mul < 0 and "-" or "+"
 			local text_string = " (" .. text_prefix .. job_heat_string .. "%)"
+
 			heat_xp_text = self._contract_panel:text({
 				blend_mode = "add",
 				font = font,
@@ -410,6 +427,7 @@ function ContractBoxGui:create_contract_box()
 				text = text_string,
 				color = heat_color
 			})
+
 			local _, _, tw, th = heat_xp_text:text_rect()
 
 			heat_xp_text:set_size(tw, th)
@@ -464,6 +482,7 @@ function ContractBoxGui:create_contract_box()
 				color = tweak_data.screen_colors.text
 			})
 			local _, _, tw, th = mutators_text_header:text_rect()
+
 			w = math.max(w, tw)
 
 			mutators_text_header:set_size(tw, th)
@@ -486,10 +505,10 @@ function ContractBoxGui:create_contract_box()
 	elseif managers.menu:debug_menu_enabled() then
 		local debug_start = self._contract_panel:text({
 			text = "Use DEBUG START to start your level",
-			y = 10,
+			word_wrap = true,
 			wrap = true,
 			x = 10,
-			word_wrap = true,
+			y = 10,
 			font_size = font_size,
 			font = font,
 			color = tweak_data.screen_colors.text
@@ -569,15 +588,16 @@ function ContractBoxGui:create_mutators_tooltip()
 	end
 
 	self._mutators_tooltip = self._fullscreen_panel:panel({
-		name = "mutator_tooltip",
 		h = 100,
 		layer = 10,
+		name = "mutator_tooltip",
 		w = self._panel:w() * 0.25
 	})
+
 	local mutators_title = self._mutators_tooltip:text({
-		y = 10,
 		name = "mutators_title",
 		x = 10,
+		y = 10,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		text = managers.localization:to_upper_text("menu_cn_mutators_active"),
@@ -585,6 +605,7 @@ function ContractBoxGui:create_mutators_tooltip()
 	})
 	local _y = mutators_title:bottom() + 5
 	local mutators_list = {}
+
 	self._mutators_data = deep_clone(mutator_lobby_data or {})
 
 	for mutator_id, mutator_data in pairs(self._mutators_data) do
@@ -595,14 +616,14 @@ function ContractBoxGui:create_mutators_tooltip()
 		end
 	end
 
-	table.sort(mutators_list, function (a, b)
+	table.sort(mutators_list, function(a, b)
 		return a:name() < b:name()
 	end)
 
 	for i, mutator in ipairs(mutators_list) do
 		local mutator_text = self._mutators_tooltip:text({
-			x = 10,
 			layer = 1,
+			x = 10,
 			name = "mutator_text_" .. tostring(mutator:id()),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -610,6 +631,7 @@ function ContractBoxGui:create_mutators_tooltip()
 			y = _y,
 			h = tweak_data.menu.pd2_small_font_size
 		})
+
 		_y = mutator_text:bottom() + 2
 	end
 
@@ -631,7 +653,7 @@ function ContractBoxGui:create_mutators_tooltip()
 end
 
 function ContractBoxGui:check_update_mutators_tooltip()
-	local refresh_contract, refresh_tooltip = nil
+	local refresh_contract, refresh_tooltip
 
 	if alive(self._lobby_mutators_text) then
 		self._lobby_mutators_text:set_visible(managers.mutators:are_mutators_enabled())
@@ -744,14 +766,16 @@ function ContractBoxGui:create_character_text(peer_id, x, y, text, rank, panel, 
 	end
 
 	self._peers = self._peers or {}
+
 	local color_id = peer_id
 	local color = tweak_data.chat_colors[color_id] or tweak_data.chat_colors[#tweak_data.chat_colors]
+
 	self._peers[peer_id] = self._peers[peer_id] or panel:text({
-		vertical = "center",
-		blend_mode = "add",
 		align = "center",
-		text = "",
+		blend_mode = "add",
 		layer = 0,
+		text = "",
+		vertical = "center",
 		name = tostring(peer_id),
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		font = tweak_data.menu.pd2_medium_font,
@@ -773,12 +797,12 @@ function ContractBoxGui:create_character_text(peer_id, x, y, text, rank, panel, 
 
 	self._peers_state = self._peers_state or {}
 	self._peers_state[peer_id] = self._peers_state[peer_id] or panel:text({
-		vertical = "top",
-		blend_mode = "add",
 		align = "center",
-		text = "",
-		rotation = 360,
+		blend_mode = "add",
 		layer = 0,
+		rotation = 360,
+		text = "",
+		vertical = "top",
 		name = tostring(peer_id) .. "_state",
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		font = tweak_data.menu.pd2_medium_font,
@@ -790,6 +814,7 @@ function ContractBoxGui:create_character_text(peer_id, x, y, text, rank, panel, 
 
 	if rank then
 		local texture, texture_rect = managers.experience:rank_icon_data(rank)
+
 		self._peers_icon = self._peers_icon or {}
 		self._peers_icon[peer_id] = self._peers_icon[peer_id] or panel:bitmap({
 			h = 16,
@@ -813,12 +838,13 @@ function ContractBoxGui:create_character_text(peer_id, x, y, text, rank, panel, 
 	if self._peers[peer_id]:visible() and self._peers[peer_id]:text() ~= "" then
 		local level = managers.crime_spree:get_peer_spree_level(peer_id)
 		local text = managers.experience:cash_string(level, "") .. managers.localization:get_default_macro("BTN_SPREE_TICKET")
+
 		self._peers_spree[peer_id] = self._peers_spree[peer_id] or panel:text({
-			vertical = "top",
-			blend_mode = "add",
 			align = "center",
-			rotation = 360,
+			blend_mode = "add",
 			layer = 0,
+			rotation = 360,
+			vertical = "top",
 			name = tostring(peer_id) .. "_spree",
 			text = text,
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -849,21 +875,25 @@ function ContractBoxGui:update_character(peer_id)
 	local x = 0
 	local y = 0
 	local text = ""
-	local experience, color_ranges = nil
+	local experience, color_ranges
 	local player_rank = 0
 	local peer = managers.network:session():peer(peer_id)
 
 	if peer then
 		local local_peer = managers.network:session() and managers.network:session():local_peer()
 		local peer_pos = managers.menu_scene:character_screen_position(peer_id)
+
 		x = peer_pos.x
 		y = peer_pos.y
 		text = peer:name()
+
 		local player_level = peer == local_peer and managers.experience:current_level() or peer:level()
 
 		if player_level then
 			player_rank = peer == local_peer and managers.experience:current_rank() or peer:rank()
+
 			local color_range_offset = utf8.len(text) + 2
+
 			experience, color_ranges = managers.experience:gui_string(player_level, player_rank, color_range_offset)
 			text = text .. " (" .. experience .. ")"
 		end
@@ -909,9 +939,11 @@ function ContractBoxGui:set_character_panel_alpha(peer_id, alpha)
 end
 
 function ContractBoxGui:_create_text_box(ws, title, text, content_data, config)
+	return
 end
 
 function ContractBoxGui:_create_lower_static_panel(lower_static_panel)
+	return
 end
 
 function ContractBoxGui:mouse_pressed(button, x, y)
@@ -975,12 +1007,15 @@ function ContractBoxGui:can_take_input()
 end
 
 function ContractBoxGui:moved_scroll_bar()
+	return
 end
 
 function ContractBoxGui:mouse_wheel_down()
+	return
 end
 
 function ContractBoxGui:mouse_wheel_up()
+	return
 end
 
 function ContractBoxGui:check_minimize()
@@ -1016,9 +1051,11 @@ function ContractBoxGui:set_enabled(enabled)
 end
 
 function ContractBoxGui:set_size(x, y)
+	return
 end
 
 function ContractBoxGui:set_visible(visible)
+	return
 end
 
 function ContractBoxGui:close()

@@ -21,10 +21,11 @@ function MenuItemChallenge:setup_gui(node, row_item)
 		amount = 0
 	}
 	local chl_color = self:parameter("awarded") and tweak_data.menu.awarded_challenge_color or row_item.color
+
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
-	row_item.challenge_name = node:_text_item_part(row_item, row_item.gui_panel, node:_right_align())
+	row_item.challenge_name = node._text_item_part(node, row_item, row_item.gui_panel, node._right_align(node))
 
 	row_item.challenge_name:set_layer(node.layers.items + 1)
 	row_item.challenge_name:set_font_size(tweak_data.menu.challenges_font_size)
@@ -32,28 +33,28 @@ function MenuItemChallenge:setup_gui(node, row_item)
 	row_item.challenge_name:set_color(chl_color)
 
 	row_item.gui_info_panel = node.safe_rect_panel:panel({
-		y = 0,
 		visible = false,
 		x = 0,
+		y = 0,
 		layer = node.layers.items,
-		w = node:_left_align(),
+		w = node._left_align(node),
 		h = node._item_panel_parent:h()
 	})
 	row_item.description_text = row_item.gui_info_panel:text({
-		wrap = true,
 		align = "left",
 		vertical = "top",
 		word_wrap = true,
+		wrap = true,
 		text = self:parameter("description"),
 		font = tweak_data.menu.small_font,
 		font_size = tweak_data.menu.small_font_size,
 		color = row_item.color
 	})
 	row_item.challenge_hl = row_item.gui_info_panel:text({
-		word_wrap = true,
-		vertical = "left",
-		wrap = true,
 		align = "left",
+		vertical = "left",
+		word_wrap = true,
+		wrap = true,
 		text = row_item.text,
 		layer = node.layers.items,
 		font = node.font,
@@ -61,72 +62,79 @@ function MenuItemChallenge:setup_gui(node, row_item)
 		color = row_item.color
 	})
 	row_item.reward_panel = row_item.gui_info_panel:panel({
-		y = 0,
 		visible = true,
 		x = 0,
+		y = 0,
 		layer = node.layers.items,
-		w = node:_left_align(),
+		w = node._left_align(node),
 		h = node._item_panel_parent:h()
 	})
+
 	local text = managers.localization:text("menu_reward_xp", {
 		XP = managers.experience:cash_string(challenge_data.xp)
 	})
+
 	row_item.reward_text = row_item.reward_panel:text({
-		vertical = "left",
 		align = "left",
+		vertical = "left",
 		text = text,
 		layer = node.layers.items,
 		font = node.font,
 		font_size = tweak_data.menu.challenges_font_size,
 		color = row_item.color
 	})
+
 	local _, _, w, h = row_item.challenge_name:text_rect()
 
 	row_item.gui_panel:set_h(h)
 
-	local bar_w = node:_left_align() - safe_rect.width / 2
+	local bar_w = node._left_align(node) - safe_rect.width / 2
 
 	if challenge_data.count and challenge_data.count > 1 then
 		local bg_bar = row_item.gui_panel:rect({
+			align = "center",
+			h = 22,
 			halign = "center",
 			vertical = "center",
-			h = 22,
 			visible = false,
-			align = "center",
-			x = node:_left_align() - bar_w,
+			x = node._left_align(node) - bar_w,
 			y = h / 2 - 11,
 			w = bar_w,
 			color = Color.black:with_alpha(0.5),
 			layer = node.layers.items - 1
 		})
+
 		row_item.bg_bar = bg_bar
+
 		local bar = row_item.gui_panel:gradient({
-			vertical = "center",
 			align = "center",
 			halign = "center",
 			orientation = "vertical",
+			vertical = "center",
 			gradient_points = {
 				0,
 				tweak_data.screen_color_blue:with_alpha(0.5),
 				1,
 				tweak_data.screen_color_blue:with_alpha(0.5)
 			},
-			x = node:_left_align() - bar_w + 2,
+			x = node._left_align(node) - bar_w + 2,
 			y = bg_bar:y() + 2,
-			w = (safe_rect.width - node:_mid_align() - 0) * progress_data.amount / challenge_data.count,
+			w = (safe_rect.width - node._mid_align(node) - 0) * (progress_data.amount / challenge_data.count),
 			h = bg_bar:h() - 4,
 			color = node.color,
 			layer = node.layers.items
 		})
+
 		row_item.bar = bar
+
 		local progress_text = row_item.gui_panel:text({
-			y = 0,
-			vertical = "center",
 			align = "right",
 			halign = "right",
 			valign = "center",
+			vertical = "center",
+			y = 0,
 			font_size = tweak_data.menu.challenges_font_size,
-			x = node:_left_align() - bar_w,
+			x = node._left_align(node) - bar_w,
 			h = h,
 			w = bg_bar:w(),
 			font = node.font,
@@ -135,6 +143,7 @@ function MenuItemChallenge:setup_gui(node, row_item)
 			text = progress_data.amount .. "/" .. challenge_data.count,
 			render_template = Idstring("VertexColorTextured")
 		})
+
 		row_item.progress_text = progress_text
 	end
 
@@ -194,7 +203,7 @@ function MenuItemChallenge:_layout(node, row_item)
 	local x, y, w, h = row_item.challenge_name:text_rect()
 
 	row_item.challenge_name:set_height(h)
-	row_item.challenge_name:set_left(node:_right_align() - row_item.gui_panel:x())
+	row_item.challenge_name:set_left(node._right_align(node) - row_item.gui_panel:x())
 	row_item.gui_panel:set_height(h)
 
 	local sh = math.min(h, 22)
@@ -205,13 +214,13 @@ function MenuItemChallenge:_layout(node, row_item)
 		row_item.bg_bar:set_center_y(row_item.gui_panel:h() / 2)
 		row_item.bar:set_h(sh - 4)
 		row_item.bar:set_h(row_item.gui_panel:h() - 1)
-		row_item.bar:set_left(node:_mid_align() - row_item.gui_panel:x() + 0)
+		row_item.bar:set_left(node._mid_align(node) - row_item.gui_panel:x() + 0)
 		row_item.bar:set_y(1)
 		row_item.progress_text:set_right(row_item.gui_panel:w() - node._align_line_padding)
 	end
 
-	node:_align_item_gui_info_panel(row_item.gui_info_panel)
-	node:_align_item_gui_info_panel(row_item.gui_info_panel)
+	node._align_item_gui_info_panel(node, row_item.gui_info_panel)
+	node._align_item_gui_info_panel(node, row_item.gui_info_panel)
 	row_item.challenge_hl:set_w(row_item.gui_info_panel:w())
 
 	local _, _, w, h = row_item.challenge_hl:text_rect()

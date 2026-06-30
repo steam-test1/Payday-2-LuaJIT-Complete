@@ -10,12 +10,13 @@ end
 
 function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 	local align_obj = self._unit:get_object(Idstring(align_obj_name))
-	local spawn_unit = nil
+	local spawn_unit
 
 	if type_name(unit) == "string" then
 		if Network:is_server() or self.allow_client_spawn then
 			local spawn_pos = align_obj:position()
 			local spawn_rot = align_obj:rotation()
+
 			spawn_unit = safe_spawn_unit(Idstring(unit), spawn_pos, spawn_rot)
 			spawn_unit:unit_data().parent_unit = self._unit
 		end
@@ -50,6 +51,7 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 		align_obj_name = align_obj_name,
 		unit = spawn_unit
 	}
+
 	self._spawned_units[unit_id] = unit_entry
 
 	if Network:is_server() and not self.local_only then
@@ -256,9 +258,9 @@ function ManageSpawnedUnits:save(data)
 		return
 	end
 
-	data.managed_spawned_units = {
-		linked_joints = self._sync_spawn_and_link
-	}
+	data.managed_spawned_units = {}
+	data.managed_spawned_units.linked_joints = self._sync_spawn_and_link
+
 	local sync_units = {}
 
 	for unit_id, unit_entry in pairs(self._spawned_units) do
@@ -352,7 +354,7 @@ local empty_vec = Vector3()
 local empty_rot = Rotation()
 
 function ManageSpawnedUnits:_link_joints(unit_id, joint_table)
-	local ids, parent_object, child_object = nil
+	local ids, parent_object, child_object
 	local parent_unit = self._unit
 	local child_unit = self._spawned_units[unit_id].unit
 

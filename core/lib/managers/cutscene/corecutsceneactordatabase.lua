@@ -40,7 +40,7 @@ function CoreCutsceneActorDatabaseUnitTypeInfo:_append_unit_info(unit)
 	assert(self:unit_type() == unit:name())
 
 	if self._object_names == nil then
-		self._object_names = table.collect(unit:get_objects("*"), function (object)
+		self._object_names = table.collect(unit:get_objects("*"), function(object)
 			return object:name()
 		end)
 
@@ -49,7 +49,7 @@ function CoreCutsceneActorDatabaseUnitTypeInfo:_append_unit_info(unit)
 	end
 
 	if self._object_visibilities == nil then
-		self._object_visibilities = table.remap(unit:get_objects("*"), function (_, object)
+		self._object_visibilities = table.remap(unit:get_objects("*"), function(_, object)
 			return object:name(), object.visibility and object:visibility() or nil
 		end)
 	end
@@ -104,6 +104,7 @@ end
 function CoreCutsceneActorDatabaseUnitTypeInfo:_file_line(file, line)
 	while not file:at_end() do
 		local text = file:gets()
+
 		line = line - 1
 
 		if line == 0 then

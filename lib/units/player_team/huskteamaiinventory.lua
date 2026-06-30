@@ -19,14 +19,14 @@ function HuskTeamAIInventory:add_unit_by_name(new_unit_name, equip)
 		end
 	end
 
-	local setup_data = {
-		user_unit = self._unit,
-		ignore_units = ignore_units,
-		expend_ammo = false,
-		hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI"),
-		hit_player = false,
-		user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice
-	}
+	local setup_data = {}
+
+	setup_data.user_unit = self._unit
+	setup_data.ignore_units = ignore_units
+	setup_data.expend_ammo = false
+	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI")
+	setup_data.hit_player = false
+	setup_data.user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice
 
 	new_unit:base():setup(setup_data)
 	TeamAIInventory.add_unit(self, new_unit, equip)

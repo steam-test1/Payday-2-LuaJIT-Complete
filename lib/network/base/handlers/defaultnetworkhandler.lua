@@ -1,6 +1,7 @@
 DefaultNetworkHandler = DefaultNetworkHandler or class()
 
 function DefaultNetworkHandler:init()
+	return
 end
 
 function DefaultNetworkHandler.lost_peer(peer_ip)

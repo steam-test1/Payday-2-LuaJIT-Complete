@@ -1,11 +1,11 @@
 PlayerMovementState = PlayerMovementState or class()
 PlayerMovementState.settings_clbks_to_add = {
-	hold_to_steelsight = true,
-	hold_to_run = true,
-	hold_to_duck = true,
-	fov_multiplier = true,
-	use_headbob = true,
 	aim_assist = true,
+	fov_multiplier = true,
+	hold_to_duck = true,
+	hold_to_run = true,
+	hold_to_steelsight = true,
+	use_headbob = true,
 	tap_to_interact = {
 		clbk_name = "_clbk_sett_var_changed"
 	},
@@ -27,19 +27,22 @@ function PlayerMovementState:init(unit)
 end
 
 function PlayerMovementState:enter(state_data, enter_data)
+	return
 end
 
 function PlayerMovementState:exit(state_data)
+	return
 end
 
 function PlayerMovementState:update(t, dt)
+	return
 end
 
 function PlayerMovementState:chk_action_forbidden(action_type)
 	if self._current_action then
 		local unblock_data = self._current_action["unblock_" .. action_type .. "_t"]
 
-		if unblock_data and (unblock_data == -1 or managers.player:player_timer():time() < unblock_data) then
+		if unblock_data and (unblock_data == -1 or unblock_data > managers.player:player_timer():time()) then
 			return true
 		end
 	end
@@ -84,6 +87,7 @@ function PlayerMovementState:interaction_blocked()
 end
 
 function PlayerMovementState:save(data)
+	return
 end
 
 function PlayerMovementState:pre_destroy()

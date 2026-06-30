@@ -5,6 +5,7 @@ function VehicleStateInactive:init(unit)
 end
 
 function VehicleStateInactive:update(t, dt)
+	return
 end
 
 function VehicleStateInactive:enter(state_data, enter_data)

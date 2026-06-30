@@ -1,4 +1,5 @@
 CrimeSpreeModifiersMenuComponent = CrimeSpreeModifiersMenuComponent or class(MenuGuiComponentGeneric)
+
 local padding = 10
 
 function CrimeSpreeModifiersMenuComponent:init(ws, fullscreen_ws, node)
@@ -39,8 +40,8 @@ function CrimeSpreeModifiersMenuComponent:_setup()
 	})
 
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
@@ -48,7 +49,7 @@ function CrimeSpreeModifiersMenuComponent:_setup()
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -69,14 +70,15 @@ function CrimeSpreeModifiersMenuComponent:_setup()
 	})
 
 	self._text_header = self._ws:panel():text({
-		vertical = "top",
 		align = "left",
 		layer = 51,
+		vertical = "top",
 		text = managers.localization:to_upper_text("menu_cs_modifiers_" .. tostring(modifiers_name)),
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
 	})
+
 	local x, y, w, h = self._text_header:text_rect()
 
 	self._text_header:set_size(self._panel:w(), h)
@@ -86,14 +88,15 @@ function CrimeSpreeModifiersMenuComponent:_setup()
 	self._current_num = 1
 	self._num_to_select = self:modifiers_to_select()
 	self._number_header = self._ws:panel():text({
-		vertical = "top",
 		align = "right",
 		layer = 51,
+		vertical = "top",
 		text = self._num_to_select > 1 and tostring(self._current_num) .. " / " .. managers.experience:cash_string(self._num_to_select, "") or "",
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
 	})
+
 	local x, y, w, h = self._text_header:text_rect()
 
 	self._number_header:set_size(self._panel:w(), h)
@@ -160,19 +163,20 @@ function CrimeSpreeModifiersMenuComponent:_setup()
 		back_btn:set_link("left", finalize_btn)
 	else
 		self._legend_text = self._button_panel:text({
-			halign = "right",
-			vertical = "bottom",
-			layer = 1,
-			blend_mode = "add",
 			align = "right",
+			blend_mode = "add",
+			halign = "right",
+			layer = 1,
 			text = "",
-			y = 0,
-			x = 0,
 			valign = "bottom",
+			vertical = "bottom",
+			x = 0,
+			y = 0,
 			color = tweak_data.screen_colors.text,
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size
 		})
+
 		local legend_string = managers.localization:get_default_macro("BTN_ACCEPT") .. " " .. managers.localization:to_upper_text("menu_cs_select_modifier") .. "  |  " .. managers.localization:to_upper_text("menu_legend_back")
 
 		self._legend_text:set_text(legend_string)
@@ -301,7 +305,8 @@ function CrimeSpreeModifiersMenuComponent:mouse_moved(o, x, y)
 		return
 	end
 
-	local used, pointer = nil
+	local used, pointer
+
 	self._selected_item = nil
 
 	for idx, btn in ipairs(self._buttons) do
@@ -310,8 +315,7 @@ function CrimeSpreeModifiersMenuComponent:mouse_moved(o, x, y)
 
 			if btn:is_selected() then
 				self._selected_item = btn
-				pointer = "link"
-				used = true
+				used, pointer = true, "link"
 			end
 		end
 	end
@@ -373,8 +377,8 @@ end
 CrimeSpreeModifierButton = CrimeSpreeModifierButton or class(MenuGuiItem)
 CrimeSpreeModifierButton._type = "CrimeSpreeModifierButton"
 CrimeSpreeModifierButton.size = {
-	w = 208,
-	h = 298
+	h = 298,
+	w = 208
 }
 
 function CrimeSpreeModifierButton:init(parent, data)
@@ -385,7 +389,9 @@ function CrimeSpreeModifierButton:init(parent, data)
 		w = CrimeSpreeModifierButton.size.w,
 		h = CrimeSpreeModifierButton.size.h
 	})
+
 	local top_padding = padding * 2
+
 	self._image_size = 128
 	self._size_modifier = 0.8
 	self._image = self._panel:panel({
@@ -402,17 +408,17 @@ function CrimeSpreeModifierButton:init(parent, data)
 	}
 	self._modifier_image = self._image:bitmap({
 		blend_mode = "add",
-		name = "icon",
-		valign = "grow",
 		halign = "grow",
-		layer = 10
+		layer = 10,
+		name = "icon",
+		valign = "grow"
 	})
 	self._desc = self._panel:text({
+		align = "center",
+		text = "",
 		vertical = "top",
 		wrap = true,
-		align = "center",
 		wrap_word = true,
-		text = "",
 		x = padding,
 		y = self._image:bottom() + top_padding,
 		w = self._panel:w() - padding * 2,
@@ -422,8 +428,8 @@ function CrimeSpreeModifierButton:init(parent, data)
 		color = tweak_data.screen_colors.text
 	})
 	self._highlight = self._panel:rect({
-		blend_mode = "add",
 		alpha = 0.4,
+		blend_mode = "add",
 		layer = 10,
 		color = tweak_data.screen_colors.button_stage_3
 	})
@@ -517,7 +523,9 @@ end
 
 function CrimeSpreeModifierButton:smoothstep(a, b, step, n)
 	local v = step / n
+
 	v = 1 - (1 - v) * (1 - v)
+
 	local x = a * (1 - v) + b * v
 
 	return x
@@ -541,23 +549,23 @@ function CrimeSpreeButton:init(parent, font, font_size)
 	self._panel:set_bottom(parent:h())
 
 	self._text = self._panel:text({
-		y = 0,
-		blend_mode = "add",
 		align = "right",
-		text = "",
+		blend_mode = "add",
 		halign = "right",
-		x = 0,
 		layer = 1,
+		text = "",
+		x = 0,
+		y = 0,
 		color = self._color,
 		font = font or tweak_data.menu.pd2_medium_font,
 		font_size = font_size or tweak_data.menu.pd2_medium_font_size
 	})
 	self._highlight = self._panel:rect({
-		blend_mode = "add",
 		alpha = 0.2,
-		valign = "scale",
+		blend_mode = "add",
 		halign = "scale",
 		layer = 10,
+		valign = "scale",
 		color = self._color
 	})
 
@@ -605,6 +613,7 @@ function CrimeSpreeButton:set_link(dir, item)
 end
 
 function CrimeSpreeButton:update(t, dt)
+	return
 end
 
 function CrimeSpreeButton:shrink_wrap_button(w_padding, h_padding)

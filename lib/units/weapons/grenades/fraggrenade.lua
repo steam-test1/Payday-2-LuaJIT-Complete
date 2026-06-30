@@ -3,6 +3,7 @@ FragGrenade = FragGrenade or class(GrenadeBase)
 function FragGrenade:_setup_from_tweak_data()
 	local grenade_entry = self._tweak_projectile_entry or "frag"
 	local tweak_entry = tweak_data.projectiles[grenade_entry]
+
 	self._init_timer = tweak_entry.init_timer or 2.5
 	self._mass_look_up_modifier = tweak_entry.mass_look_up_modifier
 	self._range = tweak_entry.range
@@ -18,7 +19,9 @@ function FragGrenade:_setup_from_tweak_data()
 	self._alert_radius = tweak_entry.alert_radius
 	self._idstr_decal = tweak_entry.idstr_decal
 	self._idstr_effect = tweak_entry.idstr_effect
+
 	local sound_event = tweak_entry.sound_event or "grenade_explode"
+
 	self._custom_params = {
 		camera_shake_max_mul = 4,
 		sound_muffle_effect = true,
@@ -38,6 +41,7 @@ end
 
 function FragGrenade:clbk_impact(tag, unit, body, other_unit, other_body, position, normal, collision_velocity, velocity, other_velocity, new_velocity, direction, damage, ...)
 	local reflect = other_unit and other_unit:vehicle() and other_unit:vehicle():is_active()
+
 	reflect = managers.modifiers:modify_value("FragGrenade:ShouldReflect", reflect, other_unit, self._unit)
 
 	if reflect then
@@ -49,6 +53,7 @@ end
 
 function FragGrenade:_on_collision(col_ray)
 	local reflect = col_ray and col_ray.unit:vehicle() and col_ray.unit:vehicle():is_active()
+
 	reflect = managers.modifiers:modify_value("FragGrenade:ShouldReflect", reflect, col_ray and col_ray.unit, self._unit)
 
 	if reflect then
@@ -64,6 +69,7 @@ function FragGrenade:_detonate(tag, unit, body, other_unit, other_body, position
 	end
 
 	self._detonated = true
+
 	local pos = self._unit:position()
 	local normal = math.UP
 	local range = self._range
@@ -103,6 +109,7 @@ function FragGrenade:_detonate_on_client()
 	end
 
 	self._detonated = true
+
 	local pos = self._unit:position()
 	local range = self._range
 

@@ -24,11 +24,11 @@ function AwardAchievmentElement:_build_panel(panel, panel_sizer)
 	self:_build_value_checkbox(panel, panel_sizer, "award_instigator", "Award only the instigator (Player or driver in vehicle)?")
 	self:_build_value_checkbox(panel, panel_sizer, "players_from_start", "Only award to players that joined from start.")
 
-	local help = {
-		text = "Awards a PSN Trophy or Steam Achievment",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Awards a PSN Trophy or Steam Achievment"
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

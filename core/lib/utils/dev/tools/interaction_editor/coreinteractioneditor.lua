@@ -42,6 +42,7 @@ function InteractionEditor:open_system(path)
 	end
 
 	local sys = CoreInteractionEditorSystem.InteractionEditorSystem:new(self._ui, path)
+
 	self._systems[sys] = sys
 end
 

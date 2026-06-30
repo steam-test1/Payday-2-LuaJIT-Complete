@@ -8,6 +8,7 @@ function MissionScriptElement:init(...)
 end
 
 function MissionScriptElement:client_on_executed()
+	return
 end
 
 function MissionScriptElement:on_executed(...)

@@ -72,21 +72,12 @@ function StatisticsTweakData:statistics_table()
 			local contact = job_tweak.contact
 			local contact_tweak = contact and tweak_data.narrative.contacts[contact]
 			local allow_job = not contact or contact ~= "wip" and contact ~= "tests"
+
 			allow_job = not job_tweak.competitive and allow_job
-
-			if job_tweak.job_wrapper then
-				allow_job = false
-			end
-
-			if job_tweak.hidden then
-				allow_job = false
-			end
-
+			allow_job = not job_tweak.job_wrapper and allow_job
+			allow_job = not job_tweak.hidden and allow_job
 			allow_job = not job_tweak.ignore_statistics and allow_job
-
-			if contact_tweak then
-				allow_job = not contact_tweak.ignore_statistics and allow_job
-			end
+			allow_job = (not contact_tweak or not contact_tweak.ignore_statistics) and allow_job
 
 			if allow_job then
 				table.insert(self._job_list, job_id)

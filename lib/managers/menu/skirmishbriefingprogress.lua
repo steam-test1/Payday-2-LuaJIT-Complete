@@ -15,7 +15,7 @@ function SkirmishBriefingProgress:init(parent, config)
 end
 
 function SkirmishBriefingProgress:_sniff_for_wave_change()
-	local last_sniffed_wave = nil
+	local last_sniffed_wave
 
 	while true do
 		local current_wave = managers.skirmish:current_wave_number()
@@ -36,6 +36,7 @@ function SkirmishBriefingProgress:redraw()
 	end
 
 	self._canvas = self._gui_obj:panel()
+
 	local start_wave, end_wave = managers.skirmish:wave_range()
 	local current_wave = self._config.static_wave or managers.skirmish:current_wave_number() or start_wave
 	local wave_diff = end_wave - start_wave
@@ -43,8 +44,8 @@ function SkirmishBriefingProgress:redraw()
 	local progress = math.max((current_wave - 1) / wave_diff, 0)
 	local bar_width = self._config.w - padding * 2
 	local progress_bar = ProgressBar:new(self._canvas, {
-		name = "progress_bar",
 		h = 8,
+		name = "progress_bar",
 		progress_color = tweak_data.screen_colors.skirmish_color,
 		back_color = tweak_data.screen_colors.text:with_alpha(0.4),
 		w = bar_width
@@ -63,8 +64,8 @@ function SkirmishBriefingProgress:redraw()
 	for i = 0, wave_diff do
 		local wave_number = start_wave + i
 		local wave_progress = i / wave_diff
-		local color = progress >= wave_progress and tweak_data.screen_colors.skirmish_color or tweak_data.screen_colors.text:with_alpha(0.4)
-		local wave_indicator = nil
+		local color = wave_progress <= progress and tweak_data.screen_colors.skirmish_color or tweak_data.screen_colors.text:with_alpha(0.4)
+		local wave_indicator
 
 		if wave_number == start_wave or wave_number == end_wave or wave_number == current_wave then
 			wave_indicator = SkirmishProgressWaveNumber:new(self._canvas, {
@@ -75,8 +76,8 @@ function SkirmishBriefingProgress:redraw()
 			wave_indicator:set_bottom(progress_bar:top() - 2)
 		else
 			wave_indicator = self._canvas:rect({
-				w = 4,
 				h = 4,
+				w = 4,
 				color = color
 			})
 
@@ -114,10 +115,10 @@ function SkirmishProgressWaveNumber:init(parent, config)
 	})
 	local texture, texture_rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 	local arrow = panel:bitmap({
-		name = "arrow",
 		h = 6,
-		w = 12,
+		name = "arrow",
 		rotation = 180,
+		w = 12,
 		texture = texture,
 		texture_rect = texture_rect,
 		color = config.color

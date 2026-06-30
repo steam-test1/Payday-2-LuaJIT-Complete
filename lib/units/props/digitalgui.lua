@@ -1,27 +1,25 @@
 DigitalGui = DigitalGui or class()
-DigitalGui.COLORS = {
-	black = Color(0, 0, 0),
-	white = Color(1, 1, 1),
-	red = Color(0.8, 0, 0),
-	green = Color(0, 0.8, 0),
-	blue = Color(0, 0, 0.8),
-	yellow = Color(0.8, 0.8, 0),
-	orange = Color(0.8, 0.4, 0),
-	light_red = Color(0.8, 0.4, 0.4),
-	light_blue = Color(0.4, 0.6, 0.8),
-	light_green = Color(0.6, 0.8, 0.4),
-	light_yellow = Color(0.8, 0.8, 0.4),
-	light_orange = Color(0.8, 0.6, 0.4)
-}
-DigitalGui.GUI_EVENT_IDS = {
-	syncronize = 1,
-	timer_set = 2,
-	timer_start_count_up = 3,
-	timer_start_count_down = 4,
-	timer_pause = 5,
-	timer_resume = 6,
-	number_set = 7
-}
+DigitalGui.COLORS = {}
+DigitalGui.COLORS.black = Color(0, 0, 0)
+DigitalGui.COLORS.white = Color(1, 1, 1)
+DigitalGui.COLORS.red = Color(0.8, 0, 0)
+DigitalGui.COLORS.green = Color(0, 0.8, 0)
+DigitalGui.COLORS.blue = Color(0, 0, 0.8)
+DigitalGui.COLORS.yellow = Color(0.8, 0.8, 0)
+DigitalGui.COLORS.orange = Color(0.8, 0.4, 0)
+DigitalGui.COLORS.light_red = Color(0.8, 0.4, 0.4)
+DigitalGui.COLORS.light_blue = Color(0.4, 0.6, 0.8)
+DigitalGui.COLORS.light_green = Color(0.6, 0.8, 0.4)
+DigitalGui.COLORS.light_yellow = Color(0.8, 0.8, 0.4)
+DigitalGui.COLORS.light_orange = Color(0.8, 0.6, 0.4)
+DigitalGui.GUI_EVENT_IDS = {}
+DigitalGui.GUI_EVENT_IDS.syncronize = 1
+DigitalGui.GUI_EVENT_IDS.timer_set = 2
+DigitalGui.GUI_EVENT_IDS.timer_start_count_up = 3
+DigitalGui.GUI_EVENT_IDS.timer_start_count_down = 4
+DigitalGui.GUI_EVENT_IDS.timer_pause = 5
+DigitalGui.GUI_EVENT_IDS.timer_resume = 6
+DigitalGui.GUI_EVENT_IDS.number_set = 7
 DigitalGui.NUMBER_CLAMP = 99999
 DigitalGui._EXTENSION_NAME = "digital_gui"
 
@@ -72,13 +70,14 @@ function DigitalGui:setup()
 	end
 
 	local font_size = self.FONT_SIZE
+
 	self._title_text = self._panel:text({
-		y = 0,
-		vertical = "center",
 		align = "center",
-		text = "01:23",
-		visible = true,
 		layer = 0,
+		text = "01:23",
+		vertical = "center",
+		visible = true,
+		y = 0,
 		font = self.FONT,
 		font_size = font_size,
 		color = self.DIGIT_COLOR
@@ -124,7 +123,7 @@ function DigitalGui:update(unit, t, dt)
 		end
 
 		if Network:is_server() and self._next_timer_sync < Application:time() then
-			self._next_timer_sync = Application:time() + 7 + math.rand(2)
+			self._next_timer_sync = Application:time() + (7 + math.rand(2))
 
 			for peer_id, peer in pairs(managers.network:session():peers()) do
 				local sync_time = math.clamp(self._timer + Network:qos(peer:rpc()).ping / 1000, 0, 100000)
@@ -292,18 +291,23 @@ function DigitalGui:_update_timer_text()
 
 	self._floored_last_timer = math.floor(self._timer)
 	self._timer = self._timer < 0 and 0 or self._timer
+
 	local precision = self:timer_precision()
 	local is_precision = precision > 0
 	local time = math.floor(self._timer)
 	local minutes = math.floor(time / 60)
+
 	time = time - minutes * 60
+
 	local seconds = math.round(time)
 	local milliseconds = 0
 
 	if is_precision then
 		seconds = math.floor(time)
+
 		local ms_time = self._timer - math.floor(self._timer)
 		local idp = 10^precision
+
 		milliseconds = math.floor(self:_round(ms_time, (precision or 1) + 1) * idp)
 		milliseconds = milliseconds % idp
 	end
@@ -311,12 +315,14 @@ function DigitalGui:_update_timer_text()
 	local minutes_str = minutes < 10 and string.format("0%i", minutes) or tostring(minutes)
 	local seconds_str = seconds < 10 and string.format("0%i", seconds) or tostring(seconds)
 	local text = self.display_format
+
 	text = string.gsub(text, "{minutes}", minutes_str)
 	text = string.gsub(text, "{seconds}", seconds_str)
 
 	if is_precision then
 		local format_str = "%0" .. precision .. "i"
 		local ms_str = string.format(format_str, milliseconds)
+
 		text = string.gsub(text, "{milliseconds}", ms_str)
 	end
 
@@ -366,21 +372,22 @@ function DigitalGui:destroy()
 end
 
 function DigitalGui:save(data)
-	local state = {
-		timer_paused = self._timer_paused,
-		timer = self._timer,
-		number = self._number,
-		timer_count_up = self._timer_count_up,
-		timer_count_down = self._timer_count_down,
-		COLOR_TYPE = self.COLOR_TYPE,
-		BG_COLOR_TYPE = self.BG_COLOR_TYPE,
-		visible = self._visible
-	}
+	local state = {}
+
+	state.timer_paused = self._timer_paused
+	state.timer = self._timer
+	state.number = self._number
+	state.timer_count_up = self._timer_count_up
+	state.timer_count_down = self._timer_count_down
+	state.COLOR_TYPE = self.COLOR_TYPE
+	state.BG_COLOR_TYPE = self.BG_COLOR_TYPE
+	state.visible = self._visible
 	data.DigitalGui = state
 end
 
 function DigitalGui:load(data)
 	local state = data.DigitalGui
+
 	self._timer_paused = state.timer_paused
 	self._timer = state.timer
 	self._number = state.number

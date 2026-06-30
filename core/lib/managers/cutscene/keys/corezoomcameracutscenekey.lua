@@ -5,16 +5,16 @@ CoreZoomCameraCutsceneKey.ELEMENT_NAME = "camera_zoom"
 CoreZoomCameraCutsceneKey.NAME = "Camera Zoom"
 CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV = 55
 CoreZoomCameraCutsceneKey.INTERPOLATION_FUNCTIONS = {
-	Linear = function (t, bias)
+	Linear = function(t, bias)
 		return t
 	end,
-	["J curve"] = function (t, bias)
+	["J curve"] = function(t, bias)
 		local b = 2 * (1 - bias)
 		local a = 1 - b
 
 		return a * t^2 + b * t
 	end,
-	["S curve"] = function (t, bias)
+	["S curve"] = function(t, bias)
 		local a = 1 + bias * 2
 		local b = a + 1
 
@@ -26,7 +26,7 @@ CoreZoomCameraCutsceneKey:register_serialized_attribute("start_fov", CoreZoomCam
 CoreZoomCameraCutsceneKey:register_serialized_attribute("end_fov", CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV, tonumber)
 CoreZoomCameraCutsceneKey:register_serialized_attribute("transition_time", 0, tonumber)
 CoreZoomCameraCutsceneKey:register_serialized_attribute("interpolation", "Linear")
-CoreZoomCameraCutsceneKey:register_serialized_attribute("interpolation_bias", 0.5, function (n)
+CoreZoomCameraCutsceneKey:register_serialized_attribute("interpolation_bias", 0.5, function(n)
 	return (tonumber(n) or 0) / 100
 end)
 
@@ -88,7 +88,7 @@ end
 CoreZoomCameraCutsceneKey.is_valid_end_fov = CoreZoomCameraCutsceneKey.is_valid_start_fov
 CoreZoomCameraCutsceneKey.control_for_interpolation = CoreCutsceneKeyBase.standard_combo_box_control
 CoreZoomCameraCutsceneKey.control_for_interpolation_bias = CoreCutsceneKeyBase.standard_percentage_slider_control
-CoreZoomCameraCutsceneKey.refresh_control_for_interpolation = CoreCutsceneKeyBase:standard_combo_box_control_refresh("interpolation", table.map_keys(CoreZoomCameraCutsceneKey.INTERPOLATION_FUNCTIONS, function (a, b)
+CoreZoomCameraCutsceneKey.refresh_control_for_interpolation = CoreCutsceneKeyBase:standard_combo_box_control_refresh("interpolation", table.map_keys(CoreZoomCameraCutsceneKey.INTERPOLATION_FUNCTIONS, function(a, b)
 	return a == "Linear" or a < b
 end))
 CoreZoomCameraCutsceneKey.refresh_control_for_interpolation_bias = CoreCutsceneKeyBase:standard_percentage_slider_control_refresh("interpolation_bias")

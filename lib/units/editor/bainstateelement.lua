@@ -13,6 +13,7 @@ function BainStateElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local state = EWS:CheckBox(panel, "Bain state", "")
 
 	state:set_value(self._hed.state)
@@ -22,11 +23,11 @@ function BainStateElement:_build_panel(panel, panel_sizer)
 	})
 	panel_sizer:add(state, 0, 0, "EXPAND")
 
-	local help = {
-		text = "Sets if bain should speak or not.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Sets if bain should speak or not."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

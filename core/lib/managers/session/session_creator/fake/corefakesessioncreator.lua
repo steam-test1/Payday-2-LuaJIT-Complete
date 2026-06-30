@@ -4,6 +4,7 @@ core:import("CoreFakeSession")
 Creator = Creator or class()
 
 function Creator:init()
+	return
 end
 
 function Creator:create_session(session_info, player_slots)

@@ -1,5 +1,6 @@
 function CoreEditor:build_marker_panel()
 	self._marker_panel = EWS:Panel(self._ews_editor_frame, "Markers", "TAB_TRAVERSAL")
+
 	local marker_sizer = EWS:BoxSizer("VERTICAL")
 
 	self._marker_panel:set_sizer(marker_sizer)
@@ -22,6 +23,7 @@ function CoreEditor:build_marker_panel()
 	marker_sizer:add(btn_sizer, 0, 0, "EXPAND")
 
 	local marker_list_sizer = EWS:BoxSizer("VERTICAL")
+
 	self._ews_markers = EWS:ListBox(self._marker_panel, "_markers", "LB_SINGLE,LB_HSCROLL,LB_NEEDED_SB,LB_SORT")
 
 	marker_list_sizer:add(self._ews_markers, 0, 0, "EXPAND")

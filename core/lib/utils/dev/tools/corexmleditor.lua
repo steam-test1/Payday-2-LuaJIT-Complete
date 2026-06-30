@@ -13,7 +13,7 @@ function CoreXMLEditor:on_check_news()
 end
 
 function CoreXMLEditor:check_news(new_only)
-	local news = nil
+	local news
 
 	if new_only then
 		news = managers.news:get_news("xml_editor", self._main_frame_table._main_frame)
@@ -22,7 +22,7 @@ function CoreXMLEditor:check_news(new_only)
 	end
 
 	if news then
-		local str = nil
+		local str
 
 		for _, n in ipairs(news) do
 			if not str then
@@ -53,9 +53,8 @@ function CoreXMLEditor:check_open()
 end
 
 function CoreXMLEditor:create_main_frame()
-	self._main_frame_table = {
-		_main_frame = EWS:Frame("XML Editor", Vector3(-1, -1, 0), Vector3(1000, 800, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
-	}
+	self._main_frame_table = {}
+	self._main_frame_table._main_frame = EWS:Frame("XML Editor", Vector3(-1, -1, 0), Vector3(1000, 800, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
 
 	self._main_frame_table._main_frame:set_icon(CoreEWS.image_path("xml_editor_16x16.png"))
 
@@ -90,8 +89,11 @@ function CoreXMLEditor:create_main_frame()
 	self._main_frame_table._main_frame:connect("", "EVT_CLOSE_WINDOW", callback(self, self, "on_close"), "")
 
 	local main_box = EWS:BoxSizer("VERTICAL")
+
 	self._main_frame_table._main_panel = EWS:Panel(self._main_frame_table._main_frame, "", "")
+
 	local panel_box = EWS:BoxSizer("VERTICAL")
+
 	self._main_frame_table._edit_text_ctrl = EWS:TextCtrl(self._main_frame_table._main_panel, "", "", "TE_MULTILINE")
 
 	panel_box:add(self._main_frame_table._edit_text_ctrl, 1, 0, "EXPAND")
@@ -143,6 +145,7 @@ function CoreXMLEditor:on_save()
 	elseif self._current_node:try_read_xml(self._main_frame_table._edit_text_ctrl:get_value()) then
 		local entry_type = self._current_entry:type()
 		local entry_name = self._current_entry:name()
+
 		self._current_node = Node("new_node")
 
 		self._current_node:read_xml(self._main_frame_table._edit_text_ctrl:get_value())
@@ -266,8 +269,10 @@ CoreXMLEditorNewDialog = CoreXMLEditorNewDialog or class()
 
 function CoreXMLEditorNewDialog:init(p)
 	self._dialog = EWS:Dialog(p, "Create New Entry", "", Vector3(-1, -1, 0), Vector3(200, 86, 0), "CAPTION,SYSTEM_MENU")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._type_text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._type_text_ctrl:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_set_button"), "")
@@ -280,6 +285,7 @@ function CoreXMLEditorNewDialog:init(p)
 	box:add(text_box, 0, 4, "ALL,EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._set = EWS:Button(self._dialog, "Create", "", "")
 
 	self._set:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_set_button"), "")
@@ -304,6 +310,7 @@ function CoreXMLEditorNewDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val

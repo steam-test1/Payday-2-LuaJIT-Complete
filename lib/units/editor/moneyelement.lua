@@ -43,11 +43,11 @@ function MoneyUnitElement:_build_panel(panel, panel_sizer)
 	self._toggle_local:set_value(self._hed.only_local_player)
 	self:_build_value_checkbox(panel, panel_sizer, "remove_all", "Remove all spending/offshore if deducting.", "Remove all when deducting.")
 
-	local help = {
-		text = "Used to add or deduct money from the player's spending cash or offshore account.\nEnable \"only if local player is instigator\" if the player activates this, instead of a mission script. ie. offshore gambling",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Used to add or deduct money from the player's spending cash or offshore account.\nEnable \"only if local player is instigator\" if the player activates this, instead of a mission script. ie. offshore gambling"
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

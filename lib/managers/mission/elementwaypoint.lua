@@ -36,8 +36,8 @@ function ElementWaypoint:on_executed(instigator)
 
 		managers.hud:add_waypoint(self._id, {
 			distance = true,
-			state = "sneak_present",
 			present_timer = 0,
+			state = "sneak_present",
 			text = text,
 			icon = self._values.icon,
 			position = self._values.position

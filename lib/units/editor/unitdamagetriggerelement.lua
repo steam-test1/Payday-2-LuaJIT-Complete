@@ -52,8 +52,8 @@ function UnitDamageTriggerUnitElement:update_selected()
 			self._units[id] = nil
 		else
 			local params = {
-				g = 0,
 				b = 0,
+				g = 0,
 				r = 1,
 				from_unit = unit,
 				to_unit = self._unit
@@ -88,8 +88,8 @@ function UnitDamageTriggerUnitElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._units) do
 		local params = {
-			g = 0,
 			b = 0,
+			g = 0,
 			r = 0.5,
 			from_unit = unit,
 			to_unit = self._unit

@@ -6,20 +6,20 @@ function NetworkFriendsPSN:init()
 	self._friends = {}
 	self._callback = {}
 	self._updated_list_friends = PSN:update_list_friends()
-	self._last_info = {
-		friends = 0,
-		friends_map = {},
-		friends_status_map = {}
-	}
+	self._last_info = {}
+	self._last_info.friends = 0
+	self._last_info.friends_map = {}
+	self._last_info.friends_status_map = {}
 
-	PSN:set_matchmaking_callback("friends_updated", function ()
+	PSN:set_matchmaking_callback("friends_updated", function()
 		managers.network.friends:psn_update_friends()
 	end)
 	PSN:update_async_friends(true, 20)
 end
 
 function NetworkFriendsPSN:destroy()
-	PSN:set_matchmaking_callback("friends_updated", function ()
+	PSN:set_matchmaking_callback("friends_updated", function()
+		return
 	end)
 	PSN:update_async_friends(false, 20)
 end
@@ -47,7 +47,7 @@ function NetworkFriendsPSN:call_silent_callback(func, ...)
 end
 
 function NetworkFriendsPSN:get_friends_list()
-	return self._friends
+	do return self._friends end
 
 	local npids = {}
 	local friends = PSN:get_list_friends()
@@ -105,6 +105,7 @@ function NetworkFriendsPSN:get_friends()
 	end
 
 	self._friends = {}
+
 	local name = managers.network.account:player_id()
 	local friends = PSN:get_list_friends()
 
@@ -119,6 +120,7 @@ function NetworkFriendsPSN:get_friends()
 			if tostring(v.friend) ~= name then
 				local online_status = "not_signed_in"
 				local info_mod = 1
+
 				self._last_info.friends_status_map[tostring(v.friend)] = v.status * info_mod
 
 				if managers.network.matchmake:user_in_lobby(v.friend) then
@@ -151,9 +153,11 @@ function NetworkFriendsPSN:register_callback(event, callback)
 end
 
 function NetworkFriendsPSN:send_friend_request(nickname)
+	return
 end
 
 function NetworkFriendsPSN:remove_friend(id)
+	return
 end
 
 function NetworkFriendsPSN:has_builtin_screen()
@@ -161,9 +165,11 @@ function NetworkFriendsPSN:has_builtin_screen()
 end
 
 function NetworkFriendsPSN:accept_friend_request(player_id)
+	return
 end
 
 function NetworkFriendsPSN:ignore_friend_request(player_id)
+	return
 end
 
 function NetworkFriendsPSN:num_pending_friend_requests()
@@ -171,6 +177,7 @@ function NetworkFriendsPSN:num_pending_friend_requests()
 end
 
 function NetworkFriendsPSN:debug_update(t, dt)
+	return
 end
 
 function NetworkFriendsPSN:psn_disconnected()

@@ -27,13 +27,12 @@ function MousePointerManager:_setup_mouse_pointer(ws)
 
 	if not self._mouse_pointers[ws:key()] then
 		local src_width, src_height = self._ws:panel():size()
-		local x = src_width / 2
-		local y = src_height / 2
+		local x, y = src_width / 2, src_height / 2
 		local mouse = self._ws:panel():panel({
-			name = "mouse",
 			h = 23,
-			w = 19,
+			name = "mouse",
 			name_s = "mouse",
+			w = 19,
 			x = x,
 			y = y,
 			layer = tweak_data.gui.MOUSE_LAYER
@@ -45,13 +44,13 @@ function MousePointerManager:_setup_mouse_pointer(ws)
 		end
 
 		mouse:bitmap({
-			texture = "guis/textures/mouse_pointer",
-			name = "pointer",
 			h = 23,
+			name = "pointer",
 			rotation = 360,
+			texture = "guis/textures/mouse_pointer",
 			w = 19,
-			y = -2,
 			x = -7,
+			y = -2,
 			texture_rect = {
 				0,
 				0,
@@ -129,6 +128,7 @@ end
 
 function MousePointerManager:get_id()
 	local id = "mouse_pointer_id" .. tostring(self._id)
+
 	self._id = self._id + 1
 
 	return id
@@ -228,7 +228,7 @@ function MousePointerManager:use_mouse(params, position)
 end
 
 function MousePointerManager:remove_mouse(id)
-	local index = nil
+	local index
 	local removed = false
 
 	if id then

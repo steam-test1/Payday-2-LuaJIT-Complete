@@ -15,6 +15,7 @@ function ElementCinematicCamera:on_script_activated()
 end
 
 function ElementCinematicCamera:client_on_executed(...)
+	return
 end
 
 function ElementCinematicCamera:on_executed(instigator, alternative, ...)

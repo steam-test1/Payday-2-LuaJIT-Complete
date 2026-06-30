@@ -12,6 +12,7 @@ function InSessionEnd:init(session)
 end
 
 function InSessionEnd:destroy()
+	return
 end
 
 function InSessionEnd:transition()

@@ -3,6 +3,7 @@ require("lib/managers/menu/BoxGuiObject")
 require("lib/managers/menu/SkirmishBriefingProgress")
 
 SkirmishSelectInfoMenuComponent = SkirmishSelectInfoMenuComponent or class()
+
 local padding = 10
 
 function SkirmishSelectInfoMenuComponent:init(ws, fullscreen_ws, node)
@@ -14,6 +15,7 @@ function SkirmishSelectInfoMenuComponent:init(ws, fullscreen_ws, node)
 	self._fullscreen_panel = fullscreen_ws:panel():panel({
 		layer = 1100
 	})
+
 	local main_panel = ExtendedPanel:new(self._panel, {
 		w = self._panel:w() * 0.45 - padding,
 		h = self._panel:h() * 0.7
@@ -96,7 +98,7 @@ function SkirmishSelectInfoMenuComponent:init(ws, fullscreen_ws, node)
 		w = progress_width + 4,
 		color = base_color
 	})
-	local wave_number, wave_progress, card, arrow, indicator, number, color, cx = nil
+	local wave_number, wave_progress, card, arrow, indicator, number, color, cx
 
 	for i = 0, wave_diff do
 		wave_number = start_wave + i
@@ -106,8 +108,8 @@ function SkirmishSelectInfoMenuComponent:init(ws, fullscreen_ws, node)
 
 		if tweak_data.skirmish.additional_lootdrops[wave_number] then
 			card = skirmish_progress_panel:bitmap({
-				w = 26,
 				h = 36,
+				w = 26,
 				texture = card_texture,
 				texture_rect = card_texture_rect
 			})
@@ -116,8 +118,8 @@ function SkirmishSelectInfoMenuComponent:init(ws, fullscreen_ws, node)
 
 			arrow = skirmish_progress_panel:bitmap({
 				h = 6,
-				w = 12,
 				rotation = 180,
+				w = 12,
 				texture = arrow_texture,
 				texture_rect = arrow_texture_rect,
 				color = color
@@ -128,8 +130,8 @@ function SkirmishSelectInfoMenuComponent:init(ws, fullscreen_ws, node)
 		end
 
 		indicator = skirmish_progress_panel:rect({
-			w = 4,
 			laer = 1,
+			w = 4,
 			y = progress_bar:top() - 4,
 			h = i == 0 and progress_bar:h() + 4 or 4,
 			color = color
@@ -190,7 +192,7 @@ function SkirmishSelectInfoMenuComponent:init(ws, fullscreen_ws, node)
 		color = tweak_data.screen_colors.text
 	})
 	local text_width_diff = math.abs(experience_text:width() - ransom_text:width())
-	local is_ransom_widest = experience_text:width() < ransom_text:width()
+	local is_ransom_widest = ransom_text:width() > experience_text:width()
 
 	wave_placer:new_row(0, 10)
 	wave_placer:add_row(experience_text)

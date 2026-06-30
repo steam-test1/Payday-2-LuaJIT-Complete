@@ -49,6 +49,7 @@ function CoreHubElement:_createicon()
 	self._icon_gui:preload("core/guis/core_edit_icon")
 
 	local pos = self._unit:position() - Vector3(iconsize / 2, iconsize / 2, 0)
+
 	self._icon_ws = self._icon_gui:create_linked_workspace(64, 64, root, pos, Vector3(iconsize, 0, 0), Vector3(0, iconsize, 0))
 
 	self._icon_ws:set_billboard(self._icon_ws.BILLBOARD_BOTH)
@@ -129,24 +130,31 @@ function CoreHubElement:set_element_data(data)
 end
 
 function CoreHubElement:selected()
+	return
 end
 
 function CoreHubElement:update_selected()
+	return
 end
 
 function CoreHubElement:update_unselected()
+	return
 end
 
 function CoreHubElement:begin_editing()
+	return
 end
 
 function CoreHubElement:end_editing()
+	return
 end
 
 function CoreHubElement:clone_data()
+	return
 end
 
 function CoreHubElement:layer_finished()
+	return
 end
 
 function CoreHubElement:action_type()
@@ -240,6 +248,7 @@ function CoreHubElement:name()
 end
 
 function CoreHubElement:load_data(data)
+	return
 end
 
 function CoreHubElement:get_color(type)
@@ -256,28 +265,30 @@ end
 
 function CoreHubElement:draw_connections_selected()
 	for _, hub in ipairs(self._hed.hubs) do
-		local r = 1
-		local g = 0.6
-		local b = 0.2
+		local r, g, b = 1, 0.6, 0.2
 
 		self:draw_arrow(self._unit, hub, r, g, b, true)
 	end
 end
 
 function CoreHubElement:draw_connections_unselected()
+	return
 end
 
 function CoreHubElement:draw_arrow(from, to, r, g, b, thick)
 	self._arrow_brush:set_color(Color(r, g, b))
 
 	local mul = 1.2
+
 	r = math.clamp(r * mul, 0, 1)
 	g = math.clamp(g * mul, 0, 1)
 	b = math.clamp(b * mul, 0, 1)
 	from = from:position()
 	to = to:position()
+
 	local len = (from - to):length()
 	local dir = (to - from):normalized()
+
 	len = len - 50
 
 	if thick then
@@ -292,6 +303,7 @@ function CoreHubElement:draw_arrow(from, to, r, g, b, thick)
 end
 
 function CoreHubElement:clear()
+	return
 end
 
 function CoreHubElement:action_types()
@@ -303,9 +315,11 @@ function CoreHubElement:timeline_color()
 end
 
 function CoreHubElement:add_triggers()
+	return
 end
 
 function CoreHubElement:clear_triggers()
+	return
 end
 
 function CoreHubElement:widget_affect_object()
@@ -317,9 +331,11 @@ function CoreHubElement:use_widget_position()
 end
 
 function CoreHubElement:set_enabled()
+	return
 end
 
 function CoreHubElement:set_disabled()
+	return
 end
 
 function CoreHubElement:set_update_selected_on(value)

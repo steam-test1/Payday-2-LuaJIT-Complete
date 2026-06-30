@@ -7,6 +7,7 @@ function CoreMaterialEditorTexture:init(parent, editor, parameter_info, paramete
 	CoreMaterialEditorParameter.init(self, parent, editor, parameter_info, parameter_node)
 
 	local text = self._value .. (self._global_texture and " (Global)" or "")
+
 	self._text = EWS:TextCtrl(self._right_panel, text, "", "TE_READONLY")
 
 	self._text:set_background_colour((EWS:get_system_colour("3DFACE") * 255):unpack())
@@ -20,6 +21,7 @@ function CoreMaterialEditorTexture:init(parent, editor, parameter_info, paramete
 end
 
 function CoreMaterialEditorTexture:update(t, dt)
+	return
 end
 
 function CoreMaterialEditorTexture:destroy()
@@ -85,7 +87,7 @@ function CoreMaterialEditorTexture:on_pick_global_texture()
 end
 
 function CoreMaterialEditorTexture:_on_browse()
-	local current_path = nil
+	local current_path
 
 	if self._value then
 		current_path = string.match(self._value, ".*/")

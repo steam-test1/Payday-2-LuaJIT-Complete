@@ -8,7 +8,7 @@ function ModifierMedicRage:OnEnemyDied(unit)
 		return
 	end
 
-	local base_ext = nil
+	local base_ext
 	local medics = managers.enemy:find_nearby_affiliated_medics(unit)
 	local buff_name = self:value("damage_buff_name") or "base_damage"
 	local buff_value = self:value("damage") * 0.01

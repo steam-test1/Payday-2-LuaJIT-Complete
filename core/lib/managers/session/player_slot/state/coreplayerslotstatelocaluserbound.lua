@@ -8,6 +8,7 @@ function LocalUserBound:init(local_user)
 end
 
 function LocalUserBound:destroy()
+	return
 end
 
 function LocalUserBound:transition()

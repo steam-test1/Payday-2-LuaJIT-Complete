@@ -28,8 +28,8 @@ function WaitingForPlayersCamera:_setup_sound_listener()
 
 	self._listener_activation_id = managers.listener:activate_set("main", "wait_camera")
 	self._sound_check_object = managers.sound_environment:add_check_object({
-		primary = true,
 		active = true,
+		primary = true,
 		object = self._unit:orientation_object()
 	})
 end
@@ -58,7 +58,7 @@ end
 function WaitingForPlayersCamera:update(unit, t, dt)
 	if self._playing then
 		if self._wait_t then
-			if self._wait_t < t then
+			if t > self._wait_t then
 				self._wait_t = nil
 
 				self:stop()

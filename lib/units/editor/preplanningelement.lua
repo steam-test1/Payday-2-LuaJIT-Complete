@@ -84,6 +84,7 @@ function PrePlanningExecuteGroupUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local location_group_params = {
 		name = "Location Groups To Activate (Spawn):",
 		tooltip = "Select location groups to activate (spawn) on element execute",

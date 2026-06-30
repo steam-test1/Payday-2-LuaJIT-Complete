@@ -8,7 +8,9 @@ end
 
 function PlayerHandStateMelee:_spawn_melee_unit()
 	local melee_entry = managers.blackmarket:equipped_melee_weapon()
+
 	self._melee_entry = melee_entry
+
 	local unit_name = tweak_data.blackmarket.melee_weapons[melee_entry].unit
 
 	if unit_name then
@@ -16,14 +18,10 @@ function PlayerHandStateMelee:_spawn_melee_unit()
 			"a_weapon_left"
 		}
 		local graphic_objects = tweak_data.blackmarket.melee_weapons[melee_entry].graphic_objects or {}
-		local align = nil
+		local align
 
 		if #aligns > 1 then
-			if self._hsm:hand_id() == 1 then
-				align = "a_weapon_right"
-			else
-				align = "a_weapon_left"
-			end
+			align = self._hsm:hand_id() == 1 and "a_weapon_right" or "a_weapon_left"
 
 			if not table.contains(aligns, align) then
 				Application:error("[PlayerHandStateMelee:_spawn_melee_unit] can't spawn melee weapon in this hand", melee_entry, self._hand_unit)
@@ -35,6 +33,7 @@ function PlayerHandStateMelee:_spawn_melee_unit()
 		end
 
 		local align_obj = self._hand_unit:get_object(Idstring("g_glove"))
+
 		self._melee_unit = World:spawn_unit(Idstring(unit_name), align_obj:position(), align_obj:rotation())
 
 		self._hand_unit:link(align_obj:name(), self._melee_unit, self._melee_unit:orientation_object():name())

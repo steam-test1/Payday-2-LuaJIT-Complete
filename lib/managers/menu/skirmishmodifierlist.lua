@@ -5,11 +5,13 @@ function SkirmishModifierList:init(parent, config)
 	local v_padding = 5
 	local scrollbar_padding = 10
 	local panel = parent:panel(config)
+
 	self._scroll = ScrollablePanel:new(panel, "scroll_area", {
-		padding = 0,
 		force_scroll_indicators = true,
-		layer = 1
+		layer = 1,
+		padding = 0
 	})
+
 	local modifiers = config.modifiers
 	local font = config.font or tweak_data.menu.pd2_small_font
 	local font_size = config.font_size or tweak_data.menu.pd2_small_font_size
@@ -24,9 +26,9 @@ function SkirmishModifierList:init(parent, config)
 		})
 		local icon_tweak = tweak_data.hud_icons[modifier_tweak.icon]
 		local modifier_icon = modifier_panel:bitmap({
-			name = "modifier_icon",
 			h = 40,
 			layer = 1,
+			name = "modifier_icon",
 			w = 40,
 			texture = icon_tweak.texture,
 			texture_rect = icon_tweak.texture_rect,
@@ -34,12 +36,12 @@ function SkirmishModifierList:init(parent, config)
 		})
 		local description_width = modifier_panel:width() - modifier_icon:width() - 5 - h_padding * 2 - scrollbar_padding
 		local modifier_desc = modifier_panel:text({
-			vertical = "center",
-			name = "modifier_desc",
-			wrap = true,
-			word_wrap = true,
 			alpha = 0.8,
 			layer = 1,
+			name = "modifier_desc",
+			vertical = "center",
+			word_wrap = true,
+			wrap = true,
 			text = managers.localization:text(modifier_class.desc_id, modifier_tweak.data),
 			font = font,
 			font_size = font_size,
@@ -49,6 +51,7 @@ function SkirmishModifierList:init(parent, config)
 			w = description_width
 		})
 		local _, _, _, h = modifier_desc:text_rect()
+
 		h = math.max(h, modifier_icon:height()) + v_padding * 2
 
 		modifier_desc:set_height(h - v_padding * 2)

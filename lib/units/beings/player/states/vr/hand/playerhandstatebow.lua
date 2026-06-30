@@ -73,6 +73,7 @@ end
 
 function PlayerHandStateBow:_check_string_haptic(progress)
 	local haptic_granularity = 0.04
+
 	progress = math.sin(math.deg(progress))
 
 	if not self._last_progress or haptic_granularity < math.abs(progress - self._last_progress) then
@@ -150,8 +151,7 @@ function PlayerHandStateBow:update(t, dt)
 
 					mvector3.negate(hand_to_hand)
 
-					local min = 10
-					local max = 50
+					local min, max = 10, 50
 
 					if offset and offset.string_distance then
 						min, max = unpack(offset.string_distance)
@@ -162,8 +162,7 @@ function PlayerHandStateBow:update(t, dt)
 					self._weapon_unit:base():set_charge_multiplier(progress)
 					self:_check_string_haptic(progress)
 
-					local pos = string_obj:position()
-					local rot = self._weapon_unit:rotation()
+					local pos, rot = string_obj:position(), self._weapon_unit:rotation()
 
 					if offset and offset.position then
 						pos = pos + offset.position:rotate_with(self._weapon_unit:rotation())

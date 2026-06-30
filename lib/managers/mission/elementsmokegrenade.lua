@@ -7,6 +7,7 @@ function ElementSmokeGrenade:init(...)
 end
 
 function ElementSmokeGrenade:client_on_executed(...)
+	return
 end
 
 function ElementSmokeGrenade:on_executed(instigator)

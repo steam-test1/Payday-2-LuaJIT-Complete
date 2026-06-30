@@ -8,6 +8,7 @@ function GameState:init(name, game_state_machine)
 end
 
 function GameState:destroy()
+	return
 end
 
 function GameState:name()
@@ -19,9 +20,11 @@ function GameState:gsm()
 end
 
 function GameState:at_enter(previous_state)
+	return
 end
 
 function GameState:at_exit(next_state)
+	return
 end
 
 function GameState:default_transition(next_state)

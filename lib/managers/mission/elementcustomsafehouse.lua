@@ -21,7 +21,7 @@ function ElementCustomSafehouseFilter:on_executed(instigator)
 		return
 	end
 
-	local room_tier = nil
+	local room_tier
 
 	if self:value("tier_check") == "current" then
 		room_tier = managers.custom_safehouse:get_room_current_tier(self:value("room_id"))
@@ -48,7 +48,7 @@ function ElementCustomSafehouseFilter:_check_value(value)
 	end
 
 	if check_type == "greater_or_equal" then
-		return self._tier_value <= value
+		return value >= self._tier_value
 	end
 
 	if check_type == "less_than" then
@@ -56,7 +56,7 @@ function ElementCustomSafehouseFilter:_check_value(value)
 	end
 
 	if check_type == "greater_than" then
-		return self._tier_value < value
+		return value > self._tier_value
 	end
 end
 
@@ -110,6 +110,7 @@ function ElementCustomSafehouseAwardTrophy:on_executed(instigator)
 
 	if self:value("award_instigator") and type(instigator) == "userdata" and alive(instigator) then
 		local local_player = managers.player:local_player()
+
 		award_trophy = alive(local_player) and local_player == instigator
 
 		if not award_trophy then
@@ -119,8 +120,6 @@ function ElementCustomSafehouseAwardTrophy:on_executed(instigator)
 				if seat and seat.driving then
 					award_trophy = true
 				end
-			elseif false then
-				-- Nothing
 			end
 		end
 	end

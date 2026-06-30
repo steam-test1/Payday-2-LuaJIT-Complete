@@ -13,6 +13,7 @@ end
 function PoisonGasGrenade:_setup_from_tweak_data()
 	local grenade_entry = self:projectile_entry()
 	local tweak_entry = tweak_data.projectiles[grenade_entry]
+
 	self._mass_look_up_modifier = tweak_entry.mass_look_up_modifier
 	self._range = tweak_entry.range
 	self._effect_name = tweak_entry.effect_name or "effects/payday2/particles/explosions/grenade_explosion"
@@ -22,7 +23,9 @@ function PoisonGasGrenade:_setup_from_tweak_data()
 	self._alert_radius = tweak_entry.alert_radius
 	self._idstr_decal = tweak_entry.idstr_decal
 	self._idstr_effect = tweak_entry.idstr_effect
+
 	local sound_event = tweak_entry.sound_event or "grenade_explode"
+
 	self._custom_params = {
 		camera_shake_max_mul = 4,
 		sound_muffle_effect = true,
@@ -94,6 +97,7 @@ function PoisonGasGrenade:_detonate(tag, unit, body, other_unit, other_body, pos
 end
 
 function PoisonGasGrenade:bullet_hit()
+	return
 end
 
 function PoisonGasGrenade:_detonate_on_client()
@@ -127,12 +131,12 @@ end
 function PoisonGasGrenade:save(data)
 	PoisonGasGrenade.super.save(self, data)
 
-	local state = {
-		timer = self._timer,
-		detonated = self._detonated,
-		projectile_entry = self._projectile_entry,
-		has_trail_effect = self._added_trail_effect
-	}
+	local state = {}
+
+	state.timer = self._timer
+	state.detonated = self._detonated
+	state.projectile_entry = self._projectile_entry
+	state.has_trail_effect = self._added_trail_effect
 	data.PoisonGasGrenade = state
 end
 
@@ -140,6 +144,7 @@ function PoisonGasGrenade:load(data)
 	PoisonGasGrenade.super.load(self, data)
 
 	local state = data.PoisonGasGrenade
+
 	self._timer = state.timer
 	self._detonated = state.detonated
 	self._projectile_entry = state.projectile_entry

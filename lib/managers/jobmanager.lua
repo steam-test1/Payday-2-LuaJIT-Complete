@@ -78,7 +78,9 @@ function JobManager:accumulate_ghost_bonus()
 
 		if stage_success and ghost_success then
 			ghost_data.bonus = Application:digest_value(ghost_bonus, true)
+
 			local bonus = Application:digest_value(agb.bonus, false) + ghost_bonus
+
 			self._global.accumulated_ghost_bonus.bonus = Application:digest_value(bonus, true)
 		else
 			ghost_data.bonus = Application:digest_value(0, true)
@@ -120,10 +122,10 @@ function JobManager:get_accumulated_ghost_bonus()
 	end
 
 	local agb = self._global.accumulated_ghost_bonus
-	local accumulated = {
-		job_id = agb.job_id,
-		bonus = Application:digest_value(agb.bonus, false)
-	}
+	local accumulated = {}
+
+	accumulated.job_id = agb.job_id
+	accumulated.bonus = Application:digest_value(agb.bonus, false)
 
 	for i, level_data in ipairs(agb) do
 		table.insert(accumulated, {
@@ -237,7 +239,7 @@ function JobManager:get_job_ghost_bonus(job_id)
 	end
 
 	if tweak_data.narrative:has_job_wrapper(job_id) then
-		local min_ghost_bonus, max_ghost_bonus, min_bonus, max_bonus = nil
+		local min_ghost_bonus, max_ghost_bonus, min_bonus, max_bonus
 
 		for i, wrapped_job_id in ipairs(tweak_data.narrative.jobs[job_id].job_wrapper) do
 			min_bonus, max_bonus = self:get_job_ghost_bonus(wrapped_job_id)
@@ -281,11 +283,11 @@ function JobManager:get_job_ghost_bonus(job_id)
 		return c and math.max(a, b) or a + b
 	end
 
-	local min_ghost_bonus, max_ghost_bonus = nil
+	local min_ghost_bonus, max_ghost_bonus
 
 	for _, level_data in ipairs(chain) do
 		if #level_data > 0 then
-			local min_bonus, max_bonus = nil
+			local min_bonus, max_bonus
 
 			for _, alt_level_data in ipairs(level_data) do
 				local bonus = self:_is_level_ghostable(tweak_data.levels[alt_level_data.level_id])
@@ -329,8 +331,10 @@ end
 
 function JobManager:_setup_job_heat()
 	local heat = {}
+
 	Global.job_manager.heat = heat
-	local job_data, is_wrapped_to_job, is_ignore_heat = nil
+
+	local job_data, is_wrapped_to_job, is_ignore_heat
 
 	for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
 		job_data = tweak_data.narrative:job_data(job_id, true)
@@ -367,7 +371,9 @@ end
 
 function JobManager:_setup_heat_job_containers()
 	local containers = {}
+
 	Global.job_manager.heat_containers = containers
+
 	local num_containers = #tweak_data.narrative.MAX_JOBS_IN_CONTAINERS
 	local step = self.JOB_HEAT_MAX_VALUE * 2 / num_containers
 
@@ -391,9 +397,9 @@ function JobManager:_chk_fill_heat_containers()
 		})
 	end
 
-	local xh, yh = nil
+	local xh, yh
 
-	table.sort(all_jobs, function (x, y)
+	table.sort(all_jobs, function(x, y)
 		xh = x.heat
 		yh = y.heat
 
@@ -412,7 +418,7 @@ function JobManager:_chk_fill_heat_containers()
 		local add_last = true
 
 		for i, container in ipairs(jobs_in_containers) do
-			if job_data.heat <= container.heat then
+			if container.heat >= job_data.heat then
 				table.insert(jobs_in_containers[i], job_data)
 
 				add_last = false
@@ -438,8 +444,9 @@ function JobManager:_chk_fill_heat_containers()
 
 			if max_jobs and max_jobs < #container then
 				reached_end = false
+
 				local num_to_move = #container - max_jobs
-				local new_container = nil
+				local new_container
 
 				if heat < 0 then
 					new_container = jobs_in_containers[index + 1]
@@ -467,6 +474,7 @@ function JobManager:_chk_fill_heat_containers()
 	end
 
 	self._global.heat_containers = {}
+
 	local prev_heat = -100
 
 	for index, container in ipairs(jobs_in_containers) do
@@ -535,11 +543,13 @@ function JobManager:heat_to_experience_value(heat)
 	if heat < 0 then
 		local equation = "-0.00032*math.pow(x,3) - 0.0481*math.pow(x,2) - 0.6*(x) + 100"
 		local heated_equation = string.gsub(equation, "x", tostring(heat))
+
 		value = math.clamp(loadstring("return " .. heated_equation)(), 0, 100)
 		value = math.clamp(value * (1 - tweak_data.narrative.FREEZING_MAX_XP_MUL) + 100 * tweak_data.narrative.FREEZING_MAX_XP_MUL, 0, 100)
 	elseif heat > 0 then
 		local equation = "(-0.00032*math.pow(x,3) + 0.048*math.pow(x,2) - 0.6*(x))"
 		local heated_equation = string.gsub(equation, "x", tostring(heat))
+
 		value = math.clamp(loadstring("return " .. heated_equation)(), 0, 100)
 		value = math.max(value * (tweak_data.narrative.HEATED_MAX_XP_MUL - 1), 0) + 100
 	end
@@ -579,10 +589,12 @@ function JobManager:heat_to_money_value(heat)
 	if heat < 0 then
 		local equation = "100"
 		local heated_equation = string.gsub(equation, "x", tostring(heat))
+
 		value = math.clamp(loadstring("return " .. heated_equation)(), 0, 100)
 	elseif heat > 0 then
 		local equation = "100"
 		local heated_equation = string.gsub(equation, "x", tostring(heat))
+
 		value = math.clamp(loadstring("return " .. heated_equation)(), 100, 200)
 	end
 
@@ -626,7 +638,7 @@ function JobManager:debug_heat_job(job_id)
 end
 
 function JobManager:_debug_spew_heat()
-	local job_id = nil
+	local job_id
 	local n = #tweak_data.narrative:get_jobs_index()
 	local spewed = {}
 
@@ -730,6 +742,7 @@ function JobManager:_check_add_heat_to_jobs(debug_job_id, ignore_debug_prints)
 
 	local cooling = job_heat_data and job_heat_data.this_job or tweak_data.narrative.DEFAULT_HEAT.this_job or 0
 	local heating = job_heat_data and job_heat_data.other_jobs or tweak_data.narrative.DEFAULT_HEAT.other_jobs or 0
+
 	self._last_known_heat = self._global.heat[current_job]
 
 	self:_change_job_heat(current_job, cooling, true)
@@ -833,8 +846,8 @@ function JobManager:plot_heat_graph(remove_only)
 	my_panel:set_position(math.round(my_panel:x()), math.round(my_panel:y()))
 
 	local border = my_panel:rect({
-		rotation = 360,
 		layer = 0,
+		rotation = 360,
 		color = Color.blue
 	})
 
@@ -843,8 +856,8 @@ function JobManager:plot_heat_graph(remove_only)
 		color = Color.black
 	})
 	my_panel:rect({
-		w = 1,
 		layer = 2,
+		w = 1,
 		color = Color.green,
 		h = my_panel:h()
 	}):set_x(my_panel:w() / 2)
@@ -857,39 +870,39 @@ function JobManager:plot_heat_graph(remove_only)
 
 	for i = 1, #self._global.heat_containers do
 		local container_line = my_panel:rect({
-			w = 1,
-			rotation = 360,
 			layer = 2,
+			rotation = 360,
+			w = 1,
 			color = Color.white,
 			h = my_panel:h()
 		})
 
-		container_line:set_x(my_panel:w() * i / #self._global.heat_containers + 1)
+		container_line:set_x(my_panel:w() * (i / #self._global.heat_containers) + 1)
 
 		local container = self._global.heat_containers[i]
 		local text = container.max_jobs and tostring(#container) .. "/" .. tostring(container.max_jobs) or tostring(#container)
 		local obj = my_panel:text({
-			y = 10,
 			align = "center",
 			layer = 3,
+			y = 10,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			text = text
 		})
 
-		obj:set_center_x(my_panel:w() * (i - 0.5) / #self._global.heat_containers)
+		obj:set_center_x(my_panel:w() * ((i - 0.5) / #self._global.heat_containers))
 		container_line:set_visible(i < #self._global.heat_containers)
 	end
 
 	local all_jobs = {}
 
 	for job_id, heat in pairs(self._global.heat) do
-		local x = (heat + self.JOB_HEAT_MAX_VALUE) * my_panel:w() / (self.JOB_HEAT_MAX_VALUE * 2)
+		local x = (heat + self.JOB_HEAT_MAX_VALUE) * (my_panel:w() / (self.JOB_HEAT_MAX_VALUE * 2))
 
 		my_panel:rect({
 			h = 2,
-			w = 2,
 			layer = 3,
+			w = 2,
 			color = Color.red,
 			x = x - 1,
 			y = math.random(30) + 30
@@ -900,11 +913,11 @@ function JobManager:plot_heat_graph(remove_only)
 	border:move(-1, -1)
 
 	local points = {}
-	local prev_y = nil
+	local prev_y
 
 	for i = -self.JOB_HEAT_MAX_VALUE, self.JOB_HEAT_MAX_VALUE do
-		local x = (i + self.JOB_HEAT_MAX_VALUE) * my_panel:w() / (self.JOB_HEAT_MAX_VALUE * 2)
-		local y = self:heat_to_experience_value(i) * my_panel:h() / 200
+		local x = (i + self.JOB_HEAT_MAX_VALUE) * (my_panel:w() / (self.JOB_HEAT_MAX_VALUE * 2))
+		local y = self:heat_to_experience_value(i) * (my_panel:h() / 200)
 
 		if prev_y and y < prev_y then
 			print("Previous value are higher!", "i=" .. tostring(i), "y=" .. tostring(y), "prev_y=" .. tostring(prev_y))
@@ -916,8 +929,8 @@ function JobManager:plot_heat_graph(remove_only)
 	end
 
 	my_panel:polyline({
-		line_width = 2,
 		layer = 3,
+		line_width = 2,
 		color = Color.red,
 		points = points
 	})
@@ -926,8 +939,8 @@ function JobManager:plot_heat_graph(remove_only)
 	prev_y = nil
 
 	for i = -self.JOB_HEAT_MAX_VALUE, self.JOB_HEAT_MAX_VALUE do
-		local x = (i + self.JOB_HEAT_MAX_VALUE) * my_panel:w() / (self.JOB_HEAT_MAX_VALUE * 2)
-		local y = self:heat_to_money_value(i) * my_panel:h() / 200
+		local x = (i + self.JOB_HEAT_MAX_VALUE) * (my_panel:w() / (self.JOB_HEAT_MAX_VALUE * 2))
+		local y = self:heat_to_money_value(i) * (my_panel:h() / 200)
 
 		if prev_y and y < prev_y then
 			print("Previous value are higher!", "i=" .. tostring(i), "y=" .. tostring(y), "prev_y=" .. tostring(prev_y))
@@ -1023,10 +1036,10 @@ function JobManager:get_job_christmas_bonus(job_id)
 end
 
 function JobManager:save(data)
-	local save_data = {
-		heat = deep_clone(Global.job_manager.heat),
-		ghost_bonus = Application:digest_value(Global.job_manager.saved_ghost_bonus, false)
-	}
+	local save_data = {}
+
+	save_data.heat = deep_clone(Global.job_manager.heat)
+	save_data.ghost_bonus = Application:digest_value(Global.job_manager.saved_ghost_bonus, false)
 	data.job_manager = save_data
 end
 
@@ -1039,7 +1052,7 @@ function JobManager:load(data)
 			Application:error("[JobManager:load] Job heat should already be setup'd!")
 		end
 
-		local job_data, is_wrapped_to_job, is_ignore_heat = nil
+		local job_data, is_wrapped_to_job, is_ignore_heat
 
 		for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
 			if not self._global.heat[job_id] then
@@ -1061,7 +1074,7 @@ function JobManager:load(data)
 		end
 
 		local invalid_jobs = {}
-		local job_index = nil
+		local job_index
 
 		for job_id, heat in pairs(self._global.heat) do
 			job_data = tweak_data.narrative:job_data(job_id, true)
@@ -1175,7 +1188,7 @@ function JobManager:activate_job(job_id, current_stage)
 	end
 
 	if job.job_wrapper then
-		local wrapped_job_id = nil
+		local wrapped_job_id
 
 		if job.wrapper_weights then
 			local total_weight = 0
@@ -1202,7 +1215,7 @@ function JobManager:activate_job(job_id, current_stage)
 		return self:activate_job(wrapped_job_id, current_stage)
 	end
 
-	local job_wrapper_id = nil
+	local job_wrapper_id
 	local wrapped_job_id = job_id
 
 	while tweak_data.narrative:is_wrapped_to_job(wrapped_job_id) do
@@ -1236,9 +1249,9 @@ end
 function JobManager:activate_temporary_job(job_id, level_id)
 	self._global.current_job = {
 		current_stage = 1,
+		last_completed_stage = 0,
 		stages = 1,
 		temporary = true,
-		last_completed_stage = 0,
 		job_id = job_id,
 		level_id = level_id
 	}
@@ -1706,7 +1719,7 @@ function JobManager:check_ok_with_cooldown(job_id)
 		return true
 	end
 
-	return self._global.cooldown[job_id] < TimerManager:wall_running():time()
+	return TimerManager:wall_running():time() > self._global.cooldown[job_id]
 end
 
 function JobManager:_check_add_to_cooldown()
@@ -1721,13 +1734,14 @@ function JobManager:_check_add_to_cooldown()
 end
 
 function JobManager:sync_save(data)
-	local state = {
-		next_interupt_stage = self._global.next_interupt_stage
-	}
+	local state = {}
+
+	state.next_interupt_stage = self._global.next_interupt_stage
 	data.JobManager = state
 end
 
 function JobManager:sync_load(data)
 	local state = data.JobManager
+
 	self._global.next_interupt_stage = state.next_interupt_stage
 end

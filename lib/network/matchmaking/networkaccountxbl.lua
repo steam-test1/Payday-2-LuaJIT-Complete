@@ -32,6 +32,7 @@ function NetworkAccountXBL:local_signin_state()
 end
 
 function NetworkAccountXBL:show_signin_ui()
+	return
 end
 
 function NetworkAccountXBL:username_id()

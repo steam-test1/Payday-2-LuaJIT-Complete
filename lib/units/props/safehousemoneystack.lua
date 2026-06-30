@@ -53,6 +53,7 @@ function SafehouseMoneyStack:_run_sequences(money)
 	self._unit:damage():run_sequence_simple(sequence)
 
 	money = money - small_sum
+
 	local where = math.min(money / SafehouseMoneyStack.MAX_SUM, 1)
 	local step_index = math.ceil(where * #self._big_steps)
 
@@ -85,7 +86,7 @@ function SafehouseMoneyStack:update()
 
 		self._test_money = self._test_money + 500000
 
-		if SafehouseMoneyStack.MAX_SUM <= self._test_money then
+		if self._test_money >= SafehouseMoneyStack.MAX_SUM then
 			self._test_money = nil
 		end
 	end

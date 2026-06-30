@@ -8,26 +8,27 @@ function HUDHint:init(hud)
 	end
 
 	self._hint_panel = self._hud_panel:panel({
-		y = 0,
-		name = "hint_panel",
 		h = 30,
-		visible = false,
 		layer = 3,
+		name = "hint_panel",
+		visible = false,
+		y = 0,
 		valign = {
 			0.3125,
 			0
 		}
 	})
+
 	local y = self._hud_panel:h() / 3.2
 
 	self._hint_panel:set_center_y(y)
 
 	local marker = self._hint_panel:rect({
-		w = 12,
-		name = "marker",
 		h = 30,
-		visible = true,
 		layer = 2,
+		name = "marker",
+		visible = true,
+		w = 12,
 		color = Color.white:with_alpha(0.75)
 	})
 
@@ -43,14 +44,14 @@ function HUDHint:init(hud)
 		color = Color.black:with_alpha(0.25)
 	})
 	clip_panel:text({
+		align = "center",
+		font_size = 28,
+		layer = 1,
 		name = "hint_text",
+		text = "",
 		vertical = "center",
 		word_wrap = false,
 		wrap = false,
-		font_size = 28,
-		align = "center",
-		text = "",
-		layer = 1,
 		font = tweak_data.hud.medium_font_noshadow,
 		color = Color.white
 	})
@@ -103,6 +104,7 @@ function HUDHint:_animate_show(hint_panel, done_cb, seconds, text)
 
 	while presenting do
 		local dt = coroutine.yield()
+
 		w = w + dt * speed
 
 		if target_w < w then
@@ -119,6 +121,7 @@ function HUDHint:_animate_show(hint_panel, done_cb, seconds, text)
 
 	while (t > 0 or forever) and not self._stop do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		marker:set_alpha((1 + math.sin(Application:time() * 800)) / 2)
@@ -126,10 +129,12 @@ function HUDHint:_animate_show(hint_panel, done_cb, seconds, text)
 	end
 
 	self._stop = false
+
 	local removing = true
 
 	while removing do
 		local dt = coroutine.yield()
+
 		w = math.clamp(w - dt * speed * 2, 0, target_w)
 
 		clip_panel:set_w(w)
@@ -145,6 +150,7 @@ function HUDHint:_animate_show(hint_panel, done_cb, seconds, text)
 end
 
 function HUDHint:show_done()
+	return
 end
 
 if _G.IS_VR then

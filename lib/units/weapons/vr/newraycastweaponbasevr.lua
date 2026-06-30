@@ -82,10 +82,11 @@ function NewRaycastWeaponBaseVR:check_autoaim(from_pos, direction, max_dist, use
 	local spread_x, spread_y = __get_spread(self, self._setup.user_unit)
 	local spread = math.max((spread_x + spread_y) / 2, 1)
 	local autohit = use_aim_assist and self._aim_assist_data or self._autohit_data
+
 	autohit = autohit_override_data or autohit
 	autohit = clone(autohit)
-	autohit.near_angle = autohit.near_angle * 2 / spread
-	autohit.far_angle = autohit.far_angle * 3 / spread
+	autohit.near_angle = autohit.near_angle * (2 / spread)
+	autohit.far_angle = autohit.far_angle * (3 / spread)
 
 	return __check_autoaim(self, from_pos, direction, max_dist, use_aim_assist, autohit, check_suppression)
 end
@@ -95,8 +96,8 @@ function NewRaycastWeaponBaseVR:_get_spread(user_unit)
 	local fps_camera = user_unit:camera() and user_unit:camera():camera_unit():base()
 
 	if fps_camera then
-		local recoil_v = (fps_camera._recoil_kick.current or 0) / 10
-		local recoil_h = (fps_camera._recoil_kick.h.current or 0) / 10
+		local recoil_v, recoil_h = (fps_camera._recoil_kick.current or 0) / 10, (fps_camera._recoil_kick.h.current or 0) / 10
+
 		spread_x = spread_x + recoil_h
 		spread_y = spread_y + recoil_v
 	end
@@ -144,6 +145,7 @@ function NewRaycastWeaponBaseVR:start_reload(total_time)
 
 			if mag.reload_objects then
 				local reload_object_name = self:clip_empty() and mag.reload_objects.reload or mag.reload_objects.reload_not_empty
+
 				self._reload_object = self._reload_mag_unit:get_object(Idstring(reload_object_name))
 			end
 		end
@@ -214,6 +216,7 @@ end
 
 function NewRaycastWeaponBase:_play_reload_anim(anim_group_id, to, from, unit)
 	local speed_multiplier = self:reload_speed_multiplier()
+
 	unit = unit or self._unit
 
 	unit:anim_stop(anim_group_id)
@@ -313,10 +316,11 @@ function NewRaycastWeaponBaseVR:update_reload_mag(time)
 		local effect = {
 			effect = Idstring(mag_data.effect.name)
 		}
-		local unit = nil
+		local unit
 
 		if mag_data.effect.part then
 			local part_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk(mag_data.effect.part, self._factory_id, self._blueprint)
+
 			unit = self._parts[part_list[1]].unit
 		else
 			unit = self._unit

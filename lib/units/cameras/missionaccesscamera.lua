@@ -16,6 +16,7 @@ function MissionAccessCamera:init(unit)
 	if _G.IS_VR then
 		local rt_resolution = managers.menu:player():render_target_resolution()
 		local resolution = VRManager:target_resolution()
+
 		scale_x = rt_resolution.x / resolution.x
 		scale_y = rt_resolution.y / resolution.y
 	end
@@ -47,8 +48,8 @@ function MissionAccessCamera:_setup_sound_listener()
 
 	self._listener_activation_id = managers.listener:activate_set("main", "access_camera")
 	self._sound_check_object = managers.sound_environment:add_check_object({
-		primary = true,
 		active = true,
+		primary = true,
 		object = self._unit:orientation_object()
 	})
 end
@@ -86,6 +87,7 @@ function MissionAccessCamera:stop()
 end
 
 function MissionAccessCamera:set_destroyed(destroyed)
+	return
 end
 
 function MissionAccessCamera:modify_fov(fov)

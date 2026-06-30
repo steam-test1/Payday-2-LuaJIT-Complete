@@ -10,7 +10,9 @@ end
 function HostStateInGame:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
 	local peer_id = sender:ip_at_index(0)
 	local my_user_id = data.local_peer:user_id() or ""
+
 	peer_name = managers.network:sanitize_peer_name(peer_name)
+
 	local drop_in_name = peer_name
 
 	print("[HostStateInGame:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, client_preferred_character, xuid, peer_level, join_attempt_identifier, peer_id)
@@ -107,6 +109,7 @@ function HostStateInGame:on_join_request_received(data, peer_name, peer_account_
 
 		if SystemInfo:distribution() == Idstring("STEAM") and peer_account_type_str == "STEAM" then
 			local user = Steam:user(peer_id)
+
 			is_modded = user:rich_presence("is_modded") == "1"
 		end
 
@@ -158,7 +161,7 @@ function HostStateInGame:on_join_request_received(data, peer_name, peer_account_
 	new_peer:set_name_drop_in(drop_in_name)
 	new_peer:set_join_attempt_identifier(join_attempt_identifier)
 
-	local new_peer_rpc = nil
+	local new_peer_rpc
 
 	if sender:protocol_at_index(0) == "TCP_IP" then
 		new_peer_rpc = managers.network:session():resolve_new_peer_rpc(new_peer, sender)
@@ -207,7 +210,9 @@ function HostStateInGame:on_join_auth_received(data, auth_ticket, sender)
 		job_id_index = tweak_data.narrative:get_index_from_job_id(managers.job:current_job_id())
 		job_stage = managers.job:current_stage()
 		alternative_job_stage = managers.job:alternative_stage() or 0
+
 		local interupt_stage_level = managers.job:interupt_stage()
+
 		interupt_job_stage_level_index = interupt_stage_level and tweak_data.levels:get_index_from_level_id(interupt_stage_level) or 0
 	end
 

@@ -6,9 +6,10 @@ function CopLogicFlee.enter(data, new_logic_name, enter_params)
 
 	local old_internal_data = data.internal_data
 	local my_data = {
-		unit = data.unit,
-		detection = data.char_tweak.detection.combat
+		unit = data.unit
 	}
+
+	my_data.detection = data.char_tweak.detection.combat
 
 	if old_internal_data then
 		if old_internal_data.nearest_cover then
@@ -31,6 +32,7 @@ function CopLogicFlee.enter(data, new_logic_name, enter_params)
 	end
 
 	local key_str = tostring(data.key)
+
 	my_data.detection_task_key = "CopLogicFlee._update_enemy_detection" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicFlee._update_enemy_detection, data)
@@ -41,7 +43,7 @@ function CopLogicFlee.enter(data, new_logic_name, enter_params)
 
 	my_data.cover_path_search_id = key_str .. "cover"
 
-	if data.attention_obj and AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+	if data.attention_obj and data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
 		my_data.want_cover = true
 	end
 
@@ -78,7 +80,7 @@ function CopLogicFlee.exit(data, new_logic_name, enter_params)
 end
 
 function CopLogicFlee.update(data)
-	local exit_state = nil
+	local exit_state
 	local unit = data.unit
 	local my_data = data.internal_data
 	local objective = data.objective
@@ -97,7 +99,7 @@ function CopLogicFlee.update(data)
 		return
 	end
 
-	if data.attention_obj and AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+	if data.attention_obj and data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
 		CopLogicFlee._cancel_flee_pathing(data, my_data)
 		CopLogicFlee._update_cover_pathing(data, my_data)
 
@@ -110,11 +112,12 @@ function CopLogicFlee.update(data)
 				CopLogicAttack._correct_path_start_pos(data, my_data.cover_path)
 
 				local new_action_data = {
-					variant = "run",
 					body_part = 2,
 					type = "walk",
+					variant = "run",
 					nav_path = my_data.cover_path
 				}
+
 				my_data.cover_path = nil
 
 				if unit:brain():action_request(new_action_data) then
@@ -138,7 +141,7 @@ function CopLogicFlee.update(data)
 			CopLogicFlee._update_pathing(data, my_data)
 		elseif my_data.cover_leave_t then
 			if not my_data.turning and not unit:movement():chk_action_forbidden("walk") then
-				if my_data.cover_leave_t < t then
+				if t > my_data.cover_leave_t then
 					my_data.cover_leave_t = nil
 				elseif my_data.best_cover and not CopLogicTravel._chk_request_action_turn_to_cover(data, my_data) and not unit:anim_data().crouch then
 					CopLogicAttack._chk_request_action_crouch(data)
@@ -148,11 +151,12 @@ function CopLogicFlee.update(data)
 			if my_data.path_blocked == false and not unit:movement():chk_action_forbidden("walk") then
 				local new_action_data = {
 					body_part = 2,
-					type = "walk",
 					path_simplified = true,
+					type = "walk",
 					variant = "run",
 					nav_path = my_data.flee_path
 				}
+
 				my_data.flee_path = nil
 				my_data.advancing = unit:brain():action_request(new_action_data)
 
@@ -175,7 +179,7 @@ function CopLogicFlee.update(data)
 				if cur_index == total_nav_points then
 					data.unit:base():set_slot(unit, 0)
 				elseif not my_data.processing_flee_path then
-					local to_pos = nil
+					local to_pos
 
 					if cur_index == total_nav_points - 1 then
 						to_pos = my_data.flee_target.pos
@@ -212,7 +216,7 @@ function CopLogicFlee.update(data)
 				end
 			else
 				local search_id = tostring(unit:key()) .. "coarseflee"
-				local verify_clbk = nil
+				local verify_clbk
 
 				if not my_data.coarse_search_failed then
 					verify_clbk = callback(CopLogicFlee, CopLogicFlee, "_flee_coarse_path_verify_clbk")
@@ -228,6 +232,7 @@ function CopLogicFlee.update(data)
 
 			if flee_pos then
 				local nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
+
 				my_data.flee_target = {
 					nav_seg = nav_seg,
 					pos = flee_pos
@@ -241,6 +246,7 @@ function CopLogicFlee._update_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local min_reaction = AIAttentionObject.REACT_COMBAT
 	local delay = CopLogicBase._upd_attention_obj_detection(data, min_reaction, nil)
@@ -276,18 +282,14 @@ function CopLogicFlee._update_enemy_detection(data)
 		my_data.want_cover = nil
 	end
 
-	if data.important then
-		delay = 0
-	else
-		delay = 0.5 + delay * 1.5
-	end
+	delay = data.important and 0 or 0.5 + delay * 1.5
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicFlee._update_enemy_detection, data, data.t + delay)
 	CopLogicBase._report_detections(data.detected_attention_objects)
 end
 
 function CopLogicFlee._upd_shoot(data, my_data)
-	local shoot = nil
+	local shoot
 	local focus_enemy = data.attention_obj
 	local action_taken = data.unit:movement():chk_action_forbidden("walk") or my_data.turning or my_data.moving_to_cover
 
@@ -308,10 +310,11 @@ function CopLogicFlee._upd_shoot(data, my_data)
 		CopLogicBase._set_attention(data, focus_enemy)
 
 		my_data.attention_unit = focus_enemy.u_key
-		local shoot_action = {
-			type = "shoot",
-			body_part = 3
-		}
+
+		local shoot_action = {}
+
+		shoot_action.type = "shoot"
+		shoot_action.body_part = 3
 
 		if data.unit:brain():action_request(shoot_action) then
 			my_data.shooting = true
@@ -522,8 +525,8 @@ function CopLogicFlee._update_cover(data)
 		local threat_pos = data.attention_obj.verified_pos
 		local min_threat_dis = 700
 
-		if not my_data.moving_to_cover and (not best_cover or not CopLogicAttack._verify_cover(best_cover[1], threat_pos, min_threat_dis) or min_threat_dis >= mvector3.distance(best_cover[1][1], threat_pos)) then
-			local better_cover = nil
+		if not my_data.moving_to_cover and (not best_cover or not CopLogicAttack._verify_cover(best_cover[1], threat_pos, min_threat_dis) or not (min_threat_dis < mvector3.distance(best_cover[1][1], threat_pos))) then
+			local better_cover
 
 			if nearest_cover and CopLogicAttack._verify_cover(nearest_cover[1], threat_pos, min_threat_dis) then
 				better_cover = nearest_cover

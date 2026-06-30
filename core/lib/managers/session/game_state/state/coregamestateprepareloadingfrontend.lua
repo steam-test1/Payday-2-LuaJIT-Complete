@@ -16,6 +16,7 @@ function PrepareLoadingFrontEnd:destroy()
 	self.game_state._front_end_requester:task_completed()
 
 	self.game_state._is_preparing_for_loading_front_end = false
+
 	local local_user_manager = self.game_state._session_manager._local_user_manager
 
 	self.game_state:player_slots():leave_level_handler(self._level_handler)

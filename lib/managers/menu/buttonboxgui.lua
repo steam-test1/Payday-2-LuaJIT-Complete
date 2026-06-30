@@ -2,11 +2,12 @@ ButtonBoxGui = ButtonBoxGui or class(TextBoxGui)
 
 function ButtonBoxGui:_setup_buttons_panel(info_area, button_list, focus_button, only_buttons)
 	self._button_list = button_list
+
 	local has_buttons = button_list and #button_list > 0
 	local buttons_panel = info_area:panel({
+		layer = 1,
 		name = "buttons_panel",
 		x = 10,
-		layer = 1,
 		w = has_buttons and 200 or 0,
 		h = info_area:h()
 	})
@@ -18,14 +19,14 @@ function ButtonBoxGui:_setup_buttons_panel(info_area, button_list, focus_button,
 
 	if has_buttons then
 		local button_text_config = {
+			blend_mode = "add",
+			halign = "right",
+			layer = 2,
 			name = "button_text",
 			vertical = "center",
 			word_wrap = "true",
 			wrap = "true",
-			blend_mode = "add",
-			halign = "right",
 			x = 10,
-			layer = 2,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			color = tweak_data.screen_colors.button_stage_3
@@ -36,11 +37,12 @@ function ButtonBoxGui:_setup_buttons_panel(info_area, button_list, focus_button,
 		if button_list then
 			for i, button in ipairs(button_list) do
 				local button_panel = buttons_panel:panel({
-					halign = "grow",
 					h = 20,
+					halign = "grow",
 					y = 100,
 					name = button.id_name
 				})
+
 				button_text_config.text = utf8.to_upper(button.text or "")
 
 				if button_text_config.text == "" then
@@ -49,6 +51,7 @@ function ButtonBoxGui:_setup_buttons_panel(info_area, button_list, focus_button,
 
 				local text = button_panel:text(button_text_config)
 				local _, _, w, h = text:text_rect()
+
 				max_w = math.max(max_w, w)
 				max_h = math.max(max_h, h)
 
@@ -66,9 +69,9 @@ function ButtonBoxGui:_setup_buttons_panel(info_area, button_list, focus_button,
 		buttons_panel:set_right(info_area:w() - 10)
 
 		local selected = buttons_panel:rect({
+			alpha = 0.3,
 			blend_mode = "add",
 			name = "selected",
-			alpha = 0.3,
 			color = tweak_data.screen_colors.button_stage_3
 		})
 
@@ -82,6 +85,7 @@ function ButtonBoxGui:_setup_scroll_bar(main, scroll_panel, buttons_panel, top_l
 	ButtonBoxGui.super._setup_scroll_bar(self, main, scroll_panel, buttons_panel, top_line, bottom_line)
 
 	local focus_button = self._text_box_focus_button
+
 	self._text_box_focus_button = nil
 
 	self:set_focus_button(focus_button, false)
@@ -92,7 +96,7 @@ function ButtonBoxGui:_override_info_area_size(info_area, scroll_panel, buttons_
 
 	local text = scroll_panel:child("text")
 
-	if info_area:h() < buttons_panel:h() + scroll_panel:y() + text:h() then
+	if buttons_panel:h() + scroll_panel:y() + text:h() > info_area:h() then
 		text:grow(-buttons_panel:w(), 0)
 
 		local _, _, ttw, tth = text:text_rect()
@@ -129,7 +133,7 @@ function ButtonBoxGui:_set_button_selected(index, is_selected, allow_callbacks)
 			button.focus_callback_func()
 		end
 
-		local button_panel = nil
+		local button_panel
 
 		if button.id_name then
 			button_panel = self._text_box_buttons_panel:child(button.id_name)

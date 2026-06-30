@@ -8,28 +8,29 @@ function HUDTemp:init(hud)
 	end
 
 	self._temp_panel = self._hud_panel:panel({
-		y = 0,
-		name = "temp_panel",
 		layer = 0,
+		name = "temp_panel",
+		valign = "scale",
 		visible = true,
-		valign = "scale"
+		y = 0
 	})
+
 	local throw_instruction = self._temp_panel:text({
-		visible = false,
-		vertical = "bottom",
-		h = 40,
-		w = 300,
-		alpha = 0.85,
 		align = "right",
-		name = "throw_instruction",
-		layer = 1,
-		text = "",
+		alpha = 0.85,
 		font = "fonts/font_medium_mf",
-		y = 2,
-		halign = "right",
 		font_size = 24,
-		x = 8,
+		h = 40,
+		halign = "right",
+		layer = 1,
+		name = "throw_instruction",
+		text = "",
 		valign = "bottom",
+		vertical = "bottom",
+		visible = false,
+		w = 300,
+		x = 8,
+		y = 2,
 		color = Color.white
 	})
 
@@ -37,44 +38,45 @@ function HUDTemp:init(hud)
 
 	local bag_panel = self._temp_panel:panel({
 		halign = "right",
-		name = "bag_panel",
 		layer = 10,
-		visible = false,
-		valign = "bottom"
+		name = "bag_panel",
+		valign = "bottom",
+		visible = false
 	})
+
 	self._bg_box = HUDBGBox_create(bag_panel, {
+		h = 56,
 		w = 204,
 		x = 0,
-		h = 56,
 		y = 0
 	})
 
 	bag_panel:set_size(self._bg_box:size())
 	self._bg_box:text({
+		font = "fonts/font_medium_mf",
+		font_size = 24,
 		layer = 1,
 		name = "bag_text",
-		vertical = "left",
-		font_size = 24,
 		text = "CARRYING:\nCIRCUIT BOARDS",
-		font = "fonts/font_medium_mf",
-		y = 2,
-		x = 8,
 		valign = "center",
+		vertical = "left",
+		x = 8,
+		y = 2,
 		color = Color.white
 	})
 
 	local bag_text = bag_panel:text({
-		visible = false,
-		vertical = "center",
-		h = 128,
-		w = 256,
-		font_size = 42,
 		align = "center",
+		font = "fonts/font_large_mf",
+		font_size = 42,
+		h = 128,
+		halign = "scale",
 		name = "bag_text",
 		text = "HEJ",
-		font = "fonts/font_large_mf",
-		halign = "scale",
 		valign = "scale",
+		vertical = "center",
+		visible = false,
+		w = 256,
 		color = Color.black
 	})
 
@@ -92,59 +94,60 @@ function HUDTemp:init(hud)
 	self._curr_stamina = 0
 	self._max_stamina = 0
 	self._stamina_panel = self._temp_panel:panel({
-		layer = 0,
-		name = "stamina_panel",
+		alpha = 0,
 		h = 128,
 		halign = "right",
-		w = 16,
+		layer = 0,
+		name = "stamina_panel",
 		valign = "center",
-		alpha = 0,
-		visable = true
+		visable = true,
+		w = 16
 	})
+
 	local stamina_bar_bg = self._stamina_panel:rect({
-		name = "stamina_bar_bg",
 		alpha = 0.25,
+		name = "stamina_bar_bg",
 		color = Color(0.6, 0.6, 0.6)
 	})
 	local low_stamina_bar = self._stamina_panel:rect({
-		name = "low_stamina_bar",
 		alpha = 0,
+		name = "low_stamina_bar",
 		color = Color(0.6, 0.6, 0.6)
 	})
 	local stamina_bar = self._stamina_panel:rect({
-		name = "stamina_bar",
 		layer = 1,
+		name = "stamina_bar",
 		color = Color(0.6, 0.6, 0.6)
 	})
 	local stamina_threshold = self._stamina_panel:rect({
-		name = "stamina_threshold",
 		h = 2,
 		layer = 2,
+		name = "stamina_threshold",
 		color = Color(1, 1, 1)
 	})
 
 	self._stamina_panel:rect({
-		name = "top_border",
 		h = 2,
 		layer = 3,
+		name = "top_border",
 		color = Color()
 	}):set_top(0)
 	self._stamina_panel:rect({
-		name = "bottom_border",
 		h = 2,
 		layer = 3,
+		name = "bottom_border",
 		color = Color()
 	}):set_bottom(128)
 	self._stamina_panel:rect({
+		layer = 3,
 		name = "left_border",
 		w = 2,
-		layer = 3,
 		color = Color()
 	}):set_left(0)
 	self._stamina_panel:rect({
+		layer = 3,
 		name = "right_border",
 		w = 2,
-		layer = 3,
 		color = Color()
 	}):set_right(16)
 	self._stamina_panel:set_right(self._temp_panel:w())
@@ -204,8 +207,7 @@ function HUDTemp:_animate_hide_bag_panel(bag_panel)
 end
 
 function HUDTemp:_animate_show_bag_panel(bag_panel)
-	local w = self._bag_panel_w
-	local h = self._bag_panel_h
+	local w, h = self._bag_panel_w, self._bag_panel_h
 	local scx = self._temp_panel:w() / 2
 	local ecx = self._temp_panel:w() - w / 2
 	local scy = self._temp_panel:h() / 2
@@ -232,6 +234,7 @@ function HUDTemp:_animate_show_bag_panel(bag_panel)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		bag_panel:set_center_x(math.lerp(scx, ecx, 1 - t / TOTAL_T))
@@ -245,8 +248,7 @@ function HUDTemp:_animate_show_bag_panel(bag_panel)
 end
 
 function HUDTemp:_animate_show_bag_panel_old(bag_panel)
-	local w = self._bag_panel_w
-	local h = self._bag_panel_h
+	local w, h = self._bag_panel_w, self._bag_panel_h
 	local scx = self._temp_panel:w() / 2
 	local ecx = self._temp_panel:w() - w / 2
 	local scy = self._temp_panel:h() / 2
@@ -264,13 +266,17 @@ function HUDTemp:_animate_show_bag_panel_old(bag_panel)
 	bag_text:set_rotation(360)
 
 	local _, _, tw, th = bag_text:text_rect()
+
 	font_size = font_size * math.min(1, bag_panel:w() / (tw * 1.15))
+
 	local TOTAL_T = 0.25
 	local t = TOTAL_T
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
+
 		local wm = math.lerp(0, w * scale, 1 - t / TOTAL_T)
 		local hm = math.lerp(0, h * scale, 1 - t / TOTAL_T)
 
@@ -287,7 +293,9 @@ function HUDTemp:_animate_show_bag_panel_old(bag_panel)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
+
 		local wm = math.lerp(w * scale, w, 1 - t / TOTAL_T)
 		local hm = math.lerp(h * scale, h, 1 - t / TOTAL_T)
 
@@ -309,8 +317,10 @@ function HUDTemp:_animate_show_text(text)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local alpha = math.round(math.abs(math.sin(t * 360 * 3)))
+
+		local alpha = math.round(math.abs((math.sin(t * 360 * 3))))
 
 		text:set_alpha(alpha)
 	end
@@ -324,8 +334,10 @@ function HUDTemp:_animate_hide_text(text)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local vis = math.round(math.abs(math.cos(t * 360 * 3)))
+
+		local vis = math.round(math.abs((math.cos(t * 360 * 3))))
 
 		text:set_alpha(vis)
 	end

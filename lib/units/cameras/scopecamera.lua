@@ -122,6 +122,7 @@ function ScopeCamera:update(t, dt)
 
 		local angle = math.dot(dir, self._camera_object:rotation():y())
 		local visible = (angle > 0.965 or length < 20) and true or false
+
 		visible = visible and not collision
 
 		self._material:set_variable(Idstring("scope_fadeout"), visible and 0 or 1)
@@ -133,6 +134,7 @@ function ScopeCamera:update(t, dt)
 		local scale_x = rt_resolution.x / resolution.x
 		local scale_y = rt_resolution.y / resolution.y
 		local scale = math.lerp(1, 0.25, math.clamp((length - 30) / 50, 0, 1))
+
 		scale_x = scale_x * scale
 		scale_y = scale_y * scale
 

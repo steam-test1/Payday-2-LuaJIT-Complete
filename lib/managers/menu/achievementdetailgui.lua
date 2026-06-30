@@ -8,12 +8,14 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 HalfCircleProgressBar = HalfCircleProgressBar or class(ExtendedPanel)
 
 function HalfCircleProgressBar:init(parent, config, progress)
 	HalfCircleProgressBar.super.init(self, parent, config)
 
 	local half_w = math.floor(self:w() / 2)
+
 	self._color = config.color or Color(config.alpha or 1, 1, 1, 1)
 	self._back_color = config.back_color or self._color:with_alpha(config.back_alpha or self._color.alpha * 0.5)
 	self._back = self:fit_bitmap({
@@ -22,14 +24,14 @@ function HalfCircleProgressBar:init(parent, config, progress)
 		color = self._back_color
 	})
 	self._right = self:fit_bitmap({
-		render_template = "VertexColorTexturedRadial",
 		blend_mode = "add",
+		render_template = "VertexColorTexturedRadial",
 		texture = config.texture,
 		color = self._color
 	})
 	self._left = self:fit_bitmap({
-		render_template = "VertexColorTexturedRadial",
 		blend_mode = "add",
+		render_template = "VertexColorTexturedRadial",
 		texture = config.texture,
 		color = self._color
 	})
@@ -38,8 +40,7 @@ function HalfCircleProgressBar:init(parent, config, progress)
 	self._left:set_w(half_w)
 	self._right:set_left(self._left:right())
 
-	local tw = self._left:texture_width()
-	local th = self._left:texture_height()
+	local tw, th = self._left:texture_width(), self._left:texture_height()
 	local half_tw = math.floor(tw / 2)
 
 	self._left:set_texture_rect(0, th, half_tw, -th)
@@ -64,13 +65,13 @@ local function get_tag_category(tag)
 end
 
 local difficulty_translate = {
-	difficulty_death_wish = "menu_difficulty_apocalypse",
 	difficulty_death_sentence = "menu_difficulty_sm_wish",
-	difficulty_normal = "menu_difficulty_normal",
+	difficulty_death_wish = "menu_difficulty_apocalypse",
 	difficulty_hard = "menu_difficulty_hard",
-	difficulty_very_hard = "menu_difficulty_very_hard",
+	difficulty_mayhem = "menu_difficulty_easy_wish",
+	difficulty_normal = "menu_difficulty_normal",
 	difficulty_overkill = "menu_difficulty_overkill",
-	difficulty_mayhem = "menu_difficulty_easy_wish"
+	difficulty_very_hard = "menu_difficulty_very_hard"
 }
 
 local function create_difficulty_text(str)
@@ -92,15 +93,16 @@ AchievementDetailGui = AchievementDetailGui or class(GrowPanel)
 
 function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback)
 	AchievementDetailGui.super.init(self, parent, {
-		padding = 10,
-		layer = 50,
 		border = 10,
 		fixed_w = 650,
-		input = true
+		input = true,
+		layer = 50,
+		padding = 10
 	})
 
 	if type(achievement_data_or_id) == "table" then
 		local data = achievement_data_or_id
+
 		self._id = data.id
 		self._info = data.info
 		self._visual = data.visual
@@ -123,15 +125,16 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 	self._back_callback = back_callback
 	self._info = self._info or managers.achievment:get_info(self._id) or {}
 	self._visual = self._visual or tweak_data.achievement.visual[self._id]
-	local grey_color = nil
+
+	local grey_color
 	local placer = self:placer()
 
 	placer:push_right()
 
 	local texture, texture_rect = tweak_data.hud_icons:get_icon_or(self._visual.icon_id, "guis/dlcs/unfinished/textures/placeholder")
 	local bitmap = placer:add_right(self:bitmap({
-		w = 85,
 		h = 85,
+		w = 85,
 		texture = texture,
 		texture_rect = texture_rect
 	}))
@@ -179,63 +182,65 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 
 	placer:pop()
 
-	local detail = placer:add_bottom(ScrollableList:new(self, {
-		w = 380,
-		scrollbar_padding = 5,
-		h = 300,
-		input = true
-	}, {
-		padding = 10
-	}))
+	do
+		local detail = placer:add_bottom(ScrollableList:new(self, {
+			h = 300,
+			input = true,
+			scrollbar_padding = 5,
+			w = 380
+		}, {
+			padding = 10
+		}))
 
-	detail:add_lines_and_static_down_indicator()
+		detail:add_lines_and_static_down_indicator()
 
-	local detail_canvas = detail:canvas()
-	local detail_placer = detail:canvas():placer()
+		local detail_canvas = detail:canvas()
+		local detail_placer = detail:canvas():placer()
 
-	add_achievement_detail_text(detail, detail_placer, self._visual, self._info, grey_color)
+		add_achievement_detail_text(detail, detail_placer, self._visual, self._info, grey_color)
 
-	local tag_str = nil
+		local tag_str
 
-	for _, tag in pairs(self._visual.tags) do
-		local category = get_tag_category(tag)
-		local id = nil
+		for _, tag in pairs(self._visual.tags) do
+			local category = get_tag_category(tag)
+			local id
 
-		if category == "contracts" then
-			id = create_contract_text(tag)
-		elseif category == "difficulty" then
-			id = create_difficulty_text(tag)
-		else
-			id = create_tag_text(tag)
+			if category == "contracts" then
+				id = create_contract_text(tag)
+			elseif category == "difficulty" then
+				id = create_difficulty_text(tag)
+			else
+				id = create_tag_text(tag)
+			end
+
+			local str = managers.localization:text("menu_achievements_" .. category) .. ": " .. managers.localization:text(id)
+
+			if not tag_str then
+				tag_str = managers.localization:text("menu_achievements_tags_intro") .. str
+			else
+				tag_str = tag_str .. ", " .. str
+			end
 		end
 
-		local str = managers.localization:text("menu_achievements_" .. category) .. ": " .. managers.localization:text(id)
-
-		if not tag_str then
-			tag_str = managers.localization:text("menu_achievements_tags_intro") .. str
-		else
-			tag_str = tag_str .. ", " .. str
+		if tag_str then
+			local item = detail_placer:add_row(detail_canvas:fine_text({
+				word_wrap = true,
+				wrap = true,
+				text = tag_str,
+				font = tiny_font,
+				font_size = tiny_font_size,
+				color = grey_color,
+				w = detail_canvas:row_w()
+			}), nil, 10)
 		end
-	end
 
-	if tag_str then
-		local item = detail_placer:add_row(detail_canvas:fine_text({
-			wrap = true,
-			word_wrap = true,
-			text = tag_str,
-			font = tiny_font,
-			font_size = tiny_font_size,
-			color = grey_color,
-			w = detail_canvas:row_w()
-		}), nil, 10)
+		self._detail = detail
 	end
-
-	self._detail = detail
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		local friend_list = placer:add_right(ScrollableList:new(self, {
-			scrollbar_padding = 5,
 			input = true,
+			scrollbar_padding = 5,
 			w = self:w() - self._detail:right() - 5,
 			h = self._detail:h()
 		}, {
@@ -255,7 +260,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 				text_id = "menu_back",
 				font = medium_font,
 				font_size = medium_font_size
-			}, function ()
+			}, function()
 				self._back_callback()
 			end))
 		else
@@ -263,8 +268,8 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		end
 
 		self._num_friend_text = placer:add_top_ralign(self:fine_text({
-			keep_w = true,
 			align = "right",
+			keep_w = true,
 			text = managers.localization:text("menu_achievement_friends_unlocked", {
 				COUNT = ""
 			}),
@@ -272,6 +277,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 			font_size = small_font_size,
 			color = grey_color
 		}))
+
 		local canvas = friend_list:canvas()
 		local f_placer = ResizingPlacer:new(canvas, {
 			padding = 4,
@@ -283,6 +289,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 
 		local friend_p = 0
 		local global_p = managers.achievment:get_global_achieved_percent(self._id)
+
 		global_p = global_p >= 0 and global_p / 100 or 0
 
 		placer:push()
@@ -311,16 +318,16 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		local _, cy = placer:current_center()
 		local circle_size = 42
 		local friend_circle = placer:add_left(HalfCircleProgressBar:new(self, {
-			texture = "guis/dlcs/trk/textures/pd2/circle_inside",
 			alpha = 1,
 			back_alpha = 0.1,
+			texture = "guis/dlcs/trk/textures/pd2/circle_inside",
 			w = circle_size,
 			h = circle_size
 		}, friend_p), 15)
 		local global_circle = HalfCircleProgressBar:new(self, {
-			texture = "guis/dlcs/trk/textures/pd2/circle_outside",
 			alpha = 1,
 			back_alpha = 0.1,
+			texture = "guis/dlcs/trk/textures/pd2/circle_outside",
 			w = circle_size,
 			h = circle_size
 		}, global_p)
@@ -328,7 +335,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		friend_circle:set_center_y(cy)
 		global_circle:set_lefttop(friend_circle:lefttop())
 
-		if friend_circle:left() < title:right() then
+		if title:right() > friend_circle:left() then
 			title:set_w(title:w() - title:right() + friend_circle:left())
 		end
 
@@ -337,7 +344,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 				local total_friends = Steam:friends()
 				local unlocked_friends = {}
 
-				managers.achievment:get_friends_with_achievement(self._id, function (friend)
+				managers.achievment:get_friends_with_achievement(self._id, function(friend)
 					print("[Ach]", "GET FRIEND WITH ACHIEVEMENT", friend)
 
 					if not alive(friend_list) or not alive(self._panel) then
@@ -369,11 +376,11 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 						COUNT = string.format("%.1f", friend_p * 100)
 					}))
 					self.make_fine_text(friend_p_text)
-					Steam:friend_avatar(Steam.SMALL_AVATAR, friend:id(), function (texture)
+					Steam:friend_avatar(Steam.SMALL_AVATAR, friend:id(), function(texture)
 						if alive(friend_list) then
 							local avatar = f_placer:add_left(canvas:fit_bitmap({
-								w = 32,
 								h = 32,
+								w = 32,
 								texture = texture
 							}), 10)
 							local name = f_placer:add_left(canvas:fine_text({

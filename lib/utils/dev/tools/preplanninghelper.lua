@@ -1,6 +1,7 @@
 PreplanningHelper = PreplanningHelper or class()
 
 function PreplanningHelper:init()
+	return
 end
 
 function PreplanningHelper:show_ews()
@@ -17,8 +18,10 @@ function PreplanningHelper:create_ews()
 	self._main_frame:set_icon(CoreEws.image_path("world_editor/icon_creator_16x16.png"))
 
 	local main_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._main_panel = EWS:Panel(self._main_frame, "", "FULL_REPAINT_ON_RESIZE")
 	self._outText = EWS:TextCtrl(self._main_panel, "Select a unit", "", "NO_BORDER,TE_RICH,TE_MULTILINE,TE_READONLY")
+
 	local btn_sizer = EWS:StaticBoxSizer(self._main_panel, "HORIZONTAL", "")
 	local setupCam_btn = EWS:Button(self._main_panel, "Setup Camera", "", "BU_EXACTFIT,NO_BORDER")
 
@@ -66,16 +69,19 @@ function PreplanningHelper:on_selected_unit(unit)
 
 		if me ~= nil then
 			local hed = me._hed
+
 			self._unit = unit
 			self._pos = self._unit:position()
 			self._width = hed.width
 			self._depth = hed.depth
 			self._height = hed.height
+
 			local x1 = self._pos.x - self._width / 2
 			local x2 = self._pos.x + self._width / 2
 			local y1 = self._pos.y - self._depth / 2
 			local y2 = self._pos.y + self._depth / 2
 			local out = "x1 = " .. x1 .. ",\n"
+
 			out = out .. "y1 = " .. y1 .. ",\n"
 			out = out .. "x2 = " .. x2 .. ",\n"
 			out = out .. "y2 = " .. y2 .. ",\n"
@@ -106,15 +112,18 @@ function PreplanningHelper:setup_camera()
 
 	local me = self._unit:mission_element()
 	local hed = me._hed
+
 	self._pos = self._unit:position()
 	self._width = hed.width
 	self._depth = hed.depth
 	self._height = hed.height
+
 	local x1 = self._pos.x - self._width / 2
 	local x2 = self._pos.x + self._width / 2
 	local y1 = self._pos.y - self._depth / 2
 	local y2 = self._pos.y + self._depth / 2
 	local out = "x1 = " .. x1 .. ",\n"
+
 	out = out .. "y1 = " .. y1 .. ",\n"
 	out = out .. "x2 = " .. x2 .. ",\n"
 	out = out .. "y2 = " .. y2 .. ",\n"

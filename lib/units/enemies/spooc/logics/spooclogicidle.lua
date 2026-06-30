@@ -12,6 +12,7 @@ function SpoocLogicIdle._upd_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local delay = CopLogicBase._upd_attention_obj_detection(data, nil, nil)
 	local new_attention, new_prio_slot, new_reaction = CopLogicIdle._get_priority_attention(data, data.detected_attention_objects)
@@ -19,9 +20,9 @@ function SpoocLogicIdle._upd_enemy_detection(data)
 	CopLogicBase._set_attention_obj(data, new_attention, new_reaction)
 	SpoocLogicIdle._chk_exit_hiding(data)
 
-	if new_reaction and AIAttentionObject.REACT_SUSPICIOUS < new_reaction and (not data.unit:anim_data().hide or data.unit:anim_data().hide_loop) then
+	if new_reaction and new_reaction > AIAttentionObject.REACT_SUSPICIOUS and (not data.unit:anim_data().hide or data.unit:anim_data().hide_loop) then
 		local objective = data.objective
-		local wanted_state = nil
+		local wanted_state
 		local allow_trans, obj_failed = CopLogicBase.is_obstructed(data, objective, nil, new_attention)
 
 		if allow_trans then
@@ -83,7 +84,7 @@ function SpoocLogicIdle._chk_exit_hiding(data)
 		return
 	end
 
-	if data.attention_obj and AIAttentionObject.REACT_SHOOT <= data.attention_obj.reaction then
+	if data.attention_obj and data.attention_obj.reaction >= AIAttentionObject.REACT_SHOOT then
 		if data.attention_obj.dis < 1500 and data.attention_obj.verified then
 			SpoocLogicIdle._exit_hiding(data)
 		elseif data.attention_obj.dis < 700 then

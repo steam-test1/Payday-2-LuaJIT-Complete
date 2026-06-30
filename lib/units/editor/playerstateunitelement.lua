@@ -23,9 +23,10 @@ function PlayerStateUnitElement:_build_panel(panel, panel_sizer)
 
 	local help = {
 		panel = panel,
-		sizer = panel_sizer,
-		text = "Set the state the players should change to."
+		sizer = panel_sizer
 	}
+
+	help.text = "Set the state the players should change to."
 
 	self:add_help_text(help)
 end

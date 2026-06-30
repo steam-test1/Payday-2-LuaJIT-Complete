@@ -5,7 +5,7 @@ function NewRaycastWeaponBase:set_scope_enabled(enabled)
 
 	if self._scope_camera_configuration and _G.IS_VR then
 		local user_unit = managers.player:player_unit()
-		local camera = nil
+		local camera
 
 		if not user_unit then
 			camera = managers.menu:player()
@@ -37,11 +37,12 @@ function NewRaycastWeaponBase:configure_scope()
 			local camera = parts_tweak[part_id] and parts_tweak[part_id].camera
 
 			if camera then
-				local config = {
-					a_camera = part.unit:get_object(Idstring(camera.a_camera)),
-					a_screen = part.unit:get_object(Idstring(camera.a_screen))
-				}
-				local material = nil
+				local config = {}
+
+				config.a_camera = part.unit:get_object(Idstring(camera.a_camera))
+				config.a_screen = part.unit:get_object(Idstring(camera.a_screen))
+
+				local material
 				local material_name = Idstring(camera.material)
 				local material_config = part.unit:get_objects_by_type(Idstring("material"))
 

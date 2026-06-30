@@ -20,9 +20,10 @@ function SlowMotionElement:_build_panel(panel, panel_sizer)
 
 	local help = {
 		panel = panel,
-		sizer = panel_sizer,
-		text = "Choose effect. Descriptions in lib/TimeSpeedEffectTweakData.lua."
+		sizer = panel_sizer
 	}
+
+	help.text = "Choose effect. Descriptions in lib/TimeSpeedEffectTweakData.lua."
 
 	self:add_help_text(help)
 end

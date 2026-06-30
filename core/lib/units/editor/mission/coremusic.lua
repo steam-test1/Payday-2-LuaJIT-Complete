@@ -37,14 +37,15 @@ function CoreMusicUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local paths = clone(managers.music:music_paths())
 
 	if #paths <= 0 then
-		local help = {
-			text = "No music available in project!",
-			panel = panel,
-			sizer = panel_sizer
-		}
+		local help = {}
+
+		help.text = "No music available in project!"
+		help.panel = panel
+		help.sizer = panel_sizer
 
 		self:add_help_text(help)
 
@@ -52,6 +53,7 @@ function CoreMusicUnitElement:_build_panel(panel, panel_sizer)
 	end
 
 	self._hed.music_event = self._hed.music_event or managers.music:music_events(paths[1])[1]
+
 	local path_value = managers.music:music_path(self._hed.music_event)
 
 	CoreEws.combobox_and_list({
@@ -64,6 +66,7 @@ function CoreMusicUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local _, music_params = self:_build_value_combobox(panel, panel_sizer, "music_event", managers.music:music_events(path_value))
+
 	self._music_params = music_params
 
 	self:_build_value_checkbox(panel, panel_sizer, "use_instigator")

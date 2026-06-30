@@ -45,14 +45,14 @@ function LookAtTriggerUnitElement:_build_panel(panel, panel_sizer)
 	}, "Set the check interval for the look at, in seconds")
 
 	local sensitivity_params = {
-		name = "Sensitivity:",
 		ctrlr_proportions = 2,
-		slider_ctrlr_proportions = 3,
-		name_proportions = 1,
-		number_ctrlr_proportions = 1,
-		min = 0.5,
 		floats = 3,
 		max = 0.999,
+		min = 0.5,
+		name = "Sensitivity:",
+		name_proportions = 1,
+		number_ctrlr_proportions = 1,
+		slider_ctrlr_proportions = 3,
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.sensitivity

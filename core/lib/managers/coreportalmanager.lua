@@ -58,7 +58,7 @@ function PortalManager:add_unit(unit)
 		return
 	end
 
-	local added = nil
+	local added
 
 	for _, group in pairs(self._unit_groups) do
 		added = group:add_unit(unit) or added
@@ -73,15 +73,12 @@ function PortalManager:add_unit(unit)
 
 		if added then
 			self._all_units[unit:key()] = (self._all_units[unit:key()] or 0) + amount
+
 			local inverse = unit:unit_data().portal_visible_inverse
 			local i = 0
 
 			if not portal:is_inside() then
-				if inverse then
-					i = 1
-				else
-					i = -1
-				end
+				i = inverse and 1 or -1
 			end
 
 			self:change_visibility(unit, i, inverse)
@@ -249,6 +246,7 @@ function PortalManager:render()
 	end
 
 	while table.remove(self._check_positions) do
+		-- Nothing
 	end
 end
 
@@ -268,7 +266,7 @@ function PortalManager:debug_draw_border(polygon, min, max)
 	for x = 2, #tbl do
 		local length = 0
 
-		while time > length do
+		while length < time do
 			if min and max then
 				local start = Vector3(tbl[x - 1].x, tbl[x - 1].y, max)
 				local stop = Vector3(tbl[x].x, tbl[x].y, max)
@@ -310,6 +308,7 @@ function PortalManager:rename_unit_group(name, new_name)
 	end
 
 	local group = self._unit_groups[name]
+
 	self._unit_groups[name] = nil
 	self._unit_groups[new_name] = group
 
@@ -324,6 +323,7 @@ end
 
 function PortalManager:add_unit_group(name)
 	local group = PortalUnitGroup:new(name)
+
 	self._unit_groups[name] = group
 
 	return group
@@ -401,10 +401,9 @@ function PortalManager:save_level_data()
 			table.insert(shapes, shape:save_level_data())
 		end
 
-		t[name] = {
-			shapes = shapes,
-			ids = group:ids()
-		}
+		t[name] = {}
+		t[name].shapes = shapes
+		t[name].ids = group:ids()
 	end
 
 	return t
@@ -425,6 +424,7 @@ end
 function PortalShape:add_unit(unit)
 	if self:inside(unit:position()) then
 		self._units[unit:key()] = unit
+
 		local inverse = unit:unit_data().portal_visible_inverse
 
 		if inverse then
@@ -465,7 +465,7 @@ function PortalShape:inside(pos)
 	if is_inside and self._min and self._max then
 		local z = pos.z
 
-		if self._min < z and z < self._max then
+		if z > self._min and z < self._max then
 			return true
 		else
 			return false
@@ -616,6 +616,7 @@ function PortalUnitGroup:update(t, dt)
 
 	if self._is_inside ~= is_inside then
 		self._is_inside = is_inside
+
 		local diff = self._is_inside and 1 or -1
 
 		self:_change_units_visibility(diff)

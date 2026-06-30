@@ -2,6 +2,7 @@ local large_font = tweak_data.menu.pd2_large_font
 local large_font_size = tweak_data.menu.pd2_large_font_size
 local movie_item_font = tweak_data.menu.pd2_large_font
 local movie_item_font_size = 28
+
 MovieListItem = MovieListItem or class(ListItem)
 MovieListItem.HEIGHT = 60
 MovieListItem.TEXT_OFFSET = 15
@@ -27,6 +28,7 @@ function MovieListItem:init(parent, item, owner)
 		x = self.HEIGHT,
 		y = self.TEXT_OFFSET
 	})
+
 	local type_text = ""
 
 	if item.type then
@@ -41,6 +43,7 @@ function MovieListItem:init(parent, item, owner)
 		x = row_w / 2 - self.HEIGHT,
 		y = self.TEXT_OFFSET
 	})
+
 	local time_text = "--:--"
 
 	if item.duration then
@@ -143,12 +146,13 @@ function MovieTheaterGui:_create_movie_list()
 	ExtendedPanel.make_fine_text(title_text)
 
 	local t_y = title_text:bottom() + 30
+
 	self._scroll = ScrollItemList:new(self._main_panel, {
-		scrollbar_padding = 10,
-		input_focus = true,
 		bar_minimum_size = 16,
 		input = true,
+		input_focus = true,
 		padding = 0,
+		scrollbar_padding = 10,
 		y = t_y,
 		h = self._main_panel:h() - t_y - 50,
 		w = self._main_panel:w()
@@ -265,7 +269,7 @@ function MovieTheaterGui:play_movie(item, blockingtag)
 	local screen_width = self._fullscreen_ws:width()
 	local screen_height = self._fullscreen_ws:height()
 	local src_width, src_height = managers.gui_data:get_base_res()
-	local dest_width, dest_height = nil
+	local dest_width, dest_height
 
 	if src_width / src_height > screen_width / screen_height then
 		dest_width = screen_width
@@ -277,6 +281,7 @@ function MovieTheaterGui:play_movie(item, blockingtag)
 
 	local x = (screen_width - dest_width) / 2
 	local y = (screen_height - dest_height) / 2
+
 	self._video_gui = self._fullscreen_ws:panel():video({
 		video = item.file,
 		x = x,

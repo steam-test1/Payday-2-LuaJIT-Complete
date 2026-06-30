@@ -19,6 +19,7 @@ core:import("CoreSsRow")
 core:import("CoreDebug")
 
 local parse_kwargs = CoreKeywordArguments.parse_kwargs
+
 GAME = CoreDependencyNode.GAME
 LEVEL = CoreDependencyNode.LEVEL
 UNIT = CoreDependencyNode.UNIT
@@ -63,6 +64,7 @@ end
 
 function DependencyParser:_make_game_node()
 	local key = self:_key(GAME, "Game")
+
 	self._key2node[key] = CoreGameDn.GameDependencyNode:new("Game", self._dn_cb, self._database)
 end
 
@@ -72,6 +74,7 @@ function DependencyParser:_make_level_nodes()
 
 		if File:exists(file) then
 			local key = self:_key(LEVEL, dir)
+
 			self._key2node[key] = CoreLevelDn.LevelDependencyNode:new(dir, self._dn_cb, self._database)
 		end
 	end
@@ -79,6 +82,7 @@ end
 
 function DependencyParser:_make_materialfile_node()
 	local key = self:_key(MATERIALS_FILE, "Materialsfile")
+
 	self._key2node[key] = CoreMaterialfileDn.MaterialsfileDependencyNode:new("Materialsfile", self._dn_cb, self._database)
 end
 
@@ -86,6 +90,7 @@ function DependencyParser:_make_nodes_from_db(dn_class, db_type)
 	for _, name in ipairs(managers.database:list_entries_of_type(db_type)) do
 		local dn = dn_class:new(name, self._dn_cb, self._database)
 		local key = self:_key(dn:type_(), name)
+
 		self._key2node[key] = dn
 	end
 end
@@ -324,6 +329,7 @@ function generate_BC_report(filepath)
 	local textures = dp:nodes(TEXTURE)
 	local effects = dp:nodes(EFFECT)
 	local prot = {}
+
 	prot = union(prot, filter(units, "terracotta.*"))
 	prot = union(prot, filter(units, "mp_.*"))
 	prot = union(prot, filter(units, "multiplayer.*"))

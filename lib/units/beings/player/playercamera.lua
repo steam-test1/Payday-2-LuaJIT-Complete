@@ -40,6 +40,7 @@ function PlayerCamera:setup_viewport(data)
 	local dimensions = data.dimensions
 	local name = "player" .. tostring(self._id)
 	local vp = managers.viewport:new_vp(dimensions.x, dimensions.y, dimensions.w, dimensions.h, name)
+
 	self._director = vp:director()
 	self._shaker = self._director:shaker()
 
@@ -79,6 +80,7 @@ end
 
 function PlayerCamera:spawn_camera_unit()
 	local lvl_tweak_data = Global.level_data and Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
+
 	self._camera_unit = World:spawn_unit(Idstring("units/payday2/characters/fps_criminals_suit_1/fps_criminals_suit_1"), self._m_cam_pos, self._m_cam_rot)
 	self._machine = self._camera_unit:anim_state_machine()
 
@@ -191,8 +193,8 @@ function PlayerCamera:_setup_sound_listener()
 
 	self._listener_activation_id = managers.listener:activate_set("main", "player_camera")
 	self._sound_check_object = managers.sound_environment:add_check_object({
-		primary = true,
 		active = true,
+		primary = true,
 		object = self._unit:orientation_object()
 	})
 end
@@ -283,6 +285,7 @@ function PlayerCamera:set_rotation(rot)
 	local t = TimerManager:game():time()
 	local sync_dt = t - self._last_sync_t
 	local sync_yaw = rot:yaw()
+
 	sync_yaw = sync_yaw % 360
 
 	if sync_yaw < 0 then
@@ -290,7 +293,8 @@ function PlayerCamera:set_rotation(rot)
 	end
 
 	sync_yaw = math.floor(255 * sync_yaw / 360)
-	local sync_pitch = nil
+
+	local sync_pitch
 
 	if _G.IS_VR then
 		sync_pitch = math.clamp(rot:pitch(), -30, 60) + 85
@@ -299,12 +303,13 @@ function PlayerCamera:set_rotation(rot)
 	end
 
 	sync_pitch = math.floor(127 * sync_pitch / 170)
+
 	local angle_delta = math.abs(self._sync_dir.yaw - sync_yaw) + math.abs(self._sync_dir.pitch - sync_pitch)
 
 	if tweak_data.network then
 		if angle_delta == 0 then
 			self._last_sync_t = t
-		elseif tweak_data.network.camera.network_sync_delta_t <= sync_dt then
+		elseif sync_dt >= tweak_data.network.camera.network_sync_delta_t then
 			local locked_look_dir = self._locked_look_dir_t and t < self._locked_look_dir_t
 
 			if _G.IS_VR then

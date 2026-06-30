@@ -176,13 +176,13 @@ function SkirmishManager:_has_players_in_custody()
 end
 
 function SkirmishManager:check_gameover_conditions()
-	return false
+	do return false end
 
 	if not self:is_skirmish() or not self._game_over_delay then
 		return false
 	end
 
-	return self._game_over_delay < Application:time()
+	return Application:time() > self._game_over_delay
 end
 
 function SkirmishManager:update()
@@ -196,7 +196,7 @@ function SkirmishManager:update()
 		self._game_over_check_needed = false
 	end
 
-	if self._game_over_check_needed and self._game_over_delay < Application:time() then
+	if self._game_over_check_needed and Application:time() > self._game_over_delay then
 		managers.groupai:state():check_gameover_conditions()
 
 		self._game_over_check_needed = false
@@ -204,9 +204,9 @@ function SkirmishManager:update()
 end
 
 function SkirmishManager:sync_save(data)
-	local state = {
-		wave_number = self:current_wave_number()
-	}
+	local state = {}
+
+	state.wave_number = self:current_wave_number()
 	data.SkirmishManager = state
 end
 
@@ -291,7 +291,7 @@ function SkirmishManager:activate_weekly_skirmish(weekly_skirmish_string, force)
 		return
 	end
 
-	local job_id, end_timestamp = nil
+	local job_id, end_timestamp
 	local modifier_ids = {}
 
 	for token in string.gmatch(weekly_skirmish_string, "([^;]+)") do
@@ -321,6 +321,7 @@ function SkirmishManager:weekly_modifiers()
 	if self:is_weekly_skirmish() and Network:is_client() then
 		if not self._host_weekly_modifiers then
 			local modifiers_string = managers.network.matchmake.lobby_handler:get_lobby_data("skirmish_weekly_modifiers")
+
 			self._host_weekly_modifiers = string.split(modifiers_string, ";")
 		end
 
@@ -359,7 +360,7 @@ function SkirmishManager:on_weekly_completed()
 
 	local wave = self:current_wave_number()
 
-	if self:weekly_progress() < wave then
+	if wave > self:weekly_progress() then
 		self._global.weekly_progress = Application:digest_value(wave, true)
 	end
 end
@@ -383,12 +384,14 @@ end
 
 function SkirmishManager:claim_reward(id)
 	local id_to_tier = {
-		[3.0] = 1,
-		[5.0] = 2,
-		[9.0] = 3
+		[3] = 1,
+		[5] = 2,
+		[9] = 3
 	}
+
 	self._global.claimed_rewards = self._global.claimed_rewards or {}
 	self._global.weekly_rewards = self._global.weekly_rewards or {}
+
 	local tier_tweak = tweak_data.skirmish.weekly_rewards[id_to_tier[id]]
 	local reward_type = table.random_key(tier_tweak)
 	local reward_list = tier_tweak[reward_type]
@@ -407,8 +410,10 @@ function SkirmishManager:claim_reward(id)
 	end
 
 	local reward = table.random(unclaimed_rewards)
+
 	claimed_rewards[reward] = true
 	self._global.claimed_rewards[reward_type] = claimed_rewards
+
 	local tweak = tweak_data.blackmarket[reward_type][reward]
 
 	managers.blackmarket:add_to_inventory(tweak.global_value or "normal", reward_type, reward)
@@ -433,9 +438,10 @@ end
 
 function SkirmishManager:add_random_special_reward(lootpool)
 	self._global.special_rewards = self._global.special_rewards or {}
+
 	local possible_rewards = {}
 	local blackmarket_tweak = tweak_data.blackmarket
-	local category_tweak, item_tweak, global_value, has_unlockable, special_category = nil
+	local category_tweak, item_tweak, global_value, has_unlockable, special_category
 
 	for category, items in pairs(lootpool) do
 		special_category = self._global.special_rewards[category]
@@ -459,12 +465,14 @@ function SkirmishManager:add_random_special_reward(lootpool)
 	end
 
 	local reward = table.random(possible_rewards)
+
 	item_tweak = blackmarket_tweak[reward.type_items][reward.item_entry]
 
 	if not item_tweak.is_a_unlockable then
 		self._global.special_rewards[reward.type_items] = self._global.special_rewards[reward.type_items] or {}
 		special_category = self._global.special_rewards[reward.type_items]
 		special_category[reward.item_entry] = true
+
 		local got_all_rewards_of_type = true
 
 		for _, entry in ipairs(lootpool[reward.type_items]) do
@@ -490,6 +498,7 @@ end
 function SkirmishManager:get_mass_drop_data()
 	local data = {}
 	local wave_progress = self:get_wave_progress()
+
 	data.coins = 0
 
 	for wave, amount in pairs(tweak_data.skirmish.additional_coins) do

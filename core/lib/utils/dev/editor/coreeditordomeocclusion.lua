@@ -26,14 +26,13 @@ function CoreEditor:_create_dome_occlusion(params)
 	self._vp:set_width_mul_enabled(false)
 	self:_set_appwin_fixed_resolution(Vector3(self._dome_occlusion_params.res + 4, self._dome_occlusion_params.res + 4, 0))
 
-	self._saved_camera = {
-		aspect_ratio = self:camera():aspect_ratio(),
-		pos = self:camera():position(),
-		rot = self:camera():rotation(),
-		fov = self:camera_fov(),
-		near_range = self:camera():near_range(),
-		far_range = self:camera():far_range()
-	}
+	self._saved_camera = {}
+	self._saved_camera.aspect_ratio = self:camera():aspect_ratio()
+	self._saved_camera.pos = self:camera():position()
+	self._saved_camera.rot = self:camera():rotation()
+	self._saved_camera.fov = self:camera_fov()
+	self._saved_camera.near_range = self:camera():near_range()
+	self._saved_camera.far_range = self:camera():far_range()
 
 	self:camera():set_aspect_ratio(1)
 	self:camera():set_width_multiplier(1)
@@ -98,8 +97,10 @@ function CoreEditor:_create_dome_occlusion(params)
 	end
 
 	local post_dome_occ = deferred_processor:modifier(Idstring("post_dome_occ"))
+
 	self._dome_occ_corner = corner
 	self._dome_occ_size = Vector3(w, d, h)
+
 	local dome_occ_feed = post_dome_occ:material()
 
 	if dome_occ_feed then
@@ -157,8 +158,11 @@ end
 function CoreEditor:_convert_dome_occlusion()
 	local path = self._dome_occlusion_params.output_path .. "\\"
 	local execute = managers.database:root_path() .. "aux_assets/engine/tools/spotmapgen.bat "
+
 	execute = execute .. path .. self._dome_occlusion_params.file_name .. ".tga" .. " "
+
 	local output_path = path .. self._dome_occlusion_params.file_name .. ".dds "
+
 	execute = execute .. output_path .. " "
 
 	print("execute", execute)

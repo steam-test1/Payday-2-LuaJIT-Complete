@@ -3,6 +3,7 @@ HUDAssaultCornerVR.old_init = HUDAssaultCorner.init
 
 function HUDAssaultCornerVR:init(hud, full_hud, tweak_hud)
 	local old_panel = hud.panel
+
 	hud.panel = managers.hud:tablet_page()
 
 	self:old_init(hud, full_hud, tweak_hud)
@@ -13,6 +14,7 @@ function HUDAssaultCornerVR:init(hud, full_hud, tweak_hud)
 	end
 
 	hud.panel = old_panel
+
 	local noreturn_text = self._noreturn_bg_box:child("point_of_no_return_text")
 
 	noreturn_text:set_text(managers.localization:to_upper_text("hud_assault_point_no_return"))
@@ -20,16 +22,17 @@ function HUDAssaultCornerVR:init(hud, full_hud, tweak_hud)
 	noreturn_text:set_right(self._noreturn_bg_box:w())
 
 	local watch_panel = managers.hud:watch_panel()
+
 	self._watch_point_of_no_return_timer = watch_panel:text({
+		align = "center",
+		font_size = 26,
+		layer = 1,
 		name = "point_of_no_return_timer",
+		text = "00:00",
 		vertical = "center",
+		visible = false,
 		word_wrap = false,
 		wrap = false,
-		font_size = 26,
-		align = "center",
-		text = "00:00",
-		visible = false,
-		layer = 1,
 		font = tweak_data.hud.medium_font_noshadow,
 		color = self._noreturn_color
 	})
@@ -68,6 +71,7 @@ end
 
 function HUDAssaultCornerVR:feed_point_of_no_return_timer(time)
 	time = math.floor(time)
+
 	local minutes = math.floor(time / 60)
 	local seconds = math.round(time - minutes * 60)
 	local text = (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
@@ -81,6 +85,7 @@ function HUDAssaultCornerVR:flash_point_of_no_return_timer()
 
 		while t < 0.5 do
 			t = t + coroutine.yield()
+
 			local color = self._noreturn_data.color or Color(1, 1, 0, 0)
 			local flash_color = self._noreturn_data.flash_color or Color(1, 1, 0.8, 0.2)
 			local n = 1 - math.sin(t * 180)

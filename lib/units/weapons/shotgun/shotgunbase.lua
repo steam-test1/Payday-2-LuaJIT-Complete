@@ -8,6 +8,7 @@ local math_cos = math.cos
 local math_rad = math.rad
 local math_random = math.random
 local math_sin = math.sin
+
 ShotgunBase = ShotgunBase or class(NewRaycastWeaponBase)
 
 function ShotgunBase:init(...)
@@ -34,14 +35,14 @@ end
 
 function ShotgunBase:_create_use_setups()
 	local use_data = {}
-	local player_setup = {
-		selection_index = tweak_data.weapon[self._name_id].use_data.selection_index,
-		equip = {
-			align_place = tweak_data.weapon[self._name_id].use_data.align_place or "left_hand"
-		},
-		unequip = {
-			align_place = "back"
-		}
+	local player_setup = {}
+
+	player_setup.selection_index = tweak_data.weapon[self._name_id].use_data.selection_index
+	player_setup.equip = {
+		align_place = tweak_data.weapon[self._name_id].use_data.align_place or "left_hand"
+	}
+	player_setup.unequip = {
+		align_place = "back"
 	}
 	use_data.player = player_setup
 	self._use_data = use_data
@@ -55,7 +56,7 @@ function ShotgunBase:fire_rate_multiplier()
 		local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
 
 		if current_state and not current_state:in_steelsight() then
-			fire_rate_mul = fire_rate_mul + 1 - self._hip_fire_rate_inc
+			fire_rate_mul = fire_rate_mul + (1 - self._hip_fire_rate_inc)
 			fire_rate_mul = self:_convert_add_to_mul(fire_rate_mul)
 		end
 	end
@@ -95,22 +96,42 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 	local hit_effects = {}
 	local all_enemies_hit = {}
 	local alert_rays = self._alert_events and {}
-	local all_hits_lookup = {}
-	local alert_rays_lookup = alert_rays and {}
 
-	local function on_hit(ray_hits)
-		for _, hit in ipairs(ray_hits) do
-			local unit_key = hit.unit:key()
-			local char_dmg_ext = hit.unit:character_damage()
+	do
+		local all_hits_lookup = {}
+		local alert_rays_lookup = alert_rays and {}
 
-			if not char_dmg_ext then
-				local base_ext = hit.unit:base()
+		local function on_hit(ray_hits)
+			for _, hit in ipairs(ray_hits) do
+				local unit_key = hit.unit:key()
+				local char_dmg_ext = hit.unit:character_damage()
 
-				if not hit.unit:in_slot(self.shield_mask) or not base_ext then
-					all_hits[#all_hits + 1] = hit
+				if not char_dmg_ext then
+					local base_ext = hit.unit:base()
 
-					if alert_rays then
-						alert_rays[#alert_rays + 1] = hit
+					if not hit.unit:in_slot(self.shield_mask) or not base_ext then
+						all_hits[#all_hits + 1] = hit
+
+						if alert_rays then
+							alert_rays[#alert_rays + 1] = hit
+						end
+					elseif not all_hits_lookup[unit_key] then
+						all_hits_lookup[unit_key] = #all_hits + 1
+						all_hits[#all_hits + 1] = hit
+
+						if alert_rays then
+							alert_rays_lookup[unit_key] = #alert_rays + 1
+							alert_rays[#alert_rays + 1] = hit
+						end
+					elseif base_ext and base_ext.chk_body_hit_priority and base_ext:chk_body_hit_priority(all_hits[all_hits_lookup[unit_key]].body, hit.body) then
+						hit_effects[#hit_effects + 1] = all_hits[all_hits_lookup[unit_key]]
+						all_hits[all_hits_lookup[unit_key]] = hit
+
+						if alert_rays then
+							alert_rays[alert_rays_lookup[unit_key]] = hit
+						end
+					else
+						hit_effects[#hit_effects + 1] = hit
 					end
 				elseif not all_hits_lookup[unit_key] then
 					all_hits_lookup[unit_key] = #all_hits + 1
@@ -120,137 +141,126 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 						alert_rays_lookup[unit_key] = #alert_rays + 1
 						alert_rays[#alert_rays + 1] = hit
 					end
-				elseif base_ext and base_ext.chk_body_hit_priority and base_ext:chk_body_hit_priority(all_hits[all_hits_lookup[unit_key]].body, hit.body) then
-					hit_effects[#hit_effects + 1] = all_hits[all_hits_lookup[unit_key]]
+				elseif char_dmg_ext.chk_body_hit_priority and char_dmg_ext:chk_body_hit_priority(all_hits[all_hits_lookup[unit_key]].body, hit.body) then
+					if not char_dmg_ext.is_head then
+						hit_effects[#hit_effects + 1] = all_hits[all_hits_lookup[unit_key]]
+					end
+
 					all_hits[all_hits_lookup[unit_key]] = hit
 
 					if alert_rays then
 						alert_rays[alert_rays_lookup[unit_key]] = hit
 					end
-				else
+				elseif not char_dmg_ext.is_head then
 					hit_effects[#hit_effects + 1] = hit
 				end
-			elseif not all_hits_lookup[unit_key] then
-				all_hits_lookup[unit_key] = #all_hits + 1
-				all_hits[#all_hits + 1] = hit
-
-				if alert_rays then
-					alert_rays_lookup[unit_key] = #alert_rays + 1
-					alert_rays[#alert_rays + 1] = hit
-				end
-			elseif char_dmg_ext.chk_body_hit_priority and char_dmg_ext:chk_body_hit_priority(all_hits[all_hits_lookup[unit_key]].body, hit.body) then
-				if not char_dmg_ext.is_head then
-					hit_effects[#hit_effects + 1] = all_hits[all_hits_lookup[unit_key]]
-				end
-
-				all_hits[all_hits_lookup[unit_key]] = hit
-
-				if alert_rays then
-					alert_rays[alert_rays_lookup[unit_key]] = hit
-				end
-			elseif not char_dmg_ext.is_head then
-				hit_effects[#hit_effects + 1] = hit
 			end
 		end
-	end
 
-	local ray_distance = self:weapon_range(user_unit)
-	local can_autoaim = self._autoaim and self._autohit_data and true or false
-	local spread_x, spread_y = self:_get_spread(user_unit)
-	spread_y = spread_y or spread_x
-	spread_mul = spread_mul or 1
+		local ray_distance = self:weapon_range(user_unit)
+		local can_autoaim = self._autoaim and self._autohit_data and true or false
+		local spread_x, spread_y = self:_get_spread(user_unit)
 
-	mvec3_cross(mvec_right, direction, math.UP)
-	mvec3_norm(mvec_right)
-	mvec3_cross(mvec_up, direction, mvec_right)
-	mvec3_norm(mvec_up)
+		spread_y = spread_y or spread_x
+		spread_mul = spread_mul or 1
 
-	for i = 1, self._rays do
-		mvec3_set(mvec_ax, mvec_right)
-		mvec3_set(mvec_ay, mvec_up)
-		mvec3_set(mvec_spread_direction, direction)
+		mvec3_cross(mvec_right, direction, math.UP)
+		mvec3_norm(mvec_right)
+		mvec3_cross(mvec_up, direction, mvec_right)
+		mvec3_norm(mvec_up)
 
-		local theta = math_random() * 360
+		for i = 1, self._rays do
+			mvec3_set(mvec_ax, mvec_right)
+			mvec3_set(mvec_ay, mvec_up)
+			mvec3_set(mvec_spread_direction, direction)
 
-		mvec3_mul(mvec_ax, math_rad(math_sin(theta) * math_random() * spread_x * spread_mul))
-		mvec3_mul(mvec_ay, math_rad(math_cos(theta) * math_random() * spread_y * spread_mul))
-		mvec3_add(mvec_spread_direction, mvec_ax)
-		mvec3_add(mvec_spread_direction, mvec_ay)
-		mvec3_set(mvec_to, mvec_spread_direction)
-		mvec3_mul(mvec_to, ray_distance)
-		mvec3_add(mvec_to, from_pos)
+			local theta = math_random() * 360
 
-		local ray_hits, hit_enemy, enemies_hit = self:_collect_hits(from_pos, mvec_to)
+			mvec3_mul(mvec_ax, math_rad(math_sin(theta) * (math_random() * spread_x) * spread_mul))
+			mvec3_mul(mvec_ay, math_rad(math_cos(theta) * (math_random() * spread_y) * spread_mul))
+			mvec3_add(mvec_spread_direction, mvec_ax)
+			mvec3_add(mvec_spread_direction, mvec_ay)
+			mvec3_set(mvec_to, mvec_spread_direction)
+			mvec3_mul(mvec_to, ray_distance)
+			mvec3_add(mvec_to, from_pos)
 
-		if can_autoaim then
-			can_autoaim = false
-			local weight = 0.1
+			local ray_hits, hit_enemy, enemies_hit = self:_collect_hits(from_pos, mvec_to)
 
-			if hit_enemy then
-				self._autohit_current = (self._autohit_current + weight) / (1 + weight)
-			else
-				local auto_hit_candidate, enemies_to_suppress = self:check_autoaim(from_pos, direction, nil, nil, nil, true)
-				result.enemies_in_cone = enemies_to_suppress or false
+			if can_autoaim then
+				can_autoaim = false
 
-				if auto_hit_candidate then
-					local autohit_chance = self:get_current_autohit_chance_for_roll()
-
-					if autohit_mul then
-						autohit_chance = autohit_chance * autohit_mul
-					end
-
-					if math_random() < autohit_chance then
-						self._autohit_current = (self._autohit_current + weight) / (1 + weight)
-
-						mvec3_set(mvec_spread_direction, auto_hit_candidate.ray)
-						mvec3_set(mvec_to, mvec_spread_direction)
-						mvec3_mul(mvec_to, ray_distance)
-						mvec3_add(mvec_to, from_pos)
-
-						ray_hits, hit_enemy, enemies_hit = self:_collect_hits(from_pos, mvec_to)
-					end
-				end
+				local weight = 0.1
 
 				if hit_enemy then
 					self._autohit_current = (self._autohit_current + weight) / (1 + weight)
-				elseif auto_hit_candidate then
-					self._autohit_current = self._autohit_current / (1 + weight)
+				else
+					local auto_hit_candidate, enemies_to_suppress = self:check_autoaim(from_pos, direction, nil, nil, nil, true)
+
+					result.enemies_in_cone = enemies_to_suppress or false
+
+					if auto_hit_candidate then
+						local autohit_chance = self:get_current_autohit_chance_for_roll()
+
+						if autohit_mul then
+							autohit_chance = autohit_chance * autohit_mul
+						end
+
+						if autohit_chance > math_random() then
+							self._autohit_current = (self._autohit_current + weight) / (1 + weight)
+
+							mvec3_set(mvec_spread_direction, auto_hit_candidate.ray)
+							mvec3_set(mvec_to, mvec_spread_direction)
+							mvec3_mul(mvec_to, ray_distance)
+							mvec3_add(mvec_to, from_pos)
+
+							ray_hits, hit_enemy, enemies_hit = self:_collect_hits(from_pos, mvec_to)
+						end
+					end
+
+					if hit_enemy then
+						self._autohit_current = (self._autohit_current + weight) / (1 + weight)
+					elseif auto_hit_candidate then
+						self._autohit_current = self._autohit_current / (1 + weight)
+					end
 				end
 			end
-		end
 
-		if hit_enemy then
-			for u_key, enemy in pairs(enemies_hit) do
-				all_enemies_hit[u_key] = enemy
+			if hit_enemy then
+				for u_key, enemy in pairs(enemies_hit) do
+					all_enemies_hit[u_key] = enemy
+				end
+			end
+
+			if ray_hits and next(ray_hits) then
+				on_hit(ray_hits)
+
+				result.hit_enemy = result.hit_enemy or ray_hits[#ray_hits].unit:character_damage() and true or false
 			end
 		end
+	end
 
-		if ray_hits and next(ray_hits) then
-			on_hit(ray_hits)
-
-			result.hit_enemy = result.hit_enemy or ray_hits[#ray_hits].unit:character_damage() and true or false
+	do
+		local function sort_f(a, b)
+			return a.distance < b.distance
 		end
-	end
 
-	local function sort_f(a, b)
-		return a.distance < b.distance
-	end
+		table.sort(all_hits, sort_f)
+		table.sort(hit_effects, sort_f)
 
-	table.sort(all_hits, sort_f)
-	table.sort(hit_effects, sort_f)
-
-	if alert_rays then
-		table.sort(alert_rays, sort_f)
+		if alert_rays then
+			table.sort(alert_rays, sort_f)
+		end
 	end
 
 	local hit_count = 0
 	local hit_anyone = false
 	local cop_kill_count = 0
-	local kill_data = {
-		kills = 0,
-		headshots = 0,
-		civilian_kills = 0
-	}
+	local kill_data = {}
+
+	kill_data.kills = 0
+	kill_data.headshots = 0
+	kill_data.civilian_kills = 0
+
 	local bullet_class = self:bullet_class()
 	local damage = self:_get_current_damage(dmg_mul)
 	local check_additional_achievements = self._ammo_data and self._ammo_data.check_additional_achievements
@@ -259,41 +269,45 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 		bullet_class:on_collision_effects(hit, self._unit, user_unit, damage)
 	end
 
-	local hit_through_wall = false
-	local hit_through_shield = false
-	local is_civ_f = CopDamage.is_civilian
+	do
+		local hit_through_wall = false
+		local hit_through_shield = false
+		local is_civ_f = CopDamage.is_civilian
 
-	for _, hit in ipairs(all_hits) do
-		local dmg = self:get_damage_falloff(damage, hit, user_unit)
+		for _, hit in ipairs(all_hits) do
+			local dmg = self:get_damage_falloff(damage, hit, user_unit)
 
-		if dmg > 0 then
-			local hit_result = bullet_class:on_collision(hit, self._unit, user_unit, dmg)
-			hit_result = managers.mutators:modify_value("ShotgunBase:_fire_raycast", hit_result)
+			if dmg > 0 then
+				local hit_result = bullet_class:on_collision(hit, self._unit, user_unit, dmg)
 
-			if check_additional_achievements then
-				hit_through_wall = hit_through_wall or hit.unit:in_slot(self.wall_mask)
-				hit_through_shield = hit_through_shield or hit.unit:in_slot(self.shield_mask) and alive(hit.unit:parent())
-			end
+				hit_result = managers.mutators:modify_value("ShotgunBase:_fire_raycast", hit_result)
 
-			if hit_result then
-				hit.damage_result = hit_result
-				hit_anyone = true
-				hit_count = hit_count + 1
+				if check_additional_achievements then
+					hit_through_wall = hit_through_wall or hit.unit:in_slot(self.wall_mask)
+					hit_through_shield = hit_through_shield or hit.unit:in_slot(self.shield_mask) and alive(hit.unit:parent())
+				end
 
-				if hit_result.type == "death" then
-					kill_data.kills = kill_data.kills + 1
-					local unit_base = hit.unit:base()
-					local unit_type = unit_base and unit_base._tweak_table
-					local is_civilian = unit_type and is_civ_f(unit_type)
+				if hit_result then
+					hit.damage_result = hit_result
+					hit_anyone = true
+					hit_count = hit_count + 1
 
-					if is_civilian then
-						kill_data.civilian_kills = kill_data.civilian_kills + 1
-					else
-						cop_kill_count = cop_kill_count + 1
-					end
+					if hit_result.type == "death" then
+						kill_data.kills = kill_data.kills + 1
 
-					if check_additional_achievements then
-						self:_check_kill_achievements(cop_kill_count, unit_base, unit_type, is_civilian, hit_through_wall, hit_through_shield)
+						local unit_base = hit.unit:base()
+						local unit_type = unit_base and unit_base._tweak_table
+						local is_civilian = unit_type and is_civ_f(unit_type)
+
+						if is_civilian then
+							kill_data.civilian_kills = kill_data.civilian_kills + 1
+						else
+							cop_kill_count = cop_kill_count + 1
+						end
+
+						if check_additional_achievements then
+							self:_check_kill_achievements(cop_kill_count, unit_base, unit_type, is_civilian, hit_through_wall, hit_through_shield)
+						end
 					end
 				end
 			end
@@ -310,6 +324,7 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 		result.enemies_in_cone = self._suppression and self:check_suppression(from_pos, direction, all_enemies_hit) or nil
 	elseif all_enemies_hit and self._suppression then
 		result.enemies_in_cone = result.enemies_in_cone or {}
+
 		local all_enemies = managers.enemy:all_enemies()
 
 		for u_key, enemy in pairs(all_enemies_hit) do
@@ -347,7 +362,7 @@ function ShotgunBase:_check_one_shot_shotgun_achievements(kill_data)
 	local blueprint = self._blueprint
 
 	for key, data in pairs(tweak_data.achievement.shotgun_single_shot_kills) do
-		if data.headshot and data.count <= kill_data.headshots - kill_data.civilian_kills or data.count <= kill_data.kills - kill_data.civilian_kills then
+		if data.headshot and kill_data.headshots - kill_data.civilian_kills >= data.count or kill_data.kills - kill_data.civilian_kills >= data.count then
 			local should_award = true
 
 			if data.blueprint then
@@ -403,16 +418,17 @@ InstantElectricBulletBase = InstantElectricBulletBase or class(InstantBulletBase
 
 function InstantElectricBulletBase:give_impact_damage(col_ray, weapon_unit, user_unit, damage, armor_piercing)
 	local hit_unit = col_ray.unit
-	local action_data = {
-		damage = 0,
-		weapon_unit = weapon_unit,
-		attacker_unit = user_unit,
-		col_ray = col_ray,
-		armor_piercing = armor_piercing,
-		attacker_unit = user_unit,
-		attack_dir = col_ray.ray,
-		variant = weapon_unit:base() and weapon_unit:base().get_tase_strength and weapon_unit:base():get_tase_strength() or "light"
-	}
+	local action_data = {}
+
+	action_data.damage = 0
+	action_data.weapon_unit = weapon_unit
+	action_data.attacker_unit = user_unit
+	action_data.col_ray = col_ray
+	action_data.armor_piercing = armor_piercing
+	action_data.attacker_unit = user_unit
+	action_data.attack_dir = col_ray.ray
+	action_data.variant = weapon_unit:base() and weapon_unit:base().get_tase_strength and weapon_unit:base():get_tase_strength() or "light"
+
 	local defense_data = hit_unit and hit_unit:character_damage().damage_tase and hit_unit:character_damage():damage_tase(action_data)
 
 	return defense_data

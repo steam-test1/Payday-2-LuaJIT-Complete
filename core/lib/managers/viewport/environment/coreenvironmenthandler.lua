@@ -2,9 +2,11 @@ core:module("CoreEnvironmentHandler")
 core:import("CoreClass")
 
 local dummy_material = {
-	set_variable = function ()
+	set_variable = function()
+		return
 	end
 }
+
 EnvironmentHandler = EnvironmentHandler or CoreClass.class()
 EnvironmentHandler.AREAS_PER_FRAME = 1
 
@@ -48,7 +50,7 @@ function EnvironmentHandler:set_environment(path, blend_duration, blend_bezier_c
 	end
 
 	local env_data = self._env_manager:_get_data(path)
-	local filtered_env_data = nil
+	local filtered_env_data
 
 	if filter_list then
 		filtered_env_data = {}
@@ -195,7 +197,7 @@ function EnvironmentHandler:editor_set_value(data_path_key, value)
 end
 
 function EnvironmentHandler:update(is_first_viewport, viewport, dt)
-	local scale = nil
+	local scale
 
 	if self._blend_duration then
 		self._blend_time = self._blend_time + dt
@@ -216,7 +218,7 @@ function EnvironmentHandler:update(is_first_viewport, viewport, dt)
 
 	self:set_first_viewport(is_first_viewport)
 
-	local remove_update_list = nil
+	local remove_update_list
 
 	for data_path_key, feeder in pairs(self._update_feeder_map) do
 		local is_done, is_not_changed = feeder:update(self, scale)
@@ -329,6 +331,7 @@ function EnvironmentHandler:_check_inside(check_pos, area_list, min_prio)
 
 		for i = 1, area_count do
 			local area = area_list[self._area_iterator]
+
 			self._area_iterator = math.mod(self._area_iterator, area_count) + 1
 
 			if area:is_higher_prio(min_prio) then
@@ -380,7 +383,7 @@ end
 
 function EnvironmentHandler:_get_post_processor_modifier_material(viewport, scene, id, ids_processor_name, ids_effect_name, ids_modifier)
 	local scene_map = self._post_processor_modifier_material_map[scene]
-	local material = nil
+	local material
 
 	if not scene_map then
 		scene_map = {}

@@ -93,7 +93,7 @@ end
 function PlayerCivilian:update(t, dt)
 	PlayerCivilian.super.update(self, t, dt)
 
-	if self._show_casing_t and self._show_casing_t < t then
+	if self._show_casing_t and t > self._show_casing_t then
 		self._show_casing_t = nil
 
 		managers.hud:show_casing("civilian")
@@ -102,12 +102,14 @@ end
 
 function PlayerCivilian:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
+
 	self._stick_move = self._controller:get_input_axis("move")
 
 	if mvector3.length(self._stick_move) < 0.1 or self:_interacting() then
 		self._move_dir = nil
 	else
 		self._move_dir = mvector3.copy(self._stick_move)
+
 		local cam_flat_rot = Rotation(self._cam_fwd_flat, math.UP)
 
 		mvector3.rotate_with(self._move_dir, cam_flat_rot)
@@ -147,14 +149,12 @@ function PlayerCivilian:_update_check_actions(t, dt)
 end
 
 function PlayerCivilian:_check_action_interact(t, input)
-	local new_action, timer, interact_object, pressed, released, holding = nil
+	local new_action, timer, interact_object, pressed, released, holding
 
 	if self._interact_expire_t then
 		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_interact_press, input.btn_interact_release, input.btn_interact_state)
 	else
-		holding = input.btn_interact_state
-		released = input.btn_interact_release
-		pressed = input.btn_interact_press
+		pressed, released, holding = input.btn_interact_press, input.btn_interact_release, input.btn_interact_state
 	end
 
 	if pressed then
@@ -234,6 +234,7 @@ end
 function PlayerCivilian:_update_interaction_timers(t)
 	if self._interact_expire_t then
 		local dt = self:_get_interaction_speed()
+
 		self._interact_expire_t = self._interact_expire_t - dt
 
 		if not alive(self._interact_params.object) or self._interact_params.object ~= managers.interaction:active_unit() or self._interact_params.tweak_data ~= self._interact_params.object:interaction().tweak_data or self._interact_params.object:interaction():check_interupt() then

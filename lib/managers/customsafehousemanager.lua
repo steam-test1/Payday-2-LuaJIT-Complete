@@ -3,6 +3,7 @@ require("lib/utils/accelbyte/Telemetry")
 require("lib/utils/accelbyte/TelemetryConst")
 
 local one_day_seconds = 86400
+
 CustomSafehouseManager = CustomSafehouseManager or class()
 CustomSafehouseManager.SAVE_DATA_VERSION = 2
 CustomSafehouseManager.SPAWN_COOLDOWN = one_day_seconds * 3
@@ -26,17 +27,16 @@ function CustomSafehouseManager:_setup()
 	self._highest_tier = #tweak_data.safehouse.prices.rooms
 
 	if not Global.custom_safehouse_manager then
-		Global.custom_safehouse_manager = {
-			total = Application:digest_value(0, true),
-			total_collected = Application:digest_value(0, true),
-			prev_total = Application:digest_value(0, true),
-			rooms = {}
-		}
+		Global.custom_safehouse_manager = {}
+		Global.custom_safehouse_manager.total = Application:digest_value(0, true)
+		Global.custom_safehouse_manager.total_collected = Application:digest_value(0, true)
+		Global.custom_safehouse_manager.prev_total = Application:digest_value(0, true)
+		Global.custom_safehouse_manager.rooms = {}
 
 		for index, data in ipairs(tweak_data.safehouse.rooms) do
 			Global.custom_safehouse_manager.rooms[data.room_id] = {
-				tier_start = 1,
 				tier_current = 1,
+				tier_start = 1,
 				tier_max = data.tier_max or self._highest_tier,
 				unlocked_tiers = {
 					1
@@ -91,12 +91,12 @@ function CustomSafehouseManager:save(data)
 	local trophies = {}
 
 	for idx, trophy in ipairs(self._global.trophies) do
-		local trophy_data = {
-			id = trophy.id,
-			objectives = {},
-			completed = trophy.completed,
-			displayed = trophy.displayed
-		}
+		local trophy_data = {}
+
+		trophy_data.id = trophy.id
+		trophy_data.objectives = {}
+		trophy_data.completed = trophy.completed
+		trophy_data.displayed = trophy.displayed
 
 		for _, objective in ipairs(trophy.objectives) do
 			local objective_data = {}
@@ -120,9 +120,10 @@ function CustomSafehouseManager:save(data)
 		daily = self._global.daily,
 		has_entered_safehouse = self._global._has_entered_safehouse or false,
 		spawn_cooldown = self._global._spawn_cooldown or 0,
-		new_player = self._global._new_player or false,
-		uno_achievement_challenge = self._uno_achievement_challenge:save()
+		new_player = self._global._new_player or false
 	}
+
+	state.uno_achievement_challenge = self._uno_achievement_challenge:save()
 	data.CustomSafehouseManager = state
 end
 
@@ -216,6 +217,7 @@ function CustomSafehouseManager:total_coins_earned()
 end
 
 function CustomSafehouseManager:update_previous_coins()
+	return
 end
 
 function CustomSafehouseManager:coins_spent()
@@ -229,6 +231,7 @@ function CustomSafehouseManager:add_coins(amount, reason)
 
 	local new_total = self:total_coins_earned() + amount
 	local new_current = self:coins() + amount
+
 	Global.custom_safehouse_manager.total = Application:digest_value(new_current, true)
 	Global.custom_safehouse_manager.total_collected = Application:digest_value(new_total, true)
 
@@ -254,6 +257,7 @@ function CustomSafehouseManager:add_coins_ingore_locked(amount, reason)
 
 	local new_total = self:total_coins_earned() + amount
 	local new_current = self:coins() + amount
+
 	Global.custom_safehouse_manager.total = Application:digest_value(new_current, true)
 	Global.custom_safehouse_manager.total_collected = Application:digest_value(new_total, true)
 
@@ -304,7 +308,7 @@ function CustomSafehouseManager:set_host_room_tier(room_id, room_tier)
 end
 
 function CustomSafehouseManager:send_room_tiers(peer)
-	local send_func = nil
+	local send_func
 
 	if peer then
 		function send_func(room_name, room_tier)
@@ -348,6 +352,7 @@ end
 function CustomSafehouseManager:set_room_tier(room_id, tier)
 	if self:is_room_tier_unlocked(room_id, tier) then
 		local room = self._global.rooms[room_id]
+
 		room.tier_current = math.clamp(tier, 1, room.tier_max)
 
 		return true
@@ -406,7 +411,7 @@ function CustomSafehouseManager:can_afford_tier(tier)
 	if tier > #tweak_data.safehouse.prices.rooms then
 		return false
 	else
-		return tweak_data.safehouse.prices.rooms[tier] <= self:coins()
+		return self:coins() >= tweak_data.safehouse.prices.rooms[tier]
 	end
 end
 
@@ -469,9 +474,7 @@ function CustomSafehouseManager:can_afford_any_upgrade()
 	for room_id, data in pairs(self._global.rooms) do
 		local tier = self:get_next_tier_unlocked(room_id)
 
-		if tier and prices[tier] ~= nil and prices[tier] < cheapest_upgrade then
-			cheapest_upgrade = prices[tier] or cheapest_upgrade
-		end
+		cheapest_upgrade = tier and prices[tier] ~= nil and cheapest_upgrade > prices[tier] and prices[tier] or cheapest_upgrade
 	end
 
 	return cheapest_upgrade <= self:coins()
@@ -481,7 +484,7 @@ function CustomSafehouseManager:total_room_unlocks()
 	local total = 0
 
 	for id, data in pairs(self._global.rooms) do
-		total = total + data.tier_max - data.tier_start
+		total = total + (data.tier_max - data.tier_start)
 	end
 
 	return total
@@ -491,7 +494,7 @@ function CustomSafehouseManager:total_room_unlocks_purchased()
 	local total = 0
 
 	for character, data in pairs(self._global.rooms) do
-		total = total + #data.unlocked_tiers - 1
+		total = total + (#data.unlocked_tiers - 1)
 	end
 
 	return total
@@ -544,6 +547,7 @@ function CustomSafehouseManager:set_trophy_displayed(id, displayed)
 		end
 
 		local trophy = self:get_trophy(id)
+
 		trophy.displayed = displayed
 	end
 end
@@ -651,7 +655,7 @@ function CustomSafehouseManager:_update_trophy_progress(trophy, key, id, amount,
 
 			if pass then
 				objective.progress = math.floor(math.min((objective.progress or 0) + amount, objective.max_progress))
-				objective.completed = objective.max_progress <= objective.progress
+				objective.completed = objective.progress >= objective.max_progress
 
 				for _, objective in ipairs(trophy.objectives) do
 					if not objective.completed then
@@ -871,7 +875,7 @@ function CustomSafehouseManager:_get_random_daily()
 		selector:add(data, data.weighting)
 	end
 
-	local contractor, daily_id = nil
+	local contractor, daily_id
 
 	while not daily_id do
 		contractor = selector:select()
@@ -948,7 +952,7 @@ function CustomSafehouseManager:generate_daily(id, tag)
 end
 
 function CustomSafehouseManager:check_if_new_daily_available()
-	local generate_new = self:interval_til_new_daily() < self:get_timestamp() - Global.custom_safehouse_manager.daily.timestamp
+	local generate_new = self:get_timestamp() - Global.custom_safehouse_manager.daily.timestamp > self:interval_til_new_daily()
 
 	if generate_new then
 		self:generate_daily()
@@ -1021,7 +1025,7 @@ function CustomSafehouseManager:is_being_raided()
 
 	local server_time = self:_get_server_time() or 0
 
-	return self.SPAWN_COOLDOWN <= server_time - (self._global._spawn_cooldown or 0)
+	return server_time - (self._global._spawn_cooldown or 0) >= self.SPAWN_COOLDOWN
 end
 
 function CustomSafehouseManager:tick_safehouse_spawn()
@@ -1076,6 +1080,7 @@ function CustomSafehouseManager:spawn_safehouse_contract()
 end
 
 function CustomSafehouseManager:spawn_safehouse_combat_contract()
+	return
 end
 
 function CustomSafehouseManager:remove_combat_contract()

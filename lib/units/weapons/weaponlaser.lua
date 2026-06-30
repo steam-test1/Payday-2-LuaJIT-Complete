@@ -35,7 +35,9 @@ function WeaponLaser:init(unit)
 
 	self._on_event = "gadget_laser_aim_on"
 	self._off_event = "gadget_laser_aim_off"
+
 	local obj = self._unit:get_object(Idstring("a_laser"))
+
 	self._laser_obj = obj
 	self._g_laser = self._unit:get_object(Idstring("g_laser"))
 	self._g_indicator = self._unit:get_object(Idstring("g_indicator"))
@@ -119,6 +121,7 @@ function WeaponLaser:update(unit, t, dt)
 			self._light_glow:set_spot_angle_end(math.lerp(8, 80, ray.distance / self._max_distance))
 
 			local scale = (math.clamp(ray.distance, self._max_distance - self._scale_distance, self._max_distance) - (self._max_distance - self._scale_distance)) / self._scale_distance
+
 			scale = 1 - scale
 
 			self._light:set_multiplier(scale)
@@ -172,6 +175,7 @@ end
 
 function WeaponLaser:set_color_by_theme(type)
 	self._theme_type = type
+
 	local theme = self._themes[type] or self._themes.default
 
 	mvector3.set(self._light_color, theme.light)
@@ -232,7 +236,8 @@ function WeaponMultiLaser:init(unit)
 
 	mvector3.set(self._light_glow_color, self._themes[self._theme_type].glow)
 
-	local obj = nil
+	local obj
+
 	self._g_lasers = {}
 
 	for index, obj_name in ipairs(self.g_lasers or {}) do
@@ -322,6 +327,7 @@ function WeaponMultiLaser:update(unit, t, dt)
 				light_glow:set_spot_angle_end(math.lerp(8, 80, ray.distance / self._max_distance))
 
 				local scale = (math.clamp(ray.distance, self._max_distance - self._scale_distance, self._max_distance) - (self._max_distance - self._scale_distance)) / self._scale_distance
+
 				scale = 1 - scale
 
 				light:set_multiplier(scale)
@@ -373,6 +379,7 @@ end
 
 function WeaponMultiLaser:set_color_by_theme(type)
 	self._theme_type = type
+
 	local theme = self._themes[type] or self._themes.default
 
 	mvector3.set(self._light_color, theme.light)
@@ -426,6 +433,7 @@ end
 
 WatchLaser = WatchLaser or class()
 WatchLaser.MAX_DISTANCE = 68
+
 local mrot1 = Rotation()
 
 function WatchLaser:init(unit)

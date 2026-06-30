@@ -30,11 +30,11 @@ end
 function ListenerManager:get_closest_listener_position(position)
 	Application:error("ListenerManager:get_closest_listener_position dont function in wwise yet")
 
-	return
+	do return end
 
-	local closest_position, closest_distance = nil
+	local closest_position, closest_distance
 
-	self:callback_on_all_active_listeners(function (listener_id)
+	self:callback_on_all_active_listeners(function(listener_id)
 		local distance_obj = Sound:listener(listener_id)
 
 		if alive(distance_obj) then
@@ -55,7 +55,7 @@ function ListenerManager:set_enabled(enabled)
 	enabled = not not enabled
 
 	if self._enabled ~= enabled then
-		self:callback_on_all_active_listeners(function (listener_id)
+		self:callback_on_all_active_listeners(function(listener_id)
 			self._listener_map[listener_id].listener:activate(enabled)
 		end)
 
@@ -240,6 +240,7 @@ function ListenerManager:add_listener(category_id, distance_obj, orientation_obj
 		occlusion_obj = occlusion_obj
 	}
 	local key = listener:key()
+
 	self._listener_map[key] = listener_data
 	listener_map[key] = listener_data
 
@@ -347,6 +348,7 @@ function ListenerManager:activate_set(stack_id, set_id)
 
 			local link_id = active_set_stack:add(set_id)
 			local activation_id = self._last_activation_id + 1
+
 			self._activation_map[activation_id] = {
 				stack_id = stack_id,
 				set_id = set_id,
@@ -409,6 +411,7 @@ end
 
 function ListenerManager:_deactivate_set(set_id)
 	local active_set_count = self._active_set_count_map[set_id]
+
 	active_set_count = active_set_count - 1
 
 	if active_set_count <= 0 then

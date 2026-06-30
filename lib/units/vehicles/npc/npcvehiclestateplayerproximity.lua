@@ -5,6 +5,7 @@ function NpcVehicleStatePlayerProximity:init(unit)
 end
 
 function NpcVehicleStatePlayerProximity:on_enter(npc_driving_ext)
+	return
 end
 
 function NpcVehicleStatePlayerProximity:on_exit(npc_driving_ext)
@@ -12,6 +13,7 @@ function NpcVehicleStatePlayerProximity:on_exit(npc_driving_ext)
 end
 
 function NpcVehicleStatePlayerProximity:update(t, dt)
+	return
 end
 
 function NpcVehicleStatePlayerProximity:name()

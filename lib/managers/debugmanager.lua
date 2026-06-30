@@ -15,6 +15,7 @@ local mvec3_rot = mvector3.rotate_with
 local mvec3_rand_orth = mvector3.random_orthogonal
 local mvec3_lerp = mvector3.lerp
 local mrot_axis_angle = mrotation.set_axis_angle
+
 DebugManager = DebugManager or class(CoreDebugManager.DebugManager)
 
 function DebugManager:qa_debug(username)
@@ -27,6 +28,7 @@ end
 
 function DebugManager:set_qa_debug_enabled(username, enabled)
 	enabled = not not enabled
+
 	local cat_print_list = {
 		"qa"
 	}

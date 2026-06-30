@@ -69,6 +69,7 @@ function PlayerHandStateDriving:update(t, dt)
 
 	self._tweak = tweak_data.vr.driving
 	self._tweak = self._tweak[self._vehicle.vehicle_unit:vehicle_driving().tweak_data]
+
 	local controller = managers.vr:hand_state_machine():controller()
 	local player_unit = managers.player:player_unit()
 
@@ -275,6 +276,7 @@ function PlayerHandStateDriving:update(t, dt)
 						local throttle_offset = self._tweak.throttle.offset or 0
 						local val = angle + throttle_offset
 						local max_angle = self._tweak.throttle.max_angle or 90
+
 						val = math.clamp(val / max_angle, -0.99, 0.99)
 
 						if math.abs(val) < 0.1 then

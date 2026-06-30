@@ -71,6 +71,7 @@ function FiniteStateMachine:_set_state(new_state_class, ...)
 	local init_function = new_state_class.init
 
 	function new_state_class.init()
+		return
 	end
 
 	self._state = new_state_class:new()

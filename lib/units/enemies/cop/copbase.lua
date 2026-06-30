@@ -1,6 +1,7 @@
 local ids_lod = Idstring("lod")
 local ids_lod1 = Idstring("lod1")
 local ids_ik_aim = Idstring("ik_aim")
+
 CopBase = CopBase or class(UnitBase)
 CopBase._anim_lods = {
 	{
@@ -23,14 +24,17 @@ CopBase._anim_lods = {
 	}
 }
 CopBase._material_translation_map = {}
-local character_path = ""
-local char_map = tweak_data.character.character_map()
 
-for _, data in pairs(char_map) do
-	for _, character in ipairs(data.list) do
-		character_path = data.path .. character .. "/" .. character
-		CopBase._material_translation_map[tostring(Idstring(character_path):key())] = Idstring(character_path .. "_contour")
-		CopBase._material_translation_map[tostring(Idstring(character_path .. "_contour"):key())] = Idstring(character_path)
+do
+	local character_path = ""
+	local char_map = tweak_data.character.character_map()
+
+	for _, data in pairs(char_map) do
+		for _, character in ipairs(data.list) do
+			character_path = data.path .. character .. "/" .. character
+			CopBase._material_translation_map[tostring(Idstring(character_path):key())] = Idstring(character_path .. "_contour")
+			CopBase._material_translation_map[tostring(Idstring(character_path .. "_contour"):key())] = Idstring(character_path)
+		end
 	end
 end
 
@@ -43,10 +47,9 @@ function CopBase:init(unit)
 	self:_set_tags(self._char_tweak.tags)
 
 	self._visibility_state = true
-	self._foot_obj_map = {
-		right = self._unit:get_object(Idstring("RightToeBase")),
-		left = self._unit:get_object(Idstring("LeftToeBase"))
-	}
+	self._foot_obj_map = {}
+	self._foot_obj_map.right = self._unit:get_object(Idstring("RightToeBase"))
+	self._foot_obj_map.left = self._unit:get_object(Idstring("LeftToeBase"))
 	self._is_in_original_material = true
 	self._buffs = {}
 	self._original_tweak_table = self._tweak_table
@@ -69,6 +72,7 @@ function CopBase:post_init()
 
 	if self._post_init_change_tweak_name then
 		local new_tweak_name = self._post_init_change_tweak_name
+
 		self._post_init_change_tweak_name = nil
 
 		self:change_char_tweak(new_tweak_name)
@@ -168,9 +172,8 @@ function CopBase:_set_tags(tags)
 	if tag_type == "table" then
 		self._tags = table.list_to_set(clone(tags))
 	elseif tag_type == "string" then
-		self._tags = {
-			[tags] = true
-		}
+		self._tags = {}
+		self._tags[tags] = true
 	else
 		self._tags = nil
 	end
@@ -292,7 +295,9 @@ function CopBase:set_force_invisible(state)
 		end
 	elseif self._force_invisible then
 		self._force_invisible = false
+
 		local new_lod = self._lod_stage
+
 		self._lod_stage = false
 
 		self:set_visibility_state(new_lod)
@@ -585,6 +590,7 @@ function CopBase:_refresh_buff_total(name)
 	end
 
 	local sync_value = math.round(sum * 1000)
+
 	buff_list._total = sync_value * 0.001
 
 	managers.network:session():send_to_peers_synched("sync_enemy_buff", self._unit, name, sync_value)
@@ -612,6 +618,7 @@ function CopBase:add_buff(name, value)
 
 	local buff_list = self._buffs[name]
 	local id = buff_list._next_id
+
 	buff_list.buffs[id] = value
 	buff_list._next_id = id + 1
 
@@ -688,8 +695,10 @@ function CopBase:change_char_tweak(new_tweak_name)
 	end
 
 	local old_tweak_data = self._char_tweak
+
 	self._tweak_table = new_tweak_name
 	self._char_tweak = new_tweak_data
+
 	local old_tags = self._tags
 	local was_special = self:has_tag("special")
 

@@ -3,14 +3,17 @@ require("lib/units/beings/player/PlayerMovementInputVR")
 
 local WARP_TYPE_MOVE = 0
 local WARP_TYPE_JUMP = 1
+
 WarpCommonState = WarpCommonState or class()
 WarpCommonState.WARP_MIN_TH = 100
 WarpCommonState.HUSK_SPEED = tweak_data.player.movement_state.standard.movement.speed.RUNNING_MAX
 
 function WarpCommonState:init()
+	return
 end
 
 function WarpCommonState:destroy()
+	return
 end
 
 function WarpCommonState:climb_ladder()
@@ -26,10 +29,12 @@ function WarpCommonState:warp()
 end
 
 function WarpCommonState:transition()
+	return
 end
 
 function WarpCommonState:_setup_warp(warp_type, target, cost)
 	local distance = mvector3.distance(self.params.unit:position(), target)
+
 	self.params.state_data._warp_distance = distance
 	self.params.state_data._warp_cost = cost and distance / self.params.state_data._wanted_husk_speed or 0
 	self.params.state_data._warp_target = target
@@ -96,7 +101,9 @@ function WarpTargetState:transition()
 
 	local targeting = self.params.input:state().warp_target
 	local warp_button_state = self.params.input:state().warp
+
 	self.params.state_data._hold_warp = self.params.state_data._hold_warp and warp_button_state
+
 	local should_warp = warp_button_state
 
 	if not should_warp and not targeting then
@@ -113,7 +120,8 @@ function WarpTargetState:transition()
 			local warp_max_time = math.max(PlayerStandardVR.MAX_WARP_DESYNC_TIME - timer, 0)
 			local wanted_distance = tp and mvector3.distance(tp, self.params.unit:position()) or 0
 			local time_th = tweak_data.vr.autowarp_length[length] * PlayerStandardVR.MAX_WARP_DESYNC_TIME
-			should_warp = self.WARP_MIN_TH < wanted_distance and warp_max_time - time_th >= -0.05 and self.params.state_data._warp_time_since_start - 0.35 >= -0.05
+
+			should_warp = wanted_distance > self.WARP_MIN_TH and warp_max_time - time_th >= -0.05 and self.params.state_data._warp_time_since_start - 0.35 >= -0.05
 		else
 			should_warp = false
 		end
@@ -184,6 +192,7 @@ end
 WarpIdleState = WarpIdleState or class(WarpCommonState)
 
 function WarpIdleState:init()
+	return
 end
 
 function WarpIdleState:transition()
@@ -192,7 +201,9 @@ function WarpIdleState:transition()
 	end
 
 	local warping = self.params.input:state().warp
+
 	self.params.state_data._hold_warp = self.params.state_data._hold_warp and warping
+
 	local touching = self.params.input:state().warp_target
 	local autowarp = managers.vr:get_setting("autowarp_length") ~= "off"
 
@@ -204,6 +215,7 @@ function WarpIdleState:transition()
 end
 
 PlayerStandardVR = PlayerStandard or Application:error("PlayerStandardVR requires PlayerStandard!")
+
 local __init_standard = PlayerStandard.init
 local __update_standard = PlayerStandard.update
 local __enter_standard = PlayerStandard.enter
@@ -211,6 +223,7 @@ local __exit_standard = PlayerStandard.exit
 local __start_action_ducking_standard = PlayerStandard._start_action_ducking
 local __start_action_zipline_standard = PlayerStandard._start_action_zipline
 local __end_action_zipline_standard = PlayerStandard._end_action_zipline
+
 PlayerStandardVR.WARP_SPEED = 3000
 PlayerStandardVR.DUCK_START_TH = 30
 PlayerStandardVR.DUCK_END_TH = 5
@@ -225,6 +238,7 @@ function PlayerStandardVR:init(unit)
 	__init_standard(self, unit)
 
 	local controller = unit:base():controller()
+
 	self._camera_base_rot = self._camera_unit:base():base_rotation()
 	self._cur_hmd_position = VRManager:hmd_position()
 
@@ -249,6 +263,7 @@ end
 function PlayerStandardVR:_start_action_jump(t)
 	self._jump_start_pos = mvector3.copy(self._pos)
 	self._jump_end_pos = mvector3.copy(self._state_data._warp_target)
+
 	local jump_vec = self._jump_end_pos - self._jump_start_pos
 
 	mvector3.set_z(jump_vec, 0)
@@ -277,6 +292,7 @@ function PlayerStandardVR:_start_action_warp(t)
 	self:_interupt_action_steelsight(t)
 
 	local cost = self._state_data._warp_cost
+
 	self._state_data._warp_timer = (self._state_data._warp_timer or 0) + cost
 	self._state_data._warp_start_time = t
 	self._state_data.warping = true
@@ -330,13 +346,15 @@ function PlayerStandardVR:_end_action_warp(t)
 			}
 		end
 
-		if self._state_data.warp_health.amount < total_amount then
+		if total_amount > self._state_data.warp_health.amount then
 			health_regen = math.min(health_regen, total_amount - self._state_data.warp_health.amount)
+
 			local prev_health = self._ext_damage:get_real_health()
 
 			self._ext_damage:restore_health(health_regen, true)
 
 			local amount_healed = self._ext_damage:get_real_health() - prev_health
+
 			self._state_data.warp_health.amount = self._state_data.warp_health.amount + amount_healed
 		end
 	end
@@ -353,7 +371,7 @@ function PlayerStandardVR:_end_action_warp(t)
 			}
 		end
 
-		if self._state_data.warp_armor.restores < max_restores then
+		if max_restores > self._state_data.warp_armor.restores then
 			self._ext_damage:restore_armor(armor_regen)
 
 			self._state_data.warp_armor.restores = self._state_data.warp_armor.restores + 1
@@ -367,8 +385,8 @@ function PlayerStandardVR:_end_action_warp(t)
 		self._ext_damage:add_temporary_dodge(dodge_increase, time)
 	end
 
-	local move_min = tweak_data.vr.post_warp.min
-	local move_max = tweak_data.vr.post_warp.max
+	local move_min, move_max = tweak_data.vr.post_warp.min, tweak_data.vr.post_warp.max
+
 	self._post_warp_skill_t = t + warp_amount * (move_max - move_min) + move_max
 	self._moving = true
 
@@ -378,6 +396,7 @@ function PlayerStandardVR:_end_action_warp(t)
 		managers.player:register_message(Message.OnEnemyKilled, "fear_nearby_enemies", callback(self, self, "_fear_nearby_enemies", distance))
 
 		local active_time = (max - min) * warp_amount + min
+
 		self._post_warp_suppression_t = t + active_time
 	end
 
@@ -522,10 +541,13 @@ function PlayerStandardVR:_update_variables(t, dt)
 		end
 
 		local is_running = self:_can_run() and not self._state_data._warp_stamina_drained
+
 		self._state_data._wanted_husk_speed = self:_get_max_walk_speed(t, is_running)
+
 		local timer = self._state_data._warp_timer or 0
 		local warp_max_time = math.max(self.MAX_WARP_DESYNC_TIME - timer, 0)
 		local warp_range = math.min(self._state_data._wanted_husk_speed * warp_max_time, self.MAX_WARP_DISTANCE)
+
 		self._state_data._warp_range = warp_range
 		self._state_data._warp_max_range = math.min(self.MAX_WARP_DESYNC_TIME * self._state_data._wanted_husk_speed, self.MAX_WARP_DISTANCE)
 		self._state_data._warp_time_since_start = t - (self._state_data._warp_start_time or 0)
@@ -534,13 +556,14 @@ function PlayerStandardVR:_update_variables(t, dt)
 		if self._ext_movement:is_above_stamina_threshold() then
 			local stamina = self._ext_movement:stamina()
 			local jump_run_time = (stamina - tweak_data.player.movement_state.stamina.JUMP_STAMINA_DRAIN) / tweak_data.player.movement_state.stamina.STAMINA_DRAIN_RATE_WARP
+
 			self._state_data._warp_stamina_jump_run_time = jump_run_time
 		else
 			self._state_data._warp_stamina_jump_run_time = 0
 		end
 	end
 
-	if self._post_warp_suppression_t and self._post_warp_suppression_t < t then
+	if self._post_warp_suppression_t and t > self._post_warp_suppression_t then
 		managers.player:unregister_message(Message.OnEnemyKilled, "fear_nearby_enemies")
 	end
 end
@@ -632,6 +655,7 @@ function PlayerStandardVR:_update_movement(t, dt)
 
 		pos_new = pos_new + pos_diff
 		self._pos = self._pos + movement
+
 		local len = mvector3.length(mvec_mover_to_ghost)
 
 		if len > 30 then
@@ -680,7 +704,7 @@ function PlayerStandardVR:_update_movement(t, dt)
 		self._jump_timer = self._jump_timer + dt
 	end
 
-	if self._post_warp_skill_t and self._post_warp_skill_t < t then
+	if self._post_warp_skill_t and t > self._post_warp_skill_t then
 		self._moving = false
 		self._post_warp_skill_t = nil
 	end
@@ -698,7 +722,7 @@ function PlayerStandardVR:_check_action_duck(t, input)
 		local diff = managers.vr:get_setting("height") - self._current_height
 
 		if not self._state_data.ducking then
-			if self.DUCK_START_TH <= diff then
+			if diff >= self.DUCK_START_TH then
 				self:_start_action_ducking(t)
 			end
 		elseif diff <= self.DUCK_END_TH then
@@ -737,6 +761,7 @@ function PlayerStandardVR:_check_action_ladder(t, input)
 
 			if self._ladder_aiming_up ~= aiming_up then
 				self._ladder_aiming_up = aiming_up
+
 				local seq = "ladder_" .. (aiming_up and "up" or "down")
 
 				self._ladder_directions:damage():run_sequence_simple(seq)
@@ -827,9 +852,10 @@ function PlayerStandardVR:_start_action_ladder(t, ladder_unit, need_warp)
 		local u_pos = self._ext_movement:m_pos()
 		local distance_bottom = mvector3.distance(u_pos, ladder:bottom())
 		local distance_top = mvector3.distance(u_pos, ladder:top())
-		local target = nil
+		local target
 		local top = ladder:top_exit()
 		local bottom = ladder:bottom_exit()
+
 		self._state_data.ladder = {
 			ladder_unit = ladder_unit,
 			ladder_ext = ladder,
@@ -838,7 +864,7 @@ function PlayerStandardVR:_start_action_ladder(t, ladder_unit, need_warp)
 			w_dir = ladder:w_dir(),
 			t_pos = distance_bottom < distance_top and 0 or 1,
 			step_length = 1 / ladder:segments(),
-			update_position = function (self)
+			update_position = function(self)
 				self.current_position = self.ladder_ext:position(self.t_pos)
 				self.locked_z = self.current_position.z
 			end,
@@ -848,6 +874,7 @@ function PlayerStandardVR:_start_action_ladder(t, ladder_unit, need_warp)
 		self._state_data.ladder:update_position()
 
 		local distance = mvector3.distance(self._unit:position(), self._state_data.ladder.current_position)
+
 		self._state_data._warp_distance = distance
 		self._state_data._warp_cost = distance / self._state_data._wanted_husk_speed or 0
 		self._state_data._warp_target = self._state_data.ladder.current_position
@@ -964,6 +991,7 @@ function PlayerStandardVR:_get_melee_charge_lerp_value(t, offset)
 	end
 
 	offset = offset or 0
+
 	local melee_entry = managers.blackmarket:equipped_melee_weapon()
 	local max_charge_time = tweak_data.blackmarket.melee_weapons[melee_entry].stats.charge_time
 
@@ -1047,8 +1075,9 @@ function PlayerStandardVR:_check_stop_shooting()
 end
 
 function PlayerStandardVR:_check_action_primary_attack(t, input)
-	local new_action1, new_action2 = nil
+	local new_action1, new_action2
 	local action_wanted = input.btn_primary_attack_state or input.btn_primary_attack_release or input.btn_akimbo_fire_state or input.btn_akimbo_fire_release
+
 	action_wanted = action_wanted or self:is_shooting_count()
 	action_wanted = action_wanted or self:_is_charging_weapon()
 
@@ -1110,6 +1139,7 @@ end
 
 function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, weap_base, akimbo)
 	local action_wanted = pressed or held or released
+
 	action_wanted = action_wanted or self:is_shooting_count()
 	action_wanted = action_wanted or self:_is_charging_weapon()
 
@@ -1154,16 +1184,20 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 		end
 
 		if not self._shooting or not self._shooting_weapons or not self._shooting_weapons[akimbo and 2 or 1] then
-			if not self._next_wall_check_t or self._next_wall_check_t < t then
+			if not self._next_wall_check_t or t > self._next_wall_check_t then
 				local wall_check_obj = tweak_data.vr.custom_wall_check[weap_base.name_id] and weap_base._unit:get_object(Idstring(tweak_data.vr.custom_wall_check[weap_base.name_id])) or weap_base:fire_object()
+
 				self._shooting_forbidden = self._unit:hand():check_hand_through_wall(self._unit:hand():get_active_hand_id(akimbo and "akimbo" or "weapon"), wall_check_obj)
+
 				local weapon_tweak = weap_base:weapon_tweak_data()
 				local delay = weapon_tweak.auto and weapon_tweak.auto.fire_rate or tweak_data.vr.wall_check_delay
+
 				self._next_wall_check_t = t + delay
 			end
 
 			if weap_base:start_shooting_allowed() and not self._shooting_forbidden then
 				local start = fire_mode == "single" and pressed
+
 				start = start or fire_mode == "auto" and held
 				start = start or fire_mode == "burst" and pressed
 				start = start or fire_mode == "volley" and pressed
@@ -1206,12 +1240,14 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 		if damage_health_ratio > 0 then
 			local upgrade_name = weap_base:is_category("saw") and "melee_damage_health_ratio_multiplier" or "damage_health_ratio_multiplier"
 			local damage_ratio = damage_health_ratio
+
 			dmg_mul = dmg_mul * (1 + managers.player:upgrade_value("player", upgrade_name, 0) * damage_ratio)
 		end
 
 		dmg_mul = dmg_mul * managers.player:temporary_upgrade_value("temporary", "berserker_damage_multiplier", 1)
 		dmg_mul = dmg_mul * managers.player:get_property("trigger_happy", 1)
-		local fired = nil
+
+		local fired
 
 		if fire_mode == "single" then
 			if pressed and start_shooting then
@@ -1234,8 +1270,9 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 				fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 			end
 		elseif held then
-			if not self._next_wall_check_t or self._next_wall_check_t < t then
+			if not self._next_wall_check_t or t > self._next_wall_check_t then
 				local wall_check_obj = tweak_data.vr.custom_wall_check[weap_base.name_id] and weap_base._unit:get_object(Idstring(tweak_data.vr.custom_wall_check[weap_base.name_id])) or weap_base:fire_object()
+
 				self._shooting_forbidden = self._unit:hand():check_hand_through_wall(self._unit:hand():get_active_hand_id(akimbo and "akimbo" or "weapon"), wall_check_obj)
 				self._next_wall_check_t = t + tweak_data.vr.wall_check_delay
 			end
@@ -1291,7 +1328,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 				local time_shooting = t - self._shooting_t
 				local achievement_data = tweak_data.achievement.never_let_you_go
 
-				if achievement_data and weap_base:get_name_id() == achievement_data.weapon_id and achievement_data.timer <= time_shooting then
+				if achievement_data and weap_base:get_name_id() == achievement_data.weapon_id and time_shooting >= achievement_data.timer then
 					managers.achievment:award(achievement_data.award)
 
 					self._shooting_t = nil
@@ -1304,6 +1341,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 					nil,
 					0
 				}
+
 				local stack = self._state_data.stacking_dmg_mul[primary_category]
 
 				if fired.hit_enemy then
@@ -1352,7 +1390,9 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 		end
 
 		yaw = math.floor(255 * yaw / 360)
+
 		local pitch = math.clamp(rot:pitch(), -85, 85) + 85
+
 		pitch = math.floor(127 * pitch / 170)
 
 		self._unit:camera():set_timed_locked_look_dir(t + 1, yaw, pitch)
@@ -1434,6 +1474,7 @@ function PlayerStandardVR:_update_fwd_ray()
 	mvector3.add(fwd_ray_to, fwd_ray_from)
 
 	local fwd_ray = World:raycast("ray", fwd_ray_from, fwd_ray_to, "slot_mask", self._slotmask_fwd_ray)
+
 	self._fwd_ray = fwd_ray
 
 	if weap_base then
@@ -1452,7 +1493,7 @@ function PlayerStandardVR:_update_fwd_ray()
 end
 
 function PlayerStandardVR:_start_action_unequip_weapon(t, data)
-	local _, selection_wanted = nil
+	local _, selection_wanted
 
 	if data.next then
 		_, selection_wanted = self._ext_inventory:get_next_selection()
@@ -1589,7 +1630,7 @@ function PlayerStandardVR:_update_reload_timers(t, dt, input)
 
 		managers.hud:set_reload_timer(current, total)
 
-		local interupt = nil
+		local interupt
 
 		if self._equipped_unit:base():update_reloading(t, dt, self._state_data.reload_expire_t - t) then
 			managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
@@ -1600,7 +1641,7 @@ function PlayerStandardVR:_update_reload_timers(t, dt, input)
 			end
 		end
 
-		if self._state_data.reload_expire_t <= t or interupt then
+		if t >= self._state_data.reload_expire_t or interupt then
 			managers.player:remove_property("shock_and_awe_reload_multiplier")
 
 			self._state_data.reload_expire_t = nil
@@ -1690,9 +1731,11 @@ function PlayerStandardVR:trigger_reload()
 end
 
 function PlayerStandardVR:_play_equip_animation()
+	return
 end
 
 function PlayerStandardVR:_play_unequip_animation()
+	return
 end
 
 local __start_action_interact = PlayerStandard._start_action_interact

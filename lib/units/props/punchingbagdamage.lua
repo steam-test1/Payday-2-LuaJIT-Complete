@@ -5,24 +5,31 @@ function PunchingBagDamage:init(unit)
 end
 
 function PunchingBagDamage:damage_melee(unit)
+	return
 end
 
 function PunchingBagDamage:damage_bullet(unit)
+	return
 end
 
 function PunchingBagDamage:damage_fire(unit)
+	return
 end
 
 function PunchingBagDamage:damage_dot(unit)
+	return
 end
 
 function PunchingBagDamage:damage_explosion(unit)
+	return
 end
 
 function PunchingBagDamage:damage_tase(unit)
+	return
 end
 
 function PunchingBagDamage:damage_mission(unit)
+	return
 end
 
 function PunchingBagDamage:dead()

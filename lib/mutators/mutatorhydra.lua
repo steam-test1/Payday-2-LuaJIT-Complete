@@ -4,8 +4,8 @@ MutatorHydra.name_id = "mutator_hydra"
 MutatorHydra.desc_id = "mutator_hydra_desc"
 MutatorHydra.has_options = true
 MutatorHydra.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 MutatorHydra.disables_achievements = true
 MutatorHydra.categories = {
@@ -494,7 +494,7 @@ function MutatorHydra:split_enemy(parent_unit, attack_data)
 end
 
 function MutatorHydra:_spawn_unit(name, parent_unit, depth)
-	if not name or self:get_max_unit_depth() <= depth then
+	if not name or depth >= self:get_max_unit_depth() then
 		return false
 	end
 
@@ -542,16 +542,16 @@ end
 
 function MutatorHydra:setup_options_gui(node)
 	local params = {
-		name = "hydra_split_slider",
 		callback = "_update_mutator_value",
+		name = "hydra_split_slider",
 		text_id = "menu_mutator_hydra_max",
 		update_callback = callback(self, self, "_update_max_unit_depth")
 	}
 	local data_node = {
+		decimal_count = 0,
 		show_value = true,
 		step = 1,
 		type = "CoreMenuItemSlider.ItemSlider",
-		decimal_count = 0,
 		min = self:_min_splits(),
 		max = self:_max_splits()
 	}

@@ -110,7 +110,7 @@ function CoreCutsceneOptimizer:_add_unit_visibility_keys(keys_node)
 		local cutscene = clip:metadata():footage()._cutscene
 
 		for _, unit_name in ipairs(unit_names) do
-			local existing_visibility_key = table.find_value(self.__cutscene_keys, function (key)
+			local existing_visibility_key = table.find_value(self.__cutscene_keys, function(key)
 				return key:frame() == clip:start_time() and key.ELEMENT_NAME == CoreUnitVisibleCutsceneKey.ELEMENT_NAME and key:unit_name() == unit_name
 			end)
 
@@ -139,11 +139,11 @@ function CoreCutsceneOptimizer:_add_unit_visibility_keys(keys_node)
 end
 
 function CoreCutsceneOptimizer:_add_discontinuity_keys(keys_node)
-	local previous_clip = nil
+	local previous_clip
 
 	for _, clip in ipairs(self.__clips) do
 		if previous_clip == nil or clip:metadata():footage() ~= previous_clip:metadata():footage() or clip:start_time_in_source() ~= previous_clip:end_time_in_source() then
-			local existing_discontinuity_key = table.find_value(self.__cutscene_keys, function (key)
+			local existing_discontinuity_key = table.find_value(self.__cutscene_keys, function(key)
 				return key:frame() == clip:start_time() and key.ELEMENT_NAME == CoreDiscontinuityCutsceneKey.ELEMENT_NAME
 			end)
 
@@ -192,10 +192,11 @@ function CoreCutsceneOptimizer:_create_merged_animation()
 		unit_animation_map.camera = self:_get_joined_camera_animation()
 	end
 
-	local merged_animation = nil
+	local merged_animation
 
 	for unit_name, animation in pairs(unit_animation_map) do
 		local prefixed_animation = AnimationCutter:add_prefix(animation, unit_name)
+
 		merged_animation = merged_animation and self:_process_animation("merge", merged_animation, prefixed_animation) or prefixed_animation
 
 		if merged_animation ~= prefixed_animation then
@@ -209,10 +210,10 @@ end
 function CoreCutsceneOptimizer:_write_animation_blobs(full_animation, dest, part_path_pattern)
 	local animation_blob_names = {}
 	local default_settings = {
-		rotation_tolerance = 0.0025,
-		position_tolerance = 0.1,
+		pack_positions = false,
 		pack_rotations = false,
-		pack_positions = false
+		position_tolerance = 0.1,
+		rotation_tolerance = 0.0025
 	}
 	local per_bone_settings = {}
 	local duration = full_animation:length()

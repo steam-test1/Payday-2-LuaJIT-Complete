@@ -42,6 +42,7 @@ function CivilianBrain:update(unit, t, dt)
 
 	if logic.update then
 		local l_data = self._logic_data
+
 		l_data.t = t
 		l_data.dt = dt
 
@@ -96,18 +97,18 @@ function CivilianBrain:on_cool_state_changed(state)
 		self._alert_listen_key = "CopBrain" .. tostring(self._unit:key())
 	end
 
-	local alert_listen_filter, alert_types = nil
+	local alert_listen_filter, alert_types
 
 	if state then
 		alert_listen_filter = managers.groupai:state():get_unit_type_filter("criminals_enemies_civilians")
 		alert_types = {
-			vo_distress = true,
 			aggression = true,
 			bullet = true,
-			vo_intimidate = true,
 			explosion = true,
 			footstep = true,
-			vo_cbt = true
+			vo_cbt = true,
+			vo_distress = true,
+			vo_intimidate = true
 		}
 	else
 		alert_listen_filter = managers.groupai:state():get_unit_type_filter("criminal")
@@ -127,7 +128,7 @@ function CivilianBrain:on_hostage_move_interaction(instigator_unit, command)
 	if command == "move" then
 		local following_hostages = managers.groupai:state():get_following_hostages(instigator_unit)
 
-		if following_hostages and tweak_data.player.max_nr_following_hostages <= table.size(following_hostages) then
+		if following_hostages and table.size(following_hostages) >= tweak_data.player.max_nr_following_hostages then
 			return
 		end
 
@@ -136,10 +137,10 @@ function CivilianBrain:on_hostage_move_interaction(instigator_unit, command)
 		end
 
 		local action = self._unit:movement():action_request({
-			clamp_to_graph = true,
-			variant = "stand_tied",
 			body_part = 1,
-			type = "act"
+			clamp_to_graph = true,
+			type = "act",
+			variant = "stand_tied"
 		})
 
 		if not action then
@@ -148,12 +149,12 @@ function CivilianBrain:on_hostage_move_interaction(instigator_unit, command)
 
 		self._unit:movement():set_stance("cbt", nil, true)
 		self:set_objective({
-			interrupt_health = 0,
 			distance = 175,
-			type = "follow",
+			interrupt_dis = 0,
+			interrupt_health = 0,
 			lose_track_dis = 2000,
 			stance = "cbt",
-			interrupt_dis = 0,
+			type = "follow",
 			follow_unit = instigator_unit,
 			nav_seg = instigator_unit:movement():nav_tracker():nav_segment(),
 			fail_clbk = callback(self, self, "on_hostage_follow_objective_failed")
@@ -184,10 +185,10 @@ function CivilianBrain:on_hostage_move_interaction(instigator_unit, command)
 		end
 
 		local action = self._unit:movement():action_request({
-			clamp_to_graph = true,
-			variant = "drop",
 			body_part = 1,
-			type = "act"
+			clamp_to_graph = true,
+			type = "act",
+			variant = "drop"
 		})
 
 		if not action then
@@ -214,9 +215,9 @@ function CivilianBrain:on_hostage_move_interaction(instigator_unit, command)
 		self._unit:movement():set_stance("hos", nil, true)
 
 		local action = self._unit:movement():action_request({
-			variant = "panic",
 			body_part = 1,
-			type = "act"
+			type = "act",
+			variant = "panic"
 		})
 
 		if not action then

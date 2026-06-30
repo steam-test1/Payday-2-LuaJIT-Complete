@@ -17,6 +17,7 @@ function Manager:init(session_state)
 end
 
 function Manager:destroy()
+	return
 end
 
 function Manager:register(name, smoketestsuite)
@@ -46,6 +47,7 @@ function Manager:_parse_arguments(args)
 
 			local name = subarg:sub(1, separator_index - 1)
 			local value = subarg:sub(separator_index + 1, -1)
+
 			suite_arguments[name] = value
 		end
 	end

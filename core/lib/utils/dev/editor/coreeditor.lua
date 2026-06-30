@@ -178,6 +178,7 @@ function CoreEditor:_init_viewport()
 	self._camera_fov = 75
 	self._camera_near_range = 20
 	self._camera_far_range = 250000
+
 	local camera = World:create_camera()
 
 	camera:set_near_range(self._camera_near_range)
@@ -202,8 +203,8 @@ function CoreEditor:_init_listener()
 
 	self._listener_always_enabled = false
 	self._sound_check_object = managers.sound_environment:add_check_object({
-		primary = true,
 		active = true,
+		primary = true,
 		object = self:camera()
 	})
 end
@@ -224,10 +225,10 @@ function CoreEditor:_init_gui()
 	self._gui = self._workspace:panel():gui(Idstring("core/guis/core_editor"))
 
 	self._gui:child("camera"):text({
-		text = "",
-		name = "select_units_amount",
 		font = "core/fonts/nice_editor_font",
-		font_size = 20
+		font_size = 20,
+		name = "select_units_amount",
+		text = ""
 	})
 	self:_align_gui()
 end
@@ -242,10 +243,9 @@ function CoreEditor:_align_gui()
 end
 
 function CoreEditor:_init_editor_data()
-	self._editor_data = {
-		keyboard_available = true,
-		virtual_controller = Input:create_virtual_controller("editor_layer")
-	}
+	self._editor_data = {}
+	self._editor_data.keyboard_available = true
+	self._editor_data.virtual_controller = Input:create_virtual_controller("editor_layer")
 end
 
 function CoreEditor:_init_groups()
@@ -297,12 +297,12 @@ function CoreEditor:layer_load_order()
 end
 
 function CoreEditor:_project_init_layer_classes()
+	return
 end
 
 function CoreEditor:_clear_values()
-	self._values = {
-		world = {}
-	}
+	self._values = {}
+	self._values.world = {}
 	self._values.world.workviews = {}
 end
 
@@ -332,6 +332,7 @@ function CoreEditor:_init_slot_masks()
 end
 
 function CoreEditor:_project_init_slot_masks()
+	return
 end
 
 function CoreEditor:_init_layer_values()
@@ -511,13 +512,15 @@ function CoreEditor:check_news(file, devices)
 	if DB:has("editor_version", self._version_path) then
 		local file = DB:open("editor_version", self._version_path)
 		local versions = ScriptSerializer:from_generic_xml(file:read())
+
 		self._news_version = versions.news
 	end
 
-	if self._world_editor_news:version() <= self._news_version then
+	if self._news_version >= self._world_editor_news:version() then
 		self._world_editor_news:set_visible(false)
 	else
 		self._news_version = self._world_editor_news:version()
+
 		local f = SystemFS:open(managers.database:base_path() .. self._version_path .. ".editor_version", "w")
 
 		f:puts(ScriptSerializer:to_generic_xml({
@@ -584,8 +587,11 @@ function CoreEditor:_init_controller()
 		keyboard = kb,
 		mouse = mouse
 	}
+
 	self._ctrl = Input:create_virtual_controller("editor")
+
 	local ctrl_layer = self._editor_data.virtual_controller
+
 	self._bindings = {}
 	self._layer_bindings = {}
 	self._menu_bindings = {}
@@ -843,11 +849,7 @@ function CoreEditor:run_simulation_callback(...)
 end
 
 function CoreEditor:run_simulation(simulation_mode)
-	if not Global.running_simulation then
-		if self._lastdir then
-			-- Nothing
-		end
-
+	if not Global.running_simulation and (not self._lastdir or true) then
 		local file = self._simulation_path .. "/test_level.world"
 		local save_continents = true
 
@@ -942,9 +944,11 @@ function CoreEditor:_simulation_disable_continents()
 end
 
 function CoreEditor:project_prestart_up(with_mission)
+	return
 end
 
 function CoreEditor:project_run_simulation(with_mission)
+	return
 end
 
 function CoreEditor:set_up_portals(mask)
@@ -961,7 +965,8 @@ function CoreEditor:set_up_portals(mask)
 		local bottom = portal.bottom
 
 		if top == 0 and bottom == 0 then
-			top, bottom = nil
+			top = nil
+			bottom = nil
 		end
 
 		managers.portal:add_portal(t, bottom, top)
@@ -1015,6 +1020,7 @@ function CoreEditor:go_through_all_units(mask)
 end
 
 function CoreEditor:_project_check_unit(...)
+	return
 end
 
 function CoreEditor:_hide_dialogs()
@@ -1075,18 +1081,23 @@ function CoreEditor:clear_layers_and_units()
 end
 
 function CoreEditor:clear_units()
+	return
 end
 
 function CoreEditor:project_stop_simulation()
+	return
 end
 
 function CoreEditor:project_clear_layers()
+	return
 end
 
 function CoreEditor:project_clear_units()
+	return
 end
 
 function CoreEditor:project_recreate_layers()
+	return
 end
 
 function CoreEditor:_show_error_log()
@@ -1165,6 +1176,7 @@ function CoreEditor:build_editor_controls()
 	editor_sizer:add(self:build_marker_panel(), 0, 0, "EXPAND")
 
 	local sp = EWS:SplitterWindow(self._ews_editor_frame, "", "")
+
 	self._continents_panel = ContinentPanel:new(sp)
 	self._notebook = EWS:Notebook(sp, "_notebook", "NB_TOP,NB_MULTILINE")
 
@@ -1588,6 +1600,7 @@ function CoreEditor:get_real_name(name)
 
 	if string.find(name, fs) then
 		local e = string.find(name, fs)
+
 		name = string.sub(name, 1, e - 1)
 	end
 
@@ -1713,6 +1726,7 @@ end
 function CoreEditor:show_dialog(name, class_name)
 	if not self._dialogs[name] then
 		local settings = self._dialogs_settings[name]
+
 		self._dialogs[name] = _G[class_name]:new(settings)
 	else
 		self._dialogs[name]:set_visible(true)
@@ -1911,7 +1925,7 @@ function CoreEditor:reload_units(unit_names, small_compile, skip_replace_units)
 		return
 	end
 
-	local reload_data = nil
+	local reload_data
 
 	if not skip_replace_units then
 		reload_data = self._current_layer:prepare_replace(unit_names)
@@ -1942,9 +1956,9 @@ function CoreEditor:reload_units(unit_names, small_compile, skip_replace_units)
 		end
 
 		Application:data_compile({
-			target_db_name = "all",
-			send_idstrings = false,
 			preprocessor_definitions = "preprocessor_definitions",
+			send_idstrings = false,
+			target_db_name = "all",
 			verbose = false,
 			platform = string.lower(SystemInfo:platform():s()),
 			source_root = managers.database:base_path(),
@@ -2020,6 +2034,7 @@ end
 
 function CoreEditor:toolbar_toggle(data, event)
 	local toolbar = self[data.toolbar] or self._toolbar
+
 	self[data.value] = toolbar:tool_state(event:get_id())
 
 	if self[data.menu] then
@@ -2403,6 +2418,7 @@ end
 
 function CoreEditor:set_value_info_pos(position)
 	local res = Application:screen_resolution()
+
 	position = position:with_x((1 + position.x) / 2 * res.x)
 	position = position:with_y((1 + position.y) / 2 * res.y - 100)
 
@@ -2435,15 +2451,12 @@ function CoreEditor:draw_occluders(t, dt)
 		for _, unit in ipairs(units) do
 			local unit_pos = unit:position()
 
-			if (unit_pos - cam_pos):length() < cam_far_range then
+			if cam_far_range > (unit_pos - cam_pos):length() then
 				local objects = unit:get_objects("oc_*")
 
 				for _, object in ipairs(objects) do
 					local object_dir = object:rotation():y()
-					local a = 0.05
-					local r = 1
-					local g = 0
-					local b = 0
+					local a, r, g, b = 0.05, 1, 0, 0
 					local d = object_dir:dot(cam_dir)
 
 					if d < 0 then
@@ -2451,10 +2464,7 @@ function CoreEditor:draw_occluders(t, dt)
 						local c = object_dir:dot(object_pos - cam_pos)
 
 						if c < 0 then
-							b = 0
-							g = 1
-							r = 0
-							a = 0.1
+							a, r, g, b = 0.1, 0, 1, 0
 						end
 					end
 
@@ -2732,11 +2742,11 @@ function CoreEditor:update_ruler(t, dt)
 	Application:draw_sphere(pos, 10, 1, 1, 1)
 
 	local ray = self:unit_by_raycast({
-		sample = true,
 		ray_type = "body editor",
+		sample = true,
 		mask = managers.slot:get_mask("all")
 	})
-	local end_position = nil
+	local end_position
 
 	if not ray or not ray.position then
 		end_position = self._current_pos
@@ -2753,7 +2763,7 @@ function CoreEditor:update_ruler(t, dt)
 end
 
 function CoreEditor:current_orientation(offset_move_vec, unit)
-	local current_pos, current_rot = nil
+	local current_pos, current_rot
 	local p1 = self:get_cursor_look_point(0)
 
 	if not self:use_surface_move() then
@@ -2767,12 +2777,13 @@ function CoreEditor:current_orientation(offset_move_vec, unit)
 				local x = math.round(p.x / self:grid_size()) * self:grid_size()
 				local y = math.round(p.y / self:grid_size()) * self:grid_size()
 				local z = math.round(p.z / self:grid_size()) * self:grid_size()
+
 				current_pos = Vector3(x, y, z)
 			end
 		end
 	else
 		local p2 = self:get_cursor_look_point(25000)
-		local ray = nil
+		local ray
 		local rays = World:raycast_all(p1, p2, nil, self._surface_move_mask)
 
 		if rays then
@@ -2789,7 +2800,9 @@ function CoreEditor:current_orientation(offset_move_vec, unit)
 			local p = ray.position + offset_move_vec
 			local x = math.round(p.x / self:grid_size()) * self:grid_size()
 			local y = math.round(p.y / self:grid_size()) * self:grid_size()
+
 			current_pos = Vector3(x, y, p.z)
+
 			local n = ray.normal
 
 			Application:draw_line(current_pos, current_pos + n * 2000, 0, 0, 1)
@@ -2800,6 +2813,7 @@ function CoreEditor:current_orientation(offset_move_vec, unit)
 				local x = (u_rot:x() - z * z:dot(u_rot:x())):normalized()
 				local y = z:cross(x)
 				local rot = Rotation(x, y, z)
+
 				current_rot = rot * unit:rotation():inverse()
 			end
 		end
@@ -2813,7 +2827,7 @@ function CoreEditor:current_orientation(offset_move_vec, unit)
 
 		if false then
 			local units = unit:find_units("intersect", "force_physics", "sphere", pos, r)
-			local closest_snap = nil
+			local closest_snap
 
 			for _, unit in ipairs(units) do
 				local aligns = unit:get_objects("snap*")
@@ -2860,13 +2874,13 @@ function CoreEditor:draw_grid(unit)
 	end
 
 	for i = -5, 5 do
-		local from_x = self._current_pos + rot:x() * i * self:grid_size() - rot:y() * 6 * self:grid_size()
-		local to_x = self._current_pos + rot:x() * i * self:grid_size() + rot:y() * 6 * self:grid_size()
+		local from_x = self._current_pos + rot:x() * (i * self:grid_size()) - rot:y() * (6 * self:grid_size())
+		local to_x = self._current_pos + rot:x() * (i * self:grid_size()) + rot:y() * (6 * self:grid_size())
 
 		Application:draw_line(from_x, to_x, 0, 0.5, 0)
 
-		local from_y = self._current_pos + rot:y() * i * self:grid_size() - rot:x() * 6 * self:grid_size()
-		local to_y = self._current_pos + rot:y() * i * self:grid_size() + rot:x() * 6 * self:grid_size()
+		local from_y = self._current_pos + rot:y() * (i * self:grid_size()) - rot:x() * (6 * self:grid_size())
+		local to_y = self._current_pos + rot:y() * (i * self:grid_size()) + rot:x() * (6 * self:grid_size())
 
 		Application:draw_line(from_y, to_y, 0, 0.5, 0)
 	end
@@ -2876,7 +2890,9 @@ function CoreEditor:update_title_bar(time, rel_time)
 	self._title_nr = self._title_nr or 0
 	self._title_speed = self._title_speed or 30
 	self._title_wait_time = self._title_wait_time or 30
+
 	local title = self._title
+
 	self._title_show_time = self._title_speed * 100
 
 	if self._title_show_msg then
@@ -2887,7 +2903,7 @@ function CoreEditor:update_title_bar(time, rel_time)
 	if not self._title_down then
 		self._title_nr = self._title_nr + self._title_speed * rel_time
 
-		if string.len(title) <= self._title_nr then
+		if self._title_nr >= string.len(title) then
 			self._title_down = true
 			self._title_show_msg = not self._title_show_msg
 
@@ -2945,7 +2961,7 @@ function CoreEditor:mouse_pos(pos)
 end
 
 function CoreEditor:screen_pos(pos)
-	return Vector3(self._screen_borders.x * (pos.x + 1) / 2, self._screen_borders.y * (pos.y + 1) / 2, 0)
+	return Vector3(self._screen_borders.x * ((pos.x + 1) / 2), self._screen_borders.y * ((pos.y + 1) / 2), 0)
 end
 
 function CoreEditor:world_to_screen(pos)
@@ -2977,7 +2993,7 @@ end
 function CoreEditor:_unit_raycasts(mask, ray_type, from, to)
 	local from = from or self:get_cursor_look_point(0)
 	local to = to or self:get_cursor_look_point(200000)
-	local rays = nil
+	local rays
 
 	if ray_type then
 		rays = World:raycast_all("ray", from, to, "ray_type", ray_type, "slot_mask", mask)
@@ -3121,6 +3137,7 @@ end
 
 function CoreEditor:_copy_files(src, dest, rules)
 	rules = rules or {}
+
 	local files = {}
 
 	for _, file in ipairs(SystemFS:list(src)) do
@@ -3231,11 +3248,7 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving, starting_sim
 			Application:error("Duplicate names exist in the world, something is incorrect!")
 			self:show_text_box("DUPLICATES", errors)
 
-			local txt = [[
-Trying to save with duplicates!
-Please check the listed duplicates on the second popup window before selecting.
-
-Press YES to save.]]
+			local txt = "Trying to save with duplicates!\nPlease check the listed duplicates on the second popup window before selecting.\n\nPress YES to save."
 
 			if EWS:MessageDialog(Global.frame_panel, txt, "This might not be good!", "YES_NO,NO_DEFAULT,ICON_EXCLAMATION"):show_modal() == "ID_NO" then
 				return
@@ -3259,8 +3272,8 @@ Press YES to save.]]
 
 	for continent, values in pairs(self._values) do
 		local t = {
-			single_data_block = true,
 			entry = "values",
+			single_data_block = true,
 			continent = continent,
 			data = values
 		}
@@ -3303,23 +3316,23 @@ Press YES to save.]]
 end
 
 function CoreEditor:check_duplicate_names_exist()
-	local res, found = nil
+	local res, found
 
 	Application:debug("[MissionManager:check_duplicate_names_exist]")
 
 	res = ""
 	res = res .. "Continent and/or Mission Script found duplicate names.\n"
 	res = res .. "Please rename the following items to something unique!\n\n"
+
 	local count_map = {}
 
 	for _, unit in pairs(self:layers().Mission._created_units) do
 		local name = unit:unit_data().continent._name .. "/" .. unit:unit_data().name_id
 
 		if not count_map[name] then
-			count_map[name] = {
-				unit = unit,
-				count = 1
-			}
+			count_map[name] = {}
+			count_map[name].unit = unit
+			count_map[name].count = 1
 		else
 			count_map[name].count = count_map[name].count + 1
 		end
@@ -3349,9 +3362,9 @@ end
 function CoreEditor:_recompile(dir)
 	local source_files = self:_source_files(dir)
 	local t = {
-		target_db_name = "all",
-		send_idstrings = false,
 		preprocessor_definitions = "preprocessor_definitions",
+		send_idstrings = false,
+		target_db_name = "all",
 		verbose = false,
 		platform = string.lower(SystemInfo:platform():s()),
 		source_root = managers.database:root_path() .. "/assets",
@@ -3393,8 +3406,11 @@ function CoreEditor:add_to_world_package(params)
 
 	if continent and not self:_check_package_duplicity(params) then
 		local t = params.init and self._continent_init_package_table or self._continent_package_table
+
 		t[continent:name()] = t[continent:name()] or {}
+
 		local package_table = t[continent:name()]
+
 		package_table[category] = package_table[category] or {}
 
 		if not table.contains(package_table[category], name or path) then
@@ -3426,6 +3442,7 @@ function CoreEditor:add_to_sound_package(params)
 	local path = params.path
 	local category = params.category
 	local continent = params.continent
+
 	self._world_sound_package_table[category] = self._world_sound_package_table[category] or {}
 
 	if not table.contains(self._world_sound_package_table[category], name or path) then
@@ -3550,7 +3567,7 @@ function CoreEditor:_save_package(file, package_table, streaming_options)
 	end
 
 	for category, names in pairs(package_table) do
-		local entry = nil
+		local entry
 
 		if category == "units" then
 			entry = "unit"
@@ -3600,6 +3617,7 @@ function CoreEditor:_save_shadow_textures(dir)
 	print("dir", dir)
 
 	dir = dir .. "/cube_lights"
+
 	local files = self:_source_files(dir)
 
 	print(inspect(files))
@@ -3657,8 +3675,8 @@ end
 
 function CoreEditor:_save_continent_files(dir)
 	local layer_files = {
-		mission_scripts = "mission",
-		mission = "mission"
+		mission = "mission",
+		mission_scripts = "mission"
 	}
 
 	for continent, data in pairs(self._continent_save_tables) do
@@ -3921,11 +3939,12 @@ end
 
 function CoreEditor:get_unit_stats(units)
 	units = units or World:find_units_quick("all")
+
 	local data = {}
-	local total = {
-		amount = 0,
-		geometry_memory = 0
-	}
+	local total = {}
+
+	total.amount = 0
+	total.geometry_memory = 0
 
 	for _, u in ipairs(units) do
 		total.amount = total.amount + 1
@@ -3934,6 +3953,7 @@ function CoreEditor:get_unit_stats(units)
 			data[u:name():s()].amount = data[u:name():s()].amount + 1
 		else
 			local t = self:get_unit_stat(u)
+
 			t.amount = 1
 			data[u:name():s()] = t
 			total.geometry_memory = total.geometry_memory + t.memory
@@ -3944,23 +3964,23 @@ function CoreEditor:get_unit_stats(units)
 end
 
 function CoreEditor:get_unit_stat(u)
-	local t = {
-		memory = u:geometry_memory_use(),
-		models = u:nr_models(),
-		author = u:author():s(),
-		nr_bodies = u:num_bodies(),
-		slot = u:slot(),
-		mass = string.format("%.4f", u:mass()),
-		nr_textures = #u:used_texture_names(),
-		nr_materials = #u:get_objects_by_type(Idstring("material")),
-		vertices_per_tris = self:vertices_per_tris(u),
-		instanced = self:_is_instanced(u),
-		unit_filename = u:unit_filename(),
-		model_filename = u:model_filename(),
-		diesel_filename = u:diesel_filename(),
-		material_filename = u:material_config():s(),
-		last_exported_from = u:last_export_source()
-	}
+	local t = {}
+
+	t.memory = u:geometry_memory_use()
+	t.models = u:nr_models()
+	t.author = u:author():s()
+	t.nr_bodies = u:num_bodies()
+	t.slot = u:slot()
+	t.mass = string.format("%.4f", u:mass())
+	t.nr_textures = #u:used_texture_names()
+	t.nr_materials = #u:get_objects_by_type(Idstring("material"))
+	t.vertices_per_tris = self:vertices_per_tris(u)
+	t.instanced = self:_is_instanced(u)
+	t.unit_filename = u:unit_filename()
+	t.model_filename = u:model_filename()
+	t.diesel_filename = u:diesel_filename()
+	t.material_filename = u:material_config():s()
+	t.last_exported_from = u:last_export_source()
 
 	return t
 end
@@ -4015,6 +4035,7 @@ function CoreEditor:load_level(dir, path)
 		file_type = "world",
 		file_path = managers.database:entry_path(path)
 	})
+
 	local status = self._world_holder:status()
 
 	if status == "ok" then
@@ -4050,6 +4071,7 @@ function CoreEditor:do_load()
 
 	for _, name in ipairs(self:layer_load_order()) do
 		local layer = self._layers[name]
+
 		progress_i = progress_i + 50 / layers_amount
 
 		self:update_load_progress(progress_i, "Create Layer: " .. name)
@@ -4200,6 +4222,7 @@ end
 function CoreEditor:category_name(n)
 	n = string.gsub(n, "_", " ")
 	n = string.upper(string.sub(n, 1, 1)) .. string.sub(n, 2)
+
 	local s = ""
 	local toupper = false
 
@@ -4377,6 +4400,7 @@ function CoreEditor:create_continent(name, values)
 
 	values.base_id = values.base_id or self:_new_base_id()
 	self._continents[name] = CoreEditorContinent:new(name, values)
+
 	local continent = self._continents[name]
 
 	self._continents_panel:add_continent({
@@ -4388,9 +4412,8 @@ function CoreEditor:create_continent(name, values)
 	})
 	self:set_continent(name)
 
-	self._values[name] = {
-		workviews = {}
-	}
+	self._values[name] = {}
+	self._values[name].workviews = {}
 
 	self:_recreate_dialogs()
 
@@ -4452,6 +4475,7 @@ end
 
 function CoreEditor:set_continent(name)
 	local changed = not self._current_continent or self._current_continent ~= self._continents[name]
+
 	self._current_continent = self._continents[name]
 
 	self._continents_panel:set_continent(self._current_continent)
@@ -4496,8 +4520,8 @@ end
 
 function CoreEditor:change_continent_by_unit()
 	local ray = self:unit_by_raycast({
-		sample = true,
 		ray_type = "body editor",
+		sample = true,
 		mask = managers.slot:get_mask("all")
 	})
 
@@ -4516,8 +4540,8 @@ end
 
 function CoreEditor:change_continent_by_unit()
 	local ray = self:unit_by_raycast({
-		sample = true,
 		ray_type = "body editor",
+		sample = true,
 		mask = managers.slot:get_mask("all")
 	})
 
@@ -4564,6 +4588,7 @@ end
 
 function CoreEditor:add_workview(name)
 	local continent = self:current_continent_name()
+
 	self._values[continent].workviews[name] = {
 		text = "",
 		position = self:camera():position(),
@@ -4593,11 +4618,11 @@ function CoreEditor:set_ruler_points()
 	end
 
 	local ray = self:unit_by_raycast({
-		sample = true,
 		ray_type = "body editor",
+		sample = true,
 		mask = managers.slot:get_mask("all")
 	})
-	local start_position = nil
+	local start_position
 
 	if not ray or not ray.position then
 		start_position = self._current_pos
@@ -4692,9 +4717,8 @@ function CoreEditorContinent:init(name, values)
 	self._name = name
 	self._need_saving = true
 	self._units = {}
-	self._values = {
-		name = name
-	}
+	self._values = {}
+	self._values.name = name
 
 	self:load_values(values)
 end
@@ -4831,31 +4855,31 @@ function CoreEditor:_init_post_effects()
 	self._post_effects = {
 		POSTFX_bloom = {
 			enable = false,
-			on = function ()
+			on = function()
 				self:viewport():vp():set_post_processor_effect("World", Idstring("hdr_post_processor"), Idstring("default"))
 				self:viewport():vp():set_post_processor_effect("World", Idstring("bloom_combine_post_processor"), Idstring("bloom_combine"))
 				self:viewport():force_apply_feeders()
 			end,
-			off = function ()
+			off = function()
 				self:viewport():vp():set_post_processor_effect("World", Idstring("hdr_post_processor"), Idstring("empty"))
 				self:viewport():vp():set_post_processor_effect("World", Idstring("bloom_combine_post_processor"), Idstring("bloom_combine_empty"))
 			end
 		},
 		POSTFX_ssao = {
 			enable = false,
-			on = function ()
+			on = function()
 				managers.environment_controller:set_ao_setting("ssao_low", self:viewport():vp())
 			end,
-			off = function ()
+			off = function()
 				managers.environment_controller:set_ao_setting("off", self:viewport():vp())
 			end
 		},
 		POSTFX_aa = {
 			enable = false,
-			on = function ()
+			on = function()
 				managers.environment_controller:set_aa_setting("smaa_x1", self:viewport():vp())
 			end,
-			off = function ()
+			off = function()
 				managers.environment_controller:set_aa_setting("off", self:viewport():vp())
 			end
 		}
@@ -4975,7 +4999,7 @@ end
 function CoreEditor:_register_undo_command_block(block)
 	self._undo_stack:push(block)
 
-	if managers.editor:undo_history_size() < self._undo_stack:size() then
+	if self._undo_stack:size() > managers.editor:undo_history_size() then
 		local dif = self._undo_stack:size() - managers.editor:undo_history_size()
 
 		table.remove(self._undo_stack:stack_table(), 1, dif)

@@ -1,4 +1,5 @@
 local ids_unit = Idstring("unit")
+
 WeaponFactoryManager = WeaponFactoryManager or class()
 WeaponFactoryManager._uses_tasks = false
 WeaponFactoryManager._uses_streaming = true
@@ -54,6 +55,7 @@ end
 
 function WeaponFactoryManager:_read_factory_data()
 	self._parts_by_type = {}
+
 	local weapon_data = tweak_data.weapon
 
 	for id, data in pairs(tweak_data.weapon.factory.parts) do
@@ -74,6 +76,7 @@ function WeaponFactoryManager:_read_factory_data()
 				end
 
 				local type = tweak_data.weapon.factory.parts[part_id].type
+
 				self._parts_by_weapon[factory_id][type] = self._parts_by_weapon[factory_id][type] or {}
 
 				table.insert(self._parts_by_weapon[factory_id][type], part_id)
@@ -91,7 +94,7 @@ end
 function WeaponFactoryManager:get_all_weapon_categories()
 	local weapon_categories = {}
 	local weapon_data = tweak_data.weapon
-	local category = nil
+	local category
 
 	for factory_id, data in pairs(tweak_data.weapon.factory) do
 		if factory_id ~= "parts" and not string.match(factory_id, "_npc") and weapon_data[self:get_weapon_id_by_factory_id(factory_id)] then
@@ -132,6 +135,7 @@ function WeaponFactoryManager:get_weapon_unit(factory_id, blueprint)
 	end
 
 	blueprint = blueprint or factory_weapon.default_blueprint
+
 	local ammo_data = self:get_ammo_data_from_weapon(factory_id, blueprint)
 
 	if ammo_data and ammo_data.weapon_unit then
@@ -348,7 +352,7 @@ function WeaponFactoryManager:_preload_parts(factory_id, factory_weapon, bluepri
 	local parts = {}
 	local need_parent = {}
 	local override = self:_get_override_parts(factory_id, blueprint)
-	local async_task_data = nil
+	local async_task_data
 
 	if not only_record and self._uses_streaming then
 		async_task_data = {
@@ -465,7 +469,7 @@ function WeaponFactoryManager:_preload_part(factory_id, part_id, forbidden, over
 	local ids_unit_name = Idstring(unit_name)
 	local original_unit_name = third_person and original_part.third_unit or original_part.unit
 	local ids_orig_unit_name = Idstring(original_unit_name)
-	local package = nil
+	local package
 
 	if not third_person and ids_unit_name == ids_orig_unit_name and not self._uses_streaming then
 		package = "packages/fps_weapon_parts/" .. part_id
@@ -655,14 +659,15 @@ function WeaponFactoryManager:_add_parts(p_unit, factory_id, factory_weapon, blu
 	print("[WeaponFactoryManager:_add_parts] ", p_unit, factory_id, factory_weapon, blueprint, forbidden, third_person, done_cb, skip_queue)
 
 	self._tasks = self._tasks or {}
+
 	local parts = {}
 	local need_parent = {}
 	local override = self:_get_override_parts(factory_id, blueprint)
 
 	if self._uses_tasks and not skip_queue then
 		table.insert(self._tasks, {
-			need_parent_i = 1,
 			blueprint_i = 1,
+			need_parent_i = 1,
 			done_cb = done_cb,
 			p_unit = p_unit,
 			factory_id = factory_id,
@@ -675,7 +680,7 @@ function WeaponFactoryManager:_add_parts(p_unit, factory_id, factory_weapon, blu
 			override = override
 		})
 	else
-		local async_task_data = nil
+		local async_task_data
 
 		if self._uses_streaming then
 			async_task_data = {
@@ -794,7 +799,7 @@ function WeaponFactoryManager:_add_part(p_unit, factory_id, part_id, forbidden, 
 
 	local unit_name = third_person and part.third_unit or part.unit
 	local ids_unit_name = Idstring(unit_name)
-	local package = nil
+	local package
 
 	if not third_person and not async_task_data then
 		local tweak_unit_name = tweak_data:get_raw_value("weapon", "factory", "parts", part_id, "unit")
@@ -821,11 +826,11 @@ function WeaponFactoryManager:_add_part(p_unit, factory_id, part_id, forbidden, 
 			link_to_unit = link_to_unit,
 			a_obj = part.a_obj and Idstring(part.a_obj),
 			parent = part.parent,
-			reload_objects = part.reload_objects,
-			steelsight_visible = part.steelsight_visible,
-			steelsight_swap_progress_trigger = part.steelsight_swap_progress_trigger,
-			animation_effects = part.animation_effects
+			reload_objects = part.reload_objects
 		}
+		parts[part_id].steelsight_visible = part.steelsight_visible
+		parts[part_id].steelsight_swap_progress_trigger = part.steelsight_swap_progress_trigger
+		parts[part_id].animation_effects = part.animation_effects
 
 		print("sending request", ids_unit_name)
 		managers.dyn_resource:load(ids_unit, ids_unit_name, "packages/dyn_resources", callback(self, self, "clbk_part_unit_loaded", async_task_data))
@@ -835,6 +840,7 @@ function WeaponFactoryManager:_add_part(p_unit, factory_id, part_id, forbidden, 
 		end
 
 		local unit = self:_spawn_and_link_unit(ids_unit_name, part.a_obj and Idstring(part.a_obj), third_person, link_to_unit)
+
 		parts[part_id] = {
 			unit = unit,
 			animations = part.animations,
@@ -889,7 +895,7 @@ function WeaponFactoryManager:clbk_part_unit_loaded(task_data, status, u_type, u
 		end
 
 		repeat
-			local re_iterate = nil
+			local re_iterate
 
 			for part_id, part in pairs(task_data.parts) do
 				if not part.unit and not part.is_streaming then
@@ -965,11 +971,14 @@ end
 
 function WeaponFactoryManager:_spawn_and_link_unit(u_name, a_obj, third_person, link_to_unit)
 	local unit = World:spawn_unit(u_name, Vector3(), Rotation())
+
 	a_obj = a_obj or link_to_unit:orientation_object():name()
+
 	local res = link_to_unit:link(a_obj, unit, unit:orientation_object():name())
 
 	if managers.occlusion and not third_person then
 		local u_key = unit:key()
+
 		self._skip_occlusion_units[u_key] = (self._skip_occlusion_units[u_key] or 0) + 1
 
 		managers.occlusion:remove_occlusion(unit)
@@ -1067,6 +1076,7 @@ function WeaponFactoryManager:get_ammo_data_from_weapon(factory_id, blueprint)
 	for _, id in ipairs(self:get_assembled_blueprint(factory_id, blueprint)) do
 		if factory.parts[id].type == "ammo" then
 			local part = self:_part_data(id, factory_id, override)
+
 			t = part.custom_stats
 		end
 	end
@@ -1082,6 +1092,7 @@ function WeaponFactoryManager:get_underbarrel_ammo_data_from_weapon(factory_id, 
 	for _, id in ipairs(self:get_assembled_blueprint(factory_id, blueprint)) do
 		if factory.parts[id].type == "underbarrel_ammo" then
 			local part = self:_part_data(id, factory_id, override)
+
 			t = part.custom_stats
 		end
 	end
@@ -1148,7 +1159,7 @@ function WeaponFactoryManager:get_duplicate_parts_by_type(blueprint)
 	local duplicate_parts = {}
 	local types_gotten = {}
 	local parts_tweak = tweak_data.weapon.factory.parts
-	local part_type = nil
+	local part_type
 
 	for _, part_id in ipairs(blueprint) do
 		part_type = parts_tweak[part_id] and parts_tweak[part_id].type
@@ -1367,7 +1378,7 @@ function WeaponFactoryManager:change_part_blueprint_only(factory_id, part_id, bl
 		default_blueprint_by_type[factory.parts[def_id].type] = def_id
 	end
 
-	local default_part_id = nil
+	local default_part_id
 	local it_blueprint = clone(blueprint)
 
 	for _, rem_id in ipairs(it_blueprint) do
@@ -1523,7 +1534,7 @@ function WeaponFactoryManager:unpack_blueprint_from_string(factory_id, blueprint
 	local factory = tweak_data.weapon.factory
 	local index_table = string.split(blueprint_string, " ")
 	local blueprint = {}
-	local part_id = nil
+	local part_id
 
 	for _, part_index in ipairs(index_table) do
 		part_id = factory[factory_id].uses_parts[tonumber(part_index)]
@@ -1570,10 +1581,10 @@ function WeaponFactoryManager:get_stance_mod(factory_id, blueprint, using_second
 	local assembled_blueprint = self:get_assembled_blueprint(factory_id, blueprint)
 	local forbidden = self:_get_forbidden_parts(factory_id, assembled_blueprint)
 	local override = self:_get_override_parts(factory_id, assembled_blueprint)
-	local part = nil
+	local part
 	local translation = Vector3()
 	local rotation = Rotation()
-	local is_not_sight_type, is_weapon_sight, is_second_sight = nil
+	local is_not_sight_type, is_weapon_sight, is_second_sight
 	local second_sight_id = using_second_sight
 
 	for _, part_id in ipairs(assembled_blueprint) do
@@ -1712,6 +1723,7 @@ function WeaponFactoryManager:get_sound_switch(switch_group, factory_id, bluepri
 		if not forbidden[part_id] then
 			local part = factory.parts[part_id]
 			local has_switch = part and part.sound_switch and part.sound_switch[switch_group]
+
 			has_switch = has_switch or overrides and overrides[part_id] and overrides[part_id].sound_switch and overrides[part_id].sound_switch[switch_group]
 
 			if has_switch and not table.contains(t, part_id) then
@@ -1722,9 +1734,9 @@ function WeaponFactoryManager:get_sound_switch(switch_group, factory_id, bluepri
 
 	if #t > 0 then
 		if #t > 1 then
-			local part_x, part_y = nil
+			local part_x, part_y
 
-			table.sort(t, function (x, y)
+			table.sort(t, function(x, y)
 				part_x = factory.parts[x]
 				part_y = factory.parts[y]
 

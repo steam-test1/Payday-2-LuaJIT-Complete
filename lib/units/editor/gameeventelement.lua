@@ -18,6 +18,7 @@ function GameEventElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local text_sizer_category = EWS:BoxSizer("HORIZONTAL")
 	local text_sizer_event = EWS:BoxSizer("HORIZONTAL")
 	local name_category = EWS:StaticText(panel, "Category:", 0, "")

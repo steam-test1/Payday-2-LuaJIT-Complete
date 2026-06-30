@@ -3,6 +3,7 @@ core:module("CoreSessionInfo")
 Info = Info or class()
 
 function Info:init()
+	return
 end
 
 function Info:is_ranked()

@@ -47,7 +47,7 @@ function PlayerFatal:enter(state_data, enter_data)
 end
 
 function PlayerFatal:_enter(enter_data)
-	local preset = nil
+	local preset
 
 	if managers.groupai:state():whisper_mode() then
 		preset = {
@@ -112,7 +112,7 @@ function PlayerFatal:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
+	local new_action
 	local cur_state = self._ext_movement:current_state_name()
 
 	if input.btn_stats_screen_press then
@@ -145,7 +145,7 @@ function PlayerFatal:_check_action_interact(t, input)
 			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
 
-		if not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t then
+		if not self._intimidate_t or t - self._intimidate_t > tweak_data.player.movement_state.interaction_delay then
 			self._intimidate_t = t
 
 			if not PlayerArrested.call_teammate(self, "f11", t, true, true, true) then

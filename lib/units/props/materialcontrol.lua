@@ -11,11 +11,11 @@ function MaterialControl:save(save_data)
 	local materials = self._unit:get_objects_by_type(Idstring("material"))
 
 	for idx, material in ipairs(materials) do
-		local material_data = {
-			time = material:time(),
-			playing = material:is_playing(),
-			playing_speed = material:playing_speed()
-		}
+		local material_data = {}
+
+		material_data.time = material:time()
+		material_data.playing = material:is_playing()
+		material_data.playing_speed = material:playing_speed()
 		data[idx] = material_data
 	end
 

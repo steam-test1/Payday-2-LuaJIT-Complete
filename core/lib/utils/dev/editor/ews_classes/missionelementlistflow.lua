@@ -6,6 +6,7 @@ function MissionElementListFlow:init(...)
 	self:create_panel("VERTICAL")
 
 	self._use_look_at = false
+
 	local toolbar_sizer = EWS:BoxSizer("VERTICAL")
 
 	self._panel_sizer:add(toolbar_sizer, 0, 0, "EXPAND")
@@ -29,6 +30,7 @@ function MissionElementListFlow:init(...)
 	toolbar_sizer:add(toolbar, 0, 0, "EXPAND,LEFT")
 
 	local selected_sizer = EWS:BoxSizer("VERTICAL")
+
 	self._selected_list = EWS:ListCtrl(self._panel, "", "LC_REPORT,NO_BORDER")
 
 	self._selected_list:clear_all()
@@ -42,6 +44,7 @@ function MissionElementListFlow:init(...)
 	self._panel_sizer:add(self._selected_list, 0, 0, "EXPAND")
 
 	local lists_sizer = EWS:BoxSizer("HORIZONTAL")
+
 	self._executers_list = EWS:ListCtrl(self._panel, "", "LC_REPORT")
 
 	self._executers_list:clear_all()
@@ -88,6 +91,7 @@ end
 
 function MissionElementListFlow:_on_gui_help()
 	local text = "Mission flow show connections between different mission components.\n\nAt the top is the current selected mission element. The left list shows what is affecting it and the right what it affects."
+
 	text = text .. "\n\nThe 'Type' column displays what type of connection it is. It can be on_executed, operator, trigger etc."
 	text = text .. "\n\nDouble click left mouse button (in any list) will select that unit."
 	text = text .. "\nSingle click right mouse button (in any list) will find that unit."
@@ -100,7 +104,7 @@ function MissionElementListFlow:on_unit_selected(unit)
 	self._selected_list:delete_all_items()
 	self._executers_list:delete_all_items()
 	self._on_executed_list:delete_all_items()
-	table.remove_condition(self._unit_history, function (unit)
+	table.remove_condition(self._unit_history, function(unit)
 		return not alive(unit)
 	end)
 
@@ -118,6 +122,7 @@ function MissionElementListFlow:on_unit_selected(unit)
 		end
 
 		self._skip_history = nil
+
 		local unit_id = unit:unit_data().unit_id
 		local i = self._selected_list:append_item(unit:unit_data().name_id)
 
@@ -282,7 +287,7 @@ function MissionElementListFlow:_on_select_executer()
 end
 
 function MissionElementListFlow:_highlight_previous(list, data)
-	local name_id = nil
+	local name_id
 
 	if alive(data.unit) then
 		name_id = data.unit:unit_data().name_id

@@ -27,6 +27,7 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 
 	if mkey ~= "value_missing" and mkey ~= "value_pending" then
 		local num_mutators = tonumber(mkey)
+
 		mutators = num_mutators and num_mutators > 0
 	end
 
@@ -34,38 +35,41 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 	local owner_account_id = lobby:key_value("owner_account_id")
 	local is_friend = managers.network.matchmake:is_user_friend(owner_id, owner_account_id)
 	local is_weekly = tonumber(lobby:key_value("skirmish")) == SkirmishManager.LOBBY_WEEKLY
+
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
+
 	local server_panel = row_item.gui_panel:panel({
-		name = "server",
 		h = 64,
-		y = 32,
-		x = 10,
 		layer = 100,
+		name = "server",
+		x = 10,
+		y = 32,
 		w = row_item.gui_panel:w() - 20
 	})
 	local marker_dot = server_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_join",
-		name = "marker_dot",
 		h = 64,
-		y = 22,
+		layer = 1,
+		name = "marker_dot",
+		texture = "guis/textures/pd2/crimenet_marker_join",
 		w = 32,
 		x = 2,
-		layer = 1,
+		y = 22,
 		color = mutators and managers.mutators:get_category_color(mutator_category) or color
 	})
-	local cx, cy = nil
+	local cx, cy
 
 	for i = 1, 4 do
 		cx = 5 + 6 * (i - 1)
 		cy = 30
+
 		local player_marker = server_panel:bitmap({
-			texture = "guis/textures/pd2/crimenet_marker_peerflag",
-			h = 16,
-			w = 8,
 			blend_mode = "normal",
+			h = 16,
 			layer = 2,
+			texture = "guis/textures/pd2/crimenet_marker_peerflag",
+			w = 8,
 			name = tostring(i),
 			color = mutators and managers.mutators:get_category_color(mutator_category) or color,
 			visible = i <= num_plrs
@@ -78,28 +82,28 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 		x = 36
 	})
 	local host_name = side_panel:text({
+		blend_mode = "add",
 		name = "host_name",
 		vertical = "center",
-		blend_mode = "add",
 		text = lobby:key_value("owner_name"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = is_friend and friend_color or regular_color
 	})
 	local skirmish_label = side_panel:text({
-		name = "skirmish_label",
-		vertical = "center",
 		blend_mode = "normal",
 		layer = 0,
+		name = "skirmish_label",
+		vertical = "center",
 		text = managers.localization:to_upper_text(is_weekly and "menu_weekly_skirmish" or "menu_skirmish"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = mutators and managers.mutators:get_category_text_color(mutator_category) or color
 	})
 	local state_label = side_panel:text({
+		blend_mode = "add",
 		name = "state_label",
 		vertical = "center",
-		blend_mode = "add",
 		text = state_name,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -119,7 +123,7 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 
 	state_label:set_size(w, h)
 	state_label:set_position(0, skirmish_label:bottom() - 2)
-	row_item.gui_panel:set_left(node:_mid_align())
+	row_item.gui_panel:set_left(node._mid_align(node))
 	row_item.gui_panel:set_w(scaled_size.width - row_item.gui_panel:left())
 	row_item.gui_panel:set_h(server_panel:h() + 20)
 

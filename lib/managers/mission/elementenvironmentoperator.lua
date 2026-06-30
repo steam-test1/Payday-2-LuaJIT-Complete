@@ -22,6 +22,7 @@ function ElementEnvironmentOperator:on_executed(instigator)
 	end
 
 	self._old_default_environment = managers.viewport:default_environment()
+
 	local operation = self:value("operation")
 
 	if not operation or operation == "set" then

@@ -12,6 +12,7 @@ function FreeFlightAction:do_action()
 end
 
 function FreeFlightAction:reset()
+	return
 end
 
 function FreeFlightAction:name()

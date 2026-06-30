@@ -73,21 +73,21 @@ end
 
 function EventJobsTweakData:_init_pda8_challenges(tweak_data)
 	table.insert(self.challenges, {
-		reward_id = "menu_pda8_2_reward",
-		global_value = "pda8",
-		name_id = "menu_pda8_2",
 		desc_id = "menu_pda8_2_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda8_2",
+		global_value = "pda8",
 		id = "pda8_2",
+		locked_id = "bm_menu_locked_pda8_2",
+		name_id = "menu_pda8_2",
+		reward_id = "menu_pda8_2_reward",
+		show_progress = true,
 		objectives = {
 			self:_collective("pda8_collective", 4, {
-				name_id = "menu_pda8_2_prog_obj",
-				desc_id = "menu_pda8_2_prog_obj_desc"
+				desc_id = "menu_pda8_2_prog_obj_desc",
+				name_id = "menu_pda8_2_prog_obj"
 			}),
 			self:_stage("pda8_stages", 1, {
-				name_id = "menu_pda8_2_track_obj",
 				desc_id = "",
+				name_id = "menu_pda8_2_track_obj",
 				stages = {
 					2,
 					3,
@@ -104,21 +104,21 @@ function EventJobsTweakData:_init_pda8_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda8_3_reward",
-		global_value = "pda8",
-		name_id = "menu_pda8_3",
 		desc_id = "menu_pda8_3_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda8_3",
+		global_value = "pda8",
 		id = "pda8_3",
+		locked_id = "bm_menu_locked_pda8_3",
+		name_id = "menu_pda8_3",
+		reward_id = "menu_pda8_3_reward",
+		show_progress = true,
 		objectives = {
 			self:_collective("pda8_collective", 6, {
-				name_id = "menu_pda8_3_prog_obj",
-				desc_id = "menu_pda8_3_prog_obj_desc"
+				desc_id = "menu_pda8_3_prog_obj_desc",
+				name_id = "menu_pda8_3_prog_obj"
 			}),
 			self:_stage("pda8_stages", 1, {
-				name_id = "menu_pda8_3_track_obj",
 				desc_id = "",
+				name_id = "menu_pda8_3_track_obj",
 				stages = {
 					3,
 					4,
@@ -134,49 +134,49 @@ function EventJobsTweakData:_init_pda8_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda8_4_reward",
-		global_value = "pda8",
-		name_id = "menu_pda8_4",
 		desc_id = "menu_pda8_4_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda8_4",
+		global_value = "pda8",
 		id = "pda8_4",
+		locked_id = "bm_menu_locked_pda8_4",
+		name_id = "menu_pda8_4",
+		reward_id = "menu_pda8_4_reward",
+		show_progress = true,
 		objectives = {
 			tweak_data.safehouse:_progress("pda8_item_1", 1, {
-				name_id = "menu_pda8_item_1",
-				desc_id = "menu_pda8_item_1_desc"
+				desc_id = "menu_pda8_item_1_desc",
+				name_id = "menu_pda8_item_1"
 			}),
 			tweak_data.safehouse:_progress("pda8_item_2", 1, {
-				name_id = "menu_pda8_item_2",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda8_item_2"
 			}),
 			tweak_data.safehouse:_progress("pda8_item_3", 1, {
-				name_id = "menu_pda8_item_3",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda8_item_3"
 			}),
 			tweak_data.safehouse:_progress("pda8_item_4", 1, {
-				name_id = "menu_pda8_item_4",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda8_item_4"
 			}),
 			tweak_data.safehouse:_progress("pda8_item_5", 1, {
-				name_id = "menu_pda8_item_5",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda8_item_5"
 			}),
 			tweak_data.safehouse:_progress("pda8_item_6", 1, {
-				name_id = "menu_pda8_item_6",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda8_item_6"
 			}),
 			tweak_data.safehouse:_progress("pda8_item_7", 1, {
-				name_id = "menu_pda8_item_7",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda8_item_7"
 			}),
 			tweak_data.safehouse:_progress("pda8_item_8", 1, {
-				name_id = "menu_pda8_item_8",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda8_item_8"
 			}),
 			self:_stage("pda8_stages", 1, {
-				name_id = "menu_pda8_4_track_obj",
 				desc_id = "",
+				name_id = "menu_pda8_4_track_obj",
 				stages = {
 					4,
 					5
@@ -185,9 +185,9 @@ function EventJobsTweakData:_init_pda8_challenges(tweak_data)
 		},
 		rewards = {
 			{
-				type_items = "masks",
+				amount = 1,
 				item_entry = "eighthgrin",
-				amount = 1
+				type_items = "masks"
 			}
 		}
 	})
@@ -195,17 +195,17 @@ end
 
 function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_1_reward",
-		name_id = "menu_pda9_1",
-		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_1_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_1",
 		id = "pda9_1",
+		locked_id = "bm_menu_locked_pda9_1",
+		name_id = "menu_pda9_1",
+		reward_id = "menu_pda9_1_reward",
+		show_progress = true,
+		temp_challenge = "PDA9",
 		objectives = {
 			self:_collective("pda9_collective_1", 2, {
-				name_id = "menu_pda9_item_2",
-				desc_id = "menu_pda9_item_1_desc"
+				desc_id = "menu_pda9_item_1_desc",
+				name_id = "menu_pda9_item_2"
 			})
 		},
 		rewards = {
@@ -216,17 +216,17 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_2_reward",
-		name_id = "menu_pda9_2",
-		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_2_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_2",
 		id = "pda9_2",
+		locked_id = "bm_menu_locked_pda9_2",
+		name_id = "menu_pda9_2",
+		reward_id = "menu_pda9_2_reward",
+		show_progress = true,
+		temp_challenge = "PDA9",
 		objectives = {
 			self:_collective("pda9_collective_2", 3, {
-				name_id = "menu_pda9_item_2",
-				desc_id = "menu_pda9_item_2_desc"
+				desc_id = "menu_pda9_item_2_desc",
+				name_id = "menu_pda9_item_2"
 			})
 		},
 		rewards = {
@@ -241,17 +241,17 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_3_reward",
-		name_id = "menu_pda9_3",
-		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_3_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_3",
 		id = "pda9_3",
+		locked_id = "bm_menu_locked_pda9_3",
+		name_id = "menu_pda9_3",
+		reward_id = "menu_pda9_3_reward",
+		show_progress = true,
+		temp_challenge = "PDA9",
 		objectives = {
 			self:_collective("pda9_collective_3", 6, {
-				name_id = "menu_pda9_item_3",
-				desc_id = "menu_pda9_item_3_desc"
+				desc_id = "menu_pda9_item_3_desc",
+				name_id = "menu_pda9_item_3"
 			})
 		},
 		rewards = {
@@ -262,17 +262,17 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_4_reward",
-		name_id = "menu_pda9_4",
-		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_4_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_4",
 		id = "pda9_4",
+		locked_id = "bm_menu_locked_pda9_4",
+		name_id = "menu_pda9_4",
+		reward_id = "menu_pda9_4_reward",
+		show_progress = true,
+		temp_challenge = "PDA9",
 		objectives = {
 			self:_collective("pda9_collective_4", 10, {
-				name_id = "menu_pda9_item_4",
-				desc_id = "menu_pda9_item_4_desc"
+				desc_id = "menu_pda9_item_4_desc",
+				name_id = "menu_pda9_item_4"
 			})
 		},
 		rewards = {
@@ -299,31 +299,31 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_community_1_reward",
-		global_value = "pda9",
-		name_id = "menu_pda9_community_1",
 		desc_id = "menu_pda9_community_1_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_community_1",
+		global_value = "pda9",
 		id = "pda9_community_1",
+		locked_id = "bm_menu_locked_pda9_community_1",
+		name_id = "menu_pda9_community_1",
+		reward_id = "menu_pda9_community_1_reward",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda9_piggy_stage_1", 1, {
-					name_id = "menu_pda9_item_1",
-					desc_id = ""
+					desc_id = "",
+					name_id = "menu_pda9_item_1"
 				}),
 				tweak_data.safehouse:_progress("pda9_n1", 1, {
-					name_id = "menu_pda9_item_n1",
-					desc_id = "menu_pda9_item_n1_desc"
+					desc_id = "menu_pda9_item_n1_desc",
+					name_id = "menu_pda9_item_n1"
 				})
 			}, 1, {
-				name_id = "menu_pda9_1_choice_obj",
 				choice_id = "pda9_community_1",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda9_1_choice_obj"
 			}),
 			self:_stage("pda9_stages", 1, {
-				name_id = "menu_pda9_1_track_obj",
 				desc_id = "menu_pda9_community_item_1_desc",
+				name_id = "menu_pda9_1_track_obj",
 				stages = {
 					2,
 					3,
@@ -342,31 +342,31 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_community_2_reward",
-		global_value = "pda9",
-		name_id = "menu_pda9_community_2",
 		desc_id = "menu_pda9_community_2_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_community_2",
+		global_value = "pda9",
 		id = "pda9_community_2",
+		locked_id = "bm_menu_locked_pda9_community_2",
+		name_id = "menu_pda9_community_2",
+		reward_id = "menu_pda9_community_2_reward",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda9_piggy_stage_2", 1, {
-					name_id = "menu_pda9_item_1",
-					desc_id = ""
+					desc_id = "",
+					name_id = "menu_pda9_item_1"
 				}),
 				tweak_data.safehouse:_progress("pda9_n2", 99, {
-					name_id = "menu_pda9_item_n2",
-					desc_id = "menu_pda9_item_n2_desc"
+					desc_id = "menu_pda9_item_n2_desc",
+					name_id = "menu_pda9_item_n2"
 				})
 			}, 1, {
-				name_id = "menu_pda9_2_choice_obj",
 				choice_id = "pda9_community_2",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda9_2_choice_obj"
 			}),
 			self:_stage("pda9_stages", 1, {
-				name_id = "menu_pda9_1_track_obj",
 				desc_id = "menu_pda9_community_item_2_desc",
+				name_id = "menu_pda9_1_track_obj",
 				stages = {
 					3,
 					4,
@@ -384,31 +384,31 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_community_3_reward",
-		global_value = "pda9",
-		name_id = "menu_pda9_community_3",
 		desc_id = "menu_pda9_community_3_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_community_3",
+		global_value = "pda9",
 		id = "pda9_community_3",
+		locked_id = "bm_menu_locked_pda9_community_3",
+		name_id = "menu_pda9_community_3",
+		reward_id = "menu_pda9_community_3_reward",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda9_piggy_stage_1", 6, {
-					name_id = "menu_pda9_item_2",
-					desc_id = ""
+					desc_id = "",
+					name_id = "menu_pda9_item_2"
 				}),
 				tweak_data.safehouse:_progress("pda9_n3", 99, {
-					name_id = "menu_pda9_item_n3",
-					desc_id = "menu_pda9_item_n3_desc"
+					desc_id = "menu_pda9_item_n3_desc",
+					name_id = "menu_pda9_item_n3"
 				})
 			}, 1, {
-				name_id = "menu_pda9_3_choice_obj",
 				choice_id = "pda9_community_3",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda9_3_choice_obj"
 			}),
 			self:_stage("pda9_stages", 1, {
-				name_id = "menu_pda9_1_track_obj",
 				desc_id = "menu_pda9_community_item_3_desc",
+				name_id = "menu_pda9_1_track_obj",
 				stages = {
 					4,
 					5,
@@ -425,31 +425,31 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_community_4_reward",
-		global_value = "pda9",
-		name_id = "menu_pda9_community_4",
 		desc_id = "menu_pda9_community_4_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_community_4",
+		global_value = "pda9",
 		id = "pda9_community_4",
+		locked_id = "bm_menu_locked_pda9_community_4",
+		name_id = "menu_pda9_community_4",
+		reward_id = "menu_pda9_community_4_reward",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				self:_collective("pda9_collective_1", 1, {
-					name_id = "menu_pda9_community_objective_1",
-					desc_id = "menu_pda9_community_objective_1_desc"
+					desc_id = "menu_pda9_community_objective_1_desc",
+					name_id = "menu_pda9_community_objective_1"
 				}),
 				tweak_data.safehouse:_progress("pda9_n4", 99, {
-					name_id = "menu_pda9_item_n4",
-					desc_id = "menu_pda9_item_n4_desc"
+					desc_id = "menu_pda9_item_n4_desc",
+					name_id = "menu_pda9_item_n4"
 				})
 			}, 1, {
-				name_id = "menu_pda9_4_choice_obj",
 				choice_id = "pda9_community_4",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda9_4_choice_obj"
 			}),
 			self:_stage("pda9_stages", 1, {
-				name_id = "menu_pda9_1_track_obj",
 				desc_id = "menu_pda9_community_item_4_desc",
+				name_id = "menu_pda9_1_track_obj",
 				stages = {
 					5,
 					6,
@@ -468,31 +468,31 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda9_community_5_reward",
-		global_value = "pda9",
-		name_id = "menu_pda9_community_5",
 		desc_id = "menu_pda9_community_5_desc",
-		show_progress = true,
-		locked_id = "bm_menu_locked_pda9_community_5",
+		global_value = "pda9",
 		id = "pda9_community_5",
+		locked_id = "bm_menu_locked_pda9_community_5",
+		name_id = "menu_pda9_community_5",
+		reward_id = "menu_pda9_community_5_reward",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				self:_collective("pda9_collective_1", 1, {
-					name_id = "menu_pda9_community_objective_1",
-					desc_id = "menu_pda9_community_objective_2_desc"
+					desc_id = "menu_pda9_community_objective_2_desc",
+					name_id = "menu_pda9_community_objective_1"
 				}),
 				tweak_data.safehouse:_progress("pda9_n5", 9, {
-					name_id = "menu_pda9_item_n5",
-					desc_id = "menu_pda9_item_n5_desc"
+					desc_id = "menu_pda9_item_n5_desc",
+					name_id = "menu_pda9_item_n5"
 				})
 			}, 1, {
-				name_id = "menu_pda9_5_choice_obj",
 				choice_id = "pda9_community_5",
-				desc_id = ""
+				desc_id = "",
+				name_id = "menu_pda9_5_choice_obj"
 			}),
 			self:_stage("pda9_stages", 1, {
-				name_id = "menu_pda9_1_track_obj",
 				desc_id = "menu_pda9_community_item_5_desc",
+				name_id = "menu_pda9_1_track_obj",
 				stages = {
 					6,
 					7
@@ -510,26 +510,26 @@ end
 
 function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_1_reward",
-		locked_id = "bm_menu_locked_cg22_1",
-		id = "cg22_1",
-		name_id = "menu_cg22_1",
 		desc_id = "menu_cg22_1_desc",
+		id = "cg22_1",
+		locked_id = "bm_menu_locked_cg22_1",
+		name_id = "menu_cg22_1",
+		reward_id = "menu_cg22_1_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_personal_1", 100, {
-					name_id = "menu_cg22_personal_1",
-					desc_id = "menu_cg22_personal_1_desc"
+					desc_id = "menu_cg22_personal_1_desc",
+					name_id = "menu_cg22_personal_1"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_1", 2000, {
-					name_id = "menu_cg22_post_objective_1",
-					desc_id = "menu_cg22_post_objective_1_desc"
+					desc_id = "menu_cg22_post_objective_1_desc",
+					name_id = "menu_cg22_post_objective_1"
 				})
 			}, 1, {
-				name_id = "menu_cg22_1_choice_obj",
 				choice_id = "cg22_personal_1",
-				desc_id = "menu_cg22_post_objective_1_desc"
+				desc_id = "menu_cg22_post_objective_1_desc",
+				name_id = "menu_cg22_1_choice_obj"
 			})
 		},
 		rewards = {
@@ -540,26 +540,26 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_2_reward",
-		locked_id = "bm_menu_locked_cg22_2",
-		id = "cg22_2",
-		name_id = "menu_cg22_2",
 		desc_id = "menu_cg22_2_desc",
+		id = "cg22_2",
+		locked_id = "bm_menu_locked_cg22_2",
+		name_id = "menu_cg22_2",
+		reward_id = "menu_cg22_2_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_personal_2", 500, {
-					name_id = "menu_cg22_personal_2",
-					desc_id = "menu_cg22_personal_2_desc"
+					desc_id = "menu_cg22_personal_2_desc",
+					name_id = "menu_cg22_personal_2"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_2", 150, {
-					name_id = "menu_cg22_post_objective_2",
-					desc_id = "menu_cg22_post_objective_2_desc"
+					desc_id = "menu_cg22_post_objective_2_desc",
+					name_id = "menu_cg22_post_objective_2"
 				})
 			}, 1, {
-				name_id = "menu_cg22_2_choice_obj",
 				choice_id = "cg22_personal_2",
-				desc_id = "menu_cg22_post_objective_2_desc"
+				desc_id = "menu_cg22_post_objective_2_desc",
+				name_id = "menu_cg22_2_choice_obj"
 			})
 		},
 		rewards = {
@@ -582,26 +582,26 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_3_reward",
-		locked_id = "bm_menu_locked_cg22_3",
-		id = "cg22_3",
-		name_id = "menu_cg22_3",
 		desc_id = "menu_cg22_3_desc",
+		id = "cg22_3",
+		locked_id = "bm_menu_locked_cg22_3",
+		name_id = "menu_cg22_3",
+		reward_id = "menu_cg22_3_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_personal_3", 150, {
-					name_id = "menu_cg22_personal_3",
-					desc_id = "menu_cg22_personal_3_desc"
+					desc_id = "menu_cg22_personal_3_desc",
+					name_id = "menu_cg22_personal_3"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_3", 1000, {
-					name_id = "menu_cg22_post_objective_3",
-					desc_id = "menu_cg22_post_objective_3_desc"
+					desc_id = "menu_cg22_post_objective_3_desc",
+					name_id = "menu_cg22_post_objective_3"
 				})
 			}, 1, {
-				name_id = "menu_cg22_3_choice_obj",
 				choice_id = "cg22_personal_3",
-				desc_id = "menu_cg22_post_objective_3_desc"
+				desc_id = "menu_cg22_post_objective_3_desc",
+				name_id = "menu_cg22_3_choice_obj"
 			})
 		},
 		rewards = {
@@ -616,30 +616,30 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_community_1_reward",
-		locked_id = "bm_menu_locked_cg22_community_1",
-		id = "cg22_community_1",
-		name_id = "menu_cg22_community_1",
 		desc_id = "menu_cg22_community_1_desc",
+		id = "cg22_community_1",
+		locked_id = "bm_menu_locked_cg22_community_1",
+		name_id = "menu_cg22_community_1",
+		reward_id = "menu_cg22_community_1_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_secure_objective", 3, {
-					name_id = "menu_cg22_item_1",
-					desc_id = "menu_cg22_item_1_desc"
+					desc_id = "menu_cg22_item_1_desc",
+					name_id = "menu_cg22_item_1"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_4", 20, {
-					name_id = "menu_cg22_post_objective_4",
-					desc_id = "menu_cg22_post_objective_4_desc"
+					desc_id = "menu_cg22_post_objective_4_desc",
+					name_id = "menu_cg22_post_objective_4"
 				})
 			}, 1, {
-				name_id = "menu_cg22_4_choice_obj",
 				choice_id = "cg22_community_1",
-				desc_id = "menu_cg22_post_objective_4_desc"
+				desc_id = "menu_cg22_post_objective_4_desc",
+				name_id = "menu_cg22_4_choice_obj"
 			}),
 			self:_stage("cg22_stages", 1, {
-				name_id = "menu_cg22_1_track_obj",
 				desc_id = "menu_cg22_community_item_1_desc",
+				name_id = "menu_cg22_1_track_obj",
 				stages = {
 					2,
 					3,
@@ -662,30 +662,30 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_community_2_reward",
-		locked_id = "bm_menu_locked_cg22_community_2",
-		id = "cg22_community_2",
-		name_id = "menu_cg22_community_2",
 		desc_id = "menu_cg22_community_2_desc",
+		id = "cg22_community_2",
+		locked_id = "bm_menu_locked_cg22_community_2",
+		name_id = "menu_cg22_community_2",
+		reward_id = "menu_cg22_community_2_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_sacrifice_objective", 3, {
-					name_id = "menu_cg22_item_2",
-					desc_id = "menu_cg22_item_2_desc"
+					desc_id = "menu_cg22_item_2_desc",
+					name_id = "menu_cg22_item_2"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_5", 40, {
-					name_id = "menu_cg22_post_objective_5",
-					desc_id = "menu_cg22_post_objective_5_desc"
+					desc_id = "menu_cg22_post_objective_5_desc",
+					name_id = "menu_cg22_post_objective_5"
 				})
 			}, 1, {
-				name_id = "menu_cg22_5_choice_obj",
 				choice_id = "cg22_community_2",
-				desc_id = "menu_cg22_post_objective_5_desc"
+				desc_id = "menu_cg22_post_objective_5_desc",
+				name_id = "menu_cg22_5_choice_obj"
 			}),
 			self:_stage("cg22_stages", 1, {
-				name_id = "menu_cg22_2_track_obj",
 				desc_id = "menu_cg22_community_item_2_desc",
+				name_id = "menu_cg22_2_track_obj",
 				stages = {
 					3,
 					4,
@@ -706,30 +706,30 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_community_3_reward",
-		locked_id = "bm_menu_locked_cg22_community_3",
-		id = "cg22_community_3",
-		name_id = "menu_cg22_community_3",
 		desc_id = "menu_cg22_community_3_desc",
+		id = "cg22_community_3",
+		locked_id = "bm_menu_locked_cg22_community_3",
+		name_id = "menu_cg22_community_3",
+		reward_id = "menu_cg22_community_3_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_snowman_objective", 1, {
-					name_id = "menu_cg22_item_3",
-					desc_id = "menu_cg22_item_3_desc"
+					desc_id = "menu_cg22_item_3_desc",
+					name_id = "menu_cg22_item_3"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_4", 100, {
-					name_id = "menu_cg22_post_objective_6",
-					desc_id = "menu_cg22_post_objective_6_desc"
+					desc_id = "menu_cg22_post_objective_6_desc",
+					name_id = "menu_cg22_post_objective_6"
 				})
 			}, 1, {
-				name_id = "menu_cg22_6_choice_obj",
 				choice_id = "cg22_community_3",
-				desc_id = "menu_cg22_post_objective_6_desc"
+				desc_id = "menu_cg22_post_objective_6_desc",
+				name_id = "menu_cg22_6_choice_obj"
 			}),
 			self:_stage("cg22_stages", 1, {
-				name_id = "menu_cg22_3_track_obj",
 				desc_id = "menu_cg22_community_item_3_desc",
+				name_id = "menu_cg22_3_track_obj",
 				stages = {
 					4,
 					5,
@@ -749,30 +749,30 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_community_4_reward",
-		locked_id = "bm_menu_locked_cg22_community_4",
-		id = "cg22_community_4",
-		name_id = "menu_cg22_community_4",
 		desc_id = "menu_cg22_community_4_desc",
+		id = "cg22_community_4",
+		locked_id = "bm_menu_locked_cg22_community_4",
+		name_id = "menu_cg22_community_4",
+		reward_id = "menu_cg22_community_4_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_sacrifice_objective", 30, {
-					name_id = "menu_cg22_item_2",
-					desc_id = "menu_cg22_item_2_desc"
+					desc_id = "menu_cg22_item_2_desc",
+					name_id = "menu_cg22_item_2"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_4", 250, {
-					name_id = "menu_cg22_post_objective_7",
-					desc_id = "menu_cg22_post_objective_7_desc"
+					desc_id = "menu_cg22_post_objective_7_desc",
+					name_id = "menu_cg22_post_objective_7"
 				})
 			}, 1, {
-				name_id = "menu_cg22_7_choice_obj",
 				choice_id = "cg22_community_4",
-				desc_id = "menu_cg22_post_objective_7_desc"
+				desc_id = "menu_cg22_post_objective_7_desc",
+				name_id = "menu_cg22_7_choice_obj"
 			}),
 			self:_stage("cg22_stages", 1, {
-				name_id = "menu_cg22_4_track_obj",
 				desc_id = "menu_cg22_community_item_4_desc",
+				name_id = "menu_cg22_4_track_obj",
 				stages = {
 					5,
 					6,
@@ -788,30 +788,30 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_community_5_reward",
-		locked_id = "bm_menu_locked_cg22_community_5",
-		id = "cg22_community_5",
-		name_id = "menu_cg22_community_5",
 		desc_id = "menu_cg22_community_5_desc",
+		id = "cg22_community_5",
+		locked_id = "bm_menu_locked_cg22_community_5",
+		name_id = "menu_cg22_community_5",
+		reward_id = "menu_cg22_community_5_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_snowman_objective", 10, {
-					name_id = "menu_cg22_item_3",
-					desc_id = "menu_cg22_item_3_desc"
+					desc_id = "menu_cg22_item_3_desc",
+					name_id = "menu_cg22_item_3"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_5", 200, {
-					name_id = "menu_cg22_post_objective_8",
-					desc_id = "menu_cg22_post_objective_8_desc"
+					desc_id = "menu_cg22_post_objective_8_desc",
+					name_id = "menu_cg22_post_objective_8"
 				})
 			}, 1, {
-				name_id = "menu_cg22_8_choice_obj",
 				choice_id = "cg22_community_5",
-				desc_id = "menu_cg22_post_objective_8_desc"
+				desc_id = "menu_cg22_post_objective_8_desc",
+				name_id = "menu_cg22_8_choice_obj"
 			}),
 			self:_stage("cg22_stages", 1, {
-				name_id = "menu_cg22_5_track_obj",
 				desc_id = "menu_cg22_community_item_5_desc",
+				name_id = "menu_cg22_5_track_obj",
 				stages = {
 					6,
 					7
@@ -829,30 +829,30 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_cg22_community_6_reward",
-		locked_id = "bm_menu_locked_cg22_community_6",
-		id = "cg22_community_6",
-		name_id = "menu_cg22_community_6",
 		desc_id = "menu_cg22_community_6_desc",
+		id = "cg22_community_6",
+		locked_id = "bm_menu_locked_cg22_community_6",
+		name_id = "menu_cg22_community_6",
+		reward_id = "menu_cg22_community_6_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("cg22_secure_objective", 30, {
-					name_id = "menu_cg22_item_1",
-					desc_id = "menu_cg22_item_1_desc"
+					desc_id = "menu_cg22_item_1_desc",
+					name_id = "menu_cg22_item_1"
 				}),
 				tweak_data.safehouse:_progress("cg22_post_objective_4", 500, {
-					name_id = "menu_cg22_post_objective_9",
-					desc_id = "menu_cg22_post_objective_9_desc"
+					desc_id = "menu_cg22_post_objective_9_desc",
+					name_id = "menu_cg22_post_objective_9"
 				})
 			}, 1, {
-				name_id = "menu_cg22_9_choice_obj",
 				choice_id = "cg22_community_6",
-				desc_id = "menu_cg22_post_objective_9_desc"
+				desc_id = "menu_cg22_post_objective_9_desc",
+				name_id = "menu_cg22_9_choice_obj"
 			}),
 			self:_stage("cg22_stages", 1, {
-				name_id = "menu_cg22_6_track_obj",
 				desc_id = "menu_cg22_community_item_6_desc",
+				name_id = "menu_cg22_6_track_obj",
 				stages = {
 					7
 				}
@@ -881,30 +881,30 @@ end
 
 function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 	table.insert(self.challenges, {
-		reward_id = "menu_pda10_3_reward",
-		locked_id = "bm_menu_locked_pda10_3",
-		id = "pda10_3",
-		name_id = "menu_pda10_3",
 		desc_id = "menu_pda10_3_desc",
+		id = "pda10_3",
+		locked_id = "bm_menu_locked_pda10_3",
+		name_id = "menu_pda10_3",
+		reward_id = "menu_pda10_3_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_heist_objective", 2, {
-					name_id = "menu_pda10_personal_3",
-					desc_id = "menu_pda10_personal_3_desc"
+					desc_id = "menu_pda10_personal_3_desc",
+					name_id = "menu_pda10_personal_3"
 				}),
 				tweak_data.safehouse:_progress("pda10_heist_post_objective", 50, {
-					name_id = "menu_pda10_post_objective_3",
-					desc_id = "menu_pda10_post_objective_3_desc"
+					desc_id = "menu_pda10_post_objective_3_desc",
+					name_id = "menu_pda10_post_objective_3"
 				})
 			}, 1, {
-				name_id = "menu_pda10_3_choice_obj",
 				choice_id = "pda10_personal_3",
-				desc_id = "menu_pda10_post_objective_3_desc"
+				desc_id = "menu_pda10_post_objective_3_desc",
+				name_id = "menu_pda10_3_choice_obj"
 			}),
 			self:_stage("pda10_stages", 1, {
-				name_id = "menu_pda10_stage_3",
 				desc_id = "menu_pda10_stage_3_desc",
+				name_id = "menu_pda10_stage_3",
 				stages = {
 					2,
 					3,
@@ -923,30 +923,30 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda10_5_reward",
-		locked_id = "bm_menu_locked_pda10_5",
-		id = "pda10_5",
-		name_id = "menu_pda10_5",
 		desc_id = "menu_pda10_5_desc",
+		id = "pda10_5",
+		locked_id = "bm_menu_locked_pda10_5",
+		name_id = "menu_pda10_5",
+		reward_id = "menu_pda10_5_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_musket_objective", 10, {
-					name_id = "menu_pda10_personal_5",
-					desc_id = "menu_pda10_personal_5_desc"
+					desc_id = "menu_pda10_personal_5_desc",
+					name_id = "menu_pda10_personal_5"
 				}),
 				tweak_data.safehouse:_progress("pda10_musket_post_objective", 100, {
-					name_id = "menu_pda10_post_objective_5",
-					desc_id = "menu_pda10_post_objective_5_desc"
+					desc_id = "menu_pda10_post_objective_5_desc",
+					name_id = "menu_pda10_post_objective_5"
 				})
 			}, 1, {
-				name_id = "menu_pda10_5_choice_obj",
 				choice_id = "pda10_personal_5",
-				desc_id = "menu_pda10_post_objective_5_desc"
+				desc_id = "menu_pda10_post_objective_5_desc",
+				name_id = "menu_pda10_5_choice_obj"
 			}),
 			self:_stage("pda10_stages", 1, {
-				name_id = "menu_pda10_stage_5",
 				desc_id = "menu_pda10_stage_5_desc",
+				name_id = "menu_pda10_stage_5",
 				stages = {
 					3,
 					4,
@@ -972,30 +972,30 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda10_2_reward",
-		locked_id = "bm_menu_locked_pda10_2",
-		id = "pda10_2",
-		name_id = "menu_pda10_2",
 		desc_id = "menu_pda10_2_desc",
+		id = "pda10_2",
+		locked_id = "bm_menu_locked_pda10_2",
+		name_id = "menu_pda10_2",
+		reward_id = "menu_pda10_2_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_bags_objective", 25, {
-					name_id = "menu_pda10_personal_2",
-					desc_id = "menu_pda10_personal_2_desc"
+					desc_id = "menu_pda10_personal_2_desc",
+					name_id = "menu_pda10_personal_2"
 				}),
 				tweak_data.safehouse:_progress("pda10_bags_post_objective", 100, {
-					name_id = "menu_pda10_post_objective_2",
-					desc_id = "menu_pda10_post_objective_2_desc"
+					desc_id = "menu_pda10_post_objective_2_desc",
+					name_id = "menu_pda10_post_objective_2"
 				})
 			}, 1, {
-				name_id = "menu_pda10_2_choice_obj",
 				choice_id = "pda10_personal_2",
-				desc_id = "menu_pda10_post_objective_2_desc"
+				desc_id = "menu_pda10_post_objective_2_desc",
+				name_id = "menu_pda10_2_choice_obj"
 			}),
 			self:_stage("pda10_stages", 1, {
-				name_id = "menu_pda10_stage_2",
 				desc_id = "menu_pda10_stage_2_desc",
+				name_id = "menu_pda10_stage_2",
 				stages = {
 					4,
 					5,
@@ -1012,30 +1012,30 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda10_6_reward",
-		locked_id = "bm_menu_locked_pda10_6",
-		id = "pda10_6",
-		name_id = "menu_pda10_6",
 		desc_id = "menu_pda10_6_desc",
+		id = "pda10_6",
+		locked_id = "bm_menu_locked_pda10_6",
+		name_id = "menu_pda10_6",
+		reward_id = "menu_pda10_6_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_hammer_objective", 25, {
-					name_id = "menu_pda10_personal_6",
-					desc_id = "menu_pda10_personal_6_desc"
+					desc_id = "menu_pda10_personal_6_desc",
+					name_id = "menu_pda10_personal_6"
 				}),
 				tweak_data.safehouse:_progress("pda10_hammer_post_objective", 100, {
-					name_id = "menu_pda10_post_objective_6",
-					desc_id = "menu_pda10_post_objective_6_desc"
+					desc_id = "menu_pda10_post_objective_6_desc",
+					name_id = "menu_pda10_post_objective_6"
 				})
 			}, 1, {
-				name_id = "menu_pda10_6_choice_obj",
 				choice_id = "pda10_personal_6",
-				desc_id = "menu_pda10_post_objective_6_desc"
+				desc_id = "menu_pda10_post_objective_6_desc",
+				name_id = "menu_pda10_6_choice_obj"
 			}),
 			self:_stage("pda10_stages", 1, {
-				name_id = "menu_pda10_stage_6",
 				desc_id = "menu_pda10_stage_6_desc",
+				name_id = "menu_pda10_stage_6",
 				stages = {
 					5,
 					6,
@@ -1059,30 +1059,30 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda10_1_reward",
-		locked_id = "bm_menu_locked_pda10_1",
-		id = "pda10_1",
-		name_id = "menu_pda10_1",
 		desc_id = "menu_pda10_1_desc",
+		id = "pda10_1",
+		locked_id = "bm_menu_locked_pda10_1",
+		name_id = "menu_pda10_1",
+		reward_id = "menu_pda10_1_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_dozer_objective", 25, {
-					name_id = "menu_pda10_personal_1",
-					desc_id = "menu_pda10_personal_1_desc"
+					desc_id = "menu_pda10_personal_1_desc",
+					name_id = "menu_pda10_personal_1"
 				}),
 				tweak_data.safehouse:_progress("pda10_dozer_post_objective", 100, {
-					name_id = "menu_pda10_post_objective_1",
-					desc_id = "menu_pda10_post_objective_1_desc"
+					desc_id = "menu_pda10_post_objective_1_desc",
+					name_id = "menu_pda10_post_objective_1"
 				})
 			}, 1, {
-				name_id = "menu_pda10_1_choice_obj",
 				choice_id = "pda10_personal_1",
-				desc_id = "menu_pda10_post_objective_1_desc"
+				desc_id = "menu_pda10_post_objective_1_desc",
+				name_id = "menu_pda10_1_choice_obj"
 			}),
 			self:_stage("pda10_stages", 1, {
-				name_id = "menu_pda10_stage_1",
 				desc_id = "menu_pda10_stage_1_desc",
+				name_id = "menu_pda10_stage_1",
 				stages = {
 					6,
 					7
@@ -1108,30 +1108,30 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 		}
 	})
 	table.insert(self.challenges, {
-		reward_id = "menu_pda10_4_reward",
-		locked_id = "bm_menu_locked_pda10_4",
-		id = "pda10_4",
-		name_id = "menu_pda10_4",
 		desc_id = "menu_pda10_4_desc",
+		id = "pda10_4",
+		locked_id = "bm_menu_locked_pda10_4",
+		name_id = "menu_pda10_4",
+		reward_id = "menu_pda10_4_reward",
 		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_buff_objective", 35, {
-					name_id = "menu_pda10_personal_4",
-					desc_id = "menu_pda10_personal_4_desc"
+					desc_id = "menu_pda10_personal_4_desc",
+					name_id = "menu_pda10_personal_4"
 				}),
 				tweak_data.safehouse:_progress("pda10_buff_post_objective", 100, {
-					name_id = "menu_pda10_post_objective_4",
-					desc_id = "menu_pda10_post_objective_4_desc"
+					desc_id = "menu_pda10_post_objective_4_desc",
+					name_id = "menu_pda10_post_objective_4"
 				})
 			}, 1, {
-				name_id = "menu_pda10_4_choice_obj",
 				choice_id = "pda10_personal_4",
-				desc_id = "menu_pda10_post_objective_4_desc"
+				desc_id = "menu_pda10_post_objective_4_desc",
+				name_id = "menu_pda10_4_choice_obj"
 			}),
 			self:_stage("pda10_stages", 1, {
-				name_id = "menu_pda10_stage_4",
 				desc_id = "menu_pda10_stage_4_desc",
+				name_id = "menu_pda10_stage_4",
 				stages = {
 					7
 				}
@@ -1158,33 +1158,33 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 end
 
 function EventJobsTweakData:_init_community_challenges(tweak_data)
-	self.community_challenges = {
-		pda9 = {
-			url = "https://www.paydaythegame.com/ovk-media/redux/ninth-2yrgbaw/ninthstage.json",
-			event_data = {
-				pigs = "pigs",
-				stage = "unlockstage"
-			}
-		},
-		cg22 = {
-			url = "https://www.paydaythegame.com/ovk-media/redux/hl22-u3yhfbfaud/holiday22stage.json",
-			event_data = {
-				bags = "bags",
-				stage = "unlockstage"
-			}
-		},
-		pda10 = {
-			url = "https://www.paydaythegame.com/ovk-media/redux/pd210-uty37awwutu63fa/piggybucks.json",
-			event_data = {
-				bags = "bucks",
-				stage = "unlockstage"
-			}
+	self.community_challenges = {}
+	self.community_challenges.pda9 = {
+		url = "https://www.paydaythegame.com/ovk-media/redux/ninth-2yrgbaw/ninthstage.json",
+		event_data = {
+			pigs = "pigs",
+			stage = "unlockstage"
+		}
+	}
+	self.community_challenges.cg22 = {
+		url = "https://www.paydaythegame.com/ovk-media/redux/hl22-u3yhfbfaud/holiday22stage.json",
+		event_data = {
+			bags = "bags",
+			stage = "unlockstage"
+		}
+	}
+	self.community_challenges.pda10 = {
+		url = "https://www.paydaythegame.com/ovk-media/redux/pd210-uty37awwutu63fa/piggybucks.json",
+		event_data = {
+			bags = "bucks",
+			stage = "unlockstage"
 		}
 	}
 end
 
 function EventJobsTweakData:_collective(collective_id, max_progress, data)
 	data.collective_id = collective_id
+
 	local save_values = {
 		"achievement_id",
 		"progress_id",
@@ -1200,9 +1200,9 @@ function EventJobsTweakData:_collective(collective_id, max_progress, data)
 	end
 
 	local obj = {
-		progress = 0,
 		completed = false,
 		displayed = true,
+		progress = 0,
 		achievement_id = data.achievement_id,
 		name_id = data.name_id,
 		desc_id = data.desc_id,
@@ -1245,10 +1245,10 @@ function EventJobsTweakData:_choice(challenge_choices, max_progress, data)
 	end
 
 	local obj = {
-		progress = 0,
 		completed = false,
 		displayed = true,
 		max_progress = 1,
+		progress = 0,
 		choice_id = data.choice_id,
 		name_id = data.name_id,
 		desc_id = data.desc_id,
@@ -1263,6 +1263,7 @@ end
 
 function EventJobsTweakData:_stage(stage_id, max_progress, data)
 	data.stage_id = stage_id
+
 	local save_values = {
 		"achievement_id",
 		"progress_id",
@@ -1280,9 +1281,9 @@ function EventJobsTweakData:_stage(stage_id, max_progress, data)
 	end
 
 	local obj = {
-		progress = 0,
 		completed = false,
 		displayed = true,
+		progress = 0,
 		achievement_id = data.achievement_id,
 		name_id = data.name_id,
 		desc_id = data.desc_id,

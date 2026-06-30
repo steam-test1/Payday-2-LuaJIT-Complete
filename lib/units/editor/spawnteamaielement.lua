@@ -13,6 +13,7 @@ function SpawnTeamAIUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local characters = {}
 
 	for _, data in ipairs(managers.criminals:characters()) do

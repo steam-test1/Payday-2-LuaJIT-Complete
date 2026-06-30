@@ -9,8 +9,8 @@ require("lib/utils/accelbyte/Telemetry")
 
 function AchievmentManager:init()
 	self.exp_awards = {
-		b = 1500,
 		a = 500,
+		b = 1500,
 		c = 5000,
 		none = 0
 	}
@@ -47,7 +47,7 @@ function AchievmentManager:init()
 
 				local init_called = false
 
-				self.handler:initialized_callback(function ()
+				self.handler:initialized_callback(function()
 					AchievmentManager.fetch_achievments("success")
 				end)
 
@@ -156,10 +156,10 @@ function AchievmentManager:init()
 end
 
 function AchievmentManager:save(data)
-	local save = {
-		forced = table.list_copy(self._forced),
-		tracked = {}
-	}
+	local save = {}
+
+	save.forced = table.list_copy(self._forced)
+	save.tracked = {}
 
 	for k, v in pairs(self.achievments) do
 		if v.tracked then
@@ -247,10 +247,10 @@ end
 function AchievmentManager.fetch_achievments(error_str)
 	print("[AchievmentManager.fetch_achievments]", error_str)
 
-	local oldest_achievement_date = nil
+	local oldest_achievement_date
 
 	if error_str == "success" then
-		local unlock_time = nil
+		local unlock_time
 
 		for id, ach in pairs(managers.achievment.achievments) do
 			if managers.achievment.handler:has_achievement(ach.id) then
@@ -291,7 +291,7 @@ function AchievmentManager.update_global_stats(success)
 			local value = managers.network.account:get_stat(stat)
 
 			for _, d in pairs(unlocks) do
-				if d.at <= value then
+				if value >= d.at then
 					managers.achievment:award(d.award)
 				end
 			end
@@ -379,6 +379,7 @@ end
 
 function AchievmentManager:_parse_achievments(platform)
 	local list = PackageManager:script_data(self.FILE_EXTENSION:id(), self.PATH:id())
+
 	self.achievments = {}
 
 	for _, ach in ipairs(list) do
@@ -393,6 +394,7 @@ function AchievmentManager:_parse_achievments(platform)
 						exp = self.exp_awards[ach.awards_exp],
 						dlc_loot = reward.dlc_loot or false
 					}
+
 					self.achievments[ach.id] = data
 				end
 			end
@@ -492,6 +494,7 @@ end
 function AchievmentManager:_update_current_milestone()
 	local current_count = self:total_unlocked()
 	local check_drops = false
+
 	self._current_milestone = nil
 
 	for _, milestone in ipairs(self._milestones) do
@@ -576,8 +579,10 @@ function AchievmentManager:award_enemy_kill_achievement(id)
 end
 
 function AchievmentManager:update()
-	local cur = nil
+	local cur
+
 	self._progress_iter, cur = next(self._with_progress, self._with_progress[self._progress_iter] and self._progress_iter)
+
 	local i = 1
 
 	while true do
@@ -591,7 +596,9 @@ function AchievmentManager:update()
 
 		if cur.info.tracked then
 			i = i + 1
+
 			local new = cur.visual.progress.get()
+
 			cur.last = cur.last or new
 
 			if cur.last ~= new then
@@ -626,7 +633,7 @@ function AchievmentManager:force_track(id, state)
 	end
 
 	if state and not data.awarded then
-		if self.MAX_TRACKED <= #self._forced then
+		if #self._forced >= self.MAX_TRACKED then
 			return data.forced
 		end
 
@@ -718,6 +725,7 @@ end
 
 function AchievmentManager:get_recent_achievements(params)
 	params = params or {}
+
 	local recent = params.from or self._recent_data.time
 	local rtn = {}
 
@@ -740,6 +748,7 @@ function AchievmentManager:_give_reward(id, skip_exp)
 	print("[AchievmentManager] give_reward", id)
 
 	local data = self:get_info(id)
+
 	data.awarded = true
 	self._with_progress[id] = nil
 
@@ -780,7 +789,7 @@ function AchievmentManager:award_progress(stat, value)
 
 	local unlocks = tweak_data.achievement.persistent_stat_unlocks[stat] or {}
 	local old_value = managers.network.account:get_stat(stat)
-	local unlock_check = table.filter_list(unlocks, function (v)
+	local unlock_check = table.filter_list(unlocks, function(v)
 		local info = self:get_info(v.award)
 
 		if info and info.awarded then
@@ -791,13 +800,13 @@ function AchievmentManager:award_progress(stat, value)
 			return false
 		end
 
-		return old_value <= v.at
+		return v.at >= old_value
 	end)
-	local stats = {
-		[stat] = {
-			type = "int",
-			value = value or 1
-		}
+	local stats = {}
+
+	stats[stat] = {
+		type = "int",
+		value = value or 1
 	}
 
 	managers.network.account:publish_statistics(stats, true)
@@ -807,7 +816,7 @@ function AchievmentManager:award_progress(stat, value)
 	print("[AchievmentManager]", inspect(unlock_check))
 
 	for _, d in pairs(unlock_check) do
-		if d.at <= new_value then
+		if new_value >= d.at then
 			self:award(d.award)
 		end
 	end
@@ -917,6 +926,7 @@ function AchievmentManager:award_psn(id)
 	end
 
 	local request = Trophies:unlock_id(self:get_info(id).id, AchievmentManager.psn_unlock_result)
+
 	Global.achievment_manager.trophy_requests[request] = id
 end
 
@@ -957,10 +967,10 @@ function AchievmentManager:clbk_install_trophies(result)
 end
 
 function AchievmentManager:check_complete_heist_stats_achivements()
-	local job = nil
+	local job
 
 	for achievement, achievement_data in pairs(tweak_data.achievement.complete_heist_stats_achievements) do
-		local remaining_jobs = nil
+		local remaining_jobs
 
 		if achievement_data.contact == "all" then
 			remaining_jobs = {}

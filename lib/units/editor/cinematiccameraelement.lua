@@ -64,13 +64,14 @@ function CinematicCameraUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local states_params = {
+		ctrlr_proportions = 2,
 		default = "none",
 		name = "State:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select a state",
 		sorted = true,
+		tooltip = "Select a state",
 		panel = panel,
 		sizer = panel_sizer,
 		options = self:_get_states(),
@@ -91,11 +92,11 @@ function CinematicCameraUnitElement:_build_panel(panel, panel_sizer)
 	toolbar:realize()
 	panel_sizer:add(toolbar, 0, 1, "EXPAND,LEFT")
 
-	local help = {
-		text = "Select a state to play on the camera",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Select a state to play on the camera"
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

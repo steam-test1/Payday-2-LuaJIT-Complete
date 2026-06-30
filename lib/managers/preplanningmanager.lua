@@ -14,6 +14,7 @@ end
 
 local default_category = "default"
 local server_master_planner = true
+
 PrePlanningManager = PrePlanningManager or class()
 PrePlanningManager.server_master_planner = server_master_planner
 
@@ -37,6 +38,7 @@ function PrePlanningManager:init()
 end
 
 function PrePlanningManager:post_init()
+	return
 end
 
 function PrePlanningManager:on_preplanning_open()
@@ -52,11 +54,11 @@ function PrePlanningManager:open_rebuy_menu()
 		return
 	end
 
-	local params = {
-		yes_func = callback(self, self, "reserve_rebuy_mission_elements"),
-		rebuy_assets = self._rebuy_assets.assets,
-		votes = self._rebuy_assets.votes
-	}
+	local params = {}
+
+	params.yes_func = callback(self, self, "reserve_rebuy_mission_elements")
+	params.rebuy_assets = self._rebuy_assets.assets
+	params.votes = self._rebuy_assets.votes
 
 	managers.menu:show_confirm_preplanning_rebuy(params)
 end
@@ -69,10 +71,11 @@ function PrePlanningManager:get_can_rebuy_assets()
 	if can_rebuy then
 		local has_assets = self._rebuy_assets.assets and #self._rebuy_assets.assets ~= 0
 		local has_votes = false
-		local mission_element = nil
+		local mission_element
 
 		for plan, type in pairs(location_data.default_plans) do
 			mission_element = self:get_default_plan_mission_element(type)
+
 			local matches = false
 
 			if mission_element then
@@ -138,9 +141,9 @@ function PrePlanningManager:activate_location_groups(location_groups)
 		self._active_location_groups[location_group] = true
 	end
 
-	local element, type = nil
+	local element, type
 
-	table.remove_condition(self._delayed_mission_elements, function (data)
+	table.remove_condition(self._delayed_mission_elements, function(data)
 		type = data.type
 		element = data.element
 
@@ -315,7 +318,7 @@ end
 
 function PrePlanningManager:get_votes_on_element(plan, type, index)
 	local vote_council = self:get_vote_council()
-	local _plan = nil
+	local _plan
 	local t = {
 		votes = 0,
 		players = {
@@ -376,6 +379,7 @@ function PrePlanningManager:_server_unreserve_mission_element(id, peer_id)
 		end
 
 		self._reserved_mission_elements[id] = nil
+
 		local peer = managers.network:session() and managers.network:session():peer(peer_id)
 
 		if peer then
@@ -463,7 +467,7 @@ function PrePlanningManager:count_reserved_for_type(type, category, peer_id)
 	local type_total_count = 0
 	local category_player_count = 0
 	local category_total_count = 0
-	local _type, _index, _category, _peer_id, type_data, category_data = nil
+	local _type, _index, _category, _peer_id, type_data, category_data
 
 	for id, data in pairs(self._reserved_mission_elements) do
 		_type, _index = unpack(data.pack)
@@ -547,6 +551,7 @@ function PrePlanningManager:_server_reserve_mission_element(type, id, peer_id)
 			},
 			peer_id = peer_id
 		}
+
 		local disables_types = self._mission_elements_by_type[type][index]:value("disables_types") or {}
 
 		for _, type in ipairs(disables_types) do
@@ -606,6 +611,7 @@ function PrePlanningManager:client_reserve_mission_element(type, id, peer_id)
 			},
 			peer_id = peer_id
 		}
+
 		local disables_types = self._mission_elements_by_type[type][index]:value("disables_types") or {}
 
 		for _, type in ipairs(disables_types) do
@@ -646,7 +652,7 @@ function PrePlanningManager:reserve_rebuy_mission_elements()
 end
 
 function PrePlanningManager:on_multi_profile_changed()
-	local upgrade_lock, upgrade_unlocked, type, index, type_data = nil
+	local upgrade_lock, upgrade_unlocked, type, index, type_data
 	local peer_id = managers.network:session():local_peer():id()
 	local mission_elements_to_lock = {}
 
@@ -731,7 +737,7 @@ function PrePlanningManager:on_execute_preplanning()
 		end
 
 		local local_peer_id = managers.network:session():local_peer():id()
-		local award_achievement, progress_stat, type_data = nil
+		local award_achievement, progress_stat, type_data
 
 		for id, data in pairs(self._reserved_mission_elements) do
 			if data.peer_id == local_peer_id then
@@ -795,6 +801,7 @@ end
 function PrePlanningManager:execute_reserved_mission_elements()
 	if Network:is_server() and not self._executed_reserved_mission_elements then
 		self._active_location_groups = {}
+
 		local location_data = self:_current_location_data()
 
 		if location_data.active_location_groups then
@@ -803,11 +810,13 @@ function PrePlanningManager:execute_reserved_mission_elements()
 			end
 		end
 
-		local type, index = nil
+		local type, index
 		local current_budget, total_budget = self:get_current_budget()
+
 		current_budget = 0
+
 		local location_group_converter = self:_get_location_groups_converter()
-		local location_group, location_index, element = nil
+		local location_group, location_index, element
 
 		local function execute_func(type, index, finished_table)
 			if not self:is_type_disabled(type) then
@@ -873,11 +882,13 @@ function PrePlanningManager:execute_reserved_mission_elements()
 end
 
 function PrePlanningManager:get_current_preplan()
-	local type, index = nil
+	local type, index
 	local current_budget, total_budget = self:get_current_budget()
+
 	current_budget = 0
+
 	local location_group_converter = self:_get_location_groups_converter()
-	local location_group, category, element = nil
+	local location_group, category, element
 
 	local function set_func(type, index, peer_id, current_table)
 		if not self:is_type_disabled(type) then
@@ -926,7 +937,7 @@ end
 function PrePlanningManager:_update_majority_votes()
 	local local_peer_id = managers.network:session():local_peer():id()
 	local vote_council = self:get_vote_council()
-	local entry = nil
+	local entry
 	local t = {}
 
 	for peer_id, plan_data in pairs(vote_council) do
@@ -940,7 +951,7 @@ function PrePlanningManager:_update_majority_votes()
 	local winners = {}
 
 	for plan, vote_data in pairs(t) do
-		local max_votes, winner = nil
+		local max_votes, winner
 
 		for entry, votes in pairs(vote_data) do
 			if not max_votes or max_votes < votes then
@@ -989,7 +1000,7 @@ function PrePlanningManager:_update_vote_council()
 	end
 
 	local vote_council = {}
-	local mission_element = nil
+	local mission_element
 
 	for i, peer_id in ipairs(peers) do
 		for plan, type in pairs(location_data.default_plans) do
@@ -1089,6 +1100,7 @@ function PrePlanningManager:get_finished_preplan()
 end
 
 function PrePlanningManager:on_simulation_started()
+	return
 end
 
 function PrePlanningManager:on_simulation_ended()
@@ -1162,6 +1174,7 @@ function PrePlanningManager:get_type_desc(type)
 	local text_string = desc_id and managers.localization:text(desc_id) or "MISSING NAME_ID: " .. type
 	local cost_money = managers.money:get_preplanning_type_cost(type)
 	local cost_budget = self:get_type_budget_cost(type)
+
 	text_string = text_string .. "\n\n"
 
 	if cost_money == 0 and cost_budget == 0 then
@@ -1393,7 +1406,7 @@ end
 function PrePlanningManager:sort_mission_elements_into_locations(mission_elements)
 	local location_groups_converter = self:_get_location_groups_converter()
 	local locations = {}
-	local group, index = nil
+	local group, index
 
 	for element_index, element in ipairs(mission_elements) do
 		group = element:value("location_group")
@@ -1420,7 +1433,7 @@ function PrePlanningManager:get_mission_elements_by_type(type)
 end
 
 function PrePlanningManager:get_first_type_in_category(category)
-	local first_type, first_prio = nil
+	local first_type, first_prio
 
 	for type, _ in pairs(self._mission_elements_by_type) do
 		if tweak_data.preplanning.types[type] and tweak_data.preplanning.types[type].category == category and (not first_type or first_prio < (tweak_data.preplanning.types[type].prio or 0) or first_type < type) then
@@ -1445,9 +1458,9 @@ function PrePlanningManager:types_with_mission_elements(optional_category, no_so
 		local location_data = self:_current_location_data()
 		local default_plan = optional_category and location_data and location_data.default_plans and location_data.default_plans[optional_category] or false
 		local td = tweak_data.preplanning.types
-		local x_prio, y_prio = nil
+		local x_prio, y_prio
 
-		table.sort(t, function (x, y)
+		table.sort(t, function(x, y)
 			x_prio = nil
 			y_prio = nil
 
@@ -1460,7 +1473,7 @@ function PrePlanningManager:types_with_mission_elements(optional_category, no_so
 			y_prio = y_prio or td[y] and td[y].prio or 0
 
 			if x_prio ~= y_prio then
-				return y_prio < x_prio
+				return x_prio > y_prio
 			end
 
 			return y < x
@@ -1474,7 +1487,7 @@ function PrePlanningManager:get_mission_element_subgroups()
 	local t = {}
 	local plans = {}
 	local other = {}
-	local category = nil
+	local category
 	local td = tweak_data.preplanning.categories
 
 	for _, type in ipairs(self:types_with_mission_elements(nil, true)) do
@@ -1493,14 +1506,14 @@ function PrePlanningManager:get_mission_element_subgroups()
 		table.insert(sorted_plans, value)
 	end
 
-	local x_prio, y_prio = nil
+	local x_prio, y_prio
 
-	table.sort(sorted_plans, function (x, y)
+	table.sort(sorted_plans, function(x, y)
 		x_prio = td[x] and td[x].prio or 0
 		y_prio = td[y] and td[y].prio or 0
 
 		if x_prio ~= y_prio then
-			return y_prio < x_prio
+			return x_prio > y_prio
 		end
 
 		return y < x
@@ -1512,12 +1525,12 @@ function PrePlanningManager:get_mission_element_subgroups()
 		table.insert(sorted_other, value)
 	end
 
-	table.sort(sorted_other, function (x, y)
+	table.sort(sorted_other, function(x, y)
 		x_prio = td[x] and td[x].prio or 0
 		y_prio = td[y] and td[y].prio or 0
 
 		if x_prio ~= y_prio then
-			return y_prio < x_prio
+			return x_prio > y_prio
 		end
 
 		return y < x
@@ -1525,13 +1538,13 @@ function PrePlanningManager:get_mission_element_subgroups()
 
 	return {
 		{
-			name_id = "menu_pp_sub_voting",
 			callback = "open_preplanning_plan_item",
+			name_id = "menu_pp_sub_voting",
 			subgroup = sorted_plans
 		},
 		{
-			name_id = "menu_pp_sub_place",
 			callback = "open_preplanning_category_item",
+			name_id = "menu_pp_sub_place",
 			subgroup = sorted_other
 		}
 	}

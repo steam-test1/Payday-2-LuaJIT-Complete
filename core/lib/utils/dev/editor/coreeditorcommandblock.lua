@@ -20,7 +20,7 @@ function CoreEditorCommandBlock:undo()
 		action.__order = i + (action.__type and (action.__type.__priority or 0))
 	end
 
-	table.sort(sorted_actions, function (a, b)
+	table.sort(sorted_actions, function(a, b)
 		return a.__order < b.__order
 	end)
 

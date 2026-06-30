@@ -1,6 +1,7 @@
 core:import("CoreEnvironmentEffectsManager")
 
 local is_editor = Application:editor()
+
 EnvironmentEffectsManager = EnvironmentEffectsManager or class(CoreEnvironmentEffectsManager.EnvironmentEffectsManager)
 
 function EnvironmentEffectsManager:init()
@@ -56,15 +57,19 @@ function EnvironmentEffect:init(default)
 end
 
 function EnvironmentEffect:load_effects()
+	return
 end
 
 function EnvironmentEffect:update(t, dt)
+	return
 end
 
 function EnvironmentEffect:start()
+	return
 end
 
 function EnvironmentEffect:stop()
+	return
 end
 
 function EnvironmentEffect:default()
@@ -72,6 +77,7 @@ function EnvironmentEffect:default()
 end
 
 RainEffect = RainEffect or class(EnvironmentEffect)
+
 local ids_rain_post_processor = Idstring("rain_post_processor")
 local ids_rain_ripples = Idstring("rain_ripples")
 local ids_rain_off = Idstring("rain_off")
@@ -149,6 +155,7 @@ function LightningEffect:init(effect_data)
 end
 
 function LightningEffect:load_effects()
+	return
 end
 
 function LightningEffect:_update_wait_start()
@@ -298,10 +305,12 @@ function LightningEffect:_set_lightning_values()
 	self._flash_anim_time = math.rand(0, 1)
 	self._distance = math.rand(1)
 	self._intensity_value = math.lerp(Vector3(2, 2, 2), Vector3(5, 5, 5), self._distance)
+
 	local c_pos = managers.environment_effects:camera_position()
 
 	if c_pos then
 		local sound_speed = 30000
+
 		self._sound_delay = self._distance * 2
 
 		if self._sound_source then
@@ -330,6 +339,7 @@ function RainDropEffect:load_effects()
 end
 
 function RainDropEffect:update(t, dt)
+	return
 end
 
 function RainDropEffect:start()
@@ -338,6 +348,7 @@ function RainDropEffect:start()
 		position = Vector3(),
 		rotation = Rotation()
 	}
+
 	self._raindrops = World:effect_manager():spawn(t)
 end
 

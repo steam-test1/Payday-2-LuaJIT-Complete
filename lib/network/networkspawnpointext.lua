@@ -14,4 +14,5 @@ function NetworkSpawnPointExt:get_data(unit)
 end
 
 function NetworkSpawnPointExt:destroy(unit)
+	return
 end

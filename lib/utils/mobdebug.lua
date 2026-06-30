@@ -4,20 +4,20 @@ local table = table or require("table")
 local string = string or require("string")
 local coroutine = coroutine or require("coroutine")
 local debug = require("debug")
-local os = os or function (module)
+local os = os or (function(module)
 	local ok, res = pcall(require, module)
 
 	return ok and res or nil
-end("os")
+end)("os")
 local mobdebug = {
-	yieldtimeout = 0.02,
+	_COPYRIGHT = "Paul Kulchenko",
 	_DESCRIPTION = "Mobile Remote Debugger for the Lua programming language",
 	_NAME = "mobdebug",
 	_VERSION = "0.803",
-	_COPYRIGHT = "Paul Kulchenko",
 	checkcount = 200,
 	connecttimeout = 2,
-	port = os and os.getenv and tonumber(os.getenv("MOBDEBUG_PORT")) or 8172
+	yieldtimeout = 0.02,
+	port = os and os.getenv and tonumber((os.getenv("MOBDEBUG_PORT"))) or 8172
 }
 local HOOKMASK = "lcr"
 local error = error
@@ -29,9 +29,7 @@ local setmetatable = setmetatable
 local tonumber = tonumber
 local unpack = table.unpack or unpack
 local rawget = rawget
-local gsub = string.gsub
-local sub = string.sub
-local find = string.find
+local gsub, sub, find = string.gsub, string.sub, string.find
 local genv = _G or _ENV
 local jit = rawget(genv, "jit")
 local MOAICoroutine = rawget(genv, "MOAICoroutine")
@@ -39,6 +37,7 @@ local ngx = rawget(genv, "ngx")
 
 if not ngx then
 	local metagindex = getmetatable(genv) and getmetatable(genv).__index
+
 	ngx = type(metagindex) == "table" and metagindex.rawget and metagindex:rawget("ngx") or nil
 end
 
@@ -89,7 +88,7 @@ if jit and jit.off then
 end
 
 local socket = require("lib/utils/socket")
-local coro_debugger, coro_debugee = nil
+local coro_debugger, coro_debugee
 local coroutines = {}
 
 setmetatable(coroutines, {
@@ -97,23 +96,23 @@ setmetatable(coroutines, {
 })
 
 local events = {
+	BREAK = 1,
 	RESTART = 3,
-	WATCH = 2,
 	STACK = 4,
-	BREAK = 1
+	WATCH = 2
 }
 local breakpoints = {}
 local watches = {}
-local lastsource, lastfile = nil
+local lastsource, lastfile
 local watchescnt = 0
-local abort = nil
+local abort
 local seen_hook = false
 local checkcount = 0
 local step_into = false
 local step_over = false
 local step_level = 0
 local stack_level = 0
-local server, buf = nil
+local server, buf
 local outputs = {}
 local iobase = {
 	print = print
@@ -135,20 +134,18 @@ local function q(s)
 	return string.gsub(s, "([%(%)%.%%%+%-%*%?%[%^%$%]])", "%%%1")
 end
 
-local serpent = function ()
-	local n = "serpent"
-	local v = "0.302"
-	local c = "Paul Kulchenko"
-	local d = "Lua serializer and pretty printer"
+local serpent = (function()
+	local n, v = "serpent", "0.302"
+	local c, d = "Paul Kulchenko", "Lua serializer and pretty printer"
 	local snum = {
-		nan = "0/0",
+		["-inf"] = "-1/0 --[[-math.huge]]",
 		inf = "1/0 --[[math.huge]]",
-		["-inf"] = "-1/0 --[[-math.huge]]"
+		nan = "0/0"
 	}
 	local badtype = {
-		userdata = true,
 		cdata = true,
-		thread = true
+		thread = true,
+		userdata = true
 	}
 	local getmetatable = debug and debug.getmetatable or getmetatable
 
@@ -156,9 +153,7 @@ local serpent = function ()
 		return next, t
 	end
 
-	local keyword = {}
-	local globals = {}
-	local G = _G or _ENV
+	local keyword, globals, G = {}, {}, _G or _ENV
 
 	for _, k in ipairs({
 		"and",
@@ -210,29 +205,18 @@ local serpent = function ()
 	end
 
 	local function s(t, opts)
-		local name = opts.name
-		local indent = opts.indent
-		local fatal = opts.fatal
-		local maxnum = opts.maxnum
-		local sparse = opts.sparse
-		local custom = opts.custom
-		local huge = not opts.nohuge
-		local space = opts.compact and "" or " "
-		local maxl = opts.maxlevel or math.huge
-		local maxlen = tonumber(opts.maxlength)
-		local metatostring = opts.metatostring
-		local iname = "_" .. (name or "")
-		local comm = opts.comment and (tonumber(opts.comment) or math.huge)
+		local name, indent, fatal, maxnum = opts.name, opts.indent, opts.fatal, opts.maxnum
+		local sparse, custom, huge = opts.sparse, opts.custom, not opts.nohuge
+		local space, maxl = opts.compact and "" or " ", opts.maxlevel or math.huge
+		local maxlen, metatostring = tonumber(opts.maxlength), opts.metatostring
+		local iname, comm = "_" .. (name or ""), opts.comment and (tonumber(opts.comment) or math.huge)
 		local numformat = opts.numformat or "%.17g"
-		local seen = {}
-		local sref = {
+		local seen, sref, syms, symn = {}, {
 			"local " .. iname .. "={}"
-		}
-		local syms = {}
-		local symn = 0
+		}, {}, 0
 
 		local function gensym(val)
-			return "_" .. tostring(tostring(val)):gsub("[^%w]", ""):gsub("(%d%w+)", function (s)
+			return "_" .. tostring(tostring(val)):gsub("[^%w]", ""):gsub("(%d%w+)", function(s)
 				if not syms[s] then
 					symn = symn + 1
 					syms[s] = symn
@@ -243,7 +227,7 @@ local serpent = function ()
 		end
 
 		local function safestr(s)
-			return type(s) == "number" and tostring(huge and snum[tostring(s)] or numformat:format(s)) or type(s) ~= "string" and tostring(s) or ("%q"):format(s):gsub("\n", "n"):gsub("", "\\026")
+			return type(s) == "number" and tostring(huge and snum[tostring(s)] or numformat:format(s)) or type(s) ~= "string" and tostring(s) or ("%q"):format(s):gsub("\n", "n"):gsub("\x1A", "\\026")
 		end
 
 		local function comment(s, l)
@@ -262,26 +246,23 @@ local serpent = function ()
 			return (path or "") .. (plain and path and "." or "") .. safe, safe
 		end
 
-		local alphanumsort = type(opts.sortkeys) == "function" and opts.sortkeys or function (k, o, n)
-			local maxn = tonumber(n) or 12
-			local to = {
-				string = "b",
-				number = "a"
+		local alphanumsort = type(opts.sortkeys) == "function" and opts.sortkeys or function(k, o, n)
+			local maxn, to = tonumber(n) or 12, {
+				number = "a",
+				string = "b"
 			}
 
 			local function padnum(d)
 				return ("%0" .. tostring(maxn) .. "d"):format(tonumber(d))
 			end
 
-			table.sort(k, function (a, b)
+			table.sort(k, function(a, b)
 				return (k[a] ~= nil and 0 or to[type(a)] or "z") .. tostring(a):gsub("%d+", padnum) < (k[b] ~= nil and 0 or to[type(b)] or "z") .. tostring(b):gsub("%d+", padnum)
 			end)
 		end
 
 		local function val2str(t, name, indent, insref, path, plainindex, level)
-			local ttype = type(t)
-			local level = level or 0
-			local mt = getmetatable(t)
+			local ttype, level, mt = type(t), level or 0, getmetatable(t)
 			local spath, sname = safename(path, name)
 			local tag = plainindex and (type(name) == "number" and "" or name .. space .. "=" .. space) or name ~= nil and sname .. space .. "=" .. space or ""
 
@@ -292,10 +273,10 @@ local serpent = function ()
 			end
 
 			if type(mt) == "table" and metatostring ~= false then
-				local to, tr = pcall(function ()
+				local to, tr = pcall(function()
 					return mt.__tostring(t)
 				end)
-				local so, sr = pcall(function ()
+				local so, sr = pcall(function()
 					return mt.__serialize(t)
 				end)
 
@@ -307,7 +288,7 @@ local serpent = function ()
 			end
 
 			if ttype == "table" then
-				if maxl <= level then
+				if level >= maxl then
 					return tag .. "{}" .. comment("maxlvl", level)
 				end
 
@@ -321,9 +302,7 @@ local serpent = function ()
 					return tag .. "{}" .. comment("maxlen", level)
 				end
 
-				local maxn = math.min(#t, maxnum or #t)
-				local o = {}
-				local out = {}
+				local maxn, o, out = math.min(#t, maxnum or #t), {}, {}
 
 				for key = 1, maxn do
 					o[key] = key
@@ -340,7 +319,7 @@ local serpent = function ()
 					end
 				end
 
-				if maxnum and maxnum < #o then
+				if maxnum and #o > maxnum then
 					o[maxnum + 1] = nil
 				end
 
@@ -351,32 +330,32 @@ local serpent = function ()
 				local sparse = sparse and maxn < #o
 
 				for n, key in ipairs(o) do
-					local value = t[key]
-					local ktype = type(key)
-					local plainindex = n <= maxn and not sparse
+					local value, ktype, plainindex = t[key], type(key), n <= maxn and not sparse
 
-					if (not opts.valignore or not opts.valignore[value]) and (not opts.keyallow or opts.keyallow[key]) and (not opts.keyignore or not opts.keyignore[key]) and (not opts.valtypeignore or not opts.valtypeignore[type(value)]) then
-						if sparse and value == nil then
-							-- Nothing
-						elseif ktype == "table" or ktype == "function" or badtype[ktype] then
-							if not seen[key] and not globals[key] then
-								sref[#sref + 1] = "placeholder"
-								local sname = safename(iname, gensym(key))
-								sref[#sref] = val2str(key, sname, indent, sname, iname, true)
-							end
-
+					if opts.valignore and opts.valignore[value] or opts.keyallow and not opts.keyallow[key] or opts.keyignore and opts.keyignore[key] or opts.valtypeignore and opts.valtypeignore[type(value)] or sparse and value == nil then
+						-- Nothing
+					elseif ktype == "table" or ktype == "function" or badtype[ktype] then
+						if not seen[key] and not globals[key] then
 							sref[#sref + 1] = "placeholder"
-							local path = seen[t] .. "[" .. tostring(seen[key] or globals[key] or gensym(key)) .. "]"
-							sref[#sref] = path .. space .. "=" .. space .. tostring(seen[value] or val2str(value, nil, indent, path))
-						else
-							out[#out + 1] = val2str(value, key, indent, nil, seen[t], plainindex, level + 1)
 
-							if maxlen then
-								maxlen = maxlen - #out[#out]
+							local sname = safename(iname, gensym(key))
 
-								if maxlen < 0 then
-									break
-								end
+							sref[#sref] = val2str(key, sname, indent, sname, iname, true)
+						end
+
+						sref[#sref + 1] = "placeholder"
+
+						local path = seen[t] .. "[" .. tostring(seen[key] or globals[key] or gensym(key)) .. "]"
+
+						sref[#sref] = path .. space .. "=" .. space .. tostring(seen[value] or val2str(value, nil, indent, path))
+					else
+						out[#out + 1] = val2str(value, key, indent, nil, seen[t], plainindex, level + 1)
+
+						if maxlen then
+							maxlen = maxlen - #out[#out]
+
+							if maxlen < 0 then
+								break
 							end
 						end
 					end
@@ -418,17 +397,17 @@ local serpent = function ()
 
 	local function deserialize(data, opts)
 		local env = opts and opts.safe == false and G or setmetatable({}, {
-			__index = function (t, k)
+			__index = function(t, k)
 				return t
 			end,
-			__call = function (t, ...)
+			__call = function(t, ...)
 				error("cannot call functions")
 			end
 		})
-		local f, res = loadstring or load("return " .. data, nil, nil, env)
+		local f, res = (loadstring or load)("return " .. data, nil, nil, env)
 
 		if not f then
-			f, res = loadstring or load(data, nil, nil, env)
+			f, res = (loadstring or load)(data, nil, nil, env)
 		end
 
 		if not f then
@@ -459,28 +438,29 @@ local serpent = function ()
 		_VERSION = v,
 		serialize = s,
 		load = deserialize,
-		dump = function (a, opts)
+		dump = function(a, opts)
 			return s(a, merge({
-				sparse = true,
+				compact = true,
 				name = "_",
-				compact = true
+				sparse = true
 			}, opts))
 		end,
-		line = function (a, opts)
+		line = function(a, opts)
 			return s(a, merge({
-				sortkeys = true,
-				comment = true
+				comment = true,
+				sortkeys = true
 			}, opts))
 		end,
-		block = function (a, opts)
+		block = function(a, opts)
 			return s(a, merge({
-				sortkeys = true,
+				comment = true,
 				indent = "  ",
-				comment = true
+				sortkeys = true
 			}, opts))
 		end
 	}
-end()
+end)()
+
 mobdebug.line = serpent.line
 mobdebug.dump = serpent.dump
 mobdebug.linemap = nil
@@ -534,6 +514,7 @@ local function stack(start)
 		end
 
 		i = 1
+
 		local ups = {}
 
 		while func do
@@ -640,6 +621,7 @@ local function restore_vars(vars)
 	end
 
 	i = i - 1
+
 	local written_vars = {}
 
 	while i > 0 do
@@ -657,6 +639,7 @@ local function restore_vars(vars)
 	end
 
 	i = 1
+
 	local func = debug.getinfo(3, "f").func
 
 	while true do
@@ -680,6 +663,7 @@ end
 
 local function capture_vars(level, thread)
 	level = (level or 0) + 2
+
 	local func = (thread and debug.getinfo(thread, level, "f") or debug.getinfo(level, "f") or {}).func
 
 	if not func then
@@ -708,7 +692,7 @@ local function capture_vars(level, thread)
 	i = 1
 
 	while true do
-		local name, value = nil
+		local name, value
 
 		if thread then
 			name, value = debug.getlocal(thread, level, i)
@@ -730,7 +714,7 @@ local function capture_vars(level, thread)
 	i = 1
 
 	while true do
-		local name, value = nil
+		local name, value
 
 		if thread then
 			name, value = debug.getlocal(thread, level, -i)
@@ -804,7 +788,7 @@ local function in_debugger()
 end
 
 local function is_pending(peer)
-	if not buf and mobdebug.checkcount <= checkcount then
+	if not buf and checkcount >= mobdebug.checkcount then
 		peer:settimeout(0)
 
 		buf = peer:receive(1)
@@ -870,7 +854,7 @@ local function handle_breakpoint(peer)
 end
 
 local function normalize_path(file)
-	local n = nil
+	local n
 
 	repeat
 		file, n = file:gsub("/+%.?/+", "/")
@@ -880,7 +864,7 @@ local function normalize_path(file)
 		file, n = file:gsub("[^/]+/%.%./", "", 1)
 	until n == 0
 
-	return file:gsub("^(/?)%.%./", "%1")
+	return (file:gsub("^(/?)%.%./", "%1"))
 end
 
 local function debug_hook(event, line)
@@ -923,7 +907,7 @@ local function debug_hook(event, line)
 			end
 		end
 
-		if not step_into and not step_over and not breakpoints[line] and watchescnt <= 0 and not is_pending(server) then
+		if not step_into and not step_over and not breakpoints[line] and not (watchescnt > 0) and not is_pending(server) then
 			checkcount = checkcount + 1
 
 			return
@@ -931,12 +915,12 @@ local function debug_hook(event, line)
 
 		checkcount = mobdebug.checkcount
 		stack_level = stack_depth(stack_level + 1)
+
 		local caller = debug.getinfo(2, "S")
 		local file = lastfile
 
 		if lastsource ~= caller.source then
-			lastsource = caller.source
-			file = caller.source
+			file, lastsource = caller.source, caller.source
 
 			if find(file, "^@") or not find(file, "[\r\n]") then
 				file = gsub(gsub(file, "^@", ""), "\\", "/")
@@ -971,7 +955,7 @@ local function debug_hook(event, line)
 			handle_breakpoint(server)
 		end
 
-		local vars, status, res = nil
+		local vars, status, res
 
 		if watchescnt > 0 then
 			vars = capture_vars(1)
@@ -1057,7 +1041,8 @@ local function stringify_results(params, status, ...)
 
 	for i = 1, select("#", ...) do
 		local ok, res = pcall(mobdebug.line, select(i, ...), params)
-		t[i] = ok and res or ("%q"):format(res):gsub("\n", "n"):gsub("", "\\026")
+
+		t[i] = ok and res or ("%q"):format(res):gsub("\n", "n"):gsub("\x1A", "\\026")
 	end
 
 	return pcall(mobdebug.dump, t, {
@@ -1092,7 +1077,7 @@ local function done()
 end
 
 local function debugger_loop(sev, svars, sfile, sline)
-	local command = nil
+	local command
 	local eval_env = svars or {}
 
 	local function emptyWatch()
@@ -1106,7 +1091,7 @@ local function debugger_loop(sev, svars, sfile, sline)
 	end
 
 	while true do
-		local line, err = nil
+		local line, err
 
 		if mobdebug.yield and server.settimeout then
 			server:settimeout(mobdebug.yieldtimeout)
@@ -1165,12 +1150,14 @@ local function debugger_loop(sev, svars, sfile, sline)
 
 			if chunk then
 				local func, res = mobdebug.loadstring(chunk)
-				local status = nil
+				local status
 
 				if func then
 					local pfunc = params and loadstring("return " .. params)
+
 					params = pfunc and pfunc()
 					params = type(params) == "table" and params or {}
+
 					local stack = tonumber(params.stack)
 					local env = stack and coro_debugee and capture_vars(stack - 1, coro_debugee) or eval_env
 
@@ -1197,6 +1184,7 @@ local function debugger_loop(sev, svars, sfile, sline)
 			end
 		elseif command == "LOAD" then
 			local _, _, size, name = string.find(line, "^[A-Z]+%s+(%d+)%s+(%S.-)%s*$")
+
 			size = tonumber(size)
 
 			if abort == nil then
@@ -1248,7 +1236,9 @@ local function debugger_loop(sev, svars, sfile, sline)
 
 				if func then
 					watchescnt = watchescnt + 1
+
 					local newidx = #watches + 1
+
 					watches[newidx] = func
 
 					server:send("200 OK " .. tostring(newidx) .. "\n")
@@ -1261,6 +1251,7 @@ local function debugger_loop(sev, svars, sfile, sline)
 			end
 		elseif command == "DELW" then
 			local _, _, index = string.find(line, "^[A-Z]+%s+(%d+)%s*$")
+
 			index = tonumber(index)
 
 			if index > 0 and index <= #watches then
@@ -1275,13 +1266,16 @@ local function debugger_loop(sev, svars, sfile, sline)
 			server:send("200 OK\n")
 
 			local ev, vars, file, line, idx_watch = coroyield()
+
 			eval_env = vars
 
 			if ev == events.BREAK then
 				server:send("202 Paused " .. file .. " " .. tostring(line) .. "\n")
 			elseif ev == events.WATCH then
 				server:send("203 Paused " .. file .. " " .. tostring(line) .. " " .. tostring(idx_watch) .. "\n")
-			elseif ev ~= events.RESTART then
+			elseif ev == events.RESTART then
+				-- Nothing
+			else
 				server:send("401 Error in Execution " .. tostring(#file) .. "\n")
 				server:send(file)
 			end
@@ -1289,14 +1283,18 @@ local function debugger_loop(sev, svars, sfile, sline)
 			server:send("200 OK\n")
 
 			step_into = true
+
 			local ev, vars, file, line, idx_watch = coroyield()
+
 			eval_env = vars
 
 			if ev == events.BREAK then
 				server:send("202 Paused " .. file .. " " .. tostring(line) .. "\n")
 			elseif ev == events.WATCH then
 				server:send("203 Paused " .. file .. " " .. tostring(line) .. " " .. tostring(idx_watch) .. "\n")
-			elseif ev ~= events.RESTART then
+			elseif ev == events.RESTART then
+				-- Nothing
+			else
 				server:send("401 Error in Execution " .. tostring(#file) .. "\n")
 				server:send(file)
 			end
@@ -1312,13 +1310,16 @@ local function debugger_loop(sev, svars, sfile, sline)
 			end
 
 			local ev, vars, file, line, idx_watch = coroyield()
+
 			eval_env = vars
 
 			if ev == events.BREAK then
 				server:send("202 Paused " .. file .. " " .. tostring(line) .. "\n")
 			elseif ev == events.WATCH then
 				server:send("203 Paused " .. file .. " " .. tostring(line) .. " " .. tostring(idx_watch) .. "\n")
-			elseif ev ~= events.RESTART then
+			elseif ev == events.RESTART then
+				-- Nothing
+			else
 				server:send("401 Error in Execution " .. tostring(#file) .. "\n")
 				server:send(file)
 			end
@@ -1340,8 +1341,7 @@ local function debugger_loop(sev, svars, sfile, sline)
 
 			return
 		elseif command == "STACK" then
-			local vars = {}
-			local ev = nil
+			local vars, ev = {}
 
 			if seen_hook then
 				ev, vars = coroyield("stack")
@@ -1353,6 +1353,7 @@ local function debugger_loop(sev, svars, sfile, sline)
 			else
 				local params = string.match(line, "--%s*(%b{})%s*$")
 				local pfunc = params and loadstring("return " .. params)
+
 				params = pfunc and pfunc()
 				params = type(params) == "table" and params or {}
 
@@ -1382,7 +1383,8 @@ local function debugger_loop(sev, svars, sfile, sline)
 
 			if stream and mode and stream == "stdout" then
 				local default = mode == "d"
-				genv.print = default and iobase.print or corowrap(function ()
+
+				genv.print = default and iobase.print or corowrap(function()
 					while true do
 						local tbl = {
 							coroutine.yield()
@@ -1452,7 +1454,7 @@ local function connect(controller_host, controller_port)
 	return sock
 end
 
-local lasthost, lastport = nil
+local lasthost, lastport
 
 local function start(controller_host, controller_port)
 	if isrunning() then
@@ -1463,14 +1465,17 @@ local function start(controller_host, controller_port)
 	lastport = controller_port or lastport
 	controller_host = lasthost or "localhost"
 	controller_port = lastport or mobdebug.port
-	local err = nil
+
+	local err
+
 	server, err = mobdebug.connect(controller_host, controller_port)
 
 	if server then
 		stack_level = stack_depth(16)
 
 		local function f()
-			return function ()
+			return function()
+				return
 			end
 		end
 
@@ -1482,8 +1487,7 @@ local function start(controller_host, controller_port)
 					local thr, err, lvl = ...
 
 					if type(thr) ~= "thread" then
-						lvl = err
-						err = thr
+						err, lvl = thr, err
 					end
 
 					local trace = dtraceback(err, (lvl or 1) + 1)
@@ -1525,8 +1529,10 @@ local function controller(controller_host, controller_port, scratchpad)
 	lastport = controller_port or lastport
 	controller_host = lasthost or "localhost"
 	controller_port = lastport or mobdebug.port
+
 	local exitonerror = not scratchpad
-	local err = nil
+	local err
+
 	server, err = mobdebug.connect(controller_host, controller_port)
 
 	if server then
@@ -1671,9 +1677,10 @@ end
 
 local function handle(params, client, options)
 	local verbose = not options or options.verbose ~= nil and options.verbose
-	local print = verbose and (type(verbose) == "function" and verbose or print) or function ()
+	local print = verbose and (type(verbose) == "function" and verbose or print) or function()
+		return
 	end
-	local file, line, watch_idx = nil
+	local file, line, watch_idx
 	local _, _, command = string.find(params, "^([a-z]+)")
 
 	if command == "run" or command == "step" or command == "out" or command == "over" or command == "exit" then
@@ -1809,8 +1816,7 @@ local function handle(params, client, options)
 			print("Invalid command")
 		end
 	elseif command == "delallb" then
-		local file = "*"
-		local line = 0
+		local file, line = "*", 0
 
 		client:send("DELB " .. file .. " " .. tostring(line) .. "\n")
 
@@ -1873,6 +1879,7 @@ local function handle(params, client, options)
 					winapi.set_encoding(winapi.CP_UTF8)
 
 					local shortp = winapi.short_path(exp)
+
 					file = shortp and io.open(shortp, "r")
 				end
 
@@ -1885,6 +1892,7 @@ local function handle(params, client, options)
 				file:close()
 
 				local fname = string.gsub(exp, "\\", "/")
+
 				fname = removebasedir(fname, basedir)
 
 				client:send("LOAD " .. tostring(#lines) .. " " .. fname .. "\n")
@@ -1908,7 +1916,7 @@ local function handle(params, client, options)
 					len = tonumber(len)
 
 					if len > 0 then
-						local status, res = nil
+						local status, res
 						local str = client:receive(len)
 						local func, err = loadstring(str)
 
@@ -1934,36 +1942,35 @@ local function handle(params, client, options)
 					end
 				elseif status == "201" then
 					_, _, file, line = string.find(params, "^201 Started%s+(.-)%s+(%d+)%s*$")
-				elseif status ~= "202" then
-					if params == "200 OK" then
-						-- Nothing
-					elseif status == "204" then
-						local _, _, stream, size = string.find(params, "^204 Output (%w+) (%d+)$")
+				elseif status == "202" or params == "200 OK" then
+					-- Nothing
+				elseif status == "204" then
+					local _, _, stream, size = string.find(params, "^204 Output (%w+) (%d+)$")
 
-						if stream and size then
-							local size = tonumber(size)
-							local msg = size > 0 and client:receive(size) or ""
+					if stream and size then
+						local size = tonumber(size)
+						local msg = size > 0 and client:receive(size) or ""
 
-							print(msg)
+						print(msg)
 
-							if outputs[stream] then
-								outputs[stream](msg)
-							end
-
-							done = false
+						if outputs[stream] then
+							outputs[stream](msg)
 						end
-					elseif status == "401" then
-						len = tonumber(len)
-						local res = client:receive(len)
 
-						print("Error in expression: " .. res)
-
-						return nil, nil, res
-					else
-						print("Unknown error")
-
-						return nil, nil, "Debugger error: unexpected response after EXEC/LOAD '" .. params .. "'"
+						done = false
 					end
+				elseif status == "401" then
+					len = tonumber(len)
+
+					local res = client:receive(len)
+
+					print("Error in expression: " .. res)
+
+					return nil, nil, res
+				else
+					print("Unknown error")
+
+					return nil, nil, "Debugger error: unexpected response after EXEC/LOAD '" .. params .. "'"
 				end
 
 				if done then
@@ -2019,7 +2026,9 @@ local function handle(params, client, options)
 			return stack
 		elseif status == "401" then
 			local _, _, len = string.find(resp, "%s+(%d+)%s*$")
+
 			len = tonumber(len)
+
 			local res = len > 0 and client:receive(len) or "Invalid stack information."
 
 			print("Error in expression: " .. res)
@@ -2140,6 +2149,7 @@ end
 local function listen(host, port)
 	host = host or "*"
 	port = port or mobdebug.port
+
 	local socket = require("lib/utils/socket")
 
 	print("Lua Remote Debugger")
@@ -2179,7 +2189,7 @@ local function listen(host, port)
 	client:close()
 end
 
-local cocreate = nil
+local cocreate
 
 local function coro()
 	if cocreate then
@@ -2189,7 +2199,7 @@ local function coro()
 	cocreate = cocreate or coroutine.create
 
 	function coroutine.create(f, ...)
-		return cocreate(function (...)
+		return cocreate(function(...)
 			mobdebug.on()
 
 			return f(...)
@@ -2197,7 +2207,7 @@ local function coro()
 	end
 end
 
-local moconew = nil
+local moconew
 
 local function moai()
 	if moconew then
@@ -2216,7 +2226,7 @@ local function moai()
 		local patched = mt.run
 
 		function mt:run(f, ...)
-			return patched(self, function (...)
+			return patched(self, function(...)
 				mobdebug.on()
 
 				return f(...)

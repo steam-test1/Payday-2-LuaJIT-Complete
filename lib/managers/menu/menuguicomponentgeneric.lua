@@ -13,6 +13,7 @@ local BOT_ADJUSTMENT = NOT_WIN_32 and 60 or 60
 local PAGE_TAB_H = medium_font_size + 10
 local WIDTH_MULTIPLIER = NOT_WIN_32 and 0.68 or 0.71
 local BOX_GAP = 13.5
+
 MenuGuiComponentGeneric = MenuGuiComponentGeneric or class(MenuGuiComponent)
 
 function MenuGuiComponentGeneric:init(ws, fullscreen_ws, node)
@@ -65,12 +66,13 @@ function MenuGuiComponentGeneric:set_layer(layer)
 end
 
 function MenuGuiComponentGeneric:populate_tabs_data(tabs_data)
+	return
 end
 
 function MenuGuiComponentGeneric:_start_page_data()
-	local data = {
-		topic_id = "dialog_ok"
-	}
+	local data = {}
+
+	data.topic_id = "dialog_ok"
 
 	return data
 end
@@ -123,6 +125,7 @@ function MenuGuiComponentGeneric:_setup(is_start_page, component_data)
 end
 
 function MenuGuiComponentGeneric:_setup_panel_size()
+	return
 end
 
 function MenuGuiComponentGeneric:_add_page_title()
@@ -150,11 +153,11 @@ function MenuGuiComponentGeneric:_add_page_title()
 		end
 
 		local bg_text = self._fullscreen_panel:text({
+			align = "left",
+			alpha = 0.4,
+			h = 90,
 			name = "title_text_bg",
 			vertical = "top",
-			h = 90,
-			alpha = 0.4,
-			align = "left",
 			text = self._title_text:text(),
 			font_size = massive_font_size,
 			font = massive_font,
@@ -171,9 +174,9 @@ end
 
 function MenuGuiComponentGeneric:_add_back_button()
 	self._panel:text({
-		vertical = "bottom",
-		name = "back_button",
 		align = "right",
+		name = "back_button",
+		vertical = "bottom",
 		text = utf8.to_upper(managers.localization:text("menu_back")),
 		font_size = large_font_size,
 		font = large_font,
@@ -186,12 +189,12 @@ function MenuGuiComponentGeneric:_add_back_button()
 
 	if MenuBackdropGUI and managers.menu:is_pc_controller() then
 		local bg_back = self._fullscreen_panel:text({
+			align = "right",
+			alpha = 0.4,
+			h = 90,
+			layer = 0,
 			name = "back_button",
 			vertical = "bottom",
-			h = 90,
-			alpha = 0.4,
-			align = "right",
-			layer = 0,
 			text = utf8.to_upper(managers.localization:text("menu_back")),
 			font_size = massive_font_size,
 			font = massive_font,
@@ -212,15 +215,15 @@ function MenuGuiComponentGeneric:_blur_background()
 		color = Color(0.4, 0, 0, 0)
 	})
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		render_template = "VertexColorTexturedBlur3D",
 		layer = -1,
+		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
 
 	local function func(o)
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(p)
 		end)
 	end
@@ -236,8 +239,8 @@ function MenuGuiComponentGeneric:_add_panels()
 	end
 
 	self._page_panel = self._panel:panel({
-		name = "PageRootPanel",
 		layer = 1,
+		name = "PageRootPanel",
 		w = self._panel:w() * WIDTH_MULTIPLIER,
 		h = h
 	})
@@ -259,8 +262,8 @@ function MenuGuiComponentGeneric:_add_panels()
 		h = self._tabs_panel:h()
 	})
 	self._info_panel = self._panel:panel({
-		name = "InfoRootPanel",
 		layer = 1,
+		name = "InfoRootPanel",
 		w = self._panel:w() * (1 - WIDTH_MULTIPLIER) - BOX_GAP,
 		h = self._page_panel:h()
 	})
@@ -292,9 +295,9 @@ function MenuGuiComponentGeneric:_add_tabs()
 	if (not managers.menu:is_pc_controller() or managers.menu:is_steam_controller()) and #self._tabs_data > 1 then
 		local button = managers.menu:is_steam_controller() and managers.localization:steam_btn("bumper_l") or managers.localization:get_default_macro("BTN_BOTTOM_L")
 		local prev_page = self._tabs_panel:text({
-			y = 0,
-			name = "prev_page",
 			layer = 2,
+			name = "prev_page",
+			y = 0,
 			font_size = medium_font_size,
 			font = medium_font,
 			color = tweak_data.screen_colors.text,
@@ -314,6 +317,7 @@ function MenuGuiComponentGeneric:_add_tabs()
 		local page_class = tab_data.page_class and _G[tab_data.page_class] or MenuGuiTabPage
 		local tab_page = page_class:new(tab_data.name_id, self._page_panel, self._fullscreen_panel, self)
 		local tab_item = MenuGuiTabItem:new(index, tab_data.name_id, tab_page, self, tab_x, self._tabs_scroll_panel)
+
 		tab_x = tab_item:next_page_position()
 
 		table.insert(self._tabs, {
@@ -326,9 +330,9 @@ function MenuGuiComponentGeneric:_add_tabs()
 	if (not managers.menu:is_pc_controller() or managers.menu:is_steam_controller()) and #self._tabs_data > 1 then
 		local button = managers.menu:is_steam_controller() and managers.localization:steam_btn("bumper_r") or managers.localization:get_default_macro("BTN_BOTTOM_R")
 		local next_page = self._tabs_panel:text({
-			y = 0,
-			name = "next_page",
 			layer = 2,
+			name = "next_page",
+			y = 0,
 			font_size = medium_font_size,
 			font = medium_font,
 			color = tweak_data.screen_colors.text,
@@ -353,13 +357,13 @@ function MenuGuiComponentGeneric:_add_legend()
 
 		self._legends_panel:set_rightbottom(self._panel:w(), self._panel:h())
 		self._legends_panel:text({
-			text = "",
-			name = "text",
-			vertical = "bottom",
 			align = "right",
 			blend_mode = "add",
 			halign = "right",
+			name = "text",
+			text = "",
 			valign = "bottom",
+			vertical = "bottom",
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			color = tweak_data.screen_colors.text
@@ -491,6 +495,7 @@ function MenuGuiComponentGeneric:update_legend()
 		for i, legend in ipairs(legends) do
 			local spacing = i > 1 and "  |  " or ""
 			local macros = {}
+
 			legend_text = legend_text .. spacing .. managers.localization:to_upper_text(legend.string_id, macros)
 		end
 
@@ -562,7 +567,8 @@ function MenuGuiComponentGeneric:mouse_moved(button, x, y)
 	end
 
 	local used = false
-	local pointer = nil
+	local pointer
+
 	self.mouse_moved_update_order = self.mouse_moved_update_order or {
 		self.update_back_button_hover,
 		self.update_tabs_hover,

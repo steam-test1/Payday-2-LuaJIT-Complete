@@ -14,16 +14,16 @@ ControllerWrapperGamepad.IDS_DIRECTION = Idstring("direction")
 ControllerWrapperGamepad.IDS_ROTATION = Idstring("rotation")
 
 function ControllerWrapperGamepad:init(manager, id, name, controller, setup, debug, skip_virtual_controller)
-	local func_map = {
-		up = callback(self, self, "virtual_connect_up"),
-		down = callback(self, self, "virtual_connect_down"),
-		right = callback(self, self, "virtual_connect_right"),
-		left = callback(self, self, "virtual_connect_left"),
-		confirm = callback(self, self, "virtual_connect_confirm"),
-		cancel = callback(self, self, "virtual_connect_cancel"),
-		axis1 = callback(self, self, "virtual_connect_axis1"),
-		axis2 = callback(self, self, "virtual_connect_axis2")
-	}
+	local func_map = {}
+
+	func_map.up = callback(self, self, "virtual_connect_up")
+	func_map.down = callback(self, self, "virtual_connect_down")
+	func_map.right = callback(self, self, "virtual_connect_right")
+	func_map.left = callback(self, self, "virtual_connect_left")
+	func_map.confirm = callback(self, self, "virtual_connect_confirm")
+	func_map.cancel = callback(self, self, "virtual_connect_cancel")
+	func_map.axis1 = callback(self, self, "virtual_connect_axis1")
+	func_map.axis2 = callback(self, self, "virtual_connect_axis2")
 
 	ControllerWrapperGamepad.super.init(self, manager, id, name, {
 		gamepad = controller,

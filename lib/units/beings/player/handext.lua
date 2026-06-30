@@ -50,4 +50,5 @@ function HandExt:post_event(event, sound_source)
 end
 
 function HandExt:update_variables()
+	return
 end

@@ -16,114 +16,118 @@ if SystemInfo:distribution() == Idstring("EPIC") then
 end
 
 local LambdaUrl = Utility:get_current_lambda_url()
-local publisher_user_id = nil
+local publisher_user_id
+
 NamespaceRoles = {
 	namespace = "",
 	roleId = ""
 }
 Ban = {
-	EndDate = "",
 	Ban = "",
-	Enabled = false,
 	DisabledDate = "",
+	Enabled = false,
+	EndDate = "",
 	TargetedNamespace = ""
 }
 Permission = {
-	SchedCron = "",
 	Action = 0,
-	SchedAction = 0,
 	Resource = "",
+	SchedAction = 0,
+	SchedCron = "",
 	SchedRange = {}
 }
+
 local PlayerSession = {
-	scope = "",
-	display_name = "",
-	user_id = "",
-	token_type = "",
 	access_token = "",
-	namespace_ = "",
-	jflgs = "",
-	xuid = "",
-	refresh_token = "",
-	platform_user_id = "",
+	display_name = "",
 	expires_in = "",
+	jflgs = "",
+	namespace_ = "",
+	platform_user_id = "",
+	refresh_token = "",
+	scope = "",
+	token_type = "",
+	user_id = "",
+	xuid = "",
 	bans = {},
 	namespace_roles = {},
 	permissions = {},
 	roles = {}
 }
+
 Login = Login or class()
 Login = {
 	has_account = false,
-	player_session = PlayerSession,
-	SerializeJsonString = function (self, document)
-		self.player_session.access_token = document.access_token
-		self.player_session.display_name = document.display_name
-		self.player_session.expires_in = document.expires_in
-		self.player_session.jflgs = document.jflgs
-		self.player_session.namespace_ = document.namespace
-		self.player_session.platform_id = document.platform_id
-		self.player_session.platform_user_id = document.platform_user_id
-		self.player_session.refresh_token = document.refresh_token
-		self.player_session.scope = document.scope
-		self.player_session.token_type = document.token_type
-		self.player_session.user_id = document.user_id
-		self.player_session.xuid = document.xuid
+	player_session = PlayerSession
+}
 
-		if document.bans ~= nil then
-			for key = 1, table.getn(document.bans) do
-				local ban = {
-					Ban = document.bans[key].Ban,
-					DisabledDate = document.bans[key].DisabledDate,
-					Enabled = document.bans[key].Enabled,
-					EndDate = document.bans[key].EndDate,
-					TargetedNamespace = document.bans[key].TargetedNamespace
-				}
+function Login:SerializeJsonString(document)
+	self.player_session.access_token = document.access_token
+	self.player_session.display_name = document.display_name
+	self.player_session.expires_in = document.expires_in
+	self.player_session.jflgs = document.jflgs
+	self.player_session.namespace_ = document.namespace
+	self.player_session.platform_id = document.platform_id
+	self.player_session.platform_user_id = document.platform_user_id
+	self.player_session.refresh_token = document.refresh_token
+	self.player_session.scope = document.scope
+	self.player_session.token_type = document.token_type
+	self.player_session.user_id = document.user_id
+	self.player_session.xuid = document.xuid
 
-				table.insert(self.player_session.bans, ban)
-			end
-		end
+	if document.bans ~= nil then
+		for key = 1, table.getn(document.bans) do
+			local ban = {
+				Ban = document.bans[key].Ban,
+				DisabledDate = document.bans[key].DisabledDate,
+				Enabled = document.bans[key].Enabled,
+				EndDate = document.bans[key].EndDate,
+				TargetedNamespace = document.bans[key].TargetedNamespace
+			}
 
-		if document.namespace_roles ~= nil then
-			for key = 1, table.getn(document.namespace_roles) do
-				local namespace_role = {
-					namespace = document.namespace_roles[key].namespace,
-					roleId = document.namespace_roles[key].roleId
-				}
-
-				table.insert(self.player_session.namespace_roles, namespace_role)
-			end
-		end
-
-		if document.permissions ~= nil then
-			for key = 1, table.getn(document.permissions) do
-				local schedRange = {}
-
-				if document.permissions[key].SchedRange ~= nil then
-					for key2 = 1, table.getn(document.permissions[key].SchedRange) do
-						table.insert(schedRange, document.permissions[key].SchedRange[key2])
-					end
-				end
-
-				local permission = {
-					Action = document.permissions[key].Action,
-					Resource = document.permissions[key].Resource,
-					SchedAction = document.permissions[key].SchedAction,
-					SchedCron = document.permissions[key].SchedCron,
-					SchedRange = schedRange
-				}
-
-				table.insert(self.player_session.permissions, permission)
-			end
-		end
-
-		if document.roles ~= nil then
-			for key = 1, table.getn(document.roles) do
-				table.insert(self.player_session.roles, document.roles[key])
-			end
+			table.insert(self.player_session.bans, ban)
 		end
 	end
-}
+
+	if document.namespace_roles ~= nil then
+		for key = 1, table.getn(document.namespace_roles) do
+			local namespace_role = {
+				namespace = document.namespace_roles[key].namespace,
+				roleId = document.namespace_roles[key].roleId
+			}
+
+			table.insert(self.player_session.namespace_roles, namespace_role)
+		end
+	end
+
+	if document.permissions ~= nil then
+		for key = 1, table.getn(document.permissions) do
+			local schedRange = {}
+
+			if document.permissions[key].SchedRange ~= nil then
+				for key2 = 1, table.getn(document.permissions[key].SchedRange) do
+					table.insert(schedRange, document.permissions[key].SchedRange[key2])
+				end
+			end
+
+			local permission = {
+				Action = document.permissions[key].Action,
+				Resource = document.permissions[key].Resource,
+				SchedAction = document.permissions[key].SchedAction,
+				SchedCron = document.permissions[key].SchedCron,
+				SchedRange = schedRange
+			}
+
+			table.insert(self.player_session.permissions, permission)
+		end
+	end
+
+	if document.roles ~= nil then
+		for key = 1, table.getn(document.roles) do
+			table.insert(self.player_session.roles, document.roles[key])
+		end
+	end
+end
 
 function Login:LoginWithEpicToken(ticket, callback)
 	cat_print("accelbyte", "[AccelByte] Login:LoginWithEpicToken")
@@ -131,10 +135,10 @@ function Login:LoginWithEpicToken(ticket, callback)
 	local payload_content_type = "application/x-www-form-urlencoded"
 	local payload_body = {}
 	local payload = "platform_token=" .. ticket
-	local headers = {
-		Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret)),
-		Accept = "application/json"
-	}
+	local headers = {}
+
+	headers.Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret))
+	headers.Accept = "application/json"
 
 	local function login_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithEpicToken : " .. IamEpicPlatformUrl)
@@ -165,17 +169,17 @@ function Login:LoginWithSteamToken(ticket, callback)
 	local payload_content_type = "application/x-www-form-urlencoded"
 	local payload_body = {}
 	local payload = "platform_token=" .. ticket
-	local headers = {
-		Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret)),
-		Accept = "application/json"
-	}
+	local headers = {}
+
+	headers.Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret))
+	headers.Accept = "application/json"
 
 	local function login_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithSteamToken : " .. IamSteamPlatformUrl)
 		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code .. (error_code == 1 and " OK" or ""))
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
 
-		local response_json = nil
+		local response_json
 
 		if response_body then
 			cat_print("accelbyte", "Response Body : " .. response_body)
@@ -205,10 +209,10 @@ function Login:LoginWithUsernamePassword(username, password)
 	local payload_content_type = "application/x-www-form-urlencoded"
 	local payload_body = {}
 	local payload = string.format("grant_type=password&username=%s&password=%s", username, password)
-	local headers = {
-		Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret)),
-		Accept = "application/json"
-	}
+	local headers = {}
+
+	headers.Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret))
+	headers.Accept = "application/json"
 
 	local function callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithUsernamePassword : " .. IamServerUrl)
@@ -231,10 +235,10 @@ function Login:LoginWithClientCredentials(callback)
 	local payload_content_type = "application/x-www-form-urlencoded"
 	local payload_body = {}
 	local payload = string.format("grant_type=client_credentials")
-	local headers = {
-		Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret)),
-		Accept = "application/json"
-	}
+	local headers = {}
+
+	headers.Authorization = "Basic " .. base64.encode(string.format("%s:%s", ClientId, ClientSecret))
+	headers.Accept = "application/json"
 
 	local function credentials_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithClientCredentials : " .. IamServerUrl)
@@ -266,7 +270,7 @@ end
 function Login:CheckPlatformIdForExistingAccount(platform_user_id, callback)
 	cat_print("accelbyte", "[AccelByte] Login:CheckPlatformIdForExistingAccount")
 
-	local platform_id = nil
+	local platform_id
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		platform_id = SteamPlatformId
@@ -288,10 +292,10 @@ function Login:CheckPlatformIdForExistingAccount(platform_user_id, callback)
 
 	local publisher_namespace = PublisherNamespace
 	local Url = string.format("%s/namespaces/%s/platformids/%s/platformuserids/%s", LambdaUrl, publisher_namespace, platform_id, platform_user_id)
-	local headers = {
-		Authorization = "Bearer " .. Login.player_session.access_token,
-		Accept = "application/json"
-	}
+	local headers = {}
+
+	headers.Authorization = "Bearer " .. Login.player_session.access_token
+	headers.Accept = "application/json"
 
 	local function existing_account_callback(success, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback CheckPlatformIdForExistingAccount : " .. Url)
@@ -302,6 +306,7 @@ function Login:CheckPlatformIdForExistingAccount(platform_user_id, callback)
 			cat_print("accelbyte", "[AccelByte] Responses Body : " .. response_body)
 
 			local response_json = json.decode(response_body)
+
 			publisher_user_id = response_json.userId
 
 			Login:SerializeJsonString(response_json)
@@ -318,106 +323,106 @@ function Login:CheckPlatformIdForExistingAccount(platform_user_id, callback)
 end
 
 EntitlementClazz = {
-	SUBSCRIPTION = 5,
 	APP = 1,
-	ENTITLEMENT = 2,
 	CODE = 4,
 	DISTRIBUTION = 3,
+	ENTITLEMENT = 2,
+	SUBSCRIPTION = 5,
 	UNKNOWN = 6
 }
 EntitlementType = {
-	UNKNOWN = 3,
 	CONSUMABLE = 2,
-	DURABLE = 1
+	DURABLE = 1,
+	UNKNOWN = 3
 }
 EntitlementStatus = {
-	UNKNOWN = 6,
+	ACTIVE = 1,
+	CONSUMED = 3,
 	DISTRIBUTED = 4,
 	INACTIVE = 2,
 	REVOKED = 5,
-	CONSUMED = 3,
-	ACTIVE = 1
+	UNKNOWN = 6
 }
 AppType = {
-	GAME = 1,
 	DEMO = 4,
 	DLC = 3,
+	GAME = 1,
 	SOFTWARE = 2,
 	UNKNOWN = 5
 }
 Source = {
 	ACHIEVEMENT = 4,
-	PROMOTION = 3,
-	OTHER = 7,
-	PURCHASE = 1,
-	REFERRAL_BONUS = 5,
-	REDEEM_CODE = 6,
 	IAP = 2,
+	OTHER = 7,
+	PROMOTION = 3,
+	PURCHASE = 1,
+	REDEEM_CODE = 6,
+	REFERRAL_BONUS = 5,
 	UNKNOWN = 8
 }
 CurrencyType = {
-	VIRTUAL = 2,
+	REAL = 1,
 	UNKNOWN = 3,
-	REAL = 1
+	VIRTUAL = 2
 }
 RegionData = {
+	currencyCode = "",
 	currencyNamespace = "",
 	discountAmount = 0,
-	expireAt = "",
-	trialPrice = 0,
-	discountPurchaseAt = "",
 	discountExpireAt = "",
-	discountedPrice = 0,
-	currencyCode = "",
 	discountPercentage = 0,
-	purchaseAt = "",
+	discountPurchaseAt = "",
+	discountedPrice = 0,
+	expireAt = "",
 	price = 0,
+	purchaseAt = "",
+	trialPrice = 0,
 	currencyType = CurrencyType.REAL
 }
 Cycle = {
-	UNKNOWN = 5,
-	QUARTERLY = 3,
 	MONTHLY = 2,
-	YEARLY = 4,
-	WEEKLY = 1
+	QUARTERLY = 3,
+	UNKNOWN = 5,
+	WEEKLY = 1,
+	YEARLY = 4
 }
 Recurring = {
-	fixedTrialCycles = 0,
 	fixedFreeDays = 0,
+	fixedTrialCycles = 0,
 	graceDays = 0,
 	cycle = Cycle.WEEKLY
 }
 ItemType = {
-	BUNDLE = 4,
-	INGAMEITEM = 3,
-	CODE = 5,
 	APP = 1,
+	BUNDLE = 4,
+	CODE = 5,
 	COINS = 2,
+	INGAMEITEM = 3,
 	SUBSCRIPTION = 6,
 	UNKNOWN = 7
 }
 ItemSnapshot = {
-	language = "",
-	name = "",
-	useCount = 0,
-	createdAt = "",
-	title = "",
-	description = "",
-	region = "",
-	targetNamespace = "",
-	maxCount = 0,
-	targetItemId = "",
-	maxCountPerUser = 0,
-	itemId = "",
-	stackable = false,
-	thumbnailUrl = "",
-	updatedAt = "",
-	targetCurrencyCode = "",
 	Namespace = "",
-	boothName = "",
 	appId = "",
-	sku = "",
 	baseAppId = "",
+	boothName = "",
+	createdAt = "",
+	description = "",
+	itemId = "",
+	language = "",
+	maxCount = 0,
+	maxCountPerUser = 0,
+	name = "",
+	region = "",
+	sku = "",
+	stackable = false,
+	targetCurrencyCode = "",
+	targetItemId = "",
+	targetNamespace = "",
+	thumbnailUrl = "",
+	title = "",
+	updatedAt = "",
+	useCount = 0,
 	appType = AppType.GAME,
 	entitlementType = EntitlementType.DURABLE,
 	itemType = ItemType.APP,
@@ -427,26 +432,26 @@ ItemSnapshot = {
 	features = {}
 }
 EntitlementInfo = {
-	name = "",
-	useCount = 0,
-	createdAt = "",
-	targetNamespace = "",
-	startDate = "",
-	endDate = "",
-	stackable = false,
-	grantedAt = "",
-	features = "",
-	itemNamespace = "",
-	distributedQuantity = 0,
-	itemId = "",
-	userId = "",
-	updatedAt = "",
-	quantity = 0,
 	Namespace = "",
+	appId = "",
+	createdAt = "",
+	distributedQuantity = 0,
+	endDate = "",
+	features = "",
+	grantedAt = "",
 	grantedCode = "",
 	id = "",
-	appId = "",
+	itemId = "",
+	itemNamespace = "",
+	name = "",
+	quantity = 0,
 	sku = "",
+	stackable = false,
+	startDate = "",
+	targetNamespace = "",
+	updatedAt = "",
+	useCount = 0,
+	userId = "",
 	clazz = EntitlementClazz.APP,
 	type = EntitlementType.DURABLE,
 	status = EntitlementStatus.ACTIVE,
@@ -588,7 +593,7 @@ Entitlement = {
 
 function Entitlement:SetDLCEntitlements()
 	local dlc_entitlements = {}
-	local valid_namespace, valid_clazz, valid_type, valid_itemId, valid_status, valid_entitlement = nil
+	local valid_namespace, valid_clazz, valid_type, valid_itemId, valid_status, valid_entitlement
 
 	for _, entitlement_data in ipairs(Entitlement.result.data) do
 		if not table.contains(dlc_entitlements, entitlement_data.itemId) then
@@ -613,11 +618,11 @@ function Entitlement:QueryEntitlementAsString(offset, limit, callback)
 	local namespace = Namespace
 	local user_id = Login.player_session.user_id
 	local Url = string.format("%s/platform/public/namespaces/%s/users/%s/entitlements?offset=%s&limit=%s", BaseUrl, namespace, user_id, offset, limit)
-	local headers = {
-		Authorization = "Bearer " .. Login.player_session.access_token
-	}
+	local headers = {}
 
-	local function callback(success, response_body)
+	headers.Authorization = "Bearer " .. Login.player_session.access_token
+
+	local callback = function(success, response_body)
 		if success then
 			cat_print("accelbyte", "[AccelByte] Callback QueryEntitlementAsString Success: " .. Url)
 			cat_print("accelbyte", "Response Body : " .. response_body)
@@ -648,16 +653,17 @@ function Entitlement:UpdateStat(stat_code, stat_value, update_method, callback)
 	local namespace = Namespace
 	local user_id = Login.player_session.user_id
 	local Url = string.format("%s/social/v2/public/namespaces/%s/users/%s/stats/%s/statitems/value", BaseUrl, PublisherNamespace, publisher_user_id, stat_code)
-	local payload_body = {
-		updateStrategy = update_method,
-		value = stat_value
-	}
-	local payload_json = json.encode(payload_body)
-	local headers = {
-		Authorization = "Bearer " .. Login.player_session.access_token
-	}
+	local payload_body = {}
 
-	local function callback(error_code, status_code, response_body)
+	payload_body.updateStrategy = update_method
+	payload_body.value = stat_value
+
+	local payload_json = json.encode(payload_body)
+	local headers = {}
+
+	headers.Authorization = "Bearer " .. Login.player_session.access_token
+
+	local callback = function(error_code, status_code, response_body)
 		if status_code == 200 then
 			cat_print("accelbyte", "[AccelByte] Callback UpdateStat Success: " .. Url)
 			cat_print("accelbyte", "Response Body : " .. response_body)
@@ -685,10 +691,11 @@ function Entitlement:UpdateCrossGameRecognition()
 	local base_url = BaseUrl
 	local namespace = Namespace
 	local user_id = Login.player_session.user_id
-	local headers = {
-		Authorization = "Bearer " .. Login.player_session.access_token,
-		Accept = "application/json"
-	}
+	local headers = {}
+
+	headers.Authorization = "Bearer " .. Login.player_session.access_token
+	headers.Accept = "application/json"
+
 	local payload_content_type = "application/json"
 	local completed_index = 0
 	local completed_achievement_list = {
@@ -793,6 +800,7 @@ end
 
 function Entitlement:CheckAndVerifyUserEntitlement(callback)
 	Entitlement.result.data = {}
+
 	local player_id = managers.network.account:player_id()
 
 	Telemetry:send_on_game_launch()

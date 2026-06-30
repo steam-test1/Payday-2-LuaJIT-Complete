@@ -98,17 +98,21 @@ function ChatManager:is_peer_muted(peer)
 end
 
 function ChatManager:save(data)
+	return
 end
 
 function ChatManager:load(data)
+	return
 end
 
 ChatBase = ChatBase or class()
 
 function ChatBase:init()
+	return
 end
 
 function ChatBase:receive_message(name, message, color, icon)
+	return
 end
 
 ChatGui = ChatGui or class(ChatBase)
@@ -130,12 +134,12 @@ function ChatGui:init(ws)
 	self._typing_callback = 0
 	self._skip_first = false
 	self._hud_blur = self._hud_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "hud_blur",
-		valign = "grow",
 		halign = "grow",
+		layer = -2,
+		name = "hud_blur",
 		render_template = "VertexColorTexturedBlur3D",
-		layer = -2
+		texture = "guis/textures/test_blur_df",
+		valign = "grow"
 	})
 
 	self._hud_blur:set_shape(self._hud_panel:shape())
@@ -144,8 +148,8 @@ function ChatGui:init(ws)
 
 	self._panel = self._hud_panel:panel({
 		name = "chat_panel",
-		x = 0,
 		valign = "bottom",
+		x = 0,
 		h = self._panel_height,
 		w = self._panel_width
 	})
@@ -156,12 +160,12 @@ function ChatGui:init(ws)
 		name = "chat_blur"
 	})
 	local blur = chat_blur:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "chat_blur",
-		valign = "grow",
 		halign = "grow",
+		layer = -2,
+		name = "chat_blur",
 		render_template = "VertexColorTexturedBlur3D",
-		layer = -2
+		texture = "guis/textures/test_blur_df",
+		valign = "grow"
 	})
 
 	blur:set_size(chat_blur:size())
@@ -178,38 +182,40 @@ function ChatGui:init(ws)
 			1
 		}
 	})
+
 	local chat_bg = self._panel:rect({
+		alpha = 0,
+		halign = "grow",
+		layer = -1,
 		name = "chat_bg",
 		valign = "grow",
-		halign = "grow",
-		alpha = 0,
-		layer = -1,
 		color = Color.black
 	})
 
 	chat_bg:set_shape(chat_blur:shape())
 
 	local output_panel = self._panel:panel({
-		name = "output_panel",
 		h = 10,
-		x = 20,
 		layer = 1,
+		name = "output_panel",
+		x = 20,
 		w = self._output_width
 	})
 	local output_bg = output_panel:rect({
+		alpha = 0,
+		halign = "grow",
+		layer = -1,
 		name = "output_bg",
 		valign = "grow",
-		halign = "grow",
-		alpha = 0,
-		layer = -1,
 		color = Color.black
 	})
 	local scroll_panel = output_panel:panel({
+		h = 10,
 		name = "scroll_panel",
 		x = 0,
-		h = 10,
 		w = self._output_width
 	})
+
 	self._scroll_indicator_box_class = BoxGuiObject:new(output_panel, {
 		sides = {
 			0,
@@ -218,35 +224,36 @@ function ChatGui:init(ws)
 			0
 		}
 	})
+
 	local scroll_up_indicator_shade = output_panel:bitmap({
-		texture = "guis/textures/headershadow",
-		name = "scroll_up_indicator_shade",
-		visible = false,
-		rotation = 180,
 		layer = 2,
+		name = "scroll_up_indicator_shade",
+		rotation = 180,
+		texture = "guis/textures/headershadow",
+		visible = false,
 		color = Color.white,
 		w = output_panel:w()
 	})
 	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 	local scroll_up_indicator_arrow = self._panel:bitmap({
-		name = "scroll_up_indicator_arrow",
 		layer = 2,
+		name = "scroll_up_indicator_arrow",
 		texture = texture,
 		texture_rect = rect,
 		color = Color.white
 	})
 	local scroll_down_indicator_shade = output_panel:bitmap({
-		texture = "guis/textures/headershadow",
-		name = "scroll_down_indicator_shade",
-		visible = false,
 		layer = 2,
+		name = "scroll_down_indicator_shade",
+		texture = "guis/textures/headershadow",
+		visible = false,
 		color = Color.white,
 		w = output_panel:w()
 	})
 	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 	local scroll_down_indicator_arrow = self._panel:bitmap({
-		name = "scroll_down_indicator_arrow",
 		layer = 2,
+		name = "scroll_down_indicator_arrow",
 		rotation = 180,
 		texture = texture,
 		texture_rect = rect,
@@ -255,18 +262,19 @@ function ChatGui:init(ws)
 	local bar_h = scroll_down_indicator_arrow:top() - scroll_up_indicator_arrow:bottom()
 	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar")
 	local scroll_bar = self._panel:panel({
-		w = 15,
-		name = "scroll_bar",
 		layer = 2,
+		name = "scroll_bar",
+		w = 15,
 		h = bar_h
 	})
 	local scroll_bar_box_panel = scroll_bar:panel({
-		name = "scroll_bar_box_panel",
 		halign = "scale",
+		name = "scroll_bar_box_panel",
+		valign = "scale",
 		w = 4,
-		x = 5,
-		valign = "scale"
+		x = 5
 	})
+
 	self._scroll_bar_box_class = BoxGuiObject:new(scroll_bar_box_panel, {
 		sides = {
 			2,
@@ -285,14 +293,15 @@ function ChatGui:init(ws)
 		self._chat_button_hide_string = managers.localization:to_upper_text("menu_cn_chat_hide", {
 			BTN_BACK = managers.localization:btn_macro("toggle_chat")
 		})
+
 		local chat_button_panel = self._hud_panel:panel({
 			name = "chat_button_panel"
 		})
 		local chat_button = chat_button_panel:text({
-			text = "",
-			name = "chat_button",
 			blend_mode = "add",
 			layer = 40,
+			name = "chat_button",
+			text = "",
 			font_size = tweak_data.menu.pd2_small_font_size,
 			font = tweak_data.menu.pd2_small_font,
 			color = tweak_data.screen_colors.button_stage_3
@@ -303,9 +312,9 @@ function ChatGui:init(ws)
 		chat_button:set_bottom(chat_button_panel:h() - 11)
 
 		local blur_object = chat_button_panel:bitmap({
-			texture = "guis/textures/test_blur_df",
 			name = "chat_button_blur",
 			render_template = "VertexColorTexturedBlur3D",
+			texture = "guis/textures/test_blur_df",
 			layer = chat_button:layer() - 2
 		})
 
@@ -313,11 +322,11 @@ function ChatGui:init(ws)
 		chat_button_panel:hide()
 
 		local new_msg_flash = chat_button_panel:bitmap({
-			texture = "guis/textures/pd2/crimenet_marker_glow",
-			name = "new_msg_flash",
 			alpha = 0,
 			blend_mode = "add",
+			name = "new_msg_flash",
 			rotation = 360,
+			texture = "guis/textures/pd2/crimenet_marker_glow",
 			w = (chat_button:w() + 20) * 2,
 			h = (chat_button:h() + 10) * 2,
 			layer = chat_button:layer() - 1,
@@ -340,7 +349,7 @@ end
 
 function ChatGui:start_hud_blur()
 	local function func(o)
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(0, 1, p))
 		end)
 	end
@@ -377,12 +386,12 @@ function ChatGui:start_notify_new_message()
 			self._notifying_new_msg = true
 
 			local function func(o)
-				over(0.1, function (p)
+				over(0.1, function(p)
 					o:set_alpha(math.lerp(0, 0.6, p))
 				end)
 
 				while true do
-					over(2, function (p)
+					over(2, function(p)
 						o:set_alpha(math.abs(math.cos(p * 360)) * 0.4 + 0.2)
 					end)
 				end
@@ -412,6 +421,7 @@ end
 function ChatGui:stop_notify_new_message()
 	if MenuCallbackHandler:is_win32() and self._notifying_new_msg then
 		self._notifying_new_msg = false
+
 		local chat_button_panel = self._hud_panel:child("chat_button_panel")
 		local new_msg_flash = chat_button_panel:child("new_msg_flash")
 
@@ -453,44 +463,43 @@ function ChatGui:set_max_lines(max_lines)
 	chat_bg:set_shape(chat_blur:shape())
 end
 
-ChatGui.PRESETS = {
-	default = {
-		left = 0,
-		bottom = 70,
-		layer = 20
-	},
-	lobby = {
-		left = 0,
-		bottom = 50,
-		layer = 20
-	},
-	crimenet = {
-		chat_blur = true,
-		left = 0,
-		is_crimenet_chat = true,
-		chat_bg_alpha = 0.75,
-		bottom = 0,
-		layer = tweak_data.gui.CRIMENET_CHAT_LAYER
-	},
-	preplanning = {
-		chat_blur = true,
-		left = 10,
-		is_crimenet_chat = true,
-		chat_bg_alpha = 0.75,
-		chat_button_align = "left",
-		bottom = 0,
-		layer = tweak_data.gui.CRIMENET_CHAT_LAYER
-	},
-	inventory = {
-		chat_button_y_offset = 25,
-		left = 0,
-		is_crimenet_chat = true,
-		chat_bg_alpha = 0.75,
-		chat_button_align = "left",
-		chat_blur = true,
-		bottom = 0,
-		layer = tweak_data.gui.CRIMENET_CHAT_LAYER
-	}
+ChatGui.PRESETS = {}
+ChatGui.PRESETS.default = {
+	bottom = 70,
+	layer = 20,
+	left = 0
+}
+ChatGui.PRESETS.lobby = {
+	bottom = 50,
+	layer = 20,
+	left = 0
+}
+ChatGui.PRESETS.crimenet = {
+	bottom = 0,
+	chat_bg_alpha = 0.75,
+	chat_blur = true,
+	is_crimenet_chat = true,
+	left = 0,
+	layer = tweak_data.gui.CRIMENET_CHAT_LAYER
+}
+ChatGui.PRESETS.preplanning = {
+	bottom = 0,
+	chat_bg_alpha = 0.75,
+	chat_blur = true,
+	chat_button_align = "left",
+	is_crimenet_chat = true,
+	left = 10,
+	layer = tweak_data.gui.CRIMENET_CHAT_LAYER
+}
+ChatGui.PRESETS.inventory = {
+	bottom = 0,
+	chat_bg_alpha = 0.75,
+	chat_blur = true,
+	chat_button_align = "left",
+	chat_button_y_offset = 25,
+	is_crimenet_chat = true,
+	left = 0,
+	layer = tweak_data.gui.CRIMENET_CHAT_LAYER
 }
 ChatGui.PRESETS.weapon_color_customize = deep_clone(ChatGui.PRESETS.inventory)
 ChatGui.PRESETS.weapon_color_customize.chat_button_y_offset = 0
@@ -564,6 +573,7 @@ end
 function ChatGui:disable_crimenet_chat()
 	if MenuCallbackHandler:is_win32() then
 		self._is_crimenet_chat = false
+
 		local chat_button_panel = self._hud_panel:child("chat_button_panel")
 
 		chat_button_panel:hide()
@@ -655,6 +665,7 @@ function ChatGui:_show_crimenet_chat()
 	local chat_blur = self._panel:child("chat_blur")
 	local hud_blur = self._hud_blur
 	local output_bg = self._panel:child("output_panel"):child("output_bg")
+
 	self._crimenet_chat_state = true
 
 	self:stop_notify_new_message()
@@ -782,7 +793,7 @@ function ChatGui:esc_key_callback()
 	self:_loose_focus()
 end
 
-local command_list = nil
+local command_list
 
 if SystemInfo:platform() == Idstring("WIN32") then
 	command_list = {
@@ -804,10 +815,11 @@ function ChatGui:enter_key_callback()
 
 	local text = self._input_panel:child("input_text")
 	local message = text:text()
-	local command_key, command_args = nil
+	local command_key, command_args
 
 	if utf8.sub(message, 1, 1) == "/" then
 		local command_string = utf8.sub(message, 2, utf8.len(message))
+
 		command_args = string.split(command_string, " ") or {}
 
 		if #command_args > 0 then
@@ -841,31 +853,31 @@ end
 
 function ChatGui:_create_input_panel()
 	self._input_panel = self._panel:panel({
-		name = "input_panel",
-		h = 24,
 		alpha = 0,
-		x = 0,
+		h = 24,
 		layer = 1,
+		name = "input_panel",
+		x = 0,
 		w = self._panel_width
 	})
 
 	self._input_panel:rect({
-		name = "focus_indicator",
 		layer = 0,
+		name = "focus_indicator",
 		visible = false,
 		color = Color.black:with_alpha(0.2)
 	})
 
 	local say = self._input_panel:text({
-		y = 0,
-		name = "say",
-		vertical = "center",
-		hvertical = "center",
 		align = "left",
 		blend_mode = "normal",
 		halign = "left",
-		x = 0,
+		hvertical = "center",
 		layer = 1,
+		name = "say",
+		vertical = "center",
+		x = 0,
+		y = 0,
 		text = utf8.to_upper(managers.localization:text("debug_chat_say")),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -876,36 +888,36 @@ function ChatGui:_create_input_panel()
 	say:set_size(w, self._input_panel:h())
 
 	local input_text = self._input_panel:text({
-		y = 0,
-		name = "input_text",
-		vertical = "center",
-		wrap = true,
 		align = "left",
 		blend_mode = "normal",
-		hvertical = "center",
-		text = "",
-		word_wrap = false,
 		halign = "left",
-		x = 0,
+		hvertical = "center",
 		layer = 1,
+		name = "input_text",
+		text = "",
+		vertical = "center",
+		word_wrap = false,
+		wrap = true,
+		x = 0,
+		y = 0,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = Color.white
 	})
 	local caret = self._input_panel:rect({
-		name = "caret",
 		h = 0,
-		y = 0,
+		layer = 2,
+		name = "caret",
 		w = 0,
 		x = 0,
-		layer = 2,
+		y = 0,
 		color = Color(0.05, 1, 1, 1)
 	})
 
 	self._input_panel:rect({
-		valign = "grow",
-		name = "input_bg",
 		layer = -1,
+		name = "input_bg",
+		valign = "grow",
 		color = Color.black:with_alpha(0.5),
 		h = self._input_panel:h()
 	})
@@ -1034,9 +1046,9 @@ function ChatGui:set_scroll_indicators(force_update_scroll_indicators)
 	scroll_bar:set_y(scroll_up_indicator_arrow:bottom() - scroll_panel:y() * (output_panel:h() - scroll_up_indicator_arrow:h() * 2) / sh)
 	scroll_bar:set_center_x(scroll_up_indicator_arrow:center_x())
 
-	local visible = output_panel:h() < scroll_panel:h()
+	local visible = scroll_panel:h() > output_panel:h()
 	local scroll_up_visible = visible and scroll_panel:top() < 0
-	local scroll_dn_visible = visible and output_panel:h() < scroll_panel:bottom()
+	local scroll_dn_visible = visible and scroll_panel:bottom() > output_panel:h()
 
 	self:_layout_input_panel()
 	scroll_bar:set_visible(visible)
@@ -1327,7 +1339,7 @@ function ChatGui:scroll_up()
 	local output_panel = self._panel:child("output_panel")
 	local scroll_panel = output_panel:child("scroll_panel")
 
-	if output_panel:h() < scroll_panel:h() then
+	if scroll_panel:h() > output_panel:h() then
 		if scroll_panel:top() == 0 then
 			self._one_scroll_dn_delay = true
 		end
@@ -1342,7 +1354,7 @@ function ChatGui:scroll_down()
 	local output_panel = self._panel:child("output_panel")
 	local scroll_panel = output_panel:child("scroll_panel")
 
-	if output_panel:h() < scroll_panel:h() then
+	if scroll_panel:h() > output_panel:h() then
 		if scroll_panel:bottom() == output_panel:h() then
 			self._one_scroll_up_delay = true
 		end
@@ -1673,6 +1685,7 @@ function ChatGui:key_press(o, k)
 	local s, e = text:selection()
 	local n = utf8.len(text:text())
 	local d = math.abs(e - s)
+
 	self._key_pressed = k
 
 	text:stop()
@@ -1748,6 +1761,7 @@ function ChatGui:key_press(o, k)
 end
 
 function ChatGui:send_message(name, message)
+	return
 end
 
 function ChatGui:receive_message(name, message, color, icon)
@@ -1761,10 +1775,11 @@ function ChatGui:receive_message(name, message, color, icon)
 	local peers = managers.network:session():peers()
 	local len = utf8.len(name) + 1
 	local x = 0
-	local icon_bitmap = nil
+	local icon_bitmap
 
 	if icon then
 		local icon_texture, icon_texture_rect = tweak_data.hud_icons:get_icon_data(icon)
+
 		icon_bitmap = scroll_panel:bitmap({
 			y = 1,
 			texture = icon_texture,
@@ -1775,15 +1790,15 @@ function ChatGui:receive_message(name, message, color, icon)
 	end
 
 	local line = scroll_panel:text({
-		halign = "left",
-		vertical = "top",
-		hvertical = "top",
-		wrap = true,
 		align = "left",
 		blend_mode = "normal",
-		word_wrap = true,
-		y = 0,
+		halign = "left",
+		hvertical = "top",
 		layer = 0,
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
+		y = 0,
 		text = name .. ": " .. message,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -1801,8 +1816,8 @@ function ChatGui:receive_message(name, message, color, icon)
 	line:set_h(h)
 
 	local line_bg = scroll_panel:rect({
-		hvertical = "top",
 		halign = "left",
+		hvertical = "top",
 		layer = -1,
 		color = Color.black:with_alpha(0.5)
 	})
@@ -1833,15 +1848,17 @@ function ChatGui:_animate_fade_output()
 	local fade_t = 1
 	local t = 0
 
-	while wait_t > t do
+	while t < wait_t do
 		local dt = coroutine.yield()
+
 		t = t + dt
 	end
 
 	local t = 0
 
-	while fade_t > t do
+	while t < fade_t do
 		local dt = coroutine.yield()
+
 		t = t + dt
 
 		self:set_output_alpha(1 - t / fade_t)
@@ -1853,10 +1870,12 @@ end
 function ChatGui:_animate_show_component(panel, start_alpha)
 	local TOTAL_T = 0.25
 	local t = 0
+
 	start_alpha = start_alpha or 0
 
 	while t < TOTAL_T do
 		local dt = coroutine.yield()
+
 		t = t + dt
 
 		panel:set_alpha(start_alpha + t / TOTAL_T * (1 - start_alpha))
@@ -1870,7 +1889,7 @@ function ChatGui:_animate_show_input(input_panel)
 	local start_alpha = input_panel:alpha()
 	local end_alpha = 1
 
-	over(TOTAL_T, function (p)
+	over(TOTAL_T, function(p)
 		input_panel:set_alpha(math.lerp(start_alpha, end_alpha, p))
 	end)
 end
@@ -1880,7 +1899,7 @@ function ChatGui:_animate_hide_input(input_panel)
 	local start_alpha = input_panel:alpha()
 	local end_alpha = 0.7
 
-	over(TOTAL_T, function (p)
+	over(TOTAL_T, function(p)
 		input_panel:set_alpha(math.lerp(start_alpha, end_alpha, p))
 	end)
 end
@@ -1890,7 +1909,9 @@ function ChatGui:_animate_input_bg(input_bg)
 
 	while true do
 		local dt = coroutine.yield()
+
 		t = t + dt
+
 		local a = 0.75 + (1 + math.sin(t * 200)) / 8
 
 		input_bg:set_alpha(a)

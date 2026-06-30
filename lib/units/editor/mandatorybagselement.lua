@@ -22,8 +22,8 @@ function MandatoryBagsUnitElement:_build_panel(panel, panel_sizer)
 		"none"
 	}, tweak_data.carry:get_carry_ids()))
 	self:_build_value_number(panel, panel_sizer, "amount", {
-		min = 0,
 		floats = 0,
-		max = 100
+		max = 100,
+		min = 0
 	}, "Amount of mandatory bags.")
 end

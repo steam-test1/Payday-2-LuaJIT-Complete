@@ -11,6 +11,7 @@ end
 function WorldDefinition:_project_assign_unit_data(unit, data)
 	if Network:is_server() and unit:id() == -1 and unit:interaction() and unit:interaction().save then
 		local unit_id = unit:unit_data().unit_id
+
 		self._synced_unit_interactions[unit_id] = unit
 	end
 end
@@ -43,10 +44,10 @@ function WorldDefinition:sync_load(data)
 	local state = data.WorldDefinition
 
 	if state then
-		local unit = nil
+		local unit
 
 		for unit_id, unit_state in pairs(state) do
-			unit = self:get_unit_on_load(unit_id, function (unit)
+			unit = self:get_unit_on_load(unit_id, function(unit)
 				unit:interaction():load(unit_state)
 			end)
 

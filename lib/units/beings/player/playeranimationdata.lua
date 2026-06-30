@@ -30,6 +30,7 @@ end
 
 function PlayerAnimationData:anim_clbk_chk_freeze_anims(unit)
 	self.can_freeze = true
+
 	local base_ext = unit:base()
 
 	if base_ext and base_ext.chk_freeze_anims then

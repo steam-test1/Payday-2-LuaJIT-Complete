@@ -35,7 +35,7 @@ function Feeder:update(t, dt)
 	for hardware_name, bind in pairs(binds) do
 		local input_data_name = bind.input_target_description:target_name()
 		local control_type = bind.type_name
-		local data = nil
+		local data
 
 		if control_type == "axis" then
 			assert(controller:has_axis(Idstring(hardware_name)), "Binding '" .. hardware_name .. "'")

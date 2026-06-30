@@ -31,22 +31,21 @@ function NpcVehicleDrivingExt:init(unit)
 
 	self._vehicle = self._unit:vehicle()
 	self._last_checkpoint_reached = false
-	self._drive_controls = {
-		accelerate = {
-			acceleration = 1,
-			brake = 0,
-			handbrake = 0
-		},
-		brake = {
-			acceleration = 0,
-			brake = 1,
-			handbrake = 0
-		},
-		handbrake = {
-			acceleration = 0,
-			brake = 1,
-			handbrake = 1
-		}
+	self._drive_controls = {}
+	self._drive_controls.accelerate = {
+		acceleration = 1,
+		brake = 0,
+		handbrake = 0
+	}
+	self._drive_controls.brake = {
+		acceleration = 0,
+		brake = 1,
+		handbrake = 0
+	}
+	self._drive_controls.handbrake = {
+		acceleration = 0,
+		brake = 1,
+		handbrake = 1
 	}
 	self._current_drive_controls = "accelerate"
 	self._is_chasing = false
@@ -129,38 +128,37 @@ function NpcVehicleDrivingExt:_start()
 			self._vehicle:set_active(true)
 			self:set_input(0, 0, 0, 0, false, true, 2)
 
-			self._drive_controls = {
-				accelerate = {
-					acceleration = 1,
-					brake = 0,
-					handbrake = 0
-				},
-				brake = {
-					acceleration = 0,
-					brake = 1,
-					handbrake = 0
-				},
-				handbrake = {
-					acceleration = 0,
-					brake = 1,
-					handbrake = 1
-				}
+			self._drive_controls = {}
+			self._drive_controls.accelerate = {
+				acceleration = 1,
+				brake = 0,
+				handbrake = 0
+			}
+			self._drive_controls.brake = {
+				acceleration = 0,
+				brake = 1,
+				handbrake = 0
+			}
+			self._drive_controls.handbrake = {
+				acceleration = 0,
+				brake = 1,
+				handbrake = 1
 			}
 			self._current_drive_controls = "accelerate"
 			self._next_checkpoint_distance = {
 				{
-					v_min = 30,
 					distance = 1200,
-					relative_angle_min = 30,
 					relative_angle_max = 60,
-					v_max = 40
+					relative_angle_min = 30,
+					v_max = 40,
+					v_min = 30
 				},
 				{
-					v_min = 40,
 					distance = 1500,
-					relative_angle_min = 30,
 					relative_angle_max = 90,
-					v_max = 60
+					relative_angle_min = 30,
+					v_max = 60,
+					v_min = 40
 				}
 			}
 			self._last_checkpoint_reached = false
@@ -208,17 +206,17 @@ end
 
 function NpcVehicleDrivingExt:_display_debug_info()
 	if self._debug and self._debug.ws and self._debug.info then
-		local nav_paths = {
-			unit_id = "",
-			unit_name = "",
-			current_state = "",
-			cop_path = "",
-			cop_target_path = "",
-			distance_to_player = 0,
-			ai_cost = {
-				cost = 0,
-				fps = 0
-			}
+		local nav_paths = {}
+
+		nav_paths.unit_id = ""
+		nav_paths.unit_name = ""
+		nav_paths.current_state = ""
+		nav_paths.cop_path = ""
+		nav_paths.cop_target_path = ""
+		nav_paths.distance_to_player = 0
+		nav_paths.ai_cost = {
+			cost = 0,
+			fps = 0
 		}
 
 		if self._debug.nav_paths then
@@ -240,19 +238,10 @@ function NpcVehicleDrivingExt:_display_debug_info()
 		local vehicle_state = self._vehicle:get_state()
 		local cop_vehicle_speed = vehicle_state:get_speed() * 3.6
 		local player_vehicle_speed = self:_get_player_speed()
+
 		player_vehicle_speed = player_vehicle_speed or 0
 
-		self._debug.info:set_text(string.format([[
-----------------------
-Cop unit:  %s - %s
-Cop state:  %s
-Player_speed:  %.2f km/h
-Cop speed:  %.2f km/h
-Drive controls:  %s
-Cop on path:  %s
-Cop targeting path:  %s
-Distance to player:  %.2f m
-AI cost:  %.2f ms ( %.2f %% of fps)]], nav_paths.unit_id, nav_paths.unit_name, nav_paths.current_state, player_vehicle_speed, cop_vehicle_speed, self._current_drive_controls, nav_paths.cop_path, nav_paths.cop_target_path, nav_paths.distance_to_player, nav_paths.ai_cost.cost, nav_paths.ai_cost.fps))
+		self._debug.info:set_text(string.format("----------------------\nCop unit:  %s - %s\nCop state:  %s\nPlayer_speed:  %.2f km/h\nCop speed:  %.2f km/h\nDrive controls:  %s\nCop on path:  %s\nCop targeting path:  %s\nDistance to player:  %.2f m\nAI cost:  %.2f ms ( %.2f %% of fps)", nav_paths.unit_id, nav_paths.unit_name, nav_paths.current_state, player_vehicle_speed, cop_vehicle_speed, self._current_drive_controls, nav_paths.cop_path, nav_paths.cop_target_path, nav_paths.distance_to_player, nav_paths.ai_cost.cost, nav_paths.ai_cost.fps))
 	end
 end
 
@@ -274,7 +263,7 @@ function NpcVehicleDrivingExt:_choose_target_path_direction(player_path, target_
 	end
 
 	local player_position = player_unit:position()
-	local player_point_id = nil
+	local player_point_id
 
 	for idx, marker_id in pairs(player_path.marker_checkpoints) do
 		if marker_id == target_marker then
@@ -302,13 +291,9 @@ function NpcVehicleDrivingExt:_choose_target_path_direction(player_path, target_
 
 	local distance_forward = (player_position - point_forward.point):length()
 	local distance_backward = (player_position - point_backward.point):length()
-	local retval = nil
+	local retval
 
-	if distance_forward <= distance_backward then
-		retval = "fwd"
-	else
-		retval = "bck"
-	end
+	retval = distance_forward <= distance_backward and "fwd" or "bck"
 
 	return retval
 end
@@ -326,7 +311,7 @@ function NpcVehicleDrivingExt:drive_to_point(cop_path, unit_and_pos, dt)
 
 	local profiler_name = "NpcVehicleDrivingExt:drive_to_point" .. unit_and_pos.unit
 	local profiler_id = Profiler:start(profiler_name)
-	local cop_points = nil
+	local cop_points
 
 	if not unit_and_pos.direction or unit_and_pos.direction == "fwd" then
 		cop_points = cop_path.points
@@ -334,7 +319,7 @@ function NpcVehicleDrivingExt:drive_to_point(cop_path, unit_and_pos, dt)
 		cop_points = cop_path.points_bck
 	end
 
-	local target_path = nil
+	local target_path
 	local player_unit = self:_get_target_unit()
 
 	if not alive(player_unit) or not alive(self._unit) then
@@ -403,7 +388,7 @@ function NpcVehicleDrivingExt:calc_cop_position_info(cop_points, unit_and_pos)
 	local angle_to_target = vehicle_fwd_vector:angle(target_direction)
 	local target_direction_360 = math.mod(360 + target_direction:to_polar().spin, 360)
 	local vehicle_fwd_vector_360 = math.mod(360 + vehicle_fwd_vector:to_polar().spin, 360)
-	local target_spin_relative_to_vehicle = math.mod(360 + target_direction_360 - vehicle_fwd_vector_360, 360)
+	local target_spin_relative_to_vehicle = math.mod(360 + (target_direction_360 - vehicle_fwd_vector_360), 360)
 
 	if managers.motion_path:npc_vehicle_debug_output_enabled() then
 		Application:draw_line(unit_position + Vector3(0, 0, 10), target_position + Vector3(0, 0, 10), 1, 0, 0)
@@ -429,7 +414,7 @@ function NpcVehicleDrivingExt:_choose_next_checkpoint(cop_path, cop_points, targ
 
 	local bridge_to_marker = self:_find_bridge(cop_path, target_path, unit_and_pos)
 
-	if cop_position_info.checkpoint_distance < distance_threshold then
+	if distance_threshold > cop_position_info.checkpoint_distance then
 		if bridge_to_marker and bridge_to_marker.marker_to then
 			unit_and_pos.direction = bridge_to_marker.direction
 
@@ -487,7 +472,7 @@ function NpcVehicleDrivingExt:_find_bridge(cop_path, target_path, unit_and_pos)
 		end
 	end
 
-	local point_id_in_direction = nil
+	local point_id_in_direction
 
 	if not unit_and_pos.direction or unit_and_pos.direction == "fwd" then
 		point_id_in_direction = unit_and_pos.target_checkpoint
@@ -521,7 +506,7 @@ function NpcVehicleDrivingExt:_find_bridge(cop_path, target_path, unit_and_pos)
 end
 
 function NpcVehicleDrivingExt:_get_marker_position(player_path, marker_to)
-	local point_id = nil
+	local point_id
 
 	for id, marker in pairs(player_path.marker_checkpoints) do
 		if marker == marker_to then
@@ -592,16 +577,16 @@ function NpcVehicleDrivingExt:_debug_show()
 	end
 
 	local debug_output_offset = managers.motion_path._debug_output_offset
-	self._debug = {
-		ws = Overlay:newgui():create_screen_workspace()
-	}
+
+	self._debug = {}
+	self._debug.ws = Overlay:newgui():create_screen_workspace()
 	self._debug.panel = self._debug.ws:panel()
 	self._debug.info = self._debug.panel:text({
-		text = "",
-		name = "debug_info",
 		font_size = 14,
-		x = 14,
 		layer = 2000,
+		name = "debug_info",
+		text = "",
+		x = 14,
 		y = 100 + debug_output_offset,
 		font = tweak_data.hud.small_font,
 		color = Color.yellow
@@ -629,6 +614,7 @@ end
 
 function NpcVehicleDrivingExt:_init_states()
 	local unit = self._unit
+
 	self._states = {
 		inactive = NpcVehicleStateInactive:new(unit),
 		pursuit = NpcVehicleStatePursuit:new(unit),

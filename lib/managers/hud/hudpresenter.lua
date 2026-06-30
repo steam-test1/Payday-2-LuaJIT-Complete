@@ -16,6 +16,7 @@ function HUDPresenter:init(hud)
 		name = "present_panel",
 		visible = false
 	})
+
 	self._bg_box = HUDBGBox_create(present_panel, {
 		w = w,
 		h = h,
@@ -32,10 +33,10 @@ function HUDPresenter:init(hud)
 	local title = self._bg_box:text({
 		layer = 1,
 		name = "title",
-		vertical = "bottom",
 		text = "TITLE",
-		x = 8,
 		valign = "bottom",
+		vertical = "bottom",
+		x = 8,
 		color = Color.white:with_alpha(1),
 		font = tweak_data.hud_present.title_font,
 		font_size = tweak_data.hud_present.title_size
@@ -48,10 +49,10 @@ function HUDPresenter:init(hud)
 	local text = self._bg_box:text({
 		layer = 1,
 		name = "text",
-		vertical = "top",
 		text = "TEXT",
-		x = 8,
 		valign = "top",
+		vertical = "top",
+		x = 8,
 		color = Color.white,
 		font = tweak_data.hud_present.text_font,
 		font_size = tweak_data.hud_present.text_size
@@ -121,6 +122,7 @@ end
 
 function HUDPresenter:_present_done()
 	self._presenting = false
+
 	local queued = table.remove(self._present_queue, 1)
 
 	if queued and queued.present_mid_text then
@@ -173,8 +175,10 @@ function HUDPresenter:_animate_show_text(title, text)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local alpha = math.round(math.abs(math.sin(t * 360 * 3)))
+
+		local alpha = math.round(math.abs((math.sin(t * 360 * 3))))
 
 		title:set_alpha(alpha)
 		text:set_alpha(alpha)
@@ -190,8 +194,10 @@ function HUDPresenter:_animate_hide_text(title, text)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local vis = math.round(math.abs(math.cos(t * 360 * 3)))
+
+		local vis = math.round(math.abs((math.cos(t * 360 * 3))))
 
 		title:set_alpha(vis)
 		text:set_alpha(vis)

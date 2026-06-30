@@ -77,10 +77,12 @@ end
 
 function LinkedStackMap:add(value)
 	self._last_link_id = self._last_link_id + 1
+
 	local link = {
 		value = value,
 		id = self._last_link_id
 	}
+
 	self._linked_map[self._last_link_id] = link
 
 	if self._top_link then

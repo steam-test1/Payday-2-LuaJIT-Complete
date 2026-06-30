@@ -7,6 +7,7 @@ function ElementPressure:init(...)
 end
 
 function ElementPressure:client_on_executed(...)
+	return
 end
 
 function ElementPressure:on_executed(instigator)

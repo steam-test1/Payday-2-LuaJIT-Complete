@@ -18,7 +18,9 @@ function InteractionEditorSystem:init(ui, path)
 	self._caption = path and managers.database:entry_name(path) or "New" .. tostring(new_counter)
 	self._op_stack = CoreInteractionEditorSystemEvents.InteractionEditorSystemEvents.setup_stack(self)
 	self._panel, self._id = ui:create_nb_page(self._caption, true)
+
 	local main_box = EWS:BoxSizer("VERTICAL")
+
 	self._graph = CoreScriptGraph.ScriptGraph:new(self._panel, "", "FLOW")
 
 	self._graph:connect("", "EVT_NODE_DELETE", callback(self, self, "on_delete_node"), nil)
@@ -39,6 +41,7 @@ function InteractionEditorSystem:init(ui, path)
 	self:activate()
 
 	self._node_id_map = path and self._graph:load(assert(managers.database:load_node(path))) or {}
+
 	local md = self._graph:graph_metadata()
 
 	if md then
@@ -208,7 +211,9 @@ function InteractionEditorSystem:save(path)
 
 	self._is_new = false
 	self._path = path
+
 	local page_id = self._ui:get_nb_page_by_caption(self._caption)
+
 	self._caption = managers.database:entry_name(path)
 
 	self._ui:set_title(self._path)

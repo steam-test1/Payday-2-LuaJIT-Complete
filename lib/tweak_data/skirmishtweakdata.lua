@@ -19,163 +19,165 @@ end
 function SkirmishTweakData:_init_special_unit_spawn_limits()
 	self.special_unit_spawn_limits = {
 		{
-			shield = 4,
 			medic = 3,
-			taser = 2,
+			shield = 4,
+			spooc = 2,
 			tank = 2,
-			spooc = 2
+			taser = 2
 		},
 		{
-			shield = 4,
 			medic = 3,
-			taser = 2,
+			shield = 4,
+			spooc = 2,
 			tank = 2,
-			spooc = 2
+			taser = 2
 		},
 		{
-			shield = 4,
 			medic = 3,
-			taser = 2,
+			shield = 4,
+			spooc = 2,
 			tank = 2,
-			spooc = 2
+			taser = 2
 		},
 		{
+			medic = 3,
 			shield = 5,
-			medic = 3,
-			taser = 2,
+			spooc = 2,
 			tank = 3,
-			spooc = 2
+			taser = 2
 		},
 		{
+			medic = 3,
 			shield = 5,
-			medic = 3,
-			taser = 2,
+			spooc = 2,
 			tank = 3,
-			spooc = 2
+			taser = 2
 		},
 		{
-			shield = 6,
 			medic = 3,
-			taser = 3,
+			shield = 6,
+			spooc = 2,
 			tank = 4,
-			spooc = 2
+			taser = 3
 		},
 		{
-			shield = 6,
 			medic = 3,
-			taser = 3,
-			tank = 4,
-			spooc = 2
-		},
-		{
 			shield = 6,
-			medic = 4,
-			taser = 3,
+			spooc = 2,
 			tank = 4,
-			spooc = 2
+			taser = 3
 		},
 		{
+			medic = 4,
+			shield = 6,
+			spooc = 2,
+			tank = 4,
+			taser = 3
+		},
+		{
+			medic = 4,
 			shield = 7,
-			medic = 4,
-			taser = 3,
+			spooc = 2,
 			tank = 5,
-			spooc = 2
+			taser = 3
 		},
 		{
+			medic = 4,
 			shield = 7,
-			medic = 4,
-			taser = 3,
+			spooc = 2,
 			tank = 5,
-			spooc = 2
+			taser = 3
 		},
 		{
-			shield = 8,
 			medic = 4,
-			taser = 4,
-			tank = 6,
-			spooc = 3
-		},
-		{
 			shield = 8,
-			medic = 4,
-			taser = 4,
+			spooc = 3,
 			tank = 6,
-			spooc = 3
+			taser = 4
 		},
 		{
+			medic = 4,
 			shield = 8,
-			medic = 4,
-			taser = 4,
+			spooc = 3,
 			tank = 6,
-			spooc = 3
+			taser = 4
 		},
 		{
+			medic = 4,
+			shield = 8,
+			spooc = 3,
+			tank = 6,
+			taser = 4
+		},
+		{
+			medic = 4,
 			shield = 9,
-			medic = 4,
-			taser = 4,
+			spooc = 3,
 			tank = 7,
-			spooc = 3
+			taser = 4
 		},
 		{
+			medic = 5,
 			shield = 9,
-			medic = 5,
-			taser = 4,
+			spooc = 3,
 			tank = 7,
-			spooc = 3
+			taser = 4
 		},
 		{
-			shield = 10,
 			medic = 5,
-			taser = 5,
-			tank = 8,
-			spooc = 3
-		},
-		{
 			shield = 10,
-			medic = 5,
-			taser = 5,
+			spooc = 3,
 			tank = 8,
-			spooc = 3
+			taser = 5
 		},
 		{
+			medic = 5,
 			shield = 10,
-			medic = 5,
-			taser = 5,
+			spooc = 3,
 			tank = 8,
-			spooc = 3
+			taser = 5
 		},
 		{
+			medic = 5,
+			shield = 10,
+			spooc = 3,
+			tank = 8,
+			taser = 5
+		},
+		{
+			medic = 5,
 			shield = 11,
-			medic = 5,
-			taser = 5,
+			spooc = 3,
 			tank = 9,
-			spooc = 3
+			taser = 5
 		},
 		{
+			medic = 5,
 			shield = 11,
-			medic = 5,
-			taser = 5,
+			spooc = 3,
 			tank = 9,
-			spooc = 3
+			taser = 5
 		},
 		{
-			shield = 12,
 			medic = 6,
-			taser = 6,
+			shield = 12,
+			spooc = 4,
 			tank = 10,
-			spooc = 4
+			taser = 6
 		}
 	}
 end
 
 function SkirmishTweakData:_init_group_ai_data(tweak_data)
 	local skirmish_data = deep_clone(tweak_data.group_ai.besiege)
+
 	skirmish_data.assault.groups = nil
 	tweak_data.group_ai.skirmish = skirmish_data
 end
 
 function SkirmishTweakData:_init_wave_phase_durations(tweak_data)
 	local skirmish_data = tweak_data.group_ai.skirmish
+
 	skirmish_data.assault.anticipation_duration = {
 		{
 			15,
@@ -509,15 +511,15 @@ function SkirmishTweakData:_init_spawn_group_weights(tweak_data)
 		end
 	end
 
-	self.assault = {
-		groups = {}
-	}
+	self.assault = {}
+	self.assault.groups = {}
 
 	for i, src_weights in ipairs(nice_human_readable_table) do
 		local dst_weights = {}
 
 		for j, weight in ipairs(src_weights) do
 			local group_name = ordered_spawn_group_names[j]
+
 			dst_weights[group_name] = {
 				weight,
 				weight,
@@ -529,7 +531,7 @@ function SkirmishTweakData:_init_spawn_group_weights(tweak_data)
 	end
 
 	local skirmish_assault_meta = {
-		__index = function (t, key)
+		__index = function(t, key)
 			if key == "groups" then
 				local current_wave = managers.skirmish:current_wave_number()
 				local current_wave_index = math.clamp(current_wave, 1, #self.assault.groups)
@@ -546,6 +548,7 @@ end
 
 function SkirmishTweakData:_init_wave_modifiers()
 	self.wave_modifiers = {}
+
 	local health_damage_multipliers = {
 		{
 			damage = 1.5,
@@ -632,6 +635,7 @@ function SkirmishTweakData:_init_wave_modifiers()
 			health = 2.5
 		}
 	}
+
 	self.wave_modifiers[1] = {
 		{
 			class = "ModifierEnemyHealthAndDamageByWave",
@@ -676,71 +680,70 @@ function SkirmishTweakData:_init_wave_modifiers()
 end
 
 function SkirmishTweakData:_init_weekly_modifiers()
-	self.weekly_modifiers = {
-		wsm01 = {
-			icon = "crime_spree_cloaker_tear_gas",
-			class = "ModifierCloakerTearGas",
-			data = {
-				diameter = 4,
-				duration = 5,
-				damage = 10
-			}
-		},
-		wsm02 = {
-			icon = "crime_spree_dozer_rage",
-			class = "ModifierDozerRage",
-			data = {
-				damage = 100
-			}
-		},
-		wsm03 = {
-			icon = "crime_spree_medic_speed",
-			class = "ModifierHealSpeed",
-			data = {
-				speed = 40
-			}
-		},
-		wsm04 = {
-			icon = "crime_spree_medic_rage",
-			class = "ModifierMedicRage",
-			data = {
-				damage = 20
-			}
-		},
-		wsm05 = {
-			icon = "crime_spree_medic_adrenaline",
-			class = "ModifierMedicAdrenaline",
-			data = {
-				damage = 100
-			}
-		},
-		wsm06 = {
-			icon = "crime_spree_more_dozers",
-			class = "ModifierMoreDozers",
-			data = {
-				inc = 4
-			}
-		},
-		wsm07 = {
-			icon = "crime_spree_shield_phalanx",
-			class = "ModifierShieldPhalanx",
-			data = {}
-		},
-		wsm08 = {
-			icon = "crime_spree_shield_reflect",
-			class = "ModifierShieldReflect",
-			data = {}
-		},
-		wsm09 = {
-			icon = "crime_spree_heavies",
-			class = "ModifierHeavies",
-			data = {}
-		},
-		wsm10 = {
-			icon = "crime_spree_no_hurt",
-			class = "ModifierNoHurtAnims",
-			data = {}
+	self.weekly_modifiers = {}
+	self.weekly_modifiers.wsm01 = {
+		class = "ModifierCloakerTearGas",
+		icon = "crime_spree_cloaker_tear_gas",
+		data = {
+			damage = 10,
+			diameter = 4,
+			duration = 5
 		}
+	}
+	self.weekly_modifiers.wsm02 = {
+		class = "ModifierDozerRage",
+		icon = "crime_spree_dozer_rage",
+		data = {
+			damage = 100
+		}
+	}
+	self.weekly_modifiers.wsm03 = {
+		class = "ModifierHealSpeed",
+		icon = "crime_spree_medic_speed",
+		data = {
+			speed = 40
+		}
+	}
+	self.weekly_modifiers.wsm04 = {
+		class = "ModifierMedicRage",
+		icon = "crime_spree_medic_rage",
+		data = {
+			damage = 20
+		}
+	}
+	self.weekly_modifiers.wsm05 = {
+		class = "ModifierMedicAdrenaline",
+		icon = "crime_spree_medic_adrenaline",
+		data = {
+			damage = 100
+		}
+	}
+	self.weekly_modifiers.wsm06 = {
+		class = "ModifierMoreDozers",
+		icon = "crime_spree_more_dozers",
+		data = {
+			inc = 4
+		}
+	}
+	self.weekly_modifiers.wsm07 = {
+		class = "ModifierShieldPhalanx",
+		icon = "crime_spree_shield_phalanx",
+		data = {}
+	}
+	self.weekly_modifiers.wsm08 = {
+		class = "ModifierShieldReflect",
+		icon = "crime_spree_shield_reflect",
+		data = {}
+	}
+	self.weekly_modifiers.wsm09 = {
+		class = "ModifierHeavies",
+		icon = "crime_spree_heavies",
+		data = {}
+	}
+	self.weekly_modifiers.wsm10 = {
+		class = "ModifierNoHurtAnims",
+		icon = "crime_spree_no_hurt",
+		data = {}
 	}
 end
 
@@ -849,10 +852,9 @@ function SkirmishTweakData:_init_job_list(tweak_data)
 end
 
 function SkirmishTweakData:_init_briefing()
-	self.random_skirmish = {
-		crimenet_videos = {
-			"codex/locke1"
-		}
+	self.random_skirmish = {}
+	self.random_skirmish.crimenet_videos = {
+		"codex/locke1"
 	}
 end
 
@@ -860,6 +862,7 @@ function SkirmishTweakData:_init_additional_rewards()
 	local tier1 = deep_clone(self.weekly_rewards[1])
 	local tier2 = deep_clone(self.weekly_rewards[2])
 	local tier3 = deep_clone(self.weekly_rewards[3])
+
 	tier1.weapon_skins = {
 		"color_anv_02",
 		"color_anv_03"
@@ -884,13 +887,13 @@ function SkirmishTweakData:_init_additional_rewards()
 		[9] = tier3
 	}
 	self.additional_lootdrops = {
-		[3.0] = 1,
-		[5.0] = 2,
-		[9.0] = 4
+		[3] = 1,
+		[5] = 2,
+		[9] = 4
 	}
 	self.additional_coins = {
-		[3.0] = 1,
-		[5.0] = 2,
-		[9.0] = 3
+		[3] = 1,
+		[5] = 2,
+		[9] = 3
 	}
 end

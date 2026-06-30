@@ -33,7 +33,7 @@ function GageAssetsItem.animate_select(o, center_helper, instant)
 		return
 	end
 
-	over(math.abs(85 - size) / 100, function (p)
+	over(math.abs(85 - size) / 100, function(p)
 		local s = math.lerp(size, 85, p)
 
 		if alive(center_helper) then
@@ -60,7 +60,7 @@ function GageAssetsItem.animate_deselect(o, center_helper)
 		local center_x, center_y = center_helper:center()
 	end
 
-	over(math.abs(65 - size) / 100, function (p)
+	over(math.abs(65 - size) / 100, function(p)
 		local s = math.lerp(size, 65, p)
 
 		if alive(center_helper) then
@@ -77,7 +77,7 @@ function GageAssetsItem:init(panel, text, i)
 
 	self._num_items = 8
 
-	self._panel:set_w(self._main_panel:w() * self._num_items / 8)
+	self._panel:set_w(self._main_panel:w() * (self._num_items / 8))
 	self._panel:set_right(self._main_panel:w())
 	self:create_assets()
 end
@@ -113,11 +113,14 @@ function GageAssetsItem:create_assets()
 
 	self._assets_list = {}
 	self._assets = tweak_data.crime_spree.assets
+
 	local center_y = math.round(self._panel:h() / 2) - tweak_data.menu.pd2_small_font_size
+
 	self._asset_text_panel = self._panel:panel({
 		layer = 4,
 		name = "asset_text"
 	})
+
 	local sorted_assets = {}
 
 	for id, data in pairs(self._assets) do
@@ -127,14 +130,14 @@ function GageAssetsItem:create_assets()
 		})
 	end
 
-	table.sort(sorted_assets, function (a, b)
+	table.sort(sorted_assets, function(a, b)
 		return managers.localization:text(a.data.name_id) < managers.localization:text(b.data.name_id)
 	end)
 
 	local mission = managers.crime_spree:get_mission()
 	local level_tweak = tweak_data.levels[mission.level.level_id]
 	local stealthable = level_tweak and level_tweak.ghost_bonus
-	local first_rect, rect = nil
+	local first_rect, rect
 	local i = 0
 	local w = self._panel:w() / (self._num_items / 2)
 	local step = w * 0.5
@@ -142,27 +145,30 @@ function GageAssetsItem:create_assets()
 	for _, asset_data in pairs(sorted_assets) do
 		if not asset_data.data.stealth or stealthable then
 			i = i + 1
+
 			local center_x = i * w - w * 0.5
+
 			rect = self._panel:rect({
-				w = 85,
 				h = 85,
+				w = 85,
 				name = "bg_rect_" .. tostring(i)
 			})
 
 			rect:hide()
 
 			first_rect = first_rect or rect
+
 			local center_x = math.ceil(i / 2) * w - step
 			local center_y = self._panel:h() * (i % 2 > 0 and 0.295 or 0.815)
-			local asset = nil
+			local asset
 			local texture, texture_rect = tweak_data.hud_icons:get_icon_data(asset_data.data.icon)
 
 			if texture and DB:has(Idstring("texture"), texture) then
 				asset = self._panel:bitmap({
 					h = 65,
 					layer = 1,
-					w = 65,
 					valign = "top",
+					w = 65,
 					name = "asset_" .. tostring(i),
 					texture = texture,
 					texture_rect = texture_rect,
@@ -170,12 +176,12 @@ function GageAssetsItem:create_assets()
 				})
 			else
 				asset = self._panel:bitmap({
-					texture = "guis/textures/pd2/endscreen/what_is_this",
-					h = 65,
-					w = 65,
 					alpha = 0,
-					valign = "top",
+					h = 65,
 					layer = 1,
+					texture = "guis/textures/pd2/endscreen/what_is_this",
+					valign = "top",
+					w = 65,
 					name = "asset_" .. tostring(i),
 					rotation = math.random(2) - 1.5
 				})
@@ -188,8 +194,8 @@ function GageAssetsItem:create_assets()
 			asset:set_rotation(0.5)
 
 			local lock = self._panel:bitmap({
-				texture = "guis/textures/pd2/blackmarket/money_lock",
 				layer = 3,
+				texture = "guis/textures/pd2/blackmarket/money_lock",
 				name = "asset_lock_" .. tostring(i),
 				color = tweak_data.screen_colors.item_stage_1
 			})
@@ -211,12 +217,12 @@ function GageAssetsItem:create_assets()
 
 	if math.ceil(#self._assets_list / self._num_items) > 1 then
 		self._move_left_rect = self._panel:bitmap({
-			texture = "guis/textures/pd2/hud_arrow",
-			h = 32,
 			blend_mode = "add",
-			w = 32,
-			rotation = 360,
+			h = 32,
 			layer = 3,
+			rotation = 360,
+			texture = "guis/textures/pd2/hud_arrow",
+			w = 32,
 			color = tweak_data.screen_colors.button_stage_3
 		})
 
@@ -225,12 +231,12 @@ function GageAssetsItem:create_assets()
 		self._move_left_rect:set_visible(false)
 
 		self._move_right_rect = self._panel:bitmap({
-			texture = "guis/textures/pd2/hud_arrow",
-			h = 32,
 			blend_mode = "add",
-			w = 32,
-			rotation = 180,
+			h = 32,
 			layer = 3,
+			rotation = 180,
+			texture = "guis/textures/pd2/hud_arrow",
+			w = 32,
 			color = tweak_data.screen_colors.button_stage_3
 		})
 
@@ -248,6 +254,7 @@ function GageAssetsItem:create_assets()
 
 		for i, string_id in ipairs(legends) do
 			local spacing = i > 1 and "  |  " or ""
+
 			t_text = t_text .. spacing .. utf8.to_upper(managers.localization:text(string_id, {
 				BTN_UPDATE = managers.localization:btn_macro("menu_update"),
 				BTN_BACK = managers.localization:btn_macro("back")
@@ -270,8 +277,8 @@ function GageAssetsItem:create_assets()
 
 	if first_rect then
 		self._select_box_panel = self._panel:panel({
-			visible = false,
-			layer = -3
+			layer = -3,
+			visible = false
 		})
 
 		self._select_box_panel:set_shape(first_rect:shape())
@@ -330,7 +337,7 @@ function GageAssetsItem:update_asset_positions()
 	local w = self._my_asset_space
 
 	for i, asset in pairs(self._assets_list) do
-		local cx = (math.ceil(i / 2) - (self._my_left_i - 1) * self._num_items / 2) * w - w / 2
+		local cx = (math.ceil(i / 2) - (self._my_left_i - 1) * (self._num_items / 2)) * w - w / 2
 		local lock = self._panel:child("asset_lock_" .. tostring(i))
 
 		if alive(lock) then
@@ -352,9 +359,10 @@ function GageAssetsItem:update_asset_positions()
 end
 
 function GageAssetsItem:select_asset(i, instant)
-	if self._num_items < #self._assets_list then
+	if #self._assets_list > self._num_items then
 		if i then
 			local page = math.ceil(i / self._num_items)
+
 			self._my_left_i = page
 		end
 
@@ -367,7 +375,7 @@ function GageAssetsItem:select_asset(i, instant)
 
 	local bg = self._panel:child("bg_rect_" .. tostring(i))
 	local text_string = self._assets_list[i].data.name_id
-	local extra_string, extra_color = nil
+	local extra_string, extra_color
 
 	if not self._text_strings_localized then
 		text_string = managers.localization:text(text_string)
@@ -384,6 +392,7 @@ function GageAssetsItem:select_asset(i, instant)
 	self:check_deselect_item()
 
 	self._asset_selected = i
+
 	local rect = self._panel:child("bg_rect_" .. tostring(i))
 
 	if rect then
@@ -400,10 +409,13 @@ function GageAssetsItem:select_asset(i, instant)
 
 	if self._assets_list[i].locked then
 		local can_unlock, reason = managers.crime_spree:can_unlock_asset()
+
 		extra_string = managers.localization:text("bm_cs_continental_coin_cost", {
 			cost = managers.experience:cash_string(self._assets_list[i].data.cost, "")
 		})
+
 		local coins = 0
+
 		coins = managers.custom_safehouse:coins()
 
 		if coins < self._assets_list[i].data.cost then
@@ -423,8 +435,8 @@ function GageAssetsItem:select_asset(i, instant)
 
 	if text_string then
 		local text = self._asset_text_panel:text({
-			name = "text_string",
 			align = "center",
+			name = "text_string",
 			text = text_string,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			font = tweak_data.menu.pd2_small_font,
@@ -439,8 +451,8 @@ function GageAssetsItem:select_asset(i, instant)
 	if extra_string then
 		local last_child = self._asset_text_panel:children()[self._asset_text_panel:num_children()]
 		local text = self._asset_text_panel:text({
-			name = "extra_string",
 			align = "center",
+			name = "extra_string",
 			text = extra_string,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			font = tweak_data.menu.pd2_small_font,
@@ -545,6 +557,7 @@ function GageAssetsItem:mouse_moved(x, y)
 	end
 
 	self._assets_list = self._assets_list or {}
+
 	local update_select = false
 
 	if not self._asset_selected then
@@ -611,6 +624,7 @@ function GageAssetsItem:move(x, y)
 	if asset_selected then
 		local is_top = asset_selected % 2 > 0
 		local step = 2 * x + (is_top and math.max(y, 0) or math.min(y, 0))
+
 		new_selected = asset_selected + step
 
 		if new_selected > #self._assets_list then
@@ -633,13 +647,14 @@ end
 function GageAssetsItem:move_left()
 	self:move(-1, 0)
 
-	return
+	do return end
 
 	if #self._assets_list == 0 then
 		return
 	end
 
 	self._asset_selected = self._asset_selected or 0
+
 	local new_selected = math.max(self._asset_selected - 1, 1)
 
 	self:select_asset(new_selected)
@@ -656,13 +671,14 @@ end
 function GageAssetsItem:move_right()
 	self:move(1, 0)
 
-	return
+	do return end
 
 	if #self._assets_list == 0 then
 		return
 	end
 
 	self._asset_selected = self._asset_selected or 0
+
 	local new_selected = math.min(self._asset_selected + 1, #self._assets_list)
 
 	self:select_asset(new_selected)
@@ -681,11 +697,12 @@ function GageAssetsItem:_return_asset_info(i)
 		return nil
 	end
 
-	local asset_cost = nil
+	local asset_cost
 
 	if self._assets_list[i].locked then
 		local cost = self._assets_list[i].data.cost
 		local coins = 0
+
 		coins = managers.custom_safehouse:coins()
 
 		if cost <= coins then

@@ -12,6 +12,7 @@ SlaveManager = SlaveManager or class()
 Updator = Updator or class()
 
 function Updator:init()
+	return
 end
 
 function Updator:peer()
@@ -19,9 +20,11 @@ function Updator:peer()
 end
 
 function Updator:update()
+	return
 end
 
 function Updator:set_batch_count()
+	return
 end
 
 SlaveUpdator = SlaveUpdator or class(Updator)
@@ -137,7 +140,7 @@ function MasterUpdator:update(t, dt)
 			self._ready_to_send = false
 			num_sent = num_sent + 1
 
-			if self._units_per_frame <= num_sent then
+			if num_sent >= self._units_per_frame then
 				break
 			end
 		end

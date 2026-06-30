@@ -1,6 +1,7 @@
 SocialHubManager = SocialHubManager or class()
 SocialHubManager.save_version = 1
 SocialHubManager._invite_cache = {}
+
 local IDS_STEAM = Idstring("STEAM")
 local IDS_EPIC = Idstring("EPIC")
 local INVITE_TIMEOUT = 30
@@ -51,6 +52,7 @@ function SocialHubManager:save(cache)
 		blocked = self._global.blocked_users,
 		cached = clean_cached_users
 	}
+
 	cache.socialhub = save_data
 end
 
@@ -152,6 +154,7 @@ end
 function SocialHubManager:fetch_users(caller_callback)
 	if EpicMM then
 		self._callback = caller_callback
+
 		local fetch_users = table.list_add(self._global.friend_users, self._global.blocked_users)
 
 		EpicMM:query_users(fetch_users, callback(self, self, "on_users_fetched"))
@@ -197,8 +200,10 @@ function SocialHubManager:on_invite_recieved(invite_id, lobby_id, user_id, displ
 	end
 
 	self._invite_cache[invite_id] = lobby_id
+
 	local user_name = display_name
 	local user_data = managers.socialhub:get_user(user_id)
+
 	user_name = user_name or user_data and user_data.name or managers.localization:text("menu_socialhub_notification_unknown")
 
 	managers.menu_component:push_socialhub_notification("lobby_invite", user_name)
@@ -278,9 +283,7 @@ function SocialHubManager:is_user_platform_friend(id, check_account)
 	if check_account and SystemInfo:distribution() == IDS_STEAM then
 		local user = self:get_user(id)
 
-		if user then
-			id = user.account_id or id
-		end
+		id = user and user.account_id or id
 	end
 
 	return table.contains(self._platform_users, id)
@@ -296,6 +299,7 @@ end
 
 function SocialHubManager:add_cached_user(id, data)
 	local str_id = tostring(id)
+
 	self._global.cached_users[str_id] = {
 		name = data.display_name,
 		id = str_id,

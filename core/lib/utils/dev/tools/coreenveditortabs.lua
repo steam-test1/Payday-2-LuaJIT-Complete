@@ -99,4 +99,5 @@ function CoreEnvEditor:create_interface()
 end
 
 function CoreEnvEditor:create_simple_interface()
+	return
 end

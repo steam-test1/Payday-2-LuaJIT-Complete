@@ -7,7 +7,9 @@ function WorldCameraState:init(game_state_machine)
 end
 
 function WorldCameraState:at_enter()
+	return
 end
 
 function WorldCameraState:at_exit()
+	return
 end

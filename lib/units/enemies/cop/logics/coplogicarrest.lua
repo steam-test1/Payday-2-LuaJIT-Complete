@@ -11,6 +11,7 @@ function CopLogicArrest.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.guard
 	my_data.arrest_targets = {}
@@ -30,6 +31,7 @@ function CopLogicArrest.enter(data, new_logic_name, enter_params)
 	end
 
 	local key_str = tostring(data.key)
+
 	my_data.update_task_key = "CopLogicArrest.queued_update" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.update_task_key, CopLogicArrest.queued_update, data, data.t)
@@ -108,6 +110,7 @@ end
 
 function CopLogicArrest.queued_update(data)
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 
 	CopLogicArrest._upd_enemy_detection(data)
@@ -127,7 +130,7 @@ function CopLogicArrest.queued_update(data)
 	local arrest_data = attention_obj and my_data.arrest_targets[attention_obj.u_key]
 
 	if not data.unit:anim_data().reload and not data.unit:movement():chk_action_forbidden("action") then
-		if attention_obj and AIAttentionObject.REACT_ARREST <= attention_obj.reaction then
+		if attention_obj and attention_obj.reaction >= AIAttentionObject.REACT_ARREST then
 			if not my_data.shooting and not data.unit:anim_data().reload then
 				local shoot_action = {
 					body_part = 3,
@@ -162,9 +165,9 @@ function CopLogicArrest.queued_update(data)
 
 			if not data.unit:movement():chk_action_forbidden("action") then
 				local new_action = {
-					variant = "arrest",
 					body_part = 1,
-					type = "act"
+					type = "act",
+					variant = "arrest"
 				}
 
 				if data.unit:brain():action_request(new_action) then
@@ -231,23 +234,24 @@ function CopLogicArrest._upd_advance(data, my_data, attention_obj, arrest_data)
 	if my_data.advancing then
 		-- Nothing
 	elseif my_data.advance_path then
-		if my_data.next_action_delay_t < data.t and not data.unit:movement():chk_action_forbidden("walk") then
+		if data.t > my_data.next_action_delay_t and not data.unit:movement():chk_action_forbidden("walk") then
 			if (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.stand) and my_data.should_stand_close and not data.unit:anim_data().stand then
 				CopLogicAttack._chk_request_action_stand(data)
 			end
 
 			local new_action_data = {
-				variant = "walk",
 				body_part = 2,
 				type = "walk",
+				variant = "walk",
 				nav_path = my_data.advance_path
 			}
+
 			my_data.advance_path = nil
 			my_data.advancing = data.unit:brain():action_request(new_action_data)
 		end
 	elseif my_data.processing_path then
 		CopLogicArrest._process_pathing_results(data, my_data)
-	elseif not my_data.in_position and my_data.next_action_delay_t < data.t then
+	elseif not my_data.in_position and data.t > my_data.next_action_delay_t then
 		if my_data.should_arrest then
 			my_data.path_search_id = "cuff" .. tostring(data.key)
 			my_data.processing_path = true
@@ -307,6 +311,7 @@ function CopLogicArrest._upd_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local delay = CopLogicBase._upd_attention_obj_detection(data, nil, nil)
 	local all_attention_objects = data.detected_attention_objects
@@ -355,8 +360,8 @@ function CopLogicArrest._upd_enemy_detection(data)
 	end
 
 	if new_reaction ~= AIAttentionObject.REACT_ARREST then
-		if (not new_reaction or new_reaction < AIAttentionObject.REACT_SHOOT or not new_attention.verified or new_attention.dis >= 1500) and (my_data.in_position or not my_data.should_arrest and not my_data.should_stand_close) then
-			if data.char_tweak.calls_in and my_data.next_action_delay_t < data.t and managers.groupai:state():can_police_be_called() and not managers.groupai:state():is_police_called() and not my_data.calling_the_police and not my_data.turning and not data.unit:sound():speaking(data.t) then
+		if (not new_reaction or new_reaction < AIAttentionObject.REACT_SHOOT or not new_attention.verified or not (new_attention.dis < 1500)) and (my_data.in_position or not my_data.should_arrest and not my_data.should_stand_close) then
+			if data.char_tweak.calls_in and data.t > my_data.next_action_delay_t and managers.groupai:state():can_police_be_called() and not managers.groupai:state():is_police_called() and not my_data.calling_the_police and not my_data.turning and not data.unit:sound():speaking(data.t) then
 				CopLogicArrest._call_the_police(data, my_data, true)
 
 				return
@@ -425,7 +430,7 @@ function CopLogicArrest._chk_reaction_to_attention_object(data, attention_data, 
 		return math.min(attention_data.settings.reaction, AIAttentionObject.REACT_AIM)
 	end
 
-	if can_arrest and (not record.assault_t or att_unit:base():arrest_settings().aggression_timeout < data.t - record.assault_t) and record.arrest_timeout < data.t and not record.status then
+	if can_arrest and (not record.assault_t or data.t - record.assault_t > att_unit:base():arrest_settings().aggression_timeout) and data.t > record.arrest_timeout and not record.status then
 		if attention_data.dis < 2000 and visible then
 			return math.min(attention_data.settings.reaction, AIAttentionObject.REACT_ARREST)
 		else
@@ -442,7 +447,7 @@ function CopLogicArrest._verify_arrest_targets(data, my_data)
 	local group_ai = managers.groupai:state()
 
 	for u_key, arrest_data in pairs(arrest_targets) do
-		local drop, penalty = nil
+		local drop, penalty
 		local record = group_ai:criminal_record(u_key)
 
 		if not record then
@@ -521,6 +526,7 @@ function CopLogicArrest.damage_clbk(data, damage_info)
 			managers.groupai:state():on_arrest_end(data.key, enemy_key)
 
 			my_data.arrest_targets[enemy_key] = nil
+
 			local record = managers.groupai:state():criminal_record(enemy_key)
 
 			if record then
@@ -531,6 +537,7 @@ function CopLogicArrest.damage_clbk(data, damage_info)
 end
 
 function CopLogicArrest.on_detected_enemy_destroyed(data, enemy_unit)
+	return
 end
 
 function CopLogicArrest.is_available_for_assignment(data, objective)
@@ -559,15 +566,16 @@ end
 
 function CopLogicArrest._call_the_police(data, my_data, paniced)
 	local action = {
-		variant = "arrest_call",
 		body_part = 1,
 		type = "act",
+		variant = "arrest_call",
 		blocks = {
-			aim = -1,
 			action = -1,
+			aim = -1,
 			walk = -1
 		}
 	}
+
 	my_data.calling_the_police = data.unit:movement():action_request(action)
 
 	if my_data.calling_the_police then
@@ -579,7 +587,8 @@ end
 
 function CopLogicArrest._get_priority_attention(data, attention_objects, reaction_func)
 	reaction_func = reaction_func or CopLogicArrest._chk_reaction_to_attention_object
-	local best_target, best_target_priority_slot, best_target_priority, best_target_reaction = nil
+
+	local best_target, best_target_priority_slot, best_target_priority, best_target_reaction
 	local near_threshold = data.internal_data.weapon_range.optimal
 	local too_close_threshold = data.internal_data.weapon_range.close
 
@@ -590,10 +599,10 @@ function CopLogicArrest._get_priority_attention(data, attention_objects, reactio
 		if not attention_data.identified then
 			-- Nothing
 		elseif attention_data.pause_expire_t then
-			if attention_data.pause_expire_t < data.t then
+			if data.t > attention_data.pause_expire_t then
 				attention_data.pause_expire_t = nil
 			end
-		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
+		elseif attention_data.stare_expire_t and data.t > attention_data.stare_expire_t then
 			if attention_data.settings.pause then
 				attention_data.stare_expire_t = nil
 				attention_data.pause_expire_t = data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())
@@ -601,7 +610,7 @@ function CopLogicArrest._get_priority_attention(data, attention_objects, reactio
 		else
 			local distance = mvector3.distance(data.m_pos, attention_data.m_pos)
 			local reaction = reaction_func(data, attention_data, not CopLogicAttack._can_move(data))
-			local reaction_too_mild = nil
+			local reaction_too_mild
 
 			if not reaction or best_target_reaction and reaction < best_target_reaction then
 				reaction_too_mild = true
@@ -636,7 +645,7 @@ function CopLogicArrest._get_priority_attention(data, attention_objects, reactio
 					local free_status = status == nil
 					local has_alerted = alert_dt < 3.5
 					local has_damaged = dmg_dt < 5
-					local reviving = nil
+					local reviving
 
 					if attention_data.is_local_player then
 						local iparams = att_unit:movement():current_state()._interact_params
@@ -755,7 +764,7 @@ end
 function CopLogicArrest._get_att_obj_close_pos(data, my_data)
 	local nav_manager = managers.navigation
 	local my_nav_tracker = data.unit:movement():nav_tracker()
-	local destroy_att_nav_tracker, att_nav_tracker = nil
+	local destroy_att_nav_tracker, att_nav_tracker
 
 	if data.attention_obj.nav_tracker then
 		att_nav_tracker = data.attention_obj.nav_tracker
@@ -817,7 +826,7 @@ function CopLogicArrest._mark_call_in_event(data, my_data, attention_obj)
 
 	if attention_obj.reaction == AIAttentionObject.REACT_ARREST then
 		my_data.call_in_event = "criminal"
-	elseif AIAttentionObject.REACT_SCARED <= attention_obj.reaction then
+	elseif attention_obj.reaction >= AIAttentionObject.REACT_SCARED then
 		local unit_base = attention_obj.unit:base()
 		local unit_brain = attention_obj.unit:brain()
 
@@ -854,6 +863,7 @@ function CopLogicArrest._chk_say_discovery(data, my_data, attention_obj)
 end
 
 function CopLogicArrest._chk_say_approach(data, my_data, attention_obj)
+	return
 end
 
 function CopLogicArrest.on_police_call_success(data)
@@ -867,16 +877,16 @@ function CopLogicArrest._say_call_the_police(data, my_data)
 
 	local blame_list = {
 		body_bag = "a19",
-		drill = "a25",
-		criminal = "a23",
-		trip_mine = "a21",
-		w_hot = "a16",
 		civilian = "a15",
-		sentry_gun = "a20",
+		criminal = "a23",
+		dead_civ = "a11",
 		dead_cop = "a12",
-		hostage_cop = "a14",
+		drill = "a25",
 		hostage_civ = "a13",
-		dead_civ = "a11"
+		hostage_cop = "a14",
+		sentry_gun = "a20",
+		trip_mine = "a21",
+		w_hot = "a16"
 	}
 
 	data.unit:sound():say(blame_list[my_data.call_in_event] or "a23", true)

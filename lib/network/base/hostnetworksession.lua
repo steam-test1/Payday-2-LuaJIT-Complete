@@ -14,21 +14,21 @@ HostNetworkSession._STATES = {
 	closing = HostStateClosing
 }
 HostNetworkSession.JOIN_REPLY = {
-	BANNED = 9,
-	MODS_DISALLOWED = 10,
-	LOW_LEVEL = 6,
-	DO_NOT_OWN_HEIST = 4,
-	SHUB_BLOCKED = 11,
-	AUTH_FAILED = 8,
-	GAME_FULL = 5,
-	WRONG_VERSION = 7,
-	HOST_LOADING = 13,
-	OK = 1,
-	GAME_STARTED = 3,
 	ALREADY_JOINED = 14,
-	SHUB_NOT_FRIEND = 12,
+	AUTH_FAILED = 8,
+	BANNED = 9,
+	DO_NOT_OWN_HEIST = 4,
 	FAILED_CONNECT = 0,
-	KICKED = 2
+	GAME_FULL = 5,
+	GAME_STARTED = 3,
+	HOST_LOADING = 13,
+	KICKED = 2,
+	LOW_LEVEL = 6,
+	MODS_DISALLOWED = 10,
+	OK = 1,
+	SHUB_BLOCKED = 11,
+	SHUB_NOT_FRIEND = 12,
+	WRONG_VERSION = 7
 }
 HostNetworkSession._DEAD_CONNECTION_REPORT_PROCESS_DELAY = math.max(HostNetworkSession.CONNECTION_TIMEOUT, HostNetworkSession.LOADING_CONNECTION_TIMEOUT) + 1.5
 HostNetworkSession._LOAD_COUNTER_LIMITS = {
@@ -131,6 +131,7 @@ function HostNetworkSession:broadcast_server_up()
 end
 
 function HostNetworkSession:on_server_up_received()
+	return
 end
 
 function HostNetworkSession:load(data)
@@ -206,7 +207,7 @@ function HostNetworkSession:set_game_started(state)
 end
 
 function HostNetworkSession:chk_peer_already_in(rpc)
-	local old_peer = nil
+	local old_peer
 
 	if rpc:protocol_at_index(0) == "STEAM" then
 		old_peer = self:peer_by_user_id(rpc:ip_at_index(0))
@@ -500,7 +501,8 @@ function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 		managers.wait:clear_peer(id)
 	end
 
-	local peer = nil
+	local peer
+
 	id, peer = HostNetworkSession.super.add_peer(self, name, rpc, in_lobby, loading, synched, id, character, user_id, account_type_str, account_id, xuid, xnaddr)
 
 	self:chk_server_joinable_state()
@@ -573,15 +575,9 @@ function HostNetworkSession:remove_peer(peer, peer_id, reason)
 	end
 
 	local info_msg_type = "kick_peer"
-	local info_msg_id = nil
+	local info_msg_id
 
-	if reason == "kicked" then
-		info_msg_id = 0
-	elseif reason == "auth_fail" then
-		info_msg_id = 2
-	else
-		info_msg_id = 1
-	end
+	info_msg_id = reason == "kicked" and 0 or reason == "auth_fail" and 2 or 1
 
 	for other_peer_id, other_peer in pairs(self._peers) do
 		if other_peer:handshakes()[peer_id] == true or other_peer:handshakes()[peer_id] == "asked" or other_peer:handshakes()[peer_id] == "exchanging_info" then
@@ -619,6 +615,7 @@ function HostNetworkSession:on_dead_connection_reported(reporter_peer_id, other_
 	end
 
 	self._dead_con_reports = self._dead_con_reports or {}
+
 	local entry = {
 		process_t = TimerManager:wall():time() + self._DEAD_CONNECTION_REPORT_PROCESS_DELAY,
 		reporter = self._peers[reporter_peer_id],
@@ -633,18 +630,18 @@ function HostNetworkSession:process_dead_con_reports()
 		local t = TimerManager:wall():time()
 		local first_dead_con_report = self._dead_con_reports[1]
 
-		if first_dead_con_report.process_t < t then
+		if t > first_dead_con_report.process_t then
 			if #self._dead_con_reports == 1 then
 				self._dead_con_reports = nil
 			else
 				table.remove(self._dead_con_reports, 1)
 			end
 
-			local kick_peer = nil
+			local kick_peer
 			local reporter_peer = first_dead_con_report.reporter
 			local reported_peer = first_dead_con_report.reported
 
-			if reported_peer:creation_t() < reporter_peer:creation_t() then
+			if reporter_peer:creation_t() > reported_peer:creation_t() then
 				print("[HostNetworkSession:process_dead_con_reports] kicking reporter ", reporter_peer:id(), reported_peer:id(), reporter_peer:creation_t(), reported_peer:creation_t())
 
 				kick_peer = reporter_peer

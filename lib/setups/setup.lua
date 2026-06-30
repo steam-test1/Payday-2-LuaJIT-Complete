@@ -140,6 +140,7 @@ script_data = script_data or {}
 game_state_machine = game_state_machine or nil
 Setup = Setup or class(CoreSetup.CoreSetup)
 _next_update_funcs = _next_update_funcs or {}
+
 local next_update_funcs_busy = false
 
 function call_on_next_update(func, optional_key)
@@ -147,12 +148,14 @@ function call_on_next_update(func, optional_key)
 		table.insert(_next_update_funcs, func)
 	else
 		local key = optional_key == true and func or optional_key
+
 		_next_update_funcs[key] = func
 	end
 end
 
 function call_next_update_functions()
 	local current = _next_update_funcs
+
 	_next_update_funcs = {}
 	next_update_funcs_busy = true
 
@@ -237,23 +240,23 @@ end
 
 function Setup:init_managers(managers)
 	Global.game_settings = Global.game_settings or {
-		is_playing = false,
+		allow_modded_players = true,
 		auto_kick = true,
-		drop_in_option = 1,
-		permission = "public",
-		job_plan = -1,
-		search_modded_lobbies = true,
-		search_appropriate_jobs = true,
-		gamemode = "standard",
-		drop_in_allowed = true,
-		reputation_permission = 0,
 		difficulty = "normal",
-		team_ai_option = 1,
-		team_ai = true,
+		drop_in_allowed = true,
+		drop_in_option = 1,
+		gamemode = "standard",
+		is_playing = false,
+		job_plan = -1,
 		kick_option = 1,
 		one_down = false,
-		allow_modded_players = true,
+		permission = "public",
+		reputation_permission = 0,
+		search_appropriate_jobs = true,
+		search_modded_lobbies = true,
 		search_one_down_lobbies = false,
+		team_ai = true,
+		team_ai_option = 1,
 		level_id = managers.dlc:is_trial() and "bank_trial" or "branchbank"
 	}
 
@@ -379,13 +382,13 @@ function Setup:_start_loading_screen()
 
 	cat_print("loading_environment", "[LoadingEnvironment] Start.")
 
-	local setup = nil
+	local setup
 
 	if not LoadingEnvironmentScene:loaded() then
 		LoadingEnvironmentScene:load("levels/zone", false)
 	end
 
-	local load_level_data = nil
+	local load_level_data
 
 	if Global.load_level then
 		if not PackageManager:loaded("packages/load_level") then
@@ -395,6 +398,7 @@ function Setup:_start_loading_screen()
 		local using_steam_controller = false
 		local show_controller = managers.user:get_setting("loading_screen_show_controller")
 		local show_hints = managers.user:get_setting("loading_screen_show_hints")
+
 		setup = "lib/setups/LevelLoadingSetup"
 		load_level_data = {
 			level_data = Global.level_data,
@@ -410,8 +414,11 @@ function Setup:_start_loading_screen()
 		end
 
 		if show_controller then
-			if not using_steam_controller then
+			if using_steam_controller then
+				-- Nothing
+			else
 				local coords = tweak_data:get_controller_help_coords()
+
 				load_level_data.controller_coords = coords and coords[table.random({
 					"normal",
 					"vehicle"
@@ -420,8 +427,8 @@ function Setup:_start_loading_screen()
 				load_level_data.controller_shapes = {
 					{
 						position = {
-							cy = 0.5,
-							cx = 0.5
+							cx = 0.5,
+							cy = 0.5
 						},
 						texture_rect = {
 							0,
@@ -448,6 +455,7 @@ function Setup:_start_loading_screen()
 		local res = RenderSettings.resolution
 		local job_data = managers.job:current_job_data() or {}
 		local bg_texture = load_level_data.level_tweak_data.load_screen or job_data.load_screen or load_data and load_data.image
+
 		load_level_data.gui_data = {
 			safe_rect_pixels = safe_rect_pixels,
 			safe_rect = safe_rect,
@@ -467,10 +475,8 @@ function Setup:_start_loading_screen()
 			},
 			bg_texture = bg_texture or "guis/textures/loading/loading_bg"
 		}
-	elseif not Global.boot_loading_environment_done then
-		setup = "lib/setups/LightLoadingSetup"
 	else
-		setup = "lib/setups/HeavyLoadingSetup"
+		setup = not Global.boot_loading_environment_done and "lib/setups/LightLoadingSetup" or "lib/setups/HeavyLoadingSetup"
 	end
 
 	self:_setup_loading_environment()
@@ -500,10 +506,10 @@ function Setup:_setup_loading_environment()
 				slice3 = Vector3(5100, 17500, 0)
 			},
 			apply_ambient = {
-				ambient_falloff_scale = 0,
-				effect_light_scale = 1,
 				ambient_color_scale = 0.31999999284744,
+				ambient_falloff_scale = 0,
 				ambient_scale = 1,
+				effect_light_scale = 1,
 				ambient_color = Vector3(1, 1, 1),
 				sky_top_color = Vector3(0, 0, 0),
 				sky_bottom_color = Vector3(0, 0, 0)
@@ -534,7 +540,9 @@ function Setup:init_game()
 	end
 
 	self._end_frame_clbks = {}
+
 	local scene_gui = Overlay:gui()
+
 	self._main_thread_loading_screen_gui_script = LightLoadingScreenGuiScript:new(scene_gui, RenderSettings.resolution, -1, tweak_data.gui.LOADING_SCREEN_LAYER, SystemInfo:platform() == Idstring("WIN32"))
 	self._main_thread_loading_screen_gui_visible = true
 
@@ -574,8 +582,7 @@ function Setup:init_finalize()
 end
 
 function Setup:update(t, dt)
-	local main_t = TimerManager:main():time()
-	local main_dt = TimerManager:main():delta_time()
+	local main_t, main_dt = TimerManager:main():time(), TimerManager:main():delta_time()
 
 	self:_upd_unload_packages()
 
@@ -776,7 +783,8 @@ end
 function Setup:exec(context)
 	if managers.network then
 		if SystemInfo:platform() == Idstring("PS4") then
-			PSN:set_matchmaking_callback("session_destroyed", function ()
+			PSN:set_matchmaking_callback("session_destroyed", function()
+				return
 			end)
 		end
 

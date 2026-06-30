@@ -5,6 +5,7 @@ UGCItem.PREVIEW_FILE = "preview.png"
 UGCItem.TMP_FILE = "tmp"
 UGCItem.DEFAULT_TAGS = {}
 UGCItem.DEFAULT_VISIBILITY = "hidden"
+
 local UGC = SystemInfo:distribution() == Idstring("STEAM") and Steam:ugc_handler()
 
 local function time_stamp()
@@ -14,7 +15,7 @@ local function time_stamp()
 end
 
 function UGCItem.SortByTimestamp(lhs, rhs)
-	return rhs._config.timestamp < lhs._config.timestamp
+	return lhs._config.timestamp > rhs._config.timestamp
 end
 
 function UGCItem:init(item_path)
@@ -316,10 +317,12 @@ function UGCItem:_load_xml(path, load_node_func, root_node, param_preprocessor)
 		local element = table.remove(to_process)
 		local node = element.node
 		local parent = element.parent
+
 		cur_table = parent
 
 		if node:name() == "node" then
 			local name = node:parameter("name")
+
 			cur_table[name] = {}
 
 			for child in node:children() do
@@ -429,6 +432,7 @@ function UGCItem:_load_config()
 	local function parse_vector(key, value)
 		if string.find(value, "Vector3") then
 			local x, y, z = string.match(value, "Vector3%(([-+]?[0-9]*.?[0-9]*), ([-+]?[0-9]*.?[0-9]*), ([-+]?[0-9]*.?[0-9]*)%)")
+
 			value = Vector3(x, y, z)
 		end
 
@@ -437,7 +441,7 @@ function UGCItem:_load_config()
 
 	local config = {}
 
-	if self:_load_xml(self._config_path, function (node)
+	if self:_load_xml(self._config_path, function(node)
 		return node:name() == "ugcitem"
 	end, config, parse_vector) then
 		self._config = config
@@ -459,7 +463,7 @@ function UGCItem:_save_config()
 end
 
 local function tags_to_string(tags)
-	local tag_string = nil
+	local tag_string
 
 	for tag, enabled in pairs(tags) do
 		if tag_string ~= nil then
@@ -488,16 +492,17 @@ end
 function UGCItem:_load_info()
 	local info = {}
 
-	if self:_load_xml(self._info_path, function (node)
+	if self:_load_xml(self._info_path, function(node)
 		if node:name() ~= "ugcinfo" then
 			return false
 		end
 
 		local id = node:parameter("id")
+
 		self._ugc_item = UGC:get_item(id)
 
 		return true
-	end, info, function (key, value)
+	end, info, function(key, value)
 		if key == "tags" then
 			return string_to_tags(value)
 		end
@@ -526,6 +531,7 @@ function UGCItem:_save_info()
 	end
 
 	self._info.timestamp = time_stamp()
+
 	local id = self._ugc_item:get_id()
 
 	if id and self._info and not self:_save_xml(self._info_path, "ugcinfo", "id=\"" .. id .. "\"", self._info, param_preprocessor) then

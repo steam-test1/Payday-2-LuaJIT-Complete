@@ -3,8 +3,8 @@ MutatorShieldDozers._type = "MutatorShieldDozers"
 MutatorShieldDozers.name_id = "mutator_shield_dozers"
 MutatorShieldDozers.desc_id = "mutator_shield_dozers_desc"
 MutatorShieldDozers.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 MutatorShieldDozers.disables_achievements = true
 MutatorShieldDozers.categories = {
@@ -28,6 +28,7 @@ function MutatorShieldDozers:modify_value(id, value)
 			local len = #self.shield_units
 			local rand = math.clamp(value._unit:id() % len + 1, 1, len)
 			local shield = self.shield_units[rand]
+
 			value._shield_unit_name = self.shield_units[rand]
 			value._shield_align_name = Idstring("a_weapon_left_front")
 		end

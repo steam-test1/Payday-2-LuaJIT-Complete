@@ -6,17 +6,18 @@ local function _increase_priority(sound_event, inc, max)
 end
 
 local priorities = {
-	crimespree = 25,
-	visitor = 1,
-	room_upgrade = 50,
-	this_visit = 5,
 	achievement = 100,
-	new_weapon = 10,
-	new_level = 20,
+	crimespree = 25,
 	days_in_row = 30,
 	heist_result = 5,
-	new_skin = 40
+	new_level = 20,
+	new_skin = 40,
+	new_weapon = 10,
+	room_upgrade = 50,
+	this_visit = 5,
+	visitor = 1
 }
+
 ButlerMirroringManager = ButlerMirroringManager or class()
 
 function ButlerMirroringManager:init()
@@ -25,10 +26,9 @@ end
 
 function ButlerMirroringManager:_setup()
 	if not Global.butler_mirroring then
-		Global.butler_mirroring = {
-			_queue = {},
-			_first_load = true
-		}
+		Global.butler_mirroring = {}
+		Global.butler_mirroring._queue = {}
+		Global.butler_mirroring._first_load = true
 	end
 
 	self._global = Global.butler_mirroring
@@ -67,7 +67,7 @@ function ButlerMirroringManager:has_sound_event()
 end
 
 function ButlerMirroringManager:get_sound_event()
-	local priority, choosen = nil
+	local priority, choosen
 
 	for k, v in pairs(self._global._queue) do
 		if not priority or priority < v.priority then
@@ -128,6 +128,7 @@ end
 
 function ButlerMirroringManager:save(data)
 	local save_data = deep_clone(self._global)
+
 	data.butler_mirroring = save_data
 end
 
@@ -154,7 +155,7 @@ function ButlerMirroringManager:_set_and_combine_queue(q_type, event_data)
 end
 
 function ButlerMirroringManager:_on_heist_complete(level_id, difficulty_id)
-	local sound_event = nil
+	local sound_event
 	local heist_difficulties = {
 		{
 			{
@@ -177,67 +178,67 @@ function ButlerMirroringManager:_on_heist_complete(level_id, difficulty_id)
 		}
 	}
 	local heist_events = {
-		firestarter = "fs",
-		branchbank_prof = "bh",
-		watchdogs_night = "wd",
-		branchbank_deposit = "bh",
-		ukrainian_job_prof = "uj",
-		framing_frame = "ff",
-		hox = "hb",
-		arm_par = "at",
-		born = "bkr",
-		pbr = "btm",
-		rat = "co",
-		jewelry_store = "js",
-		big = "bb",
-		cane = "sw",
-		arm_cro = "at",
 		alex = "rat",
-		election_day = "ed",
-		welcome_to_the_jungle_prof = "bo",
-		mus = "td",
-		kosugi = "sr",
-		arm_fac = "at",
-		cage = "cs",
-		peta = "gs",
-		kenaz = "gg",
-		mad = "bp",
-		crojob2 = "bf",
-		haunted = "sfn",
-		shoutout_raid = "md",
-		branchbank_gold_prof = "bh",
-		family = "ds",
-		nightclub = "nc",
-		mallcrasher = "mc",
-		pbr2 = "bos",
-		hox_3 = "hr",
-		pal = "cf",
-		dinner = "slh",
-		man = "uc",
-		watchdogs = "wd",
-		nail = "lr",
-		crojob1 = "bd",
-		four_stores = "fos",
-		branchbank_cash = "bh",
-		flat = "pr",
-		arm_for = "th",
-		watchdogs_wrapper = "wd",
-		roberts = "gb",
-		arm_und = "at",
-		dark = "ms",
-		jolly = "as",
-		red2 = "fwb",
-		arm_hcm = "at",
 		arena = "ah",
-		mia = "hm",
-		pines = "wx",
+		arm_cro = "at",
+		arm_fac = "at",
+		arm_for = "th",
+		arm_hcm = "at",
+		arm_par = "at",
+		arm_und = "at",
+		big = "bb",
+		born = "bkr",
+		branchbank_cash = "bh",
+		branchbank_deposit = "bh",
+		branchbank_gold_prof = "bh",
+		branchbank_prof = "bh",
+		cage = "cs",
+		cane = "sw",
 		chill_combat = "sfh",
-		gallery = "ag"
+		crojob1 = "bd",
+		crojob2 = "bf",
+		dark = "ms",
+		dinner = "slh",
+		election_day = "ed",
+		family = "ds",
+		firestarter = "fs",
+		flat = "pr",
+		four_stores = "fos",
+		framing_frame = "ff",
+		gallery = "ag",
+		haunted = "sfn",
+		hox = "hb",
+		hox_3 = "hr",
+		jewelry_store = "js",
+		jolly = "as",
+		kenaz = "gg",
+		kosugi = "sr",
+		mad = "bp",
+		mallcrasher = "mc",
+		man = "uc",
+		mia = "hm",
+		mus = "td",
+		nail = "lr",
+		nightclub = "nc",
+		pal = "cf",
+		pbr = "btm",
+		pbr2 = "bos",
+		peta = "gs",
+		pines = "wx",
+		rat = "co",
+		red2 = "fwb",
+		roberts = "gb",
+		shoutout_raid = "md",
+		ukrainian_job_prof = "uj",
+		watchdogs = "wd",
+		watchdogs_night = "wd",
+		watchdogs_wrapper = "wd",
+		welcome_to_the_jungle_prof = "bo"
 	}
 	local level_event_id = heist_events[level_id]
 
 	if level_event_id then
-		local difficulty_event_id = nil
+		local difficulty_event_id
 
 		for _, diff_data in ipairs(heist_difficulties) do
 			if table.contains(diff_data[1], difficulty_id) then
@@ -256,13 +257,13 @@ function ButlerMirroringManager:_on_heist_complete(level_id, difficulty_id)
 	end
 
 	local generic_lines = {
+		bain = "Play_btl_contract_bain_sin",
+		locke = "Play_btl_contract_locke_sin",
 		the_butcher = "Play_btl_contract_butcher_sin",
-		the_elephant = "Play_btl_contract_elephant_sin",
 		the_continental = "Play_btl_contract_continental_sin",
 		the_dentist = "Play_btl_contract_dentist_sin",
-		vlad = "Play_btl_contract_vlad_sin",
-		bain = "Play_btl_contract_bain_sin",
-		locke = "Play_btl_contract_locke_sin"
+		the_elephant = "Play_btl_contract_elephant_sin",
+		vlad = "Play_btl_contract_vlad_sin"
 	}
 
 	if not sound_event then
@@ -305,49 +306,49 @@ end
 
 function ButlerMirroringManager:_on_achievement(id)
 	local l = {
-		the_wire = "Play_btl_ach_08",
-		trk_c_0 = "Play_btl_contract_continental_all",
-		ignominy_25 = "Play_btl_inf_lvl_25",
-		gage_8 = "Play_btl_ach_02",
-		kosugi_4 = "Play_btl_ach_09",
-		frog_1 = "Play_btl_ach_10",
-		trk_b_0 = "Play_btl_contract_bain_all",
-		ignominy_75 = "Play_btl_inf_lvl_75",
-		short_fuse = "Play_btl_ach_13",
-		ignominy_100 = "Play_btl_inf_lvl_100",
-		ignominy_50 = "Play_btl_inf_lvl_50",
-		gage3_9 = "Play_btl_ach_05",
-		deer_7 = "Play_btl_ach_04",
-		trk_cb_0 = "Play_btl_contract_butcher_all",
 		death_29 = "Play_btl_ach_11",
 		death_30 = "Play_btl_ach_14",
-		sinus_1 = "Play_btl_ach_15",
-		halloween_nightmare_5 = "Play_btl_ach_12",
-		trk_d_0 = "Play_btl_contract_dentist_all",
-		gage2_8 = "Play_btl_ach_06",
-		trk_e_0 = "Play_btl_contract_elephant_all",
-		trk_l_0 = "Play_btl_contract_locke_all",
-		trk_v_0 = "Play_btl_contract_vlad_all",
+		deer_7 = "Play_btl_ach_04",
 		farm_6 = "Play_btl_ach_01",
-		gorilla_1 = "Play_btl_ach_03",
+		frog_1 = "Play_btl_ach_10",
 		gage2_10 = "Play_btl_ach_07",
+		gage2_8 = "Play_btl_ach_06",
+		gage3_9 = "Play_btl_ach_05",
+		gage_8 = "Play_btl_ach_02",
+		gorilla_1 = "Play_btl_ach_03",
+		halloween_nightmare_5 = "Play_btl_ach_12",
+		ignominy_10 = "Play_btl_inf_lvl_10",
+		ignominy_100 = "Play_btl_inf_lvl_100",
+		ignominy_25 = "Play_btl_inf_lvl_25",
+		ignominy_50 = "Play_btl_inf_lvl_50",
+		ignominy_75 = "Play_btl_inf_lvl_75",
+		kosugi_4 = "Play_btl_ach_09",
+		short_fuse = "Play_btl_ach_13",
+		sinus_1 = "Play_btl_ach_15",
+		the_wire = "Play_btl_ach_08",
+		trk_b_0 = "Play_btl_contract_bain_all",
+		trk_c_0 = "Play_btl_contract_continental_all",
+		trk_cb_0 = "Play_btl_contract_butcher_all",
+		trk_d_0 = "Play_btl_contract_dentist_all",
+		trk_e_0 = "Play_btl_contract_elephant_all",
 		trk_h_0 = "Play_btl_contract_hector_all",
-		ignominy_10 = "Play_btl_inf_lvl_10"
+		trk_l_0 = "Play_btl_contract_locke_all",
+		trk_v_0 = "Play_btl_contract_vlad_all"
 	}
 	local remark_at = {
 		"Play_btl_ach_steam_01",
-		[300.0] = "Play_btl_ach_total_300",
-		[100.0] = "Play_btl_ach_total_100",
-		[10.0] = "Play_btl_ach_total_10",
-		[500.0] = "Play_btl_ach_total_500",
-		[700.0] = "Play_btl_ach_total_700",
-		[50.0] = "Play_btl_ach_total_50",
-		[800.0] = "Play_btl_ach_total_800",
-		[1000.0] = "Play_btl_ach_total_1000",
-		[400.0] = "Play_btl_ach_total_400",
-		[900.0] = "Play_btl_ach_total_900",
-		[600.0] = "Play_btl_ach_total_600",
-		[200.0] = "Play_btl_ach_total_200"
+		[10] = "Play_btl_ach_total_10",
+		[50] = "Play_btl_ach_total_50",
+		[100] = "Play_btl_ach_total_100",
+		[200] = "Play_btl_ach_total_200",
+		[300] = "Play_btl_ach_total_300",
+		[400] = "Play_btl_ach_total_400",
+		[500] = "Play_btl_ach_total_500",
+		[600] = "Play_btl_ach_total_600",
+		[700] = "Play_btl_ach_total_700",
+		[800] = "Play_btl_ach_total_800",
+		[900] = "Play_btl_ach_total_900",
+		[1000] = "Play_btl_ach_total_1000"
 	}
 	local sound_event = l[id]
 
@@ -430,15 +431,15 @@ function ButlerMirroringManager:_on_safe_house_upgrade()
 end
 
 local function get_close_passed(t, val)
-	local _, k = table.find_value(t, function (v)
-		return val < v.at
+	local _, k = table.find_value(t, function(v)
+		return v.at > val
 	end)
 	local item = k and t[k - 1]
 
 	if item then
 		if not item.close and item.at == val then
 			return item.line
-		elseif item.close and item.at <= val and val < item.at + item.close then
+		elseif item.close and val >= item.at and val < item.at + item.close then
 			return item.line
 		end
 	end
@@ -454,14 +455,16 @@ end
 
 function ButlerMirroringManager:_on_enter_safe_house()
 	self._global._queue.this_visit = nil
+
 	local visitor_lines = {
 		vlad = "Play_btl_visit_vlad"
 	}
 	local found = World:find_units_quick("all", 16)
-	local sound_event, any_visitor = nil
+	local sound_event, any_visitor
 
 	for k, v in pairs(found) do
 		local visitor = v:base() and v:base().visitor
+
 		sound_event = visitor_lines[visitor] or sound_event
 		any_visitor = any_visitor or not not visitor
 	end
@@ -492,6 +495,7 @@ function ButlerMirroringManager:_on_enter_safe_house()
 			make_close("Play_btl_played_hours_5000", 5000, 100),
 			make_close("Play_btl_played_hours_10000", 10000, 200)
 		}
+
 		sound_event = get_close_passed(time_lines, managers.statistics:get_play_time_hours())
 
 		if sound_event then
@@ -512,6 +516,7 @@ function ButlerMirroringManager:_on_enter_safe_house()
 			make_close("Play_btl_coop_no10", 10, 2),
 			make_close("Play_btl_coop_no30", 30, 5)
 		}
+
 		sound_event = get_close_passed(alone_lines, managers.statistics:get_days_alone())
 
 		if sound_event then
@@ -556,9 +561,9 @@ end
 
 function ButlerMirroringManager:_on_days_in_row(days)
 	local lines = {
-		[3.0] = "Play_btl_played_days_3",
-		[5.0] = "Play_btl_played_days_5",
-		[10.0] = "Play_btl_played_days_10"
+		[3] = "Play_btl_played_days_3",
+		[5] = "Play_btl_played_days_5",
+		[10] = "Play_btl_played_days_10"
 	}
 	local line = lines[days]
 

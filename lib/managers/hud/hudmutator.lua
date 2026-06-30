@@ -10,6 +10,7 @@ end
 
 function HUDMutator:setup_buff_panel(hud)
 	self._buff_list = {}
+
 	local max_buffs = 8
 
 	if self._hud_panel:child("mutator_panel") then
@@ -18,9 +19,9 @@ function HUDMutator:setup_buff_panel(hud)
 
 	self._mutator_panel = self._hud_panel:panel({
 		hlign = "right",
+		layer = 0,
 		name = "mutator_panel",
 		visible = true,
-		layer = 0,
 		h = 20 * max_buffs + 2 * (max_buffs - 1)
 	})
 
@@ -34,16 +35,16 @@ function HUDMutator:setup_stage_transition_panel(hud)
 	end
 
 	self._piggy_transition_panel = self._hud_panel:panel({
-		name = "piggy_transition_panel",
-		visible = false,
 		alpha = 0,
 		layer = 1,
+		name = "piggy_transition_panel",
+		visible = false,
 		h = tweak_data.menu.pd2_large_font_size
 	})
 	self._transition_text = self._piggy_transition_panel:text({
+		layer = 2,
 		word_wrap = false,
 		wrap = false,
-		layer = 2,
 		text = managers.localization:text("hud_pda9_show_progress", {
 			PIGGY_PROGRESS = "0",
 			PIGGY_LEVEL = tostring(1)
@@ -65,9 +66,9 @@ function HUDMutator:setup_stage_transition_panel(hud)
 		}
 	})
 	self._piggy_transition_panel:rect({
-		name = "bg_rect",
 		alpha = 0.5,
 		layer = 0,
+		name = "bg_rect",
 		color = Color.black
 	})
 	self._piggy_transition_panel:set_center_x(self._hud_panel:w() / 2)
@@ -158,12 +159,15 @@ MutatorBuffElement.INITIAL_FADE = 2
 
 function MutatorBuffElement:init(parent_panel, data)
 	local size = tweak_data.mutators.piggybank.buff_font_size
+
 	self._parent_panel = parent_panel
 	self.buff_id = data.buff_id
 	self._localized_name = managers.localization:to_upper_text(data.name_id)
 	self._show_time_left = data.show_time_left or false
 	self.with_fade = data.with_fade == nil and true or data.with_fade
+
 	local y_pos = parent_panel:h() - (1 + data.index) * size
+
 	self._buff_panel = parent_panel:panel({
 		y = y_pos,
 		h = size
@@ -171,9 +175,9 @@ function MutatorBuffElement:init(parent_panel, data)
 
 	if data.icon_texture then
 		self._buff_icon = self._buff_panel:bitmap({
-			valign = "center",
-			layer = 15,
 			align = "right",
+			layer = 15,
+			valign = "center",
 			texture = data.icon_texture or nil,
 			texture_rect = data.icon_texture_rect or {
 				0,
@@ -188,8 +192,8 @@ function MutatorBuffElement:init(parent_panel, data)
 		})
 	else
 		self._buff_icon = self._buff_panel:rect({
-			layer = 1,
 			align = "right",
+			layer = 1,
 			valign = "center",
 			h = size - 5,
 			w = size - 5,
@@ -202,11 +206,11 @@ function MutatorBuffElement:init(parent_panel, data)
 	self._buff_icon:set_center_y(self._buff_panel:h() / 2)
 
 	self._buff_text = self._buff_panel:text({
-		word_wrap = false,
-		name = "timer_text",
-		wrap = false,
 		align = "right",
 		layer = 1,
+		name = "timer_text",
+		word_wrap = false,
+		wrap = false,
 		text = self._show_time_left and self._localized_name .. ": " .. tostring(math.ceil(data.time_left)) or self._localized_name,
 		font_size = size,
 		font = tweak_data.hud.medium_font_noshadow,

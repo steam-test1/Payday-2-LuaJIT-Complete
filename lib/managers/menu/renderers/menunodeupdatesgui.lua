@@ -30,12 +30,12 @@ function MenuNodeUpdatesGui:init(node, layer, parameters)
 
 			if alive(desc_text) then
 				local bitmap = self._panel:bitmap({
-					texture = "guis/textures/pd2/endscreen/exp_ring",
 					alpha = 0.75,
 					h = 32,
-					w = 32,
-					render_template = "VertexColorTexturedRadial",
 					layer = 2,
+					render_template = "VertexColorTexturedRadial",
+					texture = "guis/textures/pd2/endscreen/exp_ring",
+					w = 32,
 					color = Color(0.1, 1, 1)
 				})
 
@@ -80,6 +80,7 @@ function MenuNodeUpdatesGui:_db_result_recieved(success, page)
 		if item and item.use_db then
 			local suffix = index == num_items and "##end##" or "##" .. tonumber(index + 1) .. "##"
 			local item_end = string.find(page, suffix)
+
 			items_source["fav" .. tostring(index)] = string.sub(page, item_start, item_end)
 			item_start = item_end
 		end
@@ -94,11 +95,10 @@ function MenuNodeUpdatesGui:_db_result_recieved(success, page)
 			link_text = "http:" .. link_text
 		end
 
-		items[item_id] = {
-			title = title_text,
-			desc = desc_text,
-			link = link_text
-		}
+		items[item_id] = {}
+		items[item_id].title = title_text
+		items[item_id].desc = desc_text
+		items[item_id].link = link_text
 	end
 
 	self._db_items = items
@@ -154,10 +154,12 @@ function MenuNodeUpdatesGui:setup()
 	self._next_page_highlighted = nil
 	self._prev_page_highlighted = nil
 	self._back_button_highlighted = nil
+
 	local ws = self.ws
 	local panel = ws:panel():child("MenuNodeUpdatesGui") or ws:panel():panel({
 		name = "MenuNodeUpdatesGui"
 	})
+
 	self._panel = panel
 
 	panel:clear()
@@ -165,8 +167,8 @@ function MenuNodeUpdatesGui:setup()
 	local title_text = managers.localization:to_upper_text(self._tweak_data.title_id or "menu_content_updates")
 
 	panel:text({
-		vertical = "top",
 		align = "left",
+		vertical = "top",
 		text = title_text,
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
@@ -174,9 +176,9 @@ function MenuNodeUpdatesGui:setup()
 	})
 
 	local back_button = panel:text({
-		vertical = "bottom",
-		name = "back_button",
 		align = "right",
+		name = "back_button",
+		vertical = "bottom",
 		text = managers.localization:to_upper_text("menu_back"),
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
@@ -190,11 +192,11 @@ function MenuNodeUpdatesGui:setup()
 
 	if MenuBackdropGUI then
 		local bg_text = panel:text({
-			vertical = "top",
-			alpha = 0.4,
 			align = "left",
-			rotation = 360,
+			alpha = 0.4,
 			layer = -1,
+			rotation = 360,
+			vertical = "top",
 			text = title_text,
 			font_size = tweak_data.menu.pd2_massive_font_size,
 			font = tweak_data.menu.pd2_massive_font,
@@ -207,11 +209,11 @@ function MenuNodeUpdatesGui:setup()
 
 		if managers.menu:is_pc_controller() then
 			local bg_back = panel:text({
-				vertical = "bottom",
-				alpha = 0.4,
 				align = "right",
-				rotation = 360,
+				alpha = 0.4,
 				layer = -1,
+				rotation = 360,
+				vertical = "bottom",
 				text = managers.localization:to_upper_text("menu_back"),
 				font_size = tweak_data.menu.pd2_massive_font_size,
 				font = tweak_data.menu.pd2_massive_font,
@@ -225,6 +227,7 @@ function MenuNodeUpdatesGui:setup()
 	end
 
 	self._requested_textures = {}
+
 	local num_previous_updates = self._tweak_data.num_items or 5
 	local current_page = self._node:parameters().current_page or 1
 	local start_number = (current_page - 1) * num_previous_updates
@@ -239,10 +242,11 @@ function MenuNodeUpdatesGui:setup()
 	self._lastest_content_update = latest_update
 	self._previous_content_updates = previous_updates
 	self._num_previous_updates = num_previous_updates
+
 	local latest_update_panel = panel:panel({
 		name = "lastest_content_update",
-		y = 70,
 		x = 0,
+		y = 70,
 		w = panel:w() / 2,
 		h = panel:w() / 4
 	})
@@ -270,10 +274,10 @@ function MenuNodeUpdatesGui:setup()
 		}
 	})
 
-	self._selects = {
-		[latest_update.id] = selected
-	}
+	self._selects = {}
+	self._selects[latest_update.id] = selected
 	self._select_x = 1
+
 	local w = panel:w()
 	local padding = SystemInfo:platform() == Idstring("WIN32") and 30 or 5
 	local dech_panel_h = SystemInfo:platform() == Idstring("WIN32") and latest_update_panel:h() or panel:h() / 2
@@ -316,8 +320,8 @@ function MenuNodeUpdatesGui:setup()
 	})
 	local desc_text = latest_desc_panel:text({
 		name = "desc_text",
-		wrap = true,
 		word_wrap = true,
+		wrap = true,
 		text = desc_string,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -337,19 +341,18 @@ function MenuNodeUpdatesGui:setup()
 
 	if self._tweak_data.button then
 		local top_button = panel:panel({
-			w = 32,
+			h = 32,
 			name = "top_button",
-			h = 32
+			w = 32
 		})
-		local w = 0
-		local h = 0
+		local w, h = 0, 0
 
 		if self._tweak_data.button.text_id then
 			local text = top_button:text({
-				vertical = "top",
-				halign = "right",
 				align = "right",
+				halign = "right",
 				valign = "top",
+				vertical = "top",
 				text = managers.localization:to_upper_text(self._tweak_data.button.text_id),
 				font_size = tweak_data.menu.pd2_medium_font_size,
 				font = tweak_data.menu.pd2_medium_font,
@@ -366,8 +369,8 @@ function MenuNodeUpdatesGui:setup()
 
 		if self._tweak_data.button.image then
 			local bitmap = top_button:bitmap({
-				valign = "top",
 				halign = "right",
+				valign = "top",
 				texture = self._tweak_data.button.image,
 				color = tweak_data.screen_colors.button_stage_3
 			})
@@ -403,7 +406,8 @@ function MenuNodeUpdatesGui:setup()
 	self:make_fine_text(previous_update_text)
 	previous_update_text:set_leftbottom(previous_updates_panel:left(), previous_updates_panel:top())
 
-	local data = nil
+	local data
+
 	self._previous_update_texts = {}
 
 	for index, data in ipairs(previous_updates) do
@@ -444,6 +448,7 @@ function MenuNodeUpdatesGui:setup()
 		text:set_bottom(previous_updates_panel:bottom() - self.PADDING + 1)
 
 		self._previous_update_texts[data.id] = text
+
 		local selected = BoxGuiObject:new(content_panel, {
 			sides = {
 				2,
@@ -452,6 +457,7 @@ function MenuNodeUpdatesGui:setup()
 				2
 			}
 		})
+
 		self._selects[data.id] = selected
 	end
 
@@ -475,6 +481,7 @@ function MenuNodeUpdatesGui:setup()
 
 	if num_previous_updates < #content_updates then
 		local num_pages = self._num_pages
+
 		self._prev_page = panel:panel({
 			name = "previous_page",
 			w = tweak_data.menu.pd2_medium_font_size,
@@ -485,27 +492,28 @@ function MenuNodeUpdatesGui:setup()
 			w = tweak_data.menu.pd2_medium_font_size,
 			h = tweak_data.menu.pd2_medium_font_size
 		})
+
 		local prev_button = managers.menu:is_steam_controller() and managers.localization:steam_btn("bumper_l") or managers.menu:is_pc_controller() and "<" or managers.localization:get_default_macro("BTN_BOTTOM_L")
 		local next_button = managers.menu:is_steam_controller() and managers.localization:steam_btn("bumper_r") or managers.menu:is_pc_controller() and ">" or managers.localization:get_default_macro("BTN_BOTTOM_R")
 		local prev_text = self._prev_page:text({
+			align = "center",
 			name = "text_obj",
 			vertical = "center",
-			align = "center",
 			text = prev_button,
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size
 		})
 		local next_text = self._next_page:text({
+			align = "center",
 			name = "text_obj",
 			vertical = "center",
-			align = "center",
 			text = next_button,
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size
 		})
 		local page_text = panel:text({
-			vertical = "center",
 			align = "center",
+			vertical = "center",
 			text = tostring(current_page) .. "/" .. tostring(num_pages),
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -550,7 +558,7 @@ function MenuNodeUpdatesGui:check_inside(x, y)
 	if latest_update_panel:inside(x, y) then
 		return self._lastest_content_update
 	elseif previous_updates_panel:inside(x, y) then
-		local child = nil
+		local child
 
 		for index, data in ipairs(self._previous_content_updates) do
 			child = previous_updates_panel:child(data.id)
@@ -568,6 +576,7 @@ end
 
 function MenuNodeUpdatesGui:mouse_moved(o, x, y)
 	local moved = self._mouse_x ~= x or self._mouse_y ~= y
+
 	self._mouse_x = x
 	self._mouse_y = y
 
@@ -596,7 +605,7 @@ function MenuNodeUpdatesGui:mouse_moved(o, x, y)
 		local text = self._next_page:child("text_obj")
 		local num_pages = self._num_pages
 
-		if self._current_page < num_pages then
+		if num_pages > self._current_page then
 			if self._next_page:inside(x, y) then
 				if not self._next_page_highlighted then
 					self._next_page_highlighted = true
@@ -681,7 +690,7 @@ function MenuNodeUpdatesGui:mouse_pressed(button, x, y)
 	if alive(self._next_page) then
 		local num_pages = self._num_pages
 
-		if self._current_page < num_pages and self._next_page:inside(x, y) then
+		if num_pages > self._current_page and self._next_page:inside(x, y) then
 			self._node:parameters().current_page = self._current_page + 1
 
 			self:setup()
@@ -691,6 +700,7 @@ function MenuNodeUpdatesGui:mouse_pressed(button, x, y)
 	end
 
 	self._pressed = self:check_inside(x, y)
+
 	local ws = self.ws
 	local panel = ws:panel():child("MenuNodeUpdatesGui")
 	local back_button = panel:child("back_button")
@@ -832,6 +842,7 @@ function MenuNodeUpdatesGui:set_latest_content(content_highlighted, moved, refre
 
 			local texture = content_highlighted.image
 			local texture_count = managers.menu_component:request_texture(texture, callback(self, self, "texture_done_clbk", latest_update_panel))
+
 			self._lastest_texture_request = {
 				texture_count = texture_count,
 				texture = texture
@@ -859,12 +870,16 @@ function MenuNodeUpdatesGui:move_highlight(x, y)
 	local previous_updates_panel = panel:child("previous_content_updates")
 	local content_highlighted = self._content_highlighted
 
-	if content_highlighted then
+	if not content_highlighted then
+		-- Nothing
+	else
 		self._select_x = self._select_x + x
 	end
 
 	local old_x = self._select_x
+
 	self._select_x = math.clamp(self._select_x, 1, math.min(#self._previous_content_updates, self._num_previous_updates))
+
 	local diff_x = old_x - self._select_x
 
 	if diff_x < 0 then
@@ -874,10 +889,8 @@ function MenuNodeUpdatesGui:move_highlight(x, y)
 
 			self:set_latest_content(content_highlighted, true)
 		end
-	elseif diff_x > 0 then
-		if self:next_page() then
-			-- Nothing
-		end
+	elseif diff_x > 0 and (not self:next_page() or true) then
+		-- Nothing
 	else
 		content_highlighted = self._previous_content_updates[self._select_x]
 
@@ -898,7 +911,7 @@ end
 function MenuNodeUpdatesGui:next_page()
 	local num_pages = self._num_pages
 
-	if self._current_page < num_pages then
+	if num_pages > self._current_page then
 		self._node:parameters().current_page = self._current_page + 1
 
 		self:setup()
@@ -908,9 +921,11 @@ function MenuNodeUpdatesGui:next_page()
 end
 
 function MenuNodeUpdatesGui:move_up()
+	return
 end
 
 function MenuNodeUpdatesGui:move_down()
+	return
 end
 
 function MenuNodeUpdatesGui:move_left()

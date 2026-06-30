@@ -1,40 +1,41 @@
 VoteManager = VoteManager or class()
 VoteManager.VOTE_EVENT = {
-	stopped = 3,
-	request_kick = 4,
-	server_kick_option = 10,
 	instant_kick = 6,
-	respond = 2,
-	request_restart = 7,
-	process_restart = 8,
+	instant_restart = 9,
 	process_kick = 5,
+	process_restart = 8,
 	reports = 1,
-	instant_restart = 9
+	request_kick = 4,
+	request_restart = 7,
+	respond = 2,
+	server_kick_option = 10,
+	stopped = 3
 }
 VoteManager.VOTES = {
-	yes = 1,
 	cancel = 3,
+	no = 2,
 	none = -1,
-	no = 2
+	yes = 1
 }
 VoteManager.REASON = {
-	invalid_mask = 8,
 	invalid_character = 10,
-	many_equipments = 5,
-	invalid_henchmen = 11,
-	many_bags_pickup = 2,
-	invalid_player_style = 12,
-	wrong_equipment = 6,
-	invalid_job = 7,
 	invalid_glove_id = 13,
-	many_bags = 3,
+	invalid_henchmen = 11,
+	invalid_job = 7,
+	invalid_mask = 8,
+	invalid_player_style = 12,
+	invalid_weapon = 9,
 	invalid_weapon_color = 14,
 	many_assets = 1,
+	many_bags = 3,
+	many_bags_pickup = 2,
+	many_equipments = 5,
 	many_grenades = 4,
-	invalid_weapon = 9
+	wrong_equipment = 6
 }
 
 function VoteManager:init()
+	return
 end
 
 function VoteManager:kick(peer_id)
@@ -160,9 +161,8 @@ function VoteManager:_host_start(vote_type, voter_peer_id, kicked_peer_id)
 	self._timeout = TimerManager:wall():time() + tweak_data.voting.timeout
 	self._vote_cooldown = self._vote_cooldown or {}
 	self._vote_cooldown[voter_peer_id] = TimerManager:wall():time() + tweak_data.voting.cooldown
-	self._vote_response = {
-		[managers.network:session():local_peer():id()] = self.VOTES.none
-	}
+	self._vote_response = {}
+	self._vote_response[managers.network:session():local_peer():id()] = self.VOTES.none
 
 	for id, peer in pairs(managers.network:session():peers()) do
 		if not peer:loading() and id ~= kicked_peer_id then
@@ -246,7 +246,7 @@ function VoteManager:_host_count(abort)
 			all_voted = false
 
 			if abort then
-				local timeout_choice = nil
+				local timeout_choice
 
 				if self._type == "kick" then
 					timeout_choice = self.VOTES.no
@@ -265,7 +265,7 @@ function VoteManager:_host_count(abort)
 		end
 	end
 
-	local success = nil
+	local success
 	local amount = table.size(self._vote_response) - cancel_count
 
 	if self._type == "kick" then
@@ -424,7 +424,7 @@ function VoteManager:update(t, dt)
 	local current_time = TimerManager:wall():time()
 
 	if Network:is_server() then
-		if self._timeout and self._timeout < current_time then
+		if self._timeout and current_time > self._timeout then
 			local vote_count = 0
 
 			for _, value in pairs(self._vote_response) do
@@ -451,7 +451,7 @@ function VoteManager:update(t, dt)
 		end
 	end
 
-	if self._cooldown and self._cooldown < current_time then
+	if self._cooldown and current_time > self._cooldown then
 		self._cooldown = nil
 
 		self:_refresh_menu()
@@ -474,11 +474,7 @@ function VoteManager:update(t, dt)
 			end
 		end
 
-		if self._callback_counter < current_time then
-			if self._callback_type and self._callback_type == "restart" then
-				-- Nothing
-			end
-
+		if current_time > self._callback_counter and (not self._callback_type or self._callback_type ~= "restart" or true) then
 			if Network:is_server() and self._callback_type == "restart" then
 				managers.game_play_central:restart_the_game()
 			end
@@ -522,37 +518,38 @@ function VoteManager:message_vote()
 	end
 
 	local count = math.ceil(self._timeout - TimerManager:wall():time())
-	local message = nil
-	local dialog_data = {
-		id = "vote_data"
-	}
+	local message
+	local dialog_data = {}
+
+	dialog_data.id = "vote_data"
+
 	local peer = self._peer_to_exclude and managers.network:session():peer(self._peer_to_exclude)
-	local yes_button = {
-		callback_func = function ()
-			self:response(self.VOTES.yes)
-		end
-	}
-	local no_button = {
-		callback_func = function ()
-			self:response(self.VOTES.no)
-		end
-	}
-	local cancel_button = {
-		text = managers.localization:text("dialog_vote_cancel"),
-		callback_func = function ()
-			self:response(self.VOTES.cancel)
-		end,
-		cancel_button = true
-	}
-	local timeout_choice = nil
+	local yes_button = {}
+
+	function yes_button.callback_func()
+		self:response(self.VOTES.yes)
+	end
+
+	local no_button = {}
+
+	function no_button.callback_func()
+		self:response(self.VOTES.no)
+	end
+
+	local cancel_button = {}
+
+	cancel_button.text = managers.localization:text("dialog_vote_cancel")
+
+	function cancel_button.callback_func()
+		self:response(self.VOTES.cancel)
+	end
+
+	cancel_button.cancel_button = true
+
+	local timeout_choice
 
 	if self._type == "kick" then
-		if peer then
-			message = "dialog_mp_vote_kick_message"
-		else
-			message = "dialog_mp_vote_kick_unknown_message"
-		end
-
+		message = peer and "dialog_mp_vote_kick_message" or "dialog_mp_vote_kick_unknown_message"
 		dialog_data.title = managers.localization:text("dialog_mp_vote_kick_response_title")
 		yes_button.text = managers.localization:text("dialog_vote_kick_yes")
 		no_button.text = managers.localization:text("dialog_vote_kick_no")
@@ -572,7 +569,7 @@ function VoteManager:message_vote()
 	dialog_data.focus_button = 2
 	dialog_data.counter = {
 		1,
-		function ()
+		function()
 			count = count - 1
 
 			if not managers.network:session() then
@@ -604,27 +601,30 @@ function VoteManager:message_vote()
 end
 
 function VoteManager:message_host_kick(peer)
-	local dialog_data = {
-		title = managers.localization:text("dialog_mp_kick_player_title"),
-		text = managers.localization:text("dialog_mp_kick_player_message", {
-			PLAYER = peer:name()
-		})
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = function ()
-			if peer then
-				managers.network:session():send_to_peers("kick_peer", peer:id(), 0)
-				managers.network:session():on_peer_kicked(peer, peer:id(), 0)
-			end
+	local dialog_data = {}
 
-			managers.menu:back(true)
+	dialog_data.title = managers.localization:text("dialog_mp_kick_player_title")
+	dialog_data.text = managers.localization:text("dialog_mp_kick_player_message", {
+		PLAYER = peer:name()
+	})
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+
+	function yes_button.callback_func()
+		if peer then
+			managers.network:session():send_to_peers("kick_peer", peer:id(), 0)
+			managers.network:session():on_peer_kicked(peer, peer:id(), 0)
 		end
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no"),
-		cancel_button = true
-	}
+
+		managers.menu:back(true)
+	end
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
+	no_button.cancel_button = true
 	dialog_data.button_list = {
 		yes_button,
 		no_button

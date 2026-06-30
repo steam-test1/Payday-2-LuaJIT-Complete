@@ -3,6 +3,7 @@ require("lib/states/GameState")
 IngameAccessCamera = IngameAccessCamera or class(IngamePlayerBaseState)
 IngameAccessCamera.GUI_SAFERECT = Idstring("guis/access_camera_saferect")
 IngameAccessCamera.GUI_FULLSCREEN = Idstring("guis/access_camera_fullrect")
+
 local old_buttons = not _G.IS_VR
 local tmp_vec1 = Vector3()
 local tmp_rot1 = Rotation()
@@ -171,6 +172,7 @@ function IngameAccessCamera:_show_camera()
 	local text_id = access_camera:value("text_id") ~= "debug_none" and access_camera:value("text_id") or "hud_cam_access_camera_test_generated"
 	local number = (self._camera_data.index < 10 and "0" or "") .. self._camera_data.index
 	local text_macros = access_camera:value("text_macros") or {}
+
 	text_macros.NUMBER = number
 
 	managers.hud:set_access_camera_name(managers.localization:text(text_id, text_macros))
@@ -194,6 +196,7 @@ function IngameAccessCamera:update(t, dt)
 
 	t = managers.player:player_timer():time()
 	dt = managers.player:player_timer():delta_time()
+
 	local roll = 0
 	local access_camera = self._cameras[self._camera_data.index].access_camera
 
@@ -225,6 +228,7 @@ function IngameAccessCamera:update(t, dt)
 	end
 
 	local zoomed_value = self._cam_unit:camera():zoomed_value()
+
 	self._target_yaw = self._target_yaw - look_d.x * zoomed_value
 
 	if self._yaw_limit ~= -1 then
@@ -248,7 +252,7 @@ function IngameAccessCamera:update(t, dt)
 		move_d = self._controller:get_input_axis("touchpad_secondary")
 	end
 
-	self._cam_unit:camera():modify_fov(-move_d.y * dt * 12)
+	self._cam_unit:camera():modify_fov(-move_d.y * (dt * 12))
 
 	if self._do_show_camera then
 		self._do_show_camera = false
@@ -261,7 +265,7 @@ function IngameAccessCamera:update(t, dt)
 
 	for i, unit in ipairs(units) do
 		if World:in_view_with_options(unit:movement():m_head_pos(), 0, 0, 4000) then
-			local ray = nil
+			local ray
 
 			if self._last_access_camera and self._last_access_camera:has_camera_unit() then
 				ray = self._cam_unit:raycast("ray", unit:movement():m_head_pos(), self._cam_unit:position(), "ray_type", "ai_vision", "slot_mask", managers.slot:get_mask("world_geometry"), "ignore_unit", self._last_access_camera:camera_unit(), "report")
@@ -302,7 +306,9 @@ end
 
 function IngameAccessCamera:at_enter(old_state, params)
 	local channel_id = params and params.channel_id or "default"
+
 	self._channel = tweak_data.camera_channels[channel_id] or tweak_data.camera_channels.default
+
 	local player = managers.player:player_unit()
 
 	if player then
@@ -389,6 +395,7 @@ end
 
 function IngameAccessCamera:on_camera_access_changed(camera_unit)
 	local access_camera = self._camera_data.index and self._cameras[self._camera_data.index] and self._cameras[self._camera_data.index].access_camera
+
 	self._no_feeds = not self:_any_enabled_cameras()
 
 	if access_camera then

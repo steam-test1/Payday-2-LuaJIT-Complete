@@ -27,6 +27,7 @@ function CoreEditorGroups:create(name, reference, units)
 	end
 
 	local group = CoreEditorGroup:new(name, reference, units)
+
 	self._groups[name] = group
 
 	return group
@@ -49,6 +50,7 @@ function CoreEditorGroups:remove(name)
 end
 
 function CoreEditorGroups:clear()
+	return
 end
 
 function CoreEditorGroups:group_name()
@@ -121,7 +123,7 @@ function CoreEditorGroups:load(world_holder, offset)
 				table.insert(units, managers.worlddefinition:get_unit(unit))
 			end
 
-			local continent = nil
+			local continent
 
 			if data.continent then
 				continent = managers.editor:continent(data.continent)
@@ -133,11 +135,10 @@ function CoreEditorGroups:load(world_holder, offset)
 				cat_error("editor", "Changed reference for group,", name, ".")
 			end
 
-			groups[name] = {
-				reference = reference,
-				units = units,
-				continent = continent
-			}
+			groups[name] = {}
+			groups[name].reference = reference
+			groups[name].units = units
+			groups[name].continent = continent
 		else
 			table.delete(group_names, name)
 			cat_error("editor", "Removed old group", name, "since it didnt contain any units.")
@@ -182,12 +183,12 @@ function CoreEditorGroups:load_group_file(path)
 
 	managers.editor:change_layer_notebook(layer_name)
 
-	local reference = nil
+	local reference
 	local units = {}
 
 	if pos then
 		for unit in node:children() do
-			local rot, new_unit = nil
+			local rot, new_unit
 
 			if unit:name() == "ref_unit" then
 				reference = layer:do_spawn_unit(unit:parameter("name"), pos)
@@ -195,6 +196,7 @@ function CoreEditorGroups:load_group_file(path)
 			else
 				local pos = pos + math.string_to_vector(unit:parameter("local_pos"))
 				local rot = math.string_to_rotation(unit:parameter("local_rot"))
+
 				new_unit = layer:do_spawn_unit(unit:parameter("name"), pos, rot)
 			end
 
@@ -316,6 +318,7 @@ function CoreEditorGroup:continent_name()
 end
 
 function CoreEditorGroup:add(units)
+	return
 end
 
 function CoreEditorGroup:add_unit(unit)
@@ -376,10 +379,13 @@ function CoreEditorGroup:save_to_file()
 				local x = string.format("%.4f", local_pos.x)
 				local y = string.format("%.4f", local_pos.y)
 				local z = string.format("%.4f", local_pos.z)
+
 				local_pos = "" .. x .. " " .. y .. " " .. z
+
 				local yaw = string.format("%.4f", local_rot:yaw())
 				local pitch = string.format("%.4f", local_rot:pitch())
 				local roll = string.format("%.4f", local_rot:roll())
+
 				local_rot = "" .. yaw .. " " .. pitch .. " " .. roll
 
 				f:puts("\t<unit name=\"" .. name .. "\" local_pos=\"" .. local_pos .. "\" local_rot=\"" .. local_rot .. "\">")
@@ -471,6 +477,7 @@ function GroupPresetsDialog:init(files, path)
 	self:create_panel("VERTICAL")
 
 	self._hide_on_create = true
+
 	local option_sizer = EWS:BoxSizer("VERTICAL")
 	local hide = EWS:CheckBox(self._panel, "Hide on create", "")
 
@@ -514,6 +521,7 @@ function GroupPresetsDialog:select_group()
 
 	if i > -1 then
 		local name = self._list:get_string(i)
+
 		self._file = managers.database:base_path() .. self._path .. "\\" .. name
 	end
 end

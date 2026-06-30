@@ -12,6 +12,7 @@ function LoadingFrontEnd:init()
 end
 
 function LoadingFrontEnd:destroy()
+	return
 end
 
 function LoadingFrontEnd:transition()

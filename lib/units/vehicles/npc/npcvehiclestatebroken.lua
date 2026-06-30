@@ -5,6 +5,7 @@ function NpcVehicleStateBroken:init(unit)
 end
 
 function NpcVehicleStateBroken:update(t, dt)
+	return
 end
 
 function NpcVehicleStateBroken:name()

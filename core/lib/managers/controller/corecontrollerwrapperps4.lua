@@ -8,10 +8,10 @@ ControllerWrapperPS4.CONTROLLER_TYPE_LIST = {
 }
 
 function ControllerWrapperPS4:init(manager, id, name, controller, setup, debug, skip_virtual_controller)
-	local func_map = {
-		confirm = callback(self, self, "virtual_connect_confirm"),
-		cancel = callback(self, self, "virtual_connect_cancel")
-	}
+	local func_map = {}
+
+	func_map.confirm = callback(self, self, "virtual_connect_confirm")
+	func_map.cancel = callback(self, self, "virtual_connect_cancel")
 
 	ControllerWrapperPS4.super.init(self, manager, id, name, {
 		ps4pad = controller

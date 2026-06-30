@@ -13,6 +13,7 @@ function HUDMissionBriefing:init(hud, workspace)
 	self._hud = hud
 	self._workspace = workspace
 	self._singleplayer = Global.game_settings.single_player
+
 	local bg_font = tweak_data.menu.pd2_massive_font
 	local title_font = tweak_data.menu.pd2_large_font
 	local content_font = tweak_data.menu.pd2_medium_font
@@ -22,6 +23,7 @@ function HUDMissionBriefing:init(hud, workspace)
 	local content_font_size = tweak_data.menu.pd2_medium_font_size
 	local text_font_size = tweak_data.menu.pd2_small_font_size
 	local interupt_stage = managers.job:interupt_stage()
+
 	self._background_layer_one = self._backdrop:get_new_background_layer()
 	self._background_layer_two = self._backdrop:get_new_background_layer()
 	self._background_layer_three = self._backdrop:get_new_background_layer()
@@ -53,9 +55,9 @@ function HUDMissionBriefing:init(hud, workspace)
 				w = self._ready_slot_panel:w() - 20
 			})
 			local criminal = slot_panel:text({
-				name = "criminal",
 				align = "left",
 				blend_mode = "add",
+				name = "criminal",
 				vertical = "center",
 				font_size = text_font_size,
 				font = text_font,
@@ -63,10 +65,10 @@ function HUDMissionBriefing:init(hud, workspace)
 				text = tweak_data.gui.LONGEST_CHAR_NAME
 			})
 			local voice = slot_panel:bitmap({
+				layer = 2,
 				name = "voice",
 				visible = false,
 				x = 10,
-				layer = 2,
 				texture = voice_icon,
 				texture_rect = voice_texture_rect,
 				w = voice_texture_rect[3],
@@ -74,13 +76,13 @@ function HUDMissionBriefing:init(hud, workspace)
 				color = color
 			})
 			local name = slot_panel:text({
-				vertical = "center",
-				name = "name",
-				w = 256,
 				align = "left",
 				blend_mode = "add",
-				rotation = 360,
 				layer = 1,
+				name = "name",
+				rotation = 360,
+				vertical = "center",
+				w = 256,
 				text = managers.localization:text("menu_lobby_player_slot_available") .. "  ",
 				font = text_font,
 				font_size = text_font_size,
@@ -88,47 +90,47 @@ function HUDMissionBriefing:init(hud, workspace)
 				h = text_font_size
 			})
 			local status = slot_panel:text({
-				vertical = "center",
-				name = "status",
-				w = 256,
 				align = "right",
 				blend_mode = "add",
-				text = "  ",
-				visible = false,
 				layer = 1,
+				name = "status",
+				text = "  ",
+				vertical = "center",
+				visible = false,
+				w = 256,
 				font = text_font,
 				font_size = text_font_size,
 				h = text_font_size,
 				color = tweak_data.screen_colors.text:with_alpha(0.5)
 			})
 			local infamy = slot_panel:bitmap({
-				w = 16,
-				name = "infamy",
 				h = 16,
-				visible = false,
-				y = 1,
 				layer = 2,
+				name = "infamy",
+				visible = false,
+				w = 16,
+				y = 1,
 				color = color
 			})
 			local detection = slot_panel:panel({
+				layer = 2,
 				name = "detection",
 				visible = false,
-				layer = 2,
 				w = slot_panel:h(),
 				h = slot_panel:h()
 			})
 			local detection_ring_left_bg = detection:bitmap({
+				alpha = 0.2,
 				blend_mode = "add",
 				name = "detection_left_bg",
-				alpha = 0.2,
 				texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 				w = detection:w(),
 				h = detection:h()
 			})
 			local detection_ring_right_bg = detection:bitmap({
+				alpha = 0.2,
 				blend_mode = "add",
 				name = "detection_right_bg",
-				alpha = 0.2,
 				texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 				w = detection:w(),
 				h = detection:h()
@@ -138,19 +140,19 @@ function HUDMissionBriefing:init(hud, workspace)
 
 			local detection_ring_left = detection:bitmap({
 				blend_mode = "add",
-				name = "detection_left",
-				texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-				render_template = "VertexColorTexturedRadial",
 				layer = 1,
+				name = "detection_left",
+				render_template = "VertexColorTexturedRadial",
+				texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 				w = detection:w(),
 				h = detection:h()
 			})
 			local detection_ring_right = detection:bitmap({
 				blend_mode = "add",
-				name = "detection_right",
-				texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-				render_template = "VertexColorTexturedRadial",
 				layer = 1,
+				name = "detection_right",
+				render_template = "VertexColorTexturedRadial",
+				texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 				w = detection:w(),
 				h = detection:h()
 			})
@@ -158,10 +160,10 @@ function HUDMissionBriefing:init(hud, workspace)
 			detection_ring_right:set_texture_rect(detection_ring_right:texture_width(), 0, -detection_ring_right:texture_width(), detection_ring_right:texture_height())
 
 			local detection_value = slot_panel:text({
-				text = " ",
-				name = "detection_value",
 				align = "left",
 				blend_mode = "add",
+				name = "detection_value",
+				text = " ",
 				vertical = "center",
 				font_size = text_font_size,
 				font = text_font,
@@ -203,6 +205,7 @@ function HUDMissionBriefing:init(hud, workspace)
 	self._current_job_data = managers.job:current_job_data()
 	self._current_job_chain = managers.job:current_job_chain_data()
 	self._job_class = self._current_job_data and self._current_job_data.jc or 0
+
 	local show_contact_gui = true
 
 	if managers.crime_spree:is_active() then
@@ -225,16 +228,18 @@ function HUDMissionBriefing:init(hud, workspace)
 	end
 
 	local padding_y = 60
+
 	self._paygrade_panel = self._background_layer_one:panel({
-		w = 210,
 		h = 70,
+		w = 210,
 		y = padding_y
 	})
+
 	local pg_text = self._foreground_layer_one:text({
+		align = "right",
+		h = 32,
 		name = "pg_text",
 		vertical = "center",
-		h = 32,
-		align = "right",
 		text = utf8.to_upper(managers.localization:text("menu_risk")),
 		y = padding_y,
 		font_size = content_font_size,
@@ -246,6 +251,7 @@ function HUDMissionBriefing:init(hud, workspace)
 	pg_text:set_size(w, h)
 
 	self._paygrade_text = pg_text
+
 	local job_stars = managers.job:current_job_stars()
 	local job_and_difficulty_stars = managers.job:current_job_and_difficulty_stars()
 	local difficulty_stars = managers.job:current_difficulty_stars()
@@ -286,8 +292,8 @@ function HUDMissionBriefing:init(hud, workspace)
 		local color = active and risk_color or tweak_data.screen_colors.text
 		local alpha = active and 1 or 0.25
 		local risk = self._paygrade_panel:bitmap({
-			y = 0,
 			x = 0,
+			y = 0,
 			name = name,
 			texture = texture,
 			texture_rect = rect,
@@ -328,10 +334,10 @@ function HUDMissionBriefing:init(hud, workspace)
 
 		local min, max = managers.skirmish:wave_range()
 		local wave_range_text = self._foreground_layer_one:text({
+			align = "right",
+			h = 32,
 			name = "wave_range",
 			vertical = "center",
-			h = 32,
-			align = "right",
 			text = managers.localization:to_upper_text("menu_skirmish_wave_range", {
 				min = min,
 				max = max
@@ -362,13 +368,14 @@ function HUDMissionBriefing:init(hud, workspace)
 				h = 125,
 				w = self._background_layer_one:w() / 2
 			})
+
 			local interupt_text = self._interupt_panel:text({
+				align = "left",
+				font_size = 70,
+				h = 80,
+				layer = 5,
 				name = "job_text",
 				vertical = "top",
-				h = 80,
-				font_size = 70,
-				align = "left",
-				layer = 5,
 				text = utf8.to_upper(managers.localization:text("menu_escape")),
 				font = bg_font,
 				color = tweak_data.screen_colors.important_1
@@ -391,6 +398,7 @@ function HUDMissionBriefing:init(hud, workspace)
 	for i = 1, 7 do
 		local day_font = text_font
 		local day_font_size = text_font_size
+
 		day_color = tweak_data.screen_colors.item_stage_1
 
 		if num_stages < i then
@@ -401,9 +409,9 @@ function HUDMissionBriefing:init(hud, workspace)
 		end
 
 		local day_text = self._job_schedule_panel:text({
-			vertical = "center",
 			align = "center",
 			blend_mode = "add",
+			vertical = "center",
 			name = "day_" .. tostring(i),
 			text = utf8.to_upper(managers.localization:text("menu_day_short", {
 				day = tostring(i)
@@ -418,9 +426,9 @@ function HUDMissionBriefing:init(hud, workspace)
 		day_text:set_left(i == 1 and 0 or self._job_schedule_panel:child("day_" .. tostring(i - 1)):right())
 
 		local ghost = self._job_schedule_panel:bitmap({
-			texture = "guis/textures/pd2/cn_minighost",
-			h = 16,
 			blend_mode = "add",
+			h = 16,
+			texture = "guis/textures/pd2/cn_minighost",
 			w = 16,
 			name = "ghost_" .. tostring(i),
 			color = tweak_data.screen_colors.ghost_color
@@ -474,10 +482,10 @@ function HUDMissionBriefing:init(hud, workspace)
 
 	if managers.job:has_active_job() then
 		local payday_stamp = self._job_schedule_panel:bitmap({
-			texture = "guis/textures/pd2/mission_briefing/calendar_xo",
-			name = "payday_stamp",
 			h = 64,
 			layer = 2,
+			name = "payday_stamp",
+			texture = "guis/textures/pd2/mission_briefing/calendar_xo",
 			w = 96,
 			texture_rect = {
 				160,
@@ -497,9 +505,9 @@ function HUDMissionBriefing:init(hud, workspace)
 	end
 
 	local job_overview_text = self._foreground_layer_one:text({
+		align = "left",
 		name = "job_overview_text",
 		vertical = "bpttom",
-		align = "left",
 		text = utf8.to_upper(managers.localization:text("menu_job_overview")),
 		h = content_font_size,
 		font_size = content_font_size,
@@ -524,12 +532,13 @@ function HUDMissionBriefing:init(hud, workspace)
 	end
 
 	local text = utf8.to_upper(managers.localization:text(self._current_contact_data.name_id) .. ": " .. managers.localization:text(self._current_job_data.name_id))
-	local text_align, text_len = nil
+	local text_align, text_len
 
 	if managers.crime_spree:is_active() then
 		local level_id = Global.game_settings.level_id
 		local name_id = level_id and tweak_data.levels[level_id] and tweak_data.levels[level_id].name_id
 		local mission = managers.crime_spree:get_mission()
+
 		text = managers.localization:to_upper_text(name_id) .. ": "
 		text_len = utf8.len(text)
 		text = text .. "+" .. managers.localization:text("menu_cs_level", {
@@ -547,8 +556,8 @@ function HUDMissionBriefing:init(hud, workspace)
 	end
 
 	local job_text = self._foreground_layer_one:text({
-		vertical = "top",
 		name = "job_text",
+		vertical = "top",
 		text = text,
 		align = text_align or "left",
 		font_size = title_font_size,
@@ -562,9 +571,9 @@ function HUDMissionBriefing:init(hud, workspace)
 
 	if not text_align then
 		local big_text = self._background_layer_three:text({
-			vertical = "top",
-			name = "job_text",
 			alpha = 0.4,
+			name = "job_text",
+			vertical = "top",
 			text = text,
 			align = text_align or "left",
 			font_size = bg_font_size,
@@ -581,11 +590,11 @@ function HUDMissionBriefing:init(hud, workspace)
 	if managers.job:current_job_data().name_id == "heist_rvd" then
 		local day_1_text = self._job_schedule_panel:child("day_1")
 		local day_1_sticker = self._job_schedule_panel:bitmap({
-			texture = "guis/dlcs/rvd/textures/pd2/mission_briefing/day2",
 			h = 48,
-			w = 96,
+			layer = 2,
 			rotation = 360,
-			layer = 2
+			texture = "guis/dlcs/rvd/textures/pd2/mission_briefing/day2",
+			w = 96
 		})
 
 		day_1_sticker:set_center(day_1_text:center())
@@ -593,11 +602,11 @@ function HUDMissionBriefing:init(hud, workspace)
 
 		local day_2_text = self._job_schedule_panel:child("day_2")
 		local day_2_sticker = self._job_schedule_panel:bitmap({
-			texture = "guis/dlcs/rvd/textures/pd2/mission_briefing/day1",
 			h = 48,
-			w = 96,
+			layer = 2,
 			rotation = 360,
-			layer = 2
+			texture = "guis/dlcs/rvd/textures/pd2/mission_briefing/day1",
+			w = 96
 		})
 
 		day_2_sticker:set_center(day_2_text:center())

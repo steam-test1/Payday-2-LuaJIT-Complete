@@ -97,12 +97,12 @@ end
 
 function CoreCutscenePlayer:camera_attributes()
 	local camera = self:_camera()
-	local attributes = {
-		aspect_ratio = camera:aspect_ratio(),
-		fov = camera:fov(),
-		near_range = camera:near_range(),
-		far_range = camera:far_range()
-	}
+	local attributes = {}
+
+	attributes.aspect_ratio = camera:aspect_ratio()
+	attributes.fov = camera:fov()
+	attributes.near_range = camera:near_range()
+	attributes.far_range = camera:far_range()
 
 	if self._dof_attributes then
 		for key, value in pairs(self._dof_attributes) do
@@ -174,6 +174,7 @@ end
 
 function CoreCutscenePlayer:_master_driving_sound_instance(sound_instance)
 	self._driving_sound_instance_map = self._driving_sound_instance_map or {}
+
 	local master_instance = self._driving_sound_instance_map[sound_instance]
 
 	if master_instance == nil then
@@ -281,6 +282,7 @@ function CoreCutscenePlayer:update(time, delta_time)
 
 		if self:is_presentable() then
 			local offset = self:_driving_sound_offset() or self._time + delta_time
+
 			done = self:seek(offset, self._time == offset) == false
 		end
 	elseif alive(self._driving_sound_instance) then
@@ -413,6 +415,7 @@ end
 
 function CoreCutscenePlayer:set_camera_depth_of_field(near, far)
 	local range = far - near
+
 	self._dof_attributes = self._dof_attributes or {}
 	self._dof_attributes.near_focus_distance_min = math.max(1e-06, near - range * 0.33)
 	self._dof_attributes.near_focus_distance_max = math.max(1e-06, near)
@@ -423,7 +426,7 @@ end
 function CoreCutscenePlayer:play_camera_shake(shake_name, amplitude, frequency, offset)
 	local shake_id = self._viewport:director():shaker():play(shake_name, amplitude, frequency, offset)
 
-	return function ()
+	return function()
 		self._viewport:director():shaker():stop_immediately(shake_id)
 	end
 end
@@ -471,18 +474,22 @@ function CoreCutscenePlayer:_gui_panel(gui_name, preloading)
 		end
 
 		self._owned_gui_objects = self._owned_gui_objects or {}
+
 		local viewport_rect = self:_viewport_rect()
+
 		panel = self._workspace:panel():panel({
 			halign = "grow",
-			visible = false,
 			valign = "grow",
+			visible = false,
 			name = gui_name,
 			x = viewport_rect.px,
 			y = viewport_rect.py,
 			width = viewport_rect.pw,
 			height = viewport_rect.ph
 		})
+
 		local gui_object = panel:gui(gui_name)
+
 		self._owned_gui_objects[gui_name] = gui_object
 	end
 
@@ -524,7 +531,7 @@ function CoreCutscenePlayer:prime_cutscene_key(key, cast)
 	local delegate = self._key_handler
 
 	if delegate and delegate.prime_cutscene_key then
-		return delegate:prime_cutscene_key(self, key, cast)
+		return delegate.prime_cutscene_key(delegate, self, key, cast)
 	else
 		return key:prime(self)
 	end
@@ -534,7 +541,7 @@ function CoreCutscenePlayer:evaluate_cutscene_key(key, time, last_evaluated_time
 	local delegate = self._key_handler
 
 	if delegate and delegate.evaluate_cutscene_key then
-		return delegate:evaluate_cutscene_key(self, key, time, last_evaluated_time)
+		return delegate.evaluate_cutscene_key(delegate, self, key, time, last_evaluated_time)
 	else
 		return key:play(self, false, false)
 	end
@@ -544,7 +551,7 @@ function CoreCutscenePlayer:revert_cutscene_key(key, time, last_evaluated_time)
 	local delegate = self._key_handler
 
 	if delegate and delegate.revert_cutscene_key then
-		return delegate:revert_cutscene_key(self, key, time, last_evaluated_time)
+		return delegate.revert_cutscene_key(delegate, self, key, time, last_evaluated_time)
 	else
 		return key:play(self, true, false)
 	end
@@ -554,7 +561,7 @@ function CoreCutscenePlayer:update_cutscene_key(key, time, last_evaluated_time)
 	local delegate = self._key_handler
 
 	if delegate and delegate.update_cutscene_key then
-		return delegate:update_cutscene_key(self, key, time, last_evaluated_time)
+		return delegate.update_cutscene_key(delegate, self, key, time, last_evaluated_time)
 	else
 		return key:update(self, time)
 	end
@@ -564,7 +571,7 @@ function CoreCutscenePlayer:skip_cutscene_key(key)
 	local delegate = self._key_handler
 
 	if delegate and delegate.skip_cutscene_key then
-		return delegate:skip_cutscene_key(self, key)
+		return delegate.skip_cutscene_key(delegate, self, key)
 	else
 		return key:skip(self)
 	end
@@ -574,7 +581,7 @@ function CoreCutscenePlayer:time_in_relation_to_cutscene_key(key)
 	local delegate = self._key_handler
 
 	if delegate and delegate.time_in_relation_to_cutscene_key then
-		return delegate:time_in_relation_to_cutscene_key(key)
+		return delegate.time_in_relation_to_cutscene_key(delegate, key)
 	else
 		return self._time - key:time()
 	end
@@ -615,12 +622,12 @@ function CoreCutscenePlayer:_full_viewport_rect()
 	local resolution = RenderSettings.resolution
 
 	return {
+		h = 1,
 		px = 0,
 		py = 0,
-		h = 1,
-		y = 0,
 		w = 1,
 		x = 0,
+		y = 0,
 		pw = resolution.x,
 		ph = resolution.y
 	}
@@ -640,6 +647,7 @@ function CoreCutscenePlayer:_wide_viewport_rect()
 		w = viewport_width,
 		h = viewport_height
 	}
+
 	rect.px = rect.x * resolution.x
 	rect.py = rect.y * resolution.y
 	rect.pw = rect.w * resolution.x
@@ -678,6 +686,7 @@ function CoreCutscenePlayer:_clear_workspace()
 	end
 
 	local resolution = RenderSettings.resolution
+
 	self._workspace = Overlay:newgui():create_scaled_screen_workspace(resolution.x, resolution.y, 0, 0, resolution.x)
 
 	self._workspace:set_timer(managers.cutscene:timer())
@@ -717,8 +726,8 @@ function CoreCutscenePlayer:_configure_viewport()
 		local black_bars_enabled = self._widescreen and self:is_viewport_enabled()
 
 		self._workspace:panel():child(self.BLACK_BAR_TOP_GUI_NAME):configure({
-			y = 0,
 			x = 0,
+			y = 0,
 			visible = black_bars_enabled,
 			width = viewport_rect.pw,
 			height = viewport_rect.py
@@ -886,6 +895,7 @@ end
 function CoreCutscenePlayer:_camera_has_cut()
 	self._last_frame_camera_position = self._last_frame_camera_position or Vector3(0, 0, 0)
 	self._last_frame_camera_rotation = self._last_frame_camera_rotation or Rotation()
+
 	local camera = self:_camera()
 	local camera_position = camera:position()
 	local camera_rotation = camera:rotation()
@@ -893,6 +903,7 @@ function CoreCutscenePlayer:_camera_has_cut()
 	local rotation_difference = Rotation:rotation_difference(self._last_frame_camera_rotation, camera_rotation)
 	local position_threshold_reached = position_difference:length() > 50
 	local rotation_threshold_reached = rotation_difference:yaw() > 5 or rotation_difference:pitch() > 5 or rotation_difference:roll() > 5
+
 	self._last_frame_camera_position = camera_position
 	self._last_frame_camera_rotation = camera_rotation
 

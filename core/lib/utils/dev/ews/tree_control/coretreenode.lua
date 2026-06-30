@@ -47,6 +47,7 @@ end
 
 function CoreTreeNode:append(text)
 	local new_node = CoreTreeNode:new(text)
+
 	new_node._callbacks = self._callbacks
 	new_node._parent = self
 

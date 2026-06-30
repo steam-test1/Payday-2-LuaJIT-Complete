@@ -36,8 +36,8 @@ local free_dlcs = {
 function PS4DLCManager:init_console()
 	for i, dlc in ipairs(free_dlcs) do
 		Global.dlc_manager.all_dlc_data[dlc] = {
-			verified_for_TheBigScore = true,
-			verified = true
+			verified = true,
+			verified_for_TheBigScore = true
 		}
 	end
 end

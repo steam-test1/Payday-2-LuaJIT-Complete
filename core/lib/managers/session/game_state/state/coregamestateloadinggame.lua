@@ -31,6 +31,7 @@ function LoadingGame:init()
 end
 
 function LoadingGame:destroy()
+	return
 end
 
 function LoadingGame:transition()

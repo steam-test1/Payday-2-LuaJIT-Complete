@@ -2,6 +2,7 @@ GrenadeBase = GrenadeBase or class(ProjectileBase)
 GrenadeBase.EVENT_IDS = {
 	detonate = 1
 }
+
 local mvec1 = Vector3()
 local mvec2 = Vector3()
 
@@ -75,8 +76,8 @@ function GrenadeBase:add_damage_result(unit, is_dead, damage_percent)
 
 	if weapon_id then
 		managers.statistics:shot_fired({
-			skip_bullet_count = true,
 			hit = true,
+			skip_bullet_count = true,
 			name_id = weapon_id
 		})
 	end
@@ -104,10 +105,10 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 	local is_cop = unit:character_damage().is_cop(unit_type)
 	local is_civilian = unit:character_damage().is_civilian(unit_type)
 	local is_crouching = alive(managers.player:player_unit()) and managers.player:player_unit():movement() and managers.player:player_unit():movement():crouching()
-	local count_pass, grenade_type_pass, grenade_types_pass, kill_pass, distance_pass, enemy_pass, enemies_pass, flying_strike_pass, timer_pass, difficulty_pass, job_pass, crouching_pass, session_kill_pass, is_civilian_pass, explosive_pass, tags_all_pass, tags_any_pass, player_state_pass, damage_variant_pass, style_pass, mutators_pass, all_pass, memory, grenade_is_explosive = nil
+	local count_pass, grenade_type_pass, grenade_types_pass, kill_pass, distance_pass, enemy_pass, enemies_pass, flying_strike_pass, timer_pass, difficulty_pass, job_pass, crouching_pass, session_kill_pass, is_civilian_pass, explosive_pass, tags_all_pass, tags_any_pass, player_state_pass, damage_variant_pass, style_pass, mutators_pass, all_pass, memory, grenade_is_explosive
 
 	for achievement, achievement_data in pairs(tweak_data.achievement.grenade_achievements) do
-		count_pass = not achievement_data.count or achievement_data.count <= (achievement_data.kill and kill_count or hit_count)
+		count_pass = not achievement_data.count or (achievement_data.kill and kill_count or hit_count) >= achievement_data.count
 		grenade_type_pass = not achievement_data.grenade_type or achievement_data.grenade_type == self:projectile_entry()
 		grenade_types_pass = not achievement_data.grenade_types or table.contains(achievement_data.grenade_types, self:projectile_entry())
 		kill_pass = not achievement_data.kill or is_dead
@@ -116,7 +117,7 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 		difficulty_pass = not achievement_data.difficulties or table.contains(achievement_data.difficulties, Global.game_settings.difficulty)
 		job_pass = not achievement_data.job or managers.job:current_real_job_id() == achievement_data.job
 		crouching_pass = not achievement_data.crouching or is_crouching
-		session_kill_pass = not achievement_data.session_kills or achievement_data.session_kills <= managers.statistics:session_killed_by_projectile(achievement_data.grenade_type)
+		session_kill_pass = not achievement_data.session_kills or managers.statistics:session_killed_by_projectile(achievement_data.grenade_type) >= achievement_data.session_kills
 		is_civilian_pass = achievement_data.is_civilian == nil and true or achievement_data.is_civilian == (is_civilian or false)
 		tags_all_pass = not achievement_data.enemy_tags_all or enemy_base:has_all_tags(achievement_data.enemy_tags_all)
 		tags_any_pass = not achievement_data.enemy_tags_any or enemy_base:has_any_tag(achievement_data.enemy_tags_any)
@@ -141,6 +142,7 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 			mvector3.set(mvec2, unit:position())
 
 			local distance = mvector3.distance_sq(mvec1, mvec2)
+
 			distance_pass = distance >= achievement_data.distance * achievement_data.distance
 		end
 
@@ -148,19 +150,21 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 
 		if achievement_data.timer and is_dead then
 			local memory_name = "gre_ach_" .. achievement
+
 			memory = managers.job:get_memory(memory_name, true)
+
 			local t = Application:time()
 
 			if memory then
 				table.insert(memory, t)
 
 				for i = #memory, 1, -1 do
-					if achievement_data.timer <= t - memory[i] then
+					if t - memory[i] >= achievement_data.timer then
 						table.remove(memory, i)
 					end
 				end
 
-				timer_pass = achievement_data.kill_count <= #memory
+				timer_pass = #memory >= achievement_data.kill_count
 
 				managers.job:set_memory(memory_name, memory, true)
 			else
@@ -174,6 +178,7 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 
 		if achievement_data.explosive ~= nil then
 			local grenade_is_explosive = not not tweak_data.blackmarket.projectiles[self:projectile_entry()].is_explosive
+
 			explosive_pass = grenade_is_explosive == achievement_data.explosive
 		end
 

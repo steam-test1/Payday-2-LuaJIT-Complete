@@ -136,12 +136,14 @@ function WireLayer:update(t, dt)
 
 	if ray then
 		self._current_pos = ray.position
+
 		local n = ray.normal
 		local u_rot = Rotation()
 		local z = n
 		local x = (u_rot:x() - z * z:dot(u_rot:x())):normalized()
 		local y = z:cross(x)
 		local rot = Rotation(x, y, z)
+
 		self._current_rot = rot
 	end
 
@@ -160,6 +162,7 @@ function WireLayer:update(t, dt)
 	if self._selected_unit then
 		if self._creating_wire or self._grab then
 			local dot = self._current_rot:y():dot(self._selected_unit:rotation():y())
+
 			dot = (dot - 1) / -2
 			self._current_rot = self._current_rot * Rotation(180 * dot, 0, 0)
 		end
@@ -217,15 +220,15 @@ function WireLayer:build_panel(notebook)
 	self._sizer:add(slack_sizer, 1, 0, "EXPAND")
 
 	local slack_params = {
-		value = 0,
-		name = "Slack:",
 		ctrlr_proportions = 4,
-		slider_ctrlr_proportions = 3,
-		name_proportions = 1,
-		number_ctrlr_proportions = 1,
-		min = 0,
 		floats = 0,
 		max = 2500,
+		min = 0,
+		name = "Slack:",
+		name_proportions = 1,
+		number_ctrlr_proportions = 1,
+		slider_ctrlr_proportions = 3,
+		value = 0,
 		panel = self._ews_panel,
 		sizer = slack_sizer
 	}
@@ -271,6 +274,7 @@ end
 function WireLayer:get_help(text)
 	local t = "\t"
 	local n = "\n"
+
 	text = text .. "Select unit:     Click left mouse button on either attach point" .. n
 	text = text .. "Create unit:     Click rigth mouse button (once the spawn, twice to attach target position)" .. n
 	text = text .. "Remove unit:     Press delete"

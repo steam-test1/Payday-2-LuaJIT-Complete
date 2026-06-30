@@ -98,7 +98,7 @@ end
 
 function CoreShaderLibCompiler:root_path()
 	local path = data_path_abs() .. self.ROOT_PATH
-	local f = nil
+	local f
 
 	function f(s)
 		local str, i = string.gsub(s, "\\[%w_%.%s]+\\%.%.\\", "\\")
@@ -183,11 +183,11 @@ function CoreShaderLibCompiler:get_make_params()
 	local rt = self:base_path() .. self.RT_PATH .. self.SHADER_NAME
 	local src = self:base_path() .. self.SHADER_PATH .. self.SHADER_NAME
 	local tmp = self:base_path() .. self.TEMP_PATH
-	local make_params = {
-		source = src .. ".shader_source",
-		working_directory = tmp,
-		render_templates = rt .. ".render_template_database"
-	}
+	local make_params = {}
+
+	make_params.source = src .. ".shader_source"
+	make_params.working_directory = tmp
+	make_params.render_templates = rt .. ".render_template_database"
 
 	if target() == "win32" then
 		make_params.win32d3d9 = tmp .. self.SHADER_NAME .. ".d3d9.win32.shaders"

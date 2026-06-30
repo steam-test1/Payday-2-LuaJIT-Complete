@@ -11,6 +11,7 @@ function ElementLogicChance:init(...)
 end
 
 function ElementLogicChance:client_on_executed(...)
+	return
 end
 
 function ElementLogicChance:on_executed(instigator)
@@ -20,7 +21,7 @@ function ElementLogicChance:on_executed(instigator)
 
 	local roll = math.random(100)
 
-	if self._chance < roll then
+	if roll > self._chance then
 		self:_trigger_outcome("fail")
 
 		return
@@ -72,6 +73,7 @@ function ElementLogicChanceOperator:init(...)
 end
 
 function ElementLogicChanceOperator:client_on_executed(...)
+	return
 end
 
 function ElementLogicChanceOperator:on_executed(instigator)
@@ -113,6 +115,7 @@ function ElementLogicChanceTrigger:on_script_activated()
 end
 
 function ElementLogicChanceTrigger:client_on_executed(...)
+	return
 end
 
 function ElementLogicChanceTrigger:on_executed(instigator)

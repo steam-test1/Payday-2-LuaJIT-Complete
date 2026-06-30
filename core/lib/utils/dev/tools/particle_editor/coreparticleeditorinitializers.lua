@@ -5,12 +5,7 @@ function CoreParticleEditorInitializers:create_boxrandomposition()
 
 	initializer:set_description("Initializes particle positions randomly within a given box.")
 
-	local help = [[
-Determines how positions are treated:
-relative - Positions are rotated with effect rotation
-world - Positions are not rotated
-
-Positions are always offsetted with effect position.]]
+	local help = "Determines how positions are treated:\nrelative - Positions are rotated with effect rotation\nworld - Positions are not rotated\n\nPositions are always offsetted with effect position."
 	local p = CoreEffectProperty:new("relative", "value_list", "effect", help)
 
 	p:add_value("effect")
@@ -31,12 +26,7 @@ function CoreParticleEditorInitializers:create_boxrandomvelocity()
 
 	initializer:set_description("Initializes particle velocities randomly within a given box.")
 
-	local help = [[
-Determines how velocities are treated:
-effect - Velocities are rotated with effect rotation
-world - Velocities are not rotated
-
-Velocities are always offsetted with effect spawn velocity.]]
+	local help = "Determines how velocities are treated:\neffect - Velocities are rotated with effect rotation\nworld - Velocities are not rotated\n\nVelocities are always offsetted with effect spawn velocity."
 	local p = CoreEffectProperty:new("relative", "value_list", "effect", help)
 
 	p:add_value("effect")
@@ -95,12 +85,7 @@ function CoreParticleEditorInitializers:create_boxevenposition()
 
 	initializer:set_description("Initializes particle positions evenly distributed within a given box.\nMay initialize positions outside box if the number of particles is not evenly dividable with the proportions of the box.")
 
-	local help = [[
-Determines how positions are treated:
-relative - Positions are rotated with effect rotation
-world - Positions are not rotated
-
-Positions are always offsetted with effect position.]]
+	local help = "Determines how positions are treated:\nrelative - Positions are rotated with effect rotation\nworld - Positions are not rotated\n\nPositions are always offsetted with effect position."
 	local p = CoreEffectProperty:new("relative", "value_list", "effect", help)
 
 	p:add_value("effect")
@@ -342,34 +327,37 @@ function CoreParticleEditorInitializers:create_lightcone()
 	initializer:add_property(CoreEffectProperty:new("start", "float", "0", help))
 
 	help = "The distance to step between billboards with stepped distance as horizontal axis."
+
 	local distance_keys = CoreEffectProperty:new("distance_keys", "keys", "", help)
 
 	distance_keys:set_key_type("float")
 	distance_keys:add_key({
-		v = "20",
-		t = 0
+		t = 0,
+		v = "20"
 	})
 	distance_keys:set_min_max_keys(1, 4)
 	initializer:add_property(distance_keys)
 
 	help = "The size of billboards along distance."
+
 	local size_keys = CoreEffectProperty:new("size_keys", "keys", "", help)
 
 	size_keys:set_key_type("vector2")
 	size_keys:add_key({
-		v = "100 100",
-		t = 0
+		t = 0,
+		v = "100 100"
 	})
 	size_keys:set_min_max_keys(1, 4)
 	initializer:add_property(size_keys)
 
 	help = "The opacity of billboards along distance."
+
 	local opacity_keys = CoreEffectProperty:new("opacity_keys", "keys", "", help)
 
 	opacity_keys:set_key_type("opacity")
 	opacity_keys:add_key({
-		v = "255",
-		t = 0
+		t = 0,
+		v = "255"
 	})
 	opacity_keys:set_min_max_keys(1, 4)
 	initializer:add_property(opacity_keys)

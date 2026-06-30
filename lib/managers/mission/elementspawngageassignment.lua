@@ -7,6 +7,7 @@ function ElementSpawnGageAssignment:init(...)
 end
 
 function ElementSpawnGageAssignment:on_script_activated()
+	return
 end
 
 function ElementSpawnGageAssignment:on_executed(instigator)

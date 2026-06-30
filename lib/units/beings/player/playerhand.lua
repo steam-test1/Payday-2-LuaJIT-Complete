@@ -50,6 +50,7 @@ function PlayerHand:post_init()
 		driving = DrivingHandState:new(),
 		arrow = ArrowHandState:new()
 	}
+
 	self._hand_state_machine = HandStateMachine:new(hand_states, hand_states.empty, hand_states.empty)
 
 	self._hand_state_machine:attach_controller(controller, true)
@@ -58,13 +59,16 @@ function PlayerHand:post_init()
 
 	self._controller = controller
 	self._vr_controller = controller:get_controller("vr")
+
 	local base_rotation = camera_unit:base():base_rotation()
+
 	self._base_rotation = base_rotation
 	self._unit_movement_ext = unit:movement()
 	self._camera_unit = camera_unit
 	self._belt_yaw = base_rotation:yaw()
 	self._prev_ghost_position = mvector3.copy(self._unit_movement_ext:ghost_position())
 	self._hand_data = {}
+
 	local l_hand_unit = World:spawn_unit(Idstring("units/pd2_dlc_vr/player/vr_hand_left"), Vector3(0, 0, 0), Rotation())
 	local r_hand_unit = World:spawn_unit(Idstring("units/pd2_dlc_vr/player/vr_hand_right"), Vector3(0, 0, 0), Rotation())
 
@@ -313,6 +317,7 @@ function PlayerHand:_update_controllers(t, dt)
 
 		for i, controller in ipairs(self._hand_data) do
 			local pos, rot = self._vr_controller:pose(i - 1)
+
 			rot = self._base_rotation * rot
 			pos = pos - hmd_pos
 
@@ -341,9 +346,11 @@ function PlayerHand:_update_controllers(t, dt)
 
 			controller.rotation = rot
 			pos = pos + controller.base_position:rotate_with(controller.rotation)
+
 			local dir = pos - controller.prev_position
 			local len = mvector3.normalize(dir)
 			local speed = len / dt
+
 			max_speed = math.max(max_speed, speed)
 
 			if precision_mode then
@@ -352,7 +359,9 @@ function PlayerHand:_update_controllers(t, dt)
 
 			controller.prev_position = pos
 			pos = pos + ghost_position
+
 			local forward = Vector3(0, 1, 0)
+
 			controller.forward = forward:rotate_with(controller.rotation)
 			controller.position = pos
 
@@ -364,8 +373,9 @@ function PlayerHand:_update_controllers(t, dt)
 			controller.state_machine:set_position(pos)
 			controller.state_machine:set_rotation(rot)
 
-			if self._scheculed_wall_checks and self._scheculed_wall_checks[i] and self._scheculed_wall_checks[i].t < t then
+			if self._scheculed_wall_checks and self._scheculed_wall_checks[i] and t > self._scheculed_wall_checks[i].t then
 				local custom_obj = self._scheculed_wall_checks[i].custom_obj
+
 				self._scheculed_wall_checks[i] = nil
 
 				if not self:check_hand_through_wall(i, custom_obj) then
@@ -386,7 +396,9 @@ function PlayerHand:_update_controllers(t, dt)
 	end
 
 	local rot = VRManager:hmd_rotation()
+
 	rot = self._base_rotation * rot
+
 	local forward = Vector3(0, 1, 0)
 	local up = Vector3(0, 0, 1)
 
@@ -428,7 +440,7 @@ function PlayerHand:_update_controllers(t, dt)
 	managers.hud:belt():set_alpha(look_dot * 1.5)
 
 	for i = 1, 2 do
-		local found = nil
+		local found
 
 		if managers.hud:belt():visible() then
 			for _, interact_name in ipairs(managers.hud:belt():valid_interactions()) do
@@ -465,6 +477,7 @@ function PlayerHand:aim_target(hand, weapon, origin, melee_hand)
 		end
 
 		fop = fop + wa:rotate_with(rotation)
+
 		local target = fop + fod * 3000 - origin
 
 		return target, wa
@@ -503,7 +516,7 @@ function PlayerHand:update(unit, t, dt)
 	if weapon_main then
 		local melee_hand = self:get_active_hand_id("melee")
 		local weapon_main_base = weapon_main:base()
-		local weapon_second = nil
+		local weapon_second
 
 		if weapon_main_base.AKIMBO then
 			weapon_second = weapon_main_base._second_gun
@@ -512,7 +525,7 @@ function PlayerHand:update(unit, t, dt)
 		local player_pos = self._unit:position() + Vector3(0, 0, 150)
 		local t1, a1 = self:aim_target(self._weapon_hand_id, weapon_main, player_pos, melee_hand)
 		local t2, a2 = self:aim_target(self.other_hand_id(self._weapon_hand_id), weapon_second, player_pos, melee_hand)
-		local target = nil
+		local target
 
 		if weapon_main_base:enabled() then
 			if self._weapon_hand_id == 1 then
@@ -578,7 +591,7 @@ end
 function PlayerHand:_update_arms(t, dt)
 	self._next_sync_t = self._next_sync_t or 0
 
-	if self._next_sync_t < t then
+	if t > self._next_sync_t then
 		local arm_sim = self._arm_simulator
 		local pose = arm_sim:pose()
 
@@ -645,10 +658,10 @@ function PlayerHand:update_tablet(t, dt, hmd_forward)
 	if not swiping then
 		local vol = tweak_data.vr.tablet.interaction_volume_start
 
-		if looking_at_tablet and mvector3.dot(hand_rotation:y(), up) < vol.angle_th and vol.min_depth < length and length < vol.max_depth and math.abs(x_len) <= width + vol.extra_width and math.abs(y_len) <= height + vol.extra_height then
+		if looking_at_tablet and mvector3.dot(hand_rotation:y(), up) < vol.angle_th and length > vol.min_depth and length < vol.max_depth and math.abs(x_len) <= width + vol.extra_width and math.abs(y_len) <= height + vol.extra_height then
 			self:set_point_at_tablet(true)
 		end
-	elseif not looking_at_tablet or tablet.interaction_radius_sq < mvector3.distance_sq(pos, center) or tablet.interaction_angle_th < mvector3.dot(hand_rotation:y(), up) then
+	elseif not looking_at_tablet or mvector3.distance_sq(pos, center) > tablet.interaction_radius_sq or mvector3.dot(hand_rotation:y(), up) > tablet.interaction_angle_th then
 		self:set_point_at_tablet(false)
 	end
 end
@@ -734,6 +747,7 @@ end
 
 function PlayerHand:unlink_mask(next_state)
 	local default_weapon_hand = self.hand_id(managers.vr:get_setting("default_weapon_hand") or "right")
+
 	self._mask_unit = nil
 
 	self._hand_data[default_weapon_hand].state_machine:set_default_state("weapon")
@@ -980,7 +994,7 @@ function PlayerHand:check_hand_through_wall(hand, custom_obj)
 	local head_pos = self._unit_movement_ext:m_head_pos()
 	local hand_pos = hand_unit:position()
 	local custom_pos = alive(custom_obj) and custom_obj:position()
-	local ray = nil
+	local ray
 	local raycasts = {
 		{
 			ray = {

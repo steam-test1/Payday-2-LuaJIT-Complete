@@ -117,7 +117,7 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 
 			Application:debug("[VehicleManager] Syncing vehicle data for: ", v_ext._unit:id(), v_ext._current_state_name)
 
-			local driver, passenger_front, passenger_back_left, passenger_back_right = nil
+			local driver, passenger_front, passenger_back_left, passenger_back_right
 			local manual_exit_disabled = v_ext._manual_exit_disabled
 
 			if v_ext._seats.driver and alive(v_ext._seats.driver.occupant) then
@@ -136,7 +136,7 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 				passenger_back_right = v_ext._seats.passenger_back_right.occupant
 			end
 
-			local is_trunk_open = nil
+			local is_trunk_open
 
 			if v_ext._has_trunk then
 				is_trunk_open = v_ext._trunk_open
@@ -153,7 +153,9 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 
 			while loot_index <= #stored_loot do
 				local loot1 = stored_loot[loot_index]
+
 				loot_index = loot_index + 1
+
 				local loot2 = {
 					multiplier = 0
 				}
@@ -163,6 +165,7 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 				end
 
 				loot_index = loot_index + 1
+
 				local loot3 = {
 					multiplier = 0
 				}
@@ -189,6 +192,7 @@ end
 
 function VehicleManager:sync_vehicle_data(vehicle_unit, state, occupant_driver, occupant_left, occupant_back_left, occupant_back_right, is_trunk_open, manual_exit_disabled)
 	local v_ext = vehicle_unit:vehicle_driving()
+
 	v_ext._manual_exit_disabled = manual_exit_disabled
 
 	if v_ext._seats.driver then
@@ -332,7 +336,7 @@ function VehicleManager:find_active_vehicle_with_player()
 end
 
 function VehicleManager:find_npc_vehicle_target()
-	local target_unit = nil
+	local target_unit
 
 	for i, v in ipairs(self._vehicles) do
 		if alive(v) and v:vehicle_driving()._vehicle:is_active() and v:npc_vehicle_driving() == nil and v:vehicle_driving():num_players_inside() >= 0 then

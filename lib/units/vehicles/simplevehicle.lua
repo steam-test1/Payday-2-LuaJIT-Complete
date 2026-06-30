@@ -38,6 +38,7 @@ function SimpleVehicle:update(unit, t, dt)
 
 			self._anim_time_speed_params.current = math.lerp(self._anim_time_speed_params.start, self._anim_time_speed_params.target, self._anim_time_speed_params.transition_time)
 			self._bezier_v = self._bezier_v + self._new_time_speed / (self._started_end_t - self._start_t) * dt
+
 			local v = math.bezier({
 				0,
 				0,
@@ -49,7 +50,7 @@ function SimpleVehicle:update(unit, t, dt)
 			print("1 speed", time - self:anim_time())
 			self:_set_anim_time(time)
 
-			if self._started_end_t <= self._unit:anim_time(self.ANIM_GROUP) then
+			if self._unit:anim_time(self.ANIM_GROUP) >= self._started_end_t then
 				self._state = "run"
 				self._bezier_v = self._bezier_v - 1
 
@@ -58,6 +59,7 @@ function SimpleVehicle:update(unit, t, dt)
 			end
 		elseif self._state == "run" then
 			self._bezier_v = self._bezier_v + self._new_time_speed / (self._runned_end_t - self._started_end_t) * dt
+
 			local v = math.bezier({
 				0,
 				0.33,
@@ -69,7 +71,7 @@ function SimpleVehicle:update(unit, t, dt)
 			print("2 speed", time - self:anim_time())
 			self:_set_anim_time(time)
 
-			if self._runned_end_t <= self._unit:anim_time(self.ANIM_GROUP) then
+			if self._unit:anim_time(self.ANIM_GROUP) >= self._runned_end_t then
 				self._state = "stop"
 				self._bezier_v = self._bezier_v - 1
 
@@ -77,6 +79,7 @@ function SimpleVehicle:update(unit, t, dt)
 			end
 		elseif self._state == "stop" then
 			self._bezier_v = math.min(self._bezier_v + self._new_time_speed / (self._stopped_end_t - self._runned_end_t) * dt, 1)
+
 			local v = math.bezier({
 				0,
 				0.3,
@@ -88,7 +91,7 @@ function SimpleVehicle:update(unit, t, dt)
 			print("3 speed", time - self:anim_time())
 			self:_set_anim_time(time)
 
-			if self._stopped_end_t <= self._unit:anim_time(self.ANIM_GROUP) then
+			if self._unit:anim_time(self.ANIM_GROUP) >= self._stopped_end_t then
 				self._state = nil
 
 				print("stopped")
@@ -100,7 +103,7 @@ function SimpleVehicle:update(unit, t, dt)
 end
 
 function SimpleVehicle:_check_reached_target_anim_time()
-	if self._target_anim_time <= self._unit:anim_time(self.ANIM_GROUP) then
+	if self._unit:anim_time(self.ANIM_GROUP) >= self._target_anim_time then
 		-- Nothing
 	end
 end
@@ -192,10 +195,12 @@ function SimpleVehicle:_set_anim_time(anim_time)
 end
 
 function SimpleVehicle:_set_anim_speed(anim_speed)
+	return
 end
 
 function SimpleVehicle:save(data)
 	local state = {}
+
 	data.SimpleVehicle = state
 end
 
@@ -204,4 +209,5 @@ function SimpleVehicle:load(data)
 end
 
 function SimpleVehicle:destroy()
+	return
 end

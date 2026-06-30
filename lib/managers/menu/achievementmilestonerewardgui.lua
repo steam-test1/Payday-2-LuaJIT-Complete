@@ -86,14 +86,15 @@ AchievementMilestoneRewardGui = AchievementMilestoneRewardGui or class(GrowPanel
 
 function AchievementMilestoneRewardGui:init(parent, milestones, back_callback)
 	AchievementMilestoneRewardGui.super.init(self, parent, {
-		padding = 10,
-		layer = 50,
 		border = 10,
 		fixed_w = 550,
-		input = true
+		input = true,
+		layer = 50,
+		padding = 10
 	})
 
 	self._back_callback = back_callback
+
 	local main_placer = self:placer()
 
 	main_placer:add_row(self:fine_text({
@@ -106,10 +107,10 @@ function AchievementMilestoneRewardGui:init(parent, milestones, back_callback)
 	}))
 
 	self._list = main_placer:add_row(ScrollableList:new(self, {
-		scrollbar_padding = 10,
-		h = 300,
 		bar_minimum_size = 16,
+		h = 300,
 		input = true,
+		scrollbar_padding = 10,
 		w = self:row_w() + 10
 	}))
 
@@ -118,12 +119,12 @@ function AchievementMilestoneRewardGui:init(parent, milestones, back_callback)
 	local canvas = self._list:canvas()
 	local placer = canvas:placer()
 	local back = main_placer:add_bottom(TextButton:new(self, {
-		text_id = "menu_continue_btn",
 		binding = "continue",
 		input = true,
+		text_id = "menu_continue_btn",
 		font = medium_font,
 		font_size = medium_font_size
-	}, function ()
+	}, function()
 		self._back_callback()
 	end))
 

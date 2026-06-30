@@ -25,7 +25,7 @@ function CoreAnimationStateTreePanel:_refresh_tree()
 		local state_machine = self:unit():anim_state_machine()
 
 		if state_machine then
-			local sorted_states = table.sorted_copy(state_machine:config():states(), function (a, b)
+			local sorted_states = table.sorted_copy(state_machine:config():states(), function(a, b)
 				return a:name():s() < b:name():s()
 			end)
 

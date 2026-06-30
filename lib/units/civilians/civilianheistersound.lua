@@ -48,7 +48,7 @@ function CivilianHeisterSound:anim_clbk_stop_sound(unit, source_name)
 end
 
 function CivilianHeisterSound:_play(sound_name, source_name)
-	local source = nil
+	local source
 
 	if source_name then
 		source = Idstring(source_name)

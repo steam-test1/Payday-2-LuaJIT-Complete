@@ -31,6 +31,7 @@ end
 
 function CoreCutsceneFrameExporterDialog:_create_folder_name_box(folder_name)
 	local folder_name_sizer = EWS:StaticBoxSizer(self.__window, "VERTICAL", "Enter a name for the new folder")
+
 	self.__folder_name_ctrl = EWS:TextCtrl(self.__window, folder_name)
 
 	folder_name_sizer:add(self.__folder_name_ctrl, 0, 2, "ALL,EXPAND")
@@ -41,6 +42,7 @@ end
 function CoreCutsceneFrameExporterDialog:_create_range_box(start_frame, end_frame)
 	local frame_range_sizer = EWS:StaticBoxSizer(self.__window, "HORIZONTAL", "Frame range")
 	local all_button = EWS:RadioButton(self.__window, "All", "frame_range", "ALIGN_CENTER_VERTICAL")
+
 	self.__range_button = EWS:RadioButton(self.__window, "Frames", "frame_range", "ALIGN_CENTER_VERTICAL")
 
 	all_button:set_value(true)
@@ -93,13 +95,12 @@ end
 
 function CoreCutsceneFrameExporterDialog:_on_ok_clicked()
 	local folder_name = self:_folder_name_input()
-	local start_frame, end_frame = nil
+	local start_frame, end_frame
 
 	if self.__range_button:get_value() == true then
 		start_frame, end_frame = self:_start_end_frame_input()
 	else
-		end_frame = self.__end_frame
-		start_frame = self.__start_frame
+		start_frame, end_frame = self.__start_frame, self.__end_frame
 	end
 
 	if folder_name and start_frame and end_frame then
@@ -144,11 +145,11 @@ function CoreCutsceneFrameExporterDialog:_start_end_frame_input()
 		EWS:MessageDialog(self.__window, "The ending frame is not a valid number.", "Invalid Input", "OK,ICON_EXCLAMATION"):show_modal()
 
 		return nil
-	elseif tonumber(end_frame) < tonumber(start_frame) then
+	elseif tonumber(start_frame) > tonumber(end_frame) then
 		EWS:MessageDialog(self.__window, "The ending frame number is smaller than the starting frame number.", "Invalid Range", "OK,ICON_EXCLAMATION"):show_modal()
 
 		return nil
-	elseif tonumber(self.__end_frame) < tonumber(end_frame) then
+	elseif tonumber(end_frame) > tonumber(self.__end_frame) then
 		EWS:MessageDialog(self.__window, "The ending frame number does not exist in the active film track.", "Invalid Range", "OK,ICON_EXCLAMATION"):show_modal()
 
 		return nil

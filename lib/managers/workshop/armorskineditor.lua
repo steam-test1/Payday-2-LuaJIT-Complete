@@ -9,9 +9,8 @@ ArmorSkinEditor.texture_types = {
 }
 
 function ArmorSkinEditor:init()
-	Global.armor_skin_editor = {
-		skins = {}
-	}
+	Global.armor_skin_editor = {}
+	Global.armor_skin_editor.skins = {}
 	self._global = Global.armor_skin_editor
 	self._current_skin = 1
 	self._active = false
@@ -73,7 +72,9 @@ end
 
 function ArmorSkinEditor:select_skin(local_skin_id)
 	local is_reload = self._current_skin == local_skin_id
+
 	self._current_skin = local_skin_id
+
 	local skin = self:get_current_skin()
 
 	if not skin then
@@ -87,6 +88,7 @@ function ArmorSkinEditor:select_skin(local_skin_id)
 	end
 
 	local new_cosmetics_data = deep_clone(skin:config().data)
+
 	new_cosmetics_data.id = skin:config().data.name_id or "skin_default"
 
 	local function cb()
@@ -95,6 +97,7 @@ function ArmorSkinEditor:select_skin(local_skin_id)
 		managers.menu_scene:update(TimerManager:main():time(), TimerManager:main():delta_time())
 
 		managers.menu_scene._disable_item_updates = true
+
 		local unsaved = self._unsaved
 
 		self:apply_changes(new_cosmetics_data)
@@ -114,6 +117,7 @@ function ArmorSkinEditor:save_skin(skin, name, data)
 	skin:config().name = name or skin:config().name
 	skin:config().data = data or skin:config().data
 	skin:config().type = "armor_skin"
+
 	local tags = self:get_current_item_tags()
 
 	skin:clear_tags()
@@ -241,6 +245,7 @@ ArmorSkinEditor.get_screenshot_list = SkinEditor.get_screenshot_list
 
 function ArmorSkinEditor:enter_screenshot_mode()
 	local vp = managers.environment_controller._vp:vp()
+
 	self._old_bloom_setting = vp:get_post_processor_effect_name("World", Idstring("bloom_combine_post_processor"))
 
 	vp:set_post_processor_effect("World", Idstring("bloom_combine_post_processor"), Idstring("bloom_combine_empty"))
@@ -251,6 +256,7 @@ function ArmorSkinEditor:enter_screenshot_mode()
 	managers.menu_scene:update(TimerManager:main():time(), TimerManager:main():delta_time())
 
 	managers.menu_scene._disable_item_updates = true
+
 	local unsaved = self._unsaved
 
 	self:apply_changes()
@@ -270,11 +276,12 @@ function ArmorSkinEditor:_spawn_screenshot_background()
 	local offset_x = Vector3(0, 600, 0):rotate_with(unit:rotation())
 	local offset_y = Vector3(0, 0, 500):rotate_with(unit:rotation())
 	local pos_offset = Vector3(0, 450, 100):rotate_with(unit:rotation())
+
 	self._screenshot_ws = gui:create_world_workspace(1000, 1000, unit:position() - pos_offset, offset_x, offset_y)
 
 	self._screenshot_ws:panel():rect({
-		name = "bg",
 		layer = 20000,
+		name = "bg",
 		color = Color(0, 1, 0)
 	})
 	self._screenshot_ws:set_billboard(Workspace.BILLBOARD_BOTH)
@@ -307,14 +314,17 @@ function ArmorSkinEditor:publish_skin(skin, title, desc, changelog, callb)
 				managers.network.account:overlay_activate("url", "steam://url/CommunityFilePage/" .. id)
 			end
 		else
-			local dialog_data = {
-				title = managers.localization:text("dialog_error_title")
-			}
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("dialog_error_title")
+
 			local result_text = managers.localization:exists(result) and managers.localization:text(result) or result
+
 			dialog_data.text = managers.localization:text("debug_wskn_submit_failed") .. "\n" .. result_text
-			local ok_button = {
-				text = managers.localization:text("dialog_ok")
-			}
+
+			local ok_button = {}
+
+			ok_button.text = managers.localization:text("dialog_ok")
 			dialog_data.button_list = {
 				ok_button
 			}
@@ -381,11 +391,12 @@ function ArmorSkinEditor:publish_skin(skin, title, desc, changelog, callb)
 			if skin:submit(changelog, cb) then
 				local bar_radius = 20
 				local panel = managers.menu:active_menu().renderer.ws:panel()
+
 				self._publish_bar = CircleBitmapGuiObject:new(panel, {
-					use_bg = true,
-					current = 0,
 					blend_mode = "add",
+					current = 0,
 					layer = 2,
+					use_bg = true,
 					radius = bar_radius,
 					sides = bar_radius,
 					total = bar_radius,

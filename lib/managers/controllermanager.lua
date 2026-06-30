@@ -80,6 +80,7 @@ end
 
 function ControllerManager:clear_user_mod(category, CONTROLS_INFO)
 	Global.controller_manager.user_mod = Global.controller_manager.user_mod or {}
+
 	local names = table.map_keys(Global.controller_manager.user_mod)
 
 	for _, name in ipairs(names) do
@@ -150,13 +151,14 @@ function ControllerManager:_show_controller_changed_dialog()
 	end
 
 	Global.controller_manager.connect_controller_dialog_visible = true
-	local data = {
-		callback_func = callback(self, self, "connect_controller_dialog_callback"),
-		title = managers.localization:text("dialog_connect_controller_title"),
-		text = managers.localization:text("dialog_connect_controller_text", {
-			NR = Global.controller_manager.default_wrapper_index or 1
-		})
-	}
+
+	local data = {}
+
+	data.callback_func = callback(self, self, "connect_controller_dialog_callback")
+	data.title = managers.localization:text("dialog_connect_controller_title")
+	data.text = managers.localization:text("dialog_connect_controller_text", {
+		NR = Global.controller_manager.default_wrapper_index or 1
+	})
 
 	if SystemInfo:platform() == Idstring("XB1") then
 		data.no_buttons = true

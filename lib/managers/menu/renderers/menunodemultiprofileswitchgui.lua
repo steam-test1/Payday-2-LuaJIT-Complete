@@ -10,6 +10,7 @@ MenuNodeMultiProfileSwitchGui.HEIGHT = 652
 MenuNodeMultiProfileSwitchGui.PREVIEW_BOX_SIZE = 135
 MenuNodeMultiProfileSwitchGui.PREVIEW_BOX_PADDING = 6
 MenuNodeMultiProfileSwitchGui.PERK_DECK_X = 0.7
+
 local IDS_1 = Idstring("1")
 
 function MenuNodeMultiProfileSwitchGui:init(node, layer, parameters)
@@ -33,20 +34,21 @@ function MenuNodeMultiProfileSwitchGui:_setup_panels(node)
 	MenuNodeMultiProfileSwitchGui.super._setup_panels(self, node)
 
 	local fullscreen_ws = managers.menu_component:fullscreen_ws()
+
 	self._fullscreen_panel = fullscreen_ws:panel():panel({
 		layer = 50
 	})
 
 	self._fullscreen_panel:rect({
-		name = "bg",
 		alpha = 0.4,
+		name = "bg",
 		color = Color.black
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = -1,
 		name = "blur",
 		render_template = "VertexColorTexturedBlur3D",
-		layer = -1,
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
 	})
@@ -62,6 +64,7 @@ end
 function MenuNodeMultiProfileSwitchGui:_setup_item_panel_parent(safe_rect, shape)
 	local x = safe_rect.x + safe_rect.width / 2 - self.WIDTH / 2 + self.PADDING
 	local y = safe_rect.y + safe_rect.height / 2 - self.HEIGHT / 2
+
 	shape = shape or {}
 	shape.x = shape.x or x
 	shape.y = shape.y or y
@@ -96,8 +99,8 @@ function MenuNodeMultiProfileSwitchGui:_setup_item_panel(safe_rect, res)
 	end
 
 	self.box_panel = self._item_panel_parent:panel({
-		name = "box_panel",
 		layer = 51,
+		name = "box_panel",
 		x = -self.PADDING,
 		y = -self.PADDING,
 		w = self.WIDTH + self.PADDING * 2,
@@ -149,8 +152,8 @@ function MenuNodeMultiProfileSwitchGui:_create_legends(node)
 	end
 
 	self._legends_panel = self.ws:panel():panel({
-		name = "legend_panel",
 		layer = 100,
+		name = "legend_panel",
 		x = safe_rect_pixels.x,
 		y = safe_rect_pixels.y,
 		w = safe_rect_pixels.width,
@@ -159,15 +162,16 @@ function MenuNodeMultiProfileSwitchGui:_create_legends(node)
 
 	if managers.menu:is_pc_controller() then
 		self._legends = {}
+
 		local panel = self._legends_panel:panel({
-			visible = false,
-			name = "select"
+			name = "select",
+			visible = false
 		})
 		local icon = panel:bitmap({
-			texture = "guis/textures/pd2/mouse_buttons",
-			name = "icon",
-			h = 18,
 			blend_mode = "add",
+			h = 18,
+			name = "icon",
+			texture = "guis/textures/pd2/mouse_buttons",
 			w = 13,
 			texture_rect = {
 				1,
@@ -177,8 +181,8 @@ function MenuNodeMultiProfileSwitchGui:_create_legends(node)
 			}
 		})
 		local text = panel:text({
-			name = "text",
 			blend_mode = "add",
+			name = "text",
 			text = managers.localization:to_upper_text("menu_mouse_select"),
 			font = tweak_data.menu.pd2_tiny_font,
 			font_size = tweak_data.menu.pd2_tiny_font_size,
@@ -192,15 +196,16 @@ function MenuNodeMultiProfileSwitchGui:_create_legends(node)
 		panel:set_h(text:bottom())
 
 		self._legends.select = panel
+
 		local panel = self._legends_panel:panel({
-			visible = false,
-			name = "move"
+			name = "move",
+			visible = false
 		})
 		local icon = panel:bitmap({
-			texture = "guis/textures/pd2/mouse_buttons",
-			name = "icon",
-			h = 18,
 			blend_mode = "add",
+			h = 18,
+			name = "icon",
+			texture = "guis/textures/pd2/mouse_buttons",
 			w = 13,
 			texture_rect = {
 				18,
@@ -210,8 +215,8 @@ function MenuNodeMultiProfileSwitchGui:_create_legends(node)
 			}
 		})
 		local text = panel:text({
-			name = "text",
 			blend_mode = "add",
+			name = "text",
 			text = managers.localization:to_upper_text("menu_mouse_start_move"),
 			font = tweak_data.menu.pd2_tiny_font,
 			font_size = tweak_data.menu.pd2_tiny_font_size,
@@ -227,12 +232,12 @@ function MenuNodeMultiProfileSwitchGui:_create_legends(node)
 		self._legends.move = panel
 	else
 		local text = self._legends_panel:text({
-			blend_mode = "add",
-			name = "text",
-			layer = 100,
 			align = "right",
-			text = "TEXT",
+			blend_mode = "add",
 			halign = "grow",
+			layer = 100,
+			name = "text",
+			text = "TEXT",
 			valign = "grow",
 			font = tweak_data.menu.pd2_tiny_font,
 			font_size = tweak_data.menu.pd2_tiny_font_size,
@@ -268,9 +273,7 @@ function MenuNodeMultiProfileSwitchGui:_update_legends(row_item)
 			self._legends.move:set_visible(show_move)
 			self._legends.move:set_right(x)
 
-			if show_move then
-				x = self._legends.move:left() - padding or x
-			end
+			x = show_move and self._legends.move:left() - padding or x
 		end
 
 		if alive(self._legends.select) then
@@ -298,6 +301,7 @@ function MenuNodeMultiProfileSwitchGui:_update_legends(row_item)
 				BTN_UPDATE = managers.localization:btn_macro("menu_update"),
 				BTN_BACK = managers.localization:btn_macro("back")
 			})
+
 			legend_text = legend_text .. spacing .. legend
 		end
 
@@ -308,6 +312,7 @@ end
 function MenuNodeMultiProfileSwitchGui:_layout_preview()
 	local ws_panel = self.ws:panel()
 	local box_padding = self.PREVIEW_BOX_PADDING
+
 	self._preview_boxes = {}
 
 	if alive(self._back_legend) then
@@ -316,11 +321,11 @@ function MenuNodeMultiProfileSwitchGui:_layout_preview()
 
 	if not managers.menu:is_pc_controller() then
 		self._back_legend = ws_panel:text({
-			name = "back_legend",
-			vertical = "bottom",
 			align = "right",
 			blend_mode = "add",
 			layer = 100,
+			name = "back_legend",
+			vertical = "bottom",
 			x = self._legends_panel:x(),
 			y = self._legends_panel:y(),
 			w = self.WIDTH,
@@ -337,8 +342,8 @@ function MenuNodeMultiProfileSwitchGui:_layout_preview()
 	end
 
 	self._preview_panel = ws_panel:panel({
-		name = "preview_panel",
 		layer = 54,
+		name = "preview_panel",
 		x = self.item_panel:world_right() + self.PADDING,
 		w = self.PROFILE_WIDTH,
 		h = self.PROFILE_HEIGHT
@@ -347,9 +352,9 @@ function MenuNodeMultiProfileSwitchGui:_layout_preview()
 	self._preview_panel:set_world_top(self._item_panel_parent:world_top() + tweak_data.menu.pd2_small_font_size + box_padding)
 
 	self._profile_title = self._preview_panel:text({
-		text = "Profile",
-		name = "profile_title",
 		blend_mode = "add",
+		name = "profile_title",
+		text = "Profile",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
@@ -400,15 +405,15 @@ function MenuNodeMultiProfileSwitchGui:_layout_preview()
 	})
 
 	local primary_box = self:_create_preview_box(weapons_panel, {
-		weapon = true,
 		name = "primary",
 		perks = true,
+		weapon = true,
 		y = box_padding
 	})
 	local secondary_box = self:_create_preview_box(weapons_panel, {
-		weapon = true,
 		name = "secondary",
 		perks = true,
+		weapon = true,
 		y = primary_box.panel:bottom() + box_padding
 	})
 	local melee_box = self:_create_preview_box(weapons_panel, {
@@ -437,8 +442,8 @@ function MenuNodeMultiProfileSwitchGui:_layout_preview()
 	})
 
 	local armor_box = self:_create_preview_box(gear_panel, {
-		secondary = true,
 		name = "armor",
+		secondary = true,
 		y = box_padding
 	})
 	local deployable_box = self:_create_preview_box(gear_panel, {
@@ -460,7 +465,7 @@ function MenuNodeMultiProfileSwitchGui:_create_menu_item(row_item)
 		-- Nothing
 	elseif row_item.type ~= "divider" and row_item.name ~= "back" then
 		local perk_text = ""
-		local perk_data = nil
+		local perk_data
 
 		if row_item.name == managers.multi_profile:current_profile_index() then
 			local skillset = managers.skilltree:get_selected_skill_switch()
@@ -468,10 +473,12 @@ function MenuNodeMultiProfileSwitchGui:_create_menu_item(row_item)
 
 			if switch_data then
 				local perk_deck = managers.skilltree:digest_value(switch_data.specialization, false, 0)
+
 				perk_data = tweak_data.skilltree.specializations[perk_deck]
 			end
 		else
 			local profile = managers.multi_profile:profile(row_item.name)
+
 			perk_data = tweak_data.skilltree.specializations[profile and profile.perk_deck]
 		end
 
@@ -480,10 +487,10 @@ function MenuNodeMultiProfileSwitchGui:_create_menu_item(row_item)
 		end
 
 		row_item.perk_deck_gui = row_item.gui_panel:parent():text({
-			name = "perk_text",
 			alpha = 1,
 			blend_mode = "add",
 			layer = 52,
+			name = "perk_text",
 			text = perk_text,
 			font = self.small_font,
 			font_size = self.small_font_size
@@ -573,17 +580,17 @@ end
 
 function MenuNodeMultiProfileSwitchGui:gui_node_custom(row_item)
 	row_item.gui_panel = self._item_panel_parent:panel({
-		w = 3,
 		h = 3,
+		w = 3,
 		layer = self.layers.items
 	})
 	row_item.gui_pd2_panel = self.ws:panel():panel({
 		layer = self.layers.items
 	})
 	row_item.gui_text = row_item.gui_pd2_panel:text({
-		vertical = "bottom",
 		align = "right",
 		blend_mode = "add",
+		vertical = "bottom",
 		text = utf8.to_upper(row_item.text),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -643,10 +650,10 @@ function MenuNodeMultiProfileSwitchGui:_create_preview_box(parent, params)
 	preview_panel:set_center_x(parent:w() / 2)
 
 	local item_text = preview_panel:text({
-		text = "TEXT",
-		name = "text",
 		blend_mode = "add",
 		layer = 2,
+		name = "text",
+		text = "TEXT",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
@@ -670,9 +677,9 @@ function MenuNodeMultiProfileSwitchGui:_create_preview_box(parent, params)
 	icon_panel:set_center(preview_panel:w() / 2, preview_panel:h() / 2 + item_text:h() / 2)
 
 	local item_icon = icon_panel:bitmap({
-		texture = "guis/textures/pd2/endscreen/what_is_this",
+		layer = 1,
 		name = "icon",
-		layer = 1
+		texture = "guis/textures/pd2/endscreen/what_is_this"
 	})
 
 	item_icon:set_center(icon_panel:w() / 2, icon_panel:h() / 2)
@@ -688,16 +695,16 @@ function MenuNodeMultiProfileSwitchGui:_create_preview_box(parent, params)
 
 	if params.secondary then
 		box.dual_icon = icon_panel:bitmap({
-			texture = "guis/textures/pd2/endscreen/what_is_this",
+			layer = 1,
 			name = "dual_icon",
-			visible = false,
-			layer = 1
+			texture = "guis/textures/pd2/endscreen/what_is_this",
+			visible = false
 		})
 	elseif params.weapon then
 		box.background = icon_panel:bitmap({
-			texture = "guis/textures/pd2/endscreen/what_is_this",
+			blend_mode = "add",
 			name = "background",
-			blend_mode = "add"
+			texture = "guis/textures/pd2/endscreen/what_is_this"
 		})
 	end
 
@@ -717,8 +724,8 @@ end
 function MenuNodeMultiProfileSwitchGui:_create_skills_box(parent)
 	local padding = self.PREVIEW_BOX_PADDING
 	local inner_panel = parent:panel({
-		name = "inner_panel",
 		layer = 5,
+		name = "inner_panel",
 		x = padding * 2,
 		y = padding * 2,
 		w = parent:w() - padding * 4,
@@ -741,9 +748,9 @@ function MenuNodeMultiProfileSwitchGui:_create_skills_box(parent)
 	skillset_box:set_color(tweak_data.screen_colors.achievement_grey)
 
 	local skillset_text = skillset_panel:text({
-		text = "My Cool Skill Build",
-		name = "text",
 		blend_mode = "add",
+		name = "text",
+		text = "My Cool Skill Build",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		color = tweak_data.screen_colors.text
@@ -752,9 +759,9 @@ function MenuNodeMultiProfileSwitchGui:_create_skills_box(parent)
 	self.make_fine_text(skillset_text)
 
 	local skill_points_text = skillset_panel:text({
-		text = "100 POINTS AVAILABLE",
-		name = "skill_points_text",
 		blend_mode = "add",
+		name = "skill_points_text",
+		text = "100 POINTS AVAILABLE",
 		y = skillset_text:bottom() + padding,
 		font = tweak_data.menu.pd2_tiny_font,
 		font_size = tweak_data.menu.pd2_tiny_font_size,
@@ -790,9 +797,9 @@ function MenuNodeMultiProfileSwitchGui:_create_skills_box(parent)
 	perk_icon:set_center_y(perk_panel:h() / 2)
 
 	local perk_text = perk_panel:text({
-		text = "Generic Perk",
-		name = "text",
 		blend_mode = "add",
+		name = "text",
+		text = "Generic Perk",
 		x = perk_icon:right() + padding,
 		y = padding,
 		font = tweak_data.menu.pd2_medium_font,
@@ -807,6 +814,7 @@ function MenuNodeMultiProfileSwitchGui:_create_skills_box(parent)
 		text = perk_text,
 		icon = perk_icon
 	}
+
 	local skillpoints_panel = inner_panel:panel({
 		name = "skillpoints_panel",
 		w = inner_panel:w() - skillset_panel:w(),
@@ -816,7 +824,7 @@ function MenuNodeMultiProfileSwitchGui:_create_skills_box(parent)
 	skillpoints_panel:set_right(inner_panel:w())
 
 	local skilltrees = {}
-	local previous_icon = nil
+	local previous_icon
 
 	for index in ipairs(tweak_data.skilltree.skill_pages_order) do
 		local tree_icon = skillpoints_panel:bitmap({
@@ -849,10 +857,10 @@ function MenuNodeMultiProfileSwitchGui:_create_skills_box(parent)
 
 		for i = 1, 3 do
 			local tree_text = text_panel:text({
-				text = "00",
 				align = "center",
 				blend_mode = "add",
 				layer = 2,
+				text = "00",
 				name = "text_" .. index,
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -882,6 +890,7 @@ function MenuNodeMultiProfileSwitchGui:_update_preview_box(box, params)
 	end
 
 	params = params or {}
+
 	local text = params.text or managers.localization:to_upper_text("menu_loadout_empty")
 	local text_color = params.text_color or tweak_data.screen_colors.text
 	local texture = params.texture or "guis/textures/pd2/add_icon"
@@ -896,27 +905,30 @@ function MenuNodeMultiProfileSwitchGui:_update_preview_box(box, params)
 	local dual_icon_item = box.dual_icon
 	local bg_item = box.background
 	local perks_panel = box.perks_panel
-	local font_size = tweak_data.menu.pd2_small_font_size
 
-	text_item:stop()
-	text_item:set_x(0)
-	text_item:set_text(text)
-	text_item:set_font_size(font_size)
-	text_item:set_color(text_color)
-	text_item:show()
-	self.make_fine_text(text_item)
+	do
+		local font_size = tweak_data.menu.pd2_small_font_size
 
-	local max_width = box.panel:w() - box.padding * 2
-	local current_width = text_item:w()
+		text_item:stop()
+		text_item:set_x(0)
+		text_item:set_text(text)
+		text_item:set_font_size(font_size)
+		text_item:set_color(text_color)
+		text_item:show()
+		self.make_fine_text(text_item)
 
-	if max_width < current_width then
-		local scale = max_width / current_width
+		local max_width = box.panel:w() - box.padding * 2
+		local current_width = text_item:w()
 
-		if scale > 0.5 then
-			text_item:set_font_size(font_size * scale)
-			self.make_fine_text(text_item)
-		else
-			text_item:animate(callback(self, self, "_animate_scroll_text"))
+		if max_width < current_width then
+			local scale = max_width / current_width
+
+			if scale > 0.5 then
+				text_item:set_font_size(font_size * scale)
+				self.make_fine_text(text_item)
+			else
+				text_item:animate(callback(self, self, "_animate_scroll_text"))
+			end
 		end
 	end
 
@@ -1010,10 +1022,10 @@ function MenuNodeMultiProfileSwitchGui:_update_preview_box(box, params)
 			for _, perk_texture in ipairs(perks) do
 				if DB:has(Idstring("texture"), perk_texture) then
 					local perk_object = perks_panel:bitmap({
-						w = 16,
-						h = 16,
 						alpha = 0.8,
+						h = 16,
 						layer = 2,
+						w = 16,
 						texture = perk_texture
 					})
 
@@ -1043,11 +1055,11 @@ function MenuNodeMultiProfileSwitchGui:_animate_scroll_text(text)
 		end
 
 		wait(1)
-		over(fade_t, function (p)
+		over(fade_t, function(p)
 			text:set_alpha(1 - p)
 		end)
 		text:set_x(0)
-		over(fade_t, function (p)
+		over(fade_t, function(p)
 			text:set_alpha(p)
 		end)
 	end
@@ -1055,6 +1067,7 @@ end
 
 function MenuNodeMultiProfileSwitchGui:_update_profile_preview(profile_index, profile)
 	profile = profile or {}
+
 	local profile_name = utf8.to_upper(managers.multi_profile:profile_name(profile_index))
 
 	self._profile_title:set_text(profile_name)
@@ -1196,6 +1209,7 @@ function MenuNodeMultiProfileSwitchGui:_update_deployable_preview(primary_id, se
 
 	if secondary_data then
 		local secondary_name = managers.localization:text(secondary_data.name_id)
+
 		name = name .. " / " .. secondary_name
 	end
 

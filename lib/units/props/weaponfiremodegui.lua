@@ -1,21 +1,21 @@
 WeaponFiremodeGui = WeaponFiremodeGui or class()
-WeaponFiremodeGui.COLORS = {
-	black = Color(0, 0, 0),
-	white = Color(1, 1, 1),
-	grey = Color(0.8, 0.8, 0.8),
-	red = Color(0.8, 0, 0),
-	green = Color(0, 0.8, 0),
-	blue = Color(0, 0, 0.8),
-	yellow = Color(0.8, 0.8, 0),
-	orange = Color(0.8, 0.4, 0),
-	light_red = Color(0.8, 0.4, 0.4),
-	light_blue = Color(0.4, 0.6, 0.8),
-	light_green = Color(0.6, 0.8, 0.4),
-	light_yellow = Color(0.8, 0.8, 0.4),
-	light_orange = Color(0.8, 0.6, 0.4),
-	purple = Color(0.8, 0, 0.8)
-}
+WeaponFiremodeGui.COLORS = {}
+WeaponFiremodeGui.COLORS.black = Color(0, 0, 0)
+WeaponFiremodeGui.COLORS.white = Color(1, 1, 1)
+WeaponFiremodeGui.COLORS.grey = Color(0.8, 0.8, 0.8)
+WeaponFiremodeGui.COLORS.red = Color(0.8, 0, 0)
+WeaponFiremodeGui.COLORS.green = Color(0, 0.8, 0)
+WeaponFiremodeGui.COLORS.blue = Color(0, 0, 0.8)
+WeaponFiremodeGui.COLORS.yellow = Color(0.8, 0.8, 0)
+WeaponFiremodeGui.COLORS.orange = Color(0.8, 0.4, 0)
+WeaponFiremodeGui.COLORS.light_red = Color(0.8, 0.4, 0.4)
+WeaponFiremodeGui.COLORS.light_blue = Color(0.4, 0.6, 0.8)
+WeaponFiremodeGui.COLORS.light_green = Color(0.6, 0.8, 0.4)
+WeaponFiremodeGui.COLORS.light_yellow = Color(0.8, 0.8, 0.4)
+WeaponFiremodeGui.COLORS.light_orange = Color(0.8, 0.6, 0.4)
+WeaponFiremodeGui.COLORS.purple = Color(0.8, 0, 0.8)
 WeaponFiremodeGui._EXTENSION_NAME = "digital_gui"
+
 local mvector_tl = Vector3()
 local mvector_tr = Vector3()
 local mvector_bl = Vector3()
@@ -28,25 +28,22 @@ function WeaponFiremodeGui:init(unit)
 	self.HEIGHT = self.HEIGHT or 360
 	self.FONT = self.FONT or "fonts/font_digital"
 	self.FONT_SIZE = self.FONT_SIZE or 80
-	self.FIRE_MODE_COLOR_TYPES = {
-		auto = self.AUTO_COLOR_TYPE or "light_blue",
-		volley = self.VOLLEY_COLOR_TYPE or "green"
-	}
-	self.FIRE_MODE_COLORS = {
-		auto = WeaponFiremodeGui.COLORS[self.FIRE_MODE_COLOR_TYPES.auto],
-		volley = WeaponFiremodeGui.COLORS[self.FIRE_MODE_COLOR_TYPES.volley]
-	}
+	self.FIRE_MODE_COLOR_TYPES = {}
+	self.FIRE_MODE_COLOR_TYPES.auto = self.AUTO_COLOR_TYPE or "light_blue"
+	self.FIRE_MODE_COLOR_TYPES.volley = self.VOLLEY_COLOR_TYPE or "green"
+	self.FIRE_MODE_COLORS = {}
+	self.FIRE_MODE_COLORS.auto = WeaponFiremodeGui.COLORS[self.FIRE_MODE_COLOR_TYPES.auto]
+	self.FIRE_MODE_COLORS.volley = WeaponFiremodeGui.COLORS[self.FIRE_MODE_COLOR_TYPES.volley]
 	self.BG_COLOR_TYPE = self.BG_COLOR_TYPE
 
 	if self.BG_COLOR_TYPE then
 		self.BG_COLOR = WeaponFiremodeGui.COLORS[self.BG_COLOR_TYPE]
 	end
 
-	self._volley_data = {
-		charge_start_t = 0,
-		charge_max_t = 0,
-		num_bars = self.VOLLEY_CHARGE_BARS or 5
-	}
+	self._volley_data = {}
+	self._volley_data.charge_start_t = 0
+	self._volley_data.charge_max_t = 0
+	self._volley_data.num_bars = self.VOLLEY_CHARGE_BARS or 5
 	self._firemode = nil
 	self._firemode_panel = nil
 	self._gui_object = self._gui_object or "gui_object"
@@ -76,17 +73,18 @@ function WeaponFiremodeGui:setup()
 
 	local font = self.FONT
 	local font_size = self.FONT_SIZE
+
 	self._auto_fire_panel = self._panel:panel({
-		visible = false,
-		name = "auto_fire"
+		name = "auto_fire",
+		visible = false
 	})
 
 	self._auto_fire_panel:text({
-		text = "000",
-		name = "ammo",
-		vertical = "center",
 		align = "center",
 		layer = 0,
+		name = "ammo",
+		text = "000",
+		vertical = "center",
 		font = font,
 		font_size = font_size,
 		color = self.FIRE_MODE_COLORS.auto
@@ -94,17 +92,18 @@ function WeaponFiremodeGui:setup()
 
 	local padding = 4
 	local half_padding = padding * 0.5
+
 	self._volley_fire_panel = self._panel:panel({
-		visible = false,
-		name = "volley_fire"
+		name = "volley_fire",
+		visible = false
 	})
 
 	self._volley_fire_panel:text({
-		vertical = "center",
-		name = "ammo",
 		align = "center",
-		text = "000",
 		layer = 0,
+		name = "ammo",
+		text = "000",
+		vertical = "center",
 		w = self._volley_fire_panel:w() * 0.5,
 		font = font,
 		font_size = font_size,
@@ -119,6 +118,7 @@ function WeaponFiremodeGui:setup()
 		y = padding
 	})
 	self._volley_charge_bars = {}
+
 	local width = (self._volley_charge_panel:width() - (self._volley_data.num_bars - 1) * half_padding - 2 * padding) / self._volley_data.num_bars
 	local height = self._volley_charge_panel:height() - padding * 2
 	local volley_charge_box_gui = BoxGuiObject:new(self._volley_charge_panel, {
@@ -186,7 +186,9 @@ end
 function WeaponFiremodeGui:update(unit, t, dt)
 	if self._firemode == "volley" then
 		local ratio = math.map_range(t, self._volley_data.charge_start_t, self._volley_data.charge_start_t + self._volley_data.charge_max_t, 0, 1)
+
 		ratio = math.clamp(ratio, 0, 1)
+
 		local bars_show = math.clamp(math.ceil(#self._volley_charge_bars * ratio), 1, #self._volley_charge_bars)
 
 		self._volley_charge_bars[bars_show]:show()
@@ -202,6 +204,7 @@ function WeaponFiremodeGui:set_firemode(firemode)
 
 	if firemode then
 		local firemode_panel_name = string.format("_%s_fire_panel", firemode)
+
 		self._firemode_panel = self[firemode_panel_name]
 
 		if self._firemode_panel then

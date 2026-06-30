@@ -40,7 +40,7 @@ local function hide_static_engine_method(engine_class_name, method_name, message
 	assert(engine_class_name and method_name, "Invalid argument list.")
 
 	local function failure_func(failure_message)
-		return function (...)
+		return function(...)
 			error(string.format("Failed to call hidden method %s:%s(...). %s", engine_class_name, method_name, failure_message))
 		end
 	end
@@ -57,13 +57,13 @@ local function hide_static_engine_method(engine_class_name, method_name, message
 		return failure_func("Method not found.")
 	end
 
-	method_table[method_name] = function ()
+	method_table[method_name] = function()
 		error(string.format("%s:%s(...) has been hidden by core. %s", engine_class_name, method_name, message or "You should not call it directly."))
 	end
 
 	local class_table = assert(get_class_table(engine_class_name))
 
-	return function (...)
+	return function(...)
 		return method(class_table, ...)
 	end
 end

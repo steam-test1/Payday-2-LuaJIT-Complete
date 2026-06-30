@@ -9,7 +9,7 @@ function Data:init()
 end
 
 function Data:get_node(node_name, ...)
-	local node = nil
+	local node
 
 	if node_name then
 		node = self._nodes[node_name]
@@ -40,7 +40,7 @@ end
 
 function Data:load_data(file_path, menu_id)
 	local root = PackageManager:script_data(Idstring("menu"), file_path:id())
-	local menu = nil
+	local menu
 
 	for _, c in ipairs(root) do
 		if c._meta == "menu" and c.id and c.id == menu_id then

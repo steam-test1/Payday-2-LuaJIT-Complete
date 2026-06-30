@@ -9,7 +9,9 @@ function ItemToggle:init(data_node, parameters)
 	CoreMenuItem.Item.init(self, data_node, parameters)
 
 	self._type = "toggle"
+
 	local params = self._parameters
+
 	self.options = {}
 	self.selected = 1
 
@@ -89,12 +91,12 @@ function ItemToggle:setup_gui(node, row_item)
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
-	row_item.gui_text = node:_text_item_part(row_item, row_item.gui_panel, node:_right_align())
+	row_item.gui_text = node._text_item_part(node, row_item, row_item.gui_panel, node._right_align(node))
 
 	row_item.gui_text:set_text(row_item.to_upper and utf8.to_upper(row_item.text) or row_item.text)
 
 	if self:parameter("title_id") then
-		row_item.gui_title = node:_text_item_part(row_item, row_item.gui_panel, node:_right_align(), "right")
+		row_item.gui_title = node._text_item_part(node, row_item, row_item.gui_panel, node._right_align(node), "right")
 
 		row_item.gui_title:set_text(managers.localization:text(self:parameter("title_id")))
 	end
@@ -109,15 +111,15 @@ function ItemToggle:setup_gui(node, row_item)
 	end
 
 	if self:selected_option():parameters().text_id then
-		row_item.gui_option = node:_text_item_part(row_item, row_item.gui_panel, node:_left_align())
+		row_item.gui_option = node._text_item_part(node, row_item, row_item.gui_panel, node._left_align(node))
 
 		row_item.gui_option:set_align(row_item.align)
 	end
 
 	if self:selected_option():parameters().icon then
 		row_item.gui_icon = row_item.gui_panel:bitmap({
-			y = 0,
 			x = 0,
+			y = 0,
 			layer = node.layers.items,
 			texture_rect = {
 				0,
@@ -137,7 +139,7 @@ function ItemToggle:setup_gui(node, row_item)
 	end
 
 	if self:info_panel() == "lobby_campaign" then
-		node:_set_lobby_campaign(row_item)
+		node._set_lobby_campaign(node, row_item)
 	end
 
 	return true
@@ -159,13 +161,13 @@ function ItemToggle:reload(row_item, node)
 
 	row_item.gui_text:set_height(h)
 	row_item.gui_panel:set_height(h)
-	row_item.gui_panel:set_width(safe_rect.width - node:_mid_align())
-	row_item.gui_panel:set_x(node:_mid_align())
+	row_item.gui_panel:set_width(safe_rect.width - node._mid_align(node))
+	row_item.gui_panel:set_x(node._mid_align(node))
 
 	if row_item.gui_option then
 		row_item.gui_option:set_font_size(node.font_size)
-		row_item.gui_option:set_width(node:_left_align() - row_item.gui_panel:x())
-		row_item.gui_option:set_right(node:_left_align() - row_item.gui_panel:x())
+		row_item.gui_option:set_width(node._left_align(node) - row_item.gui_panel:x())
+		row_item.gui_option:set_right(node._left_align(node) - row_item.gui_panel:x())
 		row_item.gui_option:set_height(h)
 	end
 
@@ -174,7 +176,7 @@ function ItemToggle:reload(row_item, node)
 	if row_item.align == "right" then
 		row_item.gui_text:set_right(row_item.gui_panel:w())
 	else
-		row_item.gui_text:set_left(node:_right_align() - row_item.gui_panel:x() + (self:parameters().expand_value or 0))
+		row_item.gui_text:set_left(node._right_align(node) - row_item.gui_panel:x() + (self:parameters().expand_value or 0))
 	end
 
 	if row_item.gui_icon then
@@ -186,11 +188,11 @@ function ItemToggle:reload(row_item, node)
 				row_item.gui_icon:set_right(row_item.gui_panel:w())
 				row_item.gui_text:set_right(row_item.gui_icon:left())
 			else
-				row_item.gui_icon:set_left(node:_right_align() - row_item.gui_panel:x() + (self:parameters().expand_value or 0))
+				row_item.gui_icon:set_left(node._right_align(node) - row_item.gui_panel:x() + (self:parameters().expand_value or 0))
 				row_item.gui_text:set_left(row_item.gui_icon:right())
 			end
 		elseif row_item.align == "right" then
-			row_item.gui_icon:set_left(node:_right_align() - row_item.gui_panel:x() + (self:parameters().expand_value or 0))
+			row_item.gui_icon:set_left(node._right_align(node) - row_item.gui_panel:x() + (self:parameters().expand_value or 0))
 		else
 			row_item.gui_icon:set_right(row_item.gui_panel:w())
 		end
@@ -203,15 +205,15 @@ function ItemToggle:reload(row_item, node)
 		if row_item.gui_icon then
 			row_item.gui_title:set_right(row_item.gui_icon:left() - node._align_line_padding * 2)
 		else
-			row_item.gui_title:set_right(node:_left_align())
+			row_item.gui_title:set_right(node._left_align(node))
 		end
 	end
 
 	if row_item.gui_info_panel then
 		if self:info_panel() == "lobby_campaign" then
-			node:_align_lobby_campaign(row_item)
+			node._align_lobby_campaign(node, row_item)
 		else
-			node:_align_info_panel(row_item)
+			node._align_info_panel(node, row_item)
 		end
 	end
 
@@ -228,7 +230,7 @@ function ItemToggle:reload(row_item, node)
 	self:_set_toggle_item_image(row_item)
 
 	if self:info_panel() == "lobby_campaign" then
-		node:_reload_lobby_campaign(row_item)
+		node._reload_lobby_campaign(node, row_item)
 	end
 
 	return true
@@ -279,7 +281,7 @@ function ItemToggle:highlight_row_item(node, row_item, mouse_over)
 	end
 
 	if self:info_panel() == "lobby_campaign" then
-		node:_highlight_lobby_campaign(row_item)
+		node._highlight_lobby_campaign(node, row_item)
 	end
 
 	return true
@@ -302,7 +304,7 @@ function ItemToggle:fade_row_item(node, row_item)
 	end
 
 	if self:info_panel() == "lobby_campaign" then
-		node:_fade_lobby_campaign(row_item)
+		node._fade_lobby_campaign(node, row_item)
 	end
 
 	return true

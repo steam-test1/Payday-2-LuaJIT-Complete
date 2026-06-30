@@ -32,8 +32,8 @@ function ExplosionDamageUnitElement:_build_panel(panel, panel_sizer)
 		min = 0
 	}, "The range the explosion should reach")
 	self:_build_value_number(panel, panel_sizer, "damage", {
-		min = 0,
 		floats = 0,
-		max = 100
+		max = 100,
+		min = 0
 	}, "The damage from the explosion")
 end

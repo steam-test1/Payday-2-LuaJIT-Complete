@@ -46,8 +46,8 @@ function SpecialObjectiveGroupElement:update_selected(t, dt, selected_unit, all_
 
 			if draw then
 				self:_draw_link({
-					g = 0,
 					b = 0.75,
+					g = 0,
 					r = 0,
 					from_unit = unit,
 					to_unit = self._unit
@@ -101,8 +101,8 @@ end
 
 function SpecialObjectiveGroupElement:_so_raycast()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and (string.find(ray.unit:name():s(), "point_special_objective", 1, true) or string.find(ray.unit:name():s(), "ai_so_group", 1, true)) then
@@ -118,15 +118,15 @@ end
 
 function SpecialObjectiveGroupElement:_spawn_raycast()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if not ray or not ray.unit then
 		return
 	end
 
-	local id = nil
+	local id
 
 	if string.find(ray.unit:name():s(), "ai_enemy_group", 1, true) or string.find(ray.unit:name():s(), "ai_spawn_enemy", 1, true) or string.find(ray.unit:name():s(), "ai_civilian_group", 1, true) or string.find(ray.unit:name():s(), "ai_spawn_civilian", 1, true) then
 		id = ray.unit:unit_data().unit_id
@@ -268,12 +268,13 @@ function SpecialObjectiveGroupElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local mode_params = {
+		ctrlr_proportions = 2,
 		name = "Mode:",
 		name_proportions = 1,
-		tooltip = "Randomizer: assigns SOs to instigators. Forced Spawn: Will spawn a new group of choice. Recurring: Spawns new group. After failure, a new group will be spawned with a delay.",
 		sorted = false,
-		ctrlr_proportions = 2,
+		tooltip = "Randomizer: assigns SOs to instigators. Forced Spawn: Will spawn a new group of choice. Recurring: Spawns new group. After failure, a new group will be spawned with a delay.",
 		panel = panel,
 		sizer = panel_sizer,
 		options = {
@@ -301,13 +302,13 @@ function SpecialObjectiveGroupElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(use_instigator, 0, 0, "EXPAND")
 
 	local base_chance_params = {
-		name_proportions = 1,
-		name = "Base chance:",
 		ctrlr_proportions = 2,
-		tooltip = "Used to specify chance to happen (1==absolutely!)",
-		min = 0,
 		floats = 2,
 		max = 1,
+		min = 0,
+		name = "Base chance:",
+		name_proportions = 1,
+		tooltip = "Used to specify chance to happen (1==absolutely!)",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.base_chance
@@ -334,4 +335,5 @@ function SpecialObjectiveGroupElement:_build_panel(panel, panel_sizer)
 end
 
 function SpecialObjectiveGroupElement:add_to_mission_package()
+	return
 end

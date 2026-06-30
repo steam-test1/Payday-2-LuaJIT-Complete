@@ -16,6 +16,7 @@ function WeaponUnderbarrel:init(unit)
 end
 
 function WeaponUnderbarrel:destroy(unit)
+	return
 end
 
 function WeaponUnderbarrel:setup_data(setup_data, damage_multiplier, ammo_data)

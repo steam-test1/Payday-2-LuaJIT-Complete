@@ -5,6 +5,7 @@ function NpcVehicleStateInactive:init(unit)
 end
 
 function NpcVehicleStateInactive:update(t, dt)
+	return
 end
 
 function NpcVehicleStateInactive:name()

@@ -17,6 +17,7 @@ function ModifierLessPagers:init(data)
 	end
 
 	max_pagers = max_pagers - self:value()
+
 	local new_pagers_data = {}
 
 	for i = 1, max_pagers do

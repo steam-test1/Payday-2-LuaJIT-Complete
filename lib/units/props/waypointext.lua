@@ -1,4 +1,5 @@
 WaypointExt = WaypointExt or class()
+
 local EXTENSION_IDS = Idstring("waypoint")
 
 function WaypointExt:init(unit)
@@ -25,8 +26,10 @@ function WaypointExt:add_waypoint(icon_name, pos_z_offset, pos_locator, map_icon
 	self._pos_locator_ids = pos_locator and Idstring(self._pos_locator)
 	self._map_icon = map_icon
 	self._show_on_hud = show_on_hud
+
 	local rotation = self._pos_locator and self._unit:get_object(self._pos_locator_ids):rotation() or self._unit:rotation()
 	local position = self._pos_locator and self._unit:get_object(self._pos_locator_ids):position() or self._unit:position()
+
 	position = position + self._pos_z_offset
 	self._icon_pos = Vector3()
 
@@ -34,12 +37,12 @@ function WaypointExt:add_waypoint(icon_name, pos_z_offset, pos_locator, map_icon
 
 	self._icon_rot = rotation
 	self._waypoint_data = {
-		radius = 200,
-		waypoint_origin = "waypoint_extension",
-		waypoint_type = "unit_waypoint",
 		blend_mode = "add",
 		no_sync = true,
 		present_timer = 0,
+		radius = 200,
+		waypoint_origin = "waypoint_extension",
+		waypoint_type = "unit_waypoint",
 		icon = self._icon_name,
 		map_icon = map_icon,
 		unit = self._unit,

@@ -20,6 +20,7 @@ function MenuNodeTable:init(data_node)
 end
 
 function MenuNodeTable:_setup_columns()
+	return
 end
 
 function MenuNodeTable:_add_column(params)

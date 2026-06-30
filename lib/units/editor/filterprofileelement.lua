@@ -21,19 +21,19 @@ function FilterProfileUnitElement:_build_panel(panel, panel_sizer)
 	panel_sizer = panel_sizer or self._panel_sizer
 
 	self:_build_value_number(panel, panel_sizer, "player_lvl", {
-		min = 0,
 		floats = 0,
-		max = 100
+		max = 100,
+		min = 0
 	}, "Set player level filter")
 	self:_build_value_number(panel, panel_sizer, "money_earned", {
-		min = 0,
 		floats = 0,
-		max = 1000000
+		max = 1000000,
+		min = 0
 	}, "Set player level filter")
 	self:_build_value_number(panel, panel_sizer, "money_offshore", {
-		min = 0,
 		floats = 0,
-		max = 1000000
+		max = 1000000,
+		min = 0
 	}, "Set money offshore filter, in thousands.")
 	self:_build_value_combobox(panel, panel_sizer, "achievement", table.list_add({
 		"none"

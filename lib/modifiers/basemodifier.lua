@@ -10,6 +10,7 @@ function BaseModifier:init(data)
 end
 
 function BaseModifier:destroy()
+	return
 end
 
 function BaseModifier:value(id)

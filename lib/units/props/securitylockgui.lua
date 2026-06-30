@@ -252,16 +252,16 @@ function SecurityLockGui:destroy()
 end
 
 function SecurityLockGui:save(data)
-	local state = {
-		update_enabled = self._update_enabled,
-		timer = self._timer,
-		current_bar = self._current_bar,
-		current_timer = self._current_timer,
-		powered = self._powered,
-		done = self._done,
-		done_bars = self._done_bars,
-		visible = self._visible
-	}
+	local state = {}
+
+	state.update_enabled = self._update_enabled
+	state.timer = self._timer
+	state.current_bar = self._current_bar
+	state.current_timer = self._current_timer
+	state.powered = self._powered
+	state.done = self._done
+	state.done_bars = self._done_bars
+	state.visible = self._visible
 	data.SecurityLockGui = state
 end
 

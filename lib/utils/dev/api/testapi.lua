@@ -1,7 +1,9 @@
 TestAPI = TestAPI or class()
 Global.test_api = Global.test_api or {}
 Global.test_api.commands = Global.test_api.commands or {}
+
 local print = make_tag_print("TestAPI")
+
 TestAPIHelper = TestAPIHelper or class()
 
 function TestAPIHelper.on_event(id)
@@ -58,6 +60,7 @@ function TestAPIHelper.register_API_function(name, category, args_str, func, des
 	if args_str then
 		for _, arg in ipairs(string.split(args_str, ",%s*")) do
 			local name, default = string.match(arg, "([A-Za-z_][A-Za-z0-9_]*)%s*=%s*([A-Za-z0-9_]*)")
+
 			name = name or arg
 
 			table.insert(args, {
@@ -71,7 +74,7 @@ function TestAPIHelper.register_API_function(name, category, args_str, func, des
 		TestAPI[category] = {}
 	end
 
-	TestAPI[category][name] = function (response_string, arg_tbl)
+	TestAPI[category][name] = function(response_string, arg_tbl)
 		TestAPIHelper.register_event(name, response_string)
 
 		local ret = {}
@@ -87,6 +90,7 @@ function TestAPIHelper.register_API_function(name, category, args_str, func, des
 			local old_mt = getmetatable(_G)
 			local _old__index = old_mt.__index
 			local new_mt = deep_clone(old_mt)
+
 			locals.__index = _old__index
 			new_mt.__index = locals
 
@@ -113,7 +117,6 @@ function TestAPIHelper.register_API_function(name, category, args_str, func, des
 
 		return unpack(ret)
 	end
-
 	Global.test_api.commands = Global.test_api.commands or {}
 	Global.test_api.commands[category] = Global.test_api.commands[category] or {}
 	Global.test_api.commands[category][name] = {
@@ -126,6 +129,7 @@ function TestAPIHelper.queue_call(category_and_or_func_name, response_string, ar
 	local cat_func = string.split(category_and_or_func_name, "%.")
 	local category = cat_func[1]
 	local func_name = cat_func[2]
+
 	Global.test_api.queued_calls = Global.test_api.queued_calls or {}
 
 	assert(TestAPI[category], string.format("Missing category in TestAPI: %s", tostring(category)))
@@ -151,7 +155,7 @@ end
 function TestAPIHelper.update(t, dt)
 	if Global.test_api.delayed_callbacks then
 		for _, delayed in ipairs(Global.test_api.delayed_callbacks) do
-			if delayed.t < t and delayed.callback then
+			if t > delayed.t and delayed.callback then
 				delayed.callback()
 			end
 		end
@@ -195,6 +199,7 @@ end
 
 local function center(text, w, delimeter)
 	delimeter = delimeter or " "
+
 	local mid = w / 2
 	local offset = math.ceil(string.len(text) / 2)
 	local ret = string.rep(delimeter, mid - offset - 1) .. " " .. text
@@ -208,7 +213,7 @@ function TestAPI.help()
 
 	for key, cmds in pairs(Global.test_api.commands) do
 		padding = math.max(padding, get_max_padding_from_table_keys(cmds))
-		arg_padding = math.max(arg_padding, get_max_padding_from_table(cmds, function (v)
+		arg_padding = math.max(arg_padding, get_max_padding_from_table(cmds, function(v)
 			return v.desc
 		end))
 	end
@@ -232,7 +237,7 @@ function TestAPI.help()
 	end
 end
 
-TestAPIHelper.register_API_function("get_jobs", "jobs", "", function ()
+TestAPIHelper.register_API_function("get_jobs", "jobs", "", function()
 	local jobs = {}
 
 	for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
@@ -271,6 +276,7 @@ local function start(job_id, difficulty, stage)
 	Global.game_settings.mission = managers.job:current_mission()
 	Global.game_settings.world_setting = managers.job:current_world_setting()
 	Global.game_settings.difficulty = difficulty
+
 	local level_name = tweak_data.levels[Global.game_settings.level_id].world_name
 	local mission = Global.game_settings.mission ~= "none" and Global.game_settings.mission or nil
 
@@ -279,21 +285,21 @@ local function start(job_id, difficulty, stage)
 	return true
 end
 
-TestAPIHelper.register_API_function("start_job", "jobs", "job_id, difficulty = normal, stage = 1", function ()
+TestAPIHelper.register_API_function("start_job", "jobs", "job_id, difficulty = normal, stage = 1", function()
 	Global.exe_argument_auto_enter_level = true
 
 	if not start(job_id, difficulty, stage) then
 		TestAPIHelper.on_event("start_job")
 	end
 end, "Starts the given job and skips the loadout screen.", true)
-TestAPIHelper.register_API_function("start_job_loadout", "jobs", "job_id, difficulty = normal, stage = 1", function ()
+TestAPIHelper.register_API_function("start_job_loadout", "jobs", "job_id, difficulty = normal, stage = 1", function()
 	Global.exe_argument_auto_enter_level = false
 
 	if not start(job_id, difficulty, stage) then
 		TestAPIHelper.on_event("start_job_loadout")
 	end
 end, "Starts the given job.", true)
-TestAPIHelper.register_API_function("finish_job", "jobs", "", function ()
+TestAPIHelper.register_API_function("finish_job", "jobs", "", function()
 	if managers.platform:presence() == "Playing" then
 		local num_winners = managers.network:session():amount_of_alive_players()
 
@@ -304,17 +310,19 @@ TestAPIHelper.register_API_function("finish_job", "jobs", "", function ()
 		})
 	end
 end, "Finishes the current job.")
-TestAPIHelper.register_API_function("close_loadout_screen", "menu", "", function ()
+TestAPIHelper.register_API_function("close_loadout_screen", "menu", "", function()
 	game_state_machine:current_state():start_game_intro()
 end, "Closes the loadout screen.")
-TestAPIHelper.register_API_function("delay", "internal", "time = 1", function ()
+TestAPIHelper.register_API_function("delay", "internal", "time = 1", function()
 	Global.test_api.delayed_callbacks = Global.test_api.delayed_callbacks or {}
-	local delayed = {
-		t = TimerManager:main():time() + time,
-		callback = function ()
-			TestAPIHelper.on_event("delay")
-		end
-	}
+
+	local delayed = {}
+
+	delayed.t = TimerManager:main():time() + time
+
+	function delayed.callback()
+		TestAPIHelper.on_event("delay")
+	end
 
 	table.insert(Global.test_api.delayed_callbacks, delayed)
 end, "Delays queued calls by the given time (seconds).", true)
@@ -360,7 +368,7 @@ local function equip_weapon_in_game(category, slot)
 	})
 end
 
-TestAPIHelper.register_API_function("load_weapon", "ingame", "weapon_id", function ()
+TestAPIHelper.register_API_function("load_weapon", "ingame", "weapon_id", function()
 	local weapon_tweak = tweak_data.weapon[weapon_id]
 
 	assert(weapon_tweak and weapon_tweak.use_data, string.format("Invalid weapon: %s", tostring(weapon_id)))
@@ -380,11 +388,11 @@ TestAPIHelper.register_API_function("load_weapon", "ingame", "weapon_id", functi
 
 	managers.blackmarket:craft_temporary(category, weapon_id, slot)
 	equip_weapon_in_game(category, slot)
-	TestAPIHelper.register_event_callback("load_weapon", function ()
+	TestAPIHelper.register_event_callback("load_weapon", function()
 		managers.blackmarket:clear_temporary()
 	end)
 end, "Loads the given weapon while in a job and equips it.", true)
-TestAPIHelper.register_API_function("exit_to_menu", "ingame", "", function ()
+TestAPIHelper.register_API_function("exit_to_menu", "ingame", "", function()
 	if not Global.game_settings.is_playing then
 		TestAPIHelper.on_event("exit_to_menu")
 
@@ -421,7 +429,7 @@ TestAPIHelper.register_API_function("exit_to_menu", "ingame", "", function ()
 	managers.groupai:state():set_AI_enabled(false)
 	setup:load_start_menu()
 end, "Ends the current game and returns to menu.", true)
-TestAPIHelper.register_API_function("mask_up", "ingame", "", function ()
+TestAPIHelper.register_API_function("mask_up", "ingame", "", function()
 	if managers.player:current_state() ~= "mask_off" then
 		TestAPIHelper.on_event("mask_up")
 
@@ -430,13 +438,13 @@ TestAPIHelper.register_API_function("mask_up", "ingame", "", function ()
 
 	managers.player:set_player_state("standard")
 end, "Puts on the mask if the player is in the mask off state.", true)
-TestAPIHelper.register_API_function("fire", "ingame", "", function ()
+TestAPIHelper.register_API_function("fire", "ingame", "", function()
 	local state = alive(managers.player:player_unit()) and managers.player:player_unit():movement():current_state()
 
 	if state then
 		state:force_input({
-			btn_primary_attack_state = true,
-			btn_primary_attack_press = true
+			btn_primary_attack_press = true,
+			btn_primary_attack_state = true
 		}, {
 			btn_primary_attack_release = true
 		})

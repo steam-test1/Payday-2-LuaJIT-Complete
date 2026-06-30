@@ -1,4 +1,5 @@
 MagazineUnitDamage = MagazineUnitDamage or class(UnitDamage)
+
 local ray_from = Vector3()
 local ray_to = Vector3()
 local empty_idstr = Idstring("")
@@ -11,7 +12,7 @@ function MagazineUnitDamage:play_collision_sfx(other_unit, position, normal, col
 	mvector3.multiply(ray_to, -10)
 	mvector3.add(ray_to, position)
 
-	local material_name, sound_switch_name = nil
+	local material_name, sound_switch_name
 	local slot_mask = managers.slot:get_mask("footstep")
 	local collision_ray = World:raycast("ray", ray_from, ray_to, "slot_mask", slot_mask, "ignore_unit", self._unit)
 

@@ -8,6 +8,7 @@ function WeaponGadgetBase:init(unit)
 end
 
 function WeaponGadgetBase:set_npc()
+	return
 end
 
 function WeaponGadgetBase:set_state(on, sound_source, current_state)
@@ -57,6 +58,7 @@ function WeaponGadgetBase:toggle_requires_stance_update()
 end
 
 function WeaponGadgetBase:_check_state(current_state)
+	return
 end
 
 function WeaponGadgetBase:is_bipod()

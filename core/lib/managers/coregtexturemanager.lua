@@ -24,9 +24,10 @@ function GTextureManager:set_texture(variable_name, texture_name, texture_type)
 	if texture_name and texture_name ~= "" then
 		local data = {
 			texture_name = texture_name,
-			texture_type = texture_type,
-			texture = TextureCache:retrieve(texture_name, texture_type)
+			texture_type = texture_type
 		}
+
+		data.texture = TextureCache:retrieve(texture_name, texture_type)
 
 		GlobalTextureManager:set_texture(variable_name, data.texture)
 

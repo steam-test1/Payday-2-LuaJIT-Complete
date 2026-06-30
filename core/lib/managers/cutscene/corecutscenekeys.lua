@@ -27,7 +27,7 @@ function CoreCutsceneKey:types()
 		table.insert(sorted_types, class)
 	end
 
-	table.sort(sorted_types, function (a, b)
+	table.sort(sorted_types, function(a, b)
 		return a.NAME < b.NAME
 	end)
 
@@ -84,7 +84,8 @@ function CoreCutsceneKey:colour_palette()
 			"BE747E",
 			"6D4375"
 		}
-		self._colour_palette = table.collect(hex_values, function (hex)
+
+		self._colour_palette = table.collect(hex_values, function(hex)
 			return Color(hex)
 		end)
 	end

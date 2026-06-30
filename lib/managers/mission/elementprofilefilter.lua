@@ -7,6 +7,7 @@ function ElementProfileFilter:init(...)
 end
 
 function ElementProfileFilter:client_on_executed(...)
+	return
 end
 
 function ElementProfileFilter:on_executed(instigator)
@@ -34,7 +35,7 @@ function ElementProfileFilter:on_executed(instigator)
 end
 
 function ElementProfileFilter:_check_player_lvl()
-	local pass = self._values.player_lvl <= managers.experience:current_level()
+	local pass = managers.experience:current_level() >= self._values.player_lvl
 
 	return pass
 end

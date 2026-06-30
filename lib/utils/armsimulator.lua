@@ -37,6 +37,7 @@ function NeutralArmModifier:update(neutral_state, body_config, hmd_position, ori
 		orientation[2],
 		rot
 	}
+
 	self._t = math.clamp(self._t + self._speed * dt, 0, 1)
 	self._speed = math.min(self._speed + dt * 18, 50)
 
@@ -72,6 +73,7 @@ end
 
 function ArmSimulator:load_neural_net(neural_network)
 	local node = PackageManager:xml_data(Idstring("neural_net"), Idstring(neural_network))
+
 	self._neural_network = {
 		weights = {},
 		bias = {}
@@ -184,6 +186,7 @@ function ArmSimulator:update(t, dt, base_rotation, target, moving, dir)
 	if use_move_dir then
 		local y = forward:y()
 		local x = forward:x()
+
 		dir = dir:rotate_with(base_rotation:inverse())
 		dir = y * math.abs(mvector3.dot(dir, y)) + x * mvector3.dot(dir, x)
 
@@ -192,7 +195,7 @@ function ArmSimulator:update(t, dt, base_rotation, target, moving, dir)
 
 	local max_look_angle = 70
 	local cos_max_look_angle = 0.342
-	local use_look_dir = mvector3.dot(self._facing, forward:y()) < cos_max_look_angle
+	local use_look_dir = cos_max_look_angle > mvector3.dot(self._facing, forward:y())
 	local s1 = self._facing:to_polar().spin
 
 	if not use_look_dir then
@@ -201,13 +204,17 @@ function ArmSimulator:update(t, dt, base_rotation, target, moving, dir)
 		local s2 = v:to_polar().spin
 		local rel_a = ConstraintHelper.normalize_angle(s2 - s1)
 		local speed = use_move_dir and 1 or math.clamp((angle - 50) / (max_look_angle - 50), 0, 1)
+
 		speed = speed * speed
+
 		local step = math.sign(rel_a) * math.min(math.abs(rel_a), 360 * dt) * speed
+
 		self._facing = Polar(1, 0, s1 + step):to_vector()
 	else
 		local s2 = forward:y():to_polar().spin
 		local rel_a = ConstraintHelper.normalize_angle(s2 - s1)
 		local s = (math.abs(rel_a) - max_look_angle) * math.sign(rel_a)
+
 		self._facing = Polar(1, 0, s1 + s):to_vector()
 	end
 
@@ -217,6 +224,7 @@ function ArmSimulator:update(t, dt, base_rotation, target, moving, dir)
 		NNetHelper.transform_input_sample(input_sample, self._facing)
 	})
 	local layer0 = input
+
 	self._layer1 = layer0:dot_transpose(self._neural_network.weights[1], self._layer1)
 
 	array_sigmoid(self._layer1, self._layer1)
@@ -230,8 +238,11 @@ function ArmSimulator:update(t, dt, base_rotation, target, moving, dir)
 	array_sigmoid(self._layer3, self._layer3)
 
 	local output_sample = NNetHelper.inv_transform_output_sample(input_sample, self._layer3:data())
+
 	self._prev_facing = output_sample.facing:rotate_with(forward)
 	forward = forward * base_rotation
+
 	local rot = Rotation(forward:yaw(), 0, 0)
+
 	self._pose = NNetHelper.build_pose(output_sample, rot, target, self._pose)
 end

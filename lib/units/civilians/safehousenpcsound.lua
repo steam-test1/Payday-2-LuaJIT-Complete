@@ -6,6 +6,7 @@ function SafehouseNPCSound:init(unit)
 	SafehouseNPCSound.super.init(self, unit)
 
 	self._speech_t = 0
+
 	local player_unit = managers.player:player_unit()
 	local player_character = managers.criminals:character_name_by_unit(player_unit)
 	local player_voice = "rb1"
@@ -31,6 +32,7 @@ end
 
 function SafehouseNPCSound:_randomize_speech_time()
 	local offset = self.character and tweak_data.safehouse.heisters[self.character] and tweak_data.safehouse.heisters[self.character].idle_offset or 0
+
 	self._speech_t = Application:time() + offset + math.random(self.RND_MIN, self.RND_MAX)
 end
 
@@ -53,7 +55,7 @@ end
 function SafehouseNPCSound:update(unit, t, dt)
 	local is_speaking = self:speaking(t)
 
-	if self._speech_t <= t then
+	if t >= self._speech_t then
 		local skip = false
 
 		if self.character and tweak_data.safehouse.heisters[self.character] and tweak_data.safehouse.heisters[self.character].anim_lines then

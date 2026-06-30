@@ -93,6 +93,7 @@ function ScriptGraph:save(id_map)
 			cfg_node:set_parameter("type", node:type())
 
 			local id = tostring(node)
+
 			new_id_map[id] = node
 
 			cfg_node:set_parameter("id", id)
@@ -128,6 +129,7 @@ function ScriptGraph:load(config_root)
 		if node:name() == "node" then
 			local node_info = self:_load_node_info(node)
 			local ewsnode = EWS:FlowNode(assert(node:parameter("name")), node_info.in_slot_names, node_info.out_slot_names, tonumber(assert(node:parameter("x"))), tonumber(assert(node:parameter("y"))))
+
 			self._nodes[assert(node:parameter("id"))] = {
 				node_type = assert(node:parameter("type")),
 				info = node_info,
@@ -191,7 +193,8 @@ function ScriptGraph:_load_node_info(node)
 			if assert(node_info:parameter("type")) == "in" then
 				info.in_slots = info.in_slots or {}
 				info.in_slot_names = info.in_slot_names or {}
-				local color = nil
+
+				local color
 				local name = assert(node_info:parameter("name"))
 
 				for inf in node_info:children() do
@@ -212,8 +215,9 @@ function ScriptGraph:_load_node_info(node)
 			else
 				info.out_slots = info.out_slots or {}
 				info.out_slot_names = info.out_slot_names or {}
+
 				local connection = {}
-				local color = nil
+				local color
 				local name = assert(node_info:parameter("name"))
 
 				for inf in node_info:children() do
@@ -291,8 +295,7 @@ function ScriptGraph:_write_connections(slot_node, slot, node, id_map)
 	local con_info = node:connection_info(slot)
 
 	for _, inf in pairs(con_info) do
-		local dest = inf.node
-		local dest_slots = inf.slots
+		local dest, dest_slots = inf.node, inf.slots
 		local id = id_map and self:_find_id_with_node(id_map, dest) or tostring(dest)
 
 		for _, dest_slot in ipairs(dest_slots) do
@@ -313,6 +316,7 @@ function ScriptGraph:_write_output_color(slot_node, slot, node)
 end
 
 function ScriptGraph:_write_input_color(slot_node, slot, node)
+	return
 end
 
 function ScriptGraph:_write_output_color_to_node(slot_node, color_node, r, g, b)

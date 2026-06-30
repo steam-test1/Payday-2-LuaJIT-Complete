@@ -37,7 +37,7 @@ function GameOverState:_load_start_menu(...)
 end
 
 function GameOverState:_set_continue_button_text()
-	local text_id = self._continue_block_timer and Application:time() < self._continue_block_timer and "menu_es_calculating_experience" or not self._completion_bonus_done and "menu_es_calculating_experience" or (Network:is_server() or managers.dlc:is_trial()) and (managers.job:is_current_job_professional() and (Global.game_settings.single_player and "failed_disconnected_continue" or "debug_mission_end_continue") or "menu_victory_retry_stage") or "victory_client_waiting_for_server"
+	local text_id = self._continue_block_timer and self._continue_block_timer > Application:time() and "menu_es_calculating_experience" or not self._completion_bonus_done and "menu_es_calculating_experience" or (Network:is_server() or managers.dlc:is_trial()) and (managers.job:is_current_job_professional() and (Global.game_settings.single_player and "failed_disconnected_continue" or "debug_mission_end_continue") or "menu_victory_retry_stage") or "victory_client_waiting_for_server"
 	local continue_button = managers.menu:is_pc_controller() and "[ENTER]" or nil
 	local text = utf8.to_upper(managers.localization:text(text_id, {
 		CONTINUE = continue_button

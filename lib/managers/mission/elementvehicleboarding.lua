@@ -15,7 +15,7 @@ function ElementVehicleBoarding:get_vehicle()
 end
 
 function ElementVehicleBoarding:get_teleport_element_by_seat(seat)
-	local point_index = nil
+	local point_index
 
 	for seat_index, seat_name in ipairs(self._values.seats_order) do
 		if seat == seat_name then
@@ -97,7 +97,7 @@ function ElementVehicleBoarding:operation_embark()
 		table.insert(ordered_seats, vehicle_ext:get_seat_by_name(seat_name))
 	end
 
-	table.sort(ordered_seats, function (a, b)
+	table.sort(ordered_seats, function(a, b)
 		return a.driving and not b.driving
 	end)
 
@@ -121,6 +121,7 @@ function ElementVehicleBoarding:operation_embark()
 		if alive(heister.unit) then
 			for i = seat_index, #ordered_seats do
 				local seat = ordered_seats[i]
+
 				seat_index = i + 1
 
 				if (not alive(seat.occupant) or seat.occupant:brain()) and managers.player:server_enter_vehicle(vehicle, heister.peer_id, heister.unit, seat.name) then
@@ -134,6 +135,7 @@ function ElementVehicleBoarding:operation_embark()
 		if alive(heister.unit) then
 			for i = seat_index, #ordered_seats do
 				local seat = ordered_seats[i]
+
 				seat_index = seat_index + 1
 
 				if not alive(seat.occupant) then
@@ -144,6 +146,7 @@ function ElementVehicleBoarding:operation_embark()
 					vehicle_ext:_create_seat_SO(seat, true)
 
 					local so_data = seat.drive_SO_data
+
 					so_data.unit = heister.unit
 					so_data.ride_objective.action.align_sync = true
 
@@ -174,12 +177,13 @@ function ElementVehicleBoarding:operation_disembark()
 	end
 
 	local should_leave = false
-	local seat = nil
+	local seat
 
 	if not self._values.vehicle then
 		should_leave = true
 	else
 		local cur_vehicle_data = managers.player:get_vehicle()
+
 		seat = cur_vehicle_data and cur_vehicle_data.seat
 
 		if cur_vehicle_data and cur_vehicle_data.vehicle_unit == self:get_vehicle() then
@@ -193,7 +197,7 @@ function ElementVehicleBoarding:operation_disembark()
 		return
 	end
 
-	local exit_data = nil
+	local exit_data
 	local teleport_point_element = seat and self:get_teleport_element_by_seat(seat)
 
 	if teleport_point_element then

@@ -18,6 +18,7 @@ PlayerHandStateMachine = PlayerHandStateMachine or class(StateMachine)
 function PlayerHandStateMachine:init(hand_unit, hand_id, transition_queue)
 	self._hand_id = hand_id
 	self._hand_unit = hand_unit
+
 	local idle = PlayerHandStateStandard:new(self, "idle", hand_unit, "idle")
 	local weapon = PlayerHandStateWeapon:new(self, "weapon", hand_unit, "grip_wpn")
 	local item = PlayerHandStateItem:new(self, "item", hand_unit, "grip_wpn")

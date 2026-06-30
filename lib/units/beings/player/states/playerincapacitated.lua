@@ -46,7 +46,7 @@ function PlayerIncapacitated:enter(state_data, enter_data)
 end
 
 function PlayerIncapacitated:_enter(enter_data)
-	local preset = nil
+	local preset
 
 	if managers.groupai:state():whisper_mode() then
 		preset = {
@@ -92,7 +92,7 @@ end
 function PlayerIncapacitated:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
 
-	if self._next_shock < t then
+	if t > self._next_shock then
 		self._unit:camera():play_shaker("player_taser_shock", 0.5, 10)
 
 		self._next_shock = t + 0.5 + math.rand(2.5)
@@ -107,7 +107,7 @@ function PlayerIncapacitated:_update_check_actions(t, dt)
 
 		managers.rumble:play("incapacitated_shock")
 		self._unit:camera()._camera_unit:base():animate_fov(math.lerp(65, 75, math.random()), 0.33)
-	elseif self._recoil_t and self._recoil_t < t then
+	elseif self._recoil_t and t > self._recoil_t then
 		self._recoil_t = nil
 
 		self._camera_unit:base():stop_shooting()
@@ -125,7 +125,7 @@ function PlayerIncapacitated:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
+	local new_action
 
 	self:_check_action_interact(t, input)
 end
@@ -136,7 +136,7 @@ function PlayerIncapacitated:_check_action_interact(t, input)
 			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
 
-		if not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t then
+		if not self._intimidate_t or t - self._intimidate_t > tweak_data.player.movement_state.interaction_delay then
 			self._intimidate_t = t
 
 			PlayerArrested.call_teammate(self, "f11", t, true, true, true)

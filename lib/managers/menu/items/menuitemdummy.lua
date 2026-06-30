@@ -12,11 +12,11 @@ end
 
 function MenuItemDummy:setup_gui(node, row_item)
 	row_item.gui_panel = node.item_panel:panel({
-		w = 0,
-		h = 0
+		h = 0,
+		w = 0
 	})
 
-	row_item.gui_panel:set_left(node:_mid_align())
+	row_item.gui_panel:set_left(node._mid_align(node))
 
 	self.no_select = true
 	self.no_mouse_select = true

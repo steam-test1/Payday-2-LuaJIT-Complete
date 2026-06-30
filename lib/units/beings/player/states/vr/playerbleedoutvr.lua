@@ -1,4 +1,5 @@
 PlayerBleedOutVR = PlayerBleedOut or Application:error("PlayerBleedOutVR need PlayerBleedOut!")
+
 local __update_movement = PlayerBleedOut._update_movement
 local __enter = PlayerBleedOut.enter
 local __exit = PlayerBleedOut.exit
@@ -47,8 +48,7 @@ function PlayerBleedOutVR:_update_movement(t, dt)
 	mvector3.set(hmd_pos, self._ext_movement:hmd_position())
 
 	local move_unit = false
-	local from = pos_new + vec_ray_up
-	local to = pos_new - vec_ray_down
+	local from, to = pos_new + vec_ray_up, pos_new - vec_ray_down
 	local ray = self._unit:raycast("ray", from, to, "slot_mask", 1)
 
 	if ray then

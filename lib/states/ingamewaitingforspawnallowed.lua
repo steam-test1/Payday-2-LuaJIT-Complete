@@ -7,6 +7,7 @@ IngameWaitingForSpawnAllowed.STATE_STRING = "ingame_waiting_for_spawn_allowed"
 function IngameWaitingForSpawnAllowed:_begin_game_enter_transition()
 	local overlay_effect_desc = tweak_data.overlay_effects.spectator
 	local fade_in_duration = overlay_effect_desc.fade_in
+
 	self._fade_in_overlay_eff_id = managers.overlay_effect:play_effect(overlay_effect_desc)
 end
 
@@ -23,6 +24,7 @@ function IngameWaitingForSpawnAllowed.spawn_waiting_player(peer_to_spawn)
 
 		if not pos_rot and managers.network then
 			local spawn_point = managers.network:session() and managers.network:session():get_next_spawn_point() or managers.network:spawn_point(1)
+
 			pos_rot = spawn_point and spawn_point.pos_rot
 		end
 
@@ -57,7 +59,7 @@ function IngameWaitingForSpawnAllowed:at_enter()
 	self:_setup_controller()
 	self:_setup_sound_listener()
 	self:set_controller_enabled(false)
-	call_on_next_update(function ()
+	call_on_next_update(function()
 		self:set_controller_enabled(true)
 	end)
 
@@ -66,6 +68,7 @@ function IngameWaitingForSpawnAllowed:at_enter()
 	managers.menu:set_mouse_sensitivity(false)
 
 	self._player_state_change_needed = true
+
 	local level_tweak = tweak_data.levels[managers.job:current_level_id()]
 
 	if level_tweak and (level_tweak.death_track or level_tweak.death_event) then
@@ -133,15 +136,19 @@ function IngameWaitingForSpawnAllowed:at_exit(data)
 end
 
 function IngameWaitingForSpawnAllowed:trade_death(respawn_delay, hostages_killed)
+	return
 end
 
 function IngameWaitingForSpawnAllowed:finish_trade()
+	return
 end
 
 function IngameWaitingForSpawnAllowed:begin_trade()
+	return
 end
 
 function IngameWaitingForSpawnAllowed:cancel_trade()
+	return
 end
 
 add_prints("IngameWaitingForSpawnAllowed", {

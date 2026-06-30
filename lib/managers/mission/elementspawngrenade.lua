@@ -7,6 +7,7 @@ function ElementSpawnGrenade:init(...)
 end
 
 function ElementSpawnGrenade:client_on_executed(...)
+	return
 end
 
 function ElementSpawnGrenade:on_executed(instigator)

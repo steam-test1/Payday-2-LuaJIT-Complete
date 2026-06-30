@@ -14,6 +14,7 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 MenuSocialHubInitiator = MenuSocialHubInitiator or class(MenuInitiatorBase)
 
 function MenuSocialHubInitiator:modify_node(original_node, node_data)
@@ -82,9 +83,9 @@ function SocialHubGui:setup()
 		}
 	}
 	self._main_panel = self._panel:panel({
-		w = 650,
 		h = 550,
-		layer = 100
+		layer = 100,
+		w = 650
 	})
 
 	self._main_panel:set_center_x(self._panel:center_x())
@@ -101,25 +102,26 @@ function SocialHubGui:setup()
 		h = 50
 	})
 	self._content_panel_list = {}
+
 	local friend_panel = self._main_panel:panel({
-		y = 50,
 		visible = false,
+		y = 50,
 		h = self._main_panel:h() - 50
 	})
 
 	table.insert(self._content_panel_list, friend_panel)
 
 	local invite_panel = self._main_panel:panel({
-		y = 50,
 		visible = false,
+		y = 50,
 		h = self._main_panel:h() - 50
 	})
 
 	table.insert(self._content_panel_list, invite_panel)
 
 	local blocked_panel = self._main_panel:panel({
-		y = 50,
 		visible = false,
+		y = 50,
 		h = self._main_panel:h() - 50
 	})
 
@@ -127,10 +129,15 @@ function SocialHubGui:setup()
 	self:create_tab_panel()
 
 	local friend_tab = SocialHubFriendTab:new(friend_panel)
+
 	self._categories_runtime[1].tab = friend_tab
+
 	local invite_tab = SocialHubInviteTab:new(invite_panel, self._ws)
+
 	self._categories_runtime[2].tab = invite_tab
+
 	local blocked_tab = SocialHubBlockedTab:new(blocked_panel)
+
 	self._categories_runtime[3].tab = blocked_tab
 
 	friend_panel:set_visible(true)
@@ -158,6 +165,7 @@ function SocialHubGui:create_tab_panel()
 			name_id = data.name_id,
 			callback = callback(self, self, "on_tab_item_pressed", index)
 		})
+
 		x_position = tab_item:bounds().right
 		self._categories_runtime[index].tab_item = tab_item
 	end
@@ -201,7 +209,7 @@ function SocialHubGui:reset_tab_by_index(index)
 end
 
 function SocialHubGui:mouse_moved(o, x, y)
-	local used = nil
+	local used
 	local pointer = "arrow"
 	local active_tab = self._categories_runtime and self._categories_runtime[self._active_panel].tab or false
 
@@ -211,6 +219,7 @@ function SocialHubGui:mouse_moved(o, x, y)
 
 	if active_tab and active_tab.mouse_moved then
 		local hover, cursor = active_tab:mouse_moved(o, x, y)
+
 		used = hover or used
 		pointer = cursor or pointer
 
@@ -227,8 +236,7 @@ function SocialHubGui:mouse_moved(o, x, y)
 				tab_item:hovered(true)
 
 				if not tab_item:get_active_state() then
-					pointer = "link"
-					used = true
+					used, pointer = true, "link"
 				end
 			else
 				tab_item:hovered(false)

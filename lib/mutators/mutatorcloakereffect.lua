@@ -4,8 +4,8 @@ MutatorCloakerEffect.name_id = "mutator_cloaker_effect"
 MutatorCloakerEffect.desc_id = "mutator_cloaker_effect_desc"
 MutatorCloakerEffect.has_options = true
 MutatorCloakerEffect.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 MutatorCloakerEffect.disables_achievements = true
 MutatorCloakerEffect.categories = {
@@ -37,31 +37,31 @@ end
 function MutatorCloakerEffect:setup_options_gui(node)
 	local params = {
 		callback = "_update_mutator_value",
+		filter = true,
 		name = "effect_selector_choice",
 		text_id = "menu_mutator_cloaker_effect",
-		filter = true,
 		update_callback = callback(self, self, "_update_selected_effect")
 	}
 	local data_node = {
 		{
-			value = "explode",
+			_meta = "option",
 			text_id = "menu_mutator_cloaker_effect_explode",
-			_meta = "option"
+			value = "explode"
 		},
 		{
-			value = "fire",
+			_meta = "option",
 			text_id = "menu_mutator_cloaker_effect_fire",
-			_meta = "option"
+			value = "fire"
 		},
 		{
-			value = "smoke",
+			_meta = "option",
 			text_id = "menu_mutator_cloaker_effect_smoke",
-			_meta = "option"
+			value = "smoke"
 		},
 		{
-			value = "random",
+			_meta = "option",
 			text_id = "menu_mutator_cloaker_effect_random",
-			_meta = "option"
+			value = "random"
 		},
 		type = "MenuItemMultiChoice"
 	}
@@ -146,9 +146,9 @@ function MutatorCloakerEffect:effect_explode(unit)
 	local ply_damage = 100
 	local normal = math.UP
 	local effect_params = {
-		sound_event = "grenade_explode",
-		effect = "effects/payday2/particles/explosions/grenade_explosion",
 		camera_shake_max_mul = 4,
+		effect = "effects/payday2/particles/explosions/grenade_explosion",
+		sound_event = "grenade_explode",
 		sound_muffle_effect = true,
 		feedback_range = range * 2
 	}
@@ -192,20 +192,20 @@ end
 
 function MutatorCloakerEffect:cloaker_fire_large()
 	local params = {
-		sound_event = "molotov_impact",
-		range = 75,
+		alert_radius = 1500,
+		burn_duration = 15,
+		burn_tick_period = 0.5,
 		curve_pow = 3,
 		damage = 1,
+		dot_data_name = "enemy_mutator_cloaker_groundfire",
+		effect_name = "effects/payday2/particles/explosions/molotov_grenade",
 		fire_alert_radius = 1500,
 		hexes = 6,
-		sound_event_burning = "burn_loop_gen",
-		alert_radius = 1500,
 		player_damage = 2,
-		sound_event_impact_duration = 4,
-		burn_tick_period = 0.5,
-		burn_duration = 15,
-		dot_data_name = "enemy_mutator_cloaker_groundfire",
-		effect_name = "effects/payday2/particles/explosions/molotov_grenade"
+		range = 75,
+		sound_event = "molotov_impact",
+		sound_event_burning = "burn_loop_gen",
+		sound_event_impact_duration = 4
 	}
 
 	return params
@@ -213,6 +213,7 @@ end
 
 function MutatorCloakerEffect:cloaker_fire_small()
 	local params = self:cloaker_fire_large()
+
 	params.hexes = 2
 
 	return params

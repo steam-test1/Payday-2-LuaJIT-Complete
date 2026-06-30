@@ -3,6 +3,7 @@ core:import("CoreClass")
 
 local EMPTY_WORKSHEET_XML1 = " <Worksheet ss:Name=\"%s\">\n  <Table> "
 local EMPTY_WORKSHEET_XML2 = "\n  </Table>\n </Worksheet> "
+
 Worksheet = Worksheet or CoreClass.class()
 
 function Worksheet:init(name)

@@ -2,6 +2,7 @@ local flashbang_test_offset = Vector3(0, 0, 150)
 local debug_vec1 = Vector3()
 local temp_vec_1 = Vector3()
 local temp_vec_2 = Vector3()
+
 CoreEnvironmentControllerManager = CoreEnvironmentControllerManager or class()
 
 function CoreEnvironmentControllerManager:init()
@@ -91,6 +92,7 @@ function CoreEnvironmentControllerManager:_update_values(t, dt)
 end
 
 function CoreEnvironmentControllerManager:_refresh_fov_ratio_params(vp)
+	return
 end
 
 function CoreEnvironmentControllerManager:_update_fov_ratio()
@@ -230,11 +232,11 @@ function CoreEnvironmentControllerManager:set_blurzone(id, mode, pos, radius, he
 
 	if id then
 		blurzone = blurzone or {
-			opacity = 0,
-			radius = 0,
-			mode = -1,
+			delete_after_fadeout = false,
 			height = 0,
-			delete_after_fadeout = false
+			mode = -1,
+			opacity = 0,
+			radius = 0
 		}
 
 		if mode > 0 then
@@ -369,7 +371,7 @@ end
 function CoreEnvironmentControllerManager:blurzone_check_cylinder(blurzone, camera_pos)
 	local pos_z = blurzone.pos.z
 	local cam_z = camera_pos.z
-	local len = nil
+	local len
 
 	if cam_z < pos_z then
 		len = (blurzone.pos - camera_pos):length()
@@ -380,6 +382,7 @@ function CoreEnvironmentControllerManager:blurzone_check_cylinder(blurzone, came
 	end
 
 	local result = math.min(len / blurzone.radius, 1)
+
 	result = result * result
 
 	return (1 - result) * blurzone.opacity
@@ -388,6 +391,7 @@ end
 function CoreEnvironmentControllerManager:blurzone_check_sphere(blurzone, camera_pos)
 	local len = (blurzone.pos - camera_pos):length()
 	local result = math.min(len / blurzone.radius, 1)
+
 	result = result * result
 
 	return (1 - result) * blurzone.opacity
@@ -492,10 +496,12 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	end
 
 	local blur_zone_val = 0
+
 	blur_zone_val = self:_blurzones_update(t, dt, camera:position())
 
 	if self._hit_some > 0 then
 		local hit_fade = dt * 1.5
+
 		self._hit_some = math.max(self._hit_some - hit_fade, 0)
 		self._hit_right = math.max(self._hit_right - hit_fade, 0)
 		self._hit_left = math.max(self._hit_left - hit_fade, 0)
@@ -510,6 +516,7 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 
 	if self._current_flashbang > 0 then
 		local flsh = self._current_flashbang
+
 		self._current_flashbang = math.max(self._current_flashbang - dt * 0.08 * self._flashbang_multiplier * self._flashbang_duration, 0)
 		flashbang = math.min(self._current_flashbang, 1)
 		self._current_flashbang_flash = math.max(self._current_flashbang_flash - dt * 0.9, 0)
@@ -524,13 +531,17 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	end
 
 	local hit_some_mod = 1 - self._hit_some
+
 	hit_some_mod = hit_some_mod * hit_some_mod * hit_some_mod
 	hit_some_mod = 1 - hit_some_mod
+
 	local downed_value = self._downed_value / 100
 	local death_mod = math.max(1 - self._health_effect_value - 0.5, 0) * 2
 	local blur_zone_flashbang = blur_zone_val + flashbang
 	local flash_1 = math.pow(flashbang, 0.4)
+
 	flash_1 = flash_1 + math.pow(concussion, 0.4)
+
 	local flash_2 = math.pow(flashbang, 16) + flashbang_flash
 
 	if self._custom_dof_settings then
@@ -557,7 +568,9 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 	if lut_post then
 		local lut_modifier = lut_post:modifier(ids_LUT_settings)
 
-		if not lut_modifier then
+		if lut_modifier then
+			-- Nothing
+		else
 			return
 		end
 
@@ -570,9 +583,10 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 
 	local hurt_mod = 1 - self._health_effect_value
 	local health_diff = math.clamp((self._old_health_effect_value - self._health_effect_value) * 4, 0, 1)
+
 	self._old_health_effect_value = self._health_effect_value
 
-	if self._health_effect_value_diff < health_diff then
+	if health_diff > self._health_effect_value_diff then
 		self._health_effect_value_diff = health_diff
 	end
 
@@ -606,24 +620,22 @@ function CoreEnvironmentControllerManager:_update_post_effects()
 end
 
 function CoreEnvironmentControllerManager:_create_dof_tweak_data()
-	local new_dof_settings = {
-		none = {
-			use_no_dof = true
-		},
-		standard = {}
+	local new_dof_settings = {}
+
+	new_dof_settings.none = {
+		use_no_dof = true
 	}
-	new_dof_settings.standard.steelsight = {
-		near_plane_x = 2500,
-		near_plane_y = 2500,
-		far_plane_x = 500,
-		far_plane_y = 2000
-	}
-	new_dof_settings.standard.other = {
-		near_plane_x = 10,
-		near_plane_y = 12,
-		far_plane_x = 4000,
-		far_plane_y = 5000
-	}
+	new_dof_settings.standard = {}
+	new_dof_settings.standard.steelsight = {}
+	new_dof_settings.standard.steelsight.near_plane_x = 2500
+	new_dof_settings.standard.steelsight.near_plane_y = 2500
+	new_dof_settings.standard.steelsight.far_plane_x = 500
+	new_dof_settings.standard.steelsight.far_plane_y = 2000
+	new_dof_settings.standard.other = {}
+	new_dof_settings.standard.other.near_plane_x = 10
+	new_dof_settings.standard.other.near_plane_y = 12
+	new_dof_settings.standard.other.far_plane_x = 4000
+	new_dof_settings.standard.other.far_plane_y = 5000
 	self._dof_tweaks = new_dof_settings
 end
 
@@ -654,6 +666,7 @@ local function set_modifier_transform(effect, id, transform)
 
 	while true do
 		local id = Idstring(id .. "_" .. count)
+
 		modifier = effect:modifier(id)
 
 		if modifier then
@@ -667,7 +680,7 @@ local function set_modifier_transform(effect, id, transform)
 end
 
 local function set_modifier_visibility(effect, id, visibility_state)
-	set_modifier_transform(effect, id, function (mod)
+	set_modifier_transform(effect, id, function(mod)
 		mod:set_visibility(visibility_state)
 	end)
 end
@@ -679,7 +692,7 @@ local function set_post_material_parameter(post_id, modifier_name, parameter_id,
 		local effect = vp:vp():get_post_processor_effect("World", post_id)
 
 		if effect then
-			set_modifier_transform(effect, modifier_name, function (modifier)
+			set_modifier_transform(effect, modifier_name, function(modifier)
 				local material = modifier:material()
 
 				if material then
@@ -696,6 +709,7 @@ end
 
 function CoreEnvironmentControllerManager:set_aa_setting(setting, vp)
 	local effect = "AA_" .. setting
+
 	self._aa_setting = effect
 	vp = vp or self._vp and self._vp:vp() or nil
 
@@ -718,6 +732,7 @@ function CoreEnvironmentControllerManager:bloom_blur_size(size, vp)
 		Idstring("bloom_blur_2"),
 		Idstring("bloom_blur_3")
 	}
+
 	vp = vp or self._vp:vp()
 
 	if vp then
@@ -751,6 +766,7 @@ end
 
 function CoreEnvironmentControllerManager:set_ao_setting(setting, vp)
 	local effect = "AO_" .. setting
+
 	self._ao_setting = effect
 	vp = vp or self._vp and self._vp:vp() or nil
 
@@ -806,13 +822,16 @@ function CoreEnvironmentControllerManager:_update_dof(t, dt)
 	if self._dof_override then
 		if self._dof_override_transition_params then
 			local params = self._dof_override_transition_params
+
 			params.time = math.max(0, params.time - dt)
+
 			local lerp_v = math.bezier({
 				0,
 				0,
 				1,
 				1
 			}, 1 - params.time / params.total_t)
+
 			self._dof_override_near = math.lerp(params.start.near, params.stop.near, lerp_v)
 			self._dof_override_near_pad = math.lerp(params.start.near_pad, params.stop.near_pad, lerp_v)
 			self._dof_override_far = math.lerp(params.start.far, params.stop.far, lerp_v)
@@ -837,7 +856,9 @@ function CoreEnvironmentControllerManager:_update_dof(t, dt)
 			self._material:set_variable(ids_dof_far_plane, mvec)
 		elseif self._in_steelsight then
 			dof_settings = dof_settings.steelsight
+
 			local dof_plane_v = math.clamp(self._current_dof_distance / 5000, 0, 1)
+
 			self._near_plane_x = math.lerp(500, dof_settings.near_plane_x, dof_plane_v)
 			self._near_plane_y = math.lerp(20, dof_settings.near_plane_y, dof_plane_v)
 			self._far_plane_x = math.lerp(100, dof_settings.far_plane_x, dof_plane_v)
@@ -849,7 +870,9 @@ function CoreEnvironmentControllerManager:_update_dof(t, dt)
 			self._material:set_variable(ids_dof_far_plane, mvec)
 		else
 			dof_settings = dof_settings.other
+
 			local dof_speed = math.min(10 * dt, 1)
+
 			self._near_plane_x = math.lerp(self._near_plane_x, dof_settings.near_plane_x, dof_speed)
 			self._near_plane_y = math.lerp(self._near_plane_y, dof_settings.near_plane_y, dof_speed)
 			self._far_plane_x = math.lerp(self._far_plane_x, dof_settings.far_plane_x, dof_speed)
@@ -893,6 +916,7 @@ end
 
 function CoreEnvironmentControllerManager:set_screenflash_color_flashbang(color_name)
 	local old_color = self._screenflash_color_flashbang
+
 	self._screenflash_color_flashbang = tweak_data.accessibility_colors.screenflash.flashbang[color_name] or tweak_data.accessibility_colors.screenflash.flashbang.default or Color.white
 
 	if self._flashbang_overlay_effect_id then
@@ -901,9 +925,9 @@ function CoreEnvironmentControllerManager:set_screenflash_color_flashbang(color_
 		end
 	else
 		self._flashbang_overlay_effect_id = managers.overlay_effect:add_effect_external({
+			alpha_start = 0,
 			blend_mode = "normal",
 			layer = -1,
-			alpha_start = 0,
 			color = self._screenflash_color_flashbang
 		})
 	end
@@ -937,9 +961,9 @@ function CoreEnvironmentControllerManager:set_screenflash_color_hit_flash(color_
 			end
 		else
 			self._hit_flash_overlay_effect_id = managers.overlay_effect:add_effect_external({
+				alpha_start = 0,
 				blend_mode = "normal",
 				layer = -1,
-				alpha_start = 0,
 				color = new_color
 			})
 		end
@@ -948,6 +972,7 @@ end
 
 function CoreEnvironmentControllerManager:set_screenflash_color_blurzone(color_name)
 	local old_color = self._screenflash_color_blurzone
+
 	self._screenflash_color_blurzone = tweak_data.accessibility_colors.screenflash.blurzone[color_name] or tweak_data.accessibility_colors.screenflash.blurzone.default or Color(255, 255, 201, 7) / 255
 
 	if self._blurzone_flash_overlay_effect_id then
@@ -956,9 +981,9 @@ function CoreEnvironmentControllerManager:set_screenflash_color_blurzone(color_n
 		end
 	else
 		self._blurzone_flash_overlay_effect_id = managers.overlay_effect:add_effect_external({
+			alpha_start = 0,
 			blend_mode = "normal",
 			layer = -1,
-			alpha_start = 0,
 			color = self._screenflash_color_blurzone
 		})
 	end
@@ -979,9 +1004,10 @@ end
 function CoreEnvironmentControllerManager:_handle_screenflash(flashbang_value, hit_flash_value, blurzone_value)
 	hit_flash_value = self._hit_flash_overlay_effect_id and math.clamp(hit_flash_value * 2, 0, 1) * 0.25 or 0
 	blurzone_value = blurzone_value * 0.15
+
 	local total_value = math.clamp(flashbang_value + hit_flash_value + blurzone_value, 0, 1)
 
-	if self._screenflash_color_flash_override < total_value then
+	if total_value > self._screenflash_color_flash_override then
 		managers.overlay_effect:progress_effect_external(self._flashbang_overlay_effect_id, 1)
 
 		if self._hit_flash_overlay_effect_id then
@@ -991,6 +1017,7 @@ function CoreEnvironmentControllerManager:_handle_screenflash(flashbang_value, h
 		managers.overlay_effect:progress_effect_external(self._blurzone_flash_overlay_effect_id, 0)
 	else
 		local value_ceiling = self._screenflash_color_flash_override
+
 		flashbang_value = math.lerp(0, 1, math.clamp(flashbang_value, 0, value_ceiling) / value_ceiling)
 
 		managers.overlay_effect:progress_effect_external(self._flashbang_overlay_effect_id, flashbang_value)
@@ -1010,6 +1037,7 @@ end
 function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration, no_offset, no_effect)
 	local pos = no_offset and flashbang_pos or flashbang_pos + flashbang_test_offset
 	local flash = self:test_line_of_sight(pos, 200, 1000, 3000)
+
 	self._flashbang_duration = duration
 
 	if flash > 0 then
@@ -1030,7 +1058,7 @@ function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_s
 	if player then
 		local flash_value = math.pow(math.min(self._current_flashbang, 1), 16) + math.min(self._current_flashbang_flash, 1)
 
-		if self._screenflash_color_flash_override < flash_value then
+		if flash_value > self._screenflash_color_flash_override then
 			PlayerStandard.say_line(player:sound(), "g41x_any")
 		end
 	end
@@ -1041,7 +1069,7 @@ function CoreEnvironmentControllerManager:set_concussion_grenade(flashbang_pos, 
 	local concussion = self:test_line_of_sight(pos, 200, 1000, 3000)
 
 	if concussion > 0 then
-		if self._current_concussion < concussion then
+		if concussion > self._current_concussion then
 			duration = duration ~= 0 and duration or 1
 			duration = 1 + (1 - duration) * 2
 			self._concussion_duration = duration
@@ -1087,7 +1115,7 @@ function CoreEnvironmentControllerManager:test_line_of_sight(test_pos, min_dista
 	local cam_rot = camera:rotation()
 	local cam_fwd = camera:rotation():y()
 
-	if mvector3.dot(cam_fwd, test_vec) < max_dot then
+	if max_dot > mvector3.dot(cam_fwd, test_vec) then
 		if dis < dot_distance then
 			dot_mul = 0.5
 		else
@@ -1102,6 +1130,7 @@ function CoreEnvironmentControllerManager:test_line_of_sight(test_pos, min_dista
 	end
 
 	local flash = math.max(dis - min_distance, 0) / (max_distance - min_distance)
+
 	flash = (1 - flash) * dot_mul
 
 	return flash
@@ -1130,21 +1159,19 @@ end
 function CoreEnvironmentControllerManager:set_dof_override_ranges_transition(time, near, near_pad, far, far_pad)
 	self:set_dof_override(true)
 
-	self._dof_override_transition_params = {
-		total_t = time,
-		time = time,
-		start = {}
-	}
+	self._dof_override_transition_params = {}
+	self._dof_override_transition_params.total_t = time
+	self._dof_override_transition_params.time = time
+	self._dof_override_transition_params.start = {}
 	self._dof_override_transition_params.start.near = self._dof_override_near
 	self._dof_override_transition_params.start.near_pad = self._dof_override_near_pad
 	self._dof_override_transition_params.start.far = self._dof_override_far
 	self._dof_override_transition_params.start.far_pad = self._dof_override_far_pad
-	self._dof_override_transition_params.stop = {
-		near = near,
-		near_pad = near_pad,
-		far = far,
-		far_pad = far_pad
-	}
+	self._dof_override_transition_params.stop = {}
+	self._dof_override_transition_params.stop.near = near
+	self._dof_override_transition_params.stop.near_pad = near_pad
+	self._dof_override_transition_params.stop.far = far
+	self._dof_override_transition_params.stop.far_pad = far_pad
 end
 
 function CoreEnvironmentControllerManager:set_dome_occ_default()
@@ -1229,6 +1256,7 @@ end
 local ids_d_sun = Idstring("d_sun")
 
 function CoreEnvironmentControllerManager:feed_params()
+	return
 end
 
 function CoreEnvironmentControllerManager:feed_param_underlay(material_name, param_name, param_value)
@@ -1238,4 +1266,5 @@ function CoreEnvironmentControllerManager:feed_param_underlay(material_name, par
 end
 
 function CoreEnvironmentControllerManager:set_global_param(param_name, param_value)
+	return
 end

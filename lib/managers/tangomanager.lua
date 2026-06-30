@@ -27,12 +27,12 @@ function TangoManager:save(cache)
 	local challenges = {}
 
 	for idx, challenge in ipairs(self._global.challenges) do
-		local challenge_data = {
-			id = challenge.id,
-			objectives = {},
-			rewards = {},
-			completed = challenge.completed
-		}
+		local challenge_data = {}
+
+		challenge_data.id = challenge.id
+		challenge_data.objectives = {}
+		challenge_data.rewards = {}
+		challenge_data.completed = challenge.completed
 
 		for _, objective in ipairs(challenge.objectives) do
 			local objective_data = {}
@@ -57,6 +57,7 @@ function TangoManager:save(cache)
 		version = TangoManager.SAVE_DATA_VERSION,
 		challenges = challenges
 	}
+
 	cache.Tango = save_data
 end
 
@@ -92,6 +93,7 @@ function TangoManager:load(cache, version)
 				end
 
 				challenge.completed = objectives_complete
+
 				local all_rewarded = true
 
 				for i, reward in ipairs(saved_challenge.rewards) do
@@ -201,8 +203,9 @@ function TangoManager:_update_challenge_progress(challenge, key, id, amount, com
 	for obj_idx, objective in ipairs(challenge.objectives) do
 		if not objective.completed and objective[key] == id then
 			local pass = true
+
 			objective.progress = math.floor(math.min((objective.progress or 0) + amount, objective.max_progress))
-			objective.completed = objective.max_progress <= objective.progress
+			objective.completed = objective.progress >= objective.max_progress
 
 			for _, objective in ipairs(challenge.objectives) do
 				if not objective.completed then
@@ -301,6 +304,7 @@ function TangoManager:claim_reward(challenge_id, reward_id)
 	end
 
 	reward.rewarded = true
+
 	local all_rewarded = true
 
 	for _, r in ipairs(challenge.rewards) do
@@ -329,18 +333,20 @@ function TangoManager:announce_tango_weapon()
 	local weapon_id = tweak_data.tango.arbiter_data.weapon_id
 	local weapon_tweak = tweak_data.weapon[weapon_id]
 	local category = weapon_tweak.selection_index == 2 and "secondaries" or "primaries"
-	local dialog_data = {
-		title = managers.localization:text("dialog_new_unlock_title"),
-		text = managers.localization:text("dialog_tango_complete_desc", {
-			weapon = managers.localization:text(weapon_tweak.name_id)
-		})
-	}
-	local ok_button = {
-		text = managers.localization:text("dialog_ok")
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_new_unlock_title")
+	dialog_data.text = managers.localization:text("dialog_tango_complete_desc", {
+		weapon = managers.localization:text(weapon_tweak.name_id)
+	})
+
+	local ok_button = {}
+
+	ok_button.text = managers.localization:text("dialog_ok")
 	dialog_data.button_list = {
 		ok_button
 	}
+
 	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(tweak_data.tango.arbiter_data.factory_id)
 
 	if weapon_id then

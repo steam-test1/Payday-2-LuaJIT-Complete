@@ -5,6 +5,7 @@ TeamAIInventory.add_unit_by_factory_blueprint = HuskPlayerInventory.add_unit_by_
 function TeamAIInventory:preload_mask()
 	local character_name = managers.criminals:character_name_by_unit(self._unit)
 	local mask_unit_name = managers.criminals:character_data_by_name(character_name).mask_obj
+
 	mask_unit_name = mask_unit_name[Global.level_data.level_id] or mask_unit_name.default or mask_unit_name
 	self._mask_unit_name = mask_unit_name
 
@@ -39,8 +40,8 @@ function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	end
 
 	local setup_data = {
-		expend_ammo = false,
 		alert_AI = true,
+		expend_ammo = false,
 		user_unit = self._unit,
 		ignore_units = ignore_units,
 		hit_slotmask = managers.slot:get_mask("bullet_impact_targets"),
@@ -59,6 +60,7 @@ end
 
 function TeamAIInventory:update_ap_ammo()
 	local state = managers.player:has_category_upgrade("team", "crew_ai_ap_ammo")
+
 	self._has_ap_rounds = state
 
 	for i, sel_data in pairs(self._available_selections) do

@@ -13,9 +13,8 @@ function FeedBackManager:init()
 end
 
 function FeedBackManager:setup_preset_effects()
-	self._feedback = {
-		mission_triggered = {}
-	}
+	self._feedback = {}
+	self._feedback.mission_triggered = {}
 	self._feedback.mission_triggered.camera_shake = {
 		name = "mission_triggered"
 	}
@@ -135,6 +134,7 @@ function FeedBack:play(...)
 	local extra_params = {
 		...
 	}
+
 	self._extra_params = {}
 
 	for i = 1, #extra_params, 3 do
@@ -228,9 +228,11 @@ function FeedBackEffect:is_enabled()
 end
 
 function FeedBackEffect:set_unit(unit)
+	return
 end
 
 function FeedBackEffect:set_viewport(vp)
+	return
 end
 
 function FeedBackEffect:set_static_param(name, value)
@@ -254,6 +256,7 @@ function FeedBackEffect:play()
 end
 
 function FeedBackEffect:stop()
+	return
 end
 
 function FeedBackEffect:is_playing()
@@ -295,7 +298,7 @@ function FeedBackrumble:stop()
 end
 
 function FeedBackrumble:is_playing()
-	local rumble = nil
+	local rumble
 
 	if not self._id then
 		return false
@@ -356,6 +359,7 @@ end
 function FeedBackCameraShake:play(extra_params)
 	local params = managers.feedback:get_effect_table(self._name)[self._type]
 	local name = extra_params.name or params.name
+
 	self._multiplier = extra_params.multiplier or 1
 
 	if self._unit_camera then
@@ -426,11 +430,11 @@ function FeedBackAboveCameraEffect:play(extra_params)
 		return
 	end
 
-	local effect_params = {
-		effect = Idstring(name),
-		position = self._unit_camera:position() + self._offset,
-		rotation = self._unit_camera:rotation()
-	}
+	local effect_params = {}
+
+	effect_params.effect = Idstring(name)
+	effect_params.position = self._unit_camera:position() + self._offset
+	effect_params.rotation = self._unit_camera:rotation()
 	self._id = World:effect_manager():spawn(effect_params)
 end
 

@@ -4,6 +4,7 @@ SentryGunEquipment._DAMAGE_EFFECTS_2 = 0.25
 
 function SentryGunEquipment:init(unit)
 	self._unit = unit
+
 	local event_listener = unit:event_listener()
 
 	event_listener:add("SentryGunEquipment_on_damage_received", {

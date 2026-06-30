@@ -4,6 +4,7 @@ function BossSound:init(unit)
 	self._unit = unit
 	self._speak_expire_t = 0
 	self._events_map = self._events_map or {}
+
 	local base_ext = unit:base()
 	local char_tweak = base_ext:char_tweak()
 
@@ -19,7 +20,7 @@ function BossSound:say(sound_name, sync, skip_prefix, important, clbk)
 	local unique_event_data = self._events_map[sound_name]
 
 	if unique_event_data then
-		if self._last_imp_speech_data and self._last_imp_speech_data.prio < unique_event_data.prio then
+		if self._last_imp_speech_data and unique_event_data.prio > self._last_imp_speech_data.prio then
 			return
 		end
 
@@ -34,7 +35,7 @@ function BossSound:say(sound_name, sync, skip_prefix, important, clbk)
 		self._last_speech:stop()
 	end
 
-	local full_sound = nil
+	local full_sound
 
 	if skip_prefix then
 		full_sound = sound_name
@@ -42,7 +43,7 @@ function BossSound:say(sound_name, sync, skip_prefix, important, clbk)
 		full_sound = self._prefix .. sound_name
 	end
 
-	local event_id = nil
+	local event_id
 
 	if type(full_sound) == "number" then
 		event_id = full_sound

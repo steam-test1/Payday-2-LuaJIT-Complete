@@ -5,6 +5,7 @@ CoreParticleEditorPanel = CoreParticleEditorPanel or class()
 function CoreParticleEditorPanel:init(editor, parent, effect)
 	self._editor = editor
 	self._effect = effect
+
 	local n = Node("effect")
 
 	self._effect:save(n)
@@ -16,6 +17,7 @@ function CoreParticleEditorPanel:init(editor, parent, effect)
 		name = effect:name(),
 		xml = n:to_xml()
 	}, 20)
+
 	local n = Node("effect")
 
 	self._effect:save(n)
@@ -46,11 +48,17 @@ function CoreParticleEditorPanel:create_panel(parent)
 	self._panel:set_visible(false)
 
 	local splitter = EWS:SplitterWindow(self._panel, "", "SP_NOBORDER")
+
 	self._top_splitter = splitter
+
 	local gv_splitter = EWS:SplitterWindow(splitter, "", "SP_NOBORDER")
+
 	self._gv_splitter = gv_splitter
+
 	local effect_panel = self:create_effect_panel(gv_splitter)
+
 	self._status_box = self:create_status_box(gv_splitter)
+
 	local atom_panel = self:create_atom_panel(splitter)
 	local top_sizer = EWS:BoxSizer("VERTICAL")
 
@@ -189,6 +197,7 @@ end
 
 function CoreParticleEditorPanel:create_effect_panel(parent)
 	local panel = EWS:Panel(parent, "", "")
+
 	self._atom_combo = EWS:ComboBox(panel, "", "", "CB_DROPDOWN,CB_READONLY")
 
 	self._atom_combo:connect("EVT_COMMAND_TEXT_UPDATED", callback(self, self, "on_select_atom"))
@@ -258,12 +267,14 @@ end
 function CoreParticleEditorPanel:create_graph_view(parent)
 	self._graph_view_dialog = EWS:Dialog(parent, "Stacks And Channels Overview", "", Vector3(-1, -1, 0), Vector3(500, 400, 0), "CAPTION,RESIZE_BORDER")
 	self._graph = EWS:Graph()
+
 	local gv = EWS:GraphView(self._graph_view_dialog, "", self._graph)
 
 	gv:set_clipping(false)
 	gv:toggle_style("SUNKEN_BORDER")
 
 	self._graph_view = gv
+
 	local top_sizer = EWS:BoxSizer("VERTICAL")
 
 	top_sizer:add(gv, 1, 0, "EXPAND")
@@ -337,7 +348,9 @@ function CoreParticleEditorPanel:on_select_stack_member(stacktype)
 	local stacklist = self._stacklist_boxes[stacktype]
 	local selected = stacklist:selected_index()
 
-	if selected >= 0 then
+	if selected < 0 then
+		-- Nothing
+	else
 		self._atom:stack(stacktype):stack()[selected + 1]:fill_property_container_sheet(self._stack_panels[stacktype], self)
 		self._stack_panels[stacktype]:fit_inside()
 	end
@@ -372,9 +385,12 @@ function CoreParticleEditorPanel:update(t, dt)
 
 		if (not self._effect_id or not World:effect_manager():alive(self._effect_id)) and self._frames_since_spawn > 1 then
 			local quality = self._quality
+
 			quality = quality or 0.5
 			self._quality = nil
+
 			local gizmo = self._editor:effect_gizmo()
+
 			self._effect_id = World:effect_manager():spawn({
 				effect = Idstring("unique_test_effect_name"),
 				parent = gizmo:get_object(Idstring("rp_root_point")),
@@ -432,6 +448,7 @@ function CoreParticleEditorPanel:update_graph_view()
 
 				local reads = {}
 				local writes = {}
+
 				reads, writes = m:reads_writes()
 
 				for channel, read_type in pairs(reads) do
@@ -534,6 +551,7 @@ function CoreParticleEditorPanel:update_view(clear, undoredo)
 	end
 
 	local valid = self._effect:validate()
+
 	self._valid_effect = valid.valid
 
 	if not valid.valid then
@@ -599,11 +617,7 @@ function CoreParticleEditorPanel:on_stack_paste(stacktype)
 	local box = self._stacklist_boxes[stacktype]
 	local selected = box:selected_index()
 
-	if selected < 0 then
-		selected = nil
-	else
-		selected = selected + 1
-	end
+	selected = (not (selected < 0) or nil) and selected + 1
 
 	if not selected then
 		self._atom:stack(stacktype):add_member(deep_clone(self._editor._clipboard_object))
@@ -641,9 +655,10 @@ function CoreParticleEditorPanel:create_stack_panel(parent, stacktype)
 	stacklist:connect("EVT_KEY_DOWN", callback(self, self, "on_key_stack_member"), stacktype)
 
 	self._stacklist_boxes[stacktype] = stacklist
+
 	local stack_member_combo = EWS:ComboBox(panel, "", "", "CB_DROPDOWN,CB_READONLY")
 	local member_names = stack_member_names[stacktype]
-	local last = nil
+	local last
 
 	for _, mn in ipairs(member_names) do
 		stack_member_combo:append(mn.ui_name)
@@ -654,6 +669,7 @@ function CoreParticleEditorPanel:create_stack_panel(parent, stacktype)
 	stack_member_combo:set_value(last)
 
 	self._stack_member_combos[stacktype] = stack_member_combo
+
 	local up_button = EWS:Button(panel, "Up", "", "")
 	local down_button = EWS:Button(panel, "Down", "", "")
 	local remove_button = EWS:Button(panel, "Remove", "", "")
@@ -673,6 +689,7 @@ function CoreParticleEditorPanel:create_stack_panel(parent, stacktype)
 	affector_panel:set_scrollbars(Vector3(8, 8, 1), Vector3(1, 1, 1), Vector3(0, 0, 0), false)
 
 	self._stack_panels[stacktype] = affector_panel
+
 	local top_sizer = EWS:BoxSizer("VERTICAL")
 	local top_stacklist_sizer = EWS:BoxSizer("VERTICAL")
 	local add_member_sizer = EWS:BoxSizer("HORIZONTAL")
@@ -705,6 +722,7 @@ end
 function CoreParticleEditorPanel:create_atom_panel(parent)
 	local panel = EWS:Panel(parent, "", "")
 	local notebook = EWS:Notebook(panel, "", "")
+
 	self._atom_panel = EWS:ScrolledWindow(notebook, "", "HSCROLL,VSCROLL")
 
 	self._atom_panel:set_scrollbars(Vector3(8, 8, 1), Vector3(1, 1, 1), Vector3(0, 0, 0), false)
@@ -720,6 +738,7 @@ function CoreParticleEditorPanel:create_atom_panel(parent)
 	notebook:set_page(0)
 
 	self._stack_notebook = notebook
+
 	local top_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	top_sizer:add(notebook, 1, 0, "EXPAND")
@@ -741,6 +760,7 @@ function CoreParticleEditorPanel:undoredo(f)
 
 	if undo_state then
 		local n = Node.from_xml(undo_state.xml)
+
 		self._effect = CoreEffectDefinition:new()
 
 		self._effect:load(n)
@@ -748,6 +768,7 @@ function CoreParticleEditorPanel:undoredo(f)
 
 		if self._atom then
 			local aname = self._atom:name()
+
 			self._atom = nil
 
 			self:update_atom_combo()
@@ -775,6 +796,7 @@ end
 
 function CoreParticleEditorPanel:on_select_atom()
 	local atom = self._effect:find_atom(self._atom_combo:get_value())
+
 	self._atom = atom
 
 	if atom then
@@ -802,6 +824,7 @@ function CoreParticleEditorPanel:on_save_as()
 	self._effect:set_name(f)
 
 	self._editor._last_used_dir = dir_name(f)
+
 	local node = Node("effect")
 
 	self._effect:save(node)
@@ -834,9 +857,9 @@ function CoreParticleEditorPanel:do_save(warn_on_overwrite)
 
 	if self._valid_effect then
 		Application:data_compile({
-			target_db_name = "all",
-			send_idstrings = false,
 			preprocessor_definitions = "preprocessor_definitions",
+			send_idstrings = false,
+			target_db_name = "all",
 			verbose = false,
 			platform = string.lower(SystemInfo:platform():s()),
 			source_root = managers.database:base_path(),
@@ -910,7 +933,7 @@ function CoreUndoStack:push(state)
 
 	table.insert(self._stack, state)
 
-	if self._stacksize < #self._stack then
+	if #self._stack > self._stacksize then
 		table.remove(self._stack, 1)
 	end
 

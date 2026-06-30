@@ -17,6 +17,7 @@ function ElementEventSideJobAward:on_executed(instigator)
 
 	if self:value("award_instigator") and type(instigator) == "userdata" and alive(instigator) then
 		local local_player = managers.player:local_player()
+
 		award_progress = alive(local_player) and local_player == instigator
 
 		if not award_progress then
@@ -26,8 +27,6 @@ function ElementEventSideJobAward:on_executed(instigator)
 				if seat and seat.driving then
 					award_progress = true
 				end
-			elseif false then
-				-- Nothing
 			end
 		end
 	end

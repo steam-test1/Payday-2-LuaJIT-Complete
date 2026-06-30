@@ -1,5 +1,6 @@
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
+
 CopLogicIntimidated = class(CopLogicBase)
 
 function CopLogicIntimidated.enter(data, new_logic_name, enter_params)
@@ -10,6 +11,7 @@ function CopLogicIntimidated.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.combat
 	my_data.aggressor_unit = enter_params and enter_params.aggressor_unit
@@ -194,48 +196,44 @@ function CopLogicIntimidated.on_intimidated(data, amount, aggressor_unit)
 	if not my_data.tied then
 		data.t = TimerManager:game():time()
 		my_data.surrender_break_t = data.char_tweak.surrender_break_time and data.t + math.random(data.char_tweak.surrender_break_time[1], data.char_tweak.surrender_break_time[2], math.random())
+
 		local anim_data = data.unit:anim_data()
-		local anim, blocks = nil
+		local anim, blocks
 
 		if anim_data.hands_up then
 			anim = "hands_back"
 			blocks = {
+				action = -1,
 				heavy_hurt = -1,
 				hurt = -1,
-				action = -1,
 				light_hurt = -1,
 				walk = -1
 			}
 		elseif anim_data.hands_back then
 			anim = "tied"
 			blocks = {
-				heavy_hurt = -1,
-				hurt_sick = -1,
 				action = -1,
-				light_hurt = -1,
+				heavy_hurt = -1,
 				hurt = -1,
+				hurt_sick = -1,
+				light_hurt = -1,
 				walk = -1
 			}
 		else
-			if managers.groupai:state():whisper_mode() then
-				anim = "tied_all_in_one"
-			else
-				anim = "hands_up"
-			end
-
+			anim = managers.groupai:state():whisper_mode() and "tied_all_in_one" or "hands_up"
 			blocks = {
+				action = -1,
 				heavy_hurt = -1,
 				hurt = -1,
-				action = -1,
 				light_hurt = -1,
 				walk = -1
 			}
 		end
 
 		local action_data = {
+			body_part = 1,
 			clamp_to_graph = true,
 			type = "act",
-			body_part = 1,
 			variant = anim,
 			blocks = blocks
 		}
@@ -251,20 +249,20 @@ function CopLogicIntimidated._register_harassment_SO(data, my_data)
 	local objective_pos = data.unit:position() - data.unit:rotation():y() * 100
 	local objective_rot = data.unit:rotation()
 	local objective = {
-		stance = "hos",
-		interrupt_health = 0.85,
-		type = "act",
-		scan = true,
 		interrupt_dis = 700,
+		interrupt_health = 0.85,
+		scan = true,
+		stance = "hos",
+		type = "act",
 		pos = objective_pos,
 		rot = objective_rot,
 		nav_seg = data.unit:movement():nav_tracker():nav_segment(),
 		action_start_clbk = callback(CopLogicIntimidated, CopLogicIntimidated, "on_harassment_SO_action_start", data),
 		fail_clbk = callback(CopLogicIntimidated, CopLogicIntimidated, "on_harassment_SO_failed", data),
 		action = {
-			variant = "kick_fwd",
 			body_part = 1,
 			type = "act",
+			variant = "kick_fwd",
 			blocks = {
 				action = -1,
 				walk = -1
@@ -272,17 +270,18 @@ function CopLogicIntimidated._register_harassment_SO(data, my_data)
 		}
 	}
 	local so_descriptor = {
-		interval = 10,
-		search_dis_sq = 2250000,
 		AI_group = "friendlies",
 		base_chance = 1,
 		chance_inc = 0,
+		interval = 10,
+		search_dis_sq = 2250000,
 		usage_amount = 1,
 		objective = objective,
 		search_pos = mvector3.copy(data.m_pos),
 		admin_clbk = callback(CopLogicIntimidated, CopLogicIntimidated, "on_harassment_SO_administered", data)
 	}
 	local so_id = "harass" .. tostring(data.unit:key())
+
 	my_data.harassment_SO_id = so_id
 
 	managers.groupai:state():add_special_objective(so_id, so_descriptor)
@@ -290,23 +289,25 @@ end
 
 function CopLogicIntimidated.on_harassment_SO_administered(ignore_this, data, receiver_unit)
 	local my_data = data.internal_data
+
 	my_data.harassment_SO_id = nil
 end
 
 function CopLogicIntimidated.on_harassment_SO_action_start(ignore_this, data, receiver_unit)
 	local my_data = data.internal_data
 	local action = {
-		variant = "harassed_kicked_from_behind",
 		body_part = 1,
 		type = "act",
+		variant = "harassed_kicked_from_behind",
 		blocks = {
-			light_hurt = -1,
-			hurt = -1,
 			action = -1,
 			heavy_hurt = -1,
+			hurt = -1,
+			light_hurt = -1,
 			walk = -1
 		}
 	}
+
 	my_data.being_harassed = data.unit:movement():action_request(action)
 
 	managers.groupai:state():on_occasional_event("cop_harassment")
@@ -318,13 +319,13 @@ function CopLogicIntimidated.on_harassment_SO_failed(ignore_this, data, receiver
 
 	if my_data.being_harassed then
 		local action_data = {
-			variant = "tied",
 			body_part = 1,
 			type = "act",
+			variant = "tied",
 			blocks = {
-				light_hurt = -1,
-				hurt = -1,
 				heavy_hurt = -1,
+				hurt = -1,
+				light_hurt = -1,
 				walk = -1
 			}
 		}
@@ -347,6 +348,7 @@ end
 
 function CopLogicIntimidated._do_tied(data, aggressor_unit)
 	local my_data = data.internal_data
+
 	aggressor_unit = alive(aggressor_unit) and aggressor_unit
 
 	if managers.groupai:state():rescue_state() then
@@ -455,28 +457,27 @@ function CopLogicIntimidated.is_available_for_assignment(data, objective)
 end
 
 function CopLogicIntimidated._add_delayed_rescue_SO(data, my_data)
-	if data.char_tweak.flee_type ~= "hide" then
-		if data.unit:unit_data() and data.unit:unit_data().not_rescued then
-			-- Nothing
-		elseif my_data.delayed_clbks and my_data.delayed_clbks[my_data.delayed_rescue_SO_id] then
-			managers.enemy:reschedule_delayed_clbk(my_data.delayed_rescue_SO_id, TimerManager:game():time() + 10)
-		else
-			if my_data.rescuer then
-				local objective = my_data.rescuer:brain():objective()
-				local rescuer = my_data.rescuer
-				my_data.rescuer = nil
+	if data.char_tweak.flee_type == "hide" or data.unit:unit_data() and data.unit:unit_data().not_rescued then
+		-- Nothing
+	elseif my_data.delayed_clbks and my_data.delayed_clbks[my_data.delayed_rescue_SO_id] then
+		managers.enemy:reschedule_delayed_clbk(my_data.delayed_rescue_SO_id, TimerManager:game():time() + 10)
+	else
+		if my_data.rescuer then
+			local objective = my_data.rescuer:brain():objective()
+			local rescuer = my_data.rescuer
 
-				managers.groupai:state():on_objective_failed(rescuer, objective)
-			elseif my_data.rescue_SO_id then
-				managers.groupai:state():remove_special_objective(my_data.rescue_SO_id)
+			my_data.rescuer = nil
 
-				my_data.rescue_SO_id = nil
-			end
+			managers.groupai:state():on_objective_failed(rescuer, objective)
+		elseif my_data.rescue_SO_id then
+			managers.groupai:state():remove_special_objective(my_data.rescue_SO_id)
 
-			my_data.delayed_rescue_SO_id = "rescue" .. tostring(data.unit:key())
-
-			CopLogicBase.add_delayed_clbk(my_data, my_data.delayed_rescue_SO_id, callback(CopLogicIntimidated, CopLogicIntimidated, "register_rescue_SO", data), TimerManager:game():time() + 10)
+			my_data.rescue_SO_id = nil
 		end
+
+		my_data.delayed_rescue_SO_id = "rescue" .. tostring(data.unit:key())
+
+		CopLogicBase.add_delayed_clbk(my_data, my_data.delayed_rescue_SO_id, callback(CopLogicIntimidated, CopLogicIntimidated, "register_rescue_SO", data), TimerManager:game():time() + 10)
 	end
 end
 
@@ -486,16 +487,17 @@ function CopLogicIntimidated.register_rescue_SO(ignore_this, data)
 	CopLogicBase.on_delayed_clbk(my_data, my_data.delayed_rescue_SO_id)
 
 	my_data.delayed_rescue_SO_id = nil
+
 	local my_tracker = data.unit:movement():nav_tracker()
 	local objective_pos = my_tracker:field_position()
 	local followup_objective = {
 		scan = true,
-		type = "act",
 		stance = "hos",
+		type = "act",
 		action = {
-			variant = "idle",
 			body_part = 1,
 			type = "act",
+			variant = "idle",
 			blocks = {
 				action = -1,
 				walk = -1
@@ -504,21 +506,21 @@ function CopLogicIntimidated.register_rescue_SO(ignore_this, data)
 		action_duration = tweak_data.interaction.free.timer
 	}
 	local objective = {
-		interrupt_health = 0.85,
-		stance = "hos",
-		type = "act",
-		scan = true,
 		destroy_clbk_key = false,
 		interrupt_dis = 700,
+		interrupt_health = 0.85,
+		scan = true,
+		stance = "hos",
+		type = "act",
 		follow_unit = data.unit,
 		pos = mvector3.copy(objective_pos),
 		nav_seg = data.unit:movement():nav_tracker():nav_segment(),
 		fail_clbk = callback(CopLogicIntimidated, CopLogicIntimidated, "on_rescue_SO_failed", data),
 		complete_clbk = callback(CopLogicIntimidated, CopLogicIntimidated, "on_rescue_SO_completed", data),
 		action = {
-			variant = "untie",
 			body_part = 1,
 			type = "act",
+			variant = "untie",
 			blocks = {
 				action = -1,
 				walk = -1
@@ -528,11 +530,11 @@ function CopLogicIntimidated.register_rescue_SO(ignore_this, data)
 		followup_objective = followup_objective
 	}
 	local so_descriptor = {
-		interval = 10,
-		search_dis_sq = 1000000,
 		AI_group = "enemies",
 		base_chance = 1,
 		chance_inc = 0,
+		interval = 10,
+		search_dis_sq = 1000000,
 		usage_amount = 1,
 		objective = objective,
 		search_pos = mvector3.copy(data.m_pos),
@@ -540,6 +542,7 @@ function CopLogicIntimidated.register_rescue_SO(ignore_this, data)
 		verification_clbk = callback(CopLogicIntimidated, CopLogicIntimidated, "rescue_SO_verification", data)
 	}
 	local so_id = "rescue" .. tostring(data.unit:key())
+
 	my_data.rescue_SO_id = so_id
 
 	managers.groupai:state():add_special_objective(so_id, so_descriptor)
@@ -549,6 +552,7 @@ end
 function CopLogicIntimidated._unregister_rescue_SO(data, my_data)
 	if my_data.rescuer then
 		local rescuer = my_data.rescuer
+
 		my_data.rescuer = nil
 
 		managers.groupai:state():on_objective_failed(rescuer, rescuer:brain():objective())
@@ -565,6 +569,7 @@ end
 
 function CopLogicIntimidated.on_rescue_SO_administered(ignore_this, data, receiver_unit)
 	local my_data = data.internal_data
+
 	my_data.rescuer = receiver_unit
 	my_data.rescue_SO_id = nil
 
@@ -601,9 +606,9 @@ function CopLogicIntimidated.on_rescue_SO_completed(ignore_this, data, good_pig)
 
 	if data.unit:anim_data().hands_tied then
 		local new_action = {
-			variant = "stand",
 			body_part = 1,
-			type = "act"
+			type = "act",
+			variant = "stand"
 		}
 
 		data.unit:brain():action_request(new_action)
@@ -640,17 +645,18 @@ function CopLogicIntimidated._start_action_hands_up(data)
 	local my_data = data.internal_data
 	local anim_name = managers.groupai:state():whisper_mode() and "tied_all_in_one" or "hands_up"
 	local action_data = {
+		body_part = 1,
 		clamp_to_graph = true,
 		type = "act",
-		body_part = 1,
 		variant = anim_name,
 		blocks = {
-			light_hurt = -1,
-			hurt = -1,
 			heavy_hurt = -1,
+			hurt = -1,
+			light_hurt = -1,
 			walk = -1
 		}
 	}
+
 	my_data.act_action = data.unit:brain():action_request(action_data)
 
 	if my_data.act_action and data.unit:anim_data().hands_tied then

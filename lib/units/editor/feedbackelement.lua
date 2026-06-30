@@ -136,9 +136,9 @@ function FeedbackUnitElement:_build_panel(panel, panel_sizer)
 		"none"
 	}, self:_effect_options()), "Select and above camera effect", "effect")
 	self:_build_value_number(panel, above_camera_effect_sizer, "above_camera_effect_distance", {
-		min = 0,
 		floats = 2,
-		max = 1
+		max = 1,
+		min = 0
 	}, "A filter value to use with the range. A value of 1 means that the effect will be played whenever inside the range, a lower value means you need to be closer to the position.", "distance filter")
 end
 

@@ -1,6 +1,7 @@
 ContourExt = ContourExt or class()
 ContourExt.mod_lerp_opacity = false
 ContourExt.raycast_update_skip_count = 3
+
 local tmp_vec = Vector3()
 local mvec3_dis_sq = mvector3.distance_sq
 local math_lerp = math.lerp
@@ -8,6 +9,7 @@ local idstr_contour = Idstring("contour")
 local idstr_material = Idstring("material")
 local idstr_contour_color = Idstring("contour_color")
 local idstr_contour_opacity = Idstring("contour_opacity")
+
 ContourExt._types = {
 	teammate = {
 		persistence = 0.3,
@@ -31,8 +33,8 @@ ContourExt._types = {
 		color = tweak_data.contour.character.downed_color
 	},
 	friendly = {
-		priority = 3,
 		material_swap_required = true,
+		priority = 3,
 		color = tweak_data.contour.character.friendly_color
 	},
 	drunk_pilot = {
@@ -46,29 +48,29 @@ ContourExt._types = {
 		color = tweak_data.contour.character_interactable.standard_color
 	},
 	mark_unit = {
-		priority = 5,
 		fadeout = 4.5,
+		priority = 5,
 		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_unit_dangerous = {
-		priority = 5,
 		fadeout = 9,
+		priority = 5,
 		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_unit_dangerous_damage_bonus = {
-		priority = 4,
 		damage_bonus = true,
 		fadeout = 9,
+		priority = 4,
 		trigger_marked_event = true,
 		color = tweak_data.contour.character.more_dangerous_color
 	},
 	mark_unit_dangerous_damage_bonus_distance = {
-		priority = 4,
 		damage_bonus = true,
-		fadeout = 9,
 		damage_bonus_distance = 1,
+		fadeout = 9,
+		priority = 4,
 		trigger_marked_event = true,
 		color = tweak_data.contour.character.more_dangerous_color
 	},
@@ -78,28 +80,28 @@ ContourExt._types = {
 	},
 	mark_enemy = {
 		fadeout = 4.5,
-		priority = 5,
-		material_swap_required = true,
 		fadeout_silent = 13.5,
+		material_swap_required = true,
+		priority = 5,
 		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_enemy_damage_bonus = {
-		fadeout = 4.5,
-		priority = 4,
-		material_swap_required = true,
 		damage_bonus = true,
+		fadeout = 4.5,
 		fadeout_silent = 13.5,
+		material_swap_required = true,
+		priority = 4,
 		trigger_marked_event = true,
 		color = tweak_data.contour.character.more_dangerous_color
 	},
 	mark_enemy_damage_bonus_distance = {
-		fadeout = 4.5,
-		priority = 4,
-		material_swap_required = true,
 		damage_bonus = true,
 		damage_bonus_distance = 1,
+		fadeout = 4.5,
 		fadeout_silent = 13.5,
+		material_swap_required = true,
+		priority = 4,
 		trigger_marked_event = true,
 		color = tweak_data.contour.character.more_dangerous_color
 	},
@@ -108,23 +110,23 @@ ContourExt._types = {
 		color = tweak_data.contour.interactable.standard_color
 	},
 	highlight_character = {
-		priority = 6,
 		material_swap_required = true,
+		priority = 6,
 		color = tweak_data.contour.interactable.standard_color
 	},
 	generic_interactable = {
-		priority = 2,
 		material_swap_required = true,
+		priority = 2,
 		color = tweak_data.contour.character_interactable.standard_color
 	},
 	generic_interactable_selected = {
-		priority = 1,
 		material_swap_required = true,
+		priority = 1,
 		color = tweak_data.contour.character_interactable.selected_color
 	},
 	hostage_trade = {
-		priority = 1,
 		material_swap_required = true,
+		priority = 1,
 		color = tweak_data.contour.character_interactable.standard_color
 	},
 	deployable_selected = {
@@ -148,15 +150,15 @@ ContourExt._types = {
 		color = tweak_data.contour.deployable.interact_color
 	},
 	medic_heal = {
-		priority = 1,
-		material_swap_required = true,
 		fadeout = 2,
+		material_swap_required = true,
+		priority = 1,
 		color = tweak_data.contour.character.heal_color
 	},
 	tmp_invulnerable = {
-		priority = 1,
-		material_swap_required = true,
 		fadeout = 1,
+		material_swap_required = true,
+		priority = 1,
 		color = tweak_data.contour.character.tmp_invulnerable_color
 	},
 	vulnerable = {
@@ -164,8 +166,8 @@ ContourExt._types = {
 		color = tweak_data.contour.character.vulnerable_color
 	},
 	vulnerable_character = {
-		priority = 1,
 		material_swap_required = true,
+		priority = 1,
 		color = tweak_data.contour.character.vulnerable_color
 	}
 }
@@ -216,7 +218,7 @@ function ContourExt:apply_to_linked(func_name, ...)
 	end
 
 	local entries = spawn_ext:spawned_units()
-	local entry, contour_ext, contour_func = nil
+	local entry, contour_ext, contour_func
 
 	for unit_id, _ in pairs(linked_units) do
 		entry = entries[unit_id]
@@ -239,6 +241,7 @@ end
 
 function ContourExt:add(type, sync, multiplier, override_color, is_element)
 	self._contour_list = self._contour_list or {}
+
 	local data = self._types[type]
 	local fadeout = data.fadeout
 
@@ -257,7 +260,9 @@ function ContourExt:add(type, sync, multiplier, override_color, is_element)
 		local u_id = self._unit:id()
 
 		if u_id == -1 then
-			sync_unit, u_id = nil
+			sync_unit = nil
+			u_id = nil
+
 			local corpse_data = managers.enemy:get_corpse_unit_data_from_key(self._unit:key())
 
 			if corpse_data then
@@ -287,6 +292,7 @@ function ContourExt:add(type, sync, multiplier, override_color, is_element)
 			end
 
 			local old_color = setup.color or data.color
+
 			setup.color = override_color or nil
 
 			if old_color ~= override_color then
@@ -315,6 +321,7 @@ function ContourExt:add(type, sync, multiplier, override_color, is_element)
 
 	if data.ray_check then
 		setup.upd_skip_count = ContourExt.raycast_update_skip_count
+
 		local mov_ext = self._unit:movement()
 
 		if mov_ext and mov_ext.m_com then
@@ -322,18 +329,20 @@ function ContourExt:add(type, sync, multiplier, override_color, is_element)
 		end
 	end
 
-	local i = 1
-	local contour_list = self._contour_list
-	local old_preset_type = contour_list[1] and contour_list[1].type
+	do
+		local i = 1
+		local contour_list = self._contour_list
+		local old_preset_type = contour_list[1] and contour_list[1].type
 
-	while contour_list[i] and contour_list[i].data.priority <= data.priority do
-		i = i + 1
-	end
+		while contour_list[i] and contour_list[i].data.priority <= data.priority do
+			i = i + 1
+		end
 
-	table.insert(contour_list, i, setup)
+		table.insert(contour_list, i, setup)
 
-	if not old_preset_type or i == 1 and old_preset_type ~= setup.type then
-		self:_apply_top_preset()
+		if not old_preset_type or i == 1 and old_preset_type ~= setup.type then
+			self:_apply_top_preset()
+		end
 	end
 
 	if not self._update_enabled then
@@ -505,7 +514,7 @@ function ContourExt:_remove(index, sync, is_element)
 		return
 	end
 
-	local was_swap = nil
+	local was_swap
 
 	if setup.data.material_swap_required then
 		local base_ext = self._unit:base()
@@ -561,7 +570,9 @@ function ContourExt:_remove(index, sync, is_element)
 		local u_id = self._unit:id()
 
 		if u_id == -1 then
-			sync_unit, u_id = nil
+			sync_unit = nil
+			u_id = nil
+
 			local corpse_data = managers.enemy:get_corpse_unit_data_from_key(self._unit:key())
 
 			if corpse_data then
@@ -591,31 +602,29 @@ end
 
 function ContourExt:update(unit, t, dt)
 	local index = 1
-	local setup, cam_pos, is_current = nil
+	local setup, cam_pos, is_current
 	local ray_check_slotmask = self._slotmask_world_geometry
 
 	while self._contour_list and index <= #self._contour_list do
 		setup = self._contour_list[index]
 		is_current = index == 1
 
-		if setup.fadeout_t and setup.fadeout_t < t then
+		if setup.fadeout_t and t > setup.fadeout_t then
 			self:remove(setup.type, false, false)
 		else
 			index = index + 1
-			local turn_off = nil
+
+			local turn_off
 
 			if is_current and setup.data.ray_check then
 				if setup.upd_skip_count > 0 then
 					setup.upd_skip_count = setup.upd_skip_count - 1
-
-					if self._last_opacity == 0 then
-						turn_off = true
-					else
-						turn_off = false
-					end
+					turn_off = self._last_opacity == 0 and true
 				else
 					setup.upd_skip_count = ContourExt.raycast_update_skip_count
+
 					local turn_on = false
+
 					cam_pos = cam_pos or managers.viewport:get_current_camera_position()
 
 					if cam_pos then
@@ -650,7 +659,7 @@ function ContourExt:update(unit, t, dt)
 			if setup.flash_t then
 				local flash = setup.flash_on
 
-				if setup.flash_t < t then
+				if t > setup.flash_t then
 					setup.flash_t = setup.flash_t + setup.flash_frequency
 					flash = not flash
 					setup.flash_on = flash
@@ -733,8 +742,10 @@ end
 
 function ContourExt:_apply_top_preset()
 	local setup = self._contour_list[1]
+
 	self._last_opacity = nil
-	local was_swap = nil
+
+	local was_swap
 
 	if setup.data.material_swap_required then
 		local base_ext = self._unit:base()
@@ -778,6 +789,7 @@ function ContourExt:material_applied(material_was_swapped)
 
 		if not data.ray_check then
 			local opacity = self._last_opacity or 1
+
 			self._last_opacity = nil
 
 			self:_upd_opacity(opacity)
@@ -814,10 +826,10 @@ function ContourExt:_chk_damage_bonuses()
 		return
 	end
 
-	local dmg_bonus, dmg_bonus_dist_idx = nil
+	local dmg_bonus, dmg_bonus_dist_idx
 
 	if self._contour_list then
-		local data = nil
+		local data
 
 		for _, setup in ipairs(self._contour_list) do
 			data = setup.data
@@ -868,6 +880,7 @@ function ContourExt:update_materials()
 		self:_upd_color()
 
 		local opacity = self._last_opacity or 1
+
 		self._last_opacity = nil
 
 		self:_upd_opacity(opacity)

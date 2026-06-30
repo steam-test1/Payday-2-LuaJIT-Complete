@@ -21,6 +21,7 @@ local S_FONT = tweak_data.menu.pd2_small_font
 local S_FONT_SIZE = tweak_data.menu.pd2_small_font_size
 local M_FONT = tweak_data.menu.pd2_medium_font
 local M_FONT_SIZE = tweak_data.menu.pd2_medium_font_size
+
 SpecializationGuiNew = SpecializationGuiNew or class()
 
 function SpecializationGuiNew:init(ws, fullscreen_ws, node)
@@ -52,6 +53,7 @@ function SpecializationGuiNew:_setup()
 	end
 
 	local scaled_size = managers.gui_data:scaled_size()
+
 	self._panel = self._ws:panel():panel({
 		valign = "center",
 		visible = true,
@@ -62,9 +64,9 @@ function SpecializationGuiNew:_setup()
 	WalletGuiObject.set_wallet(self._panel)
 
 	local title_text = self._panel:text({
-		vertical = "top",
-		name = "title_text",
 		align = "left",
+		name = "title_text",
+		vertical = "top",
 		text = utf8.to_upper(managers.localization:text("menu_specialization")),
 		h = tweak_data.menu.pd2_large_font_size,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -72,13 +74,13 @@ function SpecializationGuiNew:_setup()
 		color = tweak_data.screen_colors.text
 	})
 	local bg_text = self._fullscreen_panel:text({
+		align = "left",
+		alpha = 0.4,
+		blend_mode = "add",
+		h = 90,
+		layer = 1,
 		name = "bg_text",
 		vertical = "top",
-		h = 90,
-		alpha = 0.4,
-		align = "left",
-		blend_mode = "add",
-		layer = 1,
 		text = utf8.to_upper(managers.localization:text("menu_specialization")),
 		font_size = tweak_data.menu.pd2_massive_font_size,
 		font = tweak_data.menu.pd2_massive_font,
@@ -93,10 +95,10 @@ function SpecializationGuiNew:_setup()
 
 	if managers.menu:is_pc_controller() then
 		self._panel:text({
-			vertical = "bottom",
-			name = "back_button",
 			align = "right",
 			blend_mode = "add",
+			name = "back_button",
+			vertical = "bottom",
 			text = utf8.to_upper(managers.localization:text("menu_back")),
 			h = tweak_data.menu.pd2_large_font_size,
 			font_size = tweak_data.menu.pd2_large_font_size,
@@ -108,13 +110,13 @@ function SpecializationGuiNew:_setup()
 		self._panel:child("back_button"):set_bottom(self._panel:h())
 
 		local bg_back = self._fullscreen_panel:text({
-			name = "back_button",
-			vertical = "bottom",
-			h = 90,
 			align = "right",
 			alpha = 0.4,
 			blend_mode = "add",
+			h = 90,
 			layer = 1,
+			name = "back_button",
+			vertical = "bottom",
 			text = utf8.to_upper(managers.localization:text("menu_back")),
 			font_size = tweak_data.menu.pd2_massive_font_size,
 			font = tweak_data.menu.pd2_massive_font,
@@ -133,15 +135,15 @@ function SpecializationGuiNew:_setup()
 		color = Color(0.4, 0, 0, 0)
 	})
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		render_template = "VertexColorTexturedBlur3D",
 		layer = -1,
+		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
 
 	local function func(o)
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(p)
 		end)
 	end
@@ -149,12 +151,12 @@ function SpecializationGuiNew:_setup()
 	blur:animate(func)
 
 	local points_text = self._panel:text({
-		word_wrap = false,
-		name = "points_text",
-		vertical = "top",
-		wrap = false,
 		align = "left",
 		layer = 1,
+		name = "points_text",
+		vertical = "top",
+		word_wrap = false,
+		wrap = false,
 		text = utf8.to_upper(managers.localization:text("menu_st_available_spec_points", {
 			points = managers.money:add_decimal_marks_to_string(tostring(managers.skilltree:specialization_points()))
 		})),
@@ -172,10 +174,10 @@ function SpecializationGuiNew:_setup()
 		h = self._panel:h() - tweak_data.menu.pd2_large_font_size - 5 - (title_text:bottom() + 5)
 	})
 	self._tab_panel = self._safe_panel:panel({
-		y = 0,
 		name = "tab_panel",
 		visible = true,
 		w = 810,
+		y = 0,
 		h = M_FONT_SIZE + 10
 	})
 	self._specialization_panel = self._safe_panel:panel({
@@ -192,8 +194,8 @@ function SpecializationGuiNew:_setup()
 		h = self._specialization_panel:h()
 	})
 	self._scroll_list = ScrollItemList:new(self._specialization_panel, {
-		scrollbar_padding = 10,
-		padding = 0
+		padding = 0,
+		scrollbar_padding = 10
 	}, {
 		padding = 10
 	})
@@ -202,6 +204,7 @@ function SpecializationGuiNew:_setup()
 	self._scroll_list:set_selected_callback(callback(self, self, "update_detail_panels"))
 
 	self._scroll_horizontal_index = 0
+
 	local bg_colors = {
 		Color.red,
 		Color.green,
@@ -239,6 +242,7 @@ function SpecializationGuiNew:_setup()
 	self._scroll_list:selected_item():set_horizontal_index(0)
 
 	self._category_tab_items = {}
+
 	local x_position = 0
 
 	for index, data in ipairs(tweak_data.skilltree.specialization_category) do
@@ -251,6 +255,7 @@ function SpecializationGuiNew:_setup()
 				category = data.category
 			})
 		})
+
 		x_position = category_item:bounds().right
 
 		table.insert(self._category_tab_items, category_item)
@@ -271,21 +276,21 @@ function SpecializationGuiNew:_setup()
 			loc_id = "menu_legend_preview_move"
 		})
 		table.insert(infos, {
-			loc_id = "menu_specialization_key_but_deck",
-			key = "menu_respec_tree_all"
+			key = "menu_respec_tree_all",
+			loc_id = "menu_specialization_key_but_deck"
 		})
 		table.insert(infos, {
-			loc_id = "menu_specialization_key_favorite",
-			key = "menu_respec_tree"
+			key = "menu_respec_tree",
+			loc_id = "menu_specialization_key_favorite"
 		})
 	else
 		table.insert(infos, {
-			loc_id = "menu_specialization_key_favorite",
-			key = "menu_respec_tree"
+			key = "menu_respec_tree",
+			loc_id = "menu_specialization_key_favorite"
 		})
 		table.insert(infos, {
-			loc_id = "menu_specialization_key_but_deck",
-			key = "menu_respec_tree_all"
+			key = "menu_respec_tree_all",
+			loc_id = "menu_specialization_key_but_deck"
 		})
 	end
 
@@ -323,7 +328,7 @@ function SpecializationGuiNew:on_tab_item_pressed(data)
 		end
 	end
 
-	local sort_func = nil
+	local sort_func
 
 	if data.category == "all" then
 		function sort_func(item)
@@ -395,8 +400,8 @@ function SpecializationGuiNew:update_detail_panels(item)
 	local y_pos = 0
 	local margin = 10
 	local title_text = self._details_panel:text({
-		name = "details_title",
 		layer = 1,
+		name = "details_title",
 		text = managers.localization:text(selected_item.specialization_data.name_id),
 		font = M_FONT,
 		font_size = S_FONT_SIZE
@@ -407,12 +412,13 @@ function SpecializationGuiNew:update_detail_panels(item)
 	title_text:set_y(y_pos + margin)
 
 	y_pos = title_text:bottom()
+
 	local specialization_descs_tweak = tweak_data.upgrades.specialization_descs[selected_item.specialization_id]
 	local text_params = {
-		text = "",
-		wrap = true,
-		word_wrap = true,
 		layer = 1,
+		text = "",
+		word_wrap = true,
+		wrap = true,
 		x = margin,
 		w = self._details_panel:w() - margin * 2,
 		font = M_FONT,
@@ -432,6 +438,7 @@ function SpecializationGuiNew:update_detail_panels(item)
 
 			text_params.text = managers.localization:to_upper_text(unlock_id)
 			text_params.color = tweak_data.screen_colors.important_1
+
 			local lock_text = self._details_panel:text(text_params)
 
 			ExtendedPanel.make_fine_text(lock_text)
@@ -444,12 +451,14 @@ function SpecializationGuiNew:update_detail_panels(item)
 
 	if self._scroll_horizontal_index == 0 then
 		local desc_string = managers.localization:text(selected_item.specialization_data.desc_id)
+
 		desc_string = desc_string:gsub("\n\n", "\n")
+
 		local desc_text = self._details_panel:text({
-			name = "details_desc",
-			wrap = true,
-			word_wrap = true,
 			layer = 1,
+			name = "details_desc",
+			word_wrap = true,
+			wrap = true,
 			x = margin,
 			w = self._details_panel:w() - margin * 2,
 			text = desc_string,
@@ -461,13 +470,14 @@ function SpecializationGuiNew:update_detail_panels(item)
 		desc_text:set_y(y_pos + margin)
 
 		y_pos = desc_text:bottom()
+
 		local current_tier = managers.skilltree:get_specialization_value(selected_item.specialization_id, "tiers", "current_tier")
 
 		for index, spec_data in ipairs(selected_item.specialization_data) do
 			if index % 2 ~= 0 then
 				local specialization_description = specialization_descs_tweak and specialization_descs_tweak[index] or {}
 				local multi_choice_specialization_descs = {}
-				local choice_data = nil
+				local choice_data
 
 				if spec_data.multi_choice then
 					local choice_index = managers.skilltree:get_specialization_value(selected_item.specialization_id, "choices", index)
@@ -479,19 +489,19 @@ function SpecializationGuiNew:update_detail_panels(item)
 				end
 
 				local locked = current_tier < index
-				local macroes = {
-					BTN_ABILITY = managers.localization:btn_macro("throw_grenade"),
-					CLONED_CARD = managers.localization:text("menu_deck_multichoice_no_choice")
-				}
+				local macroes = {}
+
+				macroes.BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
+				macroes.CLONED_CARD = managers.localization:text("menu_deck_multichoice_no_choice")
 
 				for i, d in pairs(specialization_description) do
 					macroes[i] = d
 				end
 
-				local choice_macroes = {
-					BTN_ABILITY = managers.localization:btn_macro("throw_grenade"),
-					CLONED_CARD = choice_data and choice_data.name_id and managers.localization:text(choice_data.name_id) or managers.localization:text("menu_deck_multichoice_no_choice")
-				}
+				local choice_macroes = {}
+
+				choice_macroes.BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
+				choice_macroes.CLONED_CARD = choice_data and choice_data.name_id and managers.localization:text(choice_data.name_id) or managers.localization:text("menu_deck_multichoice_no_choice")
 
 				for i, d in pairs(multi_choice_specialization_descs) do
 					choice_macroes[i] = d
@@ -514,6 +524,7 @@ function SpecializationGuiNew:update_detail_panels(item)
 				text_params.text = text_params.text:gsub("\n\n", " ")
 				text_params.text = text_params.text:gsub("\n", " ")
 				text_params.alpha = locked and 0.75 or 1
+
 				local ability_text = self._details_panel:text(text_params)
 
 				managers.menu_component:add_colors_to_text_object(ability_text, tweak_data.screen_colors.resource)
@@ -527,7 +538,7 @@ function SpecializationGuiNew:update_detail_panels(item)
 		local spec_data = selected_item.specialization_data[self._scroll_horizontal_index]
 		local specialization_description = specialization_descs_tweak and specialization_descs_tweak[self._scroll_horizontal_index] or {}
 		local multi_choice_specialization_descs = {}
-		local choice_data = nil
+		local choice_data
 
 		if spec_data.multi_choice then
 			local choice_index = managers.skilltree:get_specialization_value(selected_item.specialization_id, "choices", self._scroll_horizontal_index)
@@ -538,17 +549,17 @@ function SpecializationGuiNew:update_detail_panels(item)
 			end
 		end
 
-		local macroes = {
-			BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
-		}
+		local macroes = {}
+
+		macroes.BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
 
 		for i, d in pairs(specialization_description) do
 			macroes[i] = d
 		end
 
-		local choice_macroes = {
-			BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
-		}
+		local choice_macroes = {}
+
+		choice_macroes.BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
 
 		for i, d in pairs(multi_choice_specialization_descs) do
 			choice_macroes[i] = d
@@ -557,6 +568,7 @@ function SpecializationGuiNew:update_detail_panels(item)
 		local text_string = ""
 		local name_id = spec_data.name_id
 		local desc_id = spec_data.desc_id
+
 		text_string = text_string .. string.format("%s:\n%s", managers.localization:text(name_id), managers.localization:text(desc_id, macroes))
 
 		if choice_data and not is_dlc_locked then
@@ -588,11 +600,13 @@ function SpecializationGuiNew:update_detail_panels(item)
 
 			if vr_desc_data then
 				local vr_string = managers.localization:text("menu_vr_skill_addon") .. " " .. managers.localization:text(vr_desc_data.desc_id, vr_desc_data.macros)
+
 				text_string = text_string .. string.format("\n\n%s", vr_string)
 			end
 		end
 
 		text_params.text = text_string
+
 		local ability_text = self._details_panel:text(text_params)
 
 		managers.menu_component:add_colors_to_text_object(ability_text, tweak_data.screen_colors.resource)
@@ -655,27 +669,27 @@ function SpecializationGuiNew:dialog_unlock_specialization_card(index, horizonta
 	end
 
 	if total_cost <= managers.skilltree:get_specialization_value("points") then
-		local dialog_data = {
-			title = managers.localization:text("st_menu_max_perk_dialog_title"),
-			text = managers.localization:text("menu_new_perk_dialog_text", {
-				max_tier = 9,
-				point_cost = total_cost,
-				perk_tier = horizontal_index
-			}),
-			focus_button = 2,
-			button_list = {
-				{
-					text = managers.localization:text("dialog_yes"),
-					callback_func = callback(self, self, "unlock_specialization_card", {
-						total_cost,
-						index,
-						horizontal_index
-					})
-				},
-				{
-					cancel_button = true,
-					text = managers.localization:text("dialog_no")
-				}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("st_menu_max_perk_dialog_title")
+		dialog_data.text = managers.localization:text("menu_new_perk_dialog_text", {
+			max_tier = 9,
+			point_cost = total_cost,
+			perk_tier = horizontal_index
+		})
+		dialog_data.focus_button = 2
+		dialog_data.button_list = {
+			{
+				text = managers.localization:text("dialog_yes"),
+				callback_func = callback(self, self, "unlock_specialization_card", {
+					total_cost,
+					index,
+					horizontal_index
+				})
+			},
+			{
+				cancel_button = true,
+				text = managers.localization:text("dialog_no")
 			}
 		}
 
@@ -744,10 +758,11 @@ function SpecializationGuiNew:is_specialization_dlc_locked(index)
 
 	local dlc = tweak_data:get_raw_value("skilltree", "specializations", specialization_id, "dlc")
 
-	return dlc and not managers.dlc:is_dlc_unlocked(dlc)
+	return not not dlc and not managers.dlc:is_dlc_unlocked(dlc)
 end
 
 function SpecializationGuiNew:update(t, dt)
+	return
 end
 
 function SpecializationGuiNew:input_focus()
@@ -768,6 +783,7 @@ end
 
 function SpecializationGuiNew:move_left()
 	self._scroll_horizontal_index = math.clamp(self._scroll_horizontal_index - 1, 0, 9)
+
 	local selected_item = self._scroll_list:selected_item()
 
 	if selected_item then
@@ -779,6 +795,7 @@ end
 
 function SpecializationGuiNew:move_right()
 	self._scroll_horizontal_index = math.clamp(self._scroll_horizontal_index + 1, 0, 9)
+
 	local selected_item = self._scroll_list:selected_item()
 
 	if selected_item then
@@ -906,9 +923,11 @@ function SpecializationGuiNew:mouse_pressed(button, x, y)
 end
 
 function SpecializationGuiNew:mouse_clicked(o, button, x, y)
+	return
 end
 
 function SpecializationGuiNew:mouse_double_click(o, button, x, y)
+	return
 end
 
 function SpecializationGuiNew:mouse_released(button, x, y)
@@ -959,11 +978,11 @@ function SpecializationGuiNew:mouse_moved(o, x, y)
 				local can_equip = item._left_side:inside(x, y) and not hover_favorite and managers.skilltree:get_specialization_value("current_specialization") ~= item.specialization_id
 				local is_pressable = hover_favorite or can_purchase or can_equip
 				local has_multi_choice = item:is_purchased(horizontal_index) and item:has_multi_choice(horizontal_index)
+
 				is_pressable = is_pressable or has_multi_choice
 
 				if is_pressable then
-					pointer = "link"
-					used = true
+					used, pointer = true, "link"
 				end
 			end
 		end
@@ -981,8 +1000,7 @@ function SpecializationGuiNew:mouse_moved(o, x, y)
 			item:hovered(true)
 
 			if not item:get_active_state() then
-				pointer = "link"
-				used = true
+				used, pointer = true, "link"
 			end
 		else
 			item:hovered(false)
@@ -1070,15 +1088,15 @@ function SpecializationGuiNew:disable()
 	})
 
 	self._disabled_panel:rect({
-		name = "bg",
 		alpha = 0.4,
+		name = "bg",
 		color = Color.black
 	})
 	self._disabled_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = -1,
 		name = "blur",
 		render_template = "VertexColorTexturedBlur3D",
-		layer = -1,
+		texture = "guis/textures/test_blur_df",
 		w = self._disabled_panel:w(),
 		h = self._disabled_panel:h()
 	})
@@ -1120,6 +1138,7 @@ function SpecializationListItem:init(parent, panel_data, info_data)
 	self._max_horizontal_index = 9
 	self._card_panels = {}
 	self._is_equipped = false
+
 	local has_multi_choice_lookup = {}
 
 	for index, item in ipairs(self.specialization_data) do
@@ -1141,26 +1160,27 @@ function SpecializationListItem:setup()
 
 	self._content_panel:clear()
 	self._content_panel:rect({
-		name = "content_hightlight_panel",
 		alpha = 0.6,
 		layer = 1,
+		name = "content_hightlight_panel",
 		color = Color.black
 	})
 
 	self._left_side = self._content_panel:panel({
 		w = 180
 	})
-	local fav_icon_texture = "guis/textures/favorite_star"
-	local fav_icon_texture_rect = {
+
+	local fav_icon_texture, fav_icon_texture_rect = "guis/textures/favorite_star", {
 		24,
 		0,
 		24,
 		24
 	}
+
 	self._favorite_button_state = managers.skilltree:get_specialization_favorite(self.specialization_id)
 	self._favorite_button = self._left_side:bitmap({
-		layer = 3,
 		h = 24,
+		layer = 3,
 		w = 24,
 		texture = fav_icon_texture,
 		texture_rect = fav_icon_texture_rect,
@@ -1176,14 +1196,14 @@ function SpecializationListItem:setup()
 		x = offset
 	})
 	local title_text = title_panel:text({
-		name = "title_text",
-		vertical = "top",
 		align = "center",
 		halign = "grow",
-		valign = "grow",
-		y = 5,
-		x = 5,
 		layer = 8,
+		name = "title_text",
+		valign = "grow",
+		vertical = "top",
+		x = 5,
+		y = 5,
 		color = self:is_dlc_locked() and tweak_data.screen_colors.important_1 or Color.white,
 		text = managers.localization:to_upper_text(self.specialization_data.name_id),
 		font = M_FONT,
@@ -1192,14 +1212,14 @@ function SpecializationListItem:setup()
 		h = title_panel:h() - 10
 	})
 	local equipped_text = title_panel:text({
-		name = "equipped",
-		vertical = "bottom",
 		align = "center",
 		halign = "grow",
-		valign = "grow",
-		y = 5,
-		x = 5,
 		layer = 8,
+		name = "equipped",
+		valign = "grow",
+		vertical = "bottom",
+		x = 5,
+		y = 5,
 		text = "(" .. managers.localization:to_upper_text("bm_menu_equipped") .. ")",
 		x = offset,
 		font = S_FONT,
@@ -1208,11 +1228,11 @@ function SpecializationListItem:setup()
 		h = title_panel:h() - 10
 	})
 	local title_hightlight_panel = title_panel:panel({
-		visible = false,
+		halign = "scale",
+		layer = 1,
 		name = "title_highlight",
 		valign = "scale",
-		halign = "scale",
-		layer = 1
+		visible = false
 	})
 
 	BoxGuiObject:new(title_hightlight_panel, {
@@ -1226,10 +1246,10 @@ function SpecializationListItem:setup()
 	})
 	self:set_equipped(managers.skilltree:get_specialization_value("current_specialization") == self.specialization_id)
 
-	local card_size_x = self.card_base_h_size * card_ratio
-	local card_size_y = self.card_base_h_size
+	local card_size_x, card_size_y = self.card_base_h_size * card_ratio, self.card_base_h_size
 	local card_offset = 5
 	local current_tier = self:get_current_tier()
+
 	self._center_side = self._content_panel:panel({
 		x = self._left_side:w(),
 		w = card_size_x * 9 + card_offset * 9 - offset,
@@ -1244,8 +1264,7 @@ function SpecializationListItem:setup()
 			guis_catalog = guis_catalog .. "dlcs/" .. tostring(item.texture_bundle_folder) .. "/"
 		end
 
-		local card_texture = "guis/textures/pd2/specialization/perk_icon_card"
-		local card_texture_rect = {
+		local card_texture, card_texture_rect = "guis/textures/pd2/specialization/perk_icon_card", {
 			0,
 			0,
 			64,
@@ -1274,8 +1293,8 @@ function SpecializationListItem:setup()
 		card_panel:set_center_y(self._center_side:h() / 2)
 
 		local card_background = card_panel:bitmap({
-			name = "background",
 			layer = 3,
+			name = "background",
 			texture = card_texture,
 			texture_rect = card_texture_rect,
 			color = self:is_dlc_locked() and tweak_data.screen_colors.important_1 or locked and Color("ff36383B") or Color.white,
@@ -1315,8 +1334,8 @@ function SpecializationListItem:setup()
 		end
 
 		local points_text = card_panel:text({
-			name = "points",
 			layer = 6,
+			name = "points",
 			text = tostring(total_cost),
 			color = total_cost < managers.skilltree:get_specialization_value("points") and Color.white or tweak_data.screen_colors.important_1,
 			x = offset,
@@ -1333,6 +1352,7 @@ function SpecializationListItem:setup()
 
 		if multi_choice_data then
 			local choice_index = managers.skilltree:get_specialization_value(self.specialization_id, "choices", index) or 0
+
 			multi_choice_data = multi_choice_data[choice_index] or nil
 
 			if multi_choice_data then
@@ -1376,9 +1396,9 @@ function SpecializationListItem:setup()
 				end
 
 				local choice_text = card_panel:text({
+					align = "right",
 					name = "choice_text",
 					vertical = "top",
-					align = "right",
 					text = string.format("%d/%d", choice_index, #item.multi_choice),
 					color = self:is_dlc_locked() and tweak_data.screen_colors.important_1 or locked and Color("ffe9ebec") or Color.white,
 					x = offset,
@@ -1396,9 +1416,9 @@ function SpecializationListItem:setup()
 		end
 
 		local hightlight_panel = card_panel:panel({
-			visible = false,
+			layer = 1,
 			name = "hightlight_panel",
-			layer = 1
+			visible = false
 		})
 
 		BoxGuiObject:new(hightlight_panel, {
@@ -1437,9 +1457,10 @@ end
 function SpecializationListItem:on_fail_unlocked(horizontal_index)
 	if not self.anim_active then
 		self.anim_active = true
+
 		local item = self._card_panels[horizontal_index]:child("background")
 
-		item:animate(function ()
+		item:animate(function()
 			local t = 0
 			local dt = 0
 			local speed = 4
@@ -1548,6 +1569,7 @@ function SpecializationListItem:hovered_index(x, y)
 end
 
 function SpecializationListItem:hovered(x, y)
+	return
 end
 
 function SpecializationListItem:pressed(x, y)
@@ -1558,11 +1580,7 @@ function SpecializationListItem:pressed(x, y)
 			selected_item = "Locked"
 		else
 			if self._left_side:inside(x, y) then
-				if self._favorite_button:inside(x, y) then
-					selected_item = "Favorite"
-				else
-					selected_item = "Equip Deck"
-				end
+				selected_item = self._favorite_button:inside(x, y) and "Favorite" or "Equip Deck"
 			end
 
 			if self._center_side:inside(x, y) then
@@ -1583,7 +1601,7 @@ end
 function SpecializationListItem:is_dlc_locked()
 	local dlc = tweak_data:get_raw_value("skilltree", "specializations", self.specialization_id, "dlc")
 
-	return dlc and not managers.dlc:is_dlc_unlocked(dlc)
+	return not not dlc and not managers.dlc:is_dlc_unlocked(dlc)
 end
 
 function SpecializationListItem:is_favorited()
@@ -1613,19 +1631,16 @@ end
 function SpecializationListItem:switch_multi_choice(tier_index, choice_mod)
 	local spec_data = self.specialization_data[tier_index]
 
-	if not spec_data or not spec_data.multi_choice or self:get_current_tier() < tier_index then
+	if not spec_data or not spec_data.multi_choice or tier_index > self:get_current_tier() then
 		return
 	end
 
 	local choice_index = managers.skilltree:get_specialization_value(self.specialization_id, "choices", tier_index) or 0
+
 	choice_index = choice_index + choice_mod
 
 	if not spec_data.multi_choice[choice_index] then
-		if choice_index > 0 then
-			choice_index = 1
-		else
-			choice_index = #spec_data.multi_choice
-		end
+		choice_index = choice_index > 0 and 1 or #spec_data.multi_choice
 	end
 
 	managers.menu_component:post_event(choice_mod > 0 and "selection_next" or "selection_previous")
@@ -1642,24 +1657,25 @@ function SpecializationCategoryTabItem:init(parent, panel_data, tab_data)
 	self._active_state = tab_data.initial_state or false
 	self._tab_panel = parent:panel(panel_data)
 	self._tab_text = self._tab_panel:text({
-		valign = "grow",
-		vertical = "center",
 		align = "center",
 		halign = "grow",
 		layer = 5,
+		valign = "grow",
+		vertical = "center",
 		text = managers.localization:to_upper_text(tab_data.text_name_id),
 		color = Color.black,
 		font = M_FONT,
 		font_size = M_FONT_SIZE
 	})
+
 	local _, _, tw, th = self._tab_text:text_rect()
 
 	self._tab_panel:set_size(tw + 10, th + 10)
 
 	self._tab_rect = self._tab_panel:bitmap({
+		layer = 3,
 		texture = "guis/textures/pd2/shared_tab_box",
 		visible = true,
-		layer = 3,
 		color = tweak_data.screen_colors.text,
 		w = self._tab_panel:w(),
 		h = self._tab_panel:h()

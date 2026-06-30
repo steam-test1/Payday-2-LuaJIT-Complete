@@ -13,18 +13,19 @@ function PlayerStyleElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local style_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	panel_sizer:add(style_sizer, 0, 1, "EXPAND,LEFT")
 
 	self._style_params = {
+		ctrlr_proportions = 2,
 		default = "",
 		name = "Style:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
 		sizer_proportions = 1,
-		tooltip = "Select a style from the combobox",
 		sorted = true,
+		tooltip = "Select a style from the combobox",
 		panel = panel,
 		sizer = style_sizer,
 		options = {
@@ -33,6 +34,7 @@ function PlayerStyleElement:_build_panel(panel, panel_sizer)
 		},
 		value = self._hed.style
 	}
+
 	local style = CoreEWS.combobox(self._style_params)
 
 	style:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "set_element_data"), {
@@ -40,11 +42,11 @@ function PlayerStyleElement:_build_panel(panel, panel_sizer)
 		ctrlr = style
 	})
 
-	local help = {
-		text = "Change player style.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Change player style."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

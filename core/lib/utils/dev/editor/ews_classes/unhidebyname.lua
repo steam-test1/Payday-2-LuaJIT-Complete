@@ -22,7 +22,9 @@ function UnhideByName:init(...)
 	horizontal_ctrlr_sizer:add(list_sizer, 3, 0, "EXPAND")
 
 	local list_ctrlrs = EWS:BoxSizer("VERTICAL")
+
 	self._layer_cbs = {}
+
 	local layers_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "List Layers")
 	local layers = managers.editor:layers()
 	local names_layers = {}
@@ -70,6 +72,7 @@ function UnhideByName:init(...)
 	list_ctrlrs:add(layers_sizer, 0, 30, "EXPAND,TOP")
 
 	local continents_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Continents")
+
 	self._continents_sizer = EWS:BoxSizer("VERTICAL")
 
 	self:build_continent_cbs()
@@ -121,7 +124,9 @@ end
 
 function UnhideByName:build_continent_cbs()
 	self._continents_cbs = {}
+
 	local continents = managers.editor:continents()
+
 	self._continent_names = {}
 
 	for name, continent in pairs(continents) do
@@ -239,6 +244,7 @@ function UnhideByName:on_delete()
 end
 
 function UnhideByName:on_mark_unit()
+	return
 end
 
 function UnhideByName:_selected_item_units()
@@ -272,6 +278,7 @@ end
 function UnhideByName:_append_unit_to_list(unit)
 	local i = self._list:append_item(unit:unit_data().name_id)
 	local j = #self._units + 1
+
 	self._units[j] = unit
 
 	self._list:set_item_data(i, j)
@@ -300,11 +307,13 @@ function UnhideByName:unit_name_changed(unit)
 
 			if i - 1 >= 0 then
 				local over = self._units[self._list:get_item_data(i - 1)]:unit_data().name_id
-				sort = sort or unit:unit_data().name_id < over
+
+				sort = sort or over > unit:unit_data().name_id
 			end
 
 			if i + 1 < self._list:item_count() then
 				local under = self._units[self._list:get_item_data(i + 1)]:unit_data().name_id
+
 				sort = sort or under < unit:unit_data().name_id
 			end
 
@@ -337,7 +346,9 @@ function UnhideByName:fill_unit_list()
 	local layers = managers.editor:layers()
 	local j = 1
 	local filter = self._filter:get_value()
+
 	self._units = {}
+
 	local hidden = {}
 
 	for _, unit in ipairs(managers.editor:hidden_units()) do
@@ -349,6 +360,7 @@ function UnhideByName:fill_unit_list()
 			for _, unit in ipairs(layer:created_units()) do
 				if self:_continent_ok(unit) and (not self.IS_HIDE_BY_NAME and hidden[unit:key()] or self.IS_HIDE_BY_NAME and not hidden[unit:key()]) and string.find(unit:unit_data().name_id, filter, 1, true) then
 					local i = self._list:append_item(unit:unit_data().name_id)
+
 					self._units[j] = unit
 
 					self._list:set_item_data(i, j)

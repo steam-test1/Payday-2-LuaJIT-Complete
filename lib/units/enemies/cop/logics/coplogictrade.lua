@@ -9,12 +9,14 @@ function CopLogicTrade.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 
 	data.unit:movement():set_allow_fire(false)
 	CopLogicBase._reset_attention(data)
 
 	local skip_hint = enter_params and enter_params.skip_hint or false
+
 	my_data._trade_enabled = true
 
 	data.unit:network():send("hostage_trade", true, false, skip_hint)
@@ -52,33 +54,33 @@ function CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
 		end
 
 		if Network:is_server() and not unit:anim_data().hands_tied and not unit:anim_data().tied then
-			local action_data = nil
+			local action_data
 
 			if managers.enemy:all_civilians()[unit:key()] then
 				if not unit:brain():is_tied() then
 					action_data = {
+						body_part = 1,
 						clamp_to_graph = true,
 						type = "act",
-						body_part = 1,
 						variant = "tied",
 						blocks = {
-							light_hurt = -1,
-							hurt = -1,
 							heavy_hurt = -1,
+							hurt = -1,
+							light_hurt = -1,
 							walk = -1
 						}
 					}
 				end
 			else
 				action_data = {
+					body_part = 1,
 					clamp_to_graph = true,
 					type = "act",
-					body_part = 1,
 					variant = "tied_all_in_one",
 					blocks = {
-						light_hurt = -1,
-						hurt = -1,
 						heavy_hurt = -1,
+						hurt = -1,
+						light_hurt = -1,
 						walk = -1
 					}
 				}
@@ -152,7 +154,7 @@ function CopLogicTrade.on_trade(data, pos, rotation, free_criminal)
 	end
 
 	local iterations = 1
-	local coarse_path = nil
+	local coarse_path
 	local my_data = data.internal_data
 	local search_params = {
 		from_tracker = data.unit:movement():nav_tracker(),
@@ -163,6 +165,7 @@ function CopLogicTrade.on_trade(data, pos, rotation, free_criminal)
 
 	while iterations < max_attempts do
 		local nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
+
 		search_params.to_seg = nav_seg
 		coarse_path = managers.navigation:search_coarse(search_params)
 
@@ -176,7 +179,7 @@ function CopLogicTrade.on_trade(data, pos, rotation, free_criminal)
 
 		iterations = iterations + 1
 
-		if max_attempts > iterations then
+		if iterations < max_attempts then
 			flee_pos = managers.groupai:state():flee_point(data.unit:movement():nav_tracker():nav_segment(), ignore_segments)
 
 			if not flee_pos then
@@ -190,22 +193,22 @@ function CopLogicTrade.on_trade(data, pos, rotation, free_criminal)
 		data.internal_data.flee_pos = flee_pos
 
 		if data.unit:anim_data().hands_tied or data.unit:anim_data().tied then
-			local new_action = nil
+			local new_action
 
 			if data.unit:anim_data().stand and data.is_tied then
 				new_action = {
-					variant = "panic",
 					body_part = 1,
-					type = "act"
+					type = "act",
+					variant = "panic"
 				}
 				data.is_tied = nil
 
 				data.unit:movement():set_stance("hos")
 			else
 				new_action = {
-					variant = "stand",
 					body_part = 1,
-					type = "act"
+					type = "act",
+					variant = "stand"
 				}
 			end
 
@@ -231,6 +234,7 @@ function CopLogicTrade.update(data)
 		end
 	elseif my_data.flee_pos then
 		local to_pos = my_data.flee_pos
+
 		my_data.flee_pos = nil
 		my_data.pathing_to_flee_pos = true
 		my_data.flee_path_search_id = tostring(data.unit:key()) .. "flee"
@@ -242,7 +246,9 @@ end
 function CopLogicTrade._process_pathing_results(data, my_data)
 	if data.pathing_results then
 		local pathing_results = data.pathing_results
+
 		data.pathing_results = nil
+
 		local path = pathing_results[my_data.flee_path_search_id]
 
 		if path then
@@ -259,12 +265,12 @@ function CopLogicTrade._process_pathing_results(data, my_data)
 end
 
 function CopLogicTrade._chk_request_action_walk_to_flee_pos(data, my_data, end_rot)
-	local new_action_data = {
-		type = "walk",
-		nav_path = my_data.flee_path,
-		variant = "run",
-		body_part = 2
-	}
+	local new_action_data = {}
+
+	new_action_data.type = "walk"
+	new_action_data.nav_path = my_data.flee_path
+	new_action_data.variant = "run"
+	new_action_data.body_part = 2
 	my_data.flee_path = nil
 	my_data.walking_to_flee_pos = data.unit:brain():action_request(new_action_data)
 end

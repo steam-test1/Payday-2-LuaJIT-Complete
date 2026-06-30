@@ -11,7 +11,7 @@ function ElementCheckDLC:on_executed(instigator)
 		return
 	end
 
-	local can_execute = nil
+	local can_execute
 
 	if self._values.require_all then
 		can_execute = self:check_all_dlcs_owned(self._values.dlc_ids)
@@ -29,6 +29,7 @@ function ElementCheckDLC:on_executed(instigator)
 end
 
 function ElementCheckDLC:client_on_executed(...)
+	return
 end
 
 function ElementCheckDLC:check_any_dlc_owned(dlc_list)

@@ -8,14 +8,15 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 LobbyCodeMenuComponent = LobbyCodeMenuComponent or class()
 
 function LobbyCodeMenuComponent:init(ws, fullscreen_ws, node)
 	self._ws = ws
 	self._panel = self._ws:panel():panel({
-		w = 500,
-		layer = 100,
 		h = 100,
+		layer = 100,
+		w = 500,
 		y = 80
 	})
 	Global.lobby_code = Global.lobby_code or {}
@@ -25,7 +26,7 @@ function LobbyCodeMenuComponent:init(ws, fullscreen_ws, node)
 
 		self:create_hub_panel()
 
-		local initial_state = nil
+		local initial_state
 
 		if Global.lobby_code.state ~= nil then
 			initial_state = Global.lobby_code.state
@@ -42,12 +43,12 @@ function LobbyCodeMenuComponent:close()
 end
 
 function LobbyCodeMenuComponent:create_hub_panel()
-	local panel_w = 0
-	local panel_h = 0
+	local panel_w, panel_h = 0, 0
+
 	self._lobby_id_text = self._panel:text({
-		y = 5,
-		name = "lobby_id_text",
 		layer = 101,
+		name = "lobby_id_text",
+		y = 5,
 		font = medium_font,
 		font_size = medium_font_size,
 		text = managers.localization:to_upper_text("menu_lobby_code") .. ": #",
@@ -57,10 +58,10 @@ function LobbyCodeMenuComponent:create_hub_panel()
 	ExtendedPanel.make_fine_text(self._lobby_id_text)
 
 	self._id_text = self._panel:text({
-		name = "title",
 		align = "center",
-		y = 5,
 		layer = 101,
+		name = "title",
+		y = 5,
 		font = medium_font,
 		font_size = medium_font_size,
 		text = self._id_code,
@@ -69,10 +70,10 @@ function LobbyCodeMenuComponent:create_hub_panel()
 		color = Color(1, 0.5, 0.5, 0.5)
 	})
 	self._code_hidden_text = self._panel:text({
-		name = "title",
 		align = "center",
-		y = 5,
 		layer = 106,
+		name = "title",
+		y = 5,
 		font = medium_font,
 		font_size = medium_font_size,
 		text = managers.localization:text("menu_lobby_code_hidden"),
@@ -80,6 +81,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 		h = medium_font_size,
 		color = Color(1, 0.5, 0.5, 0.5)
 	})
+
 	local _, _, id_width, id_height = self._id_text:text_rect()
 	local _, _, hidden_width, hidden_height = self._code_hidden_text:text_rect()
 	local code_width = math.max(id_width, hidden_width)
@@ -89,9 +91,9 @@ function LobbyCodeMenuComponent:create_hub_panel()
 	self._code_hidden_text:set_size(code_width, code_height)
 
 	self._code_hider = self._panel:rect({
-		visible = false,
 		alpha = 0.5,
 		layer = 105,
+		visible = false,
 		x = self._id_text:x(),
 		y = self._id_text:y(),
 		w = self._id_text:w(),
@@ -99,25 +101,25 @@ function LobbyCodeMenuComponent:create_hub_panel()
 		color = Color.black
 	})
 	self._button_panel = self._panel:panel({
-		w = 32,
 		h = 32,
-		layer = 101
+		layer = 101,
+		w = 32
 	})
 
 	self._button_panel:set_x(self._id_text:right() + 5)
 	self._button_panel:set_center_y(self._id_text:center_y())
 
 	self._copy_icon = self._button_panel:bitmap({
-		texture = "guis/dlcs/shub/textures/copy_icon",
 		layer = 101,
+		texture = "guis/dlcs/shub/textures/copy_icon",
 		w = self._button_panel:w(),
 		h = self._button_panel:h()
 	})
 
 	if not managers.menu:is_pc_controller() then
 		self._copy_button_prompt = self._button_panel:text({
-			name = "copy_button_prompt",
 			layer = 101,
+			name = "copy_button_prompt",
 			font = medium_font,
 			font_size = medium_font_size,
 			x = self._copy_icon:right() + 2,
@@ -131,14 +133,14 @@ function LobbyCodeMenuComponent:create_hub_panel()
 
 	self._lower_panel = self._panel:panel({
 		halign = "grow",
-		name = "lower_panel",
 		layer = 101,
+		name = "lower_panel",
 		y = self._id_text:bottom() + 2,
 		h = medium_font_size
 	})
 	self._hide_code_text = self._lower_panel:text({
-		name = "hide_code_text",
 		layer = 101,
+		name = "hide_code_text",
 		font = medium_font,
 		font_size = medium_font_size,
 		text = managers.localization:to_upper_text("menu_lobby_code_hide"),
@@ -149,9 +151,9 @@ function LobbyCodeMenuComponent:create_hub_panel()
 
 	self._copied_alpha_timer = 0
 	self._copied_code_text = self._panel:text({
+		layer = 101,
 		name = "copied_code_text",
 		y = 32,
-		layer = 101,
 		font = small_font,
 		font_size = small_font_size,
 		text = managers.localization:text("menu_lobby_code_copied"),

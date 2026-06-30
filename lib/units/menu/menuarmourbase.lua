@@ -1,7 +1,9 @@
 MenuArmourBase = MenuArmourBase or class(UnitBase)
+
 local ids_unit = Idstring("unit")
 local ids_material_config = Idstring("material_config")
 local ids_NORMAL = Idstring("NORMAL")
+
 MenuArmourBase.material_defaults = {
 	bump_normal_texture = {
 		[2] = Idstring("units/payday2/characters/shared_textures/vest_small_nm"),
@@ -13,18 +15,18 @@ MenuArmourBase.material_defaults = {
 	diffuse_layer3_texture = Idstring("units/payday2_cash/safes/default/sticker/sticker_default_df")
 }
 MenuArmourBase.material_textures = {
+	base_gradient = "diffuse_layer1_texture",
+	normal_map = "bump_normal_texture",
 	pattern = "diffuse_layer0_texture",
 	pattern_gradient = "diffuse_layer2_texture",
-	normal_map = "bump_normal_texture",
-	sticker = "diffuse_layer3_texture",
-	base_gradient = "diffuse_layer1_texture"
+	sticker = "diffuse_layer3_texture"
 }
 MenuArmourBase.material_variables = {
 	cubemap_pattern_control = "cubemap_pattern_control",
 	pattern_pos = "pattern_pos",
-	uv_scale = "uv_scale",
-	uv_offset_rot = "uv_offset_rot",
 	pattern_tweak = "pattern_tweak",
+	uv_offset_rot = "uv_offset_rot",
+	uv_scale = "uv_scale",
 	wear_and_tear = (managers.blackmarket and managers.blackmarket:skin_editor() and managers.blackmarket:skin_editor():active() or Application:production_build()) and "wear_tear_value" or nil
 }
 
@@ -249,6 +251,7 @@ function MenuArmourBase:_apply_cosmetics(clbks)
 	self._stored_clbk_listeners = {}
 	self._is_visuals_updated = false
 	self._clbks = clbks or {}
+
 	local units = {}
 	local material_configs = {}
 	local textures = {}
@@ -267,8 +270,8 @@ function MenuArmourBase:_apply_cosmetics(clbks)
 
 	local new_cosmetics = {
 		applied = false,
-		loading = false,
 		loaded = false,
+		loading = false,
 		unit = units,
 		material_config = material_configs,
 		texture = textures,
@@ -286,7 +289,7 @@ function MenuArmourBase:_apply_cosmetics(clbks)
 			armor_level = tweak_data.blackmarket.armors[armor_id].upgrade_level
 		end
 
-		local base_texture = nil
+		local base_texture
 
 		for key, material_texture in pairs(MenuArmourBase.material_textures) do
 			base_texture = cosmetics_data[key]
@@ -351,6 +354,7 @@ function MenuArmourBase:_add_asset(assets, name)
 		end
 
 		local key = ids:key()
+
 		assets[key] = assets[key] or {
 			loaded = false,
 			name = ids
@@ -482,6 +486,7 @@ function MenuArmourBase:_chk_load_complete(cosmetics)
 
 	if cosmetics.state.armor_skin then
 		self._materials = {}
+
 		local materials = self._unit:get_objects_by_type(Idstring("material"))
 
 		for _, m in ipairs(materials) do
@@ -499,7 +504,7 @@ function MenuArmourBase:_chk_load_complete(cosmetics)
 			armor_level = tweak_data.blackmarket.armors[armor_id].upgrade_level
 		end
 
-		local p_type, base_texture, new_texture, base_variable = nil
+		local p_type, base_texture, new_texture, base_variable
 
 		for _, material in pairs(self._materials) do
 			for key, material_texture in pairs(MenuArmourBase.material_textures) do
@@ -563,9 +568,11 @@ function MenuArmourBase:_load_cosmetic_assets(cosmetics)
 	cosmetics.loading = true
 	cosmetics.loaded = false
 	cosmetics.applied = false
+
 	local unit_load_result_clbk = callback(self, self, "clbk_armor_unit_loaded", cosmetics)
 	local material_config_load_result_clbk = callback(self, self, "clbk_armor_material_config_loaded", cosmetics)
 	local texture_load_result_clbk = callback(self, self, "clbk_armor_texture_loaded", cosmetics)
+
 	self._all_load_requests_sent = false
 
 	for asset_id, asset_data in pairs(cosmetics.unit) do
@@ -606,6 +613,7 @@ function MenuArmourBase:_unload_cosmetic_assets(cosmetics)
 		mask = self._mask_id,
 		armor = self._armor_id
 	}
+
 	cosmetics.unit = {}
 	cosmetics.material_config = {}
 	cosmetics.texture = {}
@@ -623,4 +631,5 @@ function MenuArmourBase:use_cc()
 end
 
 function MenuArmourBase:_print_cosmetics(cosmetics)
+	return
 end

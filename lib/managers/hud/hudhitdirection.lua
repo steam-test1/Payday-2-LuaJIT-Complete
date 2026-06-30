@@ -1,11 +1,10 @@
 HUDHitDirection = HUDHitDirection or class()
 HUDHitDirection.UNIT_TYPE_HIT_PLAYER = 1
 HUDHitDirection.UNIT_TYPE_HIT_VEHICLE = 2
-HUDHitDirection.DAMAGE_TYPES = {
-	HEALTH = 1,
-	ARMOUR = 2,
-	VEHICLE = 3
-}
+HUDHitDirection.DAMAGE_TYPES = {}
+HUDHitDirection.DAMAGE_TYPES.HEALTH = 1
+HUDHitDirection.DAMAGE_TYPES.ARMOUR = 2
+HUDHitDirection.DAMAGE_TYPES.VEHICLE = 3
 HUDHitDirection.DAMAGE_TYPE_NAMES = {
 	"health",
 	"armor",
@@ -23,10 +22,10 @@ function HUDHitDirection:init(hud)
 
 	self._hit_direction_panel = self._hud_panel:panel({
 		halign = "center",
-		name = "hit_direction_panel",
-		visible = true,
 		layer = -5,
+		name = "hit_direction_panel",
 		valign = "center",
+		visible = true,
 		w = HUDHitDirection.PANEL_SIZE,
 		h = HUDHitDirection.PANEL_SIZE
 	})
@@ -40,11 +39,12 @@ end
 
 function HUDHitDirection:_add_hit_indicator(damage_origin, damage_type, fixed_angle)
 	damage_type = damage_type or HUDHitDirection.DAMAGE_TYPES.HEALTH
+
 	local hit = self._hit_direction_panel:bitmap({
-		blend_mode = "add",
 		alpha = 1,
-		visible = true,
+		blend_mode = "add",
 		rotation = 0,
+		visible = true,
 		texture = self:_get_indicator_texture(damage_type),
 		color = Color.white
 	})
@@ -102,6 +102,7 @@ function HUDHitDirection:_animate(indicator, data, remove_func)
 
 	while data.t > 0 do
 		local dt = coroutine.yield()
+
 		data.t = data.t - dt
 		data.col = math.clamp(data.col - dt, 0, 1)
 

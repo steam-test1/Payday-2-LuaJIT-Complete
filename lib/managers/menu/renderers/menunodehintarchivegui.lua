@@ -15,6 +15,7 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 MenuHintArchiveInitiator = MenuHintArchiveInitiator or class(MenuInitiatorBase)
 
 function MenuHintArchiveInitiator:modify_node(original_node, node_data)
@@ -63,6 +64,7 @@ function HintListItem:init(parent, data)
 		layer = self:layer() - 1
 	})
 	self._requested_textures = {}
+
 	local icon_texture = "guis/textures/loading/hints/" .. data.image
 	local texture_count = managers.menu_component:request_texture(icon_texture, callback(self, self, "_texture_done_clbk", {
 		blend_mode = "add",
@@ -75,12 +77,14 @@ function HintListItem:init(parent, data)
 	})
 
 	local left = self:w() - 32 - 16
+
 	left = left - 6
 	self._click = self:panel()
 
 	self._click:set_w(left - 10)
 
 	local title_str = tostring(data.index) .. "/" .. tostring(data.total_tips_amount)
+
 	self._title = self:fine_text({
 		y = 5,
 		text = title_str,
@@ -89,10 +93,12 @@ function HintListItem:init(parent, data)
 		color = self.NT_SD_COLOR,
 		x = self.HEIGHT
 	})
+
 	local desc_str = managers.localization:text(data.text_id)
+
 	self._desc = self:text({
-		wrap = true,
 		word_wrap = true,
+		wrap = true,
 		text = desc_str,
 		font = tiny_font,
 		font_size = tiny_font_size,
@@ -131,8 +137,8 @@ end
 function HintListItem:_texture_done_clbk(params, texture_ids)
 	if alive(params.panel) then
 		local bitmap = params.panel:bitmap({
-			w = 50,
 			h = 50,
+			w = 50,
 			texture = texture_ids,
 			blend_mode = params.blend_mode
 		})
@@ -141,7 +147,7 @@ function HintListItem:_texture_done_clbk(params, texture_ids)
 	end
 
 	repeat
-		local found = nil
+		local found
 
 		for i, data in pairs(self._requested_textures) do
 			if Idstring(data.texture) == texture_ids then
@@ -192,19 +198,19 @@ function MenuNodeHintArchiveGui:_setup_item_panel(safe_rect, res)
 	})
 
 	self._text_panel:text({
-		name = "title_text",
 		layer = 1,
+		name = "title_text",
 		text = managers.localization:to_upper_text("menu_hintarchive_title"),
 		font_size = large_font_size,
 		font = large_font,
 		color = tweak_data.screen_colors.text
 	})
 	self._text_panel:text({
-		rotation = 360,
-		name = "title_bg_text",
 		alpha = 0.4,
-		y = -13,
+		name = "title_bg_text",
+		rotation = 360,
 		x = -13,
+		y = -13,
 		text = managers.localization:to_upper_text("menu_hintarchive_title"),
 		font_size = massive_font_size,
 		font = massive_font,
@@ -212,11 +218,12 @@ function MenuNodeHintArchiveGui:_setup_item_panel(safe_rect, res)
 	})
 
 	local t_y = 50
+
 	self._scroll = ScrollItemList:new(self._item_panel_parent, {
-		scrollbar_padding = 0,
-		w = 840,
 		bar_minimum_size = 16,
 		padding = 0,
+		scrollbar_padding = 0,
+		w = 840,
 		y = t_y,
 		h = self.safe_rect_panel:h() - t_y - 50
 	}, {
@@ -226,6 +233,7 @@ function MenuNodeHintArchiveGui:_setup_item_panel(safe_rect, res)
 	self._scroll:add_lines_and_static_down_indicator()
 
 	self._tips_data = {}
+
 	local all_tips = tweak_data.tips:get_all_tips()
 
 	for i, tip in ipairs(all_tips) do
@@ -264,8 +272,8 @@ function MenuNodeHintArchiveGui:_setup_item_panel(safe_rect, res)
 		}
 	})
 	self._item_panel_parent:text({
-		name = "title_text",
 		layer = 1,
+		name = "title_text",
 		text = managers.localization:to_upper_text("menu_hintarchive_item_panel_title"),
 		x = self._detail_panel:left(),
 		y = self._detail_panel:top() - medium_font_size,
@@ -297,8 +305,8 @@ function MenuNodeHintArchiveGui:_setup_item_panel(safe_rect, res)
 		self._searchbox:register_callback(callback(self, self, "search_callback"))
 
 		local back_button = self._item_panel_parent:text({
-			name = "back_button",
 			blend_mode = "add",
+			name = "back_button",
 			text = managers.localization:to_upper_text("menu_back"),
 			font = large_font,
 			font_size = large_font_size,
@@ -310,13 +318,13 @@ function MenuNodeHintArchiveGui:_setup_item_panel(safe_rect, res)
 		back_button:set_bottom(self._item_panel_parent:h())
 
 		local bg_back = self._item_panel_parent:text({
+			align = "right",
+			alpha = 0.4,
+			blend_mode = "add",
+			h = 90,
+			layer = 1,
 			name = "TitleTextBg",
 			vertical = "top",
-			h = 90,
-			alpha = 0.4,
-			align = "right",
-			blend_mode = "add",
-			layer = 1,
 			text = back_button:text(),
 			font = massive_font,
 			font_size = massive_font_size,
@@ -338,8 +346,8 @@ function MenuNodeHintArchiveGui:setup(node)
 end
 
 function MenuNodeHintArchiveGui:search_callback(list_with_indices)
-	self._scroll:filter_items(function (item)
-		local value, index = table.find_value(self._scroll:all_items(), function (v)
+	self._scroll:filter_items(function(item)
+		local value, index = table.find_value(self._scroll:all_items(), function(v)
 			return v == item
 		end)
 
@@ -377,21 +385,23 @@ end
 
 function MenuNodeHintArchiveGui:_create_marker(node)
 	self._marker_data = {}
+
 	local width, _ = managers.gui_data:get_base_res()
 	local height = 10
+
 	self._marker_data.marker = self.item_panel:panel({
-		y = 0,
 		x = 0,
+		y = 0,
 		w = width,
 		h = height,
 		layer = self.layers.marker
 	})
 	self._marker_data.gradient = self._marker_data.marker:bitmap({
-		texture = "guis/textures/menu_selected",
 		blend_mode = "add",
-		y = 0,
-		x = 0,
 		layer = 0,
+		texture = "guis/textures/menu_selected",
+		x = 0,
+		y = 0,
 		alpha = self.marker_alpha or 0.6
 	})
 
@@ -486,18 +496,19 @@ function MenuNodeHintArchiveGui:_setup_detail_box_info(tip)
 	self._detail_panel_content:clear()
 
 	local image_size = 200
+
 	self._test_image_1 = self._detail_panel_content:bitmap({
-		y = 25,
 		layer = 2,
+		y = 25,
 		texture = "guis/textures/loading/hints/" .. tip.image,
 		w = image_size,
 		h = image_size,
 		x = self._detail_panel_content:w() / 2 - image_size / 2
 	})
 	self._text_title = self._detail_panel_content:text({
+		layer = 1,
 		name = "detail_panel_title",
 		x = 25,
-		layer = 1,
 		text = managers.localization:text(tip.title_id),
 		y = self._test_image_1:bottom() + medium_font_size,
 		w = self._detail_panel_content:w() - 50,
@@ -506,10 +517,10 @@ function MenuNodeHintArchiveGui:_setup_detail_box_info(tip)
 		color = tweak_data.screen_colors.text
 	})
 	self._text_description = self._detail_panel_content:text({
+		layer = 1,
 		name = "detail_panel_description",
 		wrap = true,
 		x = 25,
-		layer = 1,
 		text = managers.localization:text(tip.text_id),
 		y = self._test_image_1:bottom() + small_font_size + medium_font_size + 5,
 		w = self._detail_panel_content:w() - 50,

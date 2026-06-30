@@ -20,28 +20,28 @@ local FLIP_DELAY = 0.1
 local REWARD_LIST_WAIT_TIME = 3.5
 local REWARD_FADE_IN_TIME = 0.5
 local CARD_TYPES = {
-	weapon_mods = "upcard_weapon",
-	xp = "upcard_xp",
-	materials = "upcard_material",
-	safes = "upcard_safe",
-	weapon_color_skins = "upcard_cosmetic",
-	masks = "upcard_mask",
-	cash = "upcard_cash",
 	armor_skins = "upcard_cosmetic",
+	cash = "upcard_cash",
 	coins = "upcard_coins",
 	colors = "upcard_color",
-	textures = "upcard_pattern",
-	weapon_skins = "upcard_cosmetic",
 	drills = "upcard_drill",
-	weapon_bonus = "upcard_weapon_bonus"
+	masks = "upcard_mask",
+	materials = "upcard_material",
+	safes = "upcard_safe",
+	textures = "upcard_pattern",
+	weapon_bonus = "upcard_weapon_bonus",
+	weapon_color_skins = "upcard_cosmetic",
+	weapon_mods = "upcard_weapon",
+	weapon_skins = "upcard_cosmetic",
+	xp = "upcard_xp"
 }
 
 local function add_reward_text(panel, text, color)
 	return panel:placer():add_row(FineText:new(panel, {
 		alpha = 1,
-		wrap = true,
-		word_wrap = true,
 		layer = 1,
+		word_wrap = true,
+		wrap = true,
 		w = panel:w(),
 		text = text,
 		font = small_font,
@@ -61,7 +61,7 @@ local function flip_card_animation(panel, item_type)
 	local diff = end_rotation - start_rotation
 
 	managers.menu_component:post_event("loot_flip_card")
-	over(0.25, function (p)
+	over(0.25, function(p)
 		card:set_rotation(start_rotation + math.sin(p * 45) * diff)
 
 		if card:rotation() == 0 then
@@ -76,7 +76,7 @@ local function flip_card_animation(panel, item_type)
 
 	card:set_image(texture)
 	card:set_texture_rect(unpack(rect))
-	over(0.25, function (p)
+	over(0.25, function(p)
 		card:set_rotation(start_rotation + math.sin(p * 45 + 45) * diff)
 
 		if card:rotation() == 0 then
@@ -89,7 +89,7 @@ local function flip_card_animation(panel, item_type)
 	wait(2)
 	item_panel:set_visible(true)
 	item_panel:set_alpha(0)
-	over(0.25, function (p)
+	over(0.25, function(p)
 		card:set_alpha(1 - p)
 		item_panel:set_alpha(p)
 	end)
@@ -122,9 +122,10 @@ function HUDLootScreenSkirmish:init(hud, workspace, saved_lootdrop, saved_setup)
 	self._backdrop:set_panel_to_saferect(self._foreground_layer_safe)
 
 	self._callback_handler = self._callback_handler or {}
+
 	local title_text = FineText:new(self._foreground_layer_safe, {
-		name = "title_text",
 		align = "left",
+		name = "title_text",
 		vertical = "top",
 		text = managers.localization:to_upper_text("menu_l_lootscreen"),
 		font_size = large_font_size,
@@ -132,8 +133,8 @@ function HUDLootScreenSkirmish:init(hud, workspace, saved_lootdrop, saved_setup)
 		color = tweak_data.screen_colors.text
 	})
 	local title_bg = FineText:new(self._background_layer_full, {
-		name = "title_bg",
 		alpha = 0.4,
+		name = "title_bg",
 		text = title_text:text(),
 		color = tweak_data.screen_colors.button_stage_3,
 		font_size = massive_font_size,
@@ -147,6 +148,7 @@ function HUDLootScreenSkirmish:init(hud, workspace, saved_lootdrop, saved_setup)
 	title_bg:move(-13, 9)
 
 	local icon_path, texture_rect = tweak_data.hud_icons:get_icon_data("downcard_overkill_deck")
+
 	self._downcard_icon_path = icon_path
 	self._downcard_texture_rect = texture_rect
 	self._panel = ExtendedPanel:new(self._foreground_layer_safe)
@@ -181,8 +183,11 @@ function HUDLootScreenSkirmish:create_peers()
 	local max_peers = tweak_data.max_players
 	local peer_panel_width = (self._panel:w() - PADDING * (max_peers - 1)) / max_peers
 	local peer_panel_height = self._panel:h() - PANEL_HEIGHT_SUB
+
 	self._peer_data = {}
-	local peer_panel, peer_color, player_infamy, player_text, cards_panel, card_panel, cards, card_w, card_h, reward_list, placer = nil
+
+	local peer_panel, peer_color, player_infamy, player_text, cards_panel, card_panel, cards, card_w, card_h, reward_list, placer
+
 	self._peers_panel = ExtendedPanel:new(self._panel)
 	self._peer_width = peer_panel_width
 
@@ -204,16 +209,16 @@ function HUDLootScreenSkirmish:create_peers()
 		})
 
 		player_text = placer:add_row(FineText:new(peer_panel, {
-			text = " ",
 			blend_mode = "add",
+			text = " ",
 			w = peer_panel_width - PADDING,
 			font = medium_font,
 			font_size = medium_font_size,
 			color = peer_color
 		}))
 		player_infamy = peer_panel:bitmap({
-			visible = false,
 			h = 16,
+			visible = false,
 			w = 16,
 			x = player_text:x(),
 			y = player_text:y() + 4,
@@ -226,8 +231,8 @@ function HUDLootScreenSkirmish:create_peers()
 			padding = PADDING
 		}))
 		reward_list = GrowPanel:new(peer_panel, {
-			border = 0,
 			alpha = 0,
+			border = 0,
 			x = cards_panel:x(),
 			y = cards_panel:y(),
 			w = cards_panel:w(),
@@ -256,8 +261,8 @@ function HUDLootScreenSkirmish:create_peers()
 		end
 
 		self._peer_data[peer_id] = {
-			state = "init",
 			active = false,
+			state = "init",
 			panel = peer_panel,
 			player_infamy = player_infamy,
 			player_text = player_text,
@@ -289,6 +294,7 @@ end
 
 function HUDLootScreenSkirmish:make_cards(peer, amount)
 	amount = math.min(amount, CARDS_PER_ROW * NUM_OF_ROWS)
+
 	local peer_id = peer and peer:id()
 	local data = self._peer_data[peer_id]
 
@@ -327,7 +333,7 @@ function HUDLootScreenSkirmish:make_cards(peer, amount)
 		data.player_text:set_x(data.player_infamy:left())
 	end
 
-	local card, card_icon = nil
+	local card, card_icon
 	local texture, texture_rect = tweak_data.hud_icons:get_icon_data("downcard_overkill_deck")
 
 	for _, card in ipairs(data.cards) do
@@ -372,13 +378,14 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 	end
 
 	data.active = true
+
 	local reward_list = data.reward_list
 	local lootdrops = {}
 	local cash = 0
 	local xp = 0
 	local max_cards = #data.cards
 	local card_index = 1
-	local item_panel = nil
+	local item_panel
 
 	if lootdrop_data.cash and lootdrop_data.cash > 0 then
 		cash = lootdrop_data.cash
@@ -428,7 +435,7 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 		card_index = card_index + 1
 	end
 
-	local td, gv, td_cat, text, color, value_id = nil
+	local td, gv, td_cat, text, color, value_id
 	local item_id = lootdrop_data.item_entry
 	local category = lootdrop_data.type_items
 
@@ -577,7 +584,7 @@ function HUDLootScreenSkirmish:update(t, dt)
 end
 
 function HUDLootScreenSkirmish:_update_flip_cards(t, dt)
-	local data, card = nil
+	local data, card
 	local card_index = 1
 
 	for peer_id = 1, tweak_data.max_players do
@@ -624,7 +631,7 @@ function HUDLootScreenSkirmish:_update_show_reward_list(t, dt)
 		end
 	end
 
-	if REWARD_FADE_IN_TIME < self._update_t then
+	if self._update_t > REWARD_FADE_IN_TIME then
 		self:set_update(nil)
 
 		local clbk = self._callback_handler.on_peer_ready
@@ -681,19 +688,14 @@ function HUDLootScreenSkirmish:show()
 	self._active = true
 
 	if not self._video and SystemInfo:platform() ~= Idstring("X360") then
-		local variant = nil
+		local variant
 
-		if managers.dlc:is_installing() then
-			variant = 1
-		else
-			variant = math.random(8)
-		end
-
+		variant = managers.dlc:is_installing() and 1 or math.random(8)
 		self._video = self._baselayer_two:video({
-			blend_mode = "add",
-			speed = 1,
-			loop = false,
 			alpha = 0.2,
+			blend_mode = "add",
+			loop = false,
+			speed = 1,
 			video = "movies/lootdrop" .. tostring(variant)
 		})
 
@@ -719,7 +721,7 @@ function HUDLootScreenSkirmish:show()
 	})
 
 	local function fade_out_anim(o)
-		over(0.5, function (p)
+		over(0.5, function(p)
 			o:set_alpha(1 - p)
 		end)
 		fade_rect:parent():remove(fade_rect)
@@ -760,8 +762,8 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 	if category == "coins" then
 		local coins = item_id
 		local coin_icon = panel:bitmap({
-			texture = "guis/dlcs/chill/textures/pd2/safehouse/continental_coins_drop",
-			blend_mode = "normal"
+			blend_mode = "normal",
+			texture = "guis/dlcs/chill/textures/pd2/safehouse/continental_coins_drop"
 		})
 		local coin_text = FineText:new(panel, {
 			blend_mode = "normal",
@@ -783,8 +785,8 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 	if category == "bonus_cash" then
 		local value_id = item_id
 		local cash_icon = panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/cash_drop",
-			blend_mode = "normal"
+			blend_mode = "normal",
+			texture = "guis/textures/pd2/blackmarket/cash_drop"
 		})
 		local cash_text = FineText:new(panel, {
 			blend_mode = "normal",
@@ -806,8 +808,8 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 	if category == "bonus_xp" then
 		local value_id = item_id
 		local xp_icon = panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/xp_drop",
-			blend_mode = "normal"
+			blend_mode = "normal",
+			texture = "guis/textures/pd2/blackmarket/xp_drop"
 		})
 		local xp_text = FineText:new(panel, {
 			blend_mode = "normal",
@@ -829,17 +831,17 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 	if category == "colors" then
 		local colors = tweak_data.blackmarket.colors[item_id].colors
 		local bg = panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_bg",
-			layer = 1
+			layer = 1,
+			texture = "guis/textures/pd2/blackmarket/icons/colors/color_bg"
 		})
 		local c1 = panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_01",
 			layer = 0,
+			texture = "guis/textures/pd2/blackmarket/icons/colors/color_01",
 			color = colors[1]
 		})
 		local c2 = panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_02",
 			layer = 0,
+			texture = "guis/textures/pd2/blackmarket/icons/colors/color_02",
 			color = colors[2]
 		})
 
@@ -863,12 +865,13 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 		panel = panel,
 		is_pattern = category == "textures" and true or false
 	})
-	local texture_path, rarity_path = nil
+	local texture_path, rarity_path
 
 	if category == "textures" then
 		texture_path = tweak_data.blackmarket.textures[item_id].texture
 	elseif category == "cash" then
 		texture_path = "guis/textures/pd2/blackmarket/cash_drop"
+
 		local value_id = tweak_data.blackmarket.cash[item_id].value_id
 		local cash_value = managers.money:get_loot_drop_cash_value(value_id) or 0
 		local cash_string = managers.experience:cash_string(cash_value)
@@ -885,6 +888,7 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 		cash_text:set_bottom(panel:h())
 	elseif category == "xp" then
 		texture_path = "guis/textures/pd2/blackmarket/xp_drop"
+
 		local value_id = tweak_data.blackmarket.xp[item_id].value_id
 		local xp_amount = tweak_data:get_value("experience_manager", "loot_drop_value", value_id) or 0
 		local xp_string = managers.experience:experience_string(xp_amount)
@@ -911,6 +915,7 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 			end
 
 			local path = category .. "/"
+
 			texture_path = guis_catalog .. path .. item_id
 		else
 			texture_path = "guis/dlcs/cash/safes/default/safes/default_01"
@@ -927,12 +932,14 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 			end
 
 			local path = category .. "/"
+
 			texture_path = guis_catalog .. path .. item_id
 		else
 			texture_path = "guis/dlcs/cash/safes/default/drills/default_01"
 		end
 	elseif category == "weapon_skins" then
 		local weapon_id = managers.blackmarket:get_weapon_id_by_cosmetic_id(item_id)
+
 		texture_path, rarity_path = managers.blackmarket:get_weapon_icon_path(weapon_id, {
 			id = item_id
 		})

@@ -4,14 +4,16 @@ MenuNodeGui = MenuNodeGui or class(CoreMenuNodeGui.NodeGui)
 
 function MenuNodeGui:init(node, layer, parameters)
 	local name = node:parameters().name
-	local lang_mods = {
-		[Idstring("german"):key()] = name == "kit" and 0.95 or name == "challenges_active" and 0.875 or name == "challenges_awarded" and 0.875 or 0.9,
-		[Idstring("french"):key()] = name == "kit" and 0.975 or name == "challenges_active" and 0.874 or name == "challenges_awarded" and 0.874 or name == "upgrades_support" and 0.875 or 0.9,
-		[Idstring("italian"):key()] = name == "kit" and 0.975 or name == "challenges_active" and 0.875 or name == "challenges_awarded" and 0.875 or 0.95,
-		[Idstring("spanish"):key()] = name == "kit" and 1 or name == "challenges_active" and 0.84 or name == "challenges_awarded" and 0.84 or (name == "upgrades_assault" or name == "upgrades_sharpshooter" or name == "upgrades_support") and 0.975 or 0.925,
-		[Idstring("english"):key()] = name == "challenges_active" and 0.925 or name == "challenges_awarded" and 0.925 or 1
-	}
+	local lang_mods = {}
+
+	lang_mods[Idstring("german"):key()] = name == "kit" and 0.95 or name == "challenges_active" and 0.875 or name == "challenges_awarded" and 0.875 or 0.9
+	lang_mods[Idstring("french"):key()] = name == "kit" and 0.975 or name == "challenges_active" and 0.874 or name == "challenges_awarded" and 0.874 or name == "upgrades_support" and 0.875 or 0.9
+	lang_mods[Idstring("italian"):key()] = name == "kit" and 0.975 or name == "challenges_active" and 0.875 or name == "challenges_awarded" and 0.875 or 0.95
+	lang_mods[Idstring("spanish"):key()] = name == "kit" and 1 or name == "challenges_active" and 0.84 or name == "challenges_awarded" and 0.84 or (name == "upgrades_assault" or name == "upgrades_sharpshooter" or name == "upgrades_support") and 0.975 or 0.925
+	lang_mods[Idstring("english"):key()] = name == "challenges_active" and 0.925 or name == "challenges_awarded" and 0.925 or 1
+
 	local mod = lang_mods[SystemInfo:language():key()] or 1
+
 	self._align_line_proportions = node:parameters().align_line_proportions or 0.65
 	self._align_line_padding = 10 * tweak_data.scale.align_line_padding_multiplier
 	self._use_info_rect = node:parameters().use_info_rect or node:parameters().use_info_rect == nil and true
@@ -84,6 +86,7 @@ function MenuNodeGui:_setup_panels(node)
 
 	local safe_rect_pixels = self:_scaled_size()
 	local res = RenderSettings.resolution
+
 	self._topic_panel2 = self.ws:panel():panel({
 		visible = not self._no_menu_wrapper,
 		x = safe_rect_pixels.x,
@@ -99,12 +102,12 @@ function MenuNodeGui:_setup_panels(node)
 		w = safe_rect_pixels.width - self:_mid_align()
 	})
 	self._topic_text2 = self._topic_panel2:text({
-		vertical = "bottom",
-		halign = "right",
 		align = "right",
-		y = 0,
-		x = 0,
+		halign = "right",
 		valign = "bottom",
+		vertical = "bottom",
+		x = 0,
+		y = 0,
 		text = node:parameters().topic_id and managers.localization:text(node:parameters().topic_id) or "Topic",
 		w = safe_rect_pixels.width,
 		font_size = tweak_data.menu.topic_font_size,
@@ -112,6 +115,7 @@ function MenuNodeGui:_setup_panels(node)
 		color = self.row_item_color,
 		layer = self.layers.items + 1
 	})
+
 	local _, _, w, h = self._topic_text2:text_rect()
 
 	self._topic_text2:set_h(h)
@@ -132,26 +136,30 @@ function MenuNodeGui:_setup_panels(node)
 	local h = 20
 	local base = 20
 	local height = 15
+
 	self._list_arrows = {}
+
 	local aw = safe_rect_pixels.width - self:_mid_align()
+
 	self._list_arrows.up = self.ws:panel():bitmap({
 		texture = "guis/textures/pd2/shared_lines",
-		y = 0,
 		visible = false,
 		wrap_mode = "wrap",
+		y = 0,
 		x = self:_mid_align(),
 		w = aw,
 		layer = self.layers.items + 2
 	})
 	self._list_arrows.down = self.ws:panel():bitmap({
 		texture = "guis/textures/pd2/shared_lines",
-		y = 0,
 		visible = false,
 		wrap_mode = "wrap",
+		y = 0,
 		x = self:_mid_align(),
 		w = aw,
 		layer = self.layers.items + 2
 	})
+
 	local x = math.random(1, 255)
 	local y = math.random(0, math.round(self._list_arrows.up:texture_height() / 2 - 1)) * 2
 	local w = aw
@@ -200,20 +208,20 @@ function MenuNodeGui:_setup_panels(node)
 	end
 
 	local mini_info = self.safe_rect_panel:panel({
-		w = 0,
 		h = 0,
+		w = 0,
 		x = 0,
 		y = 0
 	})
 	local mini_text = mini_info:text({
+		align = "left",
 		halign = "top",
+		text = "",
 		vertical = "top",
 		word_wrap = true,
 		wrap = true,
-		align = "left",
-		text = "",
-		y = 0,
 		x = 0,
+		y = 0,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = Color.white,
@@ -258,9 +266,10 @@ function MenuNodeGui:_create_legends(node)
 		w = safe_rect_pixels.width,
 		h = safe_rect_pixels.height
 	})
+
 	local t_text = ""
 	local has_pc_legend = false
-	local visible_callback_name, visible_callback = nil
+	local visible_callback_name, visible_callback
 
 	for i, legend in ipairs(node:legends()) do
 		visible_callback_name = legend.visible_callback
@@ -272,7 +281,9 @@ function MenuNodeGui:_create_legends(node)
 
 		if (not is_pc or legend.pc) and (not visible_callback or visible_callback(self)) then
 			has_pc_legend = has_pc_legend or legend.pc
+
 			local spacing = i > 1 and "  |  " or ""
+
 			t_text = t_text .. spacing .. utf8.to_upper(managers.localization:text(legend.string_id, {
 				BTN_UPDATE = managers.localization:btn_macro("menu_update"),
 				BTN_BACK = managers.localization:btn_macro("back")
@@ -298,34 +309,35 @@ function MenuNodeGui:_create_legends(node)
 end
 
 function MenuNodeGui:_create_align(node)
-	self._align_data = {
-		panel = self._item_panel_parent:panel({
-			y = 0,
-			x = self:_left_align(),
-			w = self._align_line_padding * 2,
-			h = self._item_panel_parent:h(),
-			layer = self.layers.marker
-		})
-	}
+	self._align_data = {}
+	self._align_data.panel = self._item_panel_parent:panel({
+		y = 0,
+		x = self:_left_align(),
+		w = self._align_line_padding * 2,
+		h = self._item_panel_parent:h(),
+		layer = self.layers.marker
+	})
 end
 
 function MenuNodeGui:_create_marker(node)
 	self._marker_data = {}
+
 	local width, _ = managers.gui_data:get_base_res()
 	local height = 10
+
 	self._marker_data.marker = self.item_panel:panel({
-		y = 0,
 		x = 0,
+		y = 0,
 		w = width,
 		h = height,
 		layer = self.layers.marker
 	})
 	self._marker_data.gradient = self._marker_data.marker:bitmap({
-		texture = "guis/textures/menu_selected",
 		blend_mode = "add",
-		y = 0,
-		x = 0,
 		layer = 0,
+		texture = "guis/textures/menu_selected",
+		x = 0,
+		y = 0,
 		alpha = self.marker_alpha or 0.6
 	})
 
@@ -336,7 +348,9 @@ end
 
 function MenuNodeGui:_setup_item_panel_parent(safe_rect, shape)
 	local res = RenderSettings.resolution
+
 	shape = shape or {}
+
 	local x = shape.x or safe_rect.x
 	local y = shape.y or safe_rect.y + CoreMenuRenderer.Renderer.border_height
 	local w = shape.w or safe_rect.width
@@ -396,9 +410,7 @@ function MenuNodeGui:_set_topic_position()
 
 	local bottom = self.item_panel:top() + self._item_panel_parent:y()
 
-	if bottom < self._item_panel_parent:y() then
-		bottom = self._item_panel_parent:y() or bottom
-	end
+	bottom = bottom < self._item_panel_parent:y() and self._item_panel_parent:y() or bottom
 
 	self._topic_panel2:set_bottom(bottom)
 	self._topic_text2:set_rightbottom(self._topic_panel2:size())
@@ -428,25 +440,25 @@ function MenuNodeGui:_create_menu_item(row_item)
 		self:gui_node_custom(row_item)
 	elseif row_item.item:parameters().back then
 		row_item.gui_panel = self._item_panel_parent:panel({
-			w = 30,
 			h = 30,
+			w = 30,
 			layer = self.layers.items
 		})
 		row_item.unselected = row_item.gui_panel:bitmap({
+			layer = -1,
 			texture = "guis/textures/menu_unselected",
-			y = 0,
 			visible = false,
 			x = 0,
-			layer = -1,
+			y = 0,
 			h = row_item.gui_panel:h(),
 			w = row_item.gui_panel:w()
 		})
 		row_item.selected = row_item.gui_panel:bitmap({
+			layer = 0,
 			texture = "guis/textures/menu_selected",
-			y = 0,
 			visible = false,
 			x = 0,
-			layer = 0,
+			y = 0,
 			h = row_item.gui_panel:h(),
 			w = row_item.gui_panel:w()
 		})
@@ -456,17 +468,17 @@ function MenuNodeGui:_create_menu_item(row_item)
 			layer = self.layers.items
 		})
 		row_item.shadow_bottom = row_item.gui_panel:bitmap({
-			texture = "guis/textures/headershadowdown",
 			rotation = 180,
+			texture = "guis/textures/headershadowdown",
 			visible = false,
 			layer = self.layers.items
 		})
 		row_item.arrow_selected = row_item.gui_panel:bitmap({
-			texture = "guis/textures/menu_arrows",
-			y = 0,
 			blend_mode = "add",
+			texture = "guis/textures/menu_arrows",
 			visible = false,
 			x = 0,
+			y = 0,
 			texture_rect = {
 				0,
 				0,
@@ -478,11 +490,11 @@ function MenuNodeGui:_create_menu_item(row_item)
 			layer = self.layers.items
 		})
 		row_item.arrow_unselected = row_item.gui_panel:bitmap({
-			texture = "guis/textures/menu_arrows",
-			y = 0,
 			blend_mode = "add",
+			texture = "guis/textures/menu_arrows",
 			visible = true,
 			x = 0,
+			y = 0,
 			texture_rect = {
 				24,
 				0,
@@ -495,27 +507,30 @@ function MenuNodeGui:_create_menu_item(row_item)
 		})
 	elseif row_item.item:parameters().pd2_corner then
 		row_item.gui_panel = self._item_panel_parent:panel({
-			w = 3,
 			h = 3,
+			w = 3,
 			layer = self.layers.items
 		})
 		row_item.gui_pd2_panel = self.ws:panel():panel({
 			layer = self.layers.items
 		})
+
 		local row_item_panel = managers.menu:is_pc_controller() and row_item.gui_pd2_panel or row_item.gui_panel
+
 		row_item.gui_text = row_item_panel:text({
-			blend_mode = "add",
-			vertical = "bottom",
 			align = "right",
-			y = 0,
-			x = 0,
+			blend_mode = "add",
 			layer = 0,
+			vertical = "bottom",
+			x = 0,
+			y = 0,
 			font_size = tweak_data.menu.pd2_large_font_size * (row_item.item:parameters().scale or 1),
 			font = tweak_data.menu.pd2_large_font,
 			color = tweak_data.screen_colors.button_stage_3,
 			text = utf8.to_upper(row_item.text),
 			render_template = Idstring("VertexColorTextured")
 		})
+
 		local _, _, w, h = row_item.gui_text:text_rect()
 
 		row_item.gui_text:set_size(math.round(w), math.round(h))
@@ -543,12 +558,12 @@ function MenuNodeGui:_create_menu_item(row_item)
 
 		if MenuBackdropGUI and managers.menu:is_pc_controller() and not row_item.item:parameters().no_bg_text then
 			local bg_text = row_item.gui_pd2_panel:text({
-				vertical = "bottom",
-				h = 90,
-				alpha = 0.4,
 				align = "right",
-				rotation = 360,
+				alpha = 0.4,
+				h = 90,
 				layer = -1,
+				rotation = 360,
+				vertical = "bottom",
 				text = utf8.to_upper(row_item.text),
 				font_size = tweak_data.menu.pd2_massive_font_size,
 				font = tweak_data.menu.pd2_massive_font,
@@ -570,38 +585,42 @@ function MenuNodeGui:_create_menu_item(row_item)
 		row_item.gui_panel:set_text(utf8.to_upper(row_item.gui_panel:text()))
 
 		row_item.gui_level_panel = self._item_panel_parent:panel({
-			y = 0,
 			visible = false,
 			x = 0,
+			y = 0,
 			layer = self.layers.items,
 			w = self:_left_align(),
 			h = self._item_panel_parent:h()
 		})
+
 		local level_data = row_item.item:parameters().level_id
+
 		level_data = tweak_data.levels[level_data]
+
 		local description = level_data and level_data.briefing_id and managers.localization:text(level_data.briefing_id) or "Missing description text"
 		local image = level_data and level_data.loading_image or "guis/textures/menu/missing_level"
+
 		row_item.level_title = row_item.gui_level_panel:text({
-			word_wrap = false,
-			vertical = "top",
-			h = 128,
-			wrap = false,
 			align = "left",
-			w = 50,
+			h = 128,
 			layer = 1,
+			vertical = "top",
+			w = 50,
+			word_wrap = false,
+			wrap = false,
 			text = utf8.to_upper(row_item.gui_panel:text()),
 			font = self.font,
 			font_size = self.font_size,
 			color = row_item.color
 		})
 		row_item.level_text = row_item.gui_level_panel:text({
-			word_wrap = true,
-			vertical = "top",
-			h = 128,
-			wrap = true,
 			align = "left",
-			w = 50,
+			h = 128,
 			layer = 1,
+			vertical = "top",
+			w = 50,
+			word_wrap = true,
+			wrap = true,
 			text = utf8.to_upper(description),
 			font = tweak_data.menu.small_font,
 			font_size = tweak_data.menu.small_font_size,
@@ -615,18 +634,18 @@ function MenuNodeGui:_create_menu_item(row_item)
 			w = self.item_panel:w()
 		})
 		row_item.chat_output = row_item.gui_panel:gui(Idstring("guis/chat/textscroll"), {
-			valign = "grow",
 			h = 120,
 			halign = "grow",
+			valign = "grow",
 			w = 500,
 			layer = self.layers.items
 		})
 		row_item.chat_input = row_item.gui_panel:gui(Idstring("guis/chat/chat_input"), {
-			valign = "bottom",
-			y = 125,
 			h = 25,
 			halign = "grow",
+			valign = "bottom",
 			w = 500,
+			y = 125,
 			layer = self.layers.items
 		})
 		row_item.chat_input:script().enter_callback = callback(self, self, "_cb_chat", row_item)
@@ -643,6 +662,7 @@ function MenuNodeGui:_create_menu_item(row_item)
 		self:_align_chat(row_item)
 	elseif row_item.type == "friend" then
 		local cot_align = row_item.align == "right" and "left" or row_item.align == "left" and "right" or row_item.align
+
 		row_item.gui_panel = self.item_panel:panel({
 			w = self.item_panel:w()
 		})
@@ -662,6 +682,7 @@ function MenuNodeGui:_create_menu_item(row_item)
 		self:_align_friend(row_item)
 	elseif not row_item.item:setup_gui(self, row_item) then
 		local cot_align = row_item.align == "right" and "left" or row_item.align == "left" and "right" or row_item.align
+
 		row_item.gui_panel = self:_text_item_part(row_item, self.item_panel, self:_right_align() + (row_item.is_expanded and 20 or 0))
 		row_item.current_of_total = self:_text_item_part(row_item, self.item_panel, self:_right_align(), cot_align)
 
@@ -707,7 +728,7 @@ function MenuNodeGui:_create_menu_item(row_item)
 
 			local function animate_story_glow(o)
 				while true do
-					over(1, function (p)
+					over(1, function(p)
 						o:set_alpha(math.lerp(0.4, 0.85, math.sin(p * 180)))
 					end)
 				end
@@ -720,11 +741,12 @@ function MenuNodeGui:_create_menu_item(row_item)
 	end
 
 	local visible = row_item.item:menu_unselected_visible(self, row_item) and not row_item.item:parameters().back
+
 	row_item.menu_unselected = self.item_panel:bitmap({
 		texture = "guis/textures/menu_unselected",
-		y = 0,
 		visible = false,
 		x = 0,
+		y = 0,
 		layer = self.layers.items - 2
 	})
 
@@ -745,19 +767,19 @@ end
 
 function MenuNodeGui:_create_info_panel(row_item)
 	row_item.gui_info_panel = self.safe_rect_panel:panel({
-		y = 0,
 		visible = false,
 		x = 0,
+		y = 0,
 		layer = self.layers.first,
 		w = self:_left_align(),
 		h = self._item_panel_parent:h()
 	})
 	row_item.help_title = row_item.gui_info_panel:text({
+		align = "left",
 		halign = "top",
 		vertical = "top",
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font_size = self.font_size,
 		font = row_item.font,
 		color = Color.white,
@@ -765,13 +787,13 @@ function MenuNodeGui:_create_info_panel(row_item)
 		text = utf8.to_upper(row_item.text)
 	})
 	row_item.help_text = row_item.gui_info_panel:text({
+		align = "left",
 		halign = "top",
 		vertical = "top",
 		word_wrap = true,
 		wrap = true,
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = Color.white,
@@ -793,35 +815,37 @@ end
 
 function MenuNodeGui:_create_lobby_campaign(row_item)
 	row_item.gui_info_panel = self.safe_rect_panel:panel({
-		y = 0,
 		visible = false,
 		x = 0,
+		y = 0,
 		layer = self.layers.items,
 		w = self:_left_align(),
 		h = self._item_panel_parent:h()
 	})
 	row_item.level_id = Global.game_settings.level_id
 	row_item.level_title = row_item.gui_info_panel:text({
+		align = "left",
 		halign = "top",
 		vertical = "top",
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font_size = self.font_size,
 		font = row_item.font,
 		color = Color.white,
 		layer = self.layers.items,
 		text = string.upper(managers.localization:text(tweak_data.levels[row_item.level_id].name_id))
 	})
+
 	local briefing_text = string.upper(managers.localization:text(tweak_data.levels[row_item.level_id].briefing_id))
+
 	row_item.level_briefing = row_item.gui_info_panel:text({
+		align = "left",
 		halign = "top",
 		vertical = "top",
 		word_wrap = true,
 		wrap = true,
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = Color.white,
@@ -878,6 +902,7 @@ function MenuNodeGui:_reload_lobby_campaign(row_item)
 	end
 
 	row_item.level_id = Global.game_settings.level_id
+
 	local text = string.upper(managers.localization:text(tweak_data.levels[row_item.level_id].name_id))
 
 	row_item.level_title:set_text(text)
@@ -901,19 +926,19 @@ end
 
 function MenuNodeGui:_create_lobby_difficulty(row_item)
 	row_item.gui_info_panel = self.safe_rect_panel:panel({
-		y = 0,
 		visible = false,
 		x = 0,
+		y = 0,
 		layer = self.layers.items,
 		w = self:_left_align(),
 		h = self._item_panel_parent:h()
 	})
 	row_item.difficulty_title = row_item.gui_info_panel:text({
+		align = "left",
 		halign = "top",
 		vertical = "top",
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font_size = self.font_size,
 		font = row_item.font,
 		color = Color.white,
@@ -921,13 +946,13 @@ function MenuNodeGui:_create_lobby_difficulty(row_item)
 		text = utf8.to_upper(row_item.text)
 	})
 	row_item.help_text = row_item.gui_info_panel:text({
+		align = "left",
 		halign = "top",
 		vertical = "top",
 		word_wrap = true,
 		wrap = true,
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = Color.white,
@@ -935,13 +960,13 @@ function MenuNodeGui:_create_lobby_difficulty(row_item)
 		text = utf8.to_upper(managers.localization:text("menu_difficulty_help"))
 	})
 	row_item.difficulty_help_text = row_item.gui_info_panel:text({
+		align = "left",
 		halign = "top",
 		vertical = "top",
 		word_wrap = true,
 		wrap = true,
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font = tweak_data.menu.small_font,
 		font_size = tweak_data.menu.small_font_size,
 		color = Color.white,
@@ -1068,9 +1093,7 @@ function MenuNodeGui:_key_press(o, key, input_id, item, no_add)
 
 	local key_name = "" .. (input_id == "mouse" and Input:mouse():button_name_str(key) or Input:keyboard():button_name_str(key))
 
-	if not no_add and input_id == "mouse" then
-		key_name = "mouse " .. key_name or key_name
-	end
+	key_name = not no_add and input_id == "mouse" and "mouse " .. key_name or key_name
 
 	local forbidden_btns = {
 		"esc",
@@ -1173,7 +1196,7 @@ function MenuNodeGui:_end_customize_controller(o, item)
 	o:mouse_release(nil)
 	Input:mouse():remove_trigger(self._mouse_wheel_up_trigger)
 	Input:mouse():remove_trigger(self._mouse_wheel_down_trigger)
-	setup:add_end_frame_clbk(function ()
+	setup:add_end_frame_clbk(function()
 		self._listening_to_input = false
 	end)
 	item:dirty()
@@ -1212,9 +1235,11 @@ function MenuNodeGui:_say(message, row_item, id)
 end
 
 function MenuNodeGui:_cb_unlock()
+	return
 end
 
 function MenuNodeGui:_cb_lock()
+	return
 end
 
 function MenuNodeGui:_text_item_part(row_item, panel, align_x, text_align)
@@ -1375,7 +1400,7 @@ end
 function MenuNodeGui:update_item_icon_visibility()
 	for _, row_item in pairs(self.row_items) do
 		if alive(row_item.icon) then
-			row_item.icon:set_visible(row_item.item:icon_visible() and self._item_panel_parent:world_y() <= row_item.icon:world_y() and row_item.icon:world_bottom() <= self._item_panel_parent:world_bottom())
+			row_item.icon:set_visible(row_item.item:icon_visible() and row_item.icon:world_y() >= self._item_panel_parent:world_y() and row_item.icon:world_bottom() <= self._item_panel_parent:world_bottom())
 		end
 	end
 end
@@ -1387,6 +1412,7 @@ function MenuNodeGui:update_icon_alignment(row_item)
 
 		if row_item.gui_panel.set_text then
 			local x, y, w, h = row_item.gui_panel:text_rect()
+
 			left = x
 			right = x + w
 		end
@@ -1747,16 +1773,14 @@ function MenuNodeGui:resolution_changed()
 			self:_setup_fake_disabled(row_item)
 		end
 
-		if not row_item.item:reload(row_item, self) then
-			if row_item.item:parameters().back then
-				-- Nothing
-			elseif row_item.item:parameters().pd2_corner then
-				-- Nothing
-			elseif row_item.type == "chat" then
-				self:_align_chat(row_item)
-			elseif row_item.type ~= "kitslot" and row_item.type ~= "server_column" then
-				self:_align_normal(row_item)
-			end
+		if row_item.item:reload(row_item, self) or row_item.item:parameters().back then
+			-- Nothing
+		elseif row_item.item:parameters().pd2_corner then
+			-- Nothing
+		elseif row_item.type == "chat" then
+			self:_align_chat(row_item)
+		elseif row_item.type ~= "kitslot" and row_item.type ~= "server_column" then
+			self:_align_normal(row_item)
 		end
 	end
 
@@ -1863,11 +1887,12 @@ function MenuNodeMainGui:_add_version_string()
 
 	if Application:debug_enabled() or SystemInfo:platform() == Idstring("WIN32") then
 		local version = Application:version()
+
 		self._version_string = self.ws:panel():text({
-			name = "version_string",
-			vertical = "bottom",
 			align = "left",
 			alpha = 0.5,
+			name = "version_string",
+			vertical = "bottom",
 			text = version,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size
@@ -1882,6 +1907,7 @@ function MenuNodeMainGui:_add_version_string()
 
 			while t < 4 do
 				local dt = coroutine.yield()
+
 				t = t + dt
 			end
 
@@ -1889,6 +1915,7 @@ function MenuNodeMainGui:_add_version_string()
 
 			while t < 1 do
 				local dt = coroutine.yield()
+
 				t = t + dt
 
 				o:set_color(from * (1 - t) + to * t)

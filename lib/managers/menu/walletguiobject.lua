@@ -11,17 +11,18 @@ function WalletGuiObject.set_wallet(panel, layer)
 		name = "WalletGuiObject",
 		layer = layer or 0
 	})
+
 	local money_icon = Global.wallet_panel:bitmap({
-		texture = "guis/textures/pd2/shared_wallet_symbol",
-		name = "wallet_money_icon"
+		name = "wallet_money_icon",
+		texture = "guis/textures/pd2/shared_wallet_symbol"
 	})
 	local level_icon = Global.wallet_panel:bitmap({
-		texture = "guis/textures/pd2/shared_level_symbol",
-		name = "wallet_level_icon"
+		name = "wallet_level_icon",
+		texture = "guis/textures/pd2/shared_level_symbol"
 	})
 	local skillpoint_icon = Global.wallet_panel:bitmap({
-		texture = "guis/textures/pd2/shared_skillpoint_symbol",
-		name = "wallet_skillpoint_icon"
+		name = "wallet_skillpoint_icon",
+		texture = "guis/textures/pd2/shared_skillpoint_symbol"
 	})
 	local money_text = Global.wallet_panel:text({
 		name = "wallet_money_text",
@@ -56,11 +57,13 @@ function WalletGuiObject.set_wallet(panel, layer)
 	local max_w = money_text:right()
 	local unlocked = false
 	local coins = 0
+
 	unlocked = managers.custom_safehouse:unlocked()
 	coins = managers.custom_safehouse:coins()
+
 	local coins_icon = Global.wallet_panel:bitmap({
-		texture = "guis/dlcs/chill/textures/pd2/safehouse/continental_coins_symbol",
-		name = "wallet_coins_icon"
+		name = "wallet_coins_icon",
+		texture = "guis/dlcs/chill/textures/pd2/safehouse/continental_coins_symbol"
 	})
 	local coins_text = Global.wallet_panel:text({
 		name = "wallet_coins_text",
@@ -90,12 +93,12 @@ function WalletGuiObject.set_wallet(panel, layer)
 	skillpoint_text:set_y(math.round(skillpoint_text:y()))
 
 	local bg_blur = Global.wallet_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "bg_blur",
 		h = 0,
-		w = 0,
+		layer = -1,
+		name = "bg_blur",
 		render_template = "VertexColorTexturedBlur3D",
-		layer = -1
+		texture = "guis/textures/test_blur_df",
+		w = 0
 	})
 
 	bg_blur:set_leftbottom(0, Global.wallet_panel:h())
@@ -123,8 +126,10 @@ function WalletGuiObject.refresh()
 		local max_w = money_text:right()
 		local unlocked = false
 		local coins = 0
+
 		unlocked = managers.custom_safehouse:unlocked()
 		coins = managers.custom_safehouse:coins()
+
 		local coins_icon = Global.wallet_panel:child("wallet_coins_icon")
 		local coins_text = Global.wallet_panel:child("wallet_coins_text")
 

@@ -3,20 +3,21 @@ SecurityCamera.cameras = SecurityCamera.cameras or {}
 SecurityCamera.active_tape_loop_unit = nil
 SecurityCamera.is_security_camera = true
 SecurityCamera._NET_EVENTS = {
-	suspicion_4 = 6,
-	start_tape_loop_2 = 10,
-	suspicion_1 = 3,
-	start_tape_loop_1 = 9,
-	suspicion_2 = 4,
-	request_start_tape_loop_1 = 11,
-	request_start_tape_loop_2 = 12,
 	alarm_start = 2,
 	deactivate_tape_loop = 13,
-	suspicion_5 = 7,
-	suspicion_6 = 8,
+	request_start_tape_loop_1 = 11,
+	request_start_tape_loop_2 = 12,
+	sound_off = 1,
+	start_tape_loop_1 = 9,
+	start_tape_loop_2 = 10,
+	suspicion_1 = 3,
+	suspicion_2 = 4,
 	suspicion_3 = 5,
-	sound_off = 1
+	suspicion_4 = 6,
+	suspicion_5 = 7,
+	suspicion_6 = 8
 }
+
 local tmp_rot1 = Rotation()
 
 function SecurityCamera:init(unit)
@@ -42,7 +43,7 @@ function SecurityCamera:_update_tape_loop_restarting(unit, t, dt)
 			self._unit:contour():remove("mark_unit_friendly")
 		end
 
-		if self._tape_loop_restarting_t < t then
+		if t > self._tape_loop_restarting_t then
 			self:_deactivate_tape_loop_restart()
 		end
 	end
@@ -184,7 +185,7 @@ end
 function SecurityCamera:_upd_detection(t)
 	local dt = t - self._last_detect_t
 
-	if self._detection_interval < dt then
+	if dt > self._detection_interval then
 		self._last_detect_t = t
 
 		if self.update_position then
@@ -247,6 +248,7 @@ function SecurityCamera:_upd_acquire_new_attention_objects(t)
 
 						if self._cone_angle ~= nil then
 							local dir = (attention_pos - my_pos):normalized()
+
 							in_cone = my_fwd:angle(dir) <= self._cone_angle * 0.5
 						end
 
@@ -268,11 +270,13 @@ function SecurityCamera:_upd_detect_attention_objects(t)
 	local det_delay = self._detection_delay
 
 	for u_key, attention_info in pairs(detected_obj) do
-		if t >= attention_info.next_verify_t then
+		if t < attention_info.next_verify_t then
+			-- Nothing
+		else
 			attention_info.next_verify_t = t + (attention_info.identified and attention_info.verified and attention_info.settings.verification_interval * 1.3 or attention_info.settings.verification_interval * 0.3)
 
 			if not attention_info.identified then
-				local noticable = nil
+				local noticable
 				local angle, dis_multiplier = self:_detection_angle_and_dis_chk(my_pos, my_fwd, attention_info.handler, attention_info.settings, attention_info.handler:get_detection_m_pos())
 
 				if angle then
@@ -284,7 +288,7 @@ function SecurityCamera:_upd_detect_attention_objects(t)
 					end
 				end
 
-				local delta_prog = nil
+				local delta_prog
 				local dt = t - attention_info.prev_notice_chk_t
 
 				if noticable then
@@ -302,6 +306,7 @@ function SecurityCamera:_upd_detect_attention_objects(t)
 						end
 
 						local notice_delay_modified = math.lerp(min_delay * notice_delay_mul, max_delay, dis_mul_mod + angle_mul_mod)
+
 						delta_prog = notice_delay_modified > 0 and dt / notice_delay_modified or 1
 					end
 				else
@@ -318,7 +323,7 @@ function SecurityCamera:_upd_detect_attention_objects(t)
 					attention_info.identified_t = t
 					noticable = true
 
-					if AIAttentionObject.REACT_SCARED <= attention_info.settings.reaction then
+					if attention_info.settings.reaction >= AIAttentionObject.REACT_SCARED then
 						managers.groupai:state():on_criminal_suspicion_progress(attention_info.unit, self._unit, true)
 					end
 				elseif attention_info.notice_progress < 0 then
@@ -329,7 +334,7 @@ function SecurityCamera:_upd_detect_attention_objects(t)
 					noticable = attention_info.notice_progress
 					attention_info.prev_notice_chk_t = t
 
-					if AIAttentionObject.REACT_SCARED <= attention_info.settings.reaction then
+					if attention_info.settings.reaction >= AIAttentionObject.REACT_SCARED then
 						managers.groupai:state():on_criminal_suspicion_progress(attention_info.unit, self._unit, noticable)
 					end
 				end
@@ -341,12 +346,13 @@ function SecurityCamera:_upd_detect_attention_objects(t)
 
 			if attention_info.identified then
 				attention_info.nearly_visible = nil
-				local verified, vis_ray = nil
+
+				local verified, vis_ray
 				local attention_pos = attention_info.handler:get_detection_m_pos()
 				local dis = mvector3.distance(my_pos, attention_info.m_pos)
 
 				if dis < self._range * 1.2 then
-					local detect_pos = nil
+					local detect_pos
 
 					if attention_info.is_husk_player and attention_info.unit:anim_data().crouch then
 						detect_pos = self._tmp_vec1
@@ -380,7 +386,7 @@ function SecurityCamera:_upd_detect_attention_objects(t)
 
 					attention_info.last_verified_pos = mvector3.copy(attention_pos)
 					attention_info.verified_dis = dis
-				elseif attention_info.release_t and attention_info.release_t < t then
+				elseif attention_info.release_t and t > attention_info.release_t then
 					self:_destroy_detected_attention_object_data(attention_info)
 				else
 					attention_info.release_t = attention_info.release_t or t + attention_info.settings.release_delay
@@ -392,7 +398,7 @@ end
 
 function SecurityCamera:_detection_angle_and_dis_chk(my_pos, my_fwd, handler, settings, attention_pos)
 	local dis = mvector3.direction(self._tmp_vec1, my_pos, attention_pos)
-	local dis_multiplier, angle_multiplier = nil
+	local dis_multiplier, angle_multiplier
 	local max_dis = math.min(self._range, settings.max_range or self._range)
 
 	if settings.detection and settings.detection.range_mul then
@@ -405,6 +411,7 @@ function SecurityCamera:_detection_angle_and_dis_chk(my_pos, my_fwd, handler, se
 		if settings.notice_requires_FOV then
 			local angle = mvector3.angle(my_fwd, self._tmp_vec1)
 			local angle_max = self._cone_angle * 0.5
+
 			angle_multiplier = angle / angle_max
 
 			if angle_multiplier < 1 then
@@ -470,7 +477,7 @@ function SecurityCamera:_create_detected_attention_object_data(t, u_key, attenti
 	local att_unit = attention_info.unit
 	local m_pos = attention_info.handler:get_ground_m_pos()
 	local m_head_pos = attention_info.handler:get_detection_m_pos()
-	local is_local_player, is_husk_player, is_deployable, is_person, is_very_dangerous, nav_tracker, char_tweak = nil
+	local is_local_player, is_husk_player, is_deployable, is_person, is_very_dangerous, nav_tracker, char_tweak
 
 	if att_unit:base() then
 		is_local_player = att_unit:base().is_local_player
@@ -485,9 +492,9 @@ function SecurityCamera:_create_detected_attention_object_data(t, u_key, attenti
 
 	local dis = mvector3.distance(self._pos, m_head_pos)
 	local new_entry = {
+		notice_progress = 0,
 		verified = false,
 		verified_t = false,
-		notice_progress = 0,
 		settings = settings,
 		unit = attention_info.unit,
 		u_key = u_key,
@@ -531,7 +538,8 @@ function SecurityCamera:on_detected_attention_obj_modified(modified_u_key)
 	local old_notice_clbk = not attention_info.identified and old_settings.notice_clbk
 
 	if new_settings then
-		local switch_from_suspicious = AIAttentionObject.REACT_SCARED <= new_settings.reaction and attention_info.reaction == AIAttentionObject.REACT_SUSPICIOUS
+		local switch_from_suspicious = new_settings.reaction >= AIAttentionObject.REACT_SCARED and attention_info.reaction == AIAttentionObject.REACT_SUSPICIOUS
+
 		attention_info.settings = new_settings
 
 		if attention_info.uncover_progress then
@@ -564,7 +572,7 @@ function SecurityCamera:on_detected_attention_obj_modified(modified_u_key)
 		old_notice_clbk(self._unit, false)
 	end
 
-	if AIAttentionObject.REACT_SCARED <= old_settings.reaction and (not new_settings or AIAttentionObject.REACT_SCARED > new_settings.reaction) then
+	if old_settings.reaction >= AIAttentionObject.REACT_SCARED and (not new_settings or not (new_settings.reaction >= AIAttentionObject.REACT_SCARED)) then
 		managers.groupai:state():on_criminal_suspicion_progress(attention_info.unit, self._unit, nil)
 	end
 end
@@ -620,6 +628,7 @@ function SecurityCamera:_upd_suspicion(t)
 			if not attention_data.verified then
 				if attention_data.uncover_progress then
 					local dt = t - attention_data.last_suspicion_t
+
 					attention_data.uncover_progress = attention_data.uncover_progress - dt
 
 					if attention_data.uncover_progress <= 0 then
@@ -658,6 +667,7 @@ function SecurityCamera:_upd_suspicion(t)
 						local range_min = uncover_range
 						local mul = 1 - (dis - range_min) / range_max
 						local progress = dt * 0.5 * mul * susp_settings.buildup_mul
+
 						attention_data.uncover_progress = (attention_data.uncover_progress or 0) + progress
 						max_suspicion = math.max(max_suspicion, attention_data.uncover_progress)
 
@@ -680,6 +690,7 @@ function SecurityCamera:_upd_suspicion(t)
 					end
 				elseif attention_data.uncover_progress and attention_data.last_suspicion_t then
 					local dt = t - attention_data.last_suspicion_t
+
 					attention_data.uncover_progress = attention_data.uncover_progress - dt
 
 					if attention_data.uncover_progress <= 0 then
@@ -719,6 +730,7 @@ function SecurityCamera:_sound_the_alarm(detected_unit)
 		managers.enemy:add_delayed_clbk(self._call_police_clbk_id, callback(self, self, "clbk_call_the_police"), Application:time() + 7)
 
 		local reason_called = managers.groupai:state().analyse_giveaway("security_camera", detected_unit)
+
 		self._reason_called = managers.groupai:state():fetch_highest_giveaway(self._reason_called, reason_called)
 
 		self:_destroy_all_detected_attention_object_data()
@@ -760,7 +772,8 @@ function SecurityCamera:_set_suspicion_sound(suspicion_level)
 		self._suspicion_sound_lvl = 0
 	end
 
-	local pitch = self._suspicion_sound_lvl <= suspicion_level and 1 or 0.6
+	local pitch = suspicion_level >= self._suspicion_sound_lvl and 1 or 0.6
+
 	self._suspicion_sound_lvl = suspicion_level
 
 	self._unit:sound_source():set_rtpc("camera_suspicion_level_pitch", pitch)
@@ -771,6 +784,7 @@ function SecurityCamera:_set_suspicion_sound(suspicion_level)
 
 		if suspicion_lvl_sync ~= self._suspicion_lvl_sync then
 			self._suspicion_lvl_sync = suspicion_lvl_sync
+
 			local event_id = self._NET_EVENTS["suspicion_" .. tostring(suspicion_lvl_sync)]
 
 			self:_send_net_event(event_id)
@@ -786,7 +800,7 @@ function SecurityCamera:_upd_sound(unit, t)
 	local suspicion_level = self._suspicion
 
 	for u_key, attention_info in pairs(self._detected_attention_objects) do
-		if AIAttentionObject.REACT_SCARED <= attention_info.reaction then
+		if attention_info.reaction >= AIAttentionObject.REACT_SCARED then
 			if attention_info.identified then
 				self:_sound_the_alarm(attention_info.unit)
 
@@ -810,7 +824,7 @@ end
 function SecurityCamera:sync_net_event(event_id)
 	local net_events = self._NET_EVENTS
 
-	if net_events.suspicion_1 <= event_id and event_id <= net_events.suspicion_6 then
+	if event_id >= net_events.suspicion_1 and event_id <= net_events.suspicion_6 then
 		local suspicion_lvl = (event_id - net_events.suspicion_1 + 1) / 6
 
 		self:_set_suspicion_sound(suspicion_lvl)

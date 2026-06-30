@@ -24,6 +24,7 @@ function MissionEndState:setup_controller()
 end
 
 function MissionEndState:set_controller_enabled(enabled)
+	return
 end
 
 function MissionEndState:at_enter(old_state, params)
@@ -34,17 +35,13 @@ function MissionEndState:at_enter(old_state, params)
 	managers.platform:set_presence("Mission_end")
 
 	if not is_safe_house then
-		local rp_state = nil
+		local rp_state
 
 		if table.contains({
 			"victoryscreen",
 			"gameoverscreen"
 		}, self:name()) then
-			if Global.game_settings.single_player then
-				rp_state = "SPEnd"
-			else
-				rp_state = "MPEnd"
-			end
+			rp_state = Global.game_settings.single_player and "SPEnd" or "MPEnd"
 		else
 			rp_state = "Idle"
 		end
@@ -58,6 +55,7 @@ function MissionEndState:at_enter(old_state, params)
 
 	local job_tweak = tweak_data.levels[managers.job:current_job_id()]
 	local is_safehouse_combat = job_tweak and job_tweak.is_safehouse_combat
+
 	self._continue_block_timer = Application:time() + 1.5
 
 	if Network:is_server() and not is_safehouse_combat then
@@ -190,6 +188,7 @@ function MissionEndState:at_enter(old_state, params)
 
 	local total_killed = managers.statistics:session_total_killed()
 	local spending_kills, spendings = managers.money:on_spend_session_moneythrower()
+
 	self._moneythrower_spending_kills = spending_kills
 	self._moneythrower_spendings = spendings
 
@@ -217,6 +216,7 @@ function MissionEndState:at_enter(old_state, params)
 
 	if type(failure_music) == "table" then
 		local failure_variant = managers.groupai:state():failure_variant() or 0
+
 		failure_music = failure_music[failure_variant] or nil
 	end
 
@@ -233,6 +233,7 @@ function MissionEndState:at_enter(old_state, params)
 
 	if self._type == "victory" or self._type == "gameover" then
 		local total_xp_bonus, bonuses = self:_get_xp_dissected(self._success, params and params.num_winners, params and params.personal_win)
+
 		self._bonuses = bonuses
 
 		self:completion_bonus_done(total_xp_bonus)
@@ -312,9 +313,11 @@ function MissionEndState:_get_contract_xp(success)
 
 	local total_difficulty_stars = math.max(0, total_stars - job_stars)
 	local xp_multiplier = managers.experience:get_contract_difficulty_multiplier(total_difficulty_stars)
+
 	self._bonuses[1] = difficulty_stars > 0 and difficulty_stars or false
 	total_stars = math.min(job_stars, total_stars)
 	self._bonuses[3] = has_active_job and managers.job:on_last_stage() or false
+
 	local contract_xp = 0
 
 	if success and has_active_job and managers.job:on_last_stage() then
@@ -343,7 +346,7 @@ function MissionEndState:_set_continue_button_text()
 	local text_id = "failed_disconnected_continue"
 	local not_clickable = false
 
-	if self._continue_block_timer and Application:time() < self._continue_block_timer then
+	if self._continue_block_timer and self._continue_block_timer > Application:time() then
 		text_id = "menu_es_calculating_experience"
 		not_clickable = true
 	elseif managers.job:stage_success() and managers.job:on_last_stage() then
@@ -382,6 +385,7 @@ function MissionEndState:play_finishing_sound(success)
 
 		if type(failure_event) == "table" then
 			local failure_variant = managers.groupai:state():failure_variant() or 0
+
 			failure_event = failure_event[failure_variant] or nil
 		end
 
@@ -473,7 +477,7 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 		local best_special_kills = best_special_kills_peer and best_special_kills_peer:name() or "N/A"
 		local best_accuracy = best_accuracy_peer and best_accuracy_peer:name() or "N/A"
 		local most_downs = most_downs_peer and most_downs_peer:name() or "N/A"
-		local stage_cash_summary_string = nil
+		local stage_cash_summary_string
 
 		if self._success and managers.job._global.next_interupt_stage then
 			local victory_cash_postponed_id = "victory_cash_postponed"
@@ -504,16 +508,19 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 					stage_cash = managers.experience:cash_string(stage_payout),
 					job_cash = managers.experience:cash_string(job_payout)
 				})
+
 				stage_cash_summary_string = job_string
 			else
 				local stage_string = managers.localization:text("victory_stage_cash_summary_name", {
 					stage_cash = managers.experience:cash_string(stage_payout)
 				})
+
 				stage_cash_summary_string = stage_string
 			end
 
 			if managers.skirmish:is_skirmish() then
 				local skirmish_payout = payouts.skirmish_payout
+
 				stage_cash_summary_string = managers.localization:text("victory_stage_cash_summary_name_skirmish", {
 					wave = managers.skirmish:current_wave_number(),
 					skirmish_cash = managers.experience:cash_string(skirmish_payout)
@@ -567,6 +574,7 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 			end
 
 			stage_cash_summary_string = stage_cash_summary_string .. "\n"
+
 			local offshore_string = managers.localization:text("victory_stage_cash_summary_name_offshore", {
 				offshore = managers.localization:text("hud_offshore_account"),
 				cash = managers.experience:cash_string(managers.money:heist_offshore())
@@ -574,6 +582,7 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 			local spending_string = managers.localization:text("victory_stage_cash_summary_name_spending", {
 				cash = "##" .. managers.experience:cash_string(managers.money:heist_spending()) .. "##"
 			})
+
 			stage_cash_summary_string = stage_cash_summary_string .. offshore_string .. "\n"
 			stage_cash_summary_string = stage_cash_summary_string .. spending_string .. "\n"
 		else
@@ -609,7 +618,7 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 
 	print("on_statistics_result end")
 
-	local level_id, all_pass, total_kill_pass, total_accuracy_pass, total_headshots_pass, total_downed_pass, level_pass, levels_pass, num_players_pass, diff_pass, one_down_pass, is_dropin_pass, success_pass, killed_by_weapon_category_pass, local_accuracy_pass = nil
+	local level_id, all_pass, total_kill_pass, total_accuracy_pass, total_headshots_pass, total_downed_pass, level_pass, levels_pass, num_players_pass, diff_pass, one_down_pass, is_dropin_pass, success_pass, killed_by_weapon_category_pass, local_accuracy_pass
 
 	for achievement, achievement_data in pairs(tweak_data.achievement.complete_heist_statistics_achievements or {}) do
 		level_id = managers.job:has_active_job() and managers.job:current_level_id() or ""
@@ -618,10 +627,10 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 		num_players_pass = not achievement_data.num_players or achievement_data.num_players <= managers.network:session():amount_of_players()
 		level_pass = not achievement_data.level_id or achievement_data.level_id == level_id
 		levels_pass = not achievement_data.levels or table.contains(achievement_data.levels, level_id)
-		total_kill_pass = not achievement_data.total_kills or achievement_data.total_kills <= total_kills
-		total_accuracy_pass = not achievement_data.total_accuracy or achievement_data.total_accuracy <= group_accuracy
+		total_kill_pass = not achievement_data.total_kills or total_kills >= achievement_data.total_kills
+		total_accuracy_pass = not achievement_data.total_accuracy or group_accuracy >= achievement_data.total_accuracy
 		total_downed_pass = not achievement_data.total_downs or group_downs <= achievement_data.total_downs
-		local_accuracy_pass = not achievement_data.local_accuracy or achievement_data.local_accuracy <= managers.statistics:session_hit_accuracy()
+		local_accuracy_pass = not achievement_data.local_accuracy or managers.statistics:session_hit_accuracy() >= achievement_data.local_accuracy
 		is_dropin_pass = achievement_data.is_dropin == nil or achievement_data.is_dropin == managers.statistics:is_dropin()
 		success_pass = not achievement_data.success or self._success
 
@@ -667,6 +676,7 @@ function MissionEndState:generate_safehouse_statistics()
 	end
 
 	local was_safehouse_raid = managers.job:current_job_id() == "chill_combat"
+
 	self._trophies_list = self._trophies_list or {}
 
 	for idx, trophy_data in ipairs(managers.custom_safehouse:completed_trophies()) do
@@ -720,6 +730,7 @@ function MissionEndState:generate_safehouse_statistics()
 
 	if #self._trophies_list > 0 or has_completed_daily or was_safehouse_raid then
 		local challenge_income = managers.experience:cash_string(math.floor(trophies_income + daily_income), "")
+
 		stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_safehouse_earned_challenges", {
 			amount = challenge_income
 		}) .. "\n"
@@ -727,6 +738,7 @@ function MissionEndState:generate_safehouse_statistics()
 		for idx, trophy_data in ipairs(self._trophies_list) do
 			if trophy_data.type == "trophy" then
 				local trophy = managers.localization:text(trophy_data.name)
+
 				stage_safehouse_summary_string = stage_safehouse_summary_string .. managers.localization:text("menu_es_safehouse_challenge_complete", {
 					challenge = trophy
 				}) .. "\n"
@@ -747,6 +759,7 @@ function MissionEndState:generate_safehouse_statistics()
 
 	local coins = managers.custom_safehouse:coins()
 	local coins_total = managers.experience:cash_string(math.floor(coins), "")
+
 	stage_safehouse_summary_string = stage_safehouse_summary_string .. "\n" .. managers.localization:text("menu_es_safehouse_total_coins", {
 		amount = coins_total
 	})
@@ -788,7 +801,7 @@ function MissionEndState:_continue_blocked()
 		return true
 	end
 
-	if self._continue_block_timer and Application:time() < self._continue_block_timer then
+	if self._continue_block_timer and self._continue_block_timer > Application:time() then
 		return true
 	end
 
@@ -872,6 +885,7 @@ function MissionEndState:update(t, dt)
 			managers.custom_safehouse:update_previous_coins()
 
 			local data = managers.experience:give_experience(self._total_xp_bonus)
+
 			data.bonuses = self._bonuses
 
 			managers.hud:send_xp_data_endscreen_hud(data, callback(self, self, "set_completion_bonus_done"))
@@ -886,7 +900,7 @@ function MissionEndState:update(t, dt)
 		self._total_xp_bonus = nil
 	end
 
-	if self._continue_block_timer and self._continue_block_timer <= t then
+	if self._continue_block_timer and t >= self._continue_block_timer then
 		self._continue_block_timer = nil
 
 		self:_set_continue_button_text()
@@ -937,11 +951,11 @@ function MissionEndState:chk_complete_heist_achievements()
 	if not managers.statistics:is_dropin() then
 		local level_id = managers.job:has_active_job() and managers.job:current_level_id() or ""
 		local current_wave = managers.skirmish:current_wave_number() - (self._success and 0 or 1)
-		local level_pass, wave_pass = nil
+		local level_pass, wave_pass
 
 		for achievement, achievement_data in pairs(tweak_data.achievement.skirmish_wave_achievements) do
 			level_pass = not achievement_data.level_id or achievement_data.level_id == level_id
-			wave_pass = not achievement_data.skirmish_wave or achievement_data.skirmish_wave <= current_wave
+			wave_pass = not achievement_data.skirmish_wave or current_wave >= achievement_data.skirmish_wave
 
 			if level_pass and wave_pass then
 				managers.achievment:award_data(achievement_data, achievement)
@@ -972,7 +986,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 			local ach_data = tweak_data.achievement.close_and_personal
 			local session_killed = managers.statistics:session_killed()
-			local has_type_stats = ach_data.kill_type and not not total_killed[ach_data.kill_type]
+			local has_type_stats = not not ach_data.kill_type and not not total_killed[ach_data.kill_type]
 
 			if has_type_stats then
 				local total_kill_count = total_killed.count
@@ -987,7 +1001,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 					table.insert(civilians, "civilian_mariachi")
 
-					local count = nil
+					local count
 
 					for i, name in ipairs(civilians) do
 						count = session_killed[name]
@@ -999,7 +1013,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					end
 
 					if total_kill_count == total_kill_type_count then
-						local count_pass = not ach_data.count or ach_data.count <= total_kill_count
+						local count_pass = not ach_data.count or total_kill_count >= ach_data.count
 
 						if count_pass then
 							managers.achievment:award(ach_data.award)
@@ -1010,7 +1024,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 			local shotgun_one_o_one = tweak_data.achievement.shotgun_one_o_one
 
-			if shotgun_one_o_one.count <= total_killed.count then
+			if total_killed.count >= shotgun_one_o_one.count then
 				local session_used_weapons = managers.statistics:session_used_weapons()
 				local passed = true
 
@@ -1022,7 +1036,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					end
 				end
 
-				if passed and shotgun_one_o_one.accuracy <= managers.statistics:session_hit_accuracy() then
+				if passed and managers.statistics:session_hit_accuracy() >= shotgun_one_o_one.accuracy then
 					managers.achievment:award(shotgun_one_o_one.award)
 				end
 			end
@@ -1049,7 +1063,7 @@ function MissionEndState:chk_complete_heist_achievements()
 				end
 			end
 
-			local mask_pass, diff_pass, one_down_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, killed_by_weapon_category_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, weapons_used_pass, everyone_killed_by_weapons_pass, everyone_killed_by_melee_pass, everyone_killed_by_grenade_pass, everyone_weapons_used_pass, enemy_killed_pass, everyone_used_weapon_category_pass, everyone_killed_by_weapon_category_pass, everyone_killed_by_projectile_pass, killed_pass, shots_by_weapon_pass, killed_by_blueprint_pass, melee_used_pass, used_projectile_pass, no_alarm_pager_pass, mutators_pass, secured_pass, crime_spree_pass, preplan_pass, max_players_pass, bots_pass, bag_loot_value_pass, skirmish_wave_pass, specials_killed_pass, style_pass, all_pass, weapon_data, memory, level_id, stage, num_skills = nil
+			local mask_pass, diff_pass, one_down_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, killed_by_weapon_category_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, weapons_used_pass, everyone_killed_by_weapons_pass, everyone_killed_by_melee_pass, everyone_killed_by_grenade_pass, everyone_weapons_used_pass, enemy_killed_pass, everyone_used_weapon_category_pass, everyone_killed_by_weapon_category_pass, everyone_killed_by_projectile_pass, killed_pass, shots_by_weapon_pass, killed_by_blueprint_pass, melee_used_pass, used_projectile_pass, no_alarm_pager_pass, mutators_pass, secured_pass, crime_spree_pass, preplan_pass, max_players_pass, bots_pass, bag_loot_value_pass, skirmish_wave_pass, specials_killed_pass, style_pass, all_pass, weapon_data, memory, level_id, stage, num_skills
 			local phalanx_vip_alive = false
 
 			for _, enemy in pairs(managers.enemy:all_enemies() or {}) do
@@ -1080,15 +1094,15 @@ function MissionEndState:chk_complete_heist_achievements()
 				memory_pass = not achievement_data.memory or managers.job:get_memory(achievement, achievement_data.memory.is_shortterm) == achievement_data.memory.value
 				phalanx_vip_alive_pass = not achievement_data.phalanx_vip_alive or phalanx_vip_alive
 				is_host_pass = not achievement_data.is_host or Network:is_server() or Global.game_settings.single_player
-				converted_cops_pass = not achievement_data.converted_cops or achievement_data.converted_cops <= managers.groupai:state():get_amount_enemies_converted_to_criminals()
-				total_accuracy_pass = not achievement_data.total_accuracy or achievement_data.total_accuracy <= managers.statistics:session_hit_accuracy()
+				converted_cops_pass = not achievement_data.converted_cops or managers.groupai:state():get_amount_enemies_converted_to_criminals() >= achievement_data.converted_cops
+				total_accuracy_pass = not achievement_data.total_accuracy or managers.statistics:session_hit_accuracy() >= achievement_data.total_accuracy
 				no_alarm_pager_pass = not achievement_data.no_alarm_pager or managers.groupai:state():get_nr_successful_alarm_pager_bluffs() == 0
 				preplan_pass = not achievement_data.no_preplan or managers.preplanning:has_current_level_preplanning() and Global.preplanning_manager.rebuy_assets and Global.preplanning_manager.rebuy_assets.assets and #Global.preplanning_manager.rebuy_assets.assets == 0
-				max_players_pass = not achievement_data.max_players or managers.network:session():amount_of_players() <= achievement_data.max_players
+				max_players_pass = not achievement_data.max_players or achievement_data.max_players >= managers.network:session():amount_of_players()
 				bots_pass = not achievement_data.no_bots or managers.criminals:nr_AI_criminals() == 0
 				mask_pass = mask_pass and (not achievement_data.masks or table.contains(achievement_data.masks, managers.blackmarket:equipped_mask().mask_id))
-				bag_loot_value_pass = not achievement_data.bag_loot_value or achievement_data.bag_loot_value <= managers.money:get_payouts().bag_payout
-				skirmish_wave_pass = not achievement_data.skirmish_wave or achievement_data.skirmish_wave <= managers.skirmish:current_wave_number()
+				bag_loot_value_pass = not achievement_data.bag_loot_value or managers.money:get_payouts().bag_payout >= achievement_data.bag_loot_value
+				skirmish_wave_pass = not achievement_data.skirmish_wave or managers.skirmish:current_wave_number() >= achievement_data.skirmish_wave
 				enemy_killed_pass = not achievement_data.killed
 
 				if achievement_data.killed then
@@ -1117,12 +1131,13 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.anyone_killed == 0 then
 						killed_pass = num_killed == 0
 					else
-						killed_pass = achievement_data.anyone_killed <= num_killed
+						killed_pass = num_killed >= achievement_data.anyone_killed
 					end
 				end
 
 				local equipped_player_style = managers.blackmarket:equipped_player_style()
 				local equipped_suit_variation = managers.blackmarket:equipped_suit_variation()
+
 				style_pass = not achievement_data.player_style or (not achievement_data.player_style.style or achievement_data.player_style.style == equipped_player_style) and (not achievement_data.player_style.variation or achievement_data.player_style.variation == equipped_suit_variation) and (not achievement_data.player_style.styles or table.contains(achievement_data.player_style.styles, equipped_player_style)) and (not achievement_data.player_style.variations or table.contains(achievement_data.player_style.variations, equipped_suit_variation))
 				mutators_pass = managers.mutators:check_achievements(achievement_data)
 				used_weapon_category_pass = true
@@ -1132,7 +1147,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 					if used_weapons then
 						local category = achievement_data.used_weapon_category
-						local weapon_tweak = nil
+						local weapon_tweak
 
 						for _, weapon_id in ipairs(used_weapons) do
 							weapon_tweak = tweak_data.weapon[weapon_id]
@@ -1164,7 +1179,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.killed_by_weapons == 0 then
 						killed_by_weapons_pass = killed_by_weapons == 0
 					else
-						killed_by_weapons_pass = achievement_data.killed_by_weapons <= killed_by_weapons
+						killed_by_weapons_pass = killed_by_weapons >= achievement_data.killed_by_weapons
 					end
 				end
 
@@ -1194,7 +1209,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.everyone_killed_by_weapons == 0 then
 						everyone_killed_by_weapons_pass = everyone_killed_by_weapons == 0
 					else
-						everyone_killed_by_weapons_pass = achievement_data.everyone_killed_by_weapons <= everyone_killed_by_weapons
+						everyone_killed_by_weapons_pass = everyone_killed_by_weapons >= achievement_data.everyone_killed_by_weapons
 					end
 				end
 
@@ -1204,7 +1219,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.killed_by_melee == 0 then
 						killed_by_melee_pass = killed_by_melee == 0
 					else
-						killed_by_melee_pass = achievement_data.killed_by_melee <= killed_by_melee
+						killed_by_melee_pass = killed_by_melee >= achievement_data.killed_by_melee
 					end
 				end
 
@@ -1216,7 +1231,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.everyone_killed_by_melee == 0 then
 						everyone_killed_by_melee_pass = everyone_killed_by_melee == 0
 					else
-						everyone_killed_by_melee_pass = achievement_data.everyone_killed_by_melee <= everyone_killed_by_melee
+						everyone_killed_by_melee_pass = everyone_killed_by_melee >= achievement_data.everyone_killed_by_melee
 					end
 				end
 
@@ -1226,7 +1241,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.killed_by_grenade == 0 then
 						killed_by_grenade_pass = killed_by_grenade == 0
 					else
-						killed_by_grenade_pass = achievement_data.killed_by_grenade <= killed_by_grenade
+						killed_by_grenade_pass = killed_by_grenade >= achievement_data.killed_by_grenade
 					end
 				end
 
@@ -1238,7 +1253,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.everyone_killed_by_grenade == 0 then
 						everyone_killed_by_grenade_pass = everyone_killed_by_grenade == 0
 					else
-						everyone_killed_by_grenade_pass = achievement_data.everyone_killed_by_grenade <= everyone_killed_by_grenade
+						everyone_killed_by_grenade_pass = everyone_killed_by_grenade >= achievement_data.everyone_killed_by_grenade
 					end
 				end
 
@@ -1250,7 +1265,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.everyone_killed_by_projectile[2] == 0 then
 						everyone_killed_by_projectile_pass = everyone_killed_by_projectile == 0
 					else
-						everyone_killed_by_projectile_pass = achievement_data.everyone_killed_by_projectile[2] <= everyone_killed_by_projectile
+						everyone_killed_by_projectile_pass = everyone_killed_by_projectile >= achievement_data.everyone_killed_by_projectile[2]
 					end
 				end
 
@@ -1260,7 +1275,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					if achievement_data.civilians_killed == 0 then
 						civilians_killed_pass = civilians_killed == 0
 					else
-						civilians_killed_pass = achievement_data.civilians_killed <= civilians_killed
+						civilians_killed_pass = civilians_killed >= achievement_data.civilians_killed
 					end
 				end
 
@@ -1271,7 +1286,8 @@ function MissionEndState:chk_complete_heist_achievements()
 
 					for _, req in ipairs(achievement_data.specials_killed) do
 						local specials_killed = managers.statistics:session_enemy_killed_by_type(req.enemy, "count")
-						specials_killed_pass = req.count <= specials_killed
+
+						specials_killed_pass = specials_killed >= req.count
 					end
 				end
 
@@ -1279,6 +1295,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 				if achievement_data.weapons_used then
 					local used_weapons = managers.statistics:session_used_weapons() or {}
+
 					weapons_used_pass = table.contains_only(used_weapons, achievement_data.weapons_used)
 				end
 
@@ -1326,7 +1343,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 				if achievement_data.crime_spree then
 					if type(achievement_data.crime_spree) == "number" then
-						crime_spree_pass = managers.crime_spree:is_active() and achievement_data.crime_spree <= managers.crime_spree:spree_level()
+						crime_spree_pass = managers.crime_spree:is_active() and managers.crime_spree:spree_level() >= achievement_data.crime_spree
 					else
 						crime_spree_pass = managers.crime_spree:is_active()
 					end
@@ -1339,6 +1356,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 					for tree, data in ipairs(tweak_data.skilltree.trees) do
 						local points = managers.skilltree:get_tree_progress(tree)
+
 						num_skills = num_skills + points
 					end
 
@@ -1376,6 +1394,7 @@ function MissionEndState:chk_complete_heist_achievements()
 
 					for category, equipped_data in pairs(achievement_data.equipped) do
 						local category_pass = false
+
 						weapon_data = managers.blackmarket:equipped_item(category)
 
 						if (category == "grenades" or category == "armors") and equipped_data == weapon_data then
@@ -1565,11 +1584,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					local in_stealth = managers.groupai and managers.groupai:state():whisper_mode()
 
 					if stealth_memory == nil then
-						if in_stealth == nil then
-							stealth_memory = true
-						else
-							stealth_memory = in_stealth
-						end
+						stealth_memory = in_stealth == nil and true or in_stealth
 					end
 
 					if not in_stealth and stealth_memory then
@@ -1593,7 +1608,7 @@ function MissionEndState:chk_complete_heist_achievements()
 			end
 		end
 
-		local masks_pass, level_pass, job_pass, jobs_pass, difficulty_pass, difficulties_pass, all_pass, memory, level_id, stage = nil
+		local masks_pass, level_pass, job_pass, jobs_pass, difficulty_pass, difficulties_pass, all_pass, memory, level_id, stage
 
 		for achievement, achievement_data in pairs(tweak_data.achievement.four_mask_achievements) do
 			level_id = managers.job:has_active_job() and managers.job:current_level_id() or ""
@@ -1623,11 +1638,7 @@ function MissionEndState:chk_complete_heist_achievements()
 				end
 
 				for _, char in pairs(managers.criminals._characters) do
-					if not char.data.ai then
-						if true then
-							-- Nothing
-						end
-					else
+					if char.data.ai or false then
 						local current_mask = char.data.mask_id
 
 						if table.contains(available_masks, current_mask) then

@@ -11,6 +11,7 @@ function collect_members(cls, m)
 	for funcname, funcobj in pairs(cls) do
 		if funcname:find("create_") then
 			local fn = funcname:gsub("create_", "")
+
 			m[fn] = funcobj
 		end
 	end
@@ -26,7 +27,7 @@ function collect_member_names(members, member_names)
 		})
 	end
 
-	table.sort(member_names, function (a, b)
+	table.sort(member_names, function(a, b)
 		return a.ui_name < b.ui_name
 	end)
 end
@@ -181,6 +182,7 @@ end
 
 function CoreParticleEditor:create_main_frame()
 	self._main_frame = EWS:Frame("Tsar Bomba Particle Editor", Vector3(-1, -1, -1), Vector3(1000, 800, -1), "DEFAULT_FRAME_STYLE,FRAME_FLOAT_ON_PARENT", Global.frame)
+
 	local menu_bar = EWS:MenuBar()
 	local file_menu = EWS:Menu("")
 
@@ -206,6 +208,7 @@ function CoreParticleEditor:create_main_frame()
 	menu_bar:append(effect_menu, "Effect")
 
 	local gizmo_menu = EWS:Menu("")
+
 	self._gizmo_menu = gizmo_menu
 
 	gizmo_menu:append_item("MOVE_TO_ORIGO", "Move Effect Gizmo To Origo")
@@ -279,6 +282,7 @@ function CoreParticleEditor:create_main_frame()
 	self._main_frame:connect("BATCH_ALL_LOAD_UNLOAD", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_batch_all_load_unload"), "")
 
 	local top_panel = self:create_top_bar(self._main_frame)
+
 	self._effects_notebook = EWS:Notebook(self._main_frame, "EFFECTS_NOTEBOOK", "")
 
 	self._effects_notebook:connect("EVT_COMMAND_NOTEBOOK_PAGE_CHANGED", callback(self, self, "on_effect_changed"), "")
@@ -592,7 +596,9 @@ function CoreParticleEditor:update(t, dt)
 
 	if self._gizmo_movement == "SMOOTH" then
 		local gizmo = self:effect_gizmo()
+
 		self._gizmo_accum = self._gizmo_accum + dt * speed
+
 		local a = self._gizmo_accum
 		local r = 500
 
@@ -605,14 +611,19 @@ function CoreParticleEditor:update(t, dt)
 		gizmo:set_rotation(rot1)
 	elseif self._gizmo_movement == "JUMP" then
 		local gizmo = self:effect_gizmo()
+
 		self._gizmo_accum = self._gizmo_accum + dt
+
 		local s = math.round(self._gizmo_accum)
+
 		s = math.fmod(s, 15)
 
 		gizmo:set_position(self._gizmo_anchor + Vector3(100 * s, 0, 0))
 	elseif self._gizmo_movement == "CIRCLE" then
 		local gizmo = self:effect_gizmo()
+
 		self._gizmo_accum = self._gizmo_accum + speed * (self._gizmo_inverted and -1 or 1)
+
 		local a = self._gizmo_accum
 		local r = 1000
 
@@ -622,6 +633,7 @@ function CoreParticleEditor:update(t, dt)
 end
 
 function CoreParticleEditor:set_position(pos)
+	return
 end
 
 function CoreParticleEditor:destroy()
@@ -749,6 +761,7 @@ function CoreParticleEditor:on_open()
 	end
 
 	self._last_used_dir = dir_name(f)
+
 	local n = managers.database:load_node(f)
 	local effect = CoreEffectDefinition:new()
 

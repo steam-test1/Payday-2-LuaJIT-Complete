@@ -1,49 +1,49 @@
 GameStateFilters = {
 	any_ingame = {
-		ingame_incapacitated = true,
+		ingame_access_camera = true,
+		ingame_arrested = true,
 		ingame_bleed_out = true,
+		ingame_civilian = true,
 		ingame_clean = true,
-		ingame_standard = true,
-		ingame_waiting_for_respawn = true,
-		ingame_waiting_for_spawn_allowed = true,
+		ingame_driving = true,
 		ingame_electrified = true,
 		ingame_fatal = true,
+		ingame_freefall = true,
+		ingame_incapacitated = true,
 		ingame_mask_off = true,
-		ingame_access_camera = true,
-		ingame_driving = true,
-		ingame_waiting_for_players = true,
 		ingame_parachuting = true,
-		ingame_arrested = true,
-		ingame_civilian = true,
-		ingame_freefall = true
+		ingame_standard = true,
+		ingame_waiting_for_players = true,
+		ingame_waiting_for_respawn = true,
+		ingame_waiting_for_spawn_allowed = true
 	},
 	any_ingame_playing = {
-		ingame_incapacitated = true,
+		ingame_access_camera = true,
+		ingame_arrested = true,
 		ingame_bleed_out = true,
+		ingame_civilian = true,
 		ingame_clean = true,
-		ingame_standard = true,
-		ingame_waiting_for_respawn = true,
-		ingame_waiting_for_spawn_allowed = true,
+		ingame_driving = true,
 		ingame_electrified = true,
 		ingame_fatal = true,
-		ingame_mask_off = true,
-		ingame_access_camera = true,
-		ingame_driving = true,
-		ingame_parachuting = true,
 		ingame_freefall = true,
-		ingame_arrested = true,
-		ingame_civilian = true
+		ingame_incapacitated = true,
+		ingame_mask_off = true,
+		ingame_parachuting = true,
+		ingame_standard = true,
+		ingame_waiting_for_respawn = true,
+		ingame_waiting_for_spawn_allowed = true
 	},
 	downed = {
-		ingame_incapacitated = true,
 		ingame_bleed_out = true,
-		ingame_fatal = true
+		ingame_fatal = true,
+		ingame_incapacitated = true
 	},
 	need_revive = {
-		ingame_incapacitated = true,
 		ingame_arrested = true,
 		ingame_bleed_out = true,
-		ingame_fatal = true
+		ingame_fatal = true,
+		ingame_incapacitated = true
 	},
 	arrested = {
 		ingame_arrested = true
@@ -52,8 +52,8 @@ GameStateFilters = {
 		gameoverscreen = true
 	},
 	any_end_game = {
-		victoryscreen = true,
-		gameoverscreen = true
+		gameoverscreen = true,
+		victoryscreen = true
 	},
 	waiting_for_players = {
 		ingame_waiting_for_players = true
@@ -69,11 +69,11 @@ GameStateFilters = {
 	},
 	player_slot = {
 		ingame_lobby_menu = true,
-		menu_main = true,
-		ingame_waiting_for_players = true
+		ingame_waiting_for_players = true,
+		menu_main = true
 	},
 	lobby = {
-		menu_main = true,
-		ingame_lobby_menu = true
+		ingame_lobby_menu = true,
+		menu_main = true
 	}
 }

@@ -1,12 +1,11 @@
 CarryData = CarryData or class()
 CarryData.disable_dye_packs = true
-CarryData.EVENT_IDS = {
-	will_explode = 1,
-	explode = 2,
-	dye_pack_exploded = 3,
-	poof = 4,
-	expire = 5
-}
+CarryData.EVENT_IDS = {}
+CarryData.EVENT_IDS.will_explode = 1
+CarryData.EVENT_IDS.explode = 2
+CarryData.EVENT_IDS.dye_pack_exploded = 3
+CarryData.EVENT_IDS.poof = 4
+CarryData.EVENT_IDS.expire = 5
 CarryData._bodies_to_find_AI = {
 	Idstring("g_bag"),
 	Idstring("g_canvasbag"),
@@ -118,7 +117,7 @@ function CarryData:init(unit)
 	local enable_update = true
 
 	if unit:interaction() then
-		local has_dynamic_body = nil
+		local has_dynamic_body
 		local nr_bodies = unit:num_bodies()
 
 		for i = 0, nr_bodies - 1 do
@@ -136,8 +135,9 @@ function CarryData:init(unit)
 
 			if link_body then
 				self._link_body = link_body
+
 				local get_obj_f = unit.get_object
-				local link_obj = nil
+				local link_obj
 
 				for _, body_ids_name in ipairs(CarryData._bodies_to_find_AI) do
 					link_obj = get_obj_f(unit, body_ids_name)
@@ -366,7 +366,7 @@ function CarryData:check_explodes_on_impact(vel_vector, air_time)
 
 	local chance = math.lerp(0, 0.9, math.min((vel - vel_limit) / (1200 - vel_limit), 1))
 
-	if math.rand(1) <= chance then
+	if chance >= math.rand(1) then
 		self:start_explosion()
 
 		return true
@@ -457,16 +457,17 @@ function CarryData:disarm()
 end
 
 CarryData.EXPLOSION_SETTINGS = {
-	damage = 40,
-	range = 1000,
 	curve_pow = 3,
+	damage = 40,
+	effect = "effects/payday2/particles/explosions/bag_explosion",
 	player_damage = 20,
-	effect = "effects/payday2/particles/explosions/bag_explosion"
+	range = 1000
 }
 CarryData.EXPLOSION_CUSTOM_PARAMS = {
 	camera_shake_mul = 4,
 	effect = CarryData.EXPLOSION_SETTINGS.effect
 }
+
 local mvec1 = Vector3()
 local mvec3_set = mvector3.set
 local mvec3_dis = mvector3.distance
@@ -500,29 +501,32 @@ function CarryData:_explode()
 	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "carry_data", CarryData.EVENT_IDS.explode)
 
 	local to_explode = {}
-	local chance, distance, carry_ext = nil
-	local raycast_f = Unit.raycast
-	local splinter_slotmask = managers.slot:get_mask("world_geometry")
 
-	for _, unit in pairs(hit_units) do
-		carry_ext = alive(unit) and unit:carry_data()
+	do
+		local chance, distance, carry_ext
+		local raycast_f = Unit.raycast
+		local splinter_slotmask = managers.slot:get_mask("world_geometry")
 
-		if carry_ext and not carry_ext:is_tagged_for_explosion() and carry_ext:can_explode() then
-			unit:m_position(mvec1)
+		for _, unit in pairs(hit_units) do
+			carry_ext = alive(unit) and unit:carry_data()
 
-			distance = mvec3_dis(pos, mvec1)
-			chance = math_lerp(1, 0, math.max(distance - range / 2, 0) / range)
+			if carry_ext and not carry_ext:is_tagged_for_explosion() and carry_ext:can_explode() then
+				unit:m_position(mvec1)
 
-			if math_rand(1) < chance then
-				for i_splinter, s_pos in ipairs(splinters) do
-					if not raycast_f(self._unit, "ray", s_pos, mvec1, "slot_mask", splinter_slotmask, "ignore_unit", {
-						unit
-					}, "report") then
-						to_explode[unit:key()] = carry_ext
+				distance = mvec3_dis(pos, mvec1)
+				chance = math_lerp(1, 0, math.max(distance - range / 2, 0) / range)
 
-						carry_ext:tag_for_explosion()
+				if chance > math_rand(1) then
+					for i_splinter, s_pos in ipairs(splinters) do
+						if not raycast_f(self._unit, "ray", s_pos, mvec1, "slot_mask", splinter_slotmask, "ignore_unit", {
+							unit
+						}, "report") then
+							to_explode[unit:key()] = carry_ext
 
-						break
+							carry_ext:tag_for_explosion()
+
+							break
+						end
 					end
 				end
 			end
@@ -547,9 +551,9 @@ CarryData.EXPIRE_SETTINGS = {
 	range = 100
 }
 CarryData.EXPIRE_CUSTOM_PARAMS = {
-	sound_event = "hlp_poof_small",
+	camera_shake_mul = 0,
 	effect = "effects/payday2/particles/explosions/burnpuff",
-	camera_shake_mul = 0
+	sound_event = "hlp_poof_small"
 }
 
 function CarryData:_expire(was_synced)
@@ -574,9 +578,9 @@ CarryData.POOF_SETTINGS = {
 	range = 1000
 }
 CarryData.POOF_CUSTOM_PARAMS = {
-	sound_event = "hlp_poof_small",
+	camera_shake_mul = 4,
 	effect = "effects/payday2/environment/nail_green_smoke_explosion",
-	camera_shake_mul = 4
+	sound_event = "hlp_poof_small"
 }
 
 function CarryData:poof(was_synced)
@@ -632,6 +636,7 @@ function CarryData:clbk_out_of_world()
 		return
 	elseif self._unit:position().z < PlayerMovement.OUT_OF_WORLD_Z then
 		self._bodies_to_revert = {}
+
 		local bodies = self._unit:num_bodies()
 
 		for i_body = 0, bodies - 1 do
@@ -689,10 +694,12 @@ end
 
 function CarryData:set_carry_id(carry_id, is_init)
 	local carry_tweaks = tweak_data.carry
+
 	self._carry_id = carry_id
 
 	if carry_id then
 		self._value = managers.money:get_bag_value(self._carry_id, self._multiplier)
+
 		local carry_tweak = carry_tweaks[self._carry_id] or carry_tweaks.money
 		local carry_type_tweak = carry_tweaks.types[carry_tweak.type]
 
@@ -754,9 +761,8 @@ function CarryData:set_dye_pack_data(dye_initiated, has_dye_pack, dye_value_mult
 	end
 
 	if self._has_dye_pack then
-		self._dye_risk = {
-			next_t = TimerManager:game():time() + 2 + math.random(3)
-		}
+		self._dye_risk = {}
+		self._dye_risk.next_t = TimerManager:game():time() + 2 + math.random(3)
 	end
 end
 
@@ -798,6 +804,7 @@ function CarryData:_unregister_steal_SO()
 		managers.groupai:state():unregister_loot(self._unit:key())
 	elseif self._steal_SO_data.thief then
 		local thief = self._steal_SO_data.thief
+
 		self._steal_SO_data.thief = nil
 
 		if self._steal_SO_data.picked_up then
@@ -819,6 +826,7 @@ function CarryData:_chk_register_steal_SO()
 
 	if not self._has_body_activation_clbk then
 		local clbk = callback(self, self, "clbk_body_active_state")
+
 		self._has_body_activation_clbk = {
 			[self._link_body:key()] = clbk
 		}
@@ -847,7 +855,7 @@ function CarryData:_chk_register_steal_SO()
 		return
 	end
 
-	local drop_pos, drop_nav_seg, drop_area = nil
+	local drop_pos, drop_nav_seg, drop_area
 	local drop_point = managers.groupai:state():get_safe_enemy_loot_drop_point(pickup_nav_seg)
 
 	if drop_point then
@@ -863,13 +871,13 @@ function CarryData:_chk_register_steal_SO()
 	end
 
 	local drop_objective = {
-		type = "act",
-		interrupt_health = 0.5,
-		path_ahead = true,
 		action_duration = 1,
 		haste = "run",
-		pose = "crouch",
 		interrupt_dis = 200,
+		interrupt_health = 0.5,
+		path_ahead = true,
+		pose = "crouch",
+		type = "act",
 		nav_seg = drop_nav_seg,
 		pos = drop_pos,
 		area = drop_area,
@@ -877,8 +885,8 @@ function CarryData:_chk_register_steal_SO()
 		complete_clbk = callback(self, self, "on_secure_SO_completed"),
 		action = {
 			align_sync = true,
-			type = "act",
 			body_part = 1,
+			type = "act",
 			variant = "untie",
 			blocks = {
 				action = -1,
@@ -887,13 +895,13 @@ function CarryData:_chk_register_steal_SO()
 		}
 	}
 	local pickup_objective = {
-		destroy_clbk_key = false,
-		type = "act",
 		action_duration = 1,
+		destroy_clbk_key = false,
 		haste = "run",
+		interrupt_dis = 200,
 		interrupt_health = 0.5,
 		pose = "crouch",
-		interrupt_dis = 200,
+		type = "act",
 		nav_seg = pickup_nav_seg,
 		area = pickup_area,
 		pos = pickup_pos,
@@ -901,8 +909,8 @@ function CarryData:_chk_register_steal_SO()
 		complete_clbk = callback(self, self, "on_pickup_SO_completed"),
 		action = {
 			align_sync = true,
-			type = "act",
 			body_part = 1,
+			type = "act",
 			variant = "untie",
 			blocks = {
 				action = -1,
@@ -912,9 +920,9 @@ function CarryData:_chk_register_steal_SO()
 		followup_objective = drop_objective
 	}
 	local so_descriptor = {
-		interval = 0,
 		base_chance = 1,
 		chance_inc = 0,
+		interval = 0,
 		usage_amount = 1,
 		objective = pickup_objective,
 		search_pos = pickup_objective.pos,
@@ -923,6 +931,7 @@ function CarryData:_chk_register_steal_SO()
 		admin_clbk = callback(self, self, "on_pickup_SO_administered")
 	}
 	local so_id = "carrysteal" .. tostring(self._unit:key())
+
 	self._steal_SO_data = {
 		SO_registered = true,
 		picked_up = false,
@@ -961,7 +970,7 @@ function CarryData:clbk_pickup_SO_verification(candidate_unit)
 			return
 		end
 
-		local close_by = nil
+		local close_by
 
 		for _, neighbour_area in pairs(self._steal_SO_data.pickup_area.neighbours) do
 			if neighbour_area.nav_segs[nav_seg] then
@@ -1026,6 +1035,7 @@ function CarryData:on_secure_SO_completed(thief)
 	end
 
 	local secure_pos = self._steal_SO_data.secure_pos
+
 	self._steal_SO_data = nil
 
 	managers.mission:call_global_event("loot_lost")
@@ -1055,7 +1065,8 @@ function CarryData:_remove_collisions()
 		block = {},
 		pass = {}
 	}
-	local body, ray_mode = nil
+
+	local body, ray_mode
 	local body_f = Unit.body
 	local t_ins = table.insert
 	local ids_ray_pass = Idstring("pass")
@@ -1149,6 +1160,7 @@ function CarryData:link_to(parent_unit)
 	end
 
 	local body_active_clbk = self._has_body_activation_clbk
+
 	body_active_clbk = body_active_clbk and body_active_clbk[self._link_body:key()]
 
 	if self._has_body_activation_clbk and self._has_body_activation_clbk[self._link_body:key()] then
@@ -1175,7 +1187,7 @@ function CarryData:link_to(parent_unit)
 		self._register_steal_SO_clbk_id = nil
 	end
 
-	call_on_next_update(function ()
+	call_on_next_update(function()
 		if not alive(self._unit) or not alive(parent_unit) then
 			return
 		end
@@ -1203,6 +1215,7 @@ function CarryData:link_to(parent_unit)
 	self:_remove_collisions()
 
 	self._linked_to = parent_unit
+
 	local linked_mov_ext = parent_unit:movement()
 
 	if linked_mov_ext and linked_mov_ext.set_carrying_bag then
@@ -1222,8 +1235,10 @@ function CarryData:unlink()
 	end
 
 	local linked_to = self._linked_to
+
 	self._linked_to = nil
 	CarryData.carry_links[linked_to:key()] = nil
+
 	local linked_mov_ext = linked_to:movement()
 
 	if linked_mov_ext and linked_mov_ext.set_carrying_bag then
@@ -1327,19 +1342,20 @@ function CarryData:_on_load_attach_to_zipline(zipline_unit)
 end
 
 function CarryData:save(data)
-	local state = {
-		carry_id = self._carry_id,
-		value = self._value,
-		dye_initiated = self._dye_initiated,
-		has_dye_pack = self._has_dye_pack,
-		dye_value_multiplier = self._dye_value_multiplier
-	}
+	local state = {}
+
+	state.carry_id = self._carry_id
+	state.value = self._value
+	state.dye_initiated = self._dye_initiated
+	state.has_dye_pack = self._has_dye_pack
+	state.dye_value_multiplier = self._dye_value_multiplier
 	data.zip_line_unit_id = self._zipline_unit and self._zipline_unit:editor_id()
 	data.CarryData = state
 end
 
 function CarryData:load(data)
 	local state = data.CarryData
+
 	self._carry_id = state.carry_id
 	self._value = state.value
 	self._dye_initiated = state.dye_initiated
@@ -1435,6 +1451,7 @@ function CarryData:set_latest_peer_id(peer_id)
 		end
 	else
 		local peer = managers.network:session():peer(peer_id)
+
 		self._oobb_mod = peer and peer:is_vr() and 50 or 25
 	end
 end

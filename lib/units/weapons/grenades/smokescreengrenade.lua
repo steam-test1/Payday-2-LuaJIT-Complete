@@ -37,6 +37,7 @@ function SmokeScreenGrenade:_detonate(tag, unit, body, other_unit, other_body, p
 end
 
 function SmokeScreenGrenade:bullet_hit()
+	return
 end
 
 function SmokeScreenGrenade:_detonate_on_client()

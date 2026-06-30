@@ -14,7 +14,7 @@ function CoreAiArea:init(unit, surface_name, obj_name, xml)
 end
 
 function CoreAiArea:spawn(unit_name, spawn_point_name)
-	local spawn_point = nil
+	local spawn_point
 
 	if spawn_point_name ~= "" then
 		spawn_point = self._unit:get_object(Idstring(spawn_point_name))
@@ -157,6 +157,7 @@ function CoreSpawnSystem:set_var_and_cb(new_unit, lv2)
 
 					local meta = getmetatable(new_unit)
 					local func = meta[lv3:parameter("extension")](new_unit)
+
 					func[lv4:parameter("name")] = lv4:parameter("val")
 				end
 			end
@@ -209,8 +210,11 @@ function CoreSpawnSystem:read_spawn_xml()
 						cat_print("spawn_system", "[CoreSpawnSystem] Spawning unit: " .. lv2_name)
 
 						local new_unit = self._ai_spawn_areas[lv1_name]:spawn(lv2_name, lv2:parameter("spawn_point"))
+
 						self._linked_unit_map = self._linked_unit_map or {}
+
 						local unit_map = self._linked_unit_map[lv1_name] or {}
+
 						unit_map[lv2_name] = new_unit
 						self._linked_unit_map[lv1_name] = unit_map
 
@@ -223,8 +227,10 @@ function CoreSpawnSystem:read_spawn_xml()
 				for lv2 in lv1:children() do
 					if lv2:name() == "unit" then
 						self._enabled_unit_map = self._enabled_unit_map or {}
+
 						local unit_map = self._enabled_unit_map[lv1_name] or {}
 						local enabled = lv2:parameter("enabled") ~= "false"
+
 						unit_map[lv2:parameter("name")] = enabled
 						self._enabled_unit_map[lv1_name] = unit_map
 
@@ -250,7 +256,7 @@ function CoreSpawnSystem:setup_unit(lv1, lv2)
 
 	cat_print("spawn_system", "[CoreSpawnSystem] Spawn unit '" .. lv2_name .. "' in socket '" .. lv1_name .. "'.")
 
-	local new_unit = nil
+	local new_unit
 	local object = self._unit:get_object(Idstring(lv1_name))
 
 	if MassUnitManager:can_spawn_unit(lv2_name) then
@@ -262,7 +268,9 @@ function CoreSpawnSystem:setup_unit(lv1, lv2)
 	end
 
 	self._linked_unit_map = self._linked_unit_map or {}
+
 	local unit_map = self._linked_unit_map[lv1_name] or {}
+
 	unit_map[lv2_name] = new_unit
 	self._linked_unit_map[lv1_name] = unit_map
 
@@ -297,7 +305,9 @@ function CoreSpawnSystem:setup_unit(lv1, lv2)
 	end
 
 	self._linked_unit_map = self._linked_unit_map or {}
+
 	local unit_map = self._linked_unit_map[lv1_name] or {}
+
 	unit_map[lv2_name] = new_unit
 	self._linked_unit_map[lv1_name] = unit_map
 
@@ -317,6 +327,7 @@ function CoreSpawnSystem:set_unit_enabled(socket_name, unit_name, enabled)
 				self:setup_unit(self:get_socket_nodes(socket_name, unit_name))
 			else
 				local unit = self._linked_unit_map[socket_name][unit_name]
+
 				self._linked_unit_map[socket_name][unit_name] = nil
 
 				if alive(unit) then

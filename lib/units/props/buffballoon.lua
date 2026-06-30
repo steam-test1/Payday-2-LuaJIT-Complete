@@ -1,4 +1,5 @@
 BuffBalloon = BuffBalloon or class()
+
 local balloon_units = {
 	"units/pd2_dlc_a10th/props/a10th_balloon/a10th_balloon_zigzag",
 	"units/pd2_dlc_a10th/props/a10th_balloon/a10th_balloon_diamonds",

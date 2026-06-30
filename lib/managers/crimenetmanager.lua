@@ -72,7 +72,7 @@ function CrimeNetManager:get_last_played_job(job_id)
 
 	if tweak_data.narrative:has_job_wrapper(job_id) then
 		local job_data = tweak_data.narrative:job_data(job_id)
-		local last_played_date = nil
+		local last_played_date
 
 		for _, job_id in ipairs(job_data.job_wrapper) do
 			self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
@@ -143,10 +143,12 @@ end
 function CrimeNetManager:get_jobs_by_player_stars(span)
 	local t = {}
 	local pstars = managers.experience:level_to_stars() * 10
+
 	span = span or 20
 
 	for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
 		local pass_all_tests = true
+
 		pass_all_tests = pass_all_tests and not tweak_data.narrative:is_job_locked(job_id)
 
 		if pass_all_tests then
@@ -160,14 +162,13 @@ function CrimeNetManager:get_jobs_by_player_stars(span)
 				local difficulty = tweak_data:index_to_difficulty(difficulty_id)
 
 				if job_jc <= pstars + span and job_jc >= pstars - span then
-					slot22.marker_dot_color = job_data.marker_dot_color or nil
-					slot22.color_lerp = job_data.color_lerp or nil
-
 					table.insert(t, {
 						job_jc = job_jc,
 						job_id = job_id,
 						difficulty_id = difficulty_id,
-						difficulty = difficulty
+						difficulty = difficulty,
+						marker_dot_color = job_data.marker_dot_color or nil,
+						color_lerp = job_data.color_lerp or nil
 					})
 				end
 			end
@@ -190,6 +191,7 @@ function CrimeNetManager:_get_jobs_by_jc()
 		local dlc = tweak_data.narrative:job_data(job_id).dlc
 		local is_not_dlc_or_got = not dlc or managers.dlc:is_dlc_unlocked(dlc)
 		local pass_all_tests = is_cooldown_ok and is_not_wrapped and is_not_dlc_or_got
+
 		pass_all_tests = pass_all_tests and not tweak_data.narrative:is_job_locked(job_id)
 
 		if pass_all_tests then
@@ -206,13 +208,13 @@ function CrimeNetManager:_get_jobs_by_jc()
 
 				if is_not_level_locked then
 					t[job_jc] = t[job_jc] or {}
-					slot28.marker_dot_color = job_data.marker_dot_color or nil
-					slot28.color_lerp = job_data.color_lerp or nil
 
 					table.insert(t[job_jc], {
 						job_id = job_id,
 						difficulty_id = difficulty_id,
-						difficulty = difficulty
+						difficulty = difficulty,
+						marker_dot_color = job_data.marker_dot_color or nil,
+						color_lerp = job_data.color_lerp or nil
 					})
 				end
 			end
@@ -242,6 +244,7 @@ function CrimeNetManager:_setup()
 	end
 
 	self._presets = {}
+
 	local plvl = managers.experience:current_level()
 	local player_stars = math.clamp(math.ceil((plvl + 1) / 10), 1, 10)
 	local stars = player_stars
@@ -258,18 +261,16 @@ function CrimeNetManager:_setup()
 
 	while j < no_picks do
 		for i = 1, no_jcs do
-			local chance = nil
+			local chance
 
-			if no_jcs - 1 == 0 then
-				chance = 1
-			else
-				chance = math.lerp(start_chance, 1, math.pow((i - 1) / (no_jcs - 1), chance_curve))
-			end
+			chance = no_jcs - 1 == 0 and 1 or math.lerp(start_chance, 1, math.pow((i - 1) / (no_jcs - 1), chance_curve))
 
 			if not jobs_by_jc[jcs[i]] then
 				-- Nothing
-			elseif #jobs_by_jc[jcs[i]] ~= 0 then
-				local job_data = nil
+			elseif #jobs_by_jc[jcs[i]] == 0 then
+				-- Nothing
+			else
+				local job_data
 
 				if self._debug_mass_spawning then
 					job_data = jobs_by_jc[jcs[i]][math.random(#jobs_by_jc[jcs[i]])]
@@ -279,7 +280,9 @@ function CrimeNetManager:_setup()
 
 				local job_tweak = tweak_data.narrative:job_data(job_data.job_id)
 				local chance_multiplier = job_tweak and job_tweak.spawn_chance_multiplier or 1
+
 				job_data.chance = chance * chance_multiplier
+
 				local difficulty_filter_index = managers.user:get_setting("crimenet_filter_difficulty")
 
 				if difficulty_filter_index > 0 then
@@ -298,7 +301,7 @@ function CrimeNetManager:_setup()
 		tests = tests + 1
 
 		if self._debug_mass_spawning then
-			if tweak_data.gui.crime_net.debug_options.mass_spawn_limit <= tests then
+			if tests >= tweak_data.gui.crime_net.debug_options.mass_spawn_limit then
 				break
 			end
 		elseif no_picks <= tests then
@@ -307,6 +310,7 @@ function CrimeNetManager:_setup()
 	end
 
 	local old_presets = self._presets
+
 	self._presets = {}
 
 	while #old_presets > 0 do
@@ -415,7 +419,7 @@ function CrimeNetManager:update(t, dt)
 		max_active_jobs = math.min(tweak_data.gui.crime_net.debug_options.mass_spawn_limit, #presets)
 	end
 
-	if table.size(self._active_jobs) < max_active_jobs and table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
+	if max_active_jobs > table.size(self._active_jobs) and table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
 		self._next_job_timer = self._next_job_timer - dt
 
 		if self._next_job_timer < 0 then
@@ -799,8 +803,8 @@ function CrimeNetManager:_find_online_games_ps3(friends_only)
 
 					if name_id and not self._active_server_jobs[name_str] and table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
 						self._active_server_jobs[name_str] = {
-							alive_time = 0,
 							added = false,
+							alive_time = 0,
 							room_id = room.room_id
 						}
 
@@ -871,6 +875,7 @@ function CrimeNetManager:_find_online_games_ps3(friends_only)
 
 					if (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 						dead_list[name_str] = nil
+
 						local host_name = name_str
 						local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
 
@@ -944,8 +949,8 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 
 					if name_id and not self._active_server_jobs[name_str] and table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
 						self._active_server_jobs[name_str] = {
-							alive_time = 0,
 							added = false,
+							alive_time = 0,
 							room_id = room.room_id
 						}
 
@@ -1021,6 +1026,7 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 
 					if (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 						dead_list[name_str] = nil
+
 						local host_name = name_str
 						local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
 
@@ -1091,6 +1097,7 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 
 			if managers.network.matchmake:is_server_ok(friends_only, room, attribute_list[i], nil) then
 				dead_list[room.room_id] = nil
+
 				local host_name = name_str
 				local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
 				local name_id = level_id and tweak_data.levels[level_id] and tweak_data.levels[level_id].name_id
@@ -1242,8 +1249,7 @@ function CrimeNetManager:join_quick_play_game()
 		local player_level = managers.experience:current_level()
 		local level_diff_min = self._global.quickplay.level_diff_min or tweak_data.quickplay.default_level_diff[1]
 		local level_diff_max = self._global.quickplay.level_diff_max or tweak_data.quickplay.default_level_diff[2]
-		local min_level = math.max(player_level - level_diff_min, 0)
-		local max_level = math.min(player_level + level_diff_max, 100)
+		local min_level, max_level = math.max(player_level - level_diff_min, 0), math.min(player_level + level_diff_max, 100)
 		local was_stealth_enabled = managers.user:get_setting("quickplay_stealth")
 		local stealth_enabled = was_stealth_enabled
 		local loud_enabled = managers.user:get_setting("quickplay_loud")
@@ -1263,6 +1269,7 @@ function CrimeNetManager:join_quick_play_game()
 
 			if not stealth_enabled or not loud_enabled then
 				local is_stealth = tweak_data.quickplay.stealth_levels[level_id] or attributes_numbers[10] == 2 or false
+
 				skip_level = is_stealth ~= stealth_enabled
 			end
 
@@ -1306,7 +1313,8 @@ function CrimeNetManager:join_quick_play_game()
 		end
 
 		self._previous_quick_play_games = self._global.quickplay
-		local selected_game = nil
+
+		local selected_game
 
 		for room_id, _ in pairs(game_list) do
 			if not table.contains(self._previous_quick_play_games, room_id) then
@@ -1335,26 +1343,28 @@ function CrimeNetManager:join_quick_play_game()
 		if selected_game then
 			managers.network.matchmake:join_server(selected_game, true, true)
 		elseif was_stealth_enabled and not loud_enabled and not managers.blackmarket:player_owns_silenced_weapon() then
-			local dialog_data = {
-				title = managers.localization:text("menu_cn_quickplay_not_found_stealth_title"),
-				text = managers.localization:text("menu_cn_quickplay_not_found_stealth_body")
-			}
-			local ok_button = {
-				text = managers.localization:text("dialog_ok")
-			}
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("menu_cn_quickplay_not_found_stealth_title")
+			dialog_data.text = managers.localization:text("menu_cn_quickplay_not_found_stealth_body")
+
+			local ok_button = {}
+
+			ok_button.text = managers.localization:text("dialog_ok")
 			dialog_data.button_list = {
 				ok_button
 			}
 
 			managers.system_menu:show(dialog_data)
 		else
-			local dialog_data = {
-				title = managers.localization:text("menu_cn_quickplay_not_found_title"),
-				text = managers.localization:text("menu_cn_quickplay_not_found_body")
-			}
-			local ok_button = {
-				text = managers.localization:text("dialog_ok")
-			}
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("menu_cn_quickplay_not_found_title")
+			dialog_data.text = managers.localization:text("menu_cn_quickplay_not_found_body")
+
+			local ok_button = {}
+
+			ok_button.text = managers.localization:text("dialog_ok")
 			dialog_data.button_list = {
 				ok_button
 			}
@@ -1396,6 +1406,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	managers.menu:active_menu().renderer.ws:hide()
 
 	local safe_scaled_size = managers.gui_data:safe_scaled_size()
+
 	self._ws = ws
 	self._fullscreen_ws = fullscreeen_ws
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel({
@@ -1404,48 +1415,49 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	self._panel = self._ws:panel():panel({
 		name = "main"
 	})
+
 	local full_16_9 = managers.gui_data:full_16_9_size()
 
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = 1001,
 		name = "blur_top",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		x = 0,
-		layer = 1001,
 		w = self._fullscreen_ws:panel():w(),
 		h = full_16_9.convert_y * 2,
 		y = -full_16_9.convert_y
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = 1001,
 		name = "blur_right",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		y = 0,
-		layer = 1001,
 		w = full_16_9.convert_x * 2,
 		h = self._fullscreen_ws:panel():h(),
 		x = self._fullscreen_ws:panel():w() - full_16_9.convert_x
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = 1001,
 		name = "blur_bottom",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		x = 0,
-		layer = 1001,
 		w = self._fullscreen_ws:panel():w(),
 		h = full_16_9.convert_y * 2,
 		y = self._fullscreen_ws:panel():h() - full_16_9.convert_y
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = 1001,
 		name = "blur_left",
 		render_template = "VertexColorTexturedBlur3D",
 		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		y = 0,
-		layer = 1001,
 		w = full_16_9.convert_x * 2,
 		h = self._fullscreen_ws:panel():h(),
 		x = -full_16_9.convert_x
@@ -1453,46 +1465,46 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	self._panel:rect({
 		blend_mode = "add",
 		h = 2,
-		y = 0,
-		x = 0,
 		layer = 1,
+		x = 0,
+		y = 0,
 		w = self._panel:w(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	self._panel:rect({
 		blend_mode = "add",
 		h = 2,
-		y = 0,
-		x = 0,
 		layer = 1,
+		x = 0,
+		y = 0,
 		w = self._panel:w(),
 		color = tweak_data.screen_colors.crimenet_lines
 	}):set_bottom(self._panel:h())
 	self._panel:rect({
 		blend_mode = "add",
-		y = 0,
+		layer = 1,
 		w = 2,
 		x = 0,
-		layer = 1,
+		y = 0,
 		h = self._panel:h(),
 		color = tweak_data.screen_colors.crimenet_lines
 	}):set_right(self._panel:w())
 	self._panel:rect({
 		blend_mode = "add",
-		y = 0,
+		layer = 1,
 		w = 2,
 		x = 0,
-		layer = 1,
+		y = 0,
 		h = self._panel:h(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 
 	self._rasteroverlay = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/crimenet_map_rasteroverlay",
-		name = "rasteroverlay",
-		layer = 3,
-		wrap_mode = "wrap",
 		blend_mode = "mul",
+		layer = 3,
+		name = "rasteroverlay",
+		texture = "guis/textures/crimenet_map_rasteroverlay",
+		wrap_mode = "wrap",
 		texture_rect = {
 			0,
 			0,
@@ -1505,19 +1517,19 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	})
 
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/crimenet_map_vignette",
-		name = "vignette",
 		blend_mode = "mul",
 		layer = 2,
+		name = "vignette",
+		texture = "guis/textures/crimenet_map_vignette",
 		color = Color(1, 1, 1, 1),
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
 	})
 
 	local bd_light = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/pd2/menu_backdrop/bd_light",
+		layer = 4,
 		name = "bd_light",
-		layer = 4
+		texture = "guis/textures/pd2/menu_backdrop/bd_light"
 	})
 
 	bd_light:set_size(self._fullscreen_panel:size())
@@ -1532,7 +1544,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 
 		while true do
 			wait(0.009, self._fixed_dt)
-			over(0.045, function (p)
+			over(0.045, function(p)
 				o:set_alpha(math.lerp(alpha, wanted_alpha, p))
 			end, self._fixed_dt)
 
@@ -1545,11 +1557,11 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	bd_light:animate(light_flicker_animation)
 
 	local back_button = self._panel:text({
-		vertical = "bottom",
-		name = "back_button",
-		blend_mode = "add",
 		align = "right",
+		blend_mode = "add",
 		layer = 40,
+		name = "back_button",
+		vertical = "bottom",
 		text = managers.localization:to_upper_text("menu_back"),
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
@@ -1561,18 +1573,20 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	back_button:set_bottom(self._panel:h() - 10)
 	back_button:set_visible(managers.menu:is_pc_controller())
 
-	local blur_object = self._panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "controller_legend_blur",
-		render_template = "VertexColorTexturedBlur3D",
-		layer = back_button:layer() - 1
-	})
+	do
+		local blur_object = self._panel:bitmap({
+			name = "controller_legend_blur",
+			render_template = "VertexColorTexturedBlur3D",
+			texture = "guis/textures/test_blur_df",
+			layer = back_button:layer() - 1
+		})
 
-	blur_object:set_shape(back_button:shape())
+		blur_object:set_shape(back_button:shape())
 
-	if not managers.menu:is_pc_controller() then
-		blur_object:set_size(self._panel:w() * 0.5, tweak_data.menu.pd2_medium_font_size)
-		blur_object:set_rightbottom(self._panel:w() - 2, self._panel:h() - 2)
+		if not managers.menu:is_pc_controller() then
+			blur_object:set_size(self._panel:w() * 0.5, tweak_data.menu.pd2_medium_font_size)
+			blur_object:set_rightbottom(self._panel:w() - 2, self._panel:h() - 2)
+		end
 	end
 
 	WalletGuiObject.set_wallet(self._panel)
@@ -1581,10 +1595,10 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 
 	local text_id = Global.game_settings.single_player and "menu_crimenet_offline" or "cn_menu_num_players_offline"
 	local num_players_text = self._panel:text({
-		vertical = "top",
-		name = "num_players_text",
 		align = "left",
 		layer = 40,
+		name = "num_players_text",
+		vertical = "top",
 		text = managers.localization:to_upper_text(text_id, {
 			amount = "1"
 		}),
@@ -1598,18 +1612,18 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	num_players_text:set_top(10)
 
 	local blur_object = self._panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		name = "num_players_blur",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		layer = num_players_text:layer() - 1
 	})
 
 	blur_object:set_shape(num_players_text:shape())
 
 	local legends_button = self._panel:text({
-		name = "legends_button",
 		blend_mode = "add",
 		layer = 40,
+		name = "legends_button",
 		text = managers.localization:to_upper_text("menu_cn_legend_show", {
 			BTN_X = managers.localization:btn_macro("menu_toggle_legends")
 		}),
@@ -1624,9 +1638,9 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	legends_button:set_align("right")
 
 	local blur_object = self._panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		name = "legends_button_blur",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		layer = legends_button:layer() - 1
 	})
 
@@ -1636,461 +1650,491 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 		legends_button:set_color(tweak_data.screen_colors.button_stage_3)
 	end
 
-	local w, h = nil
-	local mw = 0
-	local mh = nil
-	local legend_panel = self._panel:panel({
-		name = "legend_panel",
-		visible = false,
-		x = 10,
-		layer = 40,
-		y = legends_button:bottom() + 4
-	})
-	local host_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_legend_host",
-		x = 10,
-		y = 10
-	})
-	local host_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_icon:right() + 2,
-		y = host_icon:top(),
-		text = managers.localization:to_upper_text("menu_cn_legend_host")
-	})
-	mw = math.max(mw, self:make_fine_text(host_text))
-	local next_y = host_text:bottom()
-	local join_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_legend_join",
-		x = 10,
-		y = next_y
-	})
-	local join_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("menu_cn_legend_join")
-	})
-	mw = math.max(mw, self:make_fine_text(join_text))
-
-	self:make_color_text(join_text, tweak_data.screen_colors.regular_color)
-
-	next_y = join_text:bottom()
-	local friends_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_legend_join",
-		x = 10,
-		y = next_y,
-		color = tweak_data.screen_colors.friend_color
-	})
-	local friends_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("menu_cn_legend_friends")
-	})
-	mw = math.max(mw, self:make_fine_text(friends_text))
-
-	self:make_color_text(friends_text, tweak_data.screen_colors.friend_color)
-
-	next_y = friends_text:bottom()
-
-	if managers.crimenet:no_servers() or is_xb1 then
-		next_y = host_text:bottom()
-
-		join_icon:hide()
-		join_text:hide()
-		friends_icon:hide()
-		friends_text:hide()
-		friends_text:set_bottom(next_y)
-	end
-
-	local mutated_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_legend_join",
-		x = 10,
-		y = next_y,
-		color = tweak_data.screen_colors.mutators_color_text
-	})
-	local mutated_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("menu_cn_legend_mutated"),
-		color = tweak_data.screen_colors.mutators_color_text
-	})
-	mw = math.max(mw, self:make_fine_text(mutated_text))
-	next_y = mutated_text:bottom()
-	local spree_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_legend_join",
-		x = 10,
-		y = next_y,
-		color = tweak_data.screen_colors.crime_spree_risk
-	})
-	local spree_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("cn_crime_spree"),
-		color = tweak_data.screen_colors.crime_spree_risk
-	})
-	mw = math.max(mw, self:make_fine_text(spree_text))
-	next_y = spree_text:bottom()
-	local skirmish_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_legend_join",
-		x = 10,
-		y = next_y,
-		color = tweak_data.screen_colors.skirmish_color
-	})
-	local skirmish_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("menu_cn_skirmish"),
-		color = tweak_data.screen_colors.skirmish_color
-	})
-	mw = math.max(mw, self:make_fine_text(skirmish_text))
-	next_y = skirmish_text:bottom()
-	local risk_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_legend_risklevel",
-		x = 10,
-		y = next_y
-	})
-	local risk_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("menu_cn_legend_risk"),
-		color = tweak_data.screen_colors.risk
-	})
-	mw = math.max(mw, self:make_fine_text(risk_text))
-	next_y = risk_text:bottom()
-	local ghost_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/cn_minighost",
-		x = 7,
-		y = next_y + 4,
-		color = tweak_data.screen_colors.ghost_color
-	})
-	local ghost_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("menu_cn_legend_ghostable"),
-		color = tweak_data.screen_colors.ghost_color
-	})
-	mw = math.max(mw, self:make_fine_text(ghost_text))
-	next_y = ghost_text:bottom()
-	local add_xmas = false
-	local add_xmas = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
-
-	if add_xmas then
-		local holiday_icon = legend_panel:bitmap({
-			texture = "guis/textures/pd2/cn_mini_xmas",
+	do
+		local w, h
+		local mw, mh = 0
+		local legend_panel = self._panel:panel({
+			layer = 40,
+			name = "legend_panel",
+			visible = false,
 			x = 10,
-			y = next_y + 2,
-			color = tweak_data.screen_colors.event_color
+			y = legends_button:bottom() + 4
 		})
-		local holiday_text = legend_panel:text({
+		local host_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/crimenet_legend_host",
+			x = 10,
+			y = 10
+		})
+		local host_text = legend_panel:text({
+			blend_mode = "add",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			x = host_icon:right() + 2,
+			y = host_icon:top(),
+			text = managers.localization:to_upper_text("menu_cn_legend_host")
+		})
+
+		mw = math.max(mw, self:make_fine_text(host_text))
+
+		local next_y = host_text:bottom()
+		local join_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/crimenet_legend_join",
+			x = 10,
+			y = next_y
+		})
+		local join_text = legend_panel:text({
 			blend_mode = "add",
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			x = host_text:left(),
 			y = next_y,
-			text = managers.localization:to_upper_text("menu_cn_legend_holiday"),
-			color = tweak_data.screen_colors.event_color
+			text = managers.localization:to_upper_text("menu_cn_legend_join")
 		})
-		mw = math.max(mw, self:make_fine_text(holiday_text))
-		next_y = holiday_text:bottom()
-	end
 
-	local kick_none_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/cn_kick_marker",
-		x = 10,
-		y = next_y + 2
-	})
-	local kick_none_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = next_y,
-		text = managers.localization:to_upper_text("menu_cn_kick_disabled")
-	})
-	mw = math.max(mw, self:make_fine_text(kick_none_text))
-	local kick_vote_icon = legend_panel:bitmap({
-		texture = "guis/textures/pd2/cn_votekick_marker",
-		x = 10,
-		y = kick_none_text:bottom() + 2
-	})
-	local kick_vote_text = legend_panel:text({
-		blend_mode = "add",
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		x = host_text:left(),
-		y = kick_none_text:bottom(),
-		text = managers.localization:to_upper_text("menu_kick_vote")
-	})
-	mw = math.max(mw, self:make_fine_text(kick_vote_text))
-	local last_text = kick_vote_text
-	local job_plan_loud_icon, job_plan_loud_text, job_plan_stealth_icon, job_plan_stealth_text = nil
+		mw = math.max(mw, self:make_fine_text(join_text))
 
-	if MenuCallbackHandler:bang_active() then
-		job_plan_loud_icon = legend_panel:bitmap({
-			texture = "guis/textures/pd2/cn_playstyle_loud",
+		self:make_color_text(join_text, tweak_data.screen_colors.regular_color)
+
+		next_y = join_text:bottom()
+
+		local friends_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/crimenet_legend_join",
 			x = 10,
-			y = kick_vote_text:bottom() + 2
+			y = next_y,
+			color = tweak_data.screen_colors.friend_color
 		})
-		job_plan_loud_text = legend_panel:text({
+		local friends_text = legend_panel:text({
 			blend_mode = "add",
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			x = host_text:left(),
-			y = kick_vote_text:bottom(),
-			text = managers.localization:to_upper_text("menu_plan_loud")
+			y = next_y,
+			text = managers.localization:to_upper_text("menu_cn_legend_friends")
 		})
-		mw = math.max(mw, self:make_fine_text(job_plan_loud_text))
-		job_plan_stealth_icon = legend_panel:bitmap({
-			texture = "guis/textures/pd2/cn_playstyle_stealth",
+
+		mw = math.max(mw, self:make_fine_text(friends_text))
+
+		self:make_color_text(friends_text, tweak_data.screen_colors.friend_color)
+
+		next_y = friends_text:bottom()
+
+		if managers.crimenet:no_servers() or is_xb1 then
+			next_y = host_text:bottom()
+
+			join_icon:hide()
+			join_text:hide()
+			friends_icon:hide()
+			friends_text:hide()
+			friends_text:set_bottom(next_y)
+		end
+
+		local mutated_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/crimenet_legend_join",
 			x = 10,
-			y = job_plan_loud_text:bottom() + 2
+			y = next_y,
+			color = tweak_data.screen_colors.mutators_color_text
 		})
-		job_plan_stealth_text = legend_panel:text({
+		local mutated_text = legend_panel:text({
 			blend_mode = "add",
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			x = host_text:left(),
-			y = job_plan_loud_text:bottom(),
-			text = managers.localization:to_upper_text("menu_plan_stealth")
+			y = next_y,
+			text = managers.localization:to_upper_text("menu_cn_legend_mutated"),
+			color = tweak_data.screen_colors.mutators_color_text
 		})
-		mw = math.max(mw, self:make_fine_text(job_plan_stealth_text))
-		last_text = job_plan_stealth_text
-	end
 
-	if managers.crimenet:no_servers() or is_xb1 then
-		kick_none_icon:hide()
-		kick_none_text:hide()
-		kick_vote_icon:hide()
-		kick_vote_text:hide()
-		kick_vote_text:set_bottom(ghost_text:bottom())
+		mw = math.max(mw, self:make_fine_text(mutated_text))
+		next_y = mutated_text:bottom()
 
-		if MenuCallbackHandler:bang_active() then
-			job_plan_loud_icon:hide()
-			job_plan_loud_text:hide()
-			job_plan_stealth_icon:hide()
-			job_plan_stealth_text:hide()
-		end
-	end
-
-	legend_panel:set_size(host_text:left() + mw + 10, last_text:bottom() + 10)
-	legend_panel:rect({
-		alpha = 0.4,
-		layer = -1,
-		color = Color.black
-	})
-	BoxGuiObject:new(legend_panel, {
-		sides = {
-			1,
-			1,
-			1,
-			1
-		}
-	})
-	legend_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		render_template = "VertexColorTexturedBlur3D",
-		layer = -1,
-		w = legend_panel:w(),
-		h = legend_panel:h()
-	})
-	legend_panel:set_right(self._panel:w() - 10)
-
-	local w, h = nil
-	local mw = 0
-	local mh = nil
-	local global_bonuses_panel = self._panel:panel({
-		y = 10,
-		name = "global_bonuses_panel",
-		layer = 40,
-		h = tweak_data.menu.pd2_small_font_size * 3
-	})
-
-	local function mul_to_procent_string(multiplier)
-		local pro = math.round(multiplier * 100)
-		local procent_string = nil
-
-		if pro == 0 and multiplier ~= 0 then
-			procent_string = string.format("%0.2f", math.abs(multiplier * 100))
-		else
-			procent_string = tostring(math.abs(pro))
-		end
-
-		return procent_string, multiplier >= 0
-	end
-
-	local has_ghost_bonus = managers.job:has_ghost_bonus()
-
-	if has_ghost_bonus then
-		local ghost_bonus_mul = managers.job:get_ghost_bonus()
-		local job_ghost_string = mul_to_procent_string(ghost_bonus_mul)
-		local ghost_text = global_bonuses_panel:text({
+		local spree_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/crimenet_legend_join",
+			x = 10,
+			y = next_y,
+			color = tweak_data.screen_colors.crime_spree_risk
+		})
+		local spree_text = legend_panel:text({
 			blend_mode = "add",
-			align = "center",
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
-			text = managers.localization:to_upper_text("menu_ghost_bonus", {
-				exp_bonus = job_ghost_string
-			}),
+			x = host_text:left(),
+			y = next_y,
+			text = managers.localization:to_upper_text("cn_crime_spree"),
+			color = tweak_data.screen_colors.crime_spree_risk
+		})
+
+		mw = math.max(mw, self:make_fine_text(spree_text))
+		next_y = spree_text:bottom()
+
+		local skirmish_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/crimenet_legend_join",
+			x = 10,
+			y = next_y,
+			color = tweak_data.screen_colors.skirmish_color
+		})
+		local skirmish_text = legend_panel:text({
+			blend_mode = "add",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			x = host_text:left(),
+			y = next_y,
+			text = managers.localization:to_upper_text("menu_cn_skirmish"),
+			color = tweak_data.screen_colors.skirmish_color
+		})
+
+		mw = math.max(mw, self:make_fine_text(skirmish_text))
+		next_y = skirmish_text:bottom()
+
+		local risk_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/crimenet_legend_risklevel",
+			x = 10,
+			y = next_y
+		})
+		local risk_text = legend_panel:text({
+			blend_mode = "add",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			x = host_text:left(),
+			y = next_y,
+			text = managers.localization:to_upper_text("menu_cn_legend_risk"),
+			color = tweak_data.screen_colors.risk
+		})
+
+		mw = math.max(mw, self:make_fine_text(risk_text))
+		next_y = risk_text:bottom()
+
+		local ghost_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/cn_minighost",
+			x = 7,
+			y = next_y + 4,
 			color = tweak_data.screen_colors.ghost_color
 		})
-	end
+		local ghost_text = legend_panel:text({
+			blend_mode = "add",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			x = host_text:left(),
+			y = next_y,
+			text = managers.localization:to_upper_text("menu_cn_legend_ghostable"),
+			color = tweak_data.screen_colors.ghost_color
+		})
 
-	if false then
-		local skill_bonus = managers.player:get_skill_exp_multiplier()
-		skill_bonus = skill_bonus - 1
+		mw = math.max(mw, self:make_fine_text(ghost_text))
+		next_y = ghost_text:bottom()
 
-		if skill_bonus > 0 then
-			local skill_string = mul_to_procent_string(skill_bonus)
-			local skill_text = global_bonuses_panel:text({
-				blend_mode = "add",
-				align = "center",
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				text = managers.localization:to_upper_text("menu_cn_skill_bonus", {
-					exp_bonus = skill_string
-				}),
-				color = tweak_data.screen_colors.skill_color
-			})
-		end
+		local add_xmas = false
+		local add_xmas = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
 
-		local infamy_bonus = managers.player:get_infamy_exp_multiplier()
-		infamy_bonus = infamy_bonus - 1
-
-		if infamy_bonus > 0 then
-			local infamy_string = mul_to_procent_string(infamy_bonus)
-			local infamy_text = global_bonuses_panel:text({
-				blend_mode = "add",
-				align = "center",
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				text = managers.localization:to_upper_text("menu_cn_infamy_bonus", {
-					exp_bonus = infamy_string
-				}),
-				color = tweak_data.lootdrop.global_values.infamy.color
-			})
-		end
-
-		local limited_bonus = managers.player:get_limited_exp_multiplier(nil, nil)
-		limited_bonus = limited_bonus - 1
-
-		if limited_bonus > 0 then
-			local limited_string = mul_to_procent_string(limited_bonus)
-			local limited_text = global_bonuses_panel:text({
-				blend_mode = "add",
-				align = "center",
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				text = managers.localization:to_upper_text("menu_cn_limited_bonus", {
-					exp_bonus = limited_string
-				}),
-				color = tweak_data.screen_colors.button_stage_2
-			})
-		end
-	end
-
-	local add_limited = false
-	add_limited = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
-
-	if add_limited then
-		local limited_bonus = (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
-
-		if limited_bonus > 0 then
-			local limited_string = mul_to_procent_string(limited_bonus)
-			local limited_text = global_bonuses_panel:text({
-				blend_mode = "add",
-				align = "center",
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				text = managers.localization:to_upper_text("menu_cn_holiday_bonus", {
-					bonus = limited_string,
-					event_icon = managers.localization:get_default_macro("BTN_XMAS")
-				}),
+		if add_xmas then
+			local holiday_icon = legend_panel:bitmap({
+				texture = "guis/textures/pd2/cn_mini_xmas",
+				x = 10,
+				y = next_y + 2,
 				color = tweak_data.screen_colors.event_color
 			})
+			local holiday_text = legend_panel:text({
+				blend_mode = "add",
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				x = host_text:left(),
+				y = next_y,
+				text = managers.localization:to_upper_text("menu_cn_legend_holiday"),
+				color = tweak_data.screen_colors.event_color
+			})
+
+			mw = math.max(mw, self:make_fine_text(holiday_text))
+			next_y = holiday_text:bottom()
 		end
+
+		local kick_none_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/cn_kick_marker",
+			x = 10,
+			y = next_y + 2
+		})
+		local kick_none_text = legend_panel:text({
+			blend_mode = "add",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			x = host_text:left(),
+			y = next_y,
+			text = managers.localization:to_upper_text("menu_cn_kick_disabled")
+		})
+
+		mw = math.max(mw, self:make_fine_text(kick_none_text))
+
+		local kick_vote_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/cn_votekick_marker",
+			x = 10,
+			y = kick_none_text:bottom() + 2
+		})
+		local kick_vote_text = legend_panel:text({
+			blend_mode = "add",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			x = host_text:left(),
+			y = kick_none_text:bottom(),
+			text = managers.localization:to_upper_text("menu_kick_vote")
+		})
+
+		mw = math.max(mw, self:make_fine_text(kick_vote_text))
+
+		local last_text = kick_vote_text
+		local job_plan_loud_icon, job_plan_loud_text, job_plan_stealth_icon, job_plan_stealth_text
+
+		if MenuCallbackHandler:bang_active() then
+			job_plan_loud_icon = legend_panel:bitmap({
+				texture = "guis/textures/pd2/cn_playstyle_loud",
+				x = 10,
+				y = kick_vote_text:bottom() + 2
+			})
+			job_plan_loud_text = legend_panel:text({
+				blend_mode = "add",
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				x = host_text:left(),
+				y = kick_vote_text:bottom(),
+				text = managers.localization:to_upper_text("menu_plan_loud")
+			})
+			mw = math.max(mw, self:make_fine_text(job_plan_loud_text))
+			job_plan_stealth_icon = legend_panel:bitmap({
+				texture = "guis/textures/pd2/cn_playstyle_stealth",
+				x = 10,
+				y = job_plan_loud_text:bottom() + 2
+			})
+			job_plan_stealth_text = legend_panel:text({
+				blend_mode = "add",
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				x = host_text:left(),
+				y = job_plan_loud_text:bottom(),
+				text = managers.localization:to_upper_text("menu_plan_stealth")
+			})
+			mw = math.max(mw, self:make_fine_text(job_plan_stealth_text))
+			last_text = job_plan_stealth_text
+		end
+
+		if managers.crimenet:no_servers() or is_xb1 then
+			kick_none_icon:hide()
+			kick_none_text:hide()
+			kick_vote_icon:hide()
+			kick_vote_text:hide()
+			kick_vote_text:set_bottom(ghost_text:bottom())
+
+			if MenuCallbackHandler:bang_active() then
+				job_plan_loud_icon:hide()
+				job_plan_loud_text:hide()
+				job_plan_stealth_icon:hide()
+				job_plan_stealth_text:hide()
+			end
+		end
+
+		legend_panel:set_size(host_text:left() + mw + 10, last_text:bottom() + 10)
+		legend_panel:rect({
+			alpha = 0.4,
+			layer = -1,
+			color = Color.black
+		})
+		BoxGuiObject:new(legend_panel, {
+			sides = {
+				1,
+				1,
+				1,
+				1
+			}
+		})
+		legend_panel:bitmap({
+			layer = -1,
+			render_template = "VertexColorTexturedBlur3D",
+			texture = "guis/textures/test_blur_df",
+			w = legend_panel:w(),
+			h = legend_panel:h()
+		})
+		legend_panel:set_right(self._panel:w() - 10)
 	end
 
-	if #global_bonuses_panel:children() > 1 then
-		for i, child in ipairs(global_bonuses_panel:children()) do
-			child:set_alpha(0)
+	do
+		local w, h
+		local mw, mh = 0
+		local global_bonuses_panel = self._panel:panel({
+			layer = 40,
+			name = "global_bonuses_panel",
+			y = 10,
+			h = tweak_data.menu.pd2_small_font_size * 3
+		})
+
+		local function mul_to_procent_string(multiplier)
+			local pro = math.round(multiplier * 100)
+			local procent_string
+
+			if pro == 0 and multiplier ~= 0 then
+				procent_string = string.format("%0.2f", math.abs(multiplier * 100))
+			else
+				procent_string = tostring(math.abs(pro))
+			end
+
+			return procent_string, multiplier >= 0
 		end
 
-		local function global_bonuses_anim(panel)
-			local child_num = 1
-			local viewing_child = panel:children()[child_num]
-			local t = 0
-			local dt = 0
+		local has_ghost_bonus = managers.job:has_ghost_bonus()
 
-			while alive(viewing_child) do
-				if not self._crimenet_enabled then
-					coroutine.yield()
-				else
-					viewing_child:set_alpha(0)
-					over(0.5, function (p)
-						viewing_child:set_alpha(math.sin(p * 90))
-					end)
-					viewing_child:set_alpha(1)
-					over(4, function (p)
-						viewing_child:set_alpha((math.cos(p * 360 * 2) + 1) * 0.5 * 0.2 + 0.8)
-					end)
-					over(0.5, function (p)
-						viewing_child:set_alpha(math.cos(p * 90))
-					end)
-					viewing_child:set_alpha(0)
+		if has_ghost_bonus then
+			local ghost_bonus_mul = managers.job:get_ghost_bonus()
+			local job_ghost_string = mul_to_procent_string(ghost_bonus_mul)
+			local ghost_text = global_bonuses_panel:text({
+				align = "center",
+				blend_mode = "add",
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = managers.localization:to_upper_text("menu_ghost_bonus", {
+					exp_bonus = job_ghost_string
+				}),
+				color = tweak_data.screen_colors.ghost_color
+			})
+		end
 
-					child_num = child_num % #panel:children() + 1
-					viewing_child = panel:children()[child_num]
-				end
+		if false then
+			local skill_bonus = managers.player:get_skill_exp_multiplier()
+
+			skill_bonus = skill_bonus - 1
+
+			if skill_bonus > 0 then
+				local skill_string = mul_to_procent_string(skill_bonus)
+				local skill_text = global_bonuses_panel:text({
+					align = "center",
+					blend_mode = "add",
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					text = managers.localization:to_upper_text("menu_cn_skill_bonus", {
+						exp_bonus = skill_string
+					}),
+					color = tweak_data.screen_colors.skill_color
+				})
+			end
+
+			local infamy_bonus = managers.player:get_infamy_exp_multiplier()
+
+			infamy_bonus = infamy_bonus - 1
+
+			if infamy_bonus > 0 then
+				local infamy_string = mul_to_procent_string(infamy_bonus)
+				local infamy_text = global_bonuses_panel:text({
+					align = "center",
+					blend_mode = "add",
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					text = managers.localization:to_upper_text("menu_cn_infamy_bonus", {
+						exp_bonus = infamy_string
+					}),
+					color = tweak_data.lootdrop.global_values.infamy.color
+				})
+			end
+
+			local limited_bonus = managers.player:get_limited_exp_multiplier(nil, nil)
+
+			limited_bonus = limited_bonus - 1
+
+			if limited_bonus > 0 then
+				local limited_string = mul_to_procent_string(limited_bonus)
+				local limited_text = global_bonuses_panel:text({
+					align = "center",
+					blend_mode = "add",
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					text = managers.localization:to_upper_text("menu_cn_limited_bonus", {
+						exp_bonus = limited_string
+					}),
+					color = tweak_data.screen_colors.button_stage_2
+				})
 			end
 		end
 
-		global_bonuses_panel:animate(global_bonuses_anim)
-	elseif #global_bonuses_panel:children() == 1 then
-		local function global_bonuses_anim(panel)
-			while alive(panel) do
-				if not self._crimenet_enabled then
-					coroutine.yield()
-				else
-					over(2, function (p)
-						panel:set_alpha((math.sin(p * 360) + 1) * 0.5 * 0.2 + 0.8)
-					end)
-				end
+		local add_limited = false
+
+		add_limited = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
+
+		if add_limited then
+			local limited_bonus = (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
+
+			if limited_bonus > 0 then
+				local limited_string = mul_to_procent_string(limited_bonus)
+				local limited_text = global_bonuses_panel:text({
+					align = "center",
+					blend_mode = "add",
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					text = managers.localization:to_upper_text("menu_cn_holiday_bonus", {
+						bonus = limited_string,
+						event_icon = managers.localization:get_default_macro("BTN_XMAS")
+					}),
+					color = tweak_data.screen_colors.event_color
+				})
 			end
 		end
 
-		global_bonuses_panel:animate(global_bonuses_anim)
+		if #global_bonuses_panel:children() > 1 then
+			for i, child in ipairs(global_bonuses_panel:children()) do
+				child:set_alpha(0)
+			end
+
+			local function global_bonuses_anim(panel)
+				local child_num = 1
+				local viewing_child = panel:children()[child_num]
+				local t = 0
+				local dt = 0
+
+				while alive(viewing_child) do
+					if not self._crimenet_enabled then
+						coroutine.yield()
+					else
+						viewing_child:set_alpha(0)
+						over(0.5, function(p)
+							viewing_child:set_alpha(math.sin(p * 90))
+						end)
+						viewing_child:set_alpha(1)
+						over(4, function(p)
+							viewing_child:set_alpha((math.cos(p * 360 * 2) + 1) * 0.5 * 0.2 + 0.8)
+						end)
+						over(0.5, function(p)
+							viewing_child:set_alpha(math.cos(p * 90))
+						end)
+						viewing_child:set_alpha(0)
+
+						child_num = child_num % #panel:children() + 1
+						viewing_child = panel:children()[child_num]
+					end
+				end
+			end
+
+			global_bonuses_panel:animate(global_bonuses_anim)
+		elseif #global_bonuses_panel:children() == 1 then
+			local function global_bonuses_anim(panel)
+				while alive(panel) do
+					if not self._crimenet_enabled then
+						coroutine.yield()
+					else
+						over(2, function(p)
+							panel:set_alpha((math.sin(p * 360) + 1) * 0.5 * 0.2 + 0.8)
+						end)
+					end
+				end
+			end
+
+			global_bonuses_panel:animate(global_bonuses_anim)
+		end
 	end
 
 	if not no_servers and not is_xb1 then
-		local id = is_x360 and "menu_cn_friends" or "menu_cn_filter"
+		if is_x360 then
+			local var_1_0 = "menu_cn_friends"
+		else
+			local id = "menu_cn_filter"
+		end
 	elseif not no_servers and is_xb1 then
 		local id = "menu_cn_smart_matchmaking"
 		local smart_matchmaking_button = self._panel:text({
-			name = "smart_matchmaking_button",
 			blend_mode = "add",
 			layer = 40,
+			name = "smart_matchmaking_button",
 			text = managers.localization:to_upper_text(id, {
 				BTN_Y = managers.localization:btn_macro("menu_toggle_filters")
 			}),
@@ -2104,9 +2148,9 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 		smart_matchmaking_button:set_top(10)
 
 		local blur_object = self._panel:bitmap({
-			texture = "guis/textures/test_blur_df",
 			name = "smart_matchmaking_button_blur",
 			render_template = "VertexColorTexturedBlur3D",
+			texture = "guis/textures/test_blur_df",
 			layer = smart_matchmaking_button:layer() - 1
 		})
 
@@ -2115,22 +2159,25 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 
 	self._map_size_w = 2048
 	self._map_size_h = 1024
+
 	local gui_width, gui_height = managers.gui_data:get_base_res()
 	local aspect = gui_width / gui_height
 	local sw = math.min(self._map_size_w, self._map_size_h * aspect)
 	local sh = math.min(self._map_size_h, self._map_size_w / aspect)
 	local dw = self._map_size_w / sw
 	local dh = self._map_size_h / sh
+
 	self._map_size_w = dw * gui_width
 	self._map_size_h = dh * gui_height
-	local pw = self._map_size_w
-	local ph = self._map_size_h
+
+	local pw, ph = self._map_size_w, self._map_size_h
+
 	self._pan_panel_border = 2.7777777777777777
 	self._pan_panel_job_border_x = full_16_9.convert_x + self._pan_panel_border * 2
 	self._pan_panel_job_border_y = full_16_9.convert_y + self._pan_panel_border * 2
 	self._pan_panel = self._panel:panel({
-		name = "pan",
 		layer = 0,
+		name = "pan",
 		w = pw,
 		h = ph
 	})
@@ -2146,9 +2193,9 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	})
 
 	self._map_panel:bitmap({
-		texture = "guis/textures/crimenet_map",
-		name = "map",
 		layer = 0,
+		name = "map",
+		texture = "guis/textures/crimenet_map",
 		w = pw,
 		h = ph
 	})
@@ -2167,84 +2214,85 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	self.MIN_ZOOM = 1
 	self.MAX_ZOOM = 9
 	self._zoom = 1
+
 	local cross_indicator_h1 = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/pd2/skilltree/dottedline",
-		name = "cross_indicator_h1",
-		h = 2,
 		alpha = 0.1,
-		wrap_mode = "wrap",
 		blend_mode = "add",
+		h = 2,
 		layer = 17,
+		name = "cross_indicator_h1",
+		texture = "guis/textures/pd2/skilltree/dottedline",
+		wrap_mode = "wrap",
 		w = self._fullscreen_panel:w(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local cross_indicator_h2 = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/pd2/skilltree/dottedline",
-		name = "cross_indicator_h2",
-		h = 2,
 		alpha = 0.1,
-		wrap_mode = "wrap",
 		blend_mode = "add",
+		h = 2,
 		layer = 17,
+		name = "cross_indicator_h2",
+		texture = "guis/textures/pd2/skilltree/dottedline",
+		wrap_mode = "wrap",
 		w = self._fullscreen_panel:w(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local cross_indicator_v1 = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/pd2/skilltree/dottedline",
-		name = "cross_indicator_v1",
-		w = 2,
 		alpha = 0.1,
-		wrap_mode = "wrap",
 		blend_mode = "add",
 		layer = 17,
+		name = "cross_indicator_v1",
+		texture = "guis/textures/pd2/skilltree/dottedline",
+		w = 2,
+		wrap_mode = "wrap",
 		h = self._fullscreen_panel:h(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local cross_indicator_v2 = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/pd2/skilltree/dottedline",
-		name = "cross_indicator_v2",
-		w = 2,
 		alpha = 0.1,
-		wrap_mode = "wrap",
 		blend_mode = "add",
 		layer = 17,
+		name = "cross_indicator_v2",
+		texture = "guis/textures/pd2/skilltree/dottedline",
+		w = 2,
+		wrap_mode = "wrap",
 		h = self._fullscreen_panel:h(),
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local line_indicator_h1 = self._fullscreen_panel:rect({
-		blend_mode = "add",
-		name = "line_indicator_h1",
-		h = 2,
-		w = 0,
 		alpha = 0.1,
+		blend_mode = "add",
+		h = 2,
 		layer = 17,
+		name = "line_indicator_h1",
+		w = 0,
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local line_indicator_h2 = self._fullscreen_panel:rect({
-		blend_mode = "add",
-		name = "line_indicator_h2",
-		h = 2,
-		w = 0,
 		alpha = 0.1,
+		blend_mode = "add",
+		h = 2,
 		layer = 17,
+		name = "line_indicator_h2",
+		w = 0,
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local line_indicator_v1 = self._fullscreen_panel:rect({
-		blend_mode = "add",
-		name = "line_indicator_v1",
-		h = 0,
-		w = 2,
 		alpha = 0.1,
+		blend_mode = "add",
+		h = 0,
 		layer = 17,
+		name = "line_indicator_v1",
+		w = 2,
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local line_indicator_v2 = self._fullscreen_panel:rect({
-		blend_mode = "add",
-		name = "line_indicator_v2",
-		h = 0,
-		w = 2,
 		alpha = 0.1,
+		blend_mode = "add",
+		h = 0,
 		layer = 17,
+		name = "line_indicator_v2",
+		w = 2,
 		color = tweak_data.screen_colors.crimenet_lines
 	})
 	local fw = self._fullscreen_panel:w()
@@ -2257,9 +2305,10 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	self:_create_locations()
 
 	self._num_layer_jobs = 0
+
 	local player_level = managers.experience:current_level()
 	local positions_tweak_data = tweak_data.gui.crime_net.map_start_positions
-	local start_position = nil
+	local start_position
 
 	for _, position in ipairs(positions_tweak_data) do
 		if player_level <= position.max_level then
@@ -2277,7 +2326,9 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 
 	self:add_special_contracts(node:parameters().no_casino, no_servers)
 
-	if not false or not managers.features:can_announce("crimenet_hacked") then
+	if false and managers.features:can_announce("crimenet_hacked") then
+		-- Nothing
+	else
 		managers.features:announce_feature("crimenet_welcome")
 
 		if is_win32 then
@@ -2338,7 +2389,9 @@ function CrimeNetGui:make_color_text(text_object, color)
 		end
 	end
 
-	if #start_ci == #end_ci then
+	if #start_ci ~= #end_ci then
+		-- Nothing
+	else
 		for i = 1, #start_ci do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)
@@ -2375,14 +2428,15 @@ function CrimeNetGui:_create_polylines()
 	end
 
 	self._region_panel = self._map_panel:panel({
-		valign = "scale",
-		halign = "scale"
+		halign = "scale",
+		valign = "scale"
 	})
 	self._region_locations = {}
-	local xs, ys, num, vectors, my_polyline = nil
+
+	local xs, ys, num, vectors, my_polyline
 	local tw = math.max(self._map_panel:child("map"):texture_width(), 1)
 	local th = math.max(self._map_panel:child("map"):texture_height(), 1)
-	local region_text_data, region_text, x, y = nil
+	local region_text_data, region_text, x, y
 
 	for _, region in ipairs(regions) do
 		xs = region[1]
@@ -2390,12 +2444,12 @@ function CrimeNetGui:_create_polylines()
 		num = math.min(#xs, #ys)
 		vectors = {}
 		my_polyline = self._region_panel:polyline({
-			line_width = 2,
-			blend_mode = "add",
-			valign = "scale",
-			halign = "scale",
 			alpha = 0.6,
+			blend_mode = "add",
+			halign = "scale",
 			layer = 1,
+			line_width = 2,
+			valign = "scale",
 			closed = region.closed,
 			color = tweak_data.screen_colors.crimenet_lines
 		})
@@ -2408,12 +2462,12 @@ function CrimeNetGui:_create_polylines()
 
 		vectors = {}
 		my_polyline = self._region_panel:polyline({
-			line_width = 5,
-			blend_mode = "add",
-			valign = "scale",
-			halign = "scale",
 			alpha = 0.2,
+			blend_mode = "add",
+			halign = "scale",
 			layer = 1,
+			line_width = 5,
+			valign = "scale",
 			closed = region.closed,
 			color = tweak_data.screen_colors.crimenet_lines
 		})
@@ -2432,16 +2486,17 @@ function CrimeNetGui:_create_polylines()
 
 			if region_text_data.title_id then
 				region_text = self._region_panel:text({
-					valign = "scale",
 					alpha = 0.6,
 					blend_mode = "add",
 					halign = "scale",
-					rotation = 0,
 					layer = 1,
+					rotation = 0,
+					valign = "scale",
 					font = tweak_data.menu.pd2_large_font,
 					font_size = tweak_data.menu.pd2_large_font_size,
 					text = managers.localization:to_upper_text(region_text_data.title_id)
 				})
+
 				local _, _, w, h = region_text:text_rect()
 
 				region_text:set_size(w, h)
@@ -2454,18 +2509,19 @@ function CrimeNetGui:_create_polylines()
 
 			if region_text_data.sub_id then
 				region_text = self._region_panel:text({
-					alpha = 0.6,
-					vertical = "center",
-					valign = "scale",
 					align = "center",
+					alpha = 0.6,
 					blend_mode = "add",
 					halign = "scale",
-					rotation = 0,
 					layer = 1,
+					rotation = 0,
+					valign = "scale",
+					vertical = "center",
 					font = tweak_data.menu.pd2_small_font,
 					font_size = tweak_data.menu.pd2_small_font_size,
 					text = managers.localization:to_upper_text(region_text_data.sub_id)
 				})
+
 				local _, _, w, h = region_text:text_rect()
 
 				region_text:set_size(w, h)
@@ -2549,7 +2605,7 @@ function CrimeNetGui:_create_locations()
 end
 
 function CrimeNetGui:_add_location(contact, data)
-	return
+	do return end
 
 	self._locations[contact] = self._locations[contact] or {}
 
@@ -2569,11 +2625,12 @@ function CrimeNetGui:_get_job_location(data)
 
 	if locations and #locations > 0 then
 		local found_point = false
-		local x, y, randomized_location = nil
+		local x, y, randomized_location
 		local break_limit = 100
 		local dots = locations[1].dots
 		local randomized_dot = math.random(#dots)
 		local choosen_dot = randomized_dot
+
 		randomized_location = dots[choosen_dot]
 
 		while randomized_location[3] do
@@ -2593,6 +2650,7 @@ function CrimeNetGui:_get_job_location(data)
 		if x and y then
 			local tw = math.max(self._map_panel:child("map"):texture_width(), 1)
 			local th = math.max(self._map_panel:child("map"):texture_height(), 1)
+
 			x = math.round(x / tw * self._map_size_w)
 			y = math.round(y / th * self._map_size_h)
 
@@ -2623,8 +2681,8 @@ function CrimeNetGui:set_getting_hacked(hacked)
 	end
 
 	local hack_window = self._getting_hacked_panel:panel({
-		name = "message",
 		layer = 2,
+		name = "message",
 		w = self._getting_hacked_panel:w() * 0.45,
 		h = self._getting_hacked_panel:h() * 0.2
 	})
@@ -2646,21 +2704,21 @@ function CrimeNetGui:set_getting_hacked(hacked)
 		color = Color.black
 	})
 	hack_window:bitmap({
-		texture = "guis/textures/pd2/cn_icon_cs",
-		y = 10,
 		blend_mode = "add",
-		x = 10,
 		layer = 1,
+		texture = "guis/textures/pd2/cn_icon_cs",
+		x = 10,
+		y = 10,
 		color = tweak_data.screen_colors.important_1,
 		w = hack_window:h() - 20,
 		h = hack_window:h() - 20
 	})
 	hack_window:text({
-		word_wrap = true,
 		blend_mode = "add",
+		layer = 1,
+		word_wrap = true,
 		wrap = true,
 		y = 10,
-		layer = 1,
 		x = hack_window:h(),
 		w = hack_window:w() - hack_window:h() - 10,
 		text = managers.localization:to_upper_text("menu_mrkwtr_hack_text"),
@@ -2672,19 +2730,19 @@ function CrimeNetGui:set_getting_hacked(hacked)
 	local progress_h = 30
 
 	hack_window:rect({
-		w = 0,
-		name = "progress",
 		alpha = 0.25,
 		blend_mode = "add",
 		layer = 2,
+		name = "progress",
+		w = 0,
 		x = hack_window:h(),
 		y = hack_window:h() - progress_h - 10,
 		h = progress_h,
 		color = tweak_data.screen_colors.important_1
 	})
 	hack_window:rect({
-		blend_mode = "add",
 		alpha = 0.25,
+		blend_mode = "add",
 		layer = 1,
 		x = hack_window:h(),
 		y = hack_window:h() - progress_h - 10,
@@ -2694,20 +2752,20 @@ function CrimeNetGui:set_getting_hacked(hacked)
 	})
 	hack_window:rect({
 		blend_mode = "add",
+		layer = 3,
 		name = "stop",
 		w = 2,
-		layer = 3,
 		x = hack_window:w() - 10,
 		y = hack_window:h() - progress_h - 10,
 		h = progress_h,
 		color = tweak_data.screen_colors.important_1
 	})
 	hack_window:text({
-		vertical = "center",
-		alpha = 1,
 		align = "left",
+		alpha = 1,
 		blend_mode = "add",
 		layer = 1,
+		vertical = "center",
 		x = hack_window:h() + 10,
 		y = hack_window:h() - progress_h - 10,
 		w = hack_window:w() - hack_window:h() - 20,
@@ -2721,16 +2779,16 @@ function CrimeNetGui:set_getting_hacked(hacked)
 	local gui_width, gui_height = managers.gui_data:get_base_res()
 
 	self._getting_hacked_panel:video({
-		blend_mode = "mul",
-		video = "movies/crimenet_hacked",
-		name = "video",
 		alpha = 1,
+		blend_mode = "mul",
 		loop = true,
+		name = "video",
+		video = "movies/crimenet_hacked",
 		width = gui_width,
 		height = gui_height,
 		color = tweak_data.screen_colors.button_Stage_3
 	})
-	self._getting_hacked_panel:animate(function (o)
+	self._getting_hacked_panel:animate(function(o)
 		local panel = o
 		local video = o:child("video")
 		local message = o:child("message")
@@ -2739,7 +2797,7 @@ function CrimeNetGui:set_getting_hacked(hacked)
 
 		panel:set_alpha(1)
 		message:set_alpha(0)
-		over(1, function (p)
+		over(1, function(p)
 			local osc = math.cos(p * 250)
 			local alpha = math.round(math.sin(p * 500 * osc))
 
@@ -2747,7 +2805,7 @@ function CrimeNetGui:set_getting_hacked(hacked)
 		end)
 		video:set_blend_mode("mulx2")
 		panel:set_alpha(1)
-		over(1, function (p)
+		over(1, function(p)
 			local osc = math.cos(p * 400)
 			local alpha = math.round(math.sin(p * 500 * osc))
 
@@ -2758,18 +2816,18 @@ function CrimeNetGui:set_getting_hacked(hacked)
 
 		self._getting_hacked_post_event = managers.menu_component:post_event("Play_loc_quote_set_a")
 
-		over(self._start_hacked_t - 4, function (p)
+		over(self._start_hacked_t - 4, function(p)
 			progress:set_w((stop:x() - progress:x()) * p)
 		end)
 		wait(0.08)
-		over(1, function (p)
+		over(1, function(p)
 			local osc = math.cos(p * 350)
 			local alpha = math.round(math.sin(p * 450 * osc))
 
 			message:set_alpha(alpha)
 		end)
 		message:set_alpha(0)
-		over(1, function (p)
+		over(1, function(p)
 			local osc = math.cos(p * 250)
 			local alpha = math.round(math.sin(p * 500 * osc))
 
@@ -2785,7 +2843,7 @@ function CrimeNetGui:set_getting_hacked(hacked)
 end
 
 function CrimeNetGui:add_special_contracts(no_casino, no_quickplay)
-	return
+	do return end
 
 	for index, special_contract in ipairs(tweak_data.gui.crime_net.special_contracts) do
 		local skip = false
@@ -2806,24 +2864,23 @@ end
 
 function CrimeNetGui:add_special_contract(special_contract, no_casino, no_quickplay)
 	local id = special_contract.id
-	local allow = id and not self._jobs[id] and (not special_contract.unlock or special_contract.unlock and tweak_data:get_value(special_contract.id, special_contract.unlock) <= managers.experience:current_level()) and (special_contract.id ~= "casino" or not no_casino) and (special_contract.id ~= "quickplay" or not no_quickplay) and (special_contract.id ~= "crime_spree" or managers.crime_spree:unlocked())
+	local allow = id and not self._jobs[id] and (not special_contract.unlock or special_contract.unlock and managers.experience:current_level() >= tweak_data:get_value(special_contract.id, special_contract.unlock)) and (special_contract.id ~= "casino" or not no_casino) and (special_contract.id ~= "quickplay" or not no_quickplay) and (special_contract.id ~= "crime_spree" or managers.crime_spree:unlocked())
 
 	if allow then
 		local type = "special"
 
-		if id == "crime_spree" then
-			type = "crime_spree"
-		end
+		type = id == "crime_spree" and "crime_spree" or type
 
 		local gui_data = self:_create_job_gui(special_contract, type)
+
 		gui_data.server = true
 		gui_data.special_node = special_contract.menu_node
 		gui_data.dlc = special_contract.dlc
 
-		if special_contract.pulse and (not special_contract.pulse_level or managers.experience:current_level() <= special_contract.pulse_level and managers.experience:current_rank() == 0) then
+		if special_contract.pulse and (not special_contract.pulse_level or special_contract.pulse_level >= managers.experience:current_level() and managers.experience:current_rank() == 0) then
 			local function animate_pulse(o)
 				while true do
-					over(1, function (p)
+					over(1, function(p)
 						o:set_alpha(math.sin(p * 180) * 0.4 + 0.2)
 					end)
 				end
@@ -2859,12 +2916,14 @@ function CrimeNetGui:add_preset_job(preset_id)
 
 	local preset = managers.crimenet:preset(preset_id)
 	local gui_data = self:_create_job_gui(preset, "preset")
+
 	gui_data.preset_id = preset_id
 	self._jobs[preset_id] = gui_data
 end
 
 function CrimeNetGui:add_server_job(data)
 	local gui_data = self:_create_job_gui(data, "server")
+
 	gui_data.server = true
 	gui_data.host_name = data.host_name
 	self._jobs[data.id] = gui_data
@@ -2890,6 +2949,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		if x and y then
 			local tw = math.max(self._map_panel:child("map"):texture_width(), 1)
 			local th = math.max(self._map_panel:child("map"):texture_height(), 1)
+
 			x = math.round(x / tw * self._map_size_w)
 			y = math.round(y / th * self._map_size_h)
 		end
@@ -2914,12 +2974,12 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		alpha = 0,
 		layer = 26
 	})
-	local heat_glow = nil
+	local heat_glow
 	local stars_panel = side_panel:panel({
-		w = 100,
+		layer = -1,
 		name = "stars_panel",
 		visible = true,
-		layer = -1
+		w = 100
 	})
 	local num_stars = 0
 	local star_size = 16
@@ -2927,31 +2987,31 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	local job_cash = 0
 	local one_down_active = data.one_down == 1
 	local difficulty_name = side_panel:text({
-		text = "",
-		name = "difficulty_name",
-		vertical = "center",
 		blend_mode = "add",
 		layer = 0,
+		name = "difficulty_name",
+		text = "",
+		vertical = "center",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color
 	})
 	local one_down_label = one_down_active and side_panel:text({
-		name = "one_down_label",
-		vertical = "center",
 		blend_mode = "add",
 		layer = 0,
+		name = "one_down_label",
+		vertical = "center",
 		text = managers.localization:to_upper_text("menu_one_down"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.one_down
 	})
 	local heat_name = side_panel:text({
-		text = "",
-		name = "heat_name",
-		vertical = "center",
 		blend_mode = "add",
 		layer = 0,
+		name = "heat_name",
+		text = "",
+		vertical = "center",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color
@@ -2962,7 +3022,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 	local function mul_to_procent_string(multiplier)
 		local pro = math.round(multiplier * 100)
-		local procent_string = nil
+		local procent_string
 
 		if pro == 0 and multiplier ~= 0 then
 			procent_string = string.format("%0.2f", math.abs(multiplier * 100))
@@ -2980,6 +3040,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		local ghost_bonus_mul = managers.job:get_ghost_bonus()
 		local job_ghost_string = mul_to_procent_string(ghost_bonus_mul)
 		local s = utf8.len(text_string)
+
 		text_string = text_string .. job_ghost_string
 
 		table.insert(range_colors, {
@@ -2993,11 +3054,13 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 	if false then
 		local skill_bonus = managers.player:get_skill_exp_multiplier()
+
 		skill_bonus = skill_bonus - 1
 
 		if skill_bonus > 0 then
 			local s = utf8.len(text_string)
 			local skill_string = mul_to_procent_string(skill_bonus)
+
 			text_string = text_string .. skill_string
 
 			table.insert(range_colors, {
@@ -3010,11 +3073,13 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 
 		local infamy_bonus = managers.player:get_infamy_exp_multiplier()
+
 		infamy_bonus = infamy_bonus - 1
 
 		if infamy_bonus > 0 then
 			local s = utf8.len(text_string)
 			local infamy_string = mul_to_procent_string(infamy_bonus)
+
 			text_string = text_string .. infamy_string
 
 			table.insert(range_colors, {
@@ -3027,11 +3092,13 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 
 		local limited_bonus = managers.player:get_limited_exp_multiplier(data.job_id, data.level_id)
+
 		limited_bonus = limited_bonus - 1
 
 		if limited_bonus > 0 then
 			local s = utf8.len(text_string)
 			local limited_string = mul_to_procent_string(limited_bonus)
+
 			text_string = text_string .. limited_string
 
 			table.insert(range_colors, {
@@ -3060,9 +3127,9 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 		for i = start_difficulty, num_difficulties do
 			stars_panel:bitmap({
-				texture = "guis/textures/pd2/cn_miniskull",
 				h = 16,
 				layer = 0,
+				texture = "guis/textures/pd2/cn_miniskull",
 				w = 12,
 				x = x,
 				y = y,
@@ -3082,8 +3149,11 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 
 		job_num = #tweak_data.narrative:job_chain(data.job_id)
+
 		local total_payout, base_payout, risk_payout = managers.money:get_contract_money_by_stars(job_stars, difficulty_stars, job_num, data.job_id)
+
 		job_cash = managers.experience:cash_string(math.round(total_payout))
+
 		local difficulty_string = managers.localization:to_upper_text(tweak_data.difficulty_name_ids[tweak_data.difficulties[data.difficulty_id]])
 
 		difficulty_name:set_text(difficulty_string)
@@ -3092,11 +3162,12 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		local heat_alpha = math.abs(job_heat) / 100
 		local heat_size = 1
 		local heat_color = managers.job:get_job_heat_color(data.job_id)
+
 		heat_glow = self._pan_panel:bitmap({
-			texture = "guis/textures/pd2/hot_cold_glow",
-			blend_mode = "add",
 			alpha = 0,
+			blend_mode = "add",
 			layer = 11,
+			texture = "guis/textures/pd2/hot_cold_glow",
 			w = 256 * heat_size,
 			h = 256 * heat_size,
 			color = heat_color
@@ -3105,6 +3176,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		if job_heat_mul ~= 0 then
 			local s = utf8.len(text_string)
 			local heat_string = mul_to_procent_string(job_heat_mul)
+
 			text_string = text_string .. heat_string
 
 			table.insert(range_colors, {
@@ -3136,11 +3208,14 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	local host_string = data.host_name or is_professional and managers.localization:to_upper_text("cn_menu_pro_job") or " "
 	local job_string = data.job_id and managers.localization:to_upper_text(job_tweak.name_id) or data.level_name or "NO JOB"
 	local contact_string = utf8.to_upper(data.job_id and managers.localization:text(tweak_data.narrative.contacts[job_tweak.contact].name_id)) or "BAIN"
+
 	contact_string = contact_string .. ": "
+
 	local info_string = managers.localization:to_upper_text("cn_menu_contract_short_" .. (job_num > 1 and "plural" or "singular"), {
 		days = job_num,
 		money = job_cash
 	})
+
 	info_string = info_string .. (data.state_name and " / " .. data.state_name or "")
 
 	if is_special then
@@ -3148,68 +3223,64 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		info_string = data.desc_id and managers.localization:to_upper_text(data.desc_id) or ""
 
 		if is_crime_spree then
-			if managers.crime_spree:in_progress() then
-				info_string = "cn_crime_spree_help_continue"
-			else
-				info_string = "cn_crime_spree_help_start"
-			end
-
+			info_string = managers.crime_spree:in_progress() and "cn_crime_spree_help_continue" or "cn_crime_spree_help_start"
 			info_string = managers.localization:to_upper_text(info_string) or ""
 		end
 	end
 
-	local job_plan_icon = nil
+	local job_plan_icon
 
 	if is_server and data.job_plan and data.job_plan ~= -1 then
 		local texture = data.job_plan == 1 and "guis/textures/pd2/cn_playstyle_loud" or "guis/textures/pd2/cn_playstyle_stealth"
+
 		job_plan_icon = side_panel:bitmap({
-			name = "job_plan_icon",
-			h = 16,
-			w = 16,
 			alpha = 1,
 			blend_mode = "normal",
-			y = 2,
-			x = 0,
+			h = 16,
 			layer = 0,
+			name = "job_plan_icon",
+			w = 16,
+			x = 0,
+			y = 2,
 			texture = texture,
 			color = Color.white
 		})
 	end
 
 	local host_name = side_panel:text({
+		blend_mode = "add",
 		name = "host_name",
 		vertical = "center",
-		blend_mode = "add",
 		text = host_string,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = data.is_friend and friend_color or is_server and regular_color or pro_color
 	})
 	local job_name = side_panel:text({
-		name = "job_name",
-		vertical = "center",
 		blend_mode = "normal",
 		layer = 0,
+		name = "job_name",
+		vertical = "center",
 		text = job_string,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color
 	})
 	local contact_name = side_panel:text({
-		name = "contact_name",
-		vertical = "center",
 		blend_mode = "normal",
 		layer = 0,
+		name = "contact_name",
+		vertical = "center",
 		text = contact_string,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color
 	})
 	local info_name = side_panel:text({
-		name = "info_name",
-		vertical = "center",
 		blend_mode = "normal",
 		layer = 0,
+		name = "info_name",
+		vertical = "center",
 		text = info_string,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -3229,10 +3300,10 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 		if is_crime_spree then
 			stars_panel:text({
-				name = "spree_level",
-				vertical = "center",
 				blend_mode = "normal",
 				layer = 0,
+				name = "spree_level",
+				vertical = "center",
 				text = managers.localization:to_upper_text("menu_cs_level", {
 					level = managers.experience:cash_string(managers.crime_spree:spree_level(), "")
 				}),
@@ -3252,20 +3323,23 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	stars_panel:set_h(star_size)
 
 	local focus = self._pan_panel:bitmap({
-		texture = "guis/textures/crimenet_map_circle",
-		name = "focus",
 		blend_mode = "add",
 		layer = 10,
+		name = "focus",
+		texture = "guis/textures/crimenet_map_circle",
 		color = color:with_alpha(0.6)
 	})
-	local x = job_plan_icon and job_plan_icon:right() + 2 or 0
-	local _, _, w, h = host_name:text_rect()
 
-	host_name:set_size(w, h)
-	host_name:set_position(x, 0)
+	do
+		local x = job_plan_icon and job_plan_icon:right() + 2 or 0
+		local _, _, w, h = host_name:text_rect()
 
-	if not is_server then
-		-- Nothing
+		host_name:set_size(w, h)
+		host_name:set_position(x, 0)
+
+		if not is_server then
+			-- Nothing
+		end
 	end
 
 	local _, _, w, h = job_name:text_rect()
@@ -3324,11 +3398,12 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	elseif data.is_crime_spree then
 		local text = ""
 
-		if tweak_data:server_state_to_index("in_lobby") < data.state then
+		if data.state > tweak_data:server_state_to_index("in_lobby") then
 			local mission_data = managers.crime_spree:get_mission(data.crime_spree_mission)
 
 			if mission_data then
 				local tweak = tweak_data.levels[mission_data.level.level_id]
+
 				text = managers.localization:text(tweak and tweak.name_id or "No level")
 			else
 				text = "No mission ID"
@@ -3401,61 +3476,62 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	side_panel:set_w(300)
 
 	self._num_layer_jobs = (self._num_layer_jobs + 1) % 1
+
 	local marker_panel = self._pan_panel:panel({
-		w = 36,
 		alpha = 0,
 		h = 66,
+		w = 36,
 		layer = 11 + self._num_layer_jobs * 3
 	})
 	local select_panel = marker_panel:panel({
-		name = "select_panel",
 		h = 38,
-		y = 0,
+		name = "select_panel",
 		w = 36,
-		x = -2
+		x = -2,
+		y = 0
 	})
 	local glow_panel = self._pan_panel:panel({
-		w = 960,
 		alpha = 0,
 		h = 192,
-		layer = 10
+		layer = 10,
+		w = 960
 	})
 	local glow_center = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_center",
-		h = 192,
-		blend_mode = "add",
-		w = 192,
 		alpha = 0.55,
+		blend_mode = "add",
+		h = 192,
+		name = "glow_center",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
+		w = 192,
 		color = data.pulse_color or is_professional and pro_color or regular_color
 	})
 	local glow_stretch = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_stretch",
-		h = 75,
-		blend_mode = "add",
-		w = 960,
 		alpha = 0.55,
+		blend_mode = "add",
+		h = 75,
+		name = "glow_stretch",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
+		w = 960,
 		color = data.pulse_color or is_professional and pro_color or regular_color
 	})
 	local glow_center_dark = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_center_dark",
-		h = 175,
-		blend_mode = "normal",
-		w = 175,
 		alpha = 0.7,
+		blend_mode = "normal",
+		h = 175,
 		layer = -1,
+		name = "glow_center_dark",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
+		w = 175,
 		color = Color.black
 	})
 	local glow_stretch_dark = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_stretch_dark",
-		h = 75,
-		blend_mode = "normal",
-		w = 990,
 		alpha = 0.75,
+		blend_mode = "normal",
+		h = 75,
 		layer = -1,
+		name = "glow_stretch_dark",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
+		w = 990,
 		color = Color.black
 	})
 
@@ -3466,28 +3542,28 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 	local marker_dot_texture = (is_special and data.icon or "guis/textures/pd2/crimenet_marker_" .. (is_server and "join" or "host")) .. (is_professional and "_pro" or "")
 	local marker_dot = marker_panel:bitmap({
-		name = "marker_dot",
 		h = 64,
-		y = 2,
+		layer = 1,
+		name = "marker_dot",
 		w = 32,
 		x = 2,
-		layer = 1,
+		y = 2,
 		texture = marker_dot_texture,
 		color = data.marker_dot_color or color
 	})
 
 	if is_professional then
 		marker_panel:bitmap({
-			texture = "guis/textures/pd2/crimenet_marker_pro_outline",
-			name = "marker_pro_outline",
-			h = 64,
-			rotation = 0,
-			w = 64,
 			alpha = 1,
 			blend_mode = "add",
-			y = 0,
+			h = 64,
+			layer = 0,
+			name = "marker_pro_outline",
+			rotation = 0,
+			texture = "guis/textures/pd2/crimenet_marker_pro_outline",
+			w = 64,
 			x = 0,
-			layer = 0
+			y = 0
 		})
 	end
 
@@ -3503,12 +3579,12 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		marker_dot:set_color(tweak_data.screen_colors.skirmish_color)
 	end
 
-	local timer_rect, peers_panel = nil
+	local timer_rect, peers_panel
 	local icon_panel = self._pan_panel:panel({
 		alpha = 1,
-		w = 18,
 		h = 64,
-		layer = 26
+		layer = 26,
+		w = 18
 	})
 	local next_icon_right = 16
 	local side_icons_top = 0
@@ -3517,13 +3593,13 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		side_icons_top = math.max(side_icons_top, child:bottom())
 	end
 
-	local ghost_icon = nil
+	local ghost_icon
 
 	if data.job_id and managers.job:is_job_ghostable(data.job_id) then
 		ghost_icon = icon_panel:bitmap({
-			texture = "guis/textures/pd2/cn_minighost",
-			name = "ghost_icon",
 			blend_mode = "add",
+			name = "ghost_icon",
+			texture = "guis/textures/pd2/cn_minighost",
 			color = tweak_data.screen_colors.ghost_color
 		})
 
@@ -3535,14 +3611,14 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 	local add_christmas = false
 	local add_christmas = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
-	local christmas_icon = nil
+	local christmas_icon
 
 	if add_christmas and data.job_id and managers.job:is_christmas_job(data.job_id) then
 		christmas_icon = icon_panel:bitmap({
 			blend_mode = "add",
 			name = "christmas_icon",
-			texture = "guis/textures/pd2/cn_mini_xmas",
 			rotation = 360,
+			texture = "guis/textures/pd2/cn_mini_xmas",
 			color = tweak_data.screen_colors.event_color
 		})
 
@@ -3556,8 +3632,8 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		local one_down_icon = icon_panel:bitmap({
 			blend_mode = "add",
 			name = "one_down_icon",
-			texture = "guis/textures/pd2/cn_mini_onedown",
 			rotation = 360,
+			texture = "guis/textures/pd2/cn_mini_onedown",
 			color = tweak_data.screen_colors.one_down
 		})
 
@@ -3575,18 +3651,20 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 			w = 32,
 			layer = 11 + self._num_layer_jobs * 3
 		})
+
 		local cx = 0
 		local cy = 0
 
 		for i = 1, 4 do
 			cx = 3 + 6 * (i - 1)
 			cy = 8
+
 			local player_marker = peers_panel:bitmap({
-				texture = "guis/textures/pd2/crimenet_marker_peerflag",
-				h = 16,
-				w = 8,
 				blend_mode = "normal",
+				h = 16,
 				layer = 2,
+				texture = "guis/textures/pd2/crimenet_marker_peerflag",
+				w = 8,
 				name = tostring(i),
 				color = color,
 				visible = i <= data.num_plrs
@@ -3608,16 +3686,16 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 
 		local kick_none_icon = icon_panel:bitmap({
-			texture = "guis/textures/pd2/cn_kick_marker",
-			name = "kick_none_icon",
+			alpha = 0,
 			blend_mode = "add",
-			alpha = 0
+			name = "kick_none_icon",
+			texture = "guis/textures/pd2/cn_kick_marker"
 		})
 		local kick_vote_icon = icon_panel:bitmap({
-			texture = "guis/textures/pd2/cn_votekick_marker",
-			name = "kick_vote_icon",
+			alpha = 0,
 			blend_mode = "add",
-			alpha = 0
+			name = "kick_vote_icon",
+			texture = "guis/textures/pd2/cn_votekick_marker"
 		})
 		local y = 0
 
@@ -3629,14 +3707,14 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		kick_vote_icon:set_y(y)
 	elseif not is_special then
 		timer_rect = marker_panel:bitmap({
-			texture = "guis/textures/pd2/crimenet_timer",
-			name = "timer_rect",
 			h = 32,
-			x = 1,
-			w = 32,
-			y = 2,
-			render_template = "VertexColorTexturedRadial",
 			layer = 2,
+			name = "timer_rect",
+			render_template = "VertexColorTexturedRadial",
+			texture = "guis/textures/pd2/crimenet_timer",
+			w = 32,
+			x = 1,
+			y = 2,
 			color = Color.white
 		})
 
@@ -3664,7 +3742,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 	end
 
-	local container_panel = nil
+	local container_panel
 
 	if diff_containers ~= 0 and job_heat_mul ~= 0 then
 		container_panel = self._pan_panel:panel({
@@ -3739,10 +3817,11 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		peers_panel:set_center_y(marker_panel:center_y())
 	end
 
-	local callout = nil
+	local callout
 
 	if narrative_data and narrative_data.crimenet_callouts and #narrative_data.crimenet_callouts > 0 then
 		local variant = math.random(#narrative_data.crimenet_callouts)
+
 		callout = narrative_data.crimenet_callouts[variant]
 	end
 
@@ -3800,9 +3879,9 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		stars_panel:set_visible(false)
 
 		local spree_panel = side_panel:panel({
-			visible = true,
-			name = "spree_panel",
 			layer = -1,
+			name = "spree_panel",
+			visible = true,
 			h = tweak_data.menu.pd2_small_font_size
 		})
 
@@ -3812,13 +3891,13 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 		if level >= 0 then
 			local spree_level = spree_panel:text({
-				halign = "left",
-				vertical = "center",
-				layer = 1,
 				align = "left",
-				y = 0,
-				x = 0,
+				halign = "left",
+				layer = 1,
 				valign = "center",
+				vertical = "center",
+				x = 0,
+				y = 0,
 				text = managers.experience:cash_string(level or 0, "") .. managers.localization:get_default_macro("BTN_SPREE_TICKET"),
 				color = tweak_data.screen_colors.crime_spree_risk,
 				font = tweak_data.menu.pd2_small_font,
@@ -3831,16 +3910,16 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		stars_panel:set_visible(false)
 
 		local skirmish_panel = side_panel:panel({
-			visible = true,
-			name = "skirmish_panel",
 			layer = -1,
+			name = "skirmish_panel",
+			visible = true,
 			h = tweak_data.menu.pd2_small_font_size
 		})
 
 		skirmish_panel:set_bottom(side_panel:h())
 
 		local wave = data.skirmish_wave
-		local text = nil
+		local text
 
 		if data.state == tweak_data:server_state_to_index("in_game") then
 			text = managers.localization:to_upper_text("menu_skirmish_wave_number", {
@@ -3851,12 +3930,12 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 
 		local skirmish_wave = skirmish_panel:text({
-			layer = 1,
-			vertical = "center",
-			blend_mode = "add",
 			align = "left",
+			blend_mode = "add",
 			halign = "left",
+			layer = 1,
 			valign = "center",
+			vertical = "center",
 			text = text,
 			color = tweak_data.screen_colors.skirmish_color,
 			font = tweak_data.menu.pd2_small_font,
@@ -3915,10 +3994,10 @@ function CrimeNetGui:_anim_remove_job_gui(o, id)
 	local icon_alpha = data.icon_panel and data.icon_panel:alpha()
 	local peers_alpha = data.peers_panel and data.peers_panel:alpha()
 	local container_alpha = data.container_panel and data.container_panel:alpha()
-	local inv_p = nil
+	local inv_p
 
 	data.glow_panel:stop()
-	over(0.2, function (p)
+	over(0.2, function(p)
 		inv_p = 1 - p
 
 		data.glow_panel:set_alpha(glow_alpha * inv_p)
@@ -3950,14 +4029,14 @@ function CrimeNetGui:_anim_remove_job_gui(o, id)
 		child:set_valign("scale")
 	end
 
-	over(0.1, function (p)
+	over(0.1, function(p)
 		inv_p = 1 - p
 		x, y = data.marker_panel:center()
 
 		data.marker_panel:set_size((w - 5) * inv_p + 5, h)
 		data.marker_panel:set_center(x, y)
 	end)
-	over(0.1, function (p)
+	over(0.1, function(p)
 		inv_p = 1 - p
 		x, y = data.marker_panel:center()
 
@@ -4019,6 +4098,7 @@ function CrimeNetGui:update_server_job(data, i)
 	local updated_friend = self:_update_job_variable(job_index, "is_friend", data.is_friend)
 	local updated_job_plan = self:_update_job_variable(job_index, "job_plan", data.job_plan)
 	local recreate_job = updated_room or updated_job or updated_level_id or updated_level_data or updated_difficulty or updated_difficulty_id or updated_one_down or updated_state or updated_friend or updated_job_plan
+
 	job.server_data = data
 	job.mutators = data.mutators
 	job.mods = data.mods
@@ -4036,29 +4116,12 @@ function CrimeNetGui:update_server_job(data, i)
 	local mutator = data.mutators and next(data.mutators) or false
 	local mutator_category = mutator and managers.mutators:get_mutator_from_id(mutator):main_category() or "mutator"
 
-	if data.mutators then
-		new_color = managers.mutators:get_category_color(mutator_category) or new_color
-	end
-
-	if data.mutators then
-		new_text_color = managers.mutators:get_category_text_color(mutator_category) or new_text_color
-	end
-
-	if data.is_crime_spree then
-		new_color = tweak_data.screen_colors.crime_spree_risk or new_color
-	end
-
-	if data.is_crime_spree then
-		new_text_color = tweak_data.screen_colors.crime_spree_risk or new_text_color
-	end
-
-	if data.is_skirmish then
-		new_color = tweak_data.screen_colors.skirmish_color or new_color
-	end
-
-	if data.is_skirmish then
-		new_text_color = tweak_data.screen_colors.skirmish_color or new_text_color
-	end
+	new_color = data.mutators and managers.mutators:get_category_color(mutator_category) or new_color
+	new_text_color = data.mutators and managers.mutators:get_category_text_color(mutator_category) or new_text_color
+	new_color = data.is_crime_spree and tweak_data.screen_colors.crime_spree_risk or new_color
+	new_text_color = data.is_crime_spree and tweak_data.screen_colors.crime_spree_risk or new_text_color
+	new_color = data.is_skirmish and tweak_data.screen_colors.skirmish_color or new_color
+	new_text_color = data.is_skirmish and tweak_data.screen_colors.skirmish_color or new_text_color
 
 	if job.peers_panel then
 		for i, peer_icon in ipairs(job.peers_panel:children()) do
@@ -4087,6 +4150,7 @@ function CrimeNetGui:update_server_job(data, i)
 		self:remove_job(job_index, true)
 
 		local gui_data = self:_create_job_gui(data, is_server and "server" or "contract", x, y, location)
+
 		gui_data.server = is_server
 		self._jobs[job_index] = gui_data
 	end
@@ -4100,6 +4164,7 @@ function CrimeNetGui:_update_job_variable(id, variable, value)
 	end
 
 	local updated = data[variable] ~= value
+
 	data[variable] = value
 
 	return updated
@@ -4210,17 +4275,17 @@ function CrimeNetGui:update(t, dt)
 	end
 
 	local update_controller_snap = true
+
 	update_controller_snap = self:input_focus()
 
 	if update_controller_snap and not managers.menu:is_pc_controller() and managers.mouse_pointer:mouse_move_x() == 0 and managers.mouse_pointer:mouse_move_y() == 0 then
-		local closest_job = nil
+		local closest_job
 		local closest_dist = 100000000
-		local closest_job_x = 0
-		local closest_job_y = 0
+		local closest_job_x, closest_job_y = 0, 0
 		local mouse_pos_x, mouse_pos_y = managers.mouse_pointer:modified_mouse_pos()
-		local job_x, job_y = nil
+		local job_x, job_y
 		local dist = 0
-		local x, y = nil
+		local x, y
 
 		for id, job in pairs(self._jobs) do
 			job_x, job_y = job.marker_panel:child("select_panel"):world_center()
@@ -4228,7 +4293,7 @@ function CrimeNetGui:update(t, dt)
 			y = job_y - mouse_pos_y
 			dist = x * x + y * y
 
-			if closest_dist > dist then
+			if dist < closest_dist then
 				closest_job = job
 				closest_dist = dist
 				closest_job_x = job_x
@@ -4376,12 +4441,14 @@ function CrimeNetGui:input_focus()
 end
 
 function CrimeNetGui:check_job_mouse_over(x, y)
+	return
 end
 
 function CrimeNetGui:check_job_pressed(x, y)
 	for id, job in pairs(self._jobs) do
 		if job.mouse_over == 1 then
 			job.expanded = not job.expanded
+
 			local job_data = tweak_data.narrative:job_data(job.job_id)
 			local data = {
 				difficulty = job.difficulty,
@@ -4559,8 +4626,7 @@ function CrimeNetGui:mouse_released(o, button, x, y)
 	end
 
 	if self._grabbed_map and #self._grabbed_map.dirs > 0 then
-		local dx = 0
-		local dy = 0
+		local dx, dy = 0, 0
 
 		for _, values in ipairs(self._grabbed_map.dirs) do
 			dx = dx + values[1]
@@ -4608,8 +4674,7 @@ function CrimeNetGui:_set_map_position(mx, my)
 
 	self._pan_panel:set_position(math.round(self._map_x), math.round(self._map_y))
 
-	y = self._map_y
-	x = self._map_x
+	x, y = self._map_x, self._map_y
 
 	self._map_panel:set_shape(self._pan_panel:shape())
 	self._pan_panel:set_position(managers.gui_data:full_16_9_to_safe(x, y))
@@ -4810,7 +4875,7 @@ function CrimeNetGui:update_job_gui(job, inside)
 			local glow_met = false
 			local expand_met = false
 			local pushout_met = x == 0
-			local dt = nil
+			local dt
 
 			if inside and job.callout and self._crimenet_enabled then
 				Application:debug(job.callout)
@@ -4865,7 +4930,7 @@ function CrimeNetGui:update_job_gui(job, inside)
 					if glow_met and inside then
 						local function animate_pulse(o)
 							while true do
-								over(1, function (p)
+								over(1, function(p)
 									o:set_alpha(math.sin(p * 180) * 0.4 + 0.2)
 								end)
 							end
@@ -4993,10 +5058,12 @@ function CrimeNetGui:mouse_moved(o, x, y)
 		local to_top = y
 		local to_bottom = self._panel:h() - y - 23
 		local panel_border = self._pan_panel_border
+
 		to_left = 1 - math.clamp(to_left / panel_border, 0, 1)
 		to_right = 1 - math.clamp(to_right / panel_border, 0, 1)
 		to_top = 1 - math.clamp(to_top / panel_border, 0, 1)
 		to_bottom = 1 - math.clamp(to_bottom / panel_border, 0, 1)
+
 		local mouse_pointer_move_x = managers.mouse_pointer:mouse_move_x()
 		local mouse_pointer_move_y = managers.mouse_pointer:mouse_move_y()
 		local mp_left = -math.min(0, mouse_pointer_move_x)
@@ -5017,7 +5084,7 @@ function CrimeNetGui:mouse_moved(o, x, y)
 		return
 	end
 
-	local used, pointer = nil
+	local used, pointer
 
 	if managers.menu:is_pc_controller() then
 		if self._panel:child("back_button"):inside(x, y) then
@@ -5028,8 +5095,7 @@ function CrimeNetGui:mouse_moved(o, x, y)
 				managers.menu_component:post_event("highlight")
 			end
 
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		elseif self._back_highlighted then
 			self._back_highlighted = false
 
@@ -5044,8 +5110,7 @@ function CrimeNetGui:mouse_moved(o, x, y)
 				managers.menu_component:post_event("highlight")
 			end
 
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		elseif self._legend_highlighted then
 			self._legend_highlighted = false
 
@@ -5061,8 +5126,7 @@ function CrimeNetGui:mouse_moved(o, x, y)
 					managers.menu_component:post_event("highlight")
 				end
 
-				pointer = "link"
-				used = true
+				used, pointer = true, "link"
 			elseif self._filter_highlighted then
 				self._filter_highlighted = false
 
@@ -5072,9 +5136,9 @@ function CrimeNetGui:mouse_moved(o, x, y)
 	end
 
 	if self._grabbed_map then
-		local left = self._grabbed_map.x < x
+		local left = x > self._grabbed_map.x
 		local right = not left
-		local up = self._grabbed_map.y < y
+		local up = y > self._grabbed_map.y
 		local down = not up
 		local mx = x - self._grabbed_map.x
 		local my = y - self._grabbed_map.y
@@ -5110,18 +5174,18 @@ function CrimeNetGui:mouse_moved(o, x, y)
 		return true, "grab"
 	end
 
-	local closest_job = nil
+	local closest_job
 	local closest_dist = 100000000
-	local closest_job_x = 0
-	local closest_job_y = 0
-	local job_x, job_y = nil
+	local closest_job_x, closest_job_y = 0, 0
+	local job_x, job_y
 	local dist = 0
 	local inside_any_job = false
-	local math_x, math_y = nil
+	local math_x, math_y
 
 	if not used then
 		for id, job in pairs(self._jobs) do
 			local inside = job.marker_panel:child("select_panel"):inside(x, y) and self._panel:inside(x, y)
+
 			inside_any_job = inside_any_job or inside
 
 			if inside then
@@ -5130,7 +5194,7 @@ function CrimeNetGui:mouse_moved(o, x, y)
 				math_y = job_y - y
 				dist = math_x * math_x + math_y * math_y
 
-				if closest_dist > dist then
+				if dist < closest_dist then
 					closest_job = job
 					closest_dist = dist
 					closest_job_x = job_x
@@ -5143,13 +5207,11 @@ function CrimeNetGui:mouse_moved(o, x, y)
 	self:update_all_job_guis(closest_job, inside_any_job)
 
 	if not used and inside_any_job then
-		pointer = "link"
-		used = true
+		used, pointer = true, "link"
 	end
 
 	if not used and self._panel:inside(x, y) then
-		pointer = "hand"
-		used = true
+		used, pointer = true, "hand"
 	end
 
 	return used, pointer

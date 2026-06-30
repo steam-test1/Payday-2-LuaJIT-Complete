@@ -26,13 +26,12 @@ function MenuInput:init(logic, ...)
 	self._item_input_action_map[MenuItemTextBox.TYPE] = callback(self, self, "input_item")
 	self._item_input_action_map[MenuItemCrimeSpreeItem.TYPE] = callback(self, self, "input_crime_spree_item")
 	self._item_input_action_map[MenuItemDummy.TYPE] = callback(self, self, "input_crime_spree_item")
-	self._callback_map = {
-		mouse_moved = {},
-		mouse_pressed = {},
-		mouse_released = {},
-		mouse_clicked = {},
-		mouse_double_click = {}
-	}
+	self._callback_map = {}
+	self._callback_map.mouse_moved = {}
+	self._callback_map.mouse_pressed = {}
+	self._callback_map.mouse_released = {}
+	self._callback_map.mouse_clicked = {}
+	self._callback_map.mouse_double_click = {}
 end
 
 function MenuInput:back(...)
@@ -69,14 +68,15 @@ function MenuInput:activate_mouse(position, controller_activated)
 	end
 
 	self._mouse_active = true
-	local data = {
-		mouse_move = callback(self, self, "mouse_moved"),
-		mouse_press = callback(self, self, "mouse_pressed"),
-		mouse_release = callback(self, self, "mouse_released"),
-		mouse_click = callback(self, self, "mouse_clicked"),
-		mouse_double_click = callback(self, self, "mouse_double_click"),
-		id = self._menu_name
-	}
+
+	local data = {}
+
+	data.mouse_move = callback(self, self, "mouse_moved")
+	data.mouse_press = callback(self, self, "mouse_pressed")
+	data.mouse_release = callback(self, self, "mouse_released")
+	data.mouse_click = callback(self, self, "mouse_clicked")
+	data.mouse_double_click = callback(self, self, "mouse_double_click")
+	data.id = self._menu_name
 
 	managers.mouse_pointer:use_mouse(data, position)
 end
@@ -198,7 +198,7 @@ function MenuInput:mouse_moved(o, x, y, mouse_ws)
 	end
 
 	local node_gui = managers.menu:active_menu().renderer:active_node_gui()
-	local select_item, select_row_item = nil
+	local select_item, select_row_item
 
 	if node_gui and managers.menu_component:input_focus() ~= true and not node_gui.CUSTOM_MOUSE_INPUT then
 		local inside_item_panel_parent = node_gui:item_panel_parent():inside(x, y)
@@ -519,103 +519,101 @@ function MenuInput:mouse_pressed(o, button, x, y)
 							return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
 						end
 					end
-				elseif row_item.gui_panel:inside(x, y) and node_gui._item_panel_parent:inside(x, y) then
-					if row_item.no_mouse_select then
-						-- Nothing
-					elseif row_item.type == "slider" then
-						self:post_event("slider_grab")
+				elseif not row_item.gui_panel:inside(x, y) or not node_gui._item_panel_parent:inside(x, y) or row_item.no_mouse_select then
+					-- Nothing
+				elseif row_item.type == "slider" then
+					self:post_event("slider_grab")
 
-						if row_item.gui_slider_marker:inside(x, y) then
+					if row_item.gui_slider_marker:inside(x, y) then
+						self._slider_marker = {
+							button = button,
+							item = row_item.item,
+							row_item = row_item
+						}
+					elseif row_item.gui_slider:inside(x, y) then
+						local where = (x - row_item.gui_slider:world_left()) / (row_item.gui_slider:world_right() - row_item.gui_slider:world_left())
+						local item = row_item.item
+
+						if item:enabled() then
+							item:set_value_by_percentage(where * 100)
+							self._logic:trigger_item(true, item)
+
 							self._slider_marker = {
 								button = button,
 								item = row_item.item,
 								row_item = row_item
 							}
-						elseif row_item.gui_slider:inside(x, y) then
-							local where = (x - row_item.gui_slider:world_left()) / (row_item.gui_slider:world_right() - row_item.gui_slider:world_left())
-							local item = row_item.item
-
-							if item:enabled() then
-								item:set_value_by_percentage(where * 100)
-								self._logic:trigger_item(true, item)
-
-								self._slider_marker = {
-									button = button,
-									item = row_item.item,
-									row_item = row_item
-								}
-							end
 						end
-					elseif row_item.type == "kitslot" then
-						local item = self._logic:selected_item()
+					end
+				elseif row_item.type == "kitslot" then
+					local item = self._logic:selected_item()
 
-						if row_item.arrow_right:inside(x, y) then
-							item:next()
+					if row_item.arrow_right:inside(x, y) then
+						item:next()
+						self._logic:trigger_item(true, item)
+
+						if row_item.arrow_right:visible() then
+							self:post_event("selection_next")
+						end
+					elseif row_item.arrow_left:inside(x, y) then
+						item:previous()
+						self._logic:trigger_item(true, item)
+
+						if row_item.arrow_left:visible() then
+							self:post_event("selection_previous")
+						end
+					elseif not row_item.choice_panel:inside(x, y) then
+						self._item_input_action_map[item.TYPE](item, self._controller, true)
+
+						return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
+					end
+				elseif row_item.type == "grid" then
+					local item = self._logic:selected_item()
+
+					if row_item.item == item then
+						row_item.item:mouse_pressed(button, x, y, row_item)
+					end
+				elseif row_item.type == "multi_choice" then
+					local item = row_item.item
+
+					if row_item.arrow_right:inside(x, y) then
+						if item:next() then
+							self:post_event("selection_next")
 							self._logic:trigger_item(true, item)
-
-							if row_item.arrow_right:visible() then
-								self:post_event("selection_next")
-							end
-						elseif row_item.arrow_left:inside(x, y) then
-							item:previous()
+						end
+					elseif row_item.arrow_left:inside(x, y) then
+						if item:previous() then
+							self:post_event("selection_previous")
 							self._logic:trigger_item(true, item)
-
-							if row_item.arrow_left:visible() then
-								self:post_event("selection_previous")
-							end
-						elseif not row_item.choice_panel:inside(x, y) then
-							self._item_input_action_map[item.TYPE](item, self._controller, true)
-
-							return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
 						end
-					elseif row_item.type == "grid" then
-						local item = self._logic:selected_item()
-
-						if row_item.item == item then
-							row_item.item:mouse_pressed(button, x, y, row_item)
-						end
-					elseif row_item.type == "multi_choice" then
-						local item = row_item.item
-
-						if row_item.arrow_right:inside(x, y) then
-							if item:next() then
-								self:post_event("selection_next")
-								self._logic:trigger_item(true, item)
-							end
-						elseif row_item.arrow_left:inside(x, y) then
+					elseif row_item.gui_text:inside(x, y) then
+						if row_item.align == "left" then
 							if item:previous() then
 								self:post_event("selection_previous")
 								self._logic:trigger_item(true, item)
 							end
-						elseif row_item.gui_text:inside(x, y) then
-							if row_item.align == "left" then
-								if item:previous() then
-									self:post_event("selection_previous")
-									self._logic:trigger_item(true, item)
-								end
-							elseif item:next() then
-								self:post_event("selection_next")
-								self._logic:trigger_item(true, item)
-							end
-						elseif row_item.choice_panel:inside(x, y) and item:enabled() then
-							item:popup_choice(row_item)
+						elseif item:next() then
 							self:post_event("selection_next")
 							self._logic:trigger_item(true, item)
 						end
-					elseif row_item.type == "chat" then
-						if row_item.chat_input:inside(x, y) then
-							row_item.chat_input:script().set_focus(true)
-						end
-					elseif row_item.type == "divider" then
-						-- Nothing
-					else
-						local item = self._logic:selected_item()
+					elseif row_item.choice_panel:inside(x, y) and item:enabled() then
+						item:popup_choice(row_item)
+						self:post_event("selection_next")
+						self._logic:trigger_item(true, item)
+					end
+				elseif row_item.type == "chat" then
+					if row_item.chat_input:inside(x, y) then
+						row_item.chat_input:script().set_focus(true)
+					end
+				elseif row_item.type == "divider" then
+					-- Nothing
+				else
+					local item = self._logic:selected_item()
 
-						if item then
-							self._item_input_action_map[item.TYPE](item, self._controller, true)
+					if item then
+						self._item_input_action_map[item.TYPE](item, self._controller, true)
 
-							return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
-						end
+						return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
 					end
 				end
 			end
@@ -651,6 +649,7 @@ function MenuInput:mouse_released(o, button, x, y)
 	end
 
 	self._slider_marker = nil
+
 	local node_gui = managers.menu:active_menu().renderer:active_node_gui()
 
 	if node_gui and not node_gui.CUSTOM_MOUSE_INPUT then
@@ -729,7 +728,7 @@ end
 local print_timers = {}
 
 local function upd_print(id, t, ...)
-	if not print_timers[id] or print_timers[id] < t then
+	if not print_timers[id] or t > print_timers[id] then
 		print(...)
 
 		print_timers[id] = t + 0.5
@@ -937,7 +936,7 @@ function MenuInput:post_event(event)
 end
 
 function MenuInput:menu_up_input_bool()
-	return MenuInput.super.menu_up_input_bool(self) or self._move_axis_limit < self:menu_axis_move().y
+	return MenuInput.super.menu_up_input_bool(self) or self:menu_axis_move().y > self._move_axis_limit
 end
 
 function MenuInput:menu_up_pressed()
@@ -973,7 +972,7 @@ function MenuInput:menu_left_released()
 end
 
 function MenuInput:menu_right_input_bool()
-	return MenuInput.super.menu_right_input_bool(self) or self._move_axis_limit < self:menu_axis_move().x
+	return MenuInput.super.menu_right_input_bool(self) or self:menu_axis_move().x > self._move_axis_limit
 end
 
 function MenuInput:menu_right_pressed()

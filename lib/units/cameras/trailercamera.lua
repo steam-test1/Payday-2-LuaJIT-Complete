@@ -55,7 +55,7 @@ function TrailerCamera:_set_actions()
 		time = 3,
 		action = TrailerCameraElementAction:new("trailer_effect1")
 	})
-	table.sort(self._actions, function (e1, e2)
+	table.sort(self._actions, function(e1, e2)
 		return e1.time < e2.time
 	end)
 	print(inspect(self._actions))
@@ -70,6 +70,7 @@ function TrailerCamera:start()
 	managers.enemy:set_gfx_lod_enabled(false)
 
 	self._playing = true
+
 	local start_time = self._main_frame and self._time_slider.value or 0
 
 	self._unit:anim_set_time(self._anim_name, start_time)
@@ -115,8 +116,11 @@ function TrailerCamera:create_ews()
 	self:close_ews()
 
 	self._main_frame = EWS:Frame("Trailer", Vector3(250, 0, 0), Vector3(600, 200, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE,FULL_REPAINT_ON_RESIZE", Global.frame)
+
 	local main_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._main_panel = EWS:Panel(self._main_frame, "", "FULL_REPAINT_ON_RESIZE")
+
 	local main_panel_sizer = EWS:BoxSizer("VERTICAL")
 
 	self._main_panel:set_sizer(main_panel_sizer)
@@ -148,11 +152,11 @@ function TrailerCamera:create_ews()
 	slider_sizer:add(EWS:StaticText(self._main_panel, "Time:", "", "ALIGN_LEFT"), 0, 0, "EXPAND")
 
 	local slider_params = {
-		min = 0,
 		floats = 2,
+		min = 0,
+		number_ctrlr_proportions = 1,
 		slider_ctrlr_proportions = 9,
 		value = 0,
-		number_ctrlr_proportions = 1,
 		panel = self._main_panel,
 		sizer = slider_sizer,
 		max = self._unit:anim_length(self._anim_name)
@@ -173,18 +177,19 @@ function TrailerCamera:create_ews()
 	})
 
 	self._time_slider = slider_params
+
 	local slider_sizer = EWS:StaticBoxSizer(self._main_panel, "VERTICAL", "")
 
 	main_panel_sizer:add(slider_sizer, 0, 0, "EXPAND")
 	slider_sizer:add(EWS:StaticText(self._main_panel, "Speed:", "", "ALIGN_LEFT"), 0, 0, "EXPAND")
 
 	local slider_params = {
-		min = 0.01,
 		floats = 2,
+		max = 10,
+		min = 0.01,
+		number_ctrlr_proportions = 1,
 		slider_ctrlr_proportions = 9,
 		value = 1,
-		number_ctrlr_proportions = 1,
-		max = 10,
 		panel = self._main_panel,
 		sizer = slider_sizer
 	}
@@ -239,7 +244,7 @@ function TrailerCamera:update(unit, t, dt)
 		self._camera:set_far_range(self._locked_far_range or self._ref_camera:far_range())
 
 		if self._wait_t then
-			if self._wait_t < t then
+			if t > self._wait_t then
 				self._wait_t = nil
 			end
 		elseif not self._unit:anim_is_playing(self._anim_name) then
@@ -250,6 +255,7 @@ end
 
 function TrailerCamera:set_depth_mode(depth_mode)
 	self._locked_far_range = depth_mode and 5000 or nil
+
 	local viz = depth_mode and "depth_visualization" or "deferred_lighting"
 
 	for _, vp in ipairs(managers.viewport:viewports()) do
@@ -280,9 +286,11 @@ end
 TrailerCameraAction = TrailerCameraAction or class()
 
 function TrailerCameraAction:init()
+	return
 end
 
 function TrailerCameraAction:execute()
+	return
 end
 
 TrailerCameraElementAction = TrailerCameraElementAction or class(TrailerCameraAction)

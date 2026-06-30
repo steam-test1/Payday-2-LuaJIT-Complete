@@ -21,18 +21,17 @@ end
 
 local function shrinkwrap(panel, padding)
 	padding = padding or {}
+
 	local padding_top = padding[1] or 0
 	local padding_right = padding[2] or padding_top
 	local padding_bottom = padding[3] or padding_top
 	local padding_left = padding[4] or padding_right
 	local children = panel:children()
-	local min_x = math.huge
-	local max_x = -math.huge
-	local min_y = math.huge
-	local max_y = -math.huge
+	local min_x, max_x = math.huge, -math.huge
+	local min_y, max_y = math.huge, -math.huge
 
 	for _, child in ipairs(children) do
-		if child:world_left() < min_x then
+		if min_x > child:world_left() then
 			min_x = child:world_left()
 		end
 
@@ -40,7 +39,7 @@ local function shrinkwrap(panel, padding)
 			max_x = child:world_right()
 		end
 
-		if child:world_top() < min_y then
+		if min_y > child:world_top() then
 			min_y = child:world_top()
 		end
 
@@ -76,10 +75,12 @@ function LevelLoadingScreenGuiScript:init(scene_gui, res, progress, base_layer)
 	self._gui_data = arg.load_level_data.gui_data
 	self._workspace_size = self._gui_data.workspace_size
 	self._saferect_size = self._gui_data.saferect_size
+
 	local challenges = arg.load_level_data.challenges
 	local safe_rect_pixels = self._gui_data.safe_rect_pixels
 	local safe_rect = self._gui_data.safe_rect
 	local aspect_ratio = self._gui_data.aspect_ratio
+
 	self._safe_rect_pixels = safe_rect_pixels
 	self._safe_rect = safe_rect
 	self._gui_data_manager = GuiDataManager:new(self._scene_gui, res, safe_rect_pixels, safe_rect, aspect_ratio)
@@ -111,20 +112,20 @@ function LevelLoadingScreenGuiScript:init(scene_gui, res, progress, base_layer)
 	end
 
 	self._indicator = background_safepanel:bitmap({
-		texture = "guis/textures/icon_loading",
+		layer = 0,
 		name = "indicator",
-		layer = 0
+		texture = "guis/textures/icon_loading"
 	})
 	self._level_title_text = background_safepanel:text({
-		y = 0,
-		vertical = "bottom",
-		h = 36,
-		text_id = "debug_loading_level",
-		font_size = 36,
 		align = "left",
 		font = "fonts/font_large_mf",
+		font_size = 36,
+		h = 36,
 		halign = "left",
 		layer = 0,
+		text_id = "debug_loading_level",
+		vertical = "bottom",
+		y = 0,
 		color = Color.white
 	})
 
@@ -137,21 +138,20 @@ function LevelLoadingScreenGuiScript:init(scene_gui, res, progress, base_layer)
 	self._level_title_text:set_right(self._indicator:left())
 
 	local bg_loading_text = background_fullpanel:text({
-		vertical = "top",
-		h = 80,
-		text_id = "debug_loading_level",
-		font_size = 80,
 		align = "right",
 		font = "fonts/font_eroded",
-		y = 0,
+		font_size = 80,
+		h = 80,
 		layer = 0,
+		text_id = "debug_loading_level",
+		vertical = "top",
+		y = 0,
 		color = Color(0.3, 0.3803921568627451, 0.8392156862745098, 1)
 	})
 
 	bg_loading_text:set_text(utf8.to_upper(bg_loading_text:text()))
 
-	local x = self._level_title_text:world_right()
-	local y = self._level_title_text:world_center_y()
+	local x, y = self._level_title_text:world_right(), self._level_title_text:world_center_y()
 
 	bg_loading_text:set_world_right(x)
 	bg_loading_text:set_world_center_y(y)
@@ -192,8 +192,8 @@ function LevelLoadingScreenGuiScript:_make_loading_hint(parent, tip)
 	})
 	local hint_box = container:panel()
 	local hint_text = hint_box:text({
-		wrap = true,
 		word_wrap = true,
+		wrap = true,
 		text = tip.text,
 		font = font,
 		font_size = font_size,
@@ -238,8 +238,8 @@ function LevelLoadingScreenGuiScript:_make_controller_hint(parent, coords)
 	local controller_shapes = arg.load_level_data.controller_shapes or {
 		{
 			position = {
-				cy = 0.5,
-				cx = 0.5
+				cx = 0.5,
+				cy = 0.5
 			},
 			texture_rect = {
 				0,
@@ -250,7 +250,7 @@ function LevelLoadingScreenGuiScript:_make_controller_hint(parent, coords)
 		}
 	}
 	local controllers = {}
-	local controller, position = nil
+	local controller, position
 
 	for i, shape in ipairs(controller_shapes) do
 		controller = container:bitmap({
@@ -293,6 +293,7 @@ function LevelLoadingScreenGuiScript:_make_controller_hint(parent, coords)
 			vertical = data.vertical,
 			color = data.color
 		})
+
 		local _, _, w, h = data.text:text_rect()
 
 		data.text:set_size(w, h)

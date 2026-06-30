@@ -67,15 +67,17 @@ function PlayerParachuting:_update_movement(t, dt)
 	end
 
 	local current_rot = self._unit:movement().fall_rotation
-	local new_rot = nil
+	local new_rot
 	local delta = self._tweak_data.movement.rotation_speed * dt
 
 	if direction.x > 0 then
 		local yaw = current_rot:yaw() - delta
+
 		new_rot = Rotation(yaw, current_rot:pitch(), current_rot:roll())
 		self._unit:movement().fall_rotation = new_rot
 	elseif direction.x < 0 then
 		local yaw = current_rot:yaw() + delta
+
 		new_rot = Rotation(yaw, current_rot:pitch(), current_rot:roll())
 		self._unit:movement().fall_rotation = new_rot
 	end
@@ -92,12 +94,14 @@ end
 
 function PlayerParachuting:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
+
 	self._stick_move = self._controller:get_input_axis("move")
 
 	if mvector3.length(self._stick_move) < 0.1 then
 		self._move_dir = nil
 	else
 		self._move_dir = mvector3.copy(self._stick_move)
+
 		local cam_flat_rot = Rotation(self._cam_fwd_flat, math.UP)
 
 		mvector3.rotate_with(self._move_dir, cam_flat_rot)
@@ -109,11 +113,11 @@ function PlayerParachuting:_update_check_actions(t, dt)
 	self:_update_charging_weapon_timers(t, input)
 	self:_update_equip_weapon_timers(t, input)
 
-	if self._change_item_expire_t and self._change_item_expire_t <= t then
+	if self._change_item_expire_t and t >= self._change_item_expire_t then
 		self._change_item_expire_t = nil
 	end
 
-	if self._change_weapon_pressed_expire_t and self._change_weapon_pressed_expire_t <= t then
+	if self._change_weapon_pressed_expire_t and t >= self._change_weapon_pressed_expire_t then
 		self._change_weapon_pressed_expire_t = nil
 	end
 
@@ -127,8 +131,9 @@ function PlayerParachuting:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
+	local new_action
 	local anim_data = self._ext_anim
+
 	new_action = new_action or self:_check_action_weapon_gadget(t, input)
 	new_action = new_action or self:_check_action_weapon_firemode(t, input)
 	new_action = new_action or self:_check_action_reload(t, input)
@@ -157,7 +162,7 @@ function PlayerParachuting:_remove_camera_limits()
 end
 
 function PlayerParachuting:_check_action_interact(t, input)
-	local new_action = nil
+	local new_action
 	local interaction_wanted = input.btn_interact_press
 
 	if interaction_wanted then

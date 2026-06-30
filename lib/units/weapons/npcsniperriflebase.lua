@@ -1,5 +1,6 @@
 NPCSniperRifleBase = NPCSniperRifleBase or class(NPCRaycastWeaponBase)
 NPCSniperRifleBase.TRAIL_EFFECT = Idstring("effects/particles/weapons/sniper_trail")
+
 local idstr_trail = Idstring("trail")
 local idstr_simulator_length = Idstring("simulator_length")
 local idstr_size = Idstring("size")

@@ -1,36 +1,32 @@
 function BlackMarketTweakData:_init_melee_weapons(tweak_data)
-	self.melee_weapons = {
-		weapon = {}
-	}
+	self.melee_weapons = {}
+	self.melee_weapons.weapon = {}
 	self.melee_weapons.weapon.name_id = "bm_melee_weapon"
 	self.melee_weapons.weapon.type = "weapon"
 	self.melee_weapons.weapon.unit = nil
 	self.melee_weapons.weapon.animation = nil
 	self.melee_weapons.weapon.instant = true
 	self.melee_weapons.weapon.free = true
-	self.melee_weapons.weapon.stats = {
-		min_damage = 3,
-		max_damage = 3,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 0,
-		range = 150,
-		weapon_type = "blunt"
-	}
+	self.melee_weapons.weapon.stats = {}
+	self.melee_weapons.weapon.stats.min_damage = 3
+	self.melee_weapons.weapon.stats.max_damage = 3
+	self.melee_weapons.weapon.stats.min_damage_effect = 1
+	self.melee_weapons.weapon.stats.max_damage_effect = 1
+	self.melee_weapons.weapon.stats.charge_time = 0
+	self.melee_weapons.weapon.stats.range = 150
+	self.melee_weapons.weapon.stats.weapon_type = "blunt"
 	self.melee_weapons.weapon.expire_t = 0.6
 	self.melee_weapons.weapon.repeat_expire_t = 0.6
-	self.melee_weapons.weapon.sounds = {
-		hit_body = "melee_hit_body",
-		hit_gen = "melee_hit_gen"
-	}
-	self.melee_weapons.fists = {
-		name_id = "bm_melee_fists",
-		type = "fists",
-		unit = nil,
-		animation = nil,
-		free = true,
-		stats = {}
-	}
+	self.melee_weapons.weapon.sounds = {}
+	self.melee_weapons.weapon.sounds.hit_body = "melee_hit_body"
+	self.melee_weapons.weapon.sounds.hit_gen = "melee_hit_gen"
+	self.melee_weapons.fists = {}
+	self.melee_weapons.fists.name_id = "bm_melee_fists"
+	self.melee_weapons.fists.type = "fists"
+	self.melee_weapons.fists.unit = nil
+	self.melee_weapons.fists.animation = nil
+	self.melee_weapons.fists.free = true
+	self.melee_weapons.fists.stats = {}
 	self.melee_weapons.fists.stats.min_damage = 3
 	self.melee_weapons.fists.stats.max_damage = 5.5
 	self.melee_weapons.fists.stats.min_damage_effect = 3
@@ -50,24 +46,22 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.fists.repeat_expire_t = 0.55
 	self.melee_weapons.fists.melee_damage_delay = 0.2
 	self.melee_weapons.fists.melee_charge_shaker = "player_melee_charge_fist"
-	self.melee_weapons.fists.sounds = {
-		equip = "fist_equip",
-		hit_air = "fist_hit_air",
-		hit_gen = "fist_hit_gen",
-		hit_body = "fist_hit_body",
-		charge = "fist_charge"
-	}
+	self.melee_weapons.fists.sounds = {}
+	self.melee_weapons.fists.sounds.equip = "fist_equip"
+	self.melee_weapons.fists.sounds.hit_air = "fist_hit_air"
+	self.melee_weapons.fists.sounds.hit_gen = "fist_hit_gen"
+	self.melee_weapons.fists.sounds.hit_body = "fist_hit_body"
+	self.melee_weapons.fists.sounds.charge = "fist_charge"
 	self.melee_weapons.fists.stats.concealment = 30
-	self.melee_weapons.kabar = {
-		name_id = "bm_melee_kabar",
-		type = "knife",
-		unit = "units/pd2_dlc_gage_lmg/weapons/wpn_fps_mel_kabar/wpn_fps_mel_kabar",
-		third_unit = "units/pd2_dlc_gage_lmg/weapons/wpn_third_mel_kabar/wpn_third_mel_kabar",
-		animation = nil,
-		dlc = "gage_pack_lmg",
-		texture_bundle_folder = "gage_pack_lmg",
-		stats = {}
-	}
+	self.melee_weapons.kabar = {}
+	self.melee_weapons.kabar.name_id = "bm_melee_kabar"
+	self.melee_weapons.kabar.type = "knife"
+	self.melee_weapons.kabar.unit = "units/pd2_dlc_gage_lmg/weapons/wpn_fps_mel_kabar/wpn_fps_mel_kabar"
+	self.melee_weapons.kabar.third_unit = "units/pd2_dlc_gage_lmg/weapons/wpn_third_mel_kabar/wpn_third_mel_kabar"
+	self.melee_weapons.kabar.animation = nil
+	self.melee_weapons.kabar.dlc = "gage_pack_lmg"
+	self.melee_weapons.kabar.texture_bundle_folder = "gage_pack_lmg"
+	self.melee_weapons.kabar.stats = {}
 	self.melee_weapons.kabar.stats.min_damage = 3
 	self.melee_weapons.kabar.stats.max_damage = 8
 	self.melee_weapons.kabar.stats.min_damage_effect = 1
@@ -86,13 +80,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.kabar.repeat_expire_t = 0.6
 	self.melee_weapons.kabar.expire_t = 1.2
 	self.melee_weapons.kabar.melee_damage_delay = 0.1
-	self.melee_weapons.kabar.sounds = {
-		equip = "knife_equip",
-		hit_air = "knife_hit_air",
-		hit_gen = "knife_hit_gen",
-		hit_body = "knife_hit_body",
-		charge = "knife_charge"
-	}
+	self.melee_weapons.kabar.sounds = {}
+	self.melee_weapons.kabar.sounds.equip = "knife_equip"
+	self.melee_weapons.kabar.sounds.hit_air = "knife_hit_air"
+	self.melee_weapons.kabar.sounds.hit_gen = "knife_hit_gen"
+	self.melee_weapons.kabar.sounds.hit_body = "knife_hit_body"
+	self.melee_weapons.kabar.sounds.charge = "knife_charge"
 	self.melee_weapons.kabar.stats.concealment = 30
 	self.melee_weapons.rambo = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.rambo.name_id = "bm_melee_rambo"
@@ -178,13 +171,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.tomahawk.expire_t = 0.6
 	self.melee_weapons.tomahawk.repeat_expire_t = 0.8
 	self.melee_weapons.tomahawk.attack_allowed_expire_t = 0.1
-	self.melee_weapons.tomahawk.sounds = {
-		equip = "tomahawk_equip",
-		hit_air = "tomahawk_hit_air",
-		hit_gen = "tomahawk_hit_gen",
-		hit_body = "tomahawk_hit_body",
-		charge = "tomahawk_charge"
-	}
+	self.melee_weapons.tomahawk.sounds = {}
+	self.melee_weapons.tomahawk.sounds.equip = "tomahawk_equip"
+	self.melee_weapons.tomahawk.sounds.hit_air = "tomahawk_hit_air"
+	self.melee_weapons.tomahawk.sounds.hit_gen = "tomahawk_hit_gen"
+	self.melee_weapons.tomahawk.sounds.hit_body = "tomahawk_hit_body"
+	self.melee_weapons.tomahawk.sounds.charge = "tomahawk_charge"
 	self.melee_weapons.tomahawk.stats.concealment = 28
 	self.melee_weapons.baton = deep_clone(self.melee_weapons.tomahawk)
 	self.melee_weapons.baton.name_id = "bm_melee_baton"
@@ -198,13 +190,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.baton.stats.charge_time = 3
 	self.melee_weapons.baton.stats.range = 250
 	self.melee_weapons.baton.stats.weapon_type = "blunt"
-	self.melee_weapons.baton.sounds = {
-		equip = "baton_equip",
-		hit_air = "baton_hit_air",
-		hit_gen = "baton_hit_gen",
-		hit_body = "baton_hit_body",
-		charge = "baton_charge"
-	}
+	self.melee_weapons.baton.sounds = {}
+	self.melee_weapons.baton.sounds.equip = "baton_equip"
+	self.melee_weapons.baton.sounds.hit_air = "baton_hit_air"
+	self.melee_weapons.baton.sounds.hit_gen = "baton_hit_gen"
+	self.melee_weapons.baton.sounds.hit_body = "baton_hit_body"
+	self.melee_weapons.baton.sounds.charge = "baton_charge"
 	self.melee_weapons.baton.stats.concealment = 30
 	self.melee_weapons.shovel = deep_clone(self.melee_weapons.tomahawk)
 	self.melee_weapons.shovel.name_id = "bm_melee_shovel"
@@ -221,13 +212,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.shovel.stats.charge_time = 3
 	self.melee_weapons.shovel.stats.range = 250
 	self.melee_weapons.shovel.stats.weapon_type = "blunt"
-	self.melee_weapons.shovel.sounds = {
-		equip = "shovel_equip",
-		hit_air = "shovel_hit_air",
-		hit_gen = "shovel_hit_gen",
-		hit_body = "shovel_hit_body",
-		charge = "shovel_charge"
-	}
+	self.melee_weapons.shovel.sounds = {}
+	self.melee_weapons.shovel.sounds.equip = "shovel_equip"
+	self.melee_weapons.shovel.sounds.hit_air = "shovel_hit_air"
+	self.melee_weapons.shovel.sounds.hit_gen = "shovel_hit_gen"
+	self.melee_weapons.shovel.sounds.hit_body = "shovel_hit_body"
+	self.melee_weapons.shovel.sounds.charge = "shovel_charge"
 	self.melee_weapons.shovel.stats.concealment = 27
 	self.melee_weapons.becker = deep_clone(self.melee_weapons.tomahawk)
 	self.melee_weapons.becker.name_id = "bm_melee_becker"
@@ -240,13 +230,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.becker.stats.charge_time = 2
 	self.melee_weapons.becker.stats.range = 200
 	self.melee_weapons.becker.repeat_expire_t = 0.6
-	self.melee_weapons.becker.sounds = {
-		equip = "becker_equip",
-		hit_air = "becker_hit_air",
-		hit_gen = "becker_hit_gen",
-		hit_body = "becker_hit_body",
-		charge = "knife_charge"
-	}
+	self.melee_weapons.becker.sounds = {}
+	self.melee_weapons.becker.sounds.equip = "becker_equip"
+	self.melee_weapons.becker.sounds.hit_air = "becker_hit_air"
+	self.melee_weapons.becker.sounds.hit_gen = "becker_hit_gen"
+	self.melee_weapons.becker.sounds.hit_body = "becker_hit_body"
+	self.melee_weapons.becker.sounds.charge = "knife_charge"
 	self.melee_weapons.becker.stats.concealment = 27
 	self.melee_weapons.moneybundle = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.moneybundle.name_id = "bm_melee_moneybundle"
@@ -387,8 +376,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.spoon_gold.type = "axe"
 	self.melee_weapons.spoon_gold.dlc = "apfo"
 	self.melee_weapons.spoon_gold.locks = {
-		achievement_lock_id = "bm_menu_locked_spoon_gold",
-		achievement = "gsu_01"
+		achievement = "gsu_01",
+		achievement_lock_id = "bm_menu_locked_spoon_gold"
 	}
 	self.melee_weapons.spoon_gold.texture_bundle_folder = "apfo"
 	self.melee_weapons.spoon_gold.dot_data_name = "melee_spoon_gold"
@@ -446,13 +435,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.bullseye.unit = "units/pd2_dlc_gage_assault/weapons/wpn_fps_mel_bullseye/wpn_fps_mel_bullseye"
 	self.melee_weapons.bullseye.third_unit = "units/pd2_dlc_gage_assault/weapons/wpn_fps_mel_bullseye/wpn_third_mel_bullseye"
-	self.melee_weapons.bullseye.sounds = {
-		equip = "bullseye_equip",
-		hit_air = "bullseye_hit_air",
-		hit_gen = "bullseye_hit_gen",
-		hit_body = "bullseye_hit_body",
-		charge = "bullseye_charge"
-	}
+	self.melee_weapons.bullseye.sounds = {}
+	self.melee_weapons.bullseye.sounds.equip = "bullseye_equip"
+	self.melee_weapons.bullseye.sounds.hit_air = "bullseye_hit_air"
+	self.melee_weapons.bullseye.sounds.hit_gen = "bullseye_hit_gen"
+	self.melee_weapons.bullseye.sounds.hit_body = "bullseye_hit_body"
+	self.melee_weapons.bullseye.sounds.charge = "bullseye_charge"
 	self.melee_weapons.bullseye.stats.min_damage = 3
 	self.melee_weapons.bullseye.stats.max_damage = 8
 	self.melee_weapons.bullseye.stats.min_damage_effect = 1
@@ -471,13 +459,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.baseballbat.unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_baseballbat/wpn_fps_mel_baseballbat"
 	self.melee_weapons.baseballbat.third_unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_baseballbat/wpn_third_mel_baseballbat"
-	self.melee_weapons.baseballbat.sounds = {
-		equip = "bat_equip",
-		hit_air = "bat_hit_air",
-		hit_gen = "baseballbat_hit_gen",
-		hit_body = "baseballbat_hit_body",
-		charge = "bat_charge"
-	}
+	self.melee_weapons.baseballbat.sounds = {}
+	self.melee_weapons.baseballbat.sounds.equip = "bat_equip"
+	self.melee_weapons.baseballbat.sounds.hit_air = "bat_hit_air"
+	self.melee_weapons.baseballbat.sounds.hit_gen = "baseballbat_hit_gen"
+	self.melee_weapons.baseballbat.sounds.hit_body = "baseballbat_hit_body"
+	self.melee_weapons.baseballbat.sounds.charge = "bat_charge"
 	self.melee_weapons.baseballbat.stats.min_damage = 3
 	self.melee_weapons.baseballbat.stats.max_damage = 9
 	self.melee_weapons.baseballbat.stats.min_damage_effect = 5
@@ -499,13 +486,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.cleaver.unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_cleaver/wpn_fps_mel_cleaver"
 	self.melee_weapons.cleaver.third_unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_cleaver/wpn_third_mel_cleaver"
-	self.melee_weapons.cleaver.sounds = {
-		equip = "cleaver_equip",
-		hit_air = "cleaver_hit_air",
-		hit_gen = "cleaver_hit_gen",
-		hit_body = "cleaver_hit_body",
-		charge = "cleaver_charge"
-	}
+	self.melee_weapons.cleaver.sounds = {}
+	self.melee_weapons.cleaver.sounds.equip = "cleaver_equip"
+	self.melee_weapons.cleaver.sounds.hit_air = "cleaver_hit_air"
+	self.melee_weapons.cleaver.sounds.hit_gen = "cleaver_hit_gen"
+	self.melee_weapons.cleaver.sounds.hit_body = "cleaver_hit_body"
+	self.melee_weapons.cleaver.sounds.charge = "cleaver_charge"
 	self.melee_weapons.cleaver.stats.min_damage = 3
 	self.melee_weapons.cleaver.stats.max_damage = 8
 	self.melee_weapons.cleaver.stats.min_damage_effect = 1
@@ -524,13 +510,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.fireaxe.unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_fireaxe/wpn_fps_mel_fireaxe"
 	self.melee_weapons.fireaxe.third_unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_fireaxe/wpn_third_mel_fireaxe"
-	self.melee_weapons.fireaxe.sounds = {
-		equip = "fire_axe_equip",
-		hit_air = "fire_axe_hit_air",
-		hit_gen = "fire_axe_hit_gen",
-		hit_body = "fire_axe_hit_body",
-		charge = "knife_charge"
-	}
+	self.melee_weapons.fireaxe.sounds = {}
+	self.melee_weapons.fireaxe.sounds.equip = "fire_axe_equip"
+	self.melee_weapons.fireaxe.sounds.hit_air = "fire_axe_hit_air"
+	self.melee_weapons.fireaxe.sounds.hit_gen = "fire_axe_hit_gen"
+	self.melee_weapons.fireaxe.sounds.hit_body = "fire_axe_hit_body"
+	self.melee_weapons.fireaxe.sounds.charge = "knife_charge"
 	self.melee_weapons.fireaxe.stats.min_damage = 7
 	self.melee_weapons.fireaxe.stats.max_damage = 45
 	self.melee_weapons.fireaxe.stats.min_damage_effect = 1
@@ -552,13 +537,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.machete.unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_machete/wpn_fps_mel_machete"
 	self.melee_weapons.machete.third_unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_machete/wpn_third_mel_machete"
-	self.melee_weapons.machete.sounds = {
-		equip = "machete_equip",
-		hit_air = "machete_hit_air",
-		hit_gen = "machete_hit_gen",
-		hit_body = "machete_hit_body",
-		charge = "machete_charge"
-	}
+	self.melee_weapons.machete.sounds = {}
+	self.melee_weapons.machete.sounds.equip = "machete_equip"
+	self.melee_weapons.machete.sounds.hit_air = "machete_hit_air"
+	self.melee_weapons.machete.sounds.hit_gen = "machete_hit_gen"
+	self.melee_weapons.machete.sounds.hit_body = "machete_hit_body"
+	self.melee_weapons.machete.sounds.charge = "machete_charge"
 	self.melee_weapons.machete.stats.min_damage = 3
 	self.melee_weapons.machete.stats.max_damage = 8
 	self.melee_weapons.machete.stats.min_damage_effect = 1
@@ -579,13 +563,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.briefcase.unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_briefcase/wpn_fps_mel_briefcase"
 	self.melee_weapons.briefcase.third_unit = "units/pd2_dlc_miami/weapons/wpn_fps_mel_briefcase/wpn_third_mel_briefcase"
-	self.melee_weapons.briefcase.sounds = {
-		equip = "suitcase_equip",
-		hit_air = "suitcase_hit_air",
-		hit_gen = "suitcase_hit_gen",
-		hit_body = "suitcase_hit_body",
-		charge = "suitcase_charge"
-	}
+	self.melee_weapons.briefcase.sounds = {}
+	self.melee_weapons.briefcase.sounds.equip = "suitcase_equip"
+	self.melee_weapons.briefcase.sounds.hit_air = "suitcase_hit_air"
+	self.melee_weapons.briefcase.sounds.hit_gen = "suitcase_hit_gen"
+	self.melee_weapons.briefcase.sounds.hit_body = "suitcase_hit_body"
+	self.melee_weapons.briefcase.sounds.charge = "suitcase_charge"
 	self.melee_weapons.briefcase.stats.min_damage = 3
 	self.melee_weapons.briefcase.stats.max_damage = 5.5
 	self.melee_weapons.briefcase.stats.min_damage_effect = 3
@@ -614,8 +597,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.toothbrush.name_id = "bm_melee_toothbrush"
 	self.melee_weapons.toothbrush.dlc = "pd2_clan"
 	self.melee_weapons.toothbrush.locks = {
-		dlc = "pd2_clan",
-		achievement = "bulldog_1"
+		achievement = "bulldog_1",
+		dlc = "pd2_clan"
 	}
 	self.melee_weapons.toothbrush.texture_bundle_folder = nil
 	self.melee_weapons.toothbrush.free = nil
@@ -633,13 +616,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.toothbrush.stats.max_damage_effect = 1
 	self.melee_weapons.toothbrush.stats.charge_time = 2
 	self.melee_weapons.toothbrush.stats.range = 150
-	self.melee_weapons.toothbrush.sounds = {
-		equip = "toothbrush_equip",
-		hit_air = "toothbrush_hit_air",
-		hit_gen = "toothbrush_hit_gen",
-		hit_body = "toothbrush_hit_body",
-		charge = "toothbrush_charge"
-	}
+	self.melee_weapons.toothbrush.sounds = {}
+	self.melee_weapons.toothbrush.sounds.equip = "toothbrush_equip"
+	self.melee_weapons.toothbrush.sounds.hit_air = "toothbrush_hit_air"
+	self.melee_weapons.toothbrush.sounds.hit_gen = "toothbrush_hit_gen"
+	self.melee_weapons.toothbrush.sounds.hit_body = "toothbrush_hit_body"
+	self.melee_weapons.toothbrush.sounds.charge = "toothbrush_charge"
 	self.melee_weapons.toothbrush.repeat_expire_t = 0.3
 	self.melee_weapons.toothbrush.stats.concealment = 30
 	self.melee_weapons.chef = deep_clone(self.melee_weapons.kabar)
@@ -661,13 +643,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.chef.stats.max_damage_effect = 1
 	self.melee_weapons.chef.stats.charge_time = 2
 	self.melee_weapons.chef.stats.range = 150
-	self.melee_weapons.chef.sounds = {
-		equip = "tomahawk_equip",
-		hit_air = "tomahawk_hit_air",
-		hit_gen = "tomahawk_hit_gen",
-		hit_body = "tomahawk_hit_body",
-		charge = "halloween_charge"
-	}
+	self.melee_weapons.chef.sounds = {}
+	self.melee_weapons.chef.sounds.equip = "tomahawk_equip"
+	self.melee_weapons.chef.sounds.hit_air = "tomahawk_hit_air"
+	self.melee_weapons.chef.sounds.hit_gen = "tomahawk_hit_gen"
+	self.melee_weapons.chef.sounds.hit_body = "tomahawk_hit_body"
+	self.melee_weapons.chef.sounds.charge = "halloween_charge"
 	self.melee_weapons.chef.repeat_expire_t = 0.36
 	self.melee_weapons.chef.stats.concealment = 29
 	self.melee_weapons.fairbair = deep_clone(self.melee_weapons.kabar)
@@ -689,13 +670,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.fairbair.stats.max_damage_effect = 1
 	self.melee_weapons.fairbair.stats.charge_time = 2
 	self.melee_weapons.fairbair.stats.range = 175
-	self.melee_weapons.fairbair.sounds = {
-		equip = "knife_equip",
-		hit_air = "fairbairn_hit_air",
-		hit_gen = "knife_hit_gen",
-		hit_body = "fairbairn_hit_body",
-		charge = "knife_charge"
-	}
+	self.melee_weapons.fairbair.sounds = {}
+	self.melee_weapons.fairbair.sounds.equip = "knife_equip"
+	self.melee_weapons.fairbair.sounds.hit_air = "fairbairn_hit_air"
+	self.melee_weapons.fairbair.sounds.hit_gen = "knife_hit_gen"
+	self.melee_weapons.fairbair.sounds.hit_body = "fairbairn_hit_body"
+	self.melee_weapons.fairbair.sounds.charge = "knife_charge"
 	self.melee_weapons.fairbair.repeat_expire_t = 0.3
 	self.melee_weapons.fairbair.stats.concealment = 30
 	self.melee_weapons.freedom = deep_clone(self.melee_weapons.kabar)
@@ -717,13 +697,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.freedom.stats.max_damage_effect = 1
 	self.melee_weapons.freedom.stats.charge_time = 3
 	self.melee_weapons.freedom.stats.range = 275
-	self.melee_weapons.freedom.sounds = {
-		equip = "freedom_equip",
-		hit_air = "freedom_hit_air",
-		hit_gen = "freedom_hit_gen",
-		hit_body = "freedom_hit_body",
-		charge = "freedom_charge"
-	}
+	self.melee_weapons.freedom.sounds = {}
+	self.melee_weapons.freedom.sounds.equip = "freedom_equip"
+	self.melee_weapons.freedom.sounds.hit_air = "freedom_hit_air"
+	self.melee_weapons.freedom.sounds.hit_gen = "freedom_hit_gen"
+	self.melee_weapons.freedom.sounds.hit_body = "freedom_hit_body"
+	self.melee_weapons.freedom.sounds.charge = "freedom_charge"
 	self.melee_weapons.freedom.repeat_expire_t = 0.9
 	self.melee_weapons.freedom.expire_t = 1.3
 	self.melee_weapons.freedom.stats.concealment = 27
@@ -747,13 +726,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.model24.stats.max_damage_effect = 3
 	self.melee_weapons.model24.stats.charge_time = 3
 	self.melee_weapons.model24.stats.range = 185
-	self.melee_weapons.model24.sounds = {
-		equip = "grenade_equip",
-		hit_air = "grenade_hit_air",
-		hit_gen = "grenade_hit_gen",
-		hit_body = "grenade_hit_body",
-		charge = "bat_charge"
-	}
+	self.melee_weapons.model24.sounds = {}
+	self.melee_weapons.model24.sounds.equip = "grenade_equip"
+	self.melee_weapons.model24.sounds.hit_air = "grenade_hit_air"
+	self.melee_weapons.model24.sounds.hit_gen = "grenade_hit_gen"
+	self.melee_weapons.model24.sounds.hit_body = "grenade_hit_body"
+	self.melee_weapons.model24.sounds.charge = "bat_charge"
 	self.melee_weapons.model24.repeat_expire_t = 0.8
 	self.melee_weapons.model24.stats.concealment = 28
 	self.melee_weapons.swagger = deep_clone(self.melee_weapons.kabar)
@@ -775,13 +753,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.swagger.stats.max_damage_effect = 3
 	self.melee_weapons.swagger.stats.charge_time = 3
 	self.melee_weapons.swagger.stats.range = 225
-	self.melee_weapons.swagger.sounds = {
-		equip = "grenade_equip",
-		hit_air = "grenade_hit_air",
-		hit_gen = "swagger_hit_gen",
-		hit_body = "swagger_hit_body",
-		charge = "bat_charge"
-	}
+	self.melee_weapons.swagger.sounds = {}
+	self.melee_weapons.swagger.sounds.equip = "grenade_equip"
+	self.melee_weapons.swagger.sounds.hit_air = "grenade_hit_air"
+	self.melee_weapons.swagger.sounds.hit_gen = "swagger_hit_gen"
+	self.melee_weapons.swagger.sounds.hit_body = "swagger_hit_body"
+	self.melee_weapons.swagger.sounds.charge = "bat_charge"
 	self.melee_weapons.swagger.repeat_expire_t = 0.8
 	self.melee_weapons.swagger.stats.concealment = 28
 	self.melee_weapons.alien_maul = deep_clone(self.melee_weapons.kabar)
@@ -851,8 +828,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.piggy_hammer.stats.concealment = 26
 	self.melee_weapons.piggy_hammer.anims = {
 		charge = {
-			loop = true,
-			anim = "Idle"
+			anim = "Idle",
+			loop = true
 		}
 	}
 	self.melee_weapons.piggy_hammer.menu_scene_anim = "Idle"
@@ -867,12 +844,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			}
 		},
 		{
-			weight = 40,
-			dot_data_name = "melee_piggy_hammer"
+			dot_data_name = "melee_piggy_hammer",
+			weight = 40
 		},
 		{
-			weight = 15,
-			instant_kill = true
+			instant_kill = true,
+			weight = 15
 		}
 	}
 	self.melee_weapons.shillelagh = deep_clone(self.melee_weapons.kabar)
@@ -894,13 +871,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.shillelagh.stats.max_damage_effect = 3
 	self.melee_weapons.shillelagh.stats.charge_time = 3
 	self.melee_weapons.shillelagh.stats.range = 185
-	self.melee_weapons.shillelagh.sounds = {
-		equip = "shillelagh_equip",
-		hit_air = "baton_hit_air",
-		hit_gen = "shillelagh_hit_gen",
-		hit_body = "shillelagh_hit_body",
-		charge = "baton_charge"
-	}
+	self.melee_weapons.shillelagh.sounds = {}
+	self.melee_weapons.shillelagh.sounds.equip = "shillelagh_equip"
+	self.melee_weapons.shillelagh.sounds.hit_air = "baton_hit_air"
+	self.melee_weapons.shillelagh.sounds.hit_gen = "shillelagh_hit_gen"
+	self.melee_weapons.shillelagh.sounds.hit_body = "shillelagh_hit_body"
+	self.melee_weapons.shillelagh.sounds.charge = "baton_charge"
 	self.melee_weapons.shillelagh.repeat_expire_t = 0.8
 	self.melee_weapons.shillelagh.stats.concealment = 27
 	self.melee_weapons.boxing_gloves = deep_clone(self.melee_weapons.fists)
@@ -914,8 +890,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		"a_weapon_right"
 	}
 	self.melee_weapons.boxing_gloves.graphic_objects = {
-		a_weapon_right = "g_glove_1",
-		a_weapon_left = "g_glove_2"
+		a_weapon_left = "g_glove_2",
+		a_weapon_right = "g_glove_1"
 	}
 	self.melee_weapons.boxing_gloves.unit = "units/pd2_hw_boxing/weapons/wpn_fps_mel_boxing_gloves/wpn_fps_mel_boxing_gloves"
 	self.melee_weapons.boxing_gloves.third_unit = "units/pd2_hw_boxing/weapons/wpn_fps_mel_boxing_gloves/wpn_third_mel_boxing_gloves"
@@ -948,13 +924,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.meat_cleaver.unit = "units/pd2_dlc_dragan/weapons/wpn_fps_mel_meat_cleaver/wpn_fps_mel_meat_cleaver"
 	self.melee_weapons.meat_cleaver.third_unit = "units/pd2_dlc_dragan/weapons/wpn_fps_mel_meat_cleaver/wpn_third_mel_meat_cleaver"
-	self.melee_weapons.meat_cleaver.sounds = {
-		equip = "cleaver_equip",
-		hit_air = "cleaver_hit_air",
-		hit_gen = "cleaver_hit_gen",
-		hit_body = "cleaver_hit_body",
-		charge = "cleaver_charge"
-	}
+	self.melee_weapons.meat_cleaver.sounds = {}
+	self.melee_weapons.meat_cleaver.sounds.equip = "cleaver_equip"
+	self.melee_weapons.meat_cleaver.sounds.hit_air = "cleaver_hit_air"
+	self.melee_weapons.meat_cleaver.sounds.hit_gen = "cleaver_hit_gen"
+	self.melee_weapons.meat_cleaver.sounds.hit_body = "cleaver_hit_body"
+	self.melee_weapons.meat_cleaver.sounds.charge = "cleaver_charge"
 	self.melee_weapons.meat_cleaver.stats.min_damage = 3
 	self.melee_weapons.meat_cleaver.stats.max_damage = 8
 	self.melee_weapons.meat_cleaver.stats.min_damage_effect = 1
@@ -981,13 +956,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.hammer.stats.max_damage_effect = 10
 	self.melee_weapons.hammer.stats.charge_time = 3
 	self.melee_weapons.hammer.stats.range = 185
-	self.melee_weapons.hammer.sounds = {
-		equip = "hammer_equip",
-		hit_air = "hammer_hit_air",
-		hit_gen = "hammer_hit_gen",
-		hit_body = "hammer_hit_body",
-		charge = "hammer_charge"
-	}
+	self.melee_weapons.hammer.sounds = {}
+	self.melee_weapons.hammer.sounds.equip = "hammer_equip"
+	self.melee_weapons.hammer.sounds.hit_air = "hammer_hit_air"
+	self.melee_weapons.hammer.sounds.hit_gen = "hammer_hit_gen"
+	self.melee_weapons.hammer.sounds.hit_body = "hammer_hit_body"
+	self.melee_weapons.hammer.sounds.charge = "hammer_charge"
 	self.melee_weapons.hammer.repeat_expire_t = 0.8
 	self.melee_weapons.hammer.stats.concealment = 28
 	self.melee_weapons.whiskey = deep_clone(self.melee_weapons.kabar)
@@ -1014,13 +988,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		loop = false,
 		start_time = -1
 	}
-	self.melee_weapons.whiskey.sounds = {
-		equip = "whiskey_equip",
-		hit_air = "whiskey_hit_air",
-		hit_gen = "whiskey_hit_gen",
-		hit_body = "whiskey_hit_body",
-		charge = "whiskey_charge"
-	}
+	self.melee_weapons.whiskey.sounds = {}
+	self.melee_weapons.whiskey.sounds.equip = "whiskey_equip"
+	self.melee_weapons.whiskey.sounds.hit_air = "whiskey_hit_air"
+	self.melee_weapons.whiskey.sounds.hit_gen = "whiskey_hit_gen"
+	self.melee_weapons.whiskey.sounds.hit_body = "whiskey_hit_body"
+	self.melee_weapons.whiskey.sounds.charge = "whiskey_charge"
 	self.melee_weapons.whiskey.repeat_expire_t = 0.8
 	self.melee_weapons.whiskey.stats.concealment = 30
 	self.melee_weapons.fork = deep_clone(self.melee_weapons.kabar)
@@ -1041,13 +1014,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.fork.stats.max_damage_effect = 1
 	self.melee_weapons.fork.stats.charge_time = 2
 	self.melee_weapons.fork.stats.range = 185
-	self.melee_weapons.fork.sounds = {
-		equip = "bbq_fork_equip",
-		hit_air = "bbq_fork_hit_air",
-		hit_gen = "bbq_fork_hit_gen",
-		hit_body = "bbq_fork_hit_body",
-		charge = "bbq_fork_charge"
-	}
+	self.melee_weapons.fork.sounds = {}
+	self.melee_weapons.fork.sounds.equip = "bbq_fork_equip"
+	self.melee_weapons.fork.sounds.hit_air = "bbq_fork_hit_air"
+	self.melee_weapons.fork.sounds.hit_gen = "bbq_fork_hit_gen"
+	self.melee_weapons.fork.sounds.hit_body = "bbq_fork_hit_body"
+	self.melee_weapons.fork.sounds.charge = "bbq_fork_charge"
 	self.melee_weapons.fork.repeat_expire_t = 0.3
 	self.melee_weapons.fork.stats.concealment = 28
 	self.melee_weapons.poker = deep_clone(self.melee_weapons.kabar)
@@ -1068,13 +1040,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.poker.stats.max_damage_effect = 3
 	self.melee_weapons.poker.stats.charge_time = 3
 	self.melee_weapons.poker.stats.range = 185
-	self.melee_weapons.poker.sounds = {
-		equip = "bbq_poker_equip",
-		hit_air = "bbq_poker_hit_air",
-		hit_gen = "bbq_poker_hit_gen",
-		hit_body = "bbq_poker_hit_body",
-		charge = "bbq_poker_charge"
-	}
+	self.melee_weapons.poker.sounds = {}
+	self.melee_weapons.poker.sounds.equip = "bbq_poker_equip"
+	self.melee_weapons.poker.sounds.hit_air = "bbq_poker_hit_air"
+	self.melee_weapons.poker.sounds.hit_gen = "bbq_poker_hit_gen"
+	self.melee_weapons.poker.sounds.hit_body = "bbq_poker_hit_body"
+	self.melee_weapons.poker.sounds.charge = "bbq_poker_charge"
 	self.melee_weapons.poker.repeat_expire_t = 0.8
 	self.melee_weapons.poker.stats.concealment = 28
 	self.melee_weapons.spatula = deep_clone(self.melee_weapons.kabar)
@@ -1095,13 +1066,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.spatula.stats.max_damage_effect = 2
 	self.melee_weapons.spatula.stats.charge_time = 2
 	self.melee_weapons.spatula.stats.range = 185
-	self.melee_weapons.spatula.sounds = {
-		equip = "bbq_spatula_equip",
-		hit_air = "bbq_spatula_hit_air",
-		hit_gen = "bbq_spatula_hit_gen",
-		hit_body = "bbq_spatula_hit_body",
-		charge = "bbq_spatula_charge"
-	}
+	self.melee_weapons.spatula.sounds = {}
+	self.melee_weapons.spatula.sounds.equip = "bbq_spatula_equip"
+	self.melee_weapons.spatula.sounds.hit_air = "bbq_spatula_hit_air"
+	self.melee_weapons.spatula.sounds.hit_gen = "bbq_spatula_hit_gen"
+	self.melee_weapons.spatula.sounds.hit_body = "bbq_spatula_hit_body"
+	self.melee_weapons.spatula.sounds.charge = "bbq_spatula_charge"
 	self.melee_weapons.spatula.repeat_expire_t = 0.8
 	self.melee_weapons.spatula.stats.concealment = 29
 	self.melee_weapons.tenderizer = deep_clone(self.melee_weapons.kabar)
@@ -1122,13 +1092,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.tenderizer.stats.max_damage_effect = 10
 	self.melee_weapons.tenderizer.stats.charge_time = 3
 	self.melee_weapons.tenderizer.stats.range = 185
-	self.melee_weapons.tenderizer.sounds = {
-		equip = "bbq_tenderizer_equip",
-		hit_air = "bbq_tenderizer_hit_air",
-		hit_gen = "bbq_tenderizer_hit_gen",
-		hit_body = "bbq_tenderizer_hit_body",
-		charge = "bbq_tenderizer_charge"
-	}
+	self.melee_weapons.tenderizer.sounds = {}
+	self.melee_weapons.tenderizer.sounds.equip = "bbq_tenderizer_equip"
+	self.melee_weapons.tenderizer.sounds.hit_air = "bbq_tenderizer_hit_air"
+	self.melee_weapons.tenderizer.sounds.hit_gen = "bbq_tenderizer_hit_gen"
+	self.melee_weapons.tenderizer.sounds.hit_body = "bbq_tenderizer_hit_body"
+	self.melee_weapons.tenderizer.sounds.charge = "bbq_tenderizer_charge"
 	self.melee_weapons.tenderizer.repeat_expire_t = 0.8
 	self.melee_weapons.tenderizer.stats.concealment = 28
 	self.melee_weapons.scalper = deep_clone(self.melee_weapons.tomahawk)
@@ -1152,13 +1121,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.scalper.expire_t = 0.6
 	self.melee_weapons.scalper.repeat_expire_t = 0.8
 	self.melee_weapons.scalper.attack_allowed_expire_t = 0.1
-	self.melee_weapons.scalper.sounds = {
-		equip = "tomahawk_equip",
-		hit_air = "tomahawk_hit_air",
-		hit_gen = "tomahawk_hit_gen",
-		hit_body = "tomahawk_hit_body",
-		charge = "tomahawk_charge"
-	}
+	self.melee_weapons.scalper.sounds = {}
+	self.melee_weapons.scalper.sounds.equip = "tomahawk_equip"
+	self.melee_weapons.scalper.sounds.hit_air = "tomahawk_hit_air"
+	self.melee_weapons.scalper.sounds.hit_gen = "tomahawk_hit_gen"
+	self.melee_weapons.scalper.sounds.hit_body = "tomahawk_hit_body"
+	self.melee_weapons.scalper.sounds.charge = "tomahawk_charge"
 	self.melee_weapons.scalper.stats.concealment = 28
 	self.melee_weapons.mining_pick = deep_clone(self.melee_weapons.tomahawk)
 	self.melee_weapons.mining_pick.name_id = "bm_melee_mining_pick"
@@ -1181,13 +1149,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.mining_pick.expire_t = 1.1
 	self.melee_weapons.mining_pick.repeat_expire_t = 0.8
 	self.melee_weapons.mining_pick.attack_allowed_expire_t = 0.1
-	self.melee_weapons.mining_pick.sounds = {
-		equip = "mining_pick_equip",
-		hit_air = "mining_pick_hit_air",
-		hit_gen = "mining_pick_hit_gen",
-		hit_body = "mining_pick_hit_body",
-		charge = "mining_pick_charge"
-	}
+	self.melee_weapons.mining_pick.sounds = {}
+	self.melee_weapons.mining_pick.sounds.equip = "mining_pick_equip"
+	self.melee_weapons.mining_pick.sounds.hit_air = "mining_pick_hit_air"
+	self.melee_weapons.mining_pick.sounds.hit_gen = "mining_pick_hit_gen"
+	self.melee_weapons.mining_pick.sounds.hit_body = "mining_pick_hit_body"
+	self.melee_weapons.mining_pick.sounds.charge = "mining_pick_charge"
 	self.melee_weapons.mining_pick.stats.concealment = 27
 	self.melee_weapons.branding_iron = deep_clone(self.melee_weapons.tomahawk)
 	self.melee_weapons.branding_iron.name_id = "bm_melee_branding_iron"
@@ -1210,13 +1177,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.branding_iron.expire_t = 1.1
 	self.melee_weapons.branding_iron.repeat_expire_t = 0.8
 	self.melee_weapons.branding_iron.attack_allowed_expire_t = 0.1
-	self.melee_weapons.branding_iron.sounds = {
-		equip = "branding_iron_equip",
-		hit_air = "branding_iron_hit_air",
-		hit_gen = "branding_iron_hit_gen",
-		hit_body = "branding_iron_hit_body",
-		charge = "branding_iron_charge"
-	}
+	self.melee_weapons.branding_iron.sounds = {}
+	self.melee_weapons.branding_iron.sounds.equip = "branding_iron_equip"
+	self.melee_weapons.branding_iron.sounds.hit_air = "branding_iron_hit_air"
+	self.melee_weapons.branding_iron.sounds.hit_gen = "branding_iron_hit_gen"
+	self.melee_weapons.branding_iron.sounds.hit_body = "branding_iron_hit_body"
+	self.melee_weapons.branding_iron.sounds.charge = "branding_iron_charge"
 	self.melee_weapons.branding_iron.stats.concealment = 27
 	self.melee_weapons.bowie = deep_clone(self.melee_weapons.tomahawk)
 	self.melee_weapons.bowie.name_id = "bm_melee_bowie"
@@ -1244,13 +1210,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		loop = false,
 		start_time = -1
 	}
-	self.melee_weapons.bowie.sounds = {
-		equip = "knife_equip",
-		hit_air = "knife_hit_air",
-		hit_gen = "knife_hit_gen",
-		hit_body = "knife_hit_body",
-		charge = "knife_charge"
-	}
+	self.melee_weapons.bowie.sounds = {}
+	self.melee_weapons.bowie.sounds.equip = "knife_equip"
+	self.melee_weapons.bowie.sounds.hit_air = "knife_hit_air"
+	self.melee_weapons.bowie.sounds.hit_gen = "knife_hit_gen"
+	self.melee_weapons.bowie.sounds.hit_body = "knife_hit_body"
+	self.melee_weapons.bowie.sounds.charge = "knife_charge"
 	self.melee_weapons.bowie.stats.concealment = 30
 	self.melee_weapons.microphone = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.microphone.name_id = "bm_melee_microphone"
@@ -1273,13 +1238,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.microphone.expire_t = 1.1
 	self.melee_weapons.microphone.repeat_expire_t = 0.8
 	self.melee_weapons.microphone.attack_allowed_expire_t = 0.1
-	self.melee_weapons.microphone.sounds = {
-		equip = "microphone_equip",
-		hit_air = "microphone_hit_air",
-		hit_gen = "microphone_hit_gen",
-		hit_body = "microphone_hit_body",
-		charge = "microphone_charge"
-	}
+	self.melee_weapons.microphone.sounds = {}
+	self.melee_weapons.microphone.sounds.equip = "microphone_equip"
+	self.melee_weapons.microphone.sounds.hit_air = "microphone_hit_air"
+	self.melee_weapons.microphone.sounds.hit_gen = "microphone_hit_gen"
+	self.melee_weapons.microphone.sounds.hit_body = "microphone_hit_body"
+	self.melee_weapons.microphone.sounds.charge = "microphone_charge"
 	self.melee_weapons.microphone.stats.concealment = 30
 	self.melee_weapons.detector = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.detector.name_id = "bm_melee_detector"
@@ -1302,13 +1266,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.detector.expire_t = 1.1
 	self.melee_weapons.detector.repeat_expire_t = 0.8
 	self.melee_weapons.detector.attack_allowed_expire_t = 0.1
-	self.melee_weapons.detector.sounds = {
-		equip = "metal_detector_equip",
-		hit_air = "metal_detector_hit_air",
-		hit_gen = "metal_detector_hit_gen",
-		hit_body = "metal_detector_hit_body",
-		charge = "metal_detector_charge"
-	}
+	self.melee_weapons.detector.sounds = {}
+	self.melee_weapons.detector.sounds.equip = "metal_detector_equip"
+	self.melee_weapons.detector.sounds.hit_air = "metal_detector_hit_air"
+	self.melee_weapons.detector.sounds.hit_gen = "metal_detector_hit_gen"
+	self.melee_weapons.detector.sounds.hit_body = "metal_detector_hit_body"
+	self.melee_weapons.detector.sounds.charge = "metal_detector_charge"
 	self.melee_weapons.detector.stats.concealment = 29
 	self.melee_weapons.micstand = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.micstand.name_id = "bm_melee_micstand"
@@ -1331,13 +1294,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.micstand.expire_t = 0.8
 	self.melee_weapons.micstand.repeat_expire_t = 0.8
 	self.melee_weapons.micstand.attack_allowed_expire_t = 0.1
-	self.melee_weapons.micstand.sounds = {
-		equip = "mic_stand_equip",
-		hit_air = "mic_stand_hit_air",
-		hit_gen = "mic_stand_hit_gen",
-		hit_body = "mic_stand_hit_body",
-		charge = "mic_stand_charge"
-	}
+	self.melee_weapons.micstand.sounds = {}
+	self.melee_weapons.micstand.sounds.equip = "mic_stand_equip"
+	self.melee_weapons.micstand.sounds.hit_air = "mic_stand_hit_air"
+	self.melee_weapons.micstand.sounds.hit_gen = "mic_stand_hit_gen"
+	self.melee_weapons.micstand.sounds.hit_body = "mic_stand_hit_body"
+	self.melee_weapons.micstand.sounds.charge = "mic_stand_charge"
 	self.melee_weapons.micstand.stats.concealment = 27
 	self.melee_weapons.oldbaton = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.oldbaton.name_id = "bm_melee_oldbaton"
@@ -1360,13 +1322,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.oldbaton.expire_t = 1.1
 	self.melee_weapons.oldbaton.repeat_expire_t = 0.8
 	self.melee_weapons.oldbaton.attack_allowed_expire_t = 0.1
-	self.melee_weapons.oldbaton.sounds = {
-		equip = "copbaton_equip",
-		hit_air = "copbaton_hit_air",
-		hit_gen = "copbaton_hit_gen",
-		hit_body = "copbaton_hit_body",
-		charge = "copbaton_charge"
-	}
+	self.melee_weapons.oldbaton.sounds = {}
+	self.melee_weapons.oldbaton.sounds.equip = "copbaton_equip"
+	self.melee_weapons.oldbaton.sounds.hit_air = "copbaton_hit_air"
+	self.melee_weapons.oldbaton.sounds.hit_gen = "copbaton_hit_gen"
+	self.melee_weapons.oldbaton.sounds.hit_body = "copbaton_hit_body"
+	self.melee_weapons.oldbaton.sounds.charge = "copbaton_charge"
 	self.melee_weapons.oldbaton.stats.concealment = 28
 	self.melee_weapons.hockey = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.hockey.name_id = "bm_melee_hockey"
@@ -1389,13 +1350,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.hockey.expire_t = 0.8
 	self.melee_weapons.hockey.repeat_expire_t = 0.8
 	self.melee_weapons.hockey.attack_allowed_expire_t = 0.1
-	self.melee_weapons.hockey.sounds = {
-		equip = "bat_equip",
-		hit_air = "bat_hit_air",
-		hit_gen = "hockeystick_hit_gen",
-		hit_body = "hockeystick_hit_body",
-		charge = "bat_charge"
-	}
+	self.melee_weapons.hockey.sounds = {}
+	self.melee_weapons.hockey.sounds.equip = "bat_equip"
+	self.melee_weapons.hockey.sounds.hit_air = "bat_hit_air"
+	self.melee_weapons.hockey.sounds.hit_gen = "hockeystick_hit_gen"
+	self.melee_weapons.hockey.sounds.hit_body = "hockeystick_hit_body"
+	self.melee_weapons.hockey.sounds.charge = "bat_charge"
 	self.melee_weapons.hockey.stats.concealment = 27
 	self.melee_weapons.switchblade = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.switchblade.name_id = "bm_melee_switchblade"
@@ -1408,13 +1368,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.switchblade.unit = "units/pd2_dlc_casino/weapons/wpn_fps_mel_switchblade/wpn_fps_mel_switchblade"
 	self.melee_weapons.switchblade.third_unit = "units/pd2_dlc_casino/weapons/wpn_third_mel_switchblade/wpn_third_mel_switchblade"
-	self.melee_weapons.switchblade.sounds = {
-		equip = "toothbrush_equip",
-		hit_air = "toothbrush_hit_air",
-		hit_gen = "toothbrush_hit_gen",
-		hit_body = "toothbrush_hit_body",
-		charge = "toothbrush_charge"
-	}
+	self.melee_weapons.switchblade.sounds = {}
+	self.melee_weapons.switchblade.sounds.equip = "toothbrush_equip"
+	self.melee_weapons.switchblade.sounds.hit_air = "toothbrush_hit_air"
+	self.melee_weapons.switchblade.sounds.hit_gen = "toothbrush_hit_gen"
+	self.melee_weapons.switchblade.sounds.hit_body = "toothbrush_hit_body"
+	self.melee_weapons.switchblade.sounds.charge = "toothbrush_charge"
 	self.melee_weapons.switchblade.stats.min_damage = 3
 	self.melee_weapons.switchblade.stats.max_damage = 8
 	self.melee_weapons.switchblade.stats.min_damage_effect = 1
@@ -1440,13 +1399,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.taser.unit = "units/pd2_dlc_casino/weapons/wpn_fps_mel_taser/wpn_fps_mel_taser"
 	self.melee_weapons.taser.third_unit = "units/pd2_dlc_casino/weapons/wpn_third_mel_taser/wpn_third_mel_taser"
-	self.melee_weapons.taser.sounds = {
-		equip = "buzzer_detector_equip",
-		hit_air = "buzzer_detector_hit_air",
-		hit_gen = "buzzer_detector_hit_gen",
-		hit_body = "buzzer_detector_hit_body",
-		charge = "buzzer_charge"
-	}
+	self.melee_weapons.taser.sounds = {}
+	self.melee_weapons.taser.sounds.equip = "buzzer_detector_equip"
+	self.melee_weapons.taser.sounds.hit_air = "buzzer_detector_hit_air"
+	self.melee_weapons.taser.sounds.hit_gen = "buzzer_detector_hit_gen"
+	self.melee_weapons.taser.sounds.hit_body = "buzzer_detector_hit_body"
+	self.melee_weapons.taser.sounds.charge = "buzzer_charge"
 	self.melee_weapons.taser.stats.min_damage = 2
 	self.melee_weapons.taser.stats.max_damage = 2
 	self.melee_weapons.taser.stats.min_damage_effect = 1
@@ -1468,13 +1426,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.slot_lever.unit = "units/pd2_dlc_casino/weapons/wpn_fps_mel_slot_lever/wpn_fps_mel_slot_lever"
 	self.melee_weapons.slot_lever.third_unit = "units/pd2_dlc_casino/weapons/wpn_third_mel_slot_lever/wpn_third_mel_slot_lever"
-	self.melee_weapons.slot_lever.sounds = {
-		equip = "slot_lever_equip",
-		hit_air = "slot_lever_hit_air",
-		hit_gen = "slot_lever_hit_gen",
-		hit_body = "slot_lever_hit_body",
-		charge = "slot_lever_charge"
-	}
+	self.melee_weapons.slot_lever.sounds = {}
+	self.melee_weapons.slot_lever.sounds.equip = "slot_lever_equip"
+	self.melee_weapons.slot_lever.sounds.hit_air = "slot_lever_hit_air"
+	self.melee_weapons.slot_lever.sounds.hit_gen = "slot_lever_hit_gen"
+	self.melee_weapons.slot_lever.sounds.hit_body = "slot_lever_hit_body"
+	self.melee_weapons.slot_lever.sounds.charge = "slot_lever_charge"
 	self.melee_weapons.slot_lever.stats.min_damage = 3
 	self.melee_weapons.slot_lever.stats.max_damage = 9
 	self.melee_weapons.slot_lever.stats.min_damage_effect = 5
@@ -1496,13 +1453,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.croupier_rake.unit = "units/pd2_dlc_casino/weapons/wpn_fps_mel_croupier_rake/wpn_fps_mel_croupier_rake"
 	self.melee_weapons.croupier_rake.third_unit = "units/pd2_dlc_casino/weapons/wpn_third_mel_croupier_rake/wpn_third_mel_croupier_rake"
-	self.melee_weapons.croupier_rake.sounds = {
-		equip = "croupier_stick_equip",
-		hit_air = "croupier_stick_hit_air",
-		hit_gen = "croupier_stick_hit_gen",
-		hit_body = "croupier_stick_hit_body",
-		charge = "croupier_stick_charge"
-	}
+	self.melee_weapons.croupier_rake.sounds = {}
+	self.melee_weapons.croupier_rake.sounds.equip = "croupier_stick_equip"
+	self.melee_weapons.croupier_rake.sounds.hit_air = "croupier_stick_hit_air"
+	self.melee_weapons.croupier_rake.sounds.hit_gen = "croupier_stick_hit_gen"
+	self.melee_weapons.croupier_rake.sounds.hit_body = "croupier_stick_hit_body"
+	self.melee_weapons.croupier_rake.sounds.charge = "croupier_stick_charge"
 	self.melee_weapons.croupier_rake.stats.min_damage = 3
 	self.melee_weapons.croupier_rake.stats.max_damage = 9
 	self.melee_weapons.croupier_rake.stats.min_damage_effect = 5
@@ -1513,17 +1469,16 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.croupier_rake.expire_t = 0.6
 	self.melee_weapons.croupier_rake.repeat_expire_t = 0.7
 	self.melee_weapons.croupier_rake.melee_damage_delay = 0.1
-	self.melee_weapons.fight = {
-		name_id = "bm_melee_fight",
-		type = "fists",
-		unit = "units/pd2_dlc_turtles/weapons/wpn_fps_mel_fight/wpn_fps_mel_fight",
-		third_unit = "units/pd2_dlc_turtles/weapons/wpn_fps_mel_fight/wpn_fps_mel_fight",
-		no_inventory_preview = true,
-		free = nil,
-		dlc = "turtles",
-		texture_bundle_folder = "turtles",
-		stats = {}
-	}
+	self.melee_weapons.fight = {}
+	self.melee_weapons.fight.name_id = "bm_melee_fight"
+	self.melee_weapons.fight.type = "fists"
+	self.melee_weapons.fight.unit = "units/pd2_dlc_turtles/weapons/wpn_fps_mel_fight/wpn_fps_mel_fight"
+	self.melee_weapons.fight.third_unit = "units/pd2_dlc_turtles/weapons/wpn_fps_mel_fight/wpn_fps_mel_fight"
+	self.melee_weapons.fight.no_inventory_preview = true
+	self.melee_weapons.fight.free = nil
+	self.melee_weapons.fight.dlc = "turtles"
+	self.melee_weapons.fight.texture_bundle_folder = "turtles"
+	self.melee_weapons.fight.stats = {}
 	self.melee_weapons.fight.stats.min_damage = 3
 	self.melee_weapons.fight.stats.max_damage = 5.5
 	self.melee_weapons.fight.stats.min_damage_effect = 3
@@ -1544,13 +1499,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.fight.repeat_expire_t = 0.55
 	self.melee_weapons.fight.melee_damage_delay = 0.1
 	self.melee_weapons.fight.melee_charge_shaker = "player_melee_charge_fist"
-	self.melee_weapons.fight.sounds = {
-		equip = "fight_equip",
-		hit_air = "fight_hit_air",
-		hit_gen = "fight_hit_gen",
-		hit_body = "fight_hit_body",
-		charge = "fight_charge"
-	}
+	self.melee_weapons.fight.sounds = {}
+	self.melee_weapons.fight.sounds.equip = "fight_equip"
+	self.melee_weapons.fight.sounds.hit_air = "fight_hit_air"
+	self.melee_weapons.fight.sounds.hit_gen = "fight_hit_gen"
+	self.melee_weapons.fight.sounds.hit_body = "fight_hit_body"
+	self.melee_weapons.fight.sounds.charge = "fight_charge"
 	self.melee_weapons.fight.stats.concealment = 30
 	self.melee_weapons.tiger = deep_clone(self.melee_weapons.fists)
 	self.melee_weapons.tiger.name_id = "bm_melee_tiger"
@@ -1599,13 +1553,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.cqc.stats.max_damage_effect = 1
 	self.melee_weapons.cqc.stats.charge_time = 2
 	self.melee_weapons.cqc.stats.range = 150
-	self.melee_weapons.cqc.sounds = {
-		equip = "cqc_equip",
-		hit_air = "cqc_hit_air",
-		hit_gen = "cqc_hit_gen",
-		hit_body = "cqc_hit_body",
-		charge = "cqc_charge"
-	}
+	self.melee_weapons.cqc.sounds = {}
+	self.melee_weapons.cqc.sounds.equip = "cqc_equip"
+	self.melee_weapons.cqc.sounds.hit_air = "cqc_hit_air"
+	self.melee_weapons.cqc.sounds.hit_gen = "cqc_hit_gen"
+	self.melee_weapons.cqc.sounds.hit_body = "cqc_hit_body"
+	self.melee_weapons.cqc.sounds.charge = "cqc_charge"
 	self.melee_weapons.cqc.repeat_expire_t = 0.3
 	self.melee_weapons.cqc.stats.concealment = 30
 	self.melee_weapons.twins = deep_clone(self.melee_weapons.kabar)
@@ -1628,282 +1581,267 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.twins.stats.max_damage_effect = 1
 	self.melee_weapons.twins.stats.charge_time = 2
 	self.melee_weapons.twins.stats.range = 200
-	self.melee_weapons.twins.sounds = {
-		equip = "twin_equip",
-		hit_air = "twin_hit_air",
-		hit_gen = "twin_hit_gen",
-		hit_body = "twin_hit_body",
-		charge = "twin_charge"
-	}
+	self.melee_weapons.twins.sounds = {}
+	self.melee_weapons.twins.sounds.equip = "twin_equip"
+	self.melee_weapons.twins.sounds.hit_air = "twin_hit_air"
+	self.melee_weapons.twins.sounds.hit_gen = "twin_hit_gen"
+	self.melee_weapons.twins.sounds.hit_body = "twin_hit_body"
+	self.melee_weapons.twins.sounds.charge = "twin_charge"
 	self.melee_weapons.twins.repeat_expire_t = 0.6
 	self.melee_weapons.twins.stats.concealment = 29
-	self.melee_weapons.sandsteel = {
-		name_id = "bm_melee_sandsteel",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_sandsteel",
-		dlc = "dragon",
-		texture_bundle_folder = "dragon",
-		type = "axe",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_dragon/weapons/wpn_fps_mel_sandsteel/wpn_fps_mel_sandsteel",
-		third_unit = "units/pd2_dlc_dragon/weapons/wpn_fps_mel_sandsteel/wpn_third_mel_sandsteel",
-		sounds = {}
+	self.melee_weapons.sandsteel = {}
+	self.melee_weapons.sandsteel.name_id = "bm_melee_sandsteel"
+	self.melee_weapons.sandsteel.animation = nil
+	self.melee_weapons.sandsteel.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.sandsteel.anim_global_param = "melee_sandsteel"
+	self.melee_weapons.sandsteel.dlc = "dragon"
+	self.melee_weapons.sandsteel.texture_bundle_folder = "dragon"
+	self.melee_weapons.sandsteel.type = "axe"
+	self.melee_weapons.sandsteel.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.sandsteel.unit = "units/pd2_dlc_dragon/weapons/wpn_fps_mel_sandsteel/wpn_fps_mel_sandsteel"
+	self.melee_weapons.sandsteel.third_unit = "units/pd2_dlc_dragon/weapons/wpn_fps_mel_sandsteel/wpn_third_mel_sandsteel"
+	self.melee_weapons.sandsteel.sounds = {}
 	self.melee_weapons.sandsteel.sounds.equip = "sandsteel_equip"
 	self.melee_weapons.sandsteel.sounds.hit_air = "sandsteel_hit_air"
 	self.melee_weapons.sandsteel.sounds.hit_gen = "sandsteel_hit_gen"
 	self.melee_weapons.sandsteel.sounds.hit_body = "sandsteel_hit_body"
 	self.melee_weapons.sandsteel.sounds.charge = "sandsteel_charge"
-	self.melee_weapons.sandsteel.stats = {
-		weapon_type = "sharp",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 275,
-		concealment = 27,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.sandsteel.stats = {}
+	self.melee_weapons.sandsteel.stats.weapon_type = "sharp"
+	self.melee_weapons.sandsteel.stats.min_damage = 7
+	self.melee_weapons.sandsteel.stats.max_damage = 45
+	self.melee_weapons.sandsteel.stats.min_damage_effect = 1
+	self.melee_weapons.sandsteel.stats.max_damage_effect = 1
+	self.melee_weapons.sandsteel.stats.charge_time = 4
+	self.melee_weapons.sandsteel.stats.range = 275
+	self.melee_weapons.sandsteel.stats.concealment = 27
+	self.melee_weapons.sandsteel.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.sandsteel.repeat_expire_t = 0.5
 	self.melee_weapons.sandsteel.expire_t = 1
 	self.melee_weapons.sandsteel.melee_damage_delay = 0.1
-	self.melee_weapons.great = {
-		name_id = "bm_melee_great",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_great",
-		dlc = "steel",
-		texture_bundle_folder = "steel",
-		type = "sword",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_great/wpn_fps_mel_great",
-		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_great/wpn_third_mel_great",
-		sounds = {}
+	self.melee_weapons.great = {}
+	self.melee_weapons.great.name_id = "bm_melee_great"
+	self.melee_weapons.great.animation = nil
+	self.melee_weapons.great.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.great.anim_global_param = "melee_great"
+	self.melee_weapons.great.dlc = "steel"
+	self.melee_weapons.great.texture_bundle_folder = "steel"
+	self.melee_weapons.great.type = "sword"
+	self.melee_weapons.great.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.great.unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_great/wpn_fps_mel_great"
+	self.melee_weapons.great.third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_great/wpn_third_mel_great"
+	self.melee_weapons.great.sounds = {}
 	self.melee_weapons.great.sounds.equip = "great_equip"
 	self.melee_weapons.great.sounds.hit_air = "great_hit_air"
 	self.melee_weapons.great.sounds.hit_gen = "great_hit_gen"
 	self.melee_weapons.great.sounds.hit_body = "great_hit_body"
 	self.melee_weapons.great.sounds.charge = "great_charge"
-	self.melee_weapons.great.stats = {
-		weapon_type = "sharp",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 275,
-		concealment = 27,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.great.stats = {}
+	self.melee_weapons.great.stats.weapon_type = "sharp"
+	self.melee_weapons.great.stats.min_damage = 7
+	self.melee_weapons.great.stats.max_damage = 45
+	self.melee_weapons.great.stats.min_damage_effect = 1
+	self.melee_weapons.great.stats.max_damage_effect = 1
+	self.melee_weapons.great.stats.charge_time = 4
+	self.melee_weapons.great.stats.range = 275
+	self.melee_weapons.great.stats.concealment = 27
+	self.melee_weapons.great.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.great.repeat_expire_t = 1.1
 	self.melee_weapons.great.expire_t = 1.5
 	self.melee_weapons.great.melee_damage_delay = 0.6
-	self.melee_weapons.beardy = {
-		name_id = "bm_melee_beardy",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3"
-		},
-		anim_global_param = "melee_beardy",
-		dlc = "steel",
-		texture_bundle_folder = "steel",
-		type = "axe",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_beardy/wpn_fps_mel_beardy",
-		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_beardy/wpn_third_mel_beardy",
-		sounds = {}
+	self.melee_weapons.beardy = {}
+	self.melee_weapons.beardy.name_id = "bm_melee_beardy"
+	self.melee_weapons.beardy.animation = nil
+	self.melee_weapons.beardy.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3"
 	}
+	self.melee_weapons.beardy.anim_global_param = "melee_beardy"
+	self.melee_weapons.beardy.dlc = "steel"
+	self.melee_weapons.beardy.texture_bundle_folder = "steel"
+	self.melee_weapons.beardy.type = "axe"
+	self.melee_weapons.beardy.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.beardy.unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_beardy/wpn_fps_mel_beardy"
+	self.melee_weapons.beardy.third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_beardy/wpn_third_mel_beardy"
+	self.melee_weapons.beardy.sounds = {}
 	self.melee_weapons.beardy.sounds.equip = "beardy_equip"
 	self.melee_weapons.beardy.sounds.hit_air = "beardy_hit_air"
 	self.melee_weapons.beardy.sounds.hit_gen = "beardy_hit_gen"
 	self.melee_weapons.beardy.sounds.hit_body = "beardy_hit_body"
 	self.melee_weapons.beardy.sounds.charge = "beardy_charge"
-	self.melee_weapons.beardy.stats = {
-		weapon_type = "sharp",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 250,
-		concealment = 26,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.beardy.stats = {}
+	self.melee_weapons.beardy.stats.weapon_type = "sharp"
+	self.melee_weapons.beardy.stats.min_damage = 7
+	self.melee_weapons.beardy.stats.max_damage = 45
+	self.melee_weapons.beardy.stats.min_damage_effect = 1
+	self.melee_weapons.beardy.stats.max_damage_effect = 1
+	self.melee_weapons.beardy.stats.charge_time = 4
+	self.melee_weapons.beardy.stats.range = 250
+	self.melee_weapons.beardy.stats.concealment = 26
+	self.melee_weapons.beardy.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.beardy.repeat_expire_t = 1.1
 	self.melee_weapons.beardy.expire_t = 1.5
 	self.melee_weapons.beardy.melee_damage_delay = 0.6
-	self.melee_weapons.buck = {
-		name_id = "bm_melee_buck",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2"
-		},
-		anim_global_param = "melee_buck",
-		dlc = "steel",
-		texture_bundle_folder = "steel",
-		type = "axe",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_buck/wpn_fps_mel_buck",
-		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_buck/wpn_third_mel_buck",
-		sounds = {}
+	self.melee_weapons.buck = {}
+	self.melee_weapons.buck.name_id = "bm_melee_buck"
+	self.melee_weapons.buck.animation = nil
+	self.melee_weapons.buck.anim_attack_vars = {
+		"var1",
+		"var2"
 	}
+	self.melee_weapons.buck.anim_global_param = "melee_buck"
+	self.melee_weapons.buck.dlc = "steel"
+	self.melee_weapons.buck.texture_bundle_folder = "steel"
+	self.melee_weapons.buck.type = "axe"
+	self.melee_weapons.buck.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.buck.unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_buck/wpn_fps_mel_buck"
+	self.melee_weapons.buck.third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_buck/wpn_third_mel_buck"
+	self.melee_weapons.buck.sounds = {}
 	self.melee_weapons.buck.sounds.equip = "buck_equip"
 	self.melee_weapons.buck.sounds.hit_air = "buck_hit_air"
 	self.melee_weapons.buck.sounds.hit_gen = "buck_hit_gen"
 	self.melee_weapons.buck.sounds.hit_body = "buck_hit_body"
 	self.melee_weapons.buck.sounds.charge = "buck_charge"
-	self.melee_weapons.buck.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 5.5,
-		min_damage_effect = 3,
-		max_damage_effect = 2,
-		charge_time = 2,
-		range = 175,
-		concealment = 28,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.buck.stats = {}
+	self.melee_weapons.buck.stats.weapon_type = "sharp"
+	self.melee_weapons.buck.stats.min_damage = 3
+	self.melee_weapons.buck.stats.max_damage = 5.5
+	self.melee_weapons.buck.stats.min_damage_effect = 3
+	self.melee_weapons.buck.stats.max_damage_effect = 2
+	self.melee_weapons.buck.stats.charge_time = 2
+	self.melee_weapons.buck.stats.range = 175
+	self.melee_weapons.buck.stats.concealment = 28
+	self.melee_weapons.buck.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.buck.repeat_expire_t = 0.9
 	self.melee_weapons.buck.expire_t = 1.4
 	self.melee_weapons.buck.melee_damage_delay = 0.4
-	self.melee_weapons.morning = {
-		name_id = "bm_melee_morning",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_axe",
-		dlc = "steel",
-		texture_bundle_folder = "steel",
-		type = "axe",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_morning/wpn_fps_mel_morning",
-		third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_morning/wpn_third_mel_morning",
-		sounds = {}
+	self.melee_weapons.morning = {}
+	self.melee_weapons.morning.name_id = "bm_melee_morning"
+	self.melee_weapons.morning.animation = nil
+	self.melee_weapons.morning.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.morning.anim_global_param = "melee_axe"
+	self.melee_weapons.morning.dlc = "steel"
+	self.melee_weapons.morning.texture_bundle_folder = "steel"
+	self.melee_weapons.morning.type = "axe"
+	self.melee_weapons.morning.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.morning.unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_morning/wpn_fps_mel_morning"
+	self.melee_weapons.morning.third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_mel_morning/wpn_third_mel_morning"
+	self.melee_weapons.morning.sounds = {}
 	self.melee_weapons.morning.sounds.equip = "morning_equip"
 	self.melee_weapons.morning.sounds.hit_air = "morning_hit_air"
 	self.melee_weapons.morning.sounds.hit_gen = "morning_hit_gen"
 	self.melee_weapons.morning.sounds.hit_body = "morning_hit_body"
 	self.melee_weapons.morning.sounds.charge = "morning_charge"
-	self.melee_weapons.morning.stats = {
-		weapon_type = "sharp",
-		min_damage = 2,
-		max_damage = 4,
-		min_damage_effect = 10,
-		max_damage_effect = 10,
-		charge_time = 3,
-		range = 225,
-		concealment = 26,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.morning.stats = {}
+	self.melee_weapons.morning.stats.weapon_type = "sharp"
+	self.melee_weapons.morning.stats.min_damage = 2
+	self.melee_weapons.morning.stats.max_damage = 4
+	self.melee_weapons.morning.stats.min_damage_effect = 10
+	self.melee_weapons.morning.stats.max_damage_effect = 10
+	self.melee_weapons.morning.stats.charge_time = 3
+	self.melee_weapons.morning.stats.range = 225
+	self.melee_weapons.morning.stats.concealment = 26
+	self.melee_weapons.morning.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.morning.repeat_expire_t = 0.5
 	self.melee_weapons.morning.expire_t = 1.1
 	self.melee_weapons.morning.melee_damage_delay = 0.1
-	self.melee_weapons.cutters = {
-		name_id = "bm_melee_boltcutter",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_cutters",
-		texture_bundle_folder = "nails",
-		free = nil,
-		type = "axe",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_nails/weapons/wpn_fps_mel_cutters/wpn_fps_mel_cutters",
-		third_unit = "units/pd2_dlc_nails/weapons/wpn_fps_mel_cutters/wpn_third_mel_cutters",
-		sounds = {}
+	self.melee_weapons.cutters = {}
+	self.melee_weapons.cutters.name_id = "bm_melee_boltcutter"
+	self.melee_weapons.cutters.animation = nil
+	self.melee_weapons.cutters.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.cutters.anim_global_param = "melee_cutters"
+	self.melee_weapons.cutters.texture_bundle_folder = "nails"
+	self.melee_weapons.cutters.free = nil
+	self.melee_weapons.cutters.type = "axe"
+	self.melee_weapons.cutters.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.cutters.unit = "units/pd2_dlc_nails/weapons/wpn_fps_mel_cutters/wpn_fps_mel_cutters"
+	self.melee_weapons.cutters.third_unit = "units/pd2_dlc_nails/weapons/wpn_fps_mel_cutters/wpn_third_mel_cutters"
+	self.melee_weapons.cutters.sounds = {}
 	self.melee_weapons.cutters.sounds.equip = "mining_pick_equip"
 	self.melee_weapons.cutters.sounds.hit_air = "mining_pick_hit_air"
 	self.melee_weapons.cutters.sounds.hit_gen = "cutters_hit_gen"
 	self.melee_weapons.cutters.sounds.hit_body = "cutters_hit_body"
 	self.melee_weapons.cutters.sounds.charge = "mining_pick_charge"
-	self.melee_weapons.cutters.stats = {
-		weapon_type = "blunt",
-		min_damage = 3,
-		max_damage = 9,
-		min_damage_effect = 5,
-		max_damage_effect = 3,
-		charge_time = 3,
-		range = 275,
-		concealment = 27,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.cutters.stats = {}
+	self.melee_weapons.cutters.stats.weapon_type = "blunt"
+	self.melee_weapons.cutters.stats.min_damage = 3
+	self.melee_weapons.cutters.stats.max_damage = 9
+	self.melee_weapons.cutters.stats.min_damage_effect = 5
+	self.melee_weapons.cutters.stats.max_damage_effect = 3
+	self.melee_weapons.cutters.stats.charge_time = 3
+	self.melee_weapons.cutters.stats.range = 275
+	self.melee_weapons.cutters.stats.concealment = 27
+	self.melee_weapons.cutters.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.cutters.repeat_expire_t = 0.8
 	self.melee_weapons.cutters.expire_t = 1.2
 	self.melee_weapons.cutters.melee_damage_delay = 0.3
-	self.melee_weapons.boxcutter = {
-		name_id = "bm_melee_boxcutter",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_boxcutter",
-		texture_bundle_folder = "rip",
-		dlc = "rvd",
-		free = nil,
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_rip/weapons/wpn_fps_mel_boxcutter/wpn_fps_mel_boxcutter",
-		third_unit = "units/pd2_dlc_rip/weapons/wpn_fps_mel_boxcutter/wpn_third_mel_boxcutter",
-		sounds = {}
+	self.melee_weapons.boxcutter = {}
+	self.melee_weapons.boxcutter.name_id = "bm_melee_boxcutter"
+	self.melee_weapons.boxcutter.animation = nil
+	self.melee_weapons.boxcutter.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.boxcutter.anim_global_param = "melee_boxcutter"
+	self.melee_weapons.boxcutter.texture_bundle_folder = "rip"
+	self.melee_weapons.boxcutter.dlc = "rvd"
+	self.melee_weapons.boxcutter.free = nil
+	self.melee_weapons.boxcutter.type = "knife"
+	self.melee_weapons.boxcutter.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.boxcutter.unit = "units/pd2_dlc_rip/weapons/wpn_fps_mel_boxcutter/wpn_fps_mel_boxcutter"
+	self.melee_weapons.boxcutter.third_unit = "units/pd2_dlc_rip/weapons/wpn_fps_mel_boxcutter/wpn_third_mel_boxcutter"
+	self.melee_weapons.boxcutter.sounds = {}
 	self.melee_weapons.boxcutter.sounds.equip = "boxcutter_equip"
 	self.melee_weapons.boxcutter.sounds.hit_air = "boxcutter_hit_air"
 	self.melee_weapons.boxcutter.sounds.hit_gen = "boxcutter_hit_gen"
 	self.melee_weapons.boxcutter.sounds.hit_body = "boxcutter_hit_body"
 	self.melee_weapons.boxcutter.sounds.charge = "boxcutter_charge"
-	self.melee_weapons.boxcutter.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 185,
-		concealment = 30
-	}
+	self.melee_weapons.boxcutter.stats = {}
+	self.melee_weapons.boxcutter.stats.weapon_type = "sharp"
+	self.melee_weapons.boxcutter.stats.min_damage = 3
+	self.melee_weapons.boxcutter.stats.max_damage = 8
+	self.melee_weapons.boxcutter.stats.min_damage_effect = 1
+	self.melee_weapons.boxcutter.stats.max_damage_effect = 1
+	self.melee_weapons.boxcutter.stats.charge_time = 2
+	self.melee_weapons.boxcutter.stats.range = 185
+	self.melee_weapons.boxcutter.stats.concealment = 30
 	self.melee_weapons.boxcutter.repeat_expire_t = 0.8
 	self.melee_weapons.boxcutter.expire_t = 0.5
 	self.melee_weapons.boxcutter.melee_damage_delay = 0.16
@@ -1914,13 +1852,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.selfie.stats.weapon_type = "blunt"
 	self.melee_weapons.selfie.dlc = "berry"
 	self.melee_weapons.selfie.texture_bundle_folder = "berry"
-	self.melee_weapons.selfie.sounds = {
-		equip = "selfie_equip",
-		hit_air = "baton_hit_air",
-		hit_gen = "selfie_hit_gen",
-		hit_body = "selfie_hit_body",
-		charge = "baton_charge"
-	}
+	self.melee_weapons.selfie.sounds = {}
+	self.melee_weapons.selfie.sounds.equip = "selfie_equip"
+	self.melee_weapons.selfie.sounds.hit_air = "baton_hit_air"
+	self.melee_weapons.selfie.sounds.hit_gen = "selfie_hit_gen"
+	self.melee_weapons.selfie.sounds.hit_body = "selfie_hit_body"
+	self.melee_weapons.selfie.sounds.charge = "baton_charge"
 	self.melee_weapons.selfie.stats.min_damage = 3
 	self.melee_weapons.selfie.stats.max_damage = 9
 	self.melee_weapons.selfie.stats.min_damage_effect = 5
@@ -1936,13 +1873,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.iceaxe.stats.weapon_type = "sharp"
 	self.melee_weapons.iceaxe.dlc = "berry"
 	self.melee_weapons.iceaxe.texture_bundle_folder = "berry"
-	self.melee_weapons.iceaxe.sounds = {
-		equip = "mining_pick_equip",
-		hit_air = "mining_pick_hit_air",
-		hit_gen = "mining_pick_hit_gen",
-		hit_body = "mining_pick_hit_body",
-		charge = "mining_pick_charge"
-	}
+	self.melee_weapons.iceaxe.sounds = {}
+	self.melee_weapons.iceaxe.sounds.equip = "mining_pick_equip"
+	self.melee_weapons.iceaxe.sounds.hit_air = "mining_pick_hit_air"
+	self.melee_weapons.iceaxe.sounds.hit_gen = "mining_pick_hit_gen"
+	self.melee_weapons.iceaxe.sounds.hit_body = "mining_pick_hit_body"
+	self.melee_weapons.iceaxe.sounds.charge = "mining_pick_charge"
 	self.melee_weapons.iceaxe.stats.min_damage = 7
 	self.melee_weapons.iceaxe.stats.max_damage = 45
 	self.melee_weapons.iceaxe.stats.min_damage_effect = 1
@@ -1957,13 +1893,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.gator.third_unit = "units/pd2_dlc_berry/weapons/wpn_third_mel_gator/wpn_third_mel_gator"
 	self.melee_weapons.gator.dlc = "berry"
 	self.melee_weapons.gator.texture_bundle_folder = "berry"
-	self.melee_weapons.gator.sounds = {
-		equip = "machete_equip",
-		hit_air = "machete_hit_air",
-		hit_gen = "machete_hit_gen",
-		hit_body = "machete_hit_body",
-		charge = "machete_charge"
-	}
+	self.melee_weapons.gator.sounds = {}
+	self.melee_weapons.gator.sounds.equip = "machete_equip"
+	self.melee_weapons.gator.sounds.hit_air = "machete_hit_air"
+	self.melee_weapons.gator.sounds.hit_gen = "machete_hit_gen"
+	self.melee_weapons.gator.sounds.hit_body = "machete_hit_body"
+	self.melee_weapons.gator.sounds.charge = "machete_charge"
 	self.melee_weapons.gator.stats.min_damage = 3
 	self.melee_weapons.gator.stats.max_damage = 8
 	self.melee_weapons.gator.stats.min_damage_effect = 1
@@ -1984,13 +1919,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.pugio.unit = "units/pd2_dlc_berry/weapons/wpn_fps_mel_pugio/wpn_fps_mel_pugio"
 	self.melee_weapons.pugio.third_unit = "units/pd2_dlc_berry/weapons/wpn_fps_mel_pugio/wpn_third_mel_pugio"
-	self.melee_weapons.pugio.sounds = {
-		equip = "cqc_equip",
-		hit_air = "cqc_hit_air",
-		hit_gen = "cqc_hit_gen",
-		hit_body = "cqc_hit_body",
-		charge = "cqc_charge"
-	}
+	self.melee_weapons.pugio.sounds = {}
+	self.melee_weapons.pugio.sounds.equip = "cqc_equip"
+	self.melee_weapons.pugio.sounds.hit_air = "cqc_hit_air"
+	self.melee_weapons.pugio.sounds.hit_gen = "cqc_hit_gen"
+	self.melee_weapons.pugio.sounds.hit_body = "cqc_hit_body"
+	self.melee_weapons.pugio.sounds.charge = "cqc_charge"
 	self.melee_weapons.pugio.stats.min_damage = 3
 	self.melee_weapons.pugio.stats.max_damage = 8
 	self.melee_weapons.pugio.stats.min_damage_effect = 1
@@ -2001,197 +1935,187 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.pugio.repeat_expire_t = 0.3
 	self.melee_weapons.pugio.expire_t = 1
 	self.melee_weapons.pugio.melee_damage_delay = 0.1
-	self.melee_weapons.shawn = {
-		name_id = "bm_melee_shawn",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_psycho",
-		dlc = "peta",
-		texture_bundle_folder = "peta",
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_shawn/wpn_fps_mel_shawn",
-		third_unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_shawn/wpn_third_mel_shawn",
-		sounds = {}
+	self.melee_weapons.shawn = {}
+	self.melee_weapons.shawn.name_id = "bm_melee_shawn"
+	self.melee_weapons.shawn.animation = nil
+	self.melee_weapons.shawn.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.shawn.anim_global_param = "melee_psycho"
+	self.melee_weapons.shawn.dlc = "peta"
+	self.melee_weapons.shawn.texture_bundle_folder = "peta"
+	self.melee_weapons.shawn.type = "knife"
+	self.melee_weapons.shawn.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.shawn.unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_shawn/wpn_fps_mel_shawn"
+	self.melee_weapons.shawn.third_unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_shawn/wpn_third_mel_shawn"
+	self.melee_weapons.shawn.sounds = {}
 	self.melee_weapons.shawn.sounds.equip = "scis_equip"
 	self.melee_weapons.shawn.sounds.hit_air = "scis_hit_air"
 	self.melee_weapons.shawn.sounds.hit_gen = "scis_hit_gen"
 	self.melee_weapons.shawn.sounds.hit_body = "scis_hit_body"
 	self.melee_weapons.shawn.sounds.charge = "scis_charge"
-	self.melee_weapons.shawn.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 150,
-		concealment = 29,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.shawn.stats = {}
+	self.melee_weapons.shawn.stats.weapon_type = "sharp"
+	self.melee_weapons.shawn.stats.min_damage = 3
+	self.melee_weapons.shawn.stats.max_damage = 8
+	self.melee_weapons.shawn.stats.min_damage_effect = 1
+	self.melee_weapons.shawn.stats.max_damage_effect = 1
+	self.melee_weapons.shawn.stats.charge_time = 2
+	self.melee_weapons.shawn.stats.range = 150
+	self.melee_weapons.shawn.stats.concealment = 29
+	self.melee_weapons.shawn.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.shawn.repeat_expire_t = 0.36
 	self.melee_weapons.shawn.expire_t = 1.8
-	self.melee_weapons.stick = {
-		name_id = "bm_melee_stick",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_baseballbat",
-		dlc = "peta",
-		texture_bundle_folder = "peta",
-		type = "blunt",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_stick/wpn_fps_mel_stick",
-		third_unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_stick/wpn_third_mel_stick",
-		sounds = {}
+	self.melee_weapons.stick = {}
+	self.melee_weapons.stick.name_id = "bm_melee_stick"
+	self.melee_weapons.stick.animation = nil
+	self.melee_weapons.stick.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.stick.anim_global_param = "melee_baseballbat"
+	self.melee_weapons.stick.dlc = "peta"
+	self.melee_weapons.stick.texture_bundle_folder = "peta"
+	self.melee_weapons.stick.type = "blunt"
+	self.melee_weapons.stick.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.stick.unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_stick/wpn_fps_mel_stick"
+	self.melee_weapons.stick.third_unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_stick/wpn_third_mel_stick"
+	self.melee_weapons.stick.sounds = {}
 	self.melee_weapons.stick.sounds.equip = "stick_equip"
 	self.melee_weapons.stick.sounds.hit_air = "stick_hit_air"
 	self.melee_weapons.stick.sounds.hit_gen = "stick_hit_gen"
 	self.melee_weapons.stick.sounds.hit_body = "stick_hit_body"
 	self.melee_weapons.stick.sounds.charge = "stick_charge"
-	self.melee_weapons.stick.stats = {
-		weapon_type = "blunt",
-		min_damage = 3,
-		max_damage = 9,
-		min_damage_effect = 5,
-		max_damage_effect = 3,
-		charge_time = 3,
-		range = 225,
-		concealment = 27,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.stick.stats = {}
+	self.melee_weapons.stick.stats.weapon_type = "blunt"
+	self.melee_weapons.stick.stats.min_damage = 3
+	self.melee_weapons.stick.stats.max_damage = 9
+	self.melee_weapons.stick.stats.min_damage_effect = 5
+	self.melee_weapons.stick.stats.max_damage_effect = 3
+	self.melee_weapons.stick.stats.charge_time = 3
+	self.melee_weapons.stick.stats.range = 225
+	self.melee_weapons.stick.stats.concealment = 27
+	self.melee_weapons.stick.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.stick.repeat_expire_t = 0.8
 	self.melee_weapons.stick.expire_t = 1.8
 	self.melee_weapons.stick.melee_damage_delay = 0.2
-	self.melee_weapons.pitchfork = {
-		name_id = "bm_melee_pitchfork",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_pitchfork",
-		dlc = "peta",
-		texture_bundle_folder = "peta",
-		type = "flag",
-		align_objects = {
-			"a_weapon_left"
-		},
-		unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_fork/wpn_fps_mel_pitchfork",
-		third_unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_fork/wpn_third_mel_pitchfork",
-		sounds = {}
+	self.melee_weapons.pitchfork = {}
+	self.melee_weapons.pitchfork.name_id = "bm_melee_pitchfork"
+	self.melee_weapons.pitchfork.animation = nil
+	self.melee_weapons.pitchfork.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.pitchfork.anim_global_param = "melee_pitchfork"
+	self.melee_weapons.pitchfork.dlc = "peta"
+	self.melee_weapons.pitchfork.texture_bundle_folder = "peta"
+	self.melee_weapons.pitchfork.type = "flag"
+	self.melee_weapons.pitchfork.align_objects = {
+		"a_weapon_left"
+	}
+	self.melee_weapons.pitchfork.unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_fork/wpn_fps_mel_pitchfork"
+	self.melee_weapons.pitchfork.third_unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_fork/wpn_third_mel_pitchfork"
+	self.melee_weapons.pitchfork.sounds = {}
 	self.melee_weapons.pitchfork.sounds.equip = "pitchfork_equip"
 	self.melee_weapons.pitchfork.sounds.hit_air = "pitchfork_hit_air"
 	self.melee_weapons.pitchfork.sounds.hit_gen = "pitchfork_hit_gen"
 	self.melee_weapons.pitchfork.sounds.hit_body = "pitchfork_hit_body"
 	self.melee_weapons.pitchfork.sounds.charge = "pitchfork_charge"
-	self.melee_weapons.pitchfork.stats = {
-		weapon_type = "sharp",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 225,
-		concealment = 27,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.pitchfork.stats = {}
+	self.melee_weapons.pitchfork.stats.weapon_type = "sharp"
+	self.melee_weapons.pitchfork.stats.min_damage = 7
+	self.melee_weapons.pitchfork.stats.max_damage = 45
+	self.melee_weapons.pitchfork.stats.min_damage_effect = 1
+	self.melee_weapons.pitchfork.stats.max_damage_effect = 1
+	self.melee_weapons.pitchfork.stats.charge_time = 4
+	self.melee_weapons.pitchfork.stats.range = 225
+	self.melee_weapons.pitchfork.stats.concealment = 27
+	self.melee_weapons.pitchfork.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.pitchfork.repeat_expire_t = 0.8
 	self.melee_weapons.pitchfork.expire_t = 1.8
 	self.melee_weapons.pitchfork.melee_damage_delay = 0.3
-	self.melee_weapons.scoutknife = {
-		name_id = "bm_melee_scoutknife",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_knife",
-		dlc = "peta",
-		texture_bundle_folder = "peta",
-		type = "knife",
-		align_objects = {
-			"a_weapon_left"
-		},
-		unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_scoutknife/wpn_fps_mel_scoutknife",
-		third_unit = "units/pd2_dlc_peta/weapons/wpn_third_mel_scoutknife/wpn_third_mel_scoutknife",
-		sounds = {}
+	self.melee_weapons.scoutknife = {}
+	self.melee_weapons.scoutknife.name_id = "bm_melee_scoutknife"
+	self.melee_weapons.scoutknife.animation = nil
+	self.melee_weapons.scoutknife.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.scoutknife.anim_global_param = "melee_knife"
+	self.melee_weapons.scoutknife.dlc = "peta"
+	self.melee_weapons.scoutknife.texture_bundle_folder = "peta"
+	self.melee_weapons.scoutknife.type = "knife"
+	self.melee_weapons.scoutknife.align_objects = {
+		"a_weapon_left"
+	}
+	self.melee_weapons.scoutknife.unit = "units/pd2_dlc_peta/weapons/wpn_fps_mel_scoutknife/wpn_fps_mel_scoutknife"
+	self.melee_weapons.scoutknife.third_unit = "units/pd2_dlc_peta/weapons/wpn_third_mel_scoutknife/wpn_third_mel_scoutknife"
+	self.melee_weapons.scoutknife.sounds = {}
 	self.melee_weapons.scoutknife.sounds.equip = "knife_equip"
 	self.melee_weapons.scoutknife.sounds.hit_air = "knife_hit_air"
 	self.melee_weapons.scoutknife.sounds.hit_gen = "knife_hit_gen"
 	self.melee_weapons.scoutknife.sounds.hit_body = "knife_hit_body"
 	self.melee_weapons.scoutknife.sounds.charge = "knife_charge"
-	self.melee_weapons.scoutknife.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 150,
-		concealment = 29,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.scoutknife.stats = {}
+	self.melee_weapons.scoutknife.stats.weapon_type = "sharp"
+	self.melee_weapons.scoutknife.stats.min_damage = 3
+	self.melee_weapons.scoutknife.stats.max_damage = 8
+	self.melee_weapons.scoutknife.stats.min_damage_effect = 1
+	self.melee_weapons.scoutknife.stats.max_damage_effect = 1
+	self.melee_weapons.scoutknife.stats.charge_time = 2
+	self.melee_weapons.scoutknife.stats.range = 150
+	self.melee_weapons.scoutknife.stats.concealment = 29
+	self.melee_weapons.scoutknife.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.scoutknife.repeat_expire_t = 0.36
 	self.melee_weapons.scoutknife.expire_t = 1.2
-	self.melee_weapons.nin = {
-		name_id = "bm_melee_nin",
-		animation = nil,
-		hit_pre_calculation = true,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_nin",
-		dlc = "pal",
-		texture_bundle_folder = "lupus",
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_lupus/weapons/wpn_fps_mel_nin/wpn_fps_mel_nin",
-		third_unit = "units/pd2_dlc_lupus/weapons/wpn_fps_mel_nin/wpn_third_mel_nin",
-		sounds = {}
+	self.melee_weapons.nin = {}
+	self.melee_weapons.nin.name_id = "bm_melee_nin"
+	self.melee_weapons.nin.animation = nil
+	self.melee_weapons.nin.hit_pre_calculation = true
+	self.melee_weapons.nin.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.nin.anim_global_param = "melee_nin"
+	self.melee_weapons.nin.dlc = "pal"
+	self.melee_weapons.nin.texture_bundle_folder = "lupus"
+	self.melee_weapons.nin.type = "knife"
+	self.melee_weapons.nin.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.nin.unit = "units/pd2_dlc_lupus/weapons/wpn_fps_mel_nin/wpn_fps_mel_nin"
+	self.melee_weapons.nin.third_unit = "units/pd2_dlc_lupus/weapons/wpn_fps_mel_nin/wpn_third_mel_nin"
+	self.melee_weapons.nin.sounds = {}
 	self.melee_weapons.nin.sounds.equip = "nin_equip"
 	self.melee_weapons.nin.sounds.hit_air = "nin_hit_air"
 	self.melee_weapons.nin.sounds.hit_gen = "nin_hit_gen"
 	self.melee_weapons.nin.sounds.hit_body = "nin_hit_body"
 	self.melee_weapons.nin.sounds.charge = "nin_charge"
-	self.melee_weapons.nin.stats = {
-		weapon_type = "sharp",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 185,
-		concealment = 27,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.nin.stats = {}
+	self.melee_weapons.nin.stats.weapon_type = "sharp"
+	self.melee_weapons.nin.stats.min_damage = 7
+	self.melee_weapons.nin.stats.max_damage = 45
+	self.melee_weapons.nin.stats.min_damage_effect = 1
+	self.melee_weapons.nin.stats.max_damage_effect = 1
+	self.melee_weapons.nin.stats.charge_time = 4
+	self.melee_weapons.nin.stats.range = 185
+	self.melee_weapons.nin.stats.concealment = 27
+	self.melee_weapons.nin.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.nin.repeat_expire_t = 0.65
 	self.melee_weapons.nin.expire_t = 1.2
 	self.melee_weapons.nin.melee_damage_delay = 0.1
@@ -2215,13 +2139,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.ballistic.stats.max_damage_effect = 1
 	self.melee_weapons.ballistic.stats.charge_time = 2
 	self.melee_weapons.ballistic.stats.range = 200
-	self.melee_weapons.ballistic.sounds = {
-		equip = "twin_equip",
-		hit_air = "twin_hit_air",
-		hit_gen = "twin_hit_gen",
-		hit_body = "twin_hit_body",
-		charge = "twin_charge"
-	}
+	self.melee_weapons.ballistic.sounds = {}
+	self.melee_weapons.ballistic.sounds.equip = "twin_equip"
+	self.melee_weapons.ballistic.sounds.hit_air = "twin_hit_air"
+	self.melee_weapons.ballistic.sounds.hit_gen = "twin_hit_gen"
+	self.melee_weapons.ballistic.sounds.hit_body = "twin_hit_body"
+	self.melee_weapons.ballistic.sounds.charge = "twin_charge"
 	self.melee_weapons.ballistic.repeat_expire_t = 0.6
 	self.melee_weapons.ballistic.stats.concealment = 29
 	self.melee_weapons.zeus = deep_clone(self.melee_weapons.fists)
@@ -2252,27 +2175,26 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.zeus.sounds.hit_body = "zeus_hit_body"
 	self.melee_weapons.zeus.sounds.charge = "zeus_charge"
 	self.melee_weapons.zeus.stats.concealment = 30
-	self.melee_weapons.wing = {
-		name_id = "bm_melee_wing",
-		animation = nil,
-		hit_pre_calculation = true,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_wing",
-		dlc = "opera",
-		texture_bundle_folder = "opera",
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_opera/weapons/wpn_fps_mel_wing/wpn_fps_mel_wing",
-		third_unit = "units/pd2_dlc_opera/weapons/wpn_fps_mel_wing/wpn_third_mel_wing",
-		sounds = {}
+	self.melee_weapons.wing = {}
+	self.melee_weapons.wing.name_id = "bm_melee_wing"
+	self.melee_weapons.wing.animation = nil
+	self.melee_weapons.wing.hit_pre_calculation = true
+	self.melee_weapons.wing.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.wing.anim_global_param = "melee_wing"
+	self.melee_weapons.wing.dlc = "opera"
+	self.melee_weapons.wing.texture_bundle_folder = "opera"
+	self.melee_weapons.wing.type = "knife"
+	self.melee_weapons.wing.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.wing.unit = "units/pd2_dlc_opera/weapons/wpn_fps_mel_wing/wpn_fps_mel_wing"
+	self.melee_weapons.wing.third_unit = "units/pd2_dlc_opera/weapons/wpn_fps_mel_wing/wpn_third_mel_wing"
+	self.melee_weapons.wing.sounds = {}
 	self.melee_weapons.wing.sounds.equip = "wing_equip"
 	self.melee_weapons.wing.sounds.hit_air = {
 		"wing_hit_air",
@@ -2294,17 +2216,16 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.wing.sounds.charge = "wing_charge"
 	self.melee_weapons.wing.melee_charge_shaker = "player_melee_charge_wing"
-	self.melee_weapons.wing.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 185,
-		concealment = 30,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.wing.stats = {}
+	self.melee_weapons.wing.stats.weapon_type = "sharp"
+	self.melee_weapons.wing.stats.min_damage = 3
+	self.melee_weapons.wing.stats.max_damage = 8
+	self.melee_weapons.wing.stats.min_damage_effect = 1
+	self.melee_weapons.wing.stats.max_damage_effect = 1
+	self.melee_weapons.wing.stats.charge_time = 2
+	self.melee_weapons.wing.stats.range = 185
+	self.melee_weapons.wing.stats.concealment = 30
+	self.melee_weapons.wing.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.wing.repeat_expire_t = 0.85
 	self.melee_weapons.wing.expire_t = 1.2
 	self.melee_weapons.wing.melee_damage_delay = 0.1
@@ -2322,50 +2243,48 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			anim = "var4"
 		},
 		charge = {
-			loop = true,
-			anim = "charge"
+			anim = "charge",
+			loop = true
 		}
 	}
 	self.melee_weapons.wing.anims.var1_attack_hit = self.melee_weapons.wing.anims.var1_attack
 	self.melee_weapons.wing.anims.var2_attack_hit = self.melee_weapons.wing.anims.var2_attack
 	self.melee_weapons.wing.anims.var3_attack_hit = self.melee_weapons.wing.anims.var3_attack
 	self.melee_weapons.wing.anims.var4_attack_hit = self.melee_weapons.wing.anims.var4_attack
-	self.melee_weapons.road = {
-		name_id = "bm_melee_road",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_road",
-		dlc = "wild",
-		texture_bundle_folder = "wild",
-		type = "axe",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_wild/weapons/wpn_fps_mel_road/wpn_fps_mel_road",
-		third_unit = "units/pd2_dlc_wild/weapons/wpn_fps_mel_road/wpn_third_mel_road",
-		sounds = {}
+	self.melee_weapons.road = {}
+	self.melee_weapons.road.name_id = "bm_melee_road"
+	self.melee_weapons.road.animation = nil
+	self.melee_weapons.road.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.road.anim_global_param = "melee_road"
+	self.melee_weapons.road.dlc = "wild"
+	self.melee_weapons.road.texture_bundle_folder = "wild"
+	self.melee_weapons.road.type = "axe"
+	self.melee_weapons.road.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.road.unit = "units/pd2_dlc_wild/weapons/wpn_fps_mel_road/wpn_fps_mel_road"
+	self.melee_weapons.road.third_unit = "units/pd2_dlc_wild/weapons/wpn_fps_mel_road/wpn_third_mel_road"
+	self.melee_weapons.road.sounds = {}
 	self.melee_weapons.road.sounds.equip = "road_equip"
 	self.melee_weapons.road.sounds.hit_air = "road_hit_air"
 	self.melee_weapons.road.sounds.hit_gen = "road_hit_gen"
 	self.melee_weapons.road.sounds.hit_body = "road_hit_body"
 	self.melee_weapons.road.sounds.charge = "road_charge"
-	self.melee_weapons.road.stats = {
-		weapon_type = "blunt",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 185,
-		concealment = 29,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.road.stats = {}
+	self.melee_weapons.road.stats.weapon_type = "blunt"
+	self.melee_weapons.road.stats.min_damage = 7
+	self.melee_weapons.road.stats.max_damage = 45
+	self.melee_weapons.road.stats.min_damage_effect = 1
+	self.melee_weapons.road.stats.max_damage_effect = 1
+	self.melee_weapons.road.stats.charge_time = 4
+	self.melee_weapons.road.stats.range = 185
+	self.melee_weapons.road.stats.concealment = 29
+	self.melee_weapons.road.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.road.repeat_expire_t = 2
 	self.melee_weapons.road.expire_t = 1.2
 	self.melee_weapons.road.melee_damage_delay = 0.4
@@ -2383,126 +2302,120 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			anim = "var2"
 		},
 		charge = {
-			loop = true,
-			anim = "charge"
+			anim = "charge",
+			loop = true
 		}
 	}
-	self.melee_weapons.cs = {
-		name_id = "bm_melee_cs",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_cs",
-		dlc = "chico",
-		texture_bundle_folder = "chico",
-		type = "blunt",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_chico/weapons/wpn_fps_mel_cs/wpn_fps_mel_cs",
-		third_unit = "units/pd2_dlc_chico/weapons/wpn_fps_mel_cs/wpn_third_mel_cs",
-		sounds = {}
+	self.melee_weapons.cs = {}
+	self.melee_weapons.cs.name_id = "bm_melee_cs"
+	self.melee_weapons.cs.animation = nil
+	self.melee_weapons.cs.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.cs.anim_global_param = "melee_cs"
+	self.melee_weapons.cs.dlc = "chico"
+	self.melee_weapons.cs.texture_bundle_folder = "chico"
+	self.melee_weapons.cs.type = "blunt"
+	self.melee_weapons.cs.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.cs.unit = "units/pd2_dlc_chico/weapons/wpn_fps_mel_cs/wpn_fps_mel_cs"
+	self.melee_weapons.cs.third_unit = "units/pd2_dlc_chico/weapons/wpn_fps_mel_cs/wpn_third_mel_cs"
+	self.melee_weapons.cs.sounds = {}
 	self.melee_weapons.cs.sounds.equip = "cs_equip"
 	self.melee_weapons.cs.sounds.hit_air = "cs_hit_air"
 	self.melee_weapons.cs.sounds.hit_gen = "cs_hit_gen"
 	self.melee_weapons.cs.sounds.hit_body = "cs_hit_body"
 	self.melee_weapons.cs.sounds.charge = "cs_charge"
-	self.melee_weapons.cs.stats = {
-		weapon_type = "blunt",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 185,
-		concealment = 25,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.cs.stats = {}
+	self.melee_weapons.cs.stats.weapon_type = "blunt"
+	self.melee_weapons.cs.stats.min_damage = 7
+	self.melee_weapons.cs.stats.max_damage = 45
+	self.melee_weapons.cs.stats.min_damage_effect = 1
+	self.melee_weapons.cs.stats.max_damage_effect = 1
+	self.melee_weapons.cs.stats.charge_time = 4
+	self.melee_weapons.cs.stats.range = 185
+	self.melee_weapons.cs.stats.concealment = 25
+	self.melee_weapons.cs.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.cs.repeat_expire_t = 2
 	self.melee_weapons.cs.expire_t = 1.2
 	self.melee_weapons.cs.melee_damage_delay = 0.35
-	self.melee_weapons.brick = {
-		name_id = "bm_melee_brick",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var1",
-			"var2"
-		},
-		anim_global_param = "melee_brick",
-		dlc = "friend",
-		texture_bundle_folder = "friend",
-		type = "blunt",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_friend/weapons/wpn_fps_mel_brick/wpn_fps_mel_brick",
-		third_unit = "units/pd2_dlc_friend/weapons/wpn_fps_mel_brick/wpn_third_mel_brick",
-		sounds = {}
+	self.melee_weapons.brick = {}
+	self.melee_weapons.brick.name_id = "bm_melee_brick"
+	self.melee_weapons.brick.animation = nil
+	self.melee_weapons.brick.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var1",
+		"var2"
 	}
+	self.melee_weapons.brick.anim_global_param = "melee_brick"
+	self.melee_weapons.brick.dlc = "friend"
+	self.melee_weapons.brick.texture_bundle_folder = "friend"
+	self.melee_weapons.brick.type = "blunt"
+	self.melee_weapons.brick.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.brick.unit = "units/pd2_dlc_friend/weapons/wpn_fps_mel_brick/wpn_fps_mel_brick"
+	self.melee_weapons.brick.third_unit = "units/pd2_dlc_friend/weapons/wpn_fps_mel_brick/wpn_third_mel_brick"
+	self.melee_weapons.brick.sounds = {}
 	self.melee_weapons.brick.sounds.equip = "brick_equip"
 	self.melee_weapons.brick.sounds.hit_air = "brick_hit_air"
 	self.melee_weapons.brick.sounds.hit_gen = "brick_hit_gen"
 	self.melee_weapons.brick.sounds.hit_body = "brick_hit_body"
 	self.melee_weapons.brick.sounds.charge = "brick_charge"
-	self.melee_weapons.brick.stats = {
-		weapon_type = "blunt",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 185,
-		concealment = 30,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.brick.stats = {}
+	self.melee_weapons.brick.stats.weapon_type = "blunt"
+	self.melee_weapons.brick.stats.min_damage = 3
+	self.melee_weapons.brick.stats.max_damage = 8
+	self.melee_weapons.brick.stats.min_damage_effect = 1
+	self.melee_weapons.brick.stats.max_damage_effect = 1
+	self.melee_weapons.brick.stats.charge_time = 2
+	self.melee_weapons.brick.stats.range = 185
+	self.melee_weapons.brick.stats.concealment = 30
+	self.melee_weapons.brick.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.brick.repeat_expire_t = 2
 	self.melee_weapons.brick.expire_t = 1.2
 	self.melee_weapons.brick.melee_damage_delay = 0.06
-	self.melee_weapons.ostry = {
-		name_id = "bm_melee_ostry",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var2"
-		},
-		anim_global_param = "melee_ostry",
-		free = true,
-		dlc = "sha",
-		texture_bundle_folder = "pd2_clan",
-		type = "knife",
-		align_objects = {
-			"a_weapon_left",
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_sha/weapons/wpn_fps_mel_ostry/wpn_fps_mel_ostry",
-		third_unit = "units/pd2_dlc_sha/weapons/wpn_fps_mel_ostry/wpn_third_mel_ostry",
-		sounds = {}
+	self.melee_weapons.ostry = {}
+	self.melee_weapons.ostry.name_id = "bm_melee_ostry"
+	self.melee_weapons.ostry.animation = nil
+	self.melee_weapons.ostry.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var2"
 	}
+	self.melee_weapons.ostry.anim_global_param = "melee_ostry"
+	self.melee_weapons.ostry.free = true
+	self.melee_weapons.ostry.dlc = "sha"
+	self.melee_weapons.ostry.texture_bundle_folder = "pd2_clan"
+	self.melee_weapons.ostry.type = "knife"
+	self.melee_weapons.ostry.align_objects = {
+		"a_weapon_left",
+		"a_weapon_right"
+	}
+	self.melee_weapons.ostry.unit = "units/pd2_dlc_sha/weapons/wpn_fps_mel_ostry/wpn_fps_mel_ostry"
+	self.melee_weapons.ostry.third_unit = "units/pd2_dlc_sha/weapons/wpn_fps_mel_ostry/wpn_third_mel_ostry"
+	self.melee_weapons.ostry.sounds = {}
 	self.melee_weapons.ostry.sounds.equip = "ostry_equip"
 	self.melee_weapons.ostry.sounds.hit_air = "ostry_hit_air"
 	self.melee_weapons.ostry.sounds.hit_gen = "ostry_hit_gen"
 	self.melee_weapons.ostry.sounds.hit_body = "ostry_hit_body"
 	self.melee_weapons.ostry.sounds.charge = "ostry_charge"
-	self.melee_weapons.ostry.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 200,
-		concealment = 28,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.ostry.stats = {}
+	self.melee_weapons.ostry.stats.weapon_type = "sharp"
+	self.melee_weapons.ostry.stats.min_damage = 3
+	self.melee_weapons.ostry.stats.max_damage = 8
+	self.melee_weapons.ostry.stats.min_damage_effect = 1
+	self.melee_weapons.ostry.stats.max_damage_effect = 1
+	self.melee_weapons.ostry.stats.charge_time = 2
+	self.melee_weapons.ostry.stats.range = 200
+	self.melee_weapons.ostry.stats.concealment = 28
+	self.melee_weapons.ostry.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.ostry.repeat_expire_t = 0.4
 	self.melee_weapons.ostry.expire_t = 0.6
 	self.melee_weapons.ostry.melee_damage_delay = 0.11
@@ -2511,42 +2424,40 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		loop = false,
 		start_time = -1
 	}
-	self.melee_weapons.catch = {
-		name_id = "bm_melee_catch",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var2"
-		},
-		anim_global_param = "melee_catch",
-		dlc = "spa",
-		texture_bundle_folder = "spa",
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_spa/weapons/wpn_fps_mel_catch/wpn_fps_mel_catch",
-		third_unit = "units/pd2_dlc_spa/weapons/wpn_fps_mel_catch/wpn_third_mel_catch",
-		sounds = {}
+	self.melee_weapons.catch = {}
+	self.melee_weapons.catch.name_id = "bm_melee_catch"
+	self.melee_weapons.catch.animation = nil
+	self.melee_weapons.catch.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var2"
 	}
+	self.melee_weapons.catch.anim_global_param = "melee_catch"
+	self.melee_weapons.catch.dlc = "spa"
+	self.melee_weapons.catch.texture_bundle_folder = "spa"
+	self.melee_weapons.catch.type = "knife"
+	self.melee_weapons.catch.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.catch.unit = "units/pd2_dlc_spa/weapons/wpn_fps_mel_catch/wpn_fps_mel_catch"
+	self.melee_weapons.catch.third_unit = "units/pd2_dlc_spa/weapons/wpn_fps_mel_catch/wpn_third_mel_catch"
+	self.melee_weapons.catch.sounds = {}
 	self.melee_weapons.catch.sounds.equip = "catch_equip"
 	self.melee_weapons.catch.sounds.hit_air = "catch_hit_air"
 	self.melee_weapons.catch.sounds.hit_gen = "catch_hit_gen"
 	self.melee_weapons.catch.sounds.hit_body = "catch_hit_body"
 	self.melee_weapons.catch.sounds.charge = "catch_charge"
-	self.melee_weapons.catch.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 200,
-		concealment = 28,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.catch.stats = {}
+	self.melee_weapons.catch.stats.weapon_type = "sharp"
+	self.melee_weapons.catch.stats.min_damage = 3
+	self.melee_weapons.catch.stats.max_damage = 8
+	self.melee_weapons.catch.stats.min_damage_effect = 1
+	self.melee_weapons.catch.stats.max_damage_effect = 1
+	self.melee_weapons.catch.stats.charge_time = 2
+	self.melee_weapons.catch.stats.range = 200
+	self.melee_weapons.catch.stats.concealment = 28
+	self.melee_weapons.catch.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.catch.repeat_expire_t = 0.4
 	self.melee_weapons.catch.expire_t = 0.6
 	self.melee_weapons.catch.melee_damage_delay = 0.11
@@ -2556,13 +2467,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.oxide.third_unit = "units/pd2_dlc_grv/weapons/wpn_fps_mel_oxide/wpn_third_mel_oxide"
 	self.melee_weapons.oxide.dlc = "grv"
 	self.melee_weapons.oxide.texture_bundle_folder = "grv"
-	self.melee_weapons.oxide.sounds = {
-		equip = "oxide_equip",
-		hit_air = "oxide_hit_air",
-		hit_gen = "oxide_hit_gen",
-		hit_body = "oxide_hit_body",
-		charge = "machete_charge"
-	}
+	self.melee_weapons.oxide.sounds = {}
+	self.melee_weapons.oxide.sounds.equip = "oxide_equip"
+	self.melee_weapons.oxide.sounds.hit_air = "oxide_hit_air"
+	self.melee_weapons.oxide.sounds.hit_gen = "oxide_hit_gen"
+	self.melee_weapons.oxide.sounds.hit_body = "oxide_hit_body"
+	self.melee_weapons.oxide.sounds.charge = "machete_charge"
 	self.melee_weapons.oxide.stats.min_damage = 7
 	self.melee_weapons.oxide.stats.max_damage = 45
 	self.melee_weapons.oxide.stats.min_damage_effect = 1
@@ -2590,13 +2500,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.sword.stats.max_damage_effect = 1
 	self.melee_weapons.sword.stats.charge_time = 2
 	self.melee_weapons.sword.stats.range = 150
-	self.melee_weapons.sword.sounds = {
-		equip = "sword_equip",
-		hit_air = "sword_hit_air",
-		hit_gen = "sword_hit_gen",
-		hit_body = "sword_hit_body",
-		charge = "toothbrush_charge"
-	}
+	self.melee_weapons.sword.sounds = {}
+	self.melee_weapons.sword.sounds.equip = "sword_equip"
+	self.melee_weapons.sword.sounds.hit_air = "sword_hit_air"
+	self.melee_weapons.sword.sounds.hit_gen = "sword_hit_gen"
+	self.melee_weapons.sword.sounds.hit_body = "sword_hit_body"
+	self.melee_weapons.sword.sounds.charge = "toothbrush_charge"
 	self.melee_weapons.sword.repeat_expire_t = 0.3
 	self.melee_weapons.sword.stats.concealment = 30
 	self.melee_weapons.agave = deep_clone(self.melee_weapons.machete)
@@ -2617,13 +2526,12 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.agave.third_unit = "units/pd2_dlc_max/weapons/wpn_fps_mel_agave/wpn_third_mel_agave"
 	self.melee_weapons.agave.dlc = nil
 	self.melee_weapons.agave.texture_bundle_folder = "max"
-	self.melee_weapons.agave.sounds = {
-		equip = "agave_equip",
-		hit_air = "agave_hit_air",
-		hit_gen = "agave_hit_gen",
-		hit_body = "agave_hit_body",
-		charge = "knife_charge"
-	}
+	self.melee_weapons.agave.sounds = {}
+	self.melee_weapons.agave.sounds.equip = "agave_equip"
+	self.melee_weapons.agave.sounds.hit_air = "agave_hit_air"
+	self.melee_weapons.agave.sounds.hit_gen = "agave_hit_gen"
+	self.melee_weapons.agave.sounds.hit_body = "agave_hit_body"
+	self.melee_weapons.agave.sounds.charge = "knife_charge"
 	self.melee_weapons.agave.stats.min_damage = 7
 	self.melee_weapons.agave.stats.max_damage = 45
 	self.melee_weapons.agave.stats.min_damage_effect = 1
@@ -2646,29 +2554,27 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.happy.anim_global_param = "melee_happy"
 	self.melee_weapons.happy.dlc = "joy"
 	self.melee_weapons.happy.texture_bundle_folder = "joy"
-	self.melee_weapons.happy.stats = {
-		min_damage = 3,
-		max_damage = 9,
-		min_damage_effect = 5,
-		max_damage_effect = 3,
-		charge_time = 3,
-		range = 250,
-		remove_weapon_movement_penalty = true,
-		weapon_type = "blunt"
-	}
+	self.melee_weapons.happy.stats = {}
+	self.melee_weapons.happy.stats.min_damage = 3
+	self.melee_weapons.happy.stats.max_damage = 9
+	self.melee_weapons.happy.stats.min_damage_effect = 5
+	self.melee_weapons.happy.stats.max_damage_effect = 3
+	self.melee_weapons.happy.stats.charge_time = 3
+	self.melee_weapons.happy.stats.range = 250
+	self.melee_weapons.happy.stats.remove_weapon_movement_penalty = true
+	self.melee_weapons.happy.stats.weapon_type = "blunt"
 	self.melee_weapons.happy.anim_attack_vars = {
 		"var1"
 	}
 	self.melee_weapons.happy.repeat_expire_t = 0.6
 	self.melee_weapons.happy.expire_t = 0.7
 	self.melee_weapons.happy.melee_damage_delay = 0.1
-	self.melee_weapons.happy.sounds = {
-		equip = "baton_equip_02",
-		hit_air = "baton_hit_air",
-		hit_gen = "baton_hit_gen",
-		hit_body = "baton_hit_body",
-		charge = "baton_charge"
-	}
+	self.melee_weapons.happy.sounds = {}
+	self.melee_weapons.happy.sounds.equip = "baton_equip_02"
+	self.melee_weapons.happy.sounds.hit_air = "baton_hit_air"
+	self.melee_weapons.happy.sounds.hit_gen = "baton_hit_gen"
+	self.melee_weapons.happy.sounds.hit_body = "baton_hit_body"
+	self.melee_weapons.happy.sounds.charge = "baton_charge"
 	self.melee_weapons.happy.stats.concealment = 30
 	self.melee_weapons.happy.anims = {
 		var1_attack = {
@@ -2702,8 +2608,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.push.stats.concealment = 30
 	self.melee_weapons.push.texture_bundle_folder = "old"
 	self.melee_weapons.push.graphic_objects = {
-		a_weapon_right = "g_push",
-		a_weapon_left = "g_push_left"
+		a_weapon_left = "g_push_left",
+		a_weapon_right = "g_push"
 	}
 	self.melee_weapons.push.menu_scene_anim = "menu"
 	self.melee_weapons.push.menu_scene_params = {
@@ -2751,8 +2657,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.grip.texture_bundle_folder = "old"
 	self.melee_weapons.grip.graphic_objects = {
-		a_weapon_right = "g_grip",
-		a_weapon_left = "g_grip_left"
+		a_weapon_left = "g_grip_left",
+		a_weapon_right = "g_grip"
 	}
 	self.melee_weapons.grip.menu_scene_anim = "menu"
 	self.melee_weapons.grip.menu_scene_params = {
@@ -2771,50 +2677,47 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.sap.stats.charge_time = 3
 	self.melee_weapons.sap.stats.range = 200
 	self.melee_weapons.sap.stats.weapon_type = "blunt"
-	self.melee_weapons.sap.sounds = {
-		equip = "sap_equip",
-		hit_air = "sap_hit_air",
-		hit_gen = "sap_hit_gen",
-		hit_body = "sap_hit_body",
-		charge = "sap_charge"
-	}
+	self.melee_weapons.sap.sounds = {}
+	self.melee_weapons.sap.sounds.equip = "sap_equip"
+	self.melee_weapons.sap.sounds.hit_air = "sap_hit_air"
+	self.melee_weapons.sap.sounds.hit_gen = "sap_hit_gen"
+	self.melee_weapons.sap.sounds.hit_body = "sap_hit_body"
+	self.melee_weapons.sap.sounds.charge = "sap_charge"
 	self.melee_weapons.sap.stats.concealment = 30
 	self.melee_weapons.sap.dlc = nil
 	self.melee_weapons.sap.texture_bundle_folder = "myh"
-	self.melee_weapons.clean = {
-		name_id = "bm_melee_clean",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2"
-		},
-		anim_global_param = "melee_clean",
-		dlc = "rvd",
-		texture_bundle_folder = "rvd",
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_mel_clean/wpn_fps_mel_clean",
-		third_unit = "units/pd2_dlc_rvd/weapons/wpn_fps_mel_clean/wpn_third_mel_clean",
-		sounds = {}
+	self.melee_weapons.clean = {}
+	self.melee_weapons.clean.name_id = "bm_melee_clean"
+	self.melee_weapons.clean.animation = nil
+	self.melee_weapons.clean.anim_attack_vars = {
+		"var1",
+		"var2"
 	}
+	self.melee_weapons.clean.anim_global_param = "melee_clean"
+	self.melee_weapons.clean.dlc = "rvd"
+	self.melee_weapons.clean.texture_bundle_folder = "rvd"
+	self.melee_weapons.clean.type = "knife"
+	self.melee_weapons.clean.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.clean.unit = "units/pd2_dlc_rvd/weapons/wpn_fps_mel_clean/wpn_fps_mel_clean"
+	self.melee_weapons.clean.third_unit = "units/pd2_dlc_rvd/weapons/wpn_fps_mel_clean/wpn_third_mel_clean"
+	self.melee_weapons.clean.sounds = {}
 	self.melee_weapons.clean.sounds.equip = "clean_equip"
 	self.melee_weapons.clean.sounds.hit_air = "clean_hit_air"
 	self.melee_weapons.clean.sounds.hit_gen = "clean_hit_gen"
 	self.melee_weapons.clean.sounds.hit_body = "clean_hit_body"
 	self.melee_weapons.clean.sounds.charge = "clean_charge"
-	self.melee_weapons.clean.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 2,
-		range = 150,
-		concealment = 29,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.clean.stats = {}
+	self.melee_weapons.clean.stats.weapon_type = "sharp"
+	self.melee_weapons.clean.stats.min_damage = 3
+	self.melee_weapons.clean.stats.max_damage = 8
+	self.melee_weapons.clean.stats.min_damage_effect = 1
+	self.melee_weapons.clean.stats.max_damage_effect = 1
+	self.melee_weapons.clean.stats.charge_time = 2
+	self.melee_weapons.clean.stats.range = 150
+	self.melee_weapons.clean.stats.concealment = 29
+	self.melee_weapons.clean.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.clean.repeat_expire_t = 0.36
 	self.melee_weapons.clean.expire_t = 0.6
 	self.melee_weapons.clean.melee_charge_shaker = "player_melee_charge_wing"
@@ -2831,46 +2734,44 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			anim = "var1"
 		},
 		charge = {
-			loop = false,
-			anim = "charge"
+			anim = "charge",
+			loop = false
 		}
 	}
-	self.melee_weapons.meter = {
-		name_id = "bm_melee_meter",
-		animation = nil,
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anim_global_param = "melee_great",
-		dlc = "ecp",
-		texture_bundle_folder = "ecp",
-		type = "sword",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_ecp/weapons/wpn_fps_mel_meter/wpn_fps_mel_meter",
-		third_unit = "units/pd2_dlc_ecp/weapons/wpn_fps_mel_meter/wpn_third_mel_meter",
-		sounds = {}
+	self.melee_weapons.meter = {}
+	self.melee_weapons.meter.name_id = "bm_melee_meter"
+	self.melee_weapons.meter.animation = nil
+	self.melee_weapons.meter.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
 	}
+	self.melee_weapons.meter.anim_global_param = "melee_great"
+	self.melee_weapons.meter.dlc = "ecp"
+	self.melee_weapons.meter.texture_bundle_folder = "ecp"
+	self.melee_weapons.meter.type = "sword"
+	self.melee_weapons.meter.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.meter.unit = "units/pd2_dlc_ecp/weapons/wpn_fps_mel_meter/wpn_fps_mel_meter"
+	self.melee_weapons.meter.third_unit = "units/pd2_dlc_ecp/weapons/wpn_fps_mel_meter/wpn_third_mel_meter"
+	self.melee_weapons.meter.sounds = {}
 	self.melee_weapons.meter.sounds.equip = "meter_equip"
 	self.melee_weapons.meter.sounds.hit_air = "meter_hit_air"
 	self.melee_weapons.meter.sounds.hit_gen = "meter_hit_gen"
 	self.melee_weapons.meter.sounds.hit_body = "meter_hit_body"
 	self.melee_weapons.meter.sounds.charge = "meter_charge"
-	self.melee_weapons.meter.stats = {
-		weapon_type = "sharp",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 4,
-		range = 275,
-		concealment = 27,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.meter.stats = {}
+	self.melee_weapons.meter.stats.weapon_type = "sharp"
+	self.melee_weapons.meter.stats.min_damage = 7
+	self.melee_weapons.meter.stats.max_damage = 45
+	self.melee_weapons.meter.stats.min_damage_effect = 1
+	self.melee_weapons.meter.stats.max_damage_effect = 1
+	self.melee_weapons.meter.stats.charge_time = 4
+	self.melee_weapons.meter.stats.range = 275
+	self.melee_weapons.meter.stats.concealment = 27
+	self.melee_weapons.meter.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.meter.repeat_expire_t = 1.1
 	self.melee_weapons.meter.expire_t = 1.5
 	self.melee_weapons.meter.melee_damage_delay = 0.6
@@ -2893,48 +2794,45 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.aziz.stats.charge_time = 2
 	self.melee_weapons.aziz.stats.range = 150
 	self.melee_weapons.aziz.melee_charge_shaker = "player_melee_charge_wing"
-	self.melee_weapons.aziz.sounds = {
-		equip = "aziz_equip",
-		hit_air = "aziz_hit_air",
-		hit_gen = "aziz_hit_gen",
-		hit_body = "aziz_hit_body",
-		charge = "aziz_charge"
-	}
+	self.melee_weapons.aziz.sounds = {}
+	self.melee_weapons.aziz.sounds.equip = "aziz_equip"
+	self.melee_weapons.aziz.sounds.hit_air = "aziz_hit_air"
+	self.melee_weapons.aziz.sounds.hit_gen = "aziz_hit_gen"
+	self.melee_weapons.aziz.sounds.hit_body = "aziz_hit_body"
+	self.melee_weapons.aziz.sounds.charge = "aziz_charge"
 	self.melee_weapons.aziz.repeat_expire_t = 0.36
 	self.melee_weapons.aziz.stats.concealment = 29
-	self.melee_weapons.hauteur = {
-		name_id = "bm_melee_hauteur",
-		animation = nil,
-		anim_attack_vars = {
-			"var1"
-		},
-		anim_global_param = "melee_hauteur",
-		texture_bundle_folder = "ktm",
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_fps_mel_hauteur",
-		third_unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_third_mel_hauteur",
-		sounds = {}
+	self.melee_weapons.hauteur = {}
+	self.melee_weapons.hauteur.name_id = "bm_melee_hauteur"
+	self.melee_weapons.hauteur.animation = nil
+	self.melee_weapons.hauteur.anim_attack_vars = {
+		"var1"
 	}
+	self.melee_weapons.hauteur.anim_global_param = "melee_hauteur"
+	self.melee_weapons.hauteur.texture_bundle_folder = "ktm"
+	self.melee_weapons.hauteur.type = "knife"
+	self.melee_weapons.hauteur.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.hauteur.unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_fps_mel_hauteur"
+	self.melee_weapons.hauteur.third_unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_third_mel_hauteur"
+	self.melee_weapons.hauteur.sounds = {}
 	self.melee_weapons.hauteur.sounds.equip = "hauteur_equip"
 	self.melee_weapons.hauteur.sounds.hit_air = "hauteur_hit_air"
 	self.melee_weapons.hauteur.sounds.hit_gen = "hauteur_hit_gen"
 	self.melee_weapons.hauteur.sounds.hit_body = "hauteur_hit_body"
 	self.melee_weapons.hauteur.sounds.charge = "hauteur_charge"
 	self.melee_weapons.hauteur.melee_charge_shaker = "player_melee_charge_wing"
-	self.melee_weapons.hauteur.stats = {
-		weapon_type = "sharp",
-		min_damage = 7,
-		max_damage = 45,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 3.5,
-		range = 150,
-		concealment = 30,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.hauteur.stats = {}
+	self.melee_weapons.hauteur.stats.weapon_type = "sharp"
+	self.melee_weapons.hauteur.stats.min_damage = 7
+	self.melee_weapons.hauteur.stats.max_damage = 45
+	self.melee_weapons.hauteur.stats.min_damage_effect = 1
+	self.melee_weapons.hauteur.stats.max_damage_effect = 1
+	self.melee_weapons.hauteur.stats.charge_time = 3.5
+	self.melee_weapons.hauteur.stats.range = 150
+	self.melee_weapons.hauteur.stats.concealment = 30
+	self.melee_weapons.hauteur.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.hauteur.repeat_expire_t = 0.6
 	self.melee_weapons.hauteur.expire_t = 1.1
 	self.melee_weapons.hauteur.melee_damage_delay = 0.13
@@ -2948,8 +2846,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.shock.name_id = "bm_melee_shock"
 	self.melee_weapons.shock.dlc = nil
 	self.melee_weapons.shock.locks = {
-		achievement_lock_id = "bm_menu_locked_shock",
-		achievement = "sah_11"
+		achievement = "sah_11",
+		achievement_lock_id = "bm_menu_locked_shock"
 	}
 	self.melee_weapons.shock.texture_bundle_folder = "apa"
 	self.melee_weapons.shock.anim_global_param = "melee_axe"
@@ -2966,34 +2864,32 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.shock.stats.max_damage_effect = 3
 	self.melee_weapons.shock.stats.charge_time = 3
 	self.melee_weapons.shock.stats.range = 185
-	self.melee_weapons.shock.sounds = {
-		equip = "shock_equip",
-		hit_air = "shock_hit_air",
-		hit_gen = "shock_hit_gen",
-		hit_body = "shock_hit_body",
-		charge = "shock_charge"
-	}
+	self.melee_weapons.shock.sounds = {}
+	self.melee_weapons.shock.sounds.equip = "shock_equip"
+	self.melee_weapons.shock.sounds.hit_air = "shock_hit_air"
+	self.melee_weapons.shock.sounds.hit_gen = "shock_hit_gen"
+	self.melee_weapons.shock.sounds.hit_body = "shock_hit_body"
+	self.melee_weapons.shock.sounds.charge = "shock_charge"
 	self.melee_weapons.shock.repeat_expire_t = 0.8
 	self.melee_weapons.shock.stats.concealment = 28
-	self.melee_weapons.fear = {
-		name_id = "bm_melee_fear",
-		info_id = "bm_melee_fear_info",
-		hit_pre_calculation = true,
-		anim_attack_vars = {
-			"var1",
-			"var2"
-		},
-		anim_global_param = "melee_fear",
-		dlc = nil,
-		texture_bundle_folder = "ssm",
-		type = "knife",
-		align_objects = {
-			"a_weapon_right"
-		},
-		unit = "units/pd2_dlc_ssm/weapons/wpn_fps_mel_fear/wpn_fps_mel_fear",
-		third_unit = "units/pd2_dlc_ssm/weapons/wpn_fps_mel_fear/wpn_third_mel_fear",
-		sounds = {}
+	self.melee_weapons.fear = {}
+	self.melee_weapons.fear.name_id = "bm_melee_fear"
+	self.melee_weapons.fear.info_id = "bm_melee_fear_info"
+	self.melee_weapons.fear.hit_pre_calculation = true
+	self.melee_weapons.fear.anim_attack_vars = {
+		"var1",
+		"var2"
 	}
+	self.melee_weapons.fear.anim_global_param = "melee_fear"
+	self.melee_weapons.fear.dlc = nil
+	self.melee_weapons.fear.texture_bundle_folder = "ssm"
+	self.melee_weapons.fear.type = "knife"
+	self.melee_weapons.fear.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.fear.unit = "units/pd2_dlc_ssm/weapons/wpn_fps_mel_fear/wpn_fps_mel_fear"
+	self.melee_weapons.fear.third_unit = "units/pd2_dlc_ssm/weapons/wpn_fps_mel_fear/wpn_third_mel_fear"
+	self.melee_weapons.fear.sounds = {}
 	self.melee_weapons.fear.sounds.equip = "cqc_equip"
 	self.melee_weapons.fear.sounds.hit_air = "cqc_hit_air"
 	self.melee_weapons.fear.sounds.hit_gen = "cqc_hit_gen"
@@ -3001,17 +2897,16 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.fear.sounds.charge = "cqc_charge"
 	self.melee_weapons.fear.melee_charge_shaker = "player_melee_charge_wing"
 	self.melee_weapons.fear.dot_data_name = "melee_fear"
-	self.melee_weapons.fear.stats = {
-		weapon_type = "sharp",
-		min_damage = 3,
-		max_damage = 8,
-		min_damage_effect = 1,
-		max_damage_effect = 1,
-		charge_time = 1.5,
-		range = 150,
-		concealment = 30,
-		remove_weapon_movement_penalty = true
-	}
+	self.melee_weapons.fear.stats = {}
+	self.melee_weapons.fear.stats.weapon_type = "sharp"
+	self.melee_weapons.fear.stats.min_damage = 3
+	self.melee_weapons.fear.stats.max_damage = 8
+	self.melee_weapons.fear.stats.min_damage_effect = 1
+	self.melee_weapons.fear.stats.max_damage_effect = 1
+	self.melee_weapons.fear.stats.charge_time = 1.5
+	self.melee_weapons.fear.stats.range = 150
+	self.melee_weapons.fear.stats.concealment = 30
+	self.melee_weapons.fear.stats.remove_weapon_movement_penalty = true
 	self.melee_weapons.fear.repeat_expire_t = 0.65
 	self.melee_weapons.fear.expire_t = 1.2
 	self.melee_weapons.fear.melee_damage_delay = 0.29
@@ -3023,8 +2918,8 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			anim = "var2"
 		},
 		charge = {
-			loop = false,
-			anim = "charge"
+			anim = "charge",
+			loop = false
 		}
 	}
 	self.melee_weapons.fear.anims.var1_attack_hit = self.melee_weapons.fear.anims.var1_attack
@@ -3051,26 +2946,24 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		"a_weapon_right"
 	}
 	self.melee_weapons.chac.texture_bundle_folder = "bex"
-	self.melee_weapons.chac.stats = {
-		remove_weapon_movement_penalty = true,
-		min_damage = 3,
-		max_damage = 5.5,
-		min_damage_effect = 3,
-		max_damage_effect = 2,
-		charge_time = 2,
-		range = 150,
-		weapon_type = "blunt"
-	}
+	self.melee_weapons.chac.stats = {}
+	self.melee_weapons.chac.stats.remove_weapon_movement_penalty = true
+	self.melee_weapons.chac.stats.min_damage = 3
+	self.melee_weapons.chac.stats.max_damage = 5.5
+	self.melee_weapons.chac.stats.min_damage_effect = 3
+	self.melee_weapons.chac.stats.max_damage_effect = 2
+	self.melee_weapons.chac.stats.charge_time = 2
+	self.melee_weapons.chac.stats.range = 150
+	self.melee_weapons.chac.stats.weapon_type = "blunt"
 	self.melee_weapons.chac.repeat_expire_t = 0.5
 	self.melee_weapons.chac.expire_t = 1.2
 	self.melee_weapons.chac.melee_damage_delay = 0.1
-	self.melee_weapons.chac.sounds = {
-		equip = "chac_equip",
-		hit_air = "chac_hit_air",
-		hit_gen = "chac_hit_gen",
-		hit_body = "chac_hit_body",
-		charge = "chac_charge"
-	}
+	self.melee_weapons.chac.sounds = {}
+	self.melee_weapons.chac.sounds.equip = "chac_equip"
+	self.melee_weapons.chac.sounds.hit_air = "chac_hit_air"
+	self.melee_weapons.chac.sounds.hit_gen = "chac_hit_gen"
+	self.melee_weapons.chac.sounds.hit_body = "chac_hit_body"
+	self.melee_weapons.chac.sounds.charge = "chac_charge"
 	self.melee_weapons.chac.stats.concealment = 30
 	self.melee_weapons.chac.anims = {
 		var1_attack = {
@@ -3086,49 +2979,51 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			anim = "var4"
 		},
 		charge = {
-			loop = true,
-			anim = "charge"
+			anim = "charge",
+			loop = true
 		}
 	}
+
 	local funder_strike_stats = {
-		weapon_type = "blunt",
-		range = 200,
-		remove_weapon_movement_penalty = true,
-		max_damage_effect = 1,
-		max_damage = 2,
 		charge_time = 3.5,
+		concealment = 30,
+		max_damage = 2,
+		max_damage_effect = 1,
 		min_damage = 2,
 		min_damage_effect = 1,
-		concealment = 30
+		range = 200,
+		remove_weapon_movement_penalty = true,
+		weapon_type = "blunt"
 	}
 	local funder_strike_sounds = {
-		hit_body = "buzzer_detector_hit_body",
-		hit_air = "buzzer_detector_hit_air",
-		hit_gen = "buzzer_detector_hit_gen",
 		charge = "buzzer_charge",
-		equip = "buzzer_detector_equip"
+		equip = "buzzer_detector_equip",
+		hit_air = "buzzer_detector_hit_air",
+		hit_body = "buzzer_detector_hit_body",
+		hit_gen = "buzzer_detector_hit_gen"
 	}
 	local anim_start_no_loop = {
-		loop = false,
 		anim = "menu",
+		loop = false,
 		start_time = 0.2
 	}
 	local anim_attack_snap_end = {
-		from = 1,
-		anim = "menu"
+		anim = "menu",
+		from = 1
 	}
+
 	self.melee_weapons.funder_strike = {
-		name_id = "bm_melee_funder_strike",
-		texture_bundle_folder = "fun",
-		melee_damage_delay = 0.13333333333333333,
-		type = "blunt",
-		menu_scene_anim = "menu",
 		anim_global_param = "melee_axe",
-		unit = "units/pd2_dlc_fun/weapons/wpn_fps_mel_funder_strike/wpn_fps_mel_funder_strike",
-		info_id = "bm_melee_funder_strike_info",
-		third_unit = "units/pd2_dlc_fun/weapons/wpn_tps_mel_funder_strike/wpn_tps_mel_funder_strike",
-		repeat_expire_t = 0.7,
 		expire_t = 0.7,
+		info_id = "bm_melee_funder_strike_info",
+		melee_damage_delay = 0.13333333333333333,
+		menu_scene_anim = "menu",
+		name_id = "bm_melee_funder_strike",
+		repeat_expire_t = 0.7,
+		texture_bundle_folder = "fun",
+		third_unit = "units/pd2_dlc_fun/weapons/wpn_tps_mel_funder_strike/wpn_tps_mel_funder_strike",
+		type = "blunt",
+		unit = "units/pd2_dlc_fun/weapons/wpn_fps_mel_funder_strike/wpn_fps_mel_funder_strike",
 		sounds = funder_strike_sounds,
 		stats = funder_strike_stats,
 		tase_data = {
@@ -3153,34 +3048,34 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		menu_scene_params = anim_attack_snap_end
 	}
 	self.melee_weapons.bonk = {
-		info_id = "bm_melee_bonk_info",
-		texture_bundle_folder = "unk",
-		melee_damage_delay = 0.2,
-		type = "blunt",
-		third_unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk/wpn_tps_mel_bonk",
-		repeat_expire_t = 0.7,
-		dlc = "unk",
 		anim_global_param = "melee_baseballbat",
-		name_id = "bm_melee_bonk",
-		unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk/wpn_fps_mel_bonk",
+		dlc = "unk",
 		expire_t = 1,
+		info_id = "bm_melee_bonk_info",
+		melee_damage_delay = 0.2,
+		name_id = "bm_melee_bonk",
+		repeat_expire_t = 0.7,
+		texture_bundle_folder = "unk",
+		third_unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk/wpn_tps_mel_bonk",
+		type = "blunt",
+		unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk/wpn_fps_mel_bonk",
 		stats = {
-			remove_weapon_movement_penalty = true,
-			range = 175,
-			weapon_type = "blunt",
-			max_damage_effect = 1.125,
-			max_damage = 40,
 			charge_time = 3,
+			concealment = 28,
+			max_damage = 40,
+			max_damage_effect = 1.125,
 			min_damage = 7,
 			min_damage_effect = 2.142,
-			concealment = 28
+			range = 175,
+			remove_weapon_movement_penalty = true,
+			weapon_type = "blunt"
 		},
 		sounds = {
-			hit_body = "bonk_hit_body",
-			hit_air = "bonk_hit_air",
-			hit_gen = "bonk_hit_gen",
 			charge = "bonk_charge",
-			equip = "bonk_equip"
+			equip = "bonk_equip",
+			hit_air = "bonk_hit_air",
+			hit_body = "bonk_hit_body",
+			hit_gen = "bonk_hit_gen"
 		},
 		anim_attack_vars = {
 			"var1",
@@ -3197,6 +3092,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.bonk2.info_id = "bm_melee_bonk2_info"
 	self.melee_weapons.bonk2.unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk2/wpn_fps_mel_bonk2"
 	self.melee_weapons.bonk2.third_unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk2/wpn_tps_mel_bonk2"
+
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

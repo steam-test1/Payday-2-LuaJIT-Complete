@@ -56,7 +56,7 @@ end
 
 function LocalizationManager:text(string_id, macros)
 	local return_string = "ERROR: " .. tostring(string_id)
-	local str_id = nil
+	local str_id
 
 	if not string_id or string_id == "" or type(string_id) ~= "string" then
 		return_string = ""
@@ -123,7 +123,7 @@ end
 function LocalizationManager:_text_format(text, X, Y, func)
 	local match_string = "%b" .. X .. Y
 
-	return string.gsub(text, match_string, function (word)
+	return string.gsub(text, match_string, function(word)
 		local id = string.sub(word, 2, -2)
 		local value = func(id)
 

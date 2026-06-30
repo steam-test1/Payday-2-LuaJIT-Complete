@@ -7,6 +7,7 @@ PrepareLoadingGame = PrepareLoadingGame or class()
 
 function PrepareLoadingGame:init()
 	self._response = CoreSessionResponse.Done:new()
+
 	local menu_handler = self.menu_state._menu_handler
 
 	menu_handler:prepare_loading_game(self._response)

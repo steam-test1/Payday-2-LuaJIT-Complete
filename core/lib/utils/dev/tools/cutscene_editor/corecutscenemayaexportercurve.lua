@@ -1,14 +1,15 @@
 CoreCutsceneMayaExporterCurve = CoreCutsceneMayaExporterCurve or class()
 CoreCutsceneMayaExporterCurveSet = CoreCutsceneMayaExporterCurveSet or class()
+
 local SAMPLED_COMPONENTS = {
 	"x",
 	"y",
 	"z"
 }
 local ROTATION_ACCESS_METHODS = {
-	z = "roll",
 	x = "yaw",
-	y = "pitch"
+	y = "pitch",
+	z = "roll"
 }
 local VALID_MAYA_NODE_TYPES = {}
 

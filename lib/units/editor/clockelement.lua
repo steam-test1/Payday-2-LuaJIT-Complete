@@ -67,8 +67,8 @@ end
 
 function ClockUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("core/units/mission_elements/logic_counter/logic_counter") then
@@ -87,6 +87,7 @@ function ClockUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local start_trigger_sizer = EWS:StaticBoxSizer(panel, "VERTICAL")
 
 	panel_sizer:add(start_trigger_sizer, 0, 0, "EXPAND")

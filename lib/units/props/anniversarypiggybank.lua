@@ -17,6 +17,7 @@ function AnniversaryPiggyBank:explode_pig(unit)
 end
 
 function AnniversaryPiggyBank:sync_explode_pig(pig_level)
+	return
 end
 
 function AnniversaryPiggyBank:on_interacted()

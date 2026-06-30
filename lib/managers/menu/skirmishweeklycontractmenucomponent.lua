@@ -9,15 +9,16 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 	self._fullscreen_panel = fullscreen_ws:panel():panel({
 		layer = 50
 	})
+
 	local job_data = node:parameters().menu_component_data
 	local bg_overlay = BlurSheet:new(self._fullscreen_panel, {
-		name = "bg_overlay",
 		layer = 1,
+		name = "bg_overlay",
 		color = Color(0.75, 0, 0, 0)
 	})
 	local title_text = FineText:new(self._panel, {
-		name = "title_text",
 		layer = 1,
+		name = "title_text",
 		text = managers.localization:to_upper_text("menu_weekly_skirmish"),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size
@@ -25,8 +26,8 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 	local width = 900
 	local height = 580
 	local contract_panel = self._panel:panel({
-		name = "contract_panel",
 		layer = 5,
+		name = "contract_panel",
 		w = width,
 		h = height
 	})
@@ -35,13 +36,13 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 	title_text:set_leftbottom(contract_panel:lefttop())
 
 	local progress_title = FineText:new(contract_panel, {
-		name = "progress_title",
 		layer = 1,
+		name = "progress_title",
 		text = managers.localization:to_upper_text("menu_weekly_skirmish_rewards")
 	})
 	local reward_panel = contract_panel:panel({
-		name = "reward_panel",
 		h = 200,
+		name = "reward_panel",
 		y = progress_title:bottom()
 	})
 
@@ -56,15 +57,15 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 
 	if managers.skirmish:host_weekly_match() then
 		local countdown_text = FineText:new(reward_panel, {
-			name = "countdown",
-			y = 5,
-			x = 10,
 			layer = 1,
+			name = "countdown",
+			x = 10,
+			y = 5,
 			text = managers.localization:to_upper_text("skirmish_weekly_time_left", managers.skirmish:weekly_time_left_params()),
 			color = tweak_data.screen_colors.text:with_alpha(0.5)
 		})
 
-		countdown_text:animate(function (o)
+		countdown_text:animate(function(o)
 			while true do
 				wait(1)
 
@@ -77,8 +78,8 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 
 	local max_weekly_wave = 9
 	local progress_text = FineText:new(reward_panel, {
-		name = "progress_text",
 		layer = 1,
+		name = "progress_text",
 		y = 5,
 		text = managers.localization:to_upper_text("menu_weekly_skirmish_current_progress", {
 			current = managers.skirmish:weekly_progress(),
@@ -90,9 +91,9 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 
 	local progress = managers.skirmish:weekly_progress() / max_weekly_wave
 	local progress_bar = ProgressBar:new(reward_panel, {
-		name = "progress_bar",
-		h = 8,
 		edges = "up",
+		h = 8,
+		name = "progress_bar",
 		progress_color = tweak_data.screen_colors.button_stage_2,
 		back_color = tweak_data.screen_colors.text:with_alpha(0.4),
 		w = reward_panel:w() * 0.75,
@@ -111,9 +112,9 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 	for _, milestone in ipairs(milestones) do
 		local milestone_progress = milestone / max_weekly_wave
 		local milestone_panel = reward_panel:panel({
-			w = 50,
 			h = 150,
 			layer = 50,
+			w = 50,
 			name = "milestone_" .. tostring(milestone)
 		})
 
@@ -123,8 +124,8 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 		local unlocked = milestone_progress <= progress
 		local color = tweak_data.screen_colors.text:with_alpha(unlocked and 1 or 0.4)
 		local milestone_title = FineText:new(milestone_panel, {
-			name = "title",
 			align = "center",
+			name = "title",
 			text = tostring(milestone),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -132,10 +133,10 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 		})
 		local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 		local milestone_arrow = milestone_panel:bitmap({
-			name = "arrow",
 			h = 6,
-			w = 12,
+			name = "arrow",
 			rotation = 180,
+			w = 12,
 			texture = texture,
 			texture_rect = rect,
 			color = color
@@ -147,7 +148,7 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 
 		if milestone > 0 then
 			local milestone_reward = managers.skirmish:claimed_reward_by_id(milestone)
-			local icon_data, text_id = nil
+			local icon_data, text_id
 
 			if milestone_reward then
 				local reward_type, reward_id = unpack(milestone_reward)
@@ -160,6 +161,7 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 
 				if reward_type == "textures" then
 					local textures_data = tweak_data.blackmarket.textures[reward_id]
+
 					icon_data = {
 						render_template = "VertexColorTexturedPatterns",
 						texture = textures_data.texture
@@ -167,6 +169,7 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 					text_id = tweak_data.blackmarket.textures[reward_id].name_id
 				elseif reward_type == "materials" then
 					local materials_data = tweak_data.blackmarket.materials[reward_id]
+
 					icon_data = {
 						texture = guis_catalog .. "textures/pd2/blackmarket/icons/materials/" .. reward_id,
 						color = materials_data.color
@@ -198,8 +201,8 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 
 			if text_id then
 				local reward_title = FineText:new(milestone_panel, {
-					name = "reward_title",
 					align = "center",
+					name = "reward_title",
 					rotation = 360,
 					text = managers.localization:to_upper_text(text_id),
 					font = tweak_data.menu.pd2_small_font,
@@ -220,6 +223,7 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 	})
 	local show_progress_warning = job_data.state == tweak_data:server_state_to_index("in_game")
 	local modifiers = job_data.skirmish_weekly_modifiers and string.split(job_data.skirmish_weekly_modifiers, ";") or managers.skirmish:weekly_modifiers()
+
 	self._details_page = SkirmishWeeklyContractDetails:new(details_panel, show_progress_warning, modifiers)
 
 	managers.menu_component:disable_crimenet()
@@ -248,7 +252,7 @@ end
 
 local function redirect_to_member(class, member_name, functions)
 	for _, name in pairs(functions) do
-		class[name] = function (self, ...)
+		class[name] = function(self, ...)
 			local member = self[member_name]
 
 			return member[name](member, ...)
@@ -295,6 +299,7 @@ end
 
 function SkirmishWeeklyContractDetails:_add_panels()
 	local tab_h = tweak_data.menu.pd2_medium_font_size + 10
+
 	self._page_panel = self._panel:panel({
 		layer = 1,
 		name = "PageRootPanel",
@@ -332,6 +337,7 @@ function SkirmishWeeklyContractDetails:populate_tabs_data(tabs_data)
 end
 
 function SkirmishWeeklyContractDetails:close()
+	return
 end
 
 function SkirmishWeeklyContractDetails:set_active_page(new_index, play_sound)
@@ -413,30 +419,39 @@ end
 SkirmishWeeklyContractPage = SkirmishWeeklyContractPage or class()
 
 function SkirmishWeeklyContractPage:init(page_id, page_panel, fullscreen_panel, gui)
+	return
 end
 
 function SkirmishWeeklyContractPage:set_active(active)
+	return
 end
 
 function SkirmishWeeklyContractPage:mouse_moved(button, x, y)
+	return
 end
 
 function SkirmishWeeklyContractPage:mouse_pressed(button, x, y)
+	return
 end
 
 function SkirmishWeeklyContractPage:mouse_released(button, x, y)
+	return
 end
 
 function SkirmishWeeklyContractPage:mouse_wheel_up(x, y)
+	return
 end
 
 function SkirmishWeeklyContractPage:mouse_wheel_down(x, y)
+	return
 end
 
 function SkirmishWeeklyContractPage:mouse_clicked(o, button, x, y)
+	return
 end
 
 function SkirmishWeeklyContractPage:update()
+	return
 end
 
 function SkirmishWeeklyContractPage:get_legend()
@@ -447,7 +462,7 @@ SkirmishWeeklyContractDescriptionPage = SkirmishWeeklyContractDescriptionPage or
 
 function SkirmishWeeklyContractDescriptionPage:init(page_id, page_panel, fullscreen_panel, gui)
 	local desc_text = managers.localization:text("menu_weekly_skirmish_desc")
-	local color_start = nil
+	local color_start
 
 	if gui._show_progress_warning then
 		desc_text = desc_text .. "\n\n##" .. managers.localization:text("menu_weekly_skirmish_dropin_warning") .. "##"
@@ -455,10 +470,10 @@ function SkirmishWeeklyContractDescriptionPage:init(page_id, page_panel, fullscr
 
 	self._desc = FineText:new(page_panel, {
 		name = "description",
-		wrap = true,
 		word_wrap = true,
-		y = 10,
+		wrap = true,
 		x = 10,
+		y = 10,
 		text = desc_text,
 		w = page_panel:width() - 20,
 		font = tweak_data.menu.pd2_small_font,

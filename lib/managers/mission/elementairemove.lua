@@ -19,8 +19,8 @@ function ElementAIRemove:on_executed(instigator)
 
 					print("backup_so: ", self._values.backup_so, backup_so)
 					instigator:character_damage():damage_mission({
-						forced = true,
 						damage = 1000,
+						forced = true,
 						col_ray = {},
 						backup_so = backup_so
 					})
@@ -34,8 +34,8 @@ function ElementAIRemove:on_executed(instigator)
 					local backup_so = self._values.backup_so and self:get_mission_element(self._values.backup_so)
 
 					instigator:character_damage():damage_mission({
-						forced = true,
 						damage = 1000,
+						forced = true,
 						col_ray = {},
 						backup_so = backup_so
 					})

@@ -11,18 +11,18 @@ function UiPlacer:init(x, y, padding_x, padding_y)
 	self._right = x
 	self._top = y
 	self._bottom = y
-	self._most = {
-		left = x + self._padding_x,
-		right = x,
-		top = y + self._padding_y,
-		bottom = y
-	}
+	self._most = {}
+	self._most.left = x + self._padding_x
+	self._most.right = x
+	self._most.top = y + self._padding_y
+	self._most.bottom = y
 	self._stack = {}
 	self._first = true
 end
 
 function UiPlacer:create_branch(use_root_level, use_stack)
 	local rtn = BranchPlacer:new(self)
+
 	rtn._padding_x = self._padding_x
 	rtn._padding_y = self._padding_y
 	rtn._start_x = self._start_x
@@ -292,7 +292,9 @@ function UiPlacer:pop()
 	self._top = self._most.top
 	self._right = self._most.right
 	self._bottom = self._most.bottom
-	local most = nil
+
+	local most
+
 	self._start_x, self._start_y, most = unpack(table.remove(self._stack))
 	self._most.left = math.min(self._most.left, most.left)
 	self._most.top = math.min(self._most.top, most.top)
@@ -368,12 +370,12 @@ function ResizingPlacer:clear(keep_stack)
 	end
 
 	local x, y = self:set_at(self._start_x, self._start_y)
-	self._most = {
-		left = x + self._padding_x,
-		right = x,
-		top = y + self._padding_y,
-		bottom = y
-	}
+
+	self._most = {}
+	self._most.left = x + self._padding_x
+	self._most.right = x
+	self._most.top = y + self._padding_y
+	self._most.bottom = y
 	self._first = true
 end
 

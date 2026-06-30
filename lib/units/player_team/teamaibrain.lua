@@ -16,7 +16,8 @@ TeamAIBrain._logics = {
 	assault = TeamAILogicAssault,
 	disabled = TeamAILogicDisabled
 }
-local reload = nil
+
+local reload
 
 if TeamAIBrain._reload_clbks then
 	reload = true
@@ -64,6 +65,7 @@ function TeamAIBrain:post_init()
 	self:_setup_attention_handler()
 
 	self._alert_listen_key = "TeamAIBrain" .. tostring(self._unit:key())
+
 	local alert_listen_filter = managers.groupai:state():get_unit_type_filter("combatant")
 
 	managers.groupai:state():add_alert_listener(self._alert_listen_key, callback(self, self, "on_alert"), alert_listen_filter, {
@@ -152,7 +154,7 @@ function TeamAIBrain:on_cool_state_changed(state)
 		return
 	end
 
-	local att_settings = nil
+	local att_settings
 
 	if state then
 		att_settings = {
@@ -168,6 +170,7 @@ function TeamAIBrain:on_cool_state_changed(state)
 end
 
 function TeamAIBrain:clbk_attention_notice_sneak(observer_unit, status)
+	return
 end
 
 function TeamAIBrain:_chk_enable_bodybag_interaction()

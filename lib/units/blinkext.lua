@@ -30,7 +30,7 @@ function BlinkExt:init(unit)
 end
 
 function BlinkExt:update(unit, t, dt)
-	if self._delay_current and self._delay_current < t then
+	if self._delay_current and t > self._delay_current then
 		if self._state == "cycle" then
 			if self._current_object then
 				self._object_list[self._current_object]:set_visibility(false)
@@ -185,10 +185,9 @@ function BlinkExt:set_state(state, delay)
 end
 
 function BlinkExt:save(data)
-	data.BlinkExt = {
-		state = self._state,
-		delay = self._delay
-	}
+	data.BlinkExt = {}
+	data.BlinkExt.state = self._state
+	data.BlinkExt.delay = self._delay
 end
 
 function BlinkExt:load(data)

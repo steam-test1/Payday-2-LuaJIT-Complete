@@ -1,10 +1,11 @@
 local MOUSEOVER_COLOR = tweak_data.screen_colors.button_stage_2
 local BUTTON_COLOR = tweak_data.screen_colors.button_stage_3
+
 SocialHubUserItem = SocialHubUserItem or class(ListItem)
 SocialHubUserItem.type = {
 	default = {
-		margin = 5,
 		layer = 100,
+		margin = 5,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	}
@@ -52,18 +53,22 @@ function SocialHubUserItem:setup_panel()
 	end
 
 	self._unselected_color = self.friend_data.state == "offline" and 0.7 or self._unselected_color
+
 	local left_y_placer = self.type_config.margin
 	local icon_texture = self.friend_data.platform == Idstring("STEAM") and "guis/dlcs/shub/textures/steam_player_icon" or self.friend_data.platform == Idstring("EPIC") and "guis/dlcs/shub/textures/epic_player_icon" or "guis/dlcs/shub/textures/generic_player_icon"
 	local icon = self._content_panel:bitmap({
 		h = 32,
-		w = 32,
 		layer = 100,
+		w = 32,
 		texture = icon_texture,
 		x = left_y_placer,
 		y = self._content_panel:h() / 2 - 16
 	})
+
 	left_y_placer = icon:right() + self.type_config.margin
+
 	local text_data = clone(self.type_config)
+
 	text_data.text = self.friend_data.name
 	self._name_text = self._content_panel:text(text_data)
 
@@ -97,22 +102,23 @@ function SocialHubUserItem:setup_panel()
 		layer = 100
 	})
 	self._buttons = {}
+
 	local right_placer_x = self._buttons_panel:right()
 
 	for index, item in ipairs(self.data.buttons or {}) do
 		local button = self._buttons_panel:panel({})
 
 		button:rect({
-			name = "bg",
-			visible = false,
 			alpha = 0.3,
 			layer = 100,
+			name = "bg",
+			visible = false,
 			color = MOUSEOVER_COLOR
 		})
 
 		local text = button:text({
-			name = "text",
 			layer = 100,
+			name = "text",
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			color = BUTTON_COLOR,
@@ -182,6 +188,7 @@ end
 function SocialHubUserItem:move_button_selection(move)
 	if #self._buttons > 0 then
 		local new_index = self._selected_index + move
+
 		new_index = math.clamp(new_index, 1, #self._buttons)
 
 		self:set_item_selected(new_index)
@@ -235,8 +242,8 @@ function SocialHubLobbyItem:init(parent, data)
 	})
 
 	self._content_panel = self._panel:panel({
-		x = 5,
 		layer = 100,
+		x = 5,
 		w = parent:w() - 10
 	})
 	self._select_panel = self._panel:panel({
@@ -290,23 +297,17 @@ function SocialHubLobbyItem:setup_panel()
 
 		local mutators_data = managers.mutators:_get_mutators_data(func)
 		local category = mutators_data and managers.mutators:get_mutator_from_id(next(mutators_data)):main_category() or "mutator"
+
 		lobby_color = managers.mutators:get_category_color(category)
 	end
 
 	local name_color = is_friend and friend_color or regular_color
 	local blend_mode = "normal"
-	local heist_mode_icon = left_panel.bitmap
-	slot21 = "guis/textures/pd2/cn_playstyle_stealth"
-
-	if "guis/textures/pd2/cn_playstyle_stealth" then
-		slot21 = "guis/textures/pd2/cn_playstyle_loud"
-	end
-
-	local heist_mode_icon = slot18(left_panel, {
-		visible = false,
+	local heist_mode_icon = left_panel:bitmap({
 		layer = 100,
+		visible = false,
 		color = lobby_color,
-		texture = "guis/textures/pd2/cn_playstyle_loud",
+		texture = "guis/textures/pd2/cn_playstyle_stealth" or "guis/textures/pd2/cn_playstyle_loud",
 		blend_mode = blend_mode
 	})
 
@@ -314,8 +315,8 @@ function SocialHubLobbyItem:setup_panel()
 	heist_mode_icon:set_center_y(top_y_placer)
 
 	local lobby_marker = left_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_join",
 		layer = 100,
+		texture = "guis/textures/pd2/crimenet_marker_join",
 		color = lobby_color,
 		texture_rect = {
 			0,
@@ -330,9 +331,9 @@ function SocialHubLobbyItem:setup_panel()
 
 	for i = 1, self.data.NUM_PLAYERS or 4 do
 		local peer_icon = left_panel:bitmap({
+			layer = 100,
 			texture = "guis/textures/pd2/crimenet_marker_peerflag",
 			visible = true,
-			layer = 100,
 			color = lobby_color,
 			x = lobby_marker:x() + 3 + (i - 1) * 6,
 			y = lobby_marker:y() + 8,
@@ -342,6 +343,7 @@ function SocialHubLobbyItem:setup_panel()
 
 	left_x_placer = lobby_marker:right() + 5
 	self.data.JOB_ID = tonumber(self.data.JOB_ID)
+
 	local job_name = self.data.JOB_ID and tweak_data.narrative:get_job_name_from_index(self.data.JOB_ID)
 	local job_data = job_name and tweak_data.narrative:job_data(job_name)
 	local heist_text = false
@@ -357,11 +359,12 @@ function SocialHubLobbyItem:setup_panel()
 	end
 
 	if is_crime_spree then
-		if tweak_data:server_state_to_index("in_lobby") < lobby_state then
+		if lobby_state > tweak_data:server_state_to_index("in_lobby") then
 			local mission_data = managers.crime_spree:get_mission(self.data.CRIME_SPREE_MISSION)
 
 			if mission_data then
 				local tweak = tweak_data.levels[mission_data.level.level_id]
+
 				heist_text = managers.localization:text(tweak and tweak.name_id or "No level")
 			else
 				heist_text = false
@@ -428,8 +431,8 @@ function SocialHubLobbyItem:setup_panel()
 
 	if is_crime_spree then
 		local crime_spree_text = left_panel:text({
-			name = "spree_level",
 			layer = 100,
+			name = "spree_level",
 			text = managers.localization:to_upper_text("menu_cs_level", {
 				level = managers.experience:cash_string(crime_spree_level, "")
 			}),
@@ -451,8 +454,8 @@ function SocialHubLobbyItem:setup_panel()
 
 		for i = start_difficulty, num_difficulties do
 			local skull_icon = left_panel:bitmap({
-				texture = "guis/textures/pd2/cn_miniskull",
 				layer = 100,
+				texture = "guis/textures/pd2/cn_miniskull",
 				color = difficulty_stars < i and Color.black or tweak_data.screen_colors.risk,
 				x = left_x_placer + 3,
 				alpha = difficulty_stars < i and 0.5 or 1,
@@ -469,10 +472,11 @@ function SocialHubLobbyItem:setup_panel()
 		x = self._content_panel:w() / 2,
 		w = self._content_panel:w() / 2
 	})
+
 	self._lobby_setting_text = right_panel:text({
+		layer = 100,
 		text = "FRIENDS ONLY",
 		visible = false,
-		layer = 100,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		blend_mode = blend_mode
@@ -486,6 +490,7 @@ function SocialHubLobbyItem:setup_panel()
 		layer = 100
 	})
 	self._buttons = {}
+
 	local right_placer_x = self._buttons_panel:right()
 
 	for index, item in ipairs(self.data.buttons or {}) do
@@ -494,16 +499,16 @@ function SocialHubLobbyItem:setup_panel()
 		})
 
 		button:rect({
-			name = "bg",
-			visible = false,
 			alpha = 0.3,
 			layer = 100,
+			name = "bg",
+			visible = false,
 			color = MOUSEOVER_COLOR
 		})
 
 		local text = button:text({
-			name = "text",
 			layer = 100,
+			name = "text",
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			color = BUTTON_COLOR,
@@ -580,6 +585,7 @@ end
 function SocialHubLobbyItem:move_button_selection(move)
 	if #self._buttons > 0 then
 		local new_index = self._selected_index + move
+
 		new_index = math.clamp(new_index, 1, #self._buttons)
 
 		self:set_item_selected(new_index)
@@ -602,10 +608,11 @@ function SocialHubUserCategoryHeader:init(parent, data)
 		color = BUTTON_COLOR
 	})
 	self.data = data
+
 	local text = self._content_panel:text({
+		layer = 100,
 		name = "text",
 		x = 5,
-		layer = 100,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		color = BUTTON_COLOR,
@@ -616,10 +623,10 @@ function SocialHubUserCategoryHeader:init(parent, data)
 	text:set_center_y(self._content_panel:center_y())
 
 	local icon = self._content_panel:bitmap({
-		texture = "guis/textures/scrollarrow",
 		h = 24,
-		w = 24,
 		layer = 100,
+		texture = "guis/textures/scrollarrow",
+		w = 24,
 		color = BUTTON_COLOR
 	})
 
@@ -683,9 +690,10 @@ function SocialHubTextHeader:init(parent, data)
 	})
 
 	self._content_panel = self._panel:panel()
+
 	local text = self._content_panel:text({
-		name = "text",
 		layer = 100,
+		name = "text",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		color = Color.white,

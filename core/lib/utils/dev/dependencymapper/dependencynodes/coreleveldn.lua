@@ -11,19 +11,19 @@ LEVEL_CONVERT = {
 	player_start = "player"
 }
 LEVEL_SKIP = {
-	unit_sequence = true,
-	hub = true,
-	environment_effect = true,
-	worldcamera_trigger = true,
+	area = true,
 	cubemap_gizmo = true,
+	environment_effect = true,
+	he_rumble = true,
+	hub = true,
 	music = true,
 	music_mode = true,
-	he_rumble = true,
-	play_effect = true,
 	physicspush = true,
-	worldcamera = true,
+	play_effect = true,
+	unit_sequence = true,
 	unit_sequence_trigger = true,
-	area = true
+	worldcamera = true,
+	worldcamera_trigger = true
 }
 LevelDependencyNode = LevelDependencyNode or CoreClass.class(CoreDependencyNode.DependencyNodeBase)
 
@@ -58,6 +58,7 @@ function LevelDependencyNode:_walkxml2dependencies(xmlnode, deps)
 
 		if unit_name ~= nil and not LEVEL_SKIP[unit_name] then
 			unit_name = LEVEL_CONVERT[unit_name] or unit_name
+
 			local dn = self._get_dn({
 				name = unit_name,
 				type_ = UNIT

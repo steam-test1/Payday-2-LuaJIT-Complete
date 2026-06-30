@@ -17,6 +17,7 @@ function SpawnVehicleElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local vehicles = {
 		"falcogini",
 		"escape_van",

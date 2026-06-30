@@ -1,8 +1,8 @@
 AmmoClip = AmmoClip or class(Pickup)
-AmmoClip.EVENT_IDS = {
-	bonnie_share_ammo = 1,
-	register_grenade = 16
-}
+AmmoClip.EVENT_IDS = {}
+AmmoClip.EVENT_IDS.bonnie_share_ammo = 1
+AmmoClip.EVENT_IDS.register_grenade = 16
+
 local CABLE_TIE_GET_CHANCE = 0.2
 local CABLE_TIE_GET_AMOUNT = 1
 
@@ -55,7 +55,7 @@ function AmmoClip:_pickup(unit)
 				end
 			end
 
-			local success, add_amount = nil
+			local success, add_amount
 
 			for _, weapon in ipairs(available_selections) do
 				if not self._weapon_category or self._weapon_category == weapon.unit:base():categories()[1] then
@@ -75,6 +75,7 @@ function AmmoClip:_pickup(unit)
 
 		if picked_up then
 			self._picked_up = true
+
 			local rand = math.random()
 
 			if rand <= CABLE_TIE_GET_CHANCE and self._ammo_box then
@@ -126,8 +127,10 @@ function AmmoClip:_chk_loose_ammo_restore_health(unit)
 			local base = tweak_data.upgrades.loose_ammo_restore_health_values.base
 			local sync_value = math.round(math.clamp(restore_value - base, 0, 13))
 			local percent_inc = player_manager:upgrade_value("player", "gain_life_per_players", 0) * num_more_hp + 1
+
 			restore_value = restore_value * (tweak_data.upgrades.loose_ammo_restore_health_values.multiplier or 0.1)
 			restore_value = restore_value * percent_inc
+
 			local damage_ext = unit:character_damage()
 
 			if not damage_ext:need_revive() and not damage_ext:dead() and not damage_ext:is_berserker() then
@@ -182,11 +185,12 @@ function AmmoClip:sync_net_event(event, peer)
 
 			self._grenade_registered = true
 		end
-	elseif AmmoClip.EVENT_IDS.bonnie_share_ammo < event then
+	elseif event > AmmoClip.EVENT_IDS.bonnie_share_ammo then
 		local damage_ext = player:character_damage()
 
 		if not damage_ext:need_revive() and not damage_ext:dead() and not damage_ext:is_berserker() then
 			local restore_value = event - 2 + (tweak_data.upgrades.loose_ammo_restore_health_values.base or 3)
+
 			restore_value = restore_value * (tweak_data.upgrades.loose_ammo_restore_health_values.multiplier or 0.1)
 			restore_value = restore_value * (tweak_data.upgrades.loose_ammo_give_team_health_ratio or 0.35)
 

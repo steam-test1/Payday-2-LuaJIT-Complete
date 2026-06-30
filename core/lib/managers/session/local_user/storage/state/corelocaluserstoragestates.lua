@@ -11,6 +11,7 @@ end
 DetectSignOut = DetectSignOut or class()
 
 function DetectSignOut:init()
+	return
 end
 
 Loading = Loading or class(DetectSignOut)
@@ -51,6 +52,7 @@ function Ready:destroy()
 end
 
 function Ready:transition()
+	return
 end
 
 NoSaveGameFound = NoSaveGameFound or class()
@@ -66,4 +68,5 @@ end
 LoadError = LoadError or class()
 
 function LoadError:transition()
+	return
 end

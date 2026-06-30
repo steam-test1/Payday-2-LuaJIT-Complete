@@ -259,7 +259,7 @@ function SavefileManager:update_current_task_type()
 end
 
 function SavefileManager:update_gui_visibility()
-	if self._hide_gui_time and self._hide_gui_time <= TimerManager:wall():time() then
+	if self._hide_gui_time and TimerManager:wall():time() >= self._hide_gui_time then
 		self._workspace:hide()
 		self._gui_script:set_text("")
 
@@ -368,7 +368,7 @@ function SavefileManager:_clean_meta_data_list(is_setting_slot)
 	if is_setting_slot then
 		Global.savefile_manager.meta_data_list[self.SETTING_SLOT] = nil
 	else
-		local empty_list = nil
+		local empty_list
 
 		for slot in pairs(Global.savefile_manager.meta_data_list) do
 			if slot ~= self.SETTING_SLOT then
@@ -380,9 +380,9 @@ function SavefileManager:_clean_meta_data_list(is_setting_slot)
 
 		if empty_list then
 			local setting_meta_data = Global.savefile_manager.meta_data_list[self.SETTING_SLOT]
-			Global.savefile_manager.meta_data_list = {
-				[self.SETTING_SLOT] = setting_meta_data
-			}
+
+			Global.savefile_manager.meta_data_list = {}
+			Global.savefile_manager.meta_data_list[self.SETTING_SLOT] = setting_meta_data
 		end
 	end
 end
@@ -408,6 +408,7 @@ function SavefileManager:_save(slot, cache_only, save_system)
 
 	if is_setting_slot and managers.user.STORE_SETTINGS_ON_PROFILE then
 		Global.savefile_manager.safe_profile_save_time = TimerManager:wall():time() + self.MAX_PROFILE_SAVE_INTERVAL
+
 		local task_data = {
 			queued_in_save_manager = false,
 			task_type = self.SAVE_TASK_TYPE,
@@ -419,9 +420,9 @@ function SavefileManager:_save(slot, cache_only, save_system)
 	else
 		local meta_data = self:_meta_data(slot)
 		local task_data = {
-			queued_in_save_manager = true,
 			date_format = "%c",
 			max_queue_size = 1,
+			queued_in_save_manager = true,
 			first_slot = slot,
 			task_type = self.SAVE_TASK_TYPE,
 			user_index = managers.user:get_platform_id()
@@ -552,12 +553,13 @@ function SavefileManager:_save_done(slot, cache_only, task_data, slot_data, succ
 	self._save_done_callback_handler:dispatch(slot, success, is_setting_slot, cache_only)
 
 	if not success then
-		local dialog_data = {
-			title = managers.localization:text("dialog_error_title")
-		}
-		local ok_button = {
-			text = managers.localization:text("dialog_ok")
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_error_title")
+
+		local ok_button = {}
+
+		ok_button.text = managers.localization:text("dialog_ok")
 		dialog_data.button_list = {
 			ok_button
 		}
@@ -625,19 +627,20 @@ end
 
 function SavefileManager:_save_data_to_slot(target_slot, data, clbk, save_system)
 	local task_data = {
-		queued_in_save_manager = true,
 		date_format = "%c",
 		max_queue_size = 1,
+		queued_in_save_manager = true,
 		first_slot = target_slot,
 		task_type = self.SAVE_TASK_TYPE,
-		user_index = managers.user:get_platform_id(),
-		subtitle = managers.localization:text("savefile_progress", {
-			VERSION = self.LOWEST_COMPATIBLE_VERSION
-		}),
-		details = managers.localization:text("savefile_progress_description"),
-		data = {
-			data
-		}
+		user_index = managers.user:get_platform_id()
+	}
+
+	task_data.subtitle = managers.localization:text("savefile_progress", {
+		VERSION = self.LOWEST_COMPATIBLE_VERSION
+	})
+	task_data.details = managers.localization:text("savefile_progress_description")
+	task_data.data = {
+		data
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
@@ -705,7 +708,8 @@ function SavefileManager:_copy_slot(src_slot, target_slot, clbk, save_system)
 	end
 
 	local function load_callback_obj(td, rd)
-		self:clbk_result_load_copy_slot(src_slot, target_slot, td, rd, clbk or function ()
+		self:clbk_result_load_copy_slot(src_slot, target_slot, td, rd, clbk or function()
+			return
 		end)
 	end
 
@@ -787,7 +791,7 @@ function SavefileManager:_on_task_queued(task_data)
 			if test_task_data.task_type == task_data.task_type and test_task_data.save_system == task_data.save_system then
 				nr_tasks_found = nr_tasks_found + 1
 
-				if task_data.max_queue_size <= nr_tasks_found then
+				if nr_tasks_found >= task_data.max_queue_size then
 					SaveGameManager:abort(test_task_data)
 					table.remove(self._queued_tasks, i_task)
 				else
@@ -861,6 +865,7 @@ function SavefileManager:_load_done(slot, cache_only, wrong_user, wrong_version)
 	end
 
 	local req_version = self:_load_cache(slot)
+
 	success = req_version == nil and success or false
 
 	self._load_done_callback_handler:dispatch(slot, success, is_setting_slot, cache_only)
@@ -875,12 +880,14 @@ function SavefileManager:_load_done(slot, cache_only, wrong_user, wrong_version)
 		self._save_slots_to_load[slot] = nil
 	elseif not success then
 		self._try_again = self._try_again or {}
-		local dialog_data = {
-			title = managers.localization:text("dialog_error_title")
-		}
-		local ok_button = {
-			text = managers.localization:text("dialog_ok")
-		}
+
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_error_title")
+
+		local ok_button = {}
+
+		ok_button.text = managers.localization:text("dialog_ok")
 		dialog_data.button_list = {
 			ok_button
 		}
@@ -888,17 +895,19 @@ function SavefileManager:_load_done(slot, cache_only, wrong_user, wrong_version)
 		if is_setting_slot or is_progress_slot then
 			local at_init = false
 			local error_msg = is_setting_slot and "dialog_fail_load_setting_" or is_progress_slot and "dialog_fail_load_progress_"
+
 			error_msg = error_msg .. (req_version == nil and "corrupt" or "wrong_version")
 
 			cat_print("savefile_manager", "ERROR: ", error_msg)
 
 			if not self._try_again[slot] then
-				local yes_button = {
-					text = managers.localization:text("dialog_yes")
-				}
-				local no_button = {
-					text = managers.localization:text("dialog_no")
-				}
+				local yes_button = {}
+
+				yes_button.text = managers.localization:text("dialog_yes")
+
+				local no_button = {}
+
+				no_button.text = managers.localization:text("dialog_no")
 				dialog_data.button_list = {
 					yes_button,
 					no_button
@@ -924,18 +933,21 @@ function SavefileManager:_load_done(slot, cache_only, wrong_user, wrong_version)
 
 						return
 					else
-						local rem_dialog_data = {
-							title = managers.localization:text("dialog_error_title"),
-							text = managers.localization:text(error_msg, {
-								VERSION = req_version
-							})
-						}
-						local ok_button = {
-							text = managers.localization:text("dialog_ok"),
-							callback_func = function ()
-								self:_remove(slot)
-							end
-						}
+						local rem_dialog_data = {}
+
+						rem_dialog_data.title = managers.localization:text("dialog_error_title")
+						rem_dialog_data.text = managers.localization:text(error_msg, {
+							VERSION = req_version
+						})
+
+						local ok_button = {}
+
+						ok_button.text = managers.localization:text("dialog_ok")
+
+						function ok_button.callback_func()
+							self:_remove(slot)
+						end
+
 						rem_dialog_data.button_list = {
 							ok_button
 						}
@@ -969,27 +981,27 @@ function SavefileManager:_load_done(slot, cache_only, wrong_user, wrong_version)
 			else
 				managers.system_menu:show(dialog_data)
 			end
+		else
+			dialog_data.text = managers.localization:text("dialog_fail_load_game_corrupt")
 
-			return
+			managers.system_menu:add_init_show(dialog_data)
 		end
-
-		dialog_data.text = managers.localization:text("dialog_fail_load_game_corrupt")
-
-		managers.system_menu:add_init_show(dialog_data)
 	elseif wrong_user then
 		Global.savefile_manager.progress_wrong_user = true
 		self._save_slots_to_load[slot] = nil
 
 		if not self._queued_wrong_user then
 			self._queued_wrong_user = true
-			local dialog_data = {
-				title = managers.localization:text("dialog_information_title"),
-				text = managers.localization:text("dialog_load_wrong_user"),
-				id = "wrong_user"
-			}
-			local ok_button = {
-				text = managers.localization:text("dialog_ok")
-			}
+
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("dialog_information_title")
+			dialog_data.text = managers.localization:text("dialog_load_wrong_user")
+			dialog_data.id = "wrong_user"
+
+			local ok_button = {}
+
+			ok_button.text = managers.localization:text("dialog_ok")
 			dialog_data.button_list = {
 				ok_button
 			}
@@ -1036,7 +1048,7 @@ function SavefileManager:_load_cache(slot)
 		local version = cache.version or 0
 		local version_name = cache.version_name
 
-		if SavefileManager.VERSION < version then
+		if version > SavefileManager.VERSION then
 			return version_name
 		end
 
@@ -1092,9 +1104,9 @@ function SavefileManager:_meta_data(slot)
 
 	if not meta_data then
 		meta_data = {
+			is_corrupt = false,
 			is_synched_cache = false,
 			is_synched_text = false,
-			is_corrupt = false,
 			slot = slot
 		}
 		Global.savefile_manager.meta_data_list[slot] = meta_data
@@ -1258,15 +1270,17 @@ function SavefileManager:fetch_savegame_hdd_space_required()
 end
 
 function SavefileManager:_ask_load_vr_progress(has_progress, load_params)
-	local dialog_data = {
-		title = managers.localization:text("dialog_error_title")
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes")
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no")
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_error_title")
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
 	dialog_data.button_list = {
 		yes_button,
 		no_button
@@ -1302,15 +1316,18 @@ end
 
 function SavefileManager:_ask_load_backup(reason, dialog_at_init, load_params)
 	dialog_at_init = false
-	local dialog_data = {
-		title = managers.localization:text("dialog_error_title")
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes")
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no")
-	}
+
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_error_title")
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
 	dialog_data.button_list = {
 		yes_button,
 		no_button
@@ -1365,7 +1382,7 @@ function SavefileManager:clbk_result_load_platform_setting_map(task_data, platfo
 		return
 	end
 
-	local cache = nil
+	local cache
 
 	if platform_setting_map then
 		cache = managers.user:get_setting_map()
@@ -1387,7 +1404,7 @@ function SavefileManager:clbk_result_load(task_data, result_data)
 			cat_print("savefile_manager", "slot:", slot, "\n", inspect(slot_data))
 
 			local status = slot_data.status
-			local cache, force_cache = nil
+			local cache, force_cache
 			local wrong_user = status == "WRONG_USER"
 			local wrong_version = status == "WRONG_VERSION"
 
@@ -1478,7 +1495,8 @@ function SavefileManager:clbk_result_iterate_savegame_slots(task_data, result_da
 	end
 
 	self._save_slots_to_load = {}
-	local found_progress_slot = nil
+
+	local found_progress_slot
 
 	if type_name(result_data) == "table" then
 		for slot, slot_data in pairs(result_data) do

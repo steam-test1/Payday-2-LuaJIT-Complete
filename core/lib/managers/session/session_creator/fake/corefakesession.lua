@@ -4,6 +4,7 @@ core:import("CoreSession")
 Session = Session or class()
 
 function Session:init()
+	return
 end
 
 function Session:delete_session()

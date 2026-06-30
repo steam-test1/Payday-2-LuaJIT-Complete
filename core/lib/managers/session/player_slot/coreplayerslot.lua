@@ -83,6 +83,7 @@ function PlayerSlot:create_player()
 
 	local factory = self._player_slots_parent._factory
 	local player_handler = factory:create_player_handler()
+
 	self._player = CorePlayer.Player:new(self, player_handler)
 	player_handler.core_player = self._player
 

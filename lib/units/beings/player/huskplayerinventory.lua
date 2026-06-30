@@ -1,4 +1,5 @@
 HuskPlayerInventory = HuskPlayerInventory or class(PlayerInventory)
+
 local ids_unit = Idstring("unit")
 
 function HuskPlayerInventory:init(unit)
@@ -17,6 +18,7 @@ function HuskPlayerInventory:init(unit)
 end
 
 function HuskPlayerInventory:_send_equipped_weapon()
+	return
 end
 
 function HuskPlayerInventory:synch_equipped_weapon(weap_index, blueprint_string, cosmetics_string, peer)
@@ -63,6 +65,7 @@ function HuskPlayerInventory:refresh_primary_hand()
 
 	if hand ~= self._primary_hand then
 		self._primary_hand = hand
+
 		local selection = self._available_selections[self._equipped_selection]
 
 		if selection and alive(selection.unit) then
@@ -109,14 +112,14 @@ function HuskPlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 		end
 	end
 
-	local setup_data = {
-		user_unit = self._unit,
-		ignore_units = ignore_units,
-		expend_ammo = false,
-		autoaim = false,
-		alert_AI = false,
-		user_sound_variant = "1"
-	}
+	local setup_data = {}
+
+	setup_data.user_unit = self._unit
+	setup_data.ignore_units = ignore_units
+	setup_data.expend_ammo = false
+	setup_data.autoaim = false
+	setup_data.alert_AI = false
+	setup_data.user_sound_variant = "1"
 
 	new_unit:base():setup(setup_data)
 	self:add_unit(new_unit, equip, instant)
@@ -125,7 +128,7 @@ end
 function HuskPlayerInventory:add_unit_by_factory_name(factory_name, equip, instant, blueprint_string, cosmetics_string)
 	local factory_weapon = tweak_data.weapon.factory[factory_name]
 	local ids_unit_name = Idstring(factory_weapon.unit)
-	local blueprint = nil
+	local blueprint
 
 	if blueprint_string and blueprint_string ~= "" then
 		blueprint = managers.weapon_factory:unpack_blueprint_from_string(factory_name, blueprint_string)
@@ -162,14 +165,14 @@ function HuskPlayerInventory:add_unit_by_factory_blueprint(factory_name, equip, 
 		end
 	end
 
-	local setup_data = {
-		user_unit = self._unit,
-		ignore_units = ignore_units,
-		expend_ammo = false,
-		autoaim = false,
-		alert_AI = false,
-		user_sound_variant = "1"
-	}
+	local setup_data = {}
+
+	setup_data.user_unit = self._unit
+	setup_data.ignore_units = ignore_units
+	setup_data.expend_ammo = false
+	setup_data.autoaim = false
+	setup_data.alert_AI = false
+	setup_data.user_sound_variant = "1"
 
 	new_unit:base():setup(setup_data)
 
@@ -244,6 +247,7 @@ end
 
 function HuskPlayerInventory:set_weapon_underbarrel(selection_index, underbarrel_id, is_on)
 	selection_index = (tonumber(selection_index) - 1) % 2 + 1
+
 	local selection = self._available_selections[selection_index]
 
 	if not selection then

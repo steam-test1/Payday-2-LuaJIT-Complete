@@ -7,19 +7,19 @@ function ChallengeManager:init()
 end
 
 function ChallengeManager:init_finalize()
+	return
 end
 
 function ChallengeManager:_setup()
 	self._default = {}
 
 	if not Global.challenge_manager then
-		Global.challenge_manager = {
-			challenges = {},
-			active_challenges = {},
-			visited_crimenet = false,
-			retrieving = false,
-			validated = false
-		}
+		Global.challenge_manager = {}
+		Global.challenge_manager.challenges = {}
+		Global.challenge_manager.active_challenges = {}
+		Global.challenge_manager.visited_crimenet = false
+		Global.challenge_manager.retrieving = false
+		Global.challenge_manager.validated = false
 
 		self:_load_challenges_from_xml()
 		managers.savefile:add_load_sequence_done_callback_handler(callback(self, self, "_load_done"))
@@ -66,6 +66,7 @@ end
 
 function ChallengeManager:_fetch_challenges()
 	local done_clbk = callback(self, self, "_fetch_done_clbk")
+
 	self._global.retrieving = true
 	self._missionsURL = "https://www.paydaythegame.com/ovk-media/stats/pd2missions.json"
 
@@ -84,9 +85,7 @@ function ChallengeManager:_fetch_done_clbk(success, s)
 			currently_active_challenges[category] = currently_active_challenges[category] or {}
 
 			for active_id in string.gmatch(ids, "'([^,]+)'") do
-				if false then
-					-- Nothing
-				elseif category == "safehouse_daily" then
+				if category == "safehouse_daily" then
 					managers.custom_safehouse:set_active_daily(active_id)
 				elseif category == "weekly_skirmish" then
 					managers.skirmish:activate_weekly_skirmish(active_id)
@@ -99,7 +98,7 @@ function ChallengeManager:_fetch_done_clbk(success, s)
 
 		local inactive_challenges = {}
 		local timestamp = self:get_timestamp()
-		local is_active = nil
+		local is_active
 
 		for key, challenge in pairs(self._global.active_challenges) do
 			is_active = table.contains(all_currently_active_challenges, challenge.id)
@@ -127,7 +126,7 @@ end
 
 function ChallengeManager:_load_challenges_from_xml()
 	local list = PackageManager:script_data(self.FILE_EXTENSION:id(), self.PATH:id())
-	local objectives, rewards = nil
+	local objectives, rewards
 
 	for _, challenge in ipairs(list) do
 		if challenge._meta == "challenge" and challenge.id then
@@ -162,7 +161,7 @@ function ChallengeManager:_load_challenges_from_xml()
 						choose_weapon_reward = data.choose_weapon_reward
 					})
 				elseif data._meta == "rewards" then
-					local texture_rect = nil
+					local texture_rect
 
 					if data.texture_rect then
 						texture_rect = string.split(data.texture_rect, ",")
@@ -243,6 +242,7 @@ end
 function ChallengeManager:activate_challenge(id, key, category)
 	if self:has_active_challenges(id, key) then
 		local active_challenge = self:get_active_challenge(id, key)
+
 		active_challenge.category = category
 
 		return false, "active"
@@ -424,6 +424,7 @@ function ChallengeManager:on_give_reward(id, key, reward_index)
 
 		if reward and not reward.rewarded then
 			reward = self:_give_reward(active_challenge, reward)
+
 			local all_rewarded = true
 
 			for _, reward in ipairs(active_challenge.rewards) do
@@ -457,6 +458,7 @@ function ChallengeManager:set_as_rewarded(id, key, reward_index)
 
 		if reward and not reward.rewarded then
 			reward.rewarded = true
+
 			local all_rewarded = true
 
 			for _, reward in ipairs(active_challenge.rewards) do
@@ -505,17 +507,18 @@ function ChallengeManager:_give_reward(challenge, reward)
 	end
 
 	reward.rewarded = true
+
 	local reward = reward
 
 	if #reward > 0 then
 		local rewards = reward
 
 		if rewards.smart_loot then
-			local amount_in_inventory = nil
+			local amount_in_inventory
 			local loot_table = {}
 			local limited_loot_table = {}
 			local most_limited_loot_table = {}
-			local entry, global_value = nil
+			local entry, global_value
 
 			for _, reward in ipairs(rewards) do
 				entry = tweak_data:get_raw_value("blackmarket", reward.type_items, reward.item_entry)
@@ -574,10 +577,10 @@ end
 function ChallengeManager:save(data)
 	Application:debug("[ChallengeManager:save]")
 
-	local save_data = {
-		active_challenges = deep_clone(self._global.active_challenges),
-		visited_crimenet = self._global.visited_crimenet
-	}
+	local save_data = {}
+
+	save_data.active_challenges = deep_clone(self._global.active_challenges)
+	save_data.visited_crimenet = self._global.visited_crimenet
 
 	if self._global.mission_values then
 		save_data.mission_values = deep_clone(self._global.mission_values)
@@ -632,9 +635,10 @@ function ChallengeManager:mission_set_value(variable, activated)
 end
 
 function ChallengeManager:check_equipped_outfit(equip_data, outfit, character)
-	local pass_armor, pass_deployable, pass_mask, pass_melee_weapon, pass_primary, pass_secondary, pass_primaries, pass_secondaries, pass_primary_unmodded, pass_secondary_unmodded, pass_skills, pass_melee_weapons, pass_primary_category, pass_secondary_category, pass_masks, pass_armors, pass_characters, pass_detection, pass_perk_deck, pass_grenade, pass_single_deployable, pass_weapons = nil
+	local pass_armor, pass_deployable, pass_mask, pass_melee_weapon, pass_primary, pass_secondary, pass_primaries, pass_secondaries, pass_primary_unmodded, pass_secondary_unmodded, pass_skills, pass_melee_weapons, pass_primary_category, pass_secondary_category, pass_masks, pass_armors, pass_characters, pass_detection, pass_perk_deck, pass_grenade, pass_single_deployable, pass_weapons
 	local ad = equip_data
-	local num_skills = nil
+	local num_skills
+
 	pass_deployable = not ad.deployable or ad.deployable == outfit.deployable
 	pass_single_deployable = not ad.single_deployable or not outfit.secondary_deployable or outfit.secondary_deployable == "nil"
 	pass_armor = not ad.armor or ad.armor == outfit.armor and ad.armor == outfit.armor_current
@@ -644,8 +648,10 @@ function ChallengeManager:check_equipped_outfit(equip_data, outfit, character)
 	pass_melee_weapon = not ad.melee_weapon or ad.melee_weapon == outfit.melee_weapon
 	pass_melee_weapons = not ad.melee_weapons or table.contains(ad.melee_weapons, outfit.melee_weapon)
 	pass_grenade = not ad.grenade or table.contains(ad.grenade, outfit.grenade)
+
 	local primary_categories = tweak_data:get_raw_value("weapon", managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id), "categories")
 	local secondary_categories = tweak_data:get_raw_value("weapon", managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id), "categories")
+
 	pass_primary = not ad.primary or ad.primary == outfit.primary.factory_id
 	pass_primaries = not ad.primaries or table.contains(ad.primaries, outfit.primary.factory_id)
 	pass_primary_unmodded = not ad.primary_unmodded or managers.weapon_factory:is_weapon_unmodded(outfit.primary.factory_id, outfit.primary.blueprint)
@@ -677,8 +683,9 @@ function ChallengeManager:check_equipped_outfit(equip_data, outfit, character)
 
 	if ad.detection then
 		local detection = managers.blackmarket:get_suspicion_offset_of_outfit_string(outfit, tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+
 		detection = math.round(detection * 100)
-		pass_detection = ad.detection.min <= detection and detection <= ad.detection.max
+		pass_detection = detection >= ad.detection.min and detection <= ad.detection.max
 	else
 		pass_detection = true
 	end
@@ -689,7 +696,7 @@ end
 function ChallengeManager:check_equipped_team(achievement_data)
 	if achievement_data.equipped_team then
 		local ad = achievement_data.equipped_team
-		local num_skills = nil
+		local num_skills
 
 		for _, peer in pairs(managers.network:session():all_peers()) do
 			if not self:check_equipped_outfit(achievement_data.equipped_team, peer:blackmarket_outfit(), peer:character()) then

@@ -1,4 +1,5 @@
 local tmp_vec1 = Vector3()
+
 CopLogicPhalanxVip = class(CopLogicBase)
 CopLogicPhalanxVip.on_alert = CopLogicIdle.on_alert
 CopLogicPhalanxVip.on_new_objective = CopLogicIdle.on_new_objective
@@ -45,7 +46,9 @@ function CopLogicPhalanxVip.enter(data, new_logic_name, enter_params)
 		unit = data.unit
 	}
 	local is_cool = data.unit:movement():cool()
+
 	my_data.detection = data.char_tweak.detection.combat
+
 	local old_internal_data = data.internal_data
 
 	if old_internal_data then
@@ -63,11 +66,14 @@ function CopLogicPhalanxVip.enter(data, new_logic_name, enter_params)
 		end
 
 		local lower_body_action = data.unit:movement()._active_actions[2]
+
 		my_data.advancing = lower_body_action and lower_body_action:type() == "walk" and lower_body_action
 	end
 
 	data.internal_data = my_data
+
 	local key_str = tostring(data.unit:key())
+
 	my_data.detection_task_key = "CopLogicPhalanxVip.update" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicPhalanxVip.queued_update, data, data.t)
@@ -110,7 +116,8 @@ function CopLogicPhalanxVip.exit(data, new_logic_name, enter_params)
 
 	for achievement_id, achievement_data in pairs(tweak_data.achievement.enemy_kill_achievements) do
 		if achievement_data.is_vip then
-			local all_pass, mutators_pass = nil
+			local all_pass, mutators_pass
+
 			mutators_pass = managers.mutators:check_achievements(achievement_data)
 			all_pass = mutators_pass
 
@@ -233,8 +240,8 @@ function CopLogicPhalanxVip.do_vip_flee(unit)
 		local flee_nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
 
 		unit:brain():set_objective({
-			forced = true,
 			attitude = "avoid",
+			forced = true,
 			type = "flee",
 			pos = flee_pos,
 			nav_seg = flee_nav_seg
@@ -246,6 +253,7 @@ function CopLogicPhalanxVip._upd_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local delay = CopLogicBase._upd_attention_obj_detection(data, nil, nil)
 	local new_attention, new_prio_slot, new_reaction = CopLogicIdle._get_priority_attention(data, data.detected_attention_objects)
@@ -253,7 +261,7 @@ function CopLogicPhalanxVip._upd_enemy_detection(data)
 	CopLogicBase._set_attention_obj(data, new_attention, new_reaction)
 	data.logic._upd_aim(data, my_data)
 
-	if new_reaction and AIAttentionObject.REACT_SHOOT <= new_reaction then
+	if new_reaction and new_reaction >= AIAttentionObject.REACT_SHOOT then
 		my_data.last_violent_attention = new_attention
 	end
 

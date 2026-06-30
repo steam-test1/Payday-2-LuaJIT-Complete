@@ -1,5 +1,6 @@
 local tmp_vec1 = Vector3()
 local tmp_rot1 = Rotation()
+
 UnitNetworkHandler = UnitNetworkHandler or class(BaseNetworkHandler)
 
 function UnitNetworkHandler:set_unit(unit, character_name, outfit_string, outfit_version, peer_id, team_id, visual_seed)
@@ -211,7 +212,7 @@ function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_ya
 		return
 	end
 
-	local end_rot = nil
+	local end_rot
 
 	if end_yaw ~= 0 then
 		end_rot = Rotation(360 * (end_yaw - 1) / 254, 0, 0)
@@ -236,7 +237,7 @@ function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_ya
 		table.insert(nav_path, first_nav_point)
 	end
 
-	local pose = nil
+	local pose
 
 	if pose_code == 1 then
 		pose = "stand"
@@ -244,7 +245,7 @@ function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_ya
 		pose = "crouch"
 	end
 
-	local end_pose = nil
+	local end_pose
 
 	if end_pose_code == 1 then
 		end_pose = "stand"
@@ -253,10 +254,10 @@ function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_ya
 	end
 
 	local action_desc = {
-		path_simplified = true,
-		type = "walk",
-		persistent = true,
 		body_part = 2,
+		path_simplified = true,
+		persistent = true,
+		type = "walk",
 		variant = haste_code == 1 and "walk" or "run",
 		end_rot = end_rot,
 		nav_path = nav_path,
@@ -376,9 +377,9 @@ function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike
 
 	local action_desc = {
 		block_type = "walk",
-		type = "spooc",
-		path_index = 1,
 		body_part = 1,
+		path_index = 1,
+		type = "spooc",
 		nav_path = {
 			unit:position()
 		},
@@ -1126,11 +1127,11 @@ function UnitNetworkHandler:action_hurt_start(unit, hurt_type, body_part, death_
 			allow_network = false,
 			block_type = CopActionHurt.idx_to_hurt_type(hurt_type),
 			blocks = {
-				tase = -1,
 				act = -1,
 				action = -1,
-				walk = -1,
-				aim = -1
+				aim = -1,
+				tase = -1,
+				walk = -1
 			},
 			body_part = body_part,
 			death_type = CopActionHurt.idx_to_death_type(death_type),
@@ -1164,7 +1165,7 @@ function UnitNetworkHandler:set_attention(unit, target_unit, reaction, sender)
 		return
 	end
 
-	local handler = nil
+	local handler
 
 	if target_unit:attention() then
 		handler = target_unit:attention()
@@ -1277,15 +1278,9 @@ function UnitNetworkHandler:alarm_pager_interaction(u_id, tweak_table, status, s
 		local peer = self._verify_sender(sender)
 
 		if peer then
-			local status_str = nil
+			local status_str
 
-			if status == 1 then
-				status_str = "started"
-			elseif status == 2 then
-				status_str = "interrupted"
-			else
-				status_str = "complete"
-			end
+			status_str = status == 1 and "started" or status == 2 and "interrupted" or "complete"
 
 			unit_data.unit:interaction():sync_interacted(peer, nil, status_str)
 		end
@@ -1393,7 +1388,7 @@ function UnitNetworkHandler:action_act_start_align(unit, act_index, body_part, b
 		return
 	end
 
-	local start_rot = nil
+	local start_rot
 
 	if start_yaw and start_yaw ~= 0 then
 		start_rot = Rotation(360 * (start_yaw - 1) / 254, 0, 0)
@@ -1486,7 +1481,7 @@ function UnitNetworkHandler:alert(alerted_unit, aggressor)
 		return
 	end
 
-	local aggressor_pos = nil
+	local aggressor_pos
 
 	if aggressor:movement() and aggressor:movement().m_head_pos then
 		aggressor_pos = aggressor:movement():m_head_pos()
@@ -1517,6 +1512,7 @@ function UnitNetworkHandler:revive_player(revive_health_level, revive_damage_red
 
 	if revive_damage_reduction > 0 then
 		revive_damage_reduction = math.clamp(revive_damage_reduction, 1, 2)
+
 		local tweak = tweak_data.upgrades.first_aid_kit.revived_damage_reduction[revive_damage_reduction]
 
 		managers.player:activate_temporary_property("revived_damage_reduction", tweak[2], tweak[1])
@@ -1762,7 +1758,7 @@ function UnitNetworkHandler:request_place_ecm_jammer(sync_attach_unit, sync_atta
 		return
 	end
 
-	local attach_unit, attach_body = nil
+	local attach_unit, attach_body
 
 	if alive(sync_attach_unit) then
 		attach_unit = sync_attach_unit
@@ -1825,7 +1821,7 @@ function UnitNetworkHandler:from_server_ecm_jammer_place_result(ecm_unit, sync_a
 		return
 	end
 
-	local attach_unit, attach_body = nil
+	local attach_unit, attach_body
 
 	if alive(sync_attach_unit) then
 		attach_unit = sync_attach_unit
@@ -1868,7 +1864,7 @@ function UnitNetworkHandler:sync_deployable_attachment(deployable_unit, sync_att
 		return
 	end
 
-	local attach_unit, attach_body = nil
+	local attach_unit, attach_body
 
 	if alive(sync_attach_unit) then
 		attach_unit = sync_attach_unit
@@ -1990,7 +1986,9 @@ function UnitNetworkHandler:place_sentry_gun(pos, rot, equipment_selection_index
 	end
 
 	local can_switch_fire_mode = PlayerSkill.has_skill("sentry_gun", "ap_bullets", user_unit)
+
 	fire_mode_index = can_switch_fire_mode and fire_mode_index or 1
+
 	local unit, spread_level, rot_level = SentryGunBase.spawn(user_unit, pos, rot, peer:id(), true, unit_idstring_index)
 
 	if unit then
@@ -2494,16 +2492,16 @@ function UnitNetworkHandler:sync_player_movement_state(unit, state, down_time, u
 		local valid_transitions = {
 			standard = {
 				arrested = true,
-				incapacitated = true,
-				carry = true,
 				bleed_out = true,
+				carry = true,
+				incapacitated = true,
 				tased = true
 			},
 			carry = {
 				arrested = true,
+				bleed_out = true,
 				incapacitated = true,
 				standard = true,
-				bleed_out = true,
 				tased = true
 			},
 			mask_off = {
@@ -2525,8 +2523,8 @@ function UnitNetworkHandler:sync_player_movement_state(unit, state, down_time, u
 				standard = true
 			},
 			tased = {
-				incapacitated = true,
 				carry = true,
+				incapacitated = true,
 				standard = true
 			},
 			incapacitated = {
@@ -2536,16 +2534,16 @@ function UnitNetworkHandler:sync_player_movement_state(unit, state, down_time, u
 			clean = {
 				arrested = true,
 				carry = true,
+				civilian = true,
 				mask_off = true,
-				standard = true,
-				civilian = true
+				standard = true
 			},
 			civilian = {
 				arrested = true,
 				carry = true,
 				clean = true,
-				standard = true,
-				mask_off = true
+				mask_off = true,
+				standard = true
 			}
 		}
 
@@ -2849,6 +2847,7 @@ function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_typ
 	if tweak_entry.client_authoritative then
 		if not unit then
 			local unit_name = Idstring(tweak_entry.local_unit)
+
 			unit = World:spawn_unit(unit_name, pos, Rotation(dir, math.UP))
 		end
 
@@ -3049,7 +3048,8 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 
 	attacker_unit = alive(attacker_unit) and attacker_unit or nil
 	weapon_unit = alive(weapon_unit) and weapon_unit or nil
-	local inv_ext = nil
+
+	local inv_ext
 
 	if not weapon_unit and attacker_unit and selection_idx ~= 0 then
 		inv_ext = attacker_unit:inventory()
@@ -3060,10 +3060,11 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 		end
 	end
 
-	local weapon_id = nil
+	local weapon_id
 
 	if weapon_unit then
 		local base_ext = weapon_unit:base()
+
 		weapon_id = base_ext and base_ext.get_name_id and base_ext:get_name_id()
 	end
 
@@ -3073,6 +3074,7 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 
 			if not weapon_id then
 				local base_ext = attacker_unit:base()
+
 				weapon_id = base_ext and base_ext.melee_weapon and base_ext:melee_weapon()
 			end
 		end
@@ -3080,7 +3082,7 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 		weapon_id = weapon_id or peer:unit() == attacker_unit and peer:melee_id()
 	end
 
-	local modified_length = nil
+	local modified_length
 
 	if dot_data.use_weapon_falloff and attacker_unit then
 		local weap_base = weapon_unit and weapon_unit:base()
@@ -3089,6 +3091,7 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 			local fake_ray = {
 				unit = target_unit
 			}
+
 			modified_length = weap_base:get_damage_falloff(dot_data.dot_length, fake_ray, attacker_unit)
 		end
 	end
@@ -3367,7 +3370,7 @@ function UnitNetworkHandler:sync_contour_add(unit, u_id, type_index, multiplier,
 		return
 	end
 
-	local contour_unit = nil
+	local contour_unit
 
 	if alive(unit) and unit:id() ~= -1 then
 		contour_unit = unit
@@ -3397,7 +3400,7 @@ function UnitNetworkHandler:sync_contour_remove(unit, u_id, type_index, sender_r
 		return
 	end
 
-	local contour_unit = nil
+	local contour_unit
 
 	if alive(unit) and unit:id() ~= -1 then
 		contour_unit = unit
@@ -3467,6 +3470,7 @@ function UnitNetworkHandler:remove_minion(unit, sender)
 end
 
 function UnitNetworkHandler:spot_enemy(unit)
+	return
 end
 
 function UnitNetworkHandler:count_down_player_minions()
@@ -3644,6 +3648,7 @@ function UnitNetworkHandler:sync_player_kill_statistic(tweak_table_name, is_head
 	managers.statistics:killed_by_anyone(data)
 
 	local attacker_state = managers.player:current_state()
+
 	data.attacker_state = attacker_state
 
 	managers.statistics:killed(data)
@@ -3696,13 +3701,7 @@ function UnitNetworkHandler:suspicion(suspect_peer_id, susp_value, sender)
 		return
 	end
 
-	if susp_value == 0 then
-		susp_value = false
-	elseif susp_value == 255 then
-		susp_value = true
-	else
-		susp_value = susp_value / 254
-	end
+	susp_value = (susp_value ~= 0 or false) and (susp_value == 255 and true or susp_value / 254)
 
 	suspect_unit:movement():on_suspicion(nil, susp_value)
 end
@@ -3742,7 +3741,7 @@ function UnitNetworkHandler:start_timespeed_effect(effect_id, timer_name, affect
 		return
 	end
 
-	local affect_timer_names = nil
+	local affect_timer_names
 
 	if affect_timer_names_str ~= "" then
 		affect_timer_names = string.split(affect_timer_names_str, ";")
@@ -3842,7 +3841,7 @@ function UnitNetworkHandler:suppression(unit, ratio, sender)
 	end
 
 	local amount_max = (sup_tweak.brown_point or sup_tweak.react_point)[2]
-	local amount, panic_chance = nil
+	local amount, panic_chance
 
 	if ratio == 16 then
 		amount = "max"
@@ -3996,6 +3995,7 @@ function UnitNetworkHandler:sync_vehicle_driving(action, unit, player)
 	end
 
 	local ext = unit:npc_vehicle_driving()
+
 	ext = ext or unit:vehicle_driving()
 
 	if action == "start" then
@@ -4237,7 +4237,7 @@ function UnitNetworkHandler:sync_swansong_hud(unit, peer_id)
 		return
 	end
 
-	local panel_id = nil
+	local panel_id
 
 	for i, panel in ipairs(managers.hud._teammate_panels) do
 		if panel._peer_id == peer_id then
@@ -4259,7 +4259,7 @@ function UnitNetworkHandler:sync_swansong_timer(unit, current, total, revives, p
 		return
 	end
 
-	local panel_id = nil
+	local panel_id
 
 	for i, panel in ipairs(managers.hud._teammate_panels) do
 		if panel._peer_id == peer_id then
@@ -4448,7 +4448,7 @@ function UnitNetworkHandler:sync_ability_hud(end_time, time_total, sender)
 		return
 	end
 
-	local panel_id = nil
+	local panel_id
 
 	for i, panel in ipairs(managers.hud._teammate_panels) do
 		if panel._peer_id == peer:id() then
@@ -4962,7 +4962,7 @@ function UnitNetworkHandler:sync_feed_piggybank(bag_unit, reached_next_level, la
 		return
 	end
 
-	local mutator = nil
+	local mutator
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
@@ -4986,7 +4986,7 @@ function UnitNetworkHandler:sync_piggybank_dialog(sync_index, sender)
 		return
 	end
 
-	local mutator = nil
+	local mutator
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
@@ -5010,7 +5010,7 @@ function UnitNetworkHandler:sync_explode_piggybank(sender)
 		return
 	end
 
-	local mutator = nil
+	local mutator
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
@@ -5122,7 +5122,7 @@ function UnitNetworkHandler:sync_gain_buff(buff_string, sender)
 		return
 	end
 
-	local mutator = nil
+	local mutator
 
 	if managers.mutators:is_mutator_active(MutatorCG22) then
 		mutator = managers.mutators:get_mutator(MutatorCG22)
@@ -5152,7 +5152,7 @@ function UnitNetworkHandler:sync_on_snowman_spawned(sender)
 		return
 	end
 
-	local mutator = nil
+	local mutator
 
 	if managers.mutators:is_mutator_active(MutatorCG22) then
 		mutator = managers.mutators:get_mutator(MutatorCG22)
@@ -5196,7 +5196,8 @@ function UnitNetworkHandler:sync_projectile_special_collision(attacker_unit, wea
 
 	attacker_unit = alive(attacker_unit) and attacker_unit or nil
 	weapon_unit = alive(weapon_unit) and weapon_unit or nil
-	local inv_ext = nil
+
+	local inv_ext
 
 	if not weapon_unit and attacker_unit and selection_idx ~= 0 then
 		inv_ext = attacker_unit:inventory()
@@ -5287,6 +5288,7 @@ function UnitNetworkHandler:from_server_spy_camera_place_result(camera_unit, sen
 	end
 
 	camera_unit = alive(camera_unit) and camera_unit or nil
+
 	local player_unit = managers.player:player_unit()
 
 	if player_unit then

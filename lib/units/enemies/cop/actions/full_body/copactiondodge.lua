@@ -23,6 +23,7 @@ function CopActionDodge:init(action_desc, common_data)
 	self._timeout = action_desc.timeout
 	self._machine = common_data.machine
 	self._ids_base = Idstring("base")
+
 	local redir_name = "dodge_" .. tostring(action_desc.variation)
 	local redir_res = self._ext_movement:play_redirect(redir_name)
 
@@ -48,6 +49,7 @@ function CopActionDodge:init(action_desc, common_data)
 
 		if Network:is_server() then
 			local sync_accuracy = math.clamp(math.floor((action_desc.shoot_accuracy or 1) * 10), 0, 10)
+
 			self._shoot_accuracy = sync_accuracy / 10
 
 			common_data.ext_network:send("action_dodge_start", self._body_part, CopActionDodge._get_variation_index(action_desc.variation), CopActionDodge._get_side_index(action_desc.side), Rotation(action_desc.direction, math.UP):yaw(), action_desc.speed or 1, sync_accuracy)
@@ -82,11 +84,12 @@ end
 function CopActionDodge:update(t)
 	if self._ext_anim.dodge then
 		local dt = TimerManager:game():delta_time()
+
 		self._last_pos = CopActionHurt._get_pos_clamped_to_graph(self)
 
 		CopActionWalk._set_new_pos(self, dt)
 
-		local new_rot = nil
+		local new_rot
 
 		if self._rot_transition then
 			local anim_rel_t = self._machine:segment_relative_time(self._ids_base)

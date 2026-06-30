@@ -1,4 +1,5 @@
 LeakedRecordingGui = LeakedRecordingGui or class(MenuGuiComponentGeneric)
+
 local MOUSEOVER_COLOR = tweak_data.screen_colors.button_stage_2
 local BUTTON_COLOR = tweak_data.screen_colors.button_stage_3
 local S_FONT = tweak_data.menu.pd2_small_font
@@ -8,8 +9,8 @@ local M_FONT_SIZE = tweak_data.menu.pd2_medium_font_size
 local L_FONT = tweak_data.menu.pd2_large_font
 local L_FONT_SIZE = tweak_data.menu.pd2_large_font_size
 local POSTER_SIZE = {
-	w = 256,
-	h = 484
+	h = 484,
+	w = 256
 }
 local POSTER_AMOUNT = 4
 
@@ -38,18 +39,19 @@ end
 
 function LeakedRecordingGui.create_background(parent_panel)
 	return parent_panel:rect({
-		name = "lobby_bg",
 		alpha = 0.4,
 		layer = 99,
+		name = "lobby_bg",
 		color = Color.black
 	})
 end
 
 function LeakedRecordingGui.create_window_panel(parent_panel, data)
 	data = data or {}
+
 	local window_panel = parent_panel:panel({
-		name = "window",
 		layer = 100,
+		name = "window",
 		x = data.x or 0,
 		y = data.y or 0,
 		w = data.w or POSTER_SIZE.w * POSTER_AMOUNT + (POSTER_AMOUNT + 1) * 5,
@@ -65,9 +67,9 @@ function LeakedRecordingGui.create_window_panel(parent_panel, data)
 	end
 
 	window_panel:rect({
-		name = "lobby_bg",
 		alpha = 0.6,
 		layer = 0,
+		name = "lobby_bg",
 		color = Color.black
 	})
 	BoxGuiObject:new(window_panel, {
@@ -85,10 +87,10 @@ end
 function LeakedRecordingGui:create_back_button()
 	if managers.menu:is_pc_controller() then
 		local back_button = self._panel:text({
-			vertical = "bottom",
-			name = "back_button",
 			align = "right",
 			blend_mode = "add",
+			name = "back_button",
+			vertical = "bottom",
 			text = utf8.to_upper(managers.localization:text("menu_back")),
 			h = tweak_data.menu.pd2_large_font_size,
 			font_size = tweak_data.menu.pd2_large_font_size,
@@ -104,13 +106,13 @@ function LeakedRecordingGui:create_back_button()
 		back_button:set_layer(101)
 
 		local bg_back = self._fullscreen_panel:text({
-			name = "TitleTextBg",
-			vertical = "bottom",
-			h = 90,
 			align = "right",
 			alpha = 0.4,
 			blend_mode = "add",
+			h = 90,
 			layer = 1,
+			name = "TitleTextBg",
+			vertical = "bottom",
 			text = back_button:text(),
 			font_size = tweak_data.menu.pd2_massive_font_size,
 			font = tweak_data.menu.pd2_massive_font,
@@ -136,9 +138,10 @@ end
 
 function LeakedRecordingGui:create_poster_box()
 	self._poster_panel = LeakedRecordingGui.create_window_panel(self._panel)
+
 	local panel_text = self._panel:text({
-		name = "panel_title",
 		layer = 100,
+		name = "panel_title",
 		text = managers.localization:text("menu_lr_poster_title"),
 		font = L_FONT,
 		font_size = L_FONT_SIZE
@@ -149,6 +152,7 @@ function LeakedRecordingGui:create_poster_box()
 
 	self._poster_panels = {}
 	self.poster_amount = 4
+
 	local window_margin = 5
 	local panel_spacing = 5
 	local window_safe_size = {
@@ -157,6 +161,7 @@ function LeakedRecordingGui:create_poster_box()
 		w = self._poster_panel:w() - window_margin * 2,
 		h = self._poster_panel:h() - window_margin * 2
 	}
+
 	self._poster_size = {
 		w = POSTER_SIZE.w,
 		h = POSTER_SIZE.h
@@ -196,6 +201,7 @@ function LeakedRecordingGui:enter_mission_menu(index)
 end
 
 function LeakedRecordingGui:update(t, dt)
+	return
 end
 
 function LeakedRecordingGui:mouse_pressed(button, x, y)
@@ -213,6 +219,7 @@ function LeakedRecordingGui:confirm_pressed()
 end
 
 function LeakedRecordingGui:special_btn_pressed(button)
+	return
 end
 
 function LeakedRecordingGui:set_focused_poster(new_focus)
@@ -221,7 +228,7 @@ function LeakedRecordingGui:set_focused_poster(new_focus)
 
 		if alive(old_focus) and self._original_focus_pos then
 			old_focus:stop()
-			old_focus:animate(function ()
+			old_focus:animate(function()
 				local t = 0
 				local dt = 0
 				local speed = 2
@@ -255,6 +262,7 @@ function LeakedRecordingGui:set_focused_poster(new_focus)
 				x = new_focus:center_x(),
 				y = new_focus:center_y()
 			}
+
 			local new_size = {
 				w = self._poster_size.w * 1.1,
 				h = self._poster_size.h * 1.1
@@ -269,11 +277,11 @@ function LeakedRecordingGui:set_focused_poster(new_focus)
 			}
 
 			new_focus:stop()
-			new_focus:animate(function (direction)
+			new_focus:animate(function(direction)
 				local t = 0
 				local dt = 0
 				local speed = 2
-				local temp_size = nil
+				local temp_size
 
 				while t < 1 do
 					dt = coroutine.yield()
@@ -331,6 +339,7 @@ LeakedRecordingMissionGuiInitiator = LeakedRecordingMissionGuiInitiator or class
 
 function LeakedRecordingMissionGuiInitiator:modify_node(original_node, data)
 	local node = deep_clone(original_node)
+
 	node:parameters().menu_component_data = data
 
 	return node
@@ -347,6 +356,7 @@ function LeakedRecordingMissionGui:init(ws, fullscreen_ws, node)
 	LeakedRecordingGui.create_back_button(self)
 
 	local node_data = node:parameters().menu_component_data or {}
+
 	self._mission_id = node_data.mission_id or 1
 	self._mission = tweak_data.gui.leakedrecordings.missions[self._mission_id]
 	self._cleared = managers.mission:get_saved_job_value(self._mission.job_value) or false
@@ -381,14 +391,15 @@ function LeakedRecordingMissionGui:create_mission_box()
 		x = 0,
 		h = POSTER_SIZE.h
 	})
+
 	local texture_size = {
-		w = 4096,
-		h = 2048
+		h = 2048,
+		w = 4096
 	}
 
 	self._fullscreen_panel:bitmap({
-		texture = "guis/dlcs/lrm/textures/pd2/crimenet/recorder_df",
 		layer = 99,
+		texture = "guis/dlcs/lrm/textures/pd2/crimenet/recorder_df",
 		x = 0,
 		texture_rect = {
 			0,
@@ -400,12 +411,12 @@ function LeakedRecordingMissionGui:create_mission_box()
 		h = self._fullscreen_panel:h()
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/dlcs/lrm/textures/pd2/crimenet/tape",
-		layer = 101,
 		h = 144.26391601563,
-		y = 187,
+		layer = 101,
+		texture = "guis/dlcs/lrm/textures/pd2/crimenet/tape",
 		w = 94.543701171875,
 		x = 853,
+		y = 187,
 		texture_rect = {
 			0,
 			0,
@@ -432,9 +443,9 @@ function LeakedRecordingMissionGui:create_mission_box()
 	local right_x = 266
 	local placer_y = 10
 	local title = self._mission_panel:text({
+		layer = 1,
 		name = "title",
 		w = 400,
-		layer = 1,
 		text = managers.localization:text("menu_lr_mission_title_" .. self._mission_id),
 		font = M_FONT,
 		font_size = M_FONT_SIZE,
@@ -446,12 +457,13 @@ function LeakedRecordingMissionGui:create_mission_box()
 	ExtendedPanel.make_fine_text(title)
 
 	placer_y = placer_y + title:h()
+
 	local description = self._mission_panel:text({
-		name = "description",
 		h = 200,
-		wrap = true,
-		w = 400,
 		layer = 1,
+		name = "description",
+		w = 400,
+		wrap = true,
 		text = managers.localization:text("menu_lr_mission_description_" .. self._mission_id),
 		font = S_FONT,
 		font_size = S_FONT_SIZE,
@@ -462,6 +474,7 @@ function LeakedRecordingMissionGui:create_mission_box()
 	ExtendedPanel.make_fine_text(description)
 
 	placer_y = placer_y + description:h() + M_FONT_SIZE
+
 	local title_text = managers.localization:text("menu_challenge_objective_title")
 
 	if self._cleared then
@@ -478,7 +491,9 @@ function LeakedRecordingMissionGui:create_mission_box()
 		y = placer_y,
 		h = M_FONT_SIZE
 	})
+
 	placer_y = placer_y + objective_title:h()
+
 	local objective_text = self._mission_panel:text({
 		name = "objective_text",
 		w = 400,
@@ -494,6 +509,7 @@ function LeakedRecordingMissionGui:create_mission_box()
 	ExtendedPanel.make_fine_text(objective_text)
 
 	placer_y = placer_y + objective_text:h()
+
 	local start_button = self._mission_panel:panel({
 		name = "start_button",
 		w = 400,
@@ -501,6 +517,7 @@ function LeakedRecordingMissionGui:create_mission_box()
 		y = placer_y,
 		h = S_FONT_SIZE
 	})
+
 	self.start_text = start_button:text({
 		name = "start_text",
 		text_id = "menu_sm_start_level",
@@ -539,14 +556,15 @@ function LeakedRecordingMissionGui:create_mission_box()
 	self._cog_is_rotating = false
 	self._cog_rotation = 0
 	self._cogwheels = {}
+
 	local cogwheel = self._fullscreen_panel:bitmap({
-		texture = "guis/dlcs/lrm/textures/pd2/crimenet/cog",
-		layer = 101,
 		h = 25,
-		y = 203,
-		w = 25,
+		layer = 101,
+		texture = "guis/dlcs/lrm/textures/pd2/crimenet/cog",
 		visible = true,
+		w = 25,
 		x = 888,
+		y = 203,
 		texture_rect = {
 			0,
 			0,
@@ -558,13 +576,13 @@ function LeakedRecordingMissionGui:create_mission_box()
 	table.insert(self._cogwheels, cogwheel)
 
 	cogwheel = self._fullscreen_panel:bitmap({
-		texture = "guis/dlcs/lrm/textures/pd2/crimenet/cog",
-		layer = 101,
 		h = 25,
-		y = 290,
-		w = 25,
+		layer = 101,
+		texture = "guis/dlcs/lrm/textures/pd2/crimenet/cog",
 		visible = true,
+		w = 25,
 		x = 888,
+		y = 290,
 		texture_rect = {
 			0,
 			0,
@@ -594,8 +612,8 @@ function LeakedRecordingMissionGui:create_mission_box()
 
 		self._buttons_info_panel = self._panel:panel({
 			101,
-			w = 810,
 			layer = 102,
+			w = 810,
 			h = M_FONT_SIZE
 		})
 
@@ -604,8 +622,8 @@ function LeakedRecordingMissionGui:create_mission_box()
 	end
 
 	local briefing_button = self._mission_panel:panel({
-		visible = false,
 		name = "briefing_button",
+		visible = false,
 		w = 100,
 		x = right_x,
 		y = placer_y,
@@ -730,14 +748,15 @@ function LeakedRecordingMissionGui:stop_recording()
 end
 
 function LeakedRecordingMissionGui:open_transcript()
-	local dialog_data = {
-		title = managers.localization:text("menu_lr_transcript_header") .. ": " .. managers.localization:text("menu_lr_mission_title_" .. self._mission_id),
-		text = managers.localization:text("menu_lr_transcript_" .. self._mission_id)
-	}
-	local ok_button = {
-		text = managers.localization:text("dialog_ok"),
-		cancel_button = true
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("menu_lr_transcript_header") .. ": " .. managers.localization:text("menu_lr_mission_title_" .. self._mission_id)
+	dialog_data.text = managers.localization:text("menu_lr_transcript_" .. self._mission_id)
+
+	local ok_button = {}
+
+	ok_button.text = managers.localization:text("dialog_ok")
+	ok_button.cancel_button = true
 	dialog_data.button_list = {
 		ok_button
 	}

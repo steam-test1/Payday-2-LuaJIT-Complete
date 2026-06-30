@@ -54,7 +54,7 @@ local weights = {
 }
 
 local function length_function(coefficients, derivative1_for)
-	return function (t, x1, y1, x2, y2, x3, y3, x4, y4)
+	return function(t, x1, y1, x2, y2, x3, y3, x4, y4)
 		local ax, bx, cx = coefficients(x1, x2, x3, x4)
 		local ay, by, cy = coefficients(y1, y2, y3, y4)
 		local z2 = t / 2
@@ -64,6 +64,7 @@ local function length_function(coefficients, derivative1_for)
 			local corrected_t = z2 * abscissae[i] + z2
 			local dx = derivative1_for(corrected_t, ax, bx, cx)
 			local dy = derivative1_for(corrected_t, ay, by, cy)
+
 			sum = sum + weights[i] * hypot(dx, dy)
 		end
 

@@ -39,6 +39,7 @@ function CoreUnitVisibleCutsceneKey:evaluate(player, fast_forward, visible)
 	assert(self._cast)
 
 	visible = visible or self:visible()
+
 	local cast_member = self._cast:unit(self:unit_name())
 
 	if cast_member then

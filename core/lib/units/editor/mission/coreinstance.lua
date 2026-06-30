@@ -16,6 +16,7 @@ function InstanceInputUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local event = EWS:TextCtrl(panel, self._hed.event, "", "TE_PROCESS_ENTER")
 
 	panel_sizer:add(event, 0, 0, "EXPAND")
@@ -47,6 +48,7 @@ function InstanceOutputUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local event = EWS:TextCtrl(panel, self._hed.event, "", "TE_PROCESS_ENTER")
 
 	panel_sizer:add(event, 0, 0, "EXPAND")
@@ -122,9 +124,9 @@ end
 
 function InstanceEventUnitElement:_instance_name_raycast()
 	local ray = managers.editor:unit_by_raycast({
+		mask = 1,
 		ray_type = "body editor",
-		skip_instance_check = true,
-		mask = 1
+		skip_instance_check = true
 	})
 
 	if not ray or not ray.unit then
@@ -209,9 +211,9 @@ function InstanceEventUnitElement:_add_instance_gui(instance_name, events, event
 	local events_params = {
 		ctrlr_proportions = 2,
 		name_proportions = 0,
-		tooltip = "Select an event from the combobox",
-		sorted = true,
 		sizer_proportions = 2,
+		sorted = true,
+		tooltip = "Select an event from the combobox",
 		panel = panel,
 		sizer = h_sizer,
 		options = events,
@@ -238,6 +240,7 @@ end
 function InstanceEventUnitElement:_on_gui_set_event_data(event_list_data)
 	local guis = self:_get_guis_by_event_list_data(event_list_data)
 	local event = guis.event:get_value()
+
 	event_list_data.event = event
 end
 
@@ -280,9 +283,10 @@ function InstanceEventUnitElement:destroy_panel(...)
 end
 
 function InstanceEventUnitElement:_on_gui_select_instance_list()
-	local settings = {
-		list_style = "LC_REPORT,LC_NO_HEADER,LC_SORT_ASCENDING"
-	}
+	local settings = {}
+
+	settings.list_style = "LC_REPORT,LC_NO_HEADER,LC_SORT_ASCENDING"
+
 	local names = managers.world_instance:instance_names_by_script(self._unit:mission_element_data().script)
 	local dialog = SelectNameModal:new("Select instances", names, settings)
 
@@ -300,6 +304,7 @@ function InstanceEventUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local btn_toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	btn_toolbar:add_tool("SELECT_UNIT_LIST", "Select unit from unit list", CoreEws.image_path("world_editor\\unit_by_name_list.png"), nil)
@@ -322,11 +327,11 @@ CoreInstanceInputEventUnitElement = CoreInstanceInputEventUnitElement or class(I
 InstanceInputEventUnitElement = InstanceInputEventUnitElement or class(CoreInstanceInputEventUnitElement)
 InstanceInputEventUnitElement.LINK_VALUES = {
 	{
+		layer = "Instances",
 		output = true,
-		type = "input",
 		table_key = "instance",
 		table_value = "event_list",
-		layer = "Instances"
+		type = "input"
 	}
 }
 
@@ -353,10 +358,10 @@ CoreInstancePointUnitElement = CoreInstancePointUnitElement or class(MissionElem
 InstancePointUnitElement = InstancePointUnitElement or class(CoreInstancePointUnitElement)
 InstancePointUnitElement.LINK_VALUES = {
 	{
-		value = "instance",
-		output = true,
 		layer = "Instances",
-		type = "spawn_point"
+		output = true,
+		type = "spawn_point",
+		value = "instance"
 	}
 }
 
@@ -416,9 +421,9 @@ end
 
 function InstancePointUnitElement:_instance_name_raycast()
 	local ray = managers.editor:unit_by_raycast({
+		mask = 1,
 		ray_type = "body editor",
-		skip_instance_check = true,
-		mask = 1
+		skip_instance_check = true
 	})
 
 	if not ray or not ray.unit then
@@ -439,7 +444,7 @@ end
 function InstancePointUnitElement:_get_options()
 	local _names = managers.world_instance:instance_names_by_script(self._unit:mission_element_data().script)
 	local names = {}
-	local instance_data = nil
+	local instance_data
 
 	for _, name in ipairs(_names) do
 		instance_data = managers.world_instance:get_instance_data_by_name(name)
@@ -457,7 +462,9 @@ function InstancePointUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local instance_ctrlr, instance_params = self:_build_value_combobox(panel, panel_sizer, "instance", self:_get_options())
+
 	self._instance_params = instance_params
 end
 
@@ -508,7 +515,7 @@ function InstanceParamsUnitElement:_add_var_dialog()
 		return
 	end
 
-	local default_value = nil
+	local default_value
 
 	if type == "number" then
 		default_value = 0
@@ -537,6 +544,7 @@ function InstanceParamsUnitElement:_add_var_dialog()
 end
 
 function InstanceParamsUnitElement:_add_var(var_name, type, default_value)
+	return
 end
 
 function InstanceParamsUnitElement:_remove_var_name(var_name)
@@ -560,6 +568,7 @@ end
 
 function InstanceParamsUnitElement:_build_var_panel(data)
 	self._panels = self._panels or {}
+
 	local panel = EWS:Panel(self._panel, "", "TAB_TRAVERSAL")
 	local sizer = EWS:BoxSizer("HORIZONTAL")
 
@@ -598,11 +607,11 @@ end
 
 function InstanceParamsUnitElement:_build_number(data, panel, sizer)
 	local number_params = {
-		name_proportions = 1,
-		tooltip = "Set a default number variable.",
-		floats = 0,
-		sizer_proportions = 1,
 		ctrlr_proportions = 2,
+		floats = 0,
+		name_proportions = 1,
+		sizer_proportions = 1,
+		tooltip = "Set a default number variable.",
 		name = data.var_name,
 		panel = panel,
 		sizer = sizer,
@@ -626,11 +635,11 @@ function InstanceParamsUnitElement:_build_combobox(data, panel, sizer, options)
 	sizer:add(horizontal_sizer, 1, 1, "EXPAND,LEFT")
 
 	local params = {
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select an option from the combobox",
-		sorted = true,
 		ctrlr_proportions = 2,
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = true,
+		tooltip = "Select an option from the combobox",
 		name = data.var_name,
 		panel = panel,
 		sizer = horizontal_sizer,
@@ -657,6 +666,7 @@ end
 
 function InstanceParamsUnitElement:_set_default_var_name(data)
 	local value = data.ctrlr:get_value()
+
 	data.data.default_value = tonumber(value) or value
 end
 
@@ -681,6 +691,7 @@ function InstanceParamsUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	toolbar:add_tool("ADD", "Add variable", CoreEws.image_path("world_editor\\add_unit.png"), nil)
@@ -697,10 +708,10 @@ CoreInstanceSetParamsUnitElement = CoreInstanceSetParamsUnitElement or class(Mis
 InstanceSetParamsUnitElement = InstanceSetParamsUnitElement or class(CoreInstanceSetParamsUnitElement)
 InstanceSetParamsUnitElement.LINK_VALUES = {
 	{
-		value = "instance",
-		output = true,
 		layer = "Instances",
-		type = "params"
+		output = true,
+		type = "params",
+		value = "instance"
 	}
 }
 
@@ -774,9 +785,9 @@ end
 
 function InstanceSetParamsUnitElement:_instance_name_raycast()
 	local ray = managers.editor:unit_by_raycast({
+		mask = 1,
 		ray_type = "body editor",
-		skip_instance_check = true,
-		mask = 1
+		skip_instance_check = true
 	})
 
 	if not ray or not ray.unit then
@@ -867,6 +878,7 @@ end
 
 function InstanceSetParamsUnitElement:_set_var_name(data)
 	local value = data.ctrlr:get_value()
+
 	value = tonumber(value) or value
 	self._hed.params[data.var_name] = value
 end
@@ -903,7 +915,7 @@ function InstanceSetParamsUnitElement:_build_from_params(params)
 		value_panel:set_sizer(value_sizer)
 		sizer:add(value_panel, 1, 0, "EXPAND")
 
-		local value_ctrlr = nil
+		local value_ctrlr
 
 		if data.type == "number" then
 			value_ctrlr = self:_build_number(data, value_panel, value_sizer)
@@ -954,11 +966,11 @@ end
 
 function InstanceSetParamsUnitElement:_build_number(data, panel, sizer)
 	local number_params = {
-		name_proportions = 1,
-		tooltip = "Set a number variable.",
-		floats = 0,
-		sizer_proportions = 1,
 		ctrlr_proportions = 2,
+		floats = 0,
+		name_proportions = 1,
+		sizer_proportions = 1,
+		tooltip = "Set a number variable.",
 		name = data.var_name,
 		panel = panel,
 		sizer = sizer,
@@ -984,11 +996,11 @@ function InstanceSetParamsUnitElement:_build_combobox(data, panel, sizer, option
 	sizer:add(horizontal_sizer, 1, 1, "EXPAND,LEFT")
 
 	local combobox_params = {
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select an option from the combobox",
-		sorted = true,
 		ctrlr_proportions = 2,
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = true,
+		tooltip = "Select an option from the combobox",
 		name = data.var_name,
 		panel = panel,
 		sizer = horizontal_sizer,
@@ -1036,7 +1048,9 @@ function InstanceSetParamsUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local instance_ctrlr, instance_params = self:_build_value_combobox(panel, panel_sizer, "instance", self:_get_options())
+
 	self._instance_params = instance_params
 
 	self:_build_value_checkbox(panel, panel_sizer, "apply_on_execute", "If checked, the values will be applied when the element is executed.")

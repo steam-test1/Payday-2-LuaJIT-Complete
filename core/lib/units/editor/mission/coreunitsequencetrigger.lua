@@ -63,8 +63,8 @@ function CoreUnitSequenceTriggerUnitElement:update_selected()
 			self._sequence_units[id] = nil
 		else
 			local params = {
-				g = 0,
 				b = 1,
+				g = 0,
 				r = 0,
 				from_unit = unit,
 				to_unit = self._unit
@@ -95,8 +95,8 @@ function CoreUnitSequenceTriggerUnitElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._sequence_units) do
 		local params = {
-			g = 0,
 			b = 0.5,
+			g = 0,
 			r = 0,
 			from_unit = unit,
 			to_unit = self._unit
@@ -150,6 +150,7 @@ function CoreUnitSequenceTriggerUnitElement:_check_add_unit(unit)
 		end
 
 		self._sequence_units[unit:unit_data().unit_id] = unit
+
 		local sequence_list_data = {
 			unit_id = unit:unit_data().unit_id,
 			sequence = default_sequence
@@ -278,22 +279,24 @@ function CoreUnitSequenceTriggerUnitElement:_add_unit(unit, sequences, sequence_
 	panel_sizer:add(h_sizer, 0, 1, "EXPAND,LEFT")
 
 	local sequence_params = {
+		ctrlr_proportions = 2,
 		default = "none",
 		name = "Sequence:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
 		sizer_proportions = 1,
-		tooltip = "Select a sequence from the combobox",
 		sorted = true,
+		tooltip = "Select a sequence from the combobox",
 		panel = panel,
 		sizer = h_sizer,
 		options = sequences,
 		value = sequence_list_data.sequence
 	}
 	local sequence = CoreEws.combobox(sequence_params)
+
 	self._guis_id = self._guis_id or 0
 	self._guis_id = self._guis_id + 1
 	sequence_list_data.guis_id = self._guis_id
+
 	local toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	toolbar:add_tool("SELECT", "Remove", CoreEws.image_path("toolbar\\delete_16x16.png"), nil)

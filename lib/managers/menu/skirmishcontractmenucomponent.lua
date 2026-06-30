@@ -12,16 +12,17 @@ function SkirmishContractMenuComponent:init(ws, fullscreen_ws, node)
 	self._fullscreen_panel = fullscreen_ws:panel():panel({
 		layer = 50
 	})
+
 	local is_win_32 = SystemInfo:platform() == Idstring("WIN32")
 	local is_nextgen = SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1")
 	local bg_overlay = BlurSheet:new(self._fullscreen_panel, {
-		name = "bg_overlay",
 		layer = 1,
+		name = "bg_overlay",
 		color = Color(0.75, 0, 0, 0)
 	})
 	local title_text = FineText:new(self._panel, {
-		name = "title_text",
 		layer = 1,
+		name = "title_text",
 		text = managers.localization:to_upper_text("menu_skirmish_selected"),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size
@@ -29,8 +30,8 @@ function SkirmishContractMenuComponent:init(ws, fullscreen_ws, node)
 	local width = 900
 	local height = 580
 	local contract_panel = self._panel:panel({
-		name = "contract_panel",
 		layer = 5,
+		name = "contract_panel",
 		w = width,
 		h = height
 	})
@@ -47,12 +48,14 @@ function SkirmishContractMenuComponent:init(ws, fullscreen_ws, node)
 	title_text:set_leftbottom(contract_panel:lefttop())
 
 	local text_width = width - (is_win_32 and 389 or 356)
+
 	text_width = text_width - 3
+
 	local briefing_text = contract_panel:text({
 		wrap = true,
-		y = 10,
-		x = 10,
 		wrap_word = true,
+		x = 10,
+		y = 10,
 		text = managers.localization:text("heist_skm_random_briefing"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -128,7 +131,7 @@ function SkirmishContractMenuComponent:init(ws, fullscreen_ws, node)
 		color = tweak_data.screen_colors.text
 	})
 	local text_width_diff = math.abs(experience_text:width() - ransom_text:width())
-	local is_ransom_widest = experience_text:width() < ransom_text:width()
+	local is_ransom_widest = ransom_text:width() > experience_text:width()
 
 	placer:new_row(0, 10)
 	placer:add_row(experience_text)
@@ -162,8 +165,8 @@ function SkirmishContractMenuComponent:init(ws, fullscreen_ws, node)
 	local crimenet_videos = tweak_data.skirmish.random_skirmish.crimenet_videos
 	local briefing_video = video_panel:video({
 		blend_mode = "add",
-		name = "briefing_video",
 		loop = true,
+		name = "briefing_video",
 		video = "movies/" .. crimenet_videos[math.random(#crimenet_videos)],
 		width = video_panel:width(),
 		height = video_panel:height(),

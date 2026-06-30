@@ -89,6 +89,7 @@ end
 function ControllerManager:setup_default_controller_list()
 	if Global.controller_manager.default_wrapper_index then
 		local controller_index_list = self._wrapper_to_controller_list[Global.controller_manager.default_wrapper_index]
+
 		self._default_controller_list = {}
 		self._controller_device_id = false
 
@@ -126,7 +127,9 @@ end
 
 function ControllerManager:replace_active_controller(replacement_ctrl_index, replacement_ctrl)
 	local old_ctrl = self._default_controller_list[1]
+
 	self._default_controller_list[1] = replacement_ctrl
+
 	local new_indexes = {}
 
 	for wrapper_index, controller_index in pairs(self._wrapper_to_controller_list) do
@@ -151,7 +154,7 @@ end
 function ControllerManager:check_connect_change()
 	if SystemInfo:platform() == Idstring("WIN32") then
 		if self._default_controller_list then
-			local connected = nil
+			local connected
 
 			for _, controller in ipairs(self._default_controller_list) do
 				connected = controller:connected()
@@ -204,7 +207,7 @@ function ControllerManager:check_connect_change()
 
 			local current_user = XboxLive:current_user()
 			local old_ctrl_device_id = self._controller_device_id
-			local replacement_xb1_ctrl, replacement_xb1_ctrl_index = nil
+			local replacement_xb1_ctrl, replacement_xb1_ctrl_index
 			local nr_controllers = Input:num_controllers()
 
 			for i_controller = 0, nr_controllers - 1 do
@@ -264,13 +267,13 @@ function ControllerManager:remove_default_controller_connect_change_callback(fun
 end
 
 function ControllerManager:create_controller(name, index, debug, prio)
-	local controller_wrapper = nil
+	local controller_wrapper
 
 	self:update_controller_wrapper_mappings()
 
 	if debug then
 		local wrapper_list = {}
-		local default_wrapper = nil
+		local default_wrapper
 
 		for wrapper_index, wrapper_class in pairs(self._wrapper_class_map) do
 			local controller_index = self._wrapper_to_controller_list[wrapper_index][1]
@@ -287,6 +290,7 @@ function ControllerManager:create_controller(name, index, debug, prio)
 		controller_wrapper = CoreControllerWrapperDebug.ControllerWrapperDebug:new(wrapper_list, self, self._next_controller_wrapper_id, name, default_wrapper, CoreControllerWrapperSettings.ControllerWrapperSettings:new(CoreControllerWrapperDebug.ControllerWrapperDebug.TYPE, nil, nil, nil))
 	else
 		index = index or Global.controller_manager.default_wrapper_index or self:get_preferred_default_wrapper_index()
+
 		local wrapper_class = self._wrapper_class_map[index]
 
 		if not wrapper_class then
@@ -295,6 +299,7 @@ function ControllerManager:create_controller(name, index, debug, prio)
 
 		local controller_index = self._wrapper_to_controller_list[index][1]
 		local controller = Input:controller(controller_index)
+
 		controller_wrapper = wrapper_class:new(self, self._next_controller_wrapper_id, name, controller, self._controller_setup[wrapper_class.TYPE], debug, false, self._virtual_game_pad)
 	end
 
@@ -361,7 +366,7 @@ function ControllerManager:update_controller_wrapper_mappings()
 
 			if wrapper_type and not self._skip_controller_map[controller_type] then
 				local old_wrapper_index = controller_type_to_old_wrapper_map[controller_type]
-				local wrapper_index = nil
+				local wrapper_index
 				local wrapper_class = self._supported_wrapper_types[wrapper_type]
 
 				if old_wrapper_index then
@@ -475,7 +480,7 @@ function ControllerManager:controller_wrapper_destroy_callback(controller_wrappe
 end
 
 function ControllerManager:load_core_settings()
-	local result = nil
+	local result
 
 	if PackageManager:has(self.CONTROLLER_SETTINGS_TYPE:id(), self.CORE_CONTROLLER_SETTINGS_PATH:id()) then
 		local node = PackageManager:script_data(self.CONTROLLER_SETTINGS_TYPE:id(), self.CORE_CONTROLLER_SETTINGS_PATH:id())
@@ -489,6 +494,7 @@ function ControllerManager:load_core_settings()
 			end
 
 			local setup = CoreControllerWrapperSettings.ControllerWrapperSettings:new(wrapper_type, child, nil, self.CORE_CONTROLLER_SETTINGS_PATH .. "." .. self.CONTROLLER_SETTINGS_TYPE)
+
 			parsed_controller_setup_map[wrapper_type] = setup
 		end
 
@@ -523,8 +529,8 @@ function ControllerManager:load_settings(path)
 		local node = PackageManager:script_data(self.CONTROLLER_SETTINGS_TYPE:id(), path:id())
 		local version = tonumber(node.version)
 		local core_version = tonumber(node.core_version)
-		local valid_version = not self._last_version or version and self._last_version <= version
-		local valid_core_version = path == self._default_settings_path or not self._last_core_version or not core_version or self._last_core_version <= core_version
+		local valid_version = not self._last_version or version and version >= self._last_version
+		local valid_core_version = path == self._default_settings_path or not self._last_core_version or not core_version or core_version >= self._last_core_version
 
 		if valid_version and valid_core_version then
 			local parsed_controller_setup_map = {}
@@ -537,6 +543,7 @@ function ControllerManager:load_settings(path)
 				end
 
 				local setup = CoreControllerWrapperSettings.ControllerWrapperSettings:new(wrapper_type, child, self._core_controller_setup[wrapper_type], tostring(path) .. "." .. tostring(self.CONTROLLER_SETTINGS_TYPE))
+
 				parsed_controller_setup_map[wrapper_type] = setup
 			end
 
@@ -555,7 +562,7 @@ function ControllerManager:load_settings(path)
 			end
 		else
 			local error_msg = "Old controller settings file \"" .. tostring(path) .. "." .. tostring(self.CONTROLLER_SETTINGS_TYPE) .. "\" detected (version: \"" .. tostring(version) .. "\", core version: \"" .. tostring(core_version) .. "\", latest version: \"" .. tostring(self._last_version) .. "\", latest core version: \"" .. tostring(self._last_core_version) .. "\"."
-			local load_default = nil
+			local load_default
 
 			if path ~= self._default_settings_path then
 				error_msg = error_msg .. " Loads the default path \"" .. tostring(self._default_settings_path) .. "." .. tostring(self.CONTROLLER_SETTINGS_TYPE) .. "\" instead."
@@ -652,6 +659,7 @@ function ControllerManager:change_default_wrapper_mode(mode)
 
 	local controller_index = self._wrapper_to_controller_list[index][1]
 	local controller = Input:controller(controller_index)
+
 	self._default_wrapper_mode = wrapper_class.change_mode(controller, mode)
 end
 
@@ -703,7 +711,7 @@ end
 function ControllerManager:verify_parsed_controller_setup_map(parsed_controller_setup_map, path)
 	local result = true
 	local connection_map = {}
-	local last_wrapper_type = nil
+	local last_wrapper_type
 
 	for wrapper_type, setup in pairs(parsed_controller_setup_map) do
 		local current_connection_map = setup:get_connection_map()

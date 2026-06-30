@@ -19,6 +19,7 @@ function RepelRopeBase:update(unit, t, dt)
 			unit:set_slot(0)
 		else
 			prog = prog^3
+
 			local new_pos = self._tmp_vec3
 
 			self._unit:m_position(new_pos)

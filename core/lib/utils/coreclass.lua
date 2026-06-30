@@ -111,7 +111,8 @@ function hijack_func(instance_or_meta, func_name, func)
 
 		if not meta[old_func_name] then
 			meta[old_func_name] = meta[func_name]
-			meta[func_name] = func or function ()
+			meta[func_name] = func or function()
+				return
 			end
 		end
 	end
@@ -132,7 +133,7 @@ function unhijack_func(instance_or_meta, func_name)
 	end
 end
 
-__frozen__newindex = __frozen__newindex or function (self, key, value)
+__frozen__newindex = __frozen__newindex or function(self, key, value)
 	error(string.format("Attempt to set %s = %s in frozen %s.", tostring(key), tostring(value), type_or_class_name(self)))
 end
 
@@ -189,7 +190,7 @@ function responder(...)
 	end
 
 	return setmetatable({}, {
-		__index = function ()
+		__index = function()
 			return responder_function
 		end
 	})
@@ -201,14 +202,14 @@ function responder_map(response_table)
 	for key, value in pairs(response_table) do
 		if key == "default" then
 			setmetatable(responder, {
-				__index = function ()
-					return function ()
+				__index = function()
+					return function()
 						return value
 					end
 				end
 			})
 		else
-			responder[key] = function ()
+			responder[key] = function()
 				return value
 			end
 		end
@@ -222,12 +223,10 @@ GetSet = GetSet or class()
 function GetSet:init(t)
 	for k, v in pairs(t) do
 		self["_" .. k] = v
-
-		self[k] = function (self)
+		self[k] = function(self)
 			return self["_" .. k]
 		end
-
-		self["set_" .. k] = function (self, v)
+		self["set_" .. k] = function(self, v)
 			self["_" .. k] = v
 		end
 	end

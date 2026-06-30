@@ -19,13 +19,14 @@ function ActionMessageUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local selection_params = {
+		ctrlr_proportions = 2,
 		default = "none",
 		name = "Message id:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select a text id from the combobox",
 		sorted = true,
+		tooltip = "Select a text id from the combobox",
 		panel = panel,
 		sizer = panel_sizer,
 		options = managers.action_messaging:ids(),

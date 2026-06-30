@@ -49,402 +49,403 @@ function CrimeSpreeTweakData:init_missions(tweak_data)
 	local debug_short_add = 5
 	local debug_med_add = 7
 	local debug_long_add = 10
+
 	self.missions = {
 		{
 			{
-				stage_id = "branchbank_cash",
-				id = "bb_cash",
 				icon = "csm_branchbank",
+				id = "bb_cash",
+				stage_id = "branchbank_cash",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.branchbank_cash
 			},
 			{
-				stage_id = "cage",
-				id = "cage",
 				icon = "csm_carshop",
+				id = "cage",
+				stage_id = "cage",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.cage
 			},
 			{
-				stage_id = "kosugi",
-				id = "kosugi",
 				icon = "csm_shadow_raid",
+				id = "kosugi",
+				stage_id = "kosugi",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.kosugi
 			},
 			{
-				stage_id = "dark",
-				id = "dark",
 				icon = "csm_murky",
+				id = "dark",
+				stage_id = "dark",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.dark
 			},
 			{
-				stage_id = "firestarter_2",
 				add = 5,
-				id = "fs_2",
 				icon = "csm_fs_2",
+				id = "fs_2",
+				stage_id = "firestarter_2",
 				level = tweak_data.narrative.stages.firestarter_2
 			},
 			{
-				stage_id = "hox_3",
 				add = 4,
-				id = "hox_3",
 				icon = "csm_hoxvenge",
+				id = "hox_3",
+				stage_id = "hox_3",
 				level = tweak_data.narrative.stages.hox_3
 			},
 			{
-				stage_id = "fish",
 				add = 4,
-				id = "fish",
 				icon = "csm_yacht",
+				id = "fish",
+				stage_id = "fish",
 				level = tweak_data.narrative.stages.fish
 			},
 			{
-				stage_id = "election_day_2",
 				add = 4,
-				id = "ed_2",
 				icon = "csm_election_2",
+				id = "ed_2",
+				stage_id = "election_day_2",
 				level = tweak_data.narrative.stages.election_day_2
 			},
 			{
-				stage_id = "crojob1",
 				add = 8,
-				id = "crojob1",
 				icon = "csm_docks",
+				id = "crojob1",
+				stage_id = "crojob1",
 				level = tweak_data.narrative.stages.crojob1
 			},
 			{
-				stage_id = "framing_frame_3",
-				id = "framing_frame_3",
 				icon = "csm_framing_3",
+				id = "framing_frame_3",
+				stage_id = "framing_frame_3",
 				add = debug_med_add,
 				level = tweak_data.narrative.stages.framing_frame_3
 			},
 			{
-				stage_id = "arm_for",
-				id = "arm_for",
 				icon = "csm_train_forest",
+				id = "arm_for",
+				stage_id = "arm_for",
 				add = debug_med_add,
 				level = tweak_data.narrative.stages.arm_for
 			},
 			{
-				stage_id = "friend",
 				add = 8,
-				id = "friend",
 				icon = "csm_friend",
+				id = "friend",
+				stage_id = "friend",
 				level = tweak_data.narrative.stages.friend
 			},
 			{
-				stage_id = "big",
 				add = 13,
-				id = "big",
 				icon = "csm_big",
+				id = "big",
+				stage_id = "big",
 				level = tweak_data.narrative.stages.big
 			},
 			{
-				stage_id = "mus",
-				id = "mus",
 				icon = "csm_diamond",
+				id = "mus",
+				stage_id = "mus",
 				add = debug_long_add,
 				level = tweak_data.narrative.stages.mus
 			},
 			{
-				stage_id = "roberts",
-				id = "roberts",
 				icon = "csm_go",
+				id = "roberts",
+				stage_id = "roberts",
 				add = debug_long_add,
 				level = tweak_data.narrative.stages.roberts
 			},
 			{
-				stage_id = "red2",
-				id = "red2",
 				icon = "csm_fwb",
+				id = "red2",
+				stage_id = "red2",
 				add = debug_long_add,
 				level = tweak_data.narrative.stages.red2
 			},
 			{
-				stage_id = "pex",
-				id = "pex",
 				icon = "csm_pex",
+				id = "pex",
+				stage_id = "pex",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.pex
 			},
 			{
-				stage_id = "tag",
-				id = "tag",
 				icon = "csm_tag",
+				id = "tag",
+				stage_id = "tag",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.tag
 			}
 		},
 		{
 			{
-				stage_id = "wwh",
 				add = 8,
-				id = "wwh",
 				icon = "csm_wwh",
+				id = "wwh",
+				stage_id = "wwh",
 				level = tweak_data.narrative.stages.wwh
 			},
 			{
-				stage_id = "rvd1",
 				add = 8,
-				id = "rvd1",
 				icon = "csm_rvd_1",
+				id = "rvd1",
+				stage_id = "rvd1",
 				level = tweak_data.narrative.stages.rvd_1
 			},
 			{
-				stage_id = "rvd2",
 				add = 10,
-				id = "rvd2",
 				icon = "csm_rvd_2",
+				id = "rvd2",
+				stage_id = "rvd2",
 				level = tweak_data.narrative.stages.rvd_2
 			},
 			{
-				stage_id = "brb",
 				add = 8,
-				id = "brb",
 				icon = "csm_brb",
+				id = "brb",
+				stage_id = "brb",
 				level = tweak_data.narrative.stages.brb
 			},
 			{
-				stage_id = "arm_cro",
-				id = "arm_cro",
 				icon = "csm_crossroads",
+				id = "arm_cro",
+				stage_id = "arm_cro",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.arm_cro
 			},
 			{
-				stage_id = "help",
-				id = "help",
 				icon = "csm_prison",
+				id = "help",
+				stage_id = "help",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.help
 			},
 			{
-				stage_id = "cage",
-				id = "arm_und",
 				icon = "csm_overpass",
+				id = "arm_und",
+				stage_id = "cage",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.arm_und
 			},
 			{
-				stage_id = "arm_hcm",
-				id = "arm_hcm",
 				icon = "csm_downtown",
+				id = "arm_hcm",
+				stage_id = "arm_hcm",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.arm_hcm
 			},
 			{
-				stage_id = "arm_par",
-				id = "arm_par",
 				icon = "csm_park",
+				id = "arm_par",
+				stage_id = "arm_par",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.arm_par
 			},
 			{
-				stage_id = "arm_fac",
-				id = "arm_fac",
 				icon = "csm_harbor",
+				id = "arm_fac",
+				stage_id = "arm_fac",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.arm_fac
 			},
 			{
-				stage_id = "chew",
 				add = 3,
-				id = "biker_2",
 				icon = "csm_biker_2",
+				id = "biker_2",
+				stage_id = "chew",
 				level = tweak_data.narrative.stages.chew
 			},
 			{
-				stage_id = "firestarter_1",
 				add = 4,
-				id = "fs_1",
 				icon = "csm_fs_1",
+				id = "fs_1",
+				stage_id = "firestarter_1",
 				level = tweak_data.narrative.stages.firestarter_1
 			},
 			{
-				stage_id = "nail",
-				id = "nail",
 				icon = "csm_labrats",
+				id = "nail",
+				stage_id = "nail",
 				add = debug_short_add,
 				level = tweak_data.narrative.stages.nail
 			},
 			{
-				stage_id = "watchdogs_1_d",
 				add = 6,
-				id = "watchdogs_1_d",
 				icon = "csm_watchdogs_1",
+				id = "watchdogs_1_d",
+				stage_id = "watchdogs_1_d",
 				level = tweak_data.narrative.stages.watchdogs_1_d
 			},
 			{
-				stage_id = "pines",
-				id = "pines",
 				icon = "csm_white_xmas",
+				id = "pines",
+				stage_id = "pines",
 				add = debug_med_add,
 				level = tweak_data.narrative.stages.pines
 			},
 			{
-				stage_id = "moon",
-				id = "moon",
 				icon = "csm_stealing_xmas",
+				id = "moon",
+				stage_id = "moon",
 				add = debug_med_add,
 				level = tweak_data.narrative.stages.moon
 			},
 			{
-				stage_id = "spa",
 				add = 8,
-				id = "spa",
 				icon = "csm_brooklyn",
+				id = "spa",
+				stage_id = "spa",
 				level = tweak_data.narrative.stages.spa
 			},
 			{
-				stage_id = "cane",
 				add = 8,
-				id = "cane",
 				icon = "csm_santas_workshop",
+				id = "cane",
+				stage_id = "cane",
 				level = tweak_data.narrative.stages.cane
 			},
 			{
-				stage_id = "mia_2",
 				add = 8,
-				id = "mia_2",
 				icon = "csm_miami_2",
+				id = "mia_2",
+				stage_id = "mia_2",
 				level = tweak_data.narrative.stages.mia_2
 			},
 			{
-				stage_id = "bex",
-				id = "bex",
 				icon = "csm_bex",
+				id = "bex",
+				stage_id = "bex",
 				add = debug_med_add,
 				level = tweak_data.narrative.stages.bex
 			},
 			{
-				stage_id = "sah",
-				id = "sah",
 				icon = "csm_sah",
+				id = "sah",
+				stage_id = "sah",
 				add = debug_med_add,
 				level = tweak_data.narrative.stages.sah
 			}
 		},
 		{
 			{
-				stage_id = "pbr2",
 				add = 9,
-				id = "pbr2",
 				icon = "csm_sky",
+				id = "pbr2",
+				stage_id = "pbr2",
 				level = tweak_data.narrative.stages.pbr2
 			},
 			{
-				stage_id = "pal",
 				add = 9,
-				id = "pal",
 				icon = "csm_counterfeit",
+				id = "pal",
+				stage_id = "pal",
 				level = tweak_data.narrative.stages.pal
 			},
 			{
-				stage_id = "flat",
 				add = 12,
-				id = "flat",
 				icon = "csm_panic_room",
+				id = "flat",
+				stage_id = "flat",
 				level = tweak_data.narrative.stages.flat
 			},
 			{
-				stage_id = "born",
-				id = "born",
 				icon = "csm_biker_1",
+				id = "born",
+				stage_id = "born",
 				add = debug_long_add,
 				level = tweak_data.narrative.stages.born
 			},
 			{
-				stage_id = "hox_2",
 				add = 15,
-				id = "hoxton_2",
 				icon = "csm_hoxout_2",
+				id = "hoxton_2",
+				stage_id = "hox_2",
 				level = tweak_data.narrative.stages.hox_2
 			},
 			{
-				stage_id = "hox_1",
 				add = 10,
-				id = "hoxton_1",
 				icon = "csm_hoxout_1",
+				id = "hoxton_1",
+				stage_id = "hox_1",
 				level = tweak_data.narrative.stages.hox_1
 			},
 			{
-				stage_id = "welcome_to_the_jungle_2",
 				add = 14,
-				id = "bo_2",
 				icon = "csm_bigoil_2",
+				id = "bo_2",
+				stage_id = "welcome_to_the_jungle_2",
 				level = tweak_data.narrative.stages.welcome_to_the_jungle_2
 			},
 			{
-				stage_id = "mia_1",
 				add = 10,
-				id = "mia_1",
 				icon = "csm_miami_1",
+				id = "mia_1",
+				stage_id = "mia_1",
 				level = tweak_data.narrative.stages.mia_1
 			},
 			{
-				stage_id = "rat",
 				add = 13,
-				id = "cook_off",
 				icon = "csm_rats_1",
+				id = "cook_off",
+				stage_id = "rat",
 				level = tweak_data.narrative.stages.rat
 			},
 			{
-				stage_id = "pbr",
-				id = "pbr",
 				icon = "csm_mountain",
+				id = "pbr",
+				stage_id = "pbr",
 				add = debug_long_add,
 				level = tweak_data.narrative.stages.pbr
 			},
 			{
-				stage_id = "glace",
 				add = 12,
-				id = "glace",
 				icon = "csm_glace",
+				id = "glace",
+				stage_id = "glace",
 				level = tweak_data.narrative.stages.glace
 			},
 			{
-				stage_id = "run",
 				add = 12,
-				id = "run",
 				icon = "csm_run",
+				id = "run",
+				stage_id = "run",
 				level = tweak_data.narrative.stages.run
 			},
 			{
-				stage_id = "man",
-				id = "man",
 				icon = "csm_undercover",
+				id = "man",
+				stage_id = "man",
 				add = debug_long_add,
 				level = tweak_data.narrative.stages.man
 			},
 			{
-				stage_id = "dinner",
 				add = 12,
-				id = "dinner",
 				icon = "csm_slaughterhouse",
+				id = "dinner",
+				stage_id = "dinner",
 				level = tweak_data.narrative.stages.dinner
 			},
 			{
-				stage_id = "jolly",
 				add = 12,
-				id = "jolly",
 				icon = "csm_aftershock",
+				id = "jolly",
+				stage_id = "jolly",
 				level = tweak_data.narrative.stages.jolly
 			},
 			{
-				stage_id = "mad",
-				id = "mad",
 				icon = "csm_mad",
+				id = "mad",
+				stage_id = "mad",
 				add = debug_long_add,
 				level = tweak_data.narrative.stages.mad
 			},
 			{
-				stage_id = "arena",
 				add = 12,
-				id = "arena",
 				icon = "csm_arena",
+				id = "arena",
+				stage_id = "arena",
 				level = tweak_data.narrative.stages.arena
 			}
 		}
@@ -454,18 +455,19 @@ end
 function CrimeSpreeTweakData:init_modifiers(tweak_data)
 	local health_increase = 25
 	local damage_increase = 25
+
 	self.max_modifiers_displayed = 3
 	self.modifier_levels = {
-		loud = 20,
 		forced = 50,
+		loud = 20,
 		stealth = 26
 	}
 	self.modifiers = {
 		forced = {
 			{
 				class = "ModifierEnemyHealthAndDamage",
-				id = "damage_health_1",
 				icon = "crime_spree_health",
+				id = "damage_health_1",
 				level = 50,
 				data = {
 					health = {
@@ -481,15 +483,15 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 		},
 		loud = {
 			{
-				id = "shield_reflect",
-				icon = "crime_spree_shield_reflect",
 				class = "ModifierShieldReflect",
+				icon = "crime_spree_shield_reflect",
+				id = "shield_reflect",
 				data = {}
 			},
 			{
-				id = "cloaker_smoke",
-				icon = "crime_spree_cloaker_smoke",
 				class = "ModifierCloakerKick",
+				icon = "crime_spree_cloaker_smoke",
+				id = "cloaker_smoke",
 				data = {
 					effect = {
 						"smoke",
@@ -498,9 +500,9 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "medic_heal_1",
-				icon = "crime_spree_medic_speed",
 				class = "ModifierHealSpeed",
+				icon = "crime_spree_medic_speed",
+				id = "medic_heal_1",
 				data = {
 					speed = {
 						20,
@@ -509,15 +511,15 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "no_hurt",
-				icon = "crime_spree_no_hurt",
 				class = "ModifierNoHurtAnims",
+				icon = "crime_spree_no_hurt",
+				id = "no_hurt",
 				data = {}
 			},
 			{
-				id = "taser_overcharge",
-				icon = "crime_spree_taser_overcharge",
 				class = "ModifierTaserOvercharge",
+				icon = "crime_spree_taser_overcharge",
+				id = "taser_overcharge",
 				data = {
 					speed = {
 						50,
@@ -526,15 +528,15 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "heavies",
-				icon = "crime_spree_heavies",
 				class = "ModifierHeavies",
+				icon = "crime_spree_heavies",
+				id = "heavies",
 				data = {}
 			},
 			{
-				id = "medic_1",
-				icon = "crime_spree_more_medics",
 				class = "ModifierMoreMedics",
+				icon = "crime_spree_more_medics",
+				id = "medic_1",
 				data = {
 					inc = {
 						2,
@@ -543,9 +545,9 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "heavy_sniper",
-				icon = "crime_spree_heavy_sniper",
 				class = "ModifierHeavySniper",
+				icon = "crime_spree_heavy_sniper",
+				id = "heavy_sniper",
 				data = {
 					spawn_chance = {
 						5,
@@ -554,9 +556,9 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "dozer_rage",
-				icon = "crime_spree_dozer_rage",
 				class = "ModifierDozerRage",
+				icon = "crime_spree_dozer_rage",
+				id = "dozer_rage",
 				data = {
 					damage = {
 						100,
@@ -565,9 +567,9 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "cloaker_tear_gas",
-				icon = "crime_spree_cloaker_tear_gas",
 				class = "ModifierCloakerTearGas",
+				icon = "crime_spree_cloaker_tear_gas",
+				id = "cloaker_tear_gas",
 				data = {
 					diameter = {
 						4,
@@ -584,9 +586,9 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "dozer_1",
-				icon = "crime_spree_more_dozers",
 				class = "ModifierMoreDozers",
+				icon = "crime_spree_more_dozers",
+				id = "dozer_1",
 				data = {
 					inc = {
 						2,
@@ -595,9 +597,9 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "medic_heal_2",
-				icon = "crime_spree_medic_speed",
 				class = "ModifierHealSpeed",
+				icon = "crime_spree_medic_speed",
+				id = "medic_heal_2",
 				data = {
 					speed = {
 						20,
@@ -606,15 +608,15 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "dozer_lmg",
-				icon = "crime_spree_dozer_lmg",
 				class = "ModifierSkulldozers",
+				icon = "crime_spree_dozer_lmg",
+				id = "dozer_lmg",
 				data = {}
 			},
 			{
-				id = "medic_adrenaline",
-				icon = "crime_spree_medic_adrenaline",
 				class = "ModifierMedicAdrenaline",
+				icon = "crime_spree_medic_adrenaline",
+				id = "medic_adrenaline",
 				data = {
 					damage = {
 						100,
@@ -623,15 +625,15 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "shield_phalanx",
-				icon = "crime_spree_shield_phalanx",
 				class = "ModifierShieldPhalanx",
+				icon = "crime_spree_shield_phalanx",
+				id = "shield_phalanx",
 				data = {}
 			},
 			{
-				id = "dozer_2",
-				icon = "crime_spree_more_dozers",
 				class = "ModifierMoreDozers",
+				icon = "crime_spree_more_dozers",
+				id = "dozer_2",
 				data = {
 					inc = {
 						2,
@@ -640,21 +642,21 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "medic_deathwish",
-				icon = "crime_spree_medic_deathwish",
 				class = "ModifierMedicDeathwish",
+				icon = "crime_spree_medic_deathwish",
+				id = "medic_deathwish",
 				data = {}
 			},
 			{
-				id = "dozer_minigun",
-				icon = "crime_spree_dozer_minigun",
 				class = "ModifierDozerMinigun",
+				icon = "crime_spree_dozer_minigun",
+				id = "dozer_minigun",
 				data = {}
 			},
 			{
-				id = "medic_2",
-				icon = "crime_spree_more_medics",
 				class = "ModifierMoreMedics",
+				icon = "crime_spree_more_medics",
+				id = "medic_2",
 				data = {
 					inc = {
 						2,
@@ -663,21 +665,21 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "dozer_immunity",
-				icon = "crime_spree_dozer_explosion",
 				class = "ModifierExplosionImmunity",
+				icon = "crime_spree_dozer_explosion",
+				id = "dozer_immunity",
 				data = {}
 			},
 			{
-				id = "dozer_medic",
-				icon = "crime_spree_dozer_medic",
 				class = "ModifierDozerMedic",
+				icon = "crime_spree_dozer_medic",
+				id = "dozer_medic",
 				data = {}
 			},
 			{
-				id = "assault_extender",
-				icon = "crime_spree_assault_extender",
 				class = "ModifierAssaultExtender",
+				icon = "crime_spree_assault_extender",
+				id = "assault_extender",
 				data = {
 					duration = {
 						50,
@@ -698,15 +700,15 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 				}
 			},
 			{
-				id = "cloaker_arrest",
-				icon = "crime_spree_cloaker_arrest",
 				class = "ModifierCloakerArrest",
+				icon = "crime_spree_cloaker_arrest",
+				id = "cloaker_arrest",
 				data = {}
 			},
 			{
-				id = "medic_rage",
-				icon = "crime_spree_medic_rage",
 				class = "ModifierMedicRage",
+				icon = "crime_spree_medic_rage",
+				id = "medic_rage",
 				data = {
 					damage = {
 						20,
@@ -718,8 +720,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 		stealth = {
 			{
 				class = "ModifierLessPagers",
-				id = "pagers_1",
 				icon = "crime_spree_pager",
+				id = "pagers_1",
 				level = 26,
 				data = {
 					count = {
@@ -730,8 +732,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierCivilianAlarm",
-				id = "civs_1",
 				icon = "crime_spree_civs_killed",
+				id = "civs_1",
 				level = 26,
 				data = {
 					count = {
@@ -742,8 +744,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierLessConcealment",
-				id = "conceal_1",
 				icon = "crime_spree_concealment",
+				id = "conceal_1",
 				level = 26,
 				data = {
 					conceal = {
@@ -754,8 +756,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierCivilianAlarm",
-				id = "civs_2",
 				icon = "crime_spree_civs_killed",
+				id = "civs_2",
 				level = 52,
 				data = {
 					count = {
@@ -766,8 +768,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierLessPagers",
-				id = "pagers_2",
 				icon = "crime_spree_pager",
+				id = "pagers_2",
 				level = 78,
 				data = {
 					count = {
@@ -778,8 +780,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierLessConcealment",
-				id = "conceal_2",
 				icon = "crime_spree_concealment",
+				id = "conceal_2",
 				level = 104,
 				data = {
 					conceal = {
@@ -790,8 +792,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierLessPagers",
-				id = "pagers_3",
 				icon = "crime_spree_pager",
+				id = "pagers_3",
 				level = 130,
 				data = {
 					count = {
@@ -802,8 +804,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierCivilianAlarm",
-				id = "civs_3",
 				icon = "crime_spree_civs_killed",
+				id = "civs_3",
 				level = 156,
 				data = {
 					count = {
@@ -814,8 +816,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 			},
 			{
 				class = "ModifierLessPagers",
-				id = "pagers_4",
 				icon = "crime_spree_pager",
+				id = "pagers_4",
 				level = 182,
 				data = {
 					count = {
@@ -830,8 +832,8 @@ function CrimeSpreeTweakData:init_modifiers(tweak_data)
 		forced = {
 			{
 				class = "ModifierEnemyHealthAndDamage",
-				id = "damage_health_rpt_",
 				icon = "crime_spree_health",
+				id = "damage_health_rpt_",
 				level = 5,
 				data = {
 					health = {
@@ -860,50 +862,52 @@ end
 
 function CrimeSpreeTweakData:init_rewards(tweak_data)
 	self.loot_drop_reward_pay_class = 40
+
 	local offshore_rate = tweak_data.money_manager.offshore_rate
+
 	self.rewards = {
 		{
-			id = "experience",
 			always_show = true,
-			max_cards = 10,
+			amount = 20000,
 			card_inc = 200000,
-			name_id = "menu_challenge_xp_drop",
 			icon = "upcard_xp",
-			amount = 20000
+			id = "experience",
+			max_cards = 10,
+			name_id = "menu_challenge_xp_drop"
 		},
 		{
+			always_show = true,
+			amount = 400000,
+			card_inc = 4000000,
+			cash_string = "$",
+			icon = "upcard_cash",
 			id = "cash",
 			max_cards = 10,
-			cash_string = "$",
-			card_inc = 4000000,
-			name_id = "menu_challenge_cash_drop",
-			icon = "upcard_cash",
-			always_show = true,
-			amount = 400000
+			name_id = "menu_challenge_cash_drop"
 		},
 		{
+			amount = 0.4,
+			card_inc = 4,
+			icon = "upcard_coins",
 			id = "continental_coins",
 			max_cards = 5,
-			card_inc = 4,
-			name_id = "menu_cs_coins",
-			icon = "upcard_coins",
-			amount = 0.4
+			name_id = "menu_cs_coins"
 		},
 		{
+			amount = 0.2,
+			card_inc = 5,
+			icon = "upcard_random",
 			id = "loot_drop",
 			max_cards = 5,
-			card_inc = 5,
-			name_id = "menu_challenge_loot_drop",
-			icon = "upcard_random",
-			amount = 0.2
+			name_id = "menu_challenge_loot_drop"
 		},
 		{
+			amount = 0.007,
+			card_inc = 1,
+			icon = "upcard_cosmetic",
 			id = "random_cosmetic",
 			max_cards = 5,
-			card_inc = 1,
-			name_id = "menu_challenge_cosmetic_drop",
-			icon = "upcard_cosmetic",
-			amount = 0.007
+			name_id = "menu_challenge_cosmetic_drop"
 		}
 	}
 	self.all_cosmetics_reward = {
@@ -984,10 +988,10 @@ end
 
 function CrimeSpreeTweakData:init_gage_assets(tweak_data)
 	local asset_cost = 18
+
 	self.max_assets_unlocked = 4
-	self.assets = {
-		increased_health = {}
-	}
+	self.assets = {}
+	self.assets.increased_health = {}
 	self.assets.increased_health.name_id = "menu_cs_ga_increased_health"
 	self.assets.increased_health.unlock_desc_id = "menu_cs_ga_increased_health_desc"
 	self.assets.increased_health.icon = "csb_health"
@@ -996,179 +1000,163 @@ function CrimeSpreeTweakData:init_gage_assets(tweak_data)
 		health = 10
 	}
 	self.assets.increased_health.class = "GageModifierMaxHealth"
-	self.assets.increased_armor = {
-		name_id = "menu_cs_ga_increased_armor",
-		unlock_desc_id = "menu_cs_ga_increased_armor_desc",
-		icon = "csb_armor",
-		cost = asset_cost,
-		data = {
-			armor = 10
-		},
-		class = "GageModifierMaxArmor"
+	self.assets.increased_armor = {}
+	self.assets.increased_armor.name_id = "menu_cs_ga_increased_armor"
+	self.assets.increased_armor.unlock_desc_id = "menu_cs_ga_increased_armor_desc"
+	self.assets.increased_armor.icon = "csb_armor"
+	self.assets.increased_armor.cost = asset_cost
+	self.assets.increased_armor.data = {
+		armor = 10
 	}
-	self.assets.increased_stamina = {
-		name_id = "menu_cs_ga_increased_stamina",
-		unlock_desc_id = "menu_cs_ga_increased_stamina_desc",
-		icon = "csb_stamina",
-		cost = asset_cost,
-		data = {
-			stamina = 100
-		},
-		class = "GageModifierMaxStamina"
+	self.assets.increased_armor.class = "GageModifierMaxArmor"
+	self.assets.increased_stamina = {}
+	self.assets.increased_stamina.name_id = "menu_cs_ga_increased_stamina"
+	self.assets.increased_stamina.unlock_desc_id = "menu_cs_ga_increased_stamina_desc"
+	self.assets.increased_stamina.icon = "csb_stamina"
+	self.assets.increased_stamina.cost = asset_cost
+	self.assets.increased_stamina.data = {
+		stamina = 100
 	}
-	self.assets.increased_ammo = {
-		name_id = "menu_cs_ga_increased_ammo",
-		unlock_desc_id = "menu_cs_ga_increased_ammo_desc",
-		icon = "csb_ammo",
-		cost = asset_cost,
-		data = {
-			ammo = 15
-		},
-		class = "GageModifierMaxAmmo"
+	self.assets.increased_stamina.class = "GageModifierMaxStamina"
+	self.assets.increased_ammo = {}
+	self.assets.increased_ammo.name_id = "menu_cs_ga_increased_ammo"
+	self.assets.increased_ammo.unlock_desc_id = "menu_cs_ga_increased_ammo_desc"
+	self.assets.increased_ammo.icon = "csb_ammo"
+	self.assets.increased_ammo.cost = asset_cost
+	self.assets.increased_ammo.data = {
+		ammo = 15
 	}
-	self.assets.increased_lives = {
-		name_id = "menu_cs_ga_increased_lives",
-		unlock_desc_id = "menu_cs_ga_increased_lives_desc",
-		icon = "csb_lives",
-		cost = asset_cost,
-		data = {
-			lives = 1
-		},
-		class = "GageModifierMaxLives"
+	self.assets.increased_ammo.class = "GageModifierMaxAmmo"
+	self.assets.increased_lives = {}
+	self.assets.increased_lives.name_id = "menu_cs_ga_increased_lives"
+	self.assets.increased_lives.unlock_desc_id = "menu_cs_ga_increased_lives_desc"
+	self.assets.increased_lives.icon = "csb_lives"
+	self.assets.increased_lives.cost = asset_cost
+	self.assets.increased_lives.data = {
+		lives = 1
 	}
-	self.assets.increased_throwables = {
-		name_id = "menu_cs_ga_increased_throwables",
-		unlock_desc_id = "menu_cs_ga_increased_throwables_desc",
-		icon = "csb_throwables",
-		cost = asset_cost,
-		data = {
-			throwables = 70
-		},
-		class = "GageModifierMaxThrowables"
+	self.assets.increased_lives.class = "GageModifierMaxLives"
+	self.assets.increased_throwables = {}
+	self.assets.increased_throwables.name_id = "menu_cs_ga_increased_throwables"
+	self.assets.increased_throwables.unlock_desc_id = "menu_cs_ga_increased_throwables_desc"
+	self.assets.increased_throwables.icon = "csb_throwables"
+	self.assets.increased_throwables.cost = asset_cost
+	self.assets.increased_throwables.data = {
+		throwables = 70
 	}
-	self.assets.increased_deployables = {
-		name_id = "menu_cs_ga_increased_deployables",
-		unlock_desc_id = "menu_cs_ga_increased_deployables_desc",
-		icon = "csb_deployables",
-		cost = asset_cost,
-		data = {
-			deployables = 50
-		},
-		class = "GageModifierMaxDeployables"
+	self.assets.increased_throwables.class = "GageModifierMaxThrowables"
+	self.assets.increased_deployables = {}
+	self.assets.increased_deployables.name_id = "menu_cs_ga_increased_deployables"
+	self.assets.increased_deployables.unlock_desc_id = "menu_cs_ga_increased_deployables_desc"
+	self.assets.increased_deployables.icon = "csb_deployables"
+	self.assets.increased_deployables.cost = asset_cost
+	self.assets.increased_deployables.data = {
+		deployables = 50
 	}
-	self.assets.increased_absorption = {
-		name_id = "menu_cs_ga_increased_absorption",
-		unlock_desc_id = "menu_cs_ga_increased_absorption_desc",
-		icon = "csb_absorb",
-		cost = asset_cost,
-		data = {
-			absorption = 0.5
-		},
-		class = "GageModifierDamageAbsorption"
+	self.assets.increased_deployables.class = "GageModifierMaxDeployables"
+	self.assets.increased_absorption = {}
+	self.assets.increased_absorption.name_id = "menu_cs_ga_increased_absorption"
+	self.assets.increased_absorption.unlock_desc_id = "menu_cs_ga_increased_absorption_desc"
+	self.assets.increased_absorption.icon = "csb_absorb"
+	self.assets.increased_absorption.cost = asset_cost
+	self.assets.increased_absorption.data = {
+		absorption = 0.5
 	}
-	self.assets.quick_reload = {
-		name_id = "menu_cs_ga_quick_reload",
-		unlock_desc_id = "menu_cs_ga_quick_reload_desc",
-		icon = "csb_reload",
-		cost = asset_cost,
-		data = {
-			speed = 25
-		},
-		class = "GageModifierQuickReload"
+	self.assets.increased_absorption.class = "GageModifierDamageAbsorption"
+	self.assets.quick_reload = {}
+	self.assets.quick_reload.name_id = "menu_cs_ga_quick_reload"
+	self.assets.quick_reload.unlock_desc_id = "menu_cs_ga_quick_reload_desc"
+	self.assets.quick_reload.icon = "csb_reload"
+	self.assets.quick_reload.cost = asset_cost
+	self.assets.quick_reload.data = {
+		speed = 25
 	}
-	self.assets.quick_switch = {
-		name_id = "menu_cs_ga_quick_switch",
-		unlock_desc_id = "menu_cs_ga_quick_switch_desc",
-		icon = "csb_switch",
-		cost = asset_cost,
-		data = {
-			speed = 50
-		},
-		class = "GageModifierQuickSwitch"
+	self.assets.quick_reload.class = "GageModifierQuickReload"
+	self.assets.quick_switch = {}
+	self.assets.quick_switch.name_id = "menu_cs_ga_quick_switch"
+	self.assets.quick_switch.unlock_desc_id = "menu_cs_ga_quick_switch_desc"
+	self.assets.quick_switch.icon = "csb_switch"
+	self.assets.quick_switch.cost = asset_cost
+	self.assets.quick_switch.data = {
+		speed = 50
 	}
-	self.assets.melee_invulnerability = {
-		name_id = "menu_cs_ga_melee_invulnerability",
-		unlock_desc_id = "menu_cs_ga_melee_invulnerability_desc",
-		icon = "csb_melee",
-		cost = asset_cost,
-		data = {
-			time = 5
-		},
-		class = "GageModifierMeleeInvincibility"
+	self.assets.quick_switch.class = "GageModifierQuickSwitch"
+	self.assets.melee_invulnerability = {}
+	self.assets.melee_invulnerability.name_id = "menu_cs_ga_melee_invulnerability"
+	self.assets.melee_invulnerability.unlock_desc_id = "menu_cs_ga_melee_invulnerability_desc"
+	self.assets.melee_invulnerability.icon = "csb_melee"
+	self.assets.melee_invulnerability.cost = asset_cost
+	self.assets.melee_invulnerability.data = {
+		time = 5
 	}
-	self.assets.explosion_immunity = {
-		name_id = "menu_cs_ga_explosion_immunity",
-		unlock_desc_id = "menu_cs_ga_explosion_immunity_desc",
-		icon = "csb_explosion",
-		cost = asset_cost,
-		data = {},
-		class = "GageModifierExplosionImmunity"
+	self.assets.melee_invulnerability.class = "GageModifierMeleeInvincibility"
+	self.assets.explosion_immunity = {}
+	self.assets.explosion_immunity.name_id = "menu_cs_ga_explosion_immunity"
+	self.assets.explosion_immunity.unlock_desc_id = "menu_cs_ga_explosion_immunity_desc"
+	self.assets.explosion_immunity.icon = "csb_explosion"
+	self.assets.explosion_immunity.cost = asset_cost
+	self.assets.explosion_immunity.data = {}
+	self.assets.explosion_immunity.class = "GageModifierExplosionImmunity"
+	self.assets.life_steal = {}
+	self.assets.life_steal.name_id = "menu_cs_ga_life_steal"
+	self.assets.life_steal.unlock_desc_id = "menu_cs_ga_life_steal_desc"
+	self.assets.life_steal.icon = "csb_lifesteal"
+	self.assets.life_steal.cost = asset_cost
+	self.assets.life_steal.data = {
+		armor_restored = 0.05,
+		cooldown = 5,
+		health_restored = 0.05
 	}
-	self.assets.life_steal = {
-		name_id = "menu_cs_ga_life_steal",
-		unlock_desc_id = "menu_cs_ga_life_steal_desc",
-		icon = "csb_lifesteal",
-		cost = asset_cost,
-		data = {
-			cooldown = 5,
-			armor_restored = 0.05,
-			health_restored = 0.05
-		},
-		class = "GageModifierLifeSteal"
+	self.assets.life_steal.class = "GageModifierLifeSteal"
+	self.assets.quick_pagers = {}
+	self.assets.quick_pagers.name_id = "menu_cs_ga_quick_pagers"
+	self.assets.quick_pagers.unlock_desc_id = "menu_cs_ga_quick_pagers_desc"
+	self.assets.quick_pagers.icon = "csb_pagers"
+	self.assets.quick_pagers.cost = asset_cost
+	self.assets.quick_pagers.data = {
+		speed = 50
 	}
-	self.assets.quick_pagers = {
-		name_id = "menu_cs_ga_quick_pagers",
-		unlock_desc_id = "menu_cs_ga_quick_pagers_desc",
-		icon = "csb_pagers",
-		cost = asset_cost,
-		data = {
-			speed = 50
-		},
-		stealth = true,
-		class = "GageModifierQuickPagers"
+	self.assets.quick_pagers.stealth = true
+	self.assets.quick_pagers.class = "GageModifierQuickPagers"
+	self.assets.increased_body_bags = {}
+	self.assets.increased_body_bags.name_id = "menu_cs_ga_increased_body_bags"
+	self.assets.increased_body_bags.unlock_desc_id = "menu_cs_ga_increased_body_bags_desc"
+	self.assets.increased_body_bags.icon = "csb_bodybags"
+	self.assets.increased_body_bags.cost = asset_cost
+	self.assets.increased_body_bags.data = {
+		bags = 2
 	}
-	self.assets.increased_body_bags = {
-		name_id = "menu_cs_ga_increased_body_bags",
-		unlock_desc_id = "menu_cs_ga_increased_body_bags_desc",
-		icon = "csb_bodybags",
-		cost = asset_cost,
-		data = {
-			bags = 2
-		},
-		stealth = true,
-		class = "GageModifierMaxBodyBags"
+	self.assets.increased_body_bags.stealth = true
+	self.assets.increased_body_bags.class = "GageModifierMaxBodyBags"
+	self.assets.quick_locks = {}
+	self.assets.quick_locks.name_id = "menu_cs_ga_quick_locks"
+	self.assets.quick_locks.unlock_desc_id = "menu_cs_ga_quick_locks_desc"
+	self.assets.quick_locks.icon = "csb_locks"
+	self.assets.quick_locks.cost = asset_cost
+	self.assets.quick_locks.data = {
+		speed = 25
 	}
-	self.assets.quick_locks = {
-		name_id = "menu_cs_ga_quick_locks",
-		unlock_desc_id = "menu_cs_ga_quick_locks_desc",
-		icon = "csb_locks",
-		cost = asset_cost,
-		data = {
-			speed = 25
-		},
-		stealth = true,
-		class = "GageModifierQuickLocks"
-	}
+	self.assets.quick_locks.stealth = true
+	self.assets.quick_locks.class = "GageModifierQuickLocks"
 end
 
 function CrimeSpreeTweakData:init_gui(tweak_data)
-	self.gui = {
-		randomize_time = {
-			1.25,
-			2.5
-		},
-		spin_speed = 800,
-		spin_speed_limit = {
-			80,
-			1000
-		},
-		max_chat_lines = {
-			lobby = 11,
-			preplanning = 11
-		},
-		missions_displayed = 3,
-		modifiers_before_scroll = 7
+	self.gui = {}
+	self.gui.randomize_time = {
+		1.25,
+		2.5
 	}
+	self.gui.spin_speed = 800
+	self.gui.spin_speed_limit = {
+		80,
+		1000
+	}
+	self.gui.max_chat_lines = {
+		lobby = 11,
+		preplanning = 11
+	}
+	self.gui.missions_displayed = 3
+	self.gui.modifiers_before_scroll = 7
 end
 
 function CrimeSpreeTweakData:get_mission_type_from_index(index)

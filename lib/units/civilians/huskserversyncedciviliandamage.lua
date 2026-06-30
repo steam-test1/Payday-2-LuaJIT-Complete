@@ -20,7 +20,7 @@ function HuskServerSyncedCivilianDamage:sync_damage_bullet(attacker_unit, hit_of
 
 	mvector3.set_z(hit_pos, hit_pos.z + hit_offset_height)
 
-	local attack_dir = nil
+	local attack_dir
 
 	if attacker_unit then
 		attack_dir = hit_pos - attacker_unit:movement():m_head_pos()
@@ -63,7 +63,7 @@ function HuskServerSyncedCivilianDamage:sync_damage_explosion(attacker_unit, res
 
 	mvector3.set_z(hit_pos, hit_pos.z + 130)
 
-	local attack_dir = nil
+	local attack_dir
 
 	if attacker_unit then
 		attack_dir = hit_pos - attacker_unit:position()
@@ -106,7 +106,7 @@ function HuskServerSyncedCivilianDamage:sync_damage_fire(attacker_unit, result_i
 
 	mvector3.set_z(hit_pos, hit_pos.z + 130)
 
-	local attack_dir = nil
+	local attack_dir
 
 	if attacker_unit then
 		attack_dir = hit_pos - attacker_unit:position()
@@ -149,7 +149,7 @@ function HuskServerSyncedCivilianDamage:sync_damage_melee(attacker_unit, attacke
 
 	mvector3.set_z(hit_pos, hit_pos.z + 130)
 
-	local attack_dir = nil
+	local attack_dir
 
 	if attacker_unit then
 		attack_dir = hit_pos - attacker_unit:movement():m_head_pos()
@@ -262,6 +262,7 @@ end
 function HuskServerSyncedCivilianDamage:_clamp_health_percentage(health_abs)
 	local damage = math.clamp(health_abs, self._HEALTH_INIT_PRECENT, self._HEALTH_INIT)
 	local damage_percent = math.ceil(damage / self._HEALTH_INIT_PRECENT)
+
 	damage = damage_percent * self._HEALTH_INIT_PRECENT
 
 	return damage, damage_percent

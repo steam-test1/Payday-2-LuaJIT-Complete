@@ -71,7 +71,7 @@ function HandStateMachine:enter_hand_state(hand, state_name)
 		end
 	end
 
-	table.insert_sorted(active_states, new_state, function (a, b)
+	table.insert_sorted(active_states, new_state, function(a, b)
 		return a:level() < b:level()
 	end)
 	self:_apply_bindings()

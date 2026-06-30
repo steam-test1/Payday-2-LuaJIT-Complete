@@ -10,6 +10,7 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 MenuNodeAchievementFilterCreator = MenuNodeAchievementFilterCreator or class(MenuInitiatorBase)
 
 function MenuNodeAchievementFilterCreator:create_item(node, item_type, params)
@@ -28,6 +29,7 @@ function MenuNodeAchievementFilterCreator:create_divider(node, params)
 	params = params or {}
 	params.no_text = not params.text_id
 	params.size = params.size or 8
+
 	local data_node = {
 		type = "MenuItemDivider"
 	}
@@ -40,19 +42,22 @@ end
 
 function MenuNodeAchievementFilterCreator:create_tags_option(node, category_name, text_func, sort_func)
 	Global.achievements_filters = Global.achievements_filters or {}
+
 	local filters = Global.achievements_filters
+
 	filters.tags = filters.tags or {}
+
 	local tags = tweak_data.achievement.tags
 	local options = {
 		{
-			text_id = "menu_achievement_filter_off",
 			_meta = "option",
+			text_id = "menu_achievement_filter_off",
 			color = tweak_data.screen_colors.button_stage_3
 		},
 		{
-			value = true,
+			_meta = "option",
 			text_id = "menu_achievement_any",
-			_meta = "option"
+			value = true
 		}
 	}
 	local values = table.map_values(tags[category_name], sort_func)
@@ -69,9 +74,9 @@ function MenuNodeAchievementFilterCreator:create_tags_option(node, category_name
 	end
 
 	table.insert(options, {
-		value = false,
+		_meta = "option",
 		text_id = "menu_achievement_none",
-		_meta = "option"
+		value = false
 	})
 
 	local rtn = self:create_multichoice(node, options, {
@@ -109,13 +114,13 @@ local function alphabetical_sort(lhs, rhs)
 end
 
 local difficulty_translate = {
-	difficulty_death_wish = "menu_difficulty_apocalypse",
 	difficulty_death_sentence = "menu_difficulty_sm_wish",
-	difficulty_normal = "menu_difficulty_normal",
+	difficulty_death_wish = "menu_difficulty_apocalypse",
 	difficulty_hard = "menu_difficulty_hard",
-	difficulty_very_hard = "menu_difficulty_very_hard",
+	difficulty_mayhem = "menu_difficulty_easy_wish",
+	difficulty_normal = "menu_difficulty_normal",
 	difficulty_overkill = "menu_difficulty_overkill",
-	difficulty_mayhem = "menu_difficulty_easy_wish"
+	difficulty_very_hard = "menu_difficulty_very_hard"
 }
 
 local function create_difficulty_text(str)
@@ -137,29 +142,32 @@ MenuNodeAchievementFilterGui = MenuNodeAchievementFilterGui or class(MenuNodeGui
 
 function MenuNodeAchievementFilterGui:init(node, layer, parameters)
 	Global.achievements_filters = Global.achievements_filters or {}
+
 	local filters = Global.achievements_filters
+
 	filters.tags = filters.tags or {}
+
 	local tags = tweak_data.achievement.tags
 	local sort_orders = {
 		{
-			value = "default",
+			_meta = "option",
 			text_id = "menu_default",
-			_meta = "option"
+			value = "default"
 		},
 		{
-			value = "alphabetical",
+			_meta = "option",
 			text_id = "menu_sort_alphabetic",
-			_meta = "option"
+			value = "alphabetical"
 		},
 		{
-			value = "chronological",
+			_meta = "option",
 			text_id = "menu_sort_chronologic",
-			_meta = "option"
+			value = "chronological"
 		},
 		{
-			value = "progress",
+			_meta = "option",
 			text_id = "menu_sort_progress",
-			_meta = "option"
+			value = "progress"
 		}
 	}
 
@@ -172,42 +180,41 @@ function MenuNodeAchievementFilterGui:init(node, layer, parameters)
 		size = medium_font_size + 10
 	})
 	n:create_toggle(node, {
+		enabled = true,
 		help_id = "menu_achievements_hide_unlocked_help",
 		name = "toggle_unlocked",
-		enabled = true,
 		text_id = "menu_achievements_hide_unlocked"
 	}):set_value(filters.hide_unlocked and "on" or "off")
 	n:create_toggle(node, {
+		enabled = true,
 		help_id = "menu_achievements_hide_ladder_help",
 		name = "toggle_ladder",
-		enabled = true,
 		text_id = "menu_achievements_hide_ladder"
 	}):set_value(filters.hide_ladder and "on" or "off")
 	n:create_multichoice(node, sort_orders, {
+		enabled = true,
 		help_id = "menu_achievements_sort_order_help",
 		name = "sort_order",
-		enabled = true,
 		text_id = "menu_achievements_sort_order"
 	}):set_value(filters.sort_order or "default")
 	node:set_default_item_name("toggle_unlocked")
 	n:create_divider(node, {
-		size = 24,
-		name = "divider_top"
+		name = "divider_top",
+		size = 24
 	})
 
-	self._tags_bidnings = {
-		progress = n:create_tags_option(node, "progress", create_tag_text, alphabetical_sort),
-		contracts = n:create_tags_option(node, "contracts", create_contract_text, alphabetical_sort),
-		difficulty = n:create_tags_option(node, "difficulty", create_difficulty_text, difficulty_sort),
-		unlock = n:create_tags_option(node, "unlock", create_tag_text, alphabetical_sort),
-		tactics = n:create_tags_option(node, "tactics", create_tag_text, alphabetical_sort),
-		inventory = n:create_tags_option(node, "inventory", create_tag_text, alphabetical_sort),
-		teamwork = n:create_tags_option(node, "teamwork", create_tag_text, alphabetical_sort)
-	}
+	self._tags_bidnings = {}
+	self._tags_bidnings.progress = n:create_tags_option(node, "progress", create_tag_text, alphabetical_sort)
+	self._tags_bidnings.contracts = n:create_tags_option(node, "contracts", create_contract_text, alphabetical_sort)
+	self._tags_bidnings.difficulty = n:create_tags_option(node, "difficulty", create_difficulty_text, difficulty_sort)
+	self._tags_bidnings.unlock = n:create_tags_option(node, "unlock", create_tag_text, alphabetical_sort)
+	self._tags_bidnings.tactics = n:create_tags_option(node, "tactics", create_tag_text, alphabetical_sort)
+	self._tags_bidnings.inventory = n:create_tags_option(node, "inventory", create_tag_text, alphabetical_sort)
+	self._tags_bidnings.teamwork = n:create_tags_option(node, "teamwork", create_tag_text, alphabetical_sort)
 
 	n:create_divider(node, {
-		size = 24,
-		name = "divider_bottom"
+		name = "divider_bottom",
+		size = 24
 	})
 
 	if managers.menu:is_pc_controller() then
@@ -231,15 +238,19 @@ function MenuNodeAchievementFilterGui:init(node, layer, parameters)
 	MenuNodeAchievementFilterGui.super.init(self, node, layer, parameters)
 
 	local create_params = node:parameters().create_params[1]
-	self._on_filters_clbk = create_params.on_filters_done or function ()
+
+	self._on_filters_clbk = create_params.on_filters_done or function()
+		return
 	end
-	self._calc_filter_num = create_params.calc_filter_num or function ()
+	self._calc_filter_num = create_params.calc_filter_num or function()
 		return 0
 	end
 	self._extra_panel = ExtendedPanel:new(self.item_panel, {
 		layer = 151
 	})
+
 	local title_dummy = self:row_item_by_name("title_dummy").gui_panel
+
 	self._title_help = LeftRightText:new(self._extra_panel, {
 		font = medium_font,
 		font_size = medium_font_size,
@@ -276,16 +287,16 @@ function MenuNodeAchievementFilterGui:init(node, layer, parameters)
 			text_id = "menu_back",
 			font = medium_font,
 			font_size = medium_font_size
-		}, function ()
+		}, function()
 			managers.menu:back()
 		end)
 
 		back:set_righttop(buttons_div:righttop())
 
 		local hide = TextButton:new(self._extra_panel, {
-			text_id = "menu_achievements_clear_filter_btn",
 			binding = "menu_clear",
 			input = true,
+			text_id = "menu_achievements_clear_filter_btn",
 			font = medium_font,
 			font_size = medium_font_size
 		}, callback(self, self, "_clear_tags"))

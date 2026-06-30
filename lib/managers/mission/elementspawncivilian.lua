@@ -13,7 +13,9 @@ end
 
 function ElementSpawnCivilian:_finalize_values()
 	self._values.state = self:value("state")
+
 	local state_index = table.index_of(CopActionAct._act_redirects.civilian_spawn, self._values.state)
+
 	self._values.state = state_index ~= -1 and state_index or nil
 	self._values.force_pickup = self._values.force_pickup ~= "none" and self._values.force_pickup or nil
 	self._values.team = self._values.team ~= "default" and self._values.team or nil
@@ -34,6 +36,7 @@ function ElementSpawnCivilian:produce(params)
 
 	local default_team_id = params and params.team or self._values.team or tweak_data.levels:get_default_team_ID("non_combatant")
 	local unit = safe_spawn_unit(self._enemy_name, self:get_orientation())
+
 	unit:unit_data().mission_element = self
 
 	table.insert(self._units, unit)
@@ -51,8 +54,8 @@ function ElementSpawnCivilian:produce(params)
 			local spawn_ai = {
 				init_state = "idle",
 				objective = {
-					interrupt_health = 1,
 					interrupt_dis = -1,
+					interrupt_health = 1,
 					type = "act",
 					action = action_data
 				}

@@ -10,9 +10,11 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 OnPressedTextButton = OnPressedTextButton or class(TextButton)
 
 function OnPressedTextButton:mouse_clicked()
+	return
 end
 
 function OnPressedTextButton:mouse_pressed(button, x, y)
@@ -43,8 +45,8 @@ function AchievementRecentListItem:init(parent, item, black_bg)
 	local placer = self:placer()
 	local texture, texture_rect = tweak_data.hud_icons:get_icon_or(self._visual.icon_id, "guis/dlcs/unfinished/textures/placeholder")
 	local bitmap = placer:add_bottom(self:bitmap({
-		w = 50,
 		h = 50,
+		w = 50,
 		texture = texture,
 		texture_rect = texture_rect
 	}))
@@ -87,7 +89,7 @@ function AchievementRecentListItem:init(parent, item, black_bg)
 				render_template = data.render_template
 			})
 
-			if i:h() < i:w() * 1.5 then
+			if i:w() * 1.5 > i:h() then
 				panel.make_bitmap_fit(i, ICON_SIZE * 2, ICON_SIZE)
 			end
 
@@ -101,7 +103,7 @@ function AchievementRecentListItem:init(parent, item, black_bg)
 
 		panel:set_right(self:w() - 10)
 
-		if self:h() < panel:h() then
+		if panel:h() > self:h() then
 			self:set_h(panel:h())
 		else
 			panel:set_center_y(self:h() / 2)
@@ -122,10 +124,10 @@ function AchievementRecentListGui:init(parent, list, back_callback)
 	self._back_callback = back_callback
 
 	AchievementRecentListGui.super.init(self, parent, {
-		w = 650,
-		layer = 50,
 		h = 440,
-		input = true
+		input = true,
+		layer = 50,
+		w = 650
 	})
 	self:set_center(parent:w() / 2, parent:h() / 2)
 
@@ -154,9 +156,9 @@ function AchievementRecentListGui:init(parent, list, back_callback)
 	placer:set_at(self:w() - border - 6, nil)
 
 	local safe = placer:add_left(self:fit_bitmap({
-		w = 32,
+		h = 32,
 		texture = "guis/dlcs/trk/textures/pd2/unlocked",
-		h = 32
+		w = 32
 	}))
 	local text = placer:add_left(self:fine_text({
 		text_id = "menu_achievements_rewards",
@@ -169,8 +171,8 @@ function AchievementRecentListGui:init(parent, list, back_callback)
 	placer:new_row()
 
 	local scroll = placer:add_bottom(ScrollableList:new(self, {
-		scrollbar_padding = 5,
 		input = true,
+		scrollbar_padding = 5,
 		w = row_w,
 		h = self:h() - placer:most().bottom - 48
 	}))
@@ -178,6 +180,7 @@ function AchievementRecentListGui:init(parent, list, back_callback)
 	scroll:add_lines_and_static_down_indicator()
 
 	self._scroll = scroll
+
 	local s_placer = scroll:canvas():placer()
 	local black_bg = true
 
@@ -189,12 +192,12 @@ function AchievementRecentListGui:init(parent, list, back_callback)
 
 	if managers.menu:is_pc_controller() then
 		local back = OnPressedTextButton:new(self, {
-			text_id = "menu_continue_btn",
 			binding = "continue",
 			input = true,
+			text_id = "menu_continue_btn",
 			font = medium_font,
 			font_size = medium_font_size
-		}, function ()
+		}, function()
 			self._back_callback()
 		end)
 

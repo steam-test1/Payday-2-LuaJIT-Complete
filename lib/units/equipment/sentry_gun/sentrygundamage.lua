@@ -25,6 +25,7 @@ function SentryGunDamage:init(unit)
 
 	if self._invulnerable_body_names then
 		self._invulnerable_bodies = {}
+
 		local names_split = string.split(self._invulnerable_body_names, " ")
 
 		for _, name_ids in ipairs(names_split) do
@@ -139,7 +140,9 @@ function SentryGunDamage:damage_bullet(attack_data)
 
 	if attack_data.attacker_unit == managers.player:player_unit() then
 		self._char_tweak = tweak_data.weapon[self._unit:base():get_name_id()]
+
 		local critical_hit, damage = CopDamage.roll_critical_hit(self, attack_data, dmg_adjusted)
+
 		dmg_adjusted = damage
 
 		if critical_hit then
@@ -157,7 +160,7 @@ function SentryGunDamage:damage_bullet(attack_data)
 		if spott_dst then
 			local dst = mvector3.distance(attack_data.origin, self._unit:position())
 
-			if spott_dst[1] < dst then
+			if dst > spott_dst[1] then
 				dmg_adjusted = dmg_adjusted * spott_dst[2]
 			end
 		end
@@ -174,17 +177,19 @@ function SentryGunDamage:damage_bullet(attack_data)
 	end
 
 	dmg_adjusted = dmg_adjusted + self._sync_dmg_leftover
-	local dmg_shield = nil
+
+	local dmg_shield
 
 	if hit_shield and self._shield_health > 0 then
 		dmg_shield = true
 	end
 
 	local result = {
-		variant = "bullet",
-		type = "dmg_rcv"
+		type = "dmg_rcv",
+		variant = "bullet"
 	}
 	local damage_sync = self:_apply_damage(dmg_adjusted, dmg_shield, not dmg_shield, true, attack_data.attacker_unit, attack_data.variant)
+
 	attack_data.result = result
 
 	if self._is_car and attack_data and attack_data.attacker_unit == managers.player:player_unit() and attack_data.weapon_unit and attack_data.weapon_unit:base() and attack_data.weapon_unit:base().name_id == tweak_data.achievement.ja22_01.weapon then
@@ -260,8 +265,10 @@ function SentryGunDamage:damage_fire(attack_data)
 	end
 
 	local damage = attack_data.damage * (tweak_data.weapon[self._unit:base():get_name_id()].FIRE_DMG_MUL or 1)
+
 	damage = damage * (self._marked_dmg_mul or 1)
 	damage = damage + self._sync_dmg_leftover
+
 	local damage_sync = self:_apply_damage(damage, true, true, true, attacker_unit, "fire")
 
 	if self._ignore_client_damage then
@@ -313,11 +320,14 @@ function SentryGunDamage:damage_explosion(attack_data)
 	end
 
 	local damage = attack_data.damage * tweak_data.weapon[self._unit:base():get_name_id()].EXPLOSION_DMG_MUL
+
 	attack_data.damage = damage
 
 	if attacker_unit and attacker_unit == managers.player:player_unit() then
 		self._char_tweak = tweak_data.weapon[self._unit:base():get_name_id()]
+
 		local critical_hit, crit_damage = CopDamage.roll_critical_hit(self, attack_data, damage)
+
 		damage = crit_damage
 
 		if critical_hit then
@@ -329,6 +339,7 @@ function SentryGunDamage:damage_explosion(attack_data)
 
 	damage = damage * (self._marked_dmg_mul or 1)
 	damage = damage + self._sync_dmg_leftover
+
 	local damage_sync = self:_apply_damage(damage, true, true, true, attacker_unit, "explosion")
 
 	if self._ignore_client_damage then
@@ -405,6 +416,7 @@ end
 
 function SentryGunDamage:die(attacker_unit, variant, options)
 	options = options or {}
+
 	local sequence_death = options.sequence_death or self._death_sequence_name
 	local sequence_shield_death = options.sequence_shield_death or self._death_with_shield_sequence_name
 	local sequence_done = options.sequence_done or "done_turret_destroyed"
@@ -424,7 +436,7 @@ function SentryGunDamage:die(attacker_unit, variant, options)
 		local ja22_01_data = tweak_data.achievement.ja22_01
 		local total_health = self._HEALTH_INIT + self._SHIELD_HEALTH_INIT * (1 + self._repair_counter)
 
-		if ja22_01_data.percentage_dmg < self._local_car_damage / total_health then
+		if self._local_car_damage / total_health > ja22_01_data.percentage_dmg then
 			print("JA22_01: Sentrygun Achievement Awarded!", "Damage: " .. math.truncate(self._local_car_damage, 1), "Percentage: " .. math.truncate(self._local_car_damage / total_health * 100, 1) .. "%")
 			managers.achievment:award(ja22_01_data.award)
 		else
@@ -555,7 +567,7 @@ function SentryGunDamage:_apply_damage(damage, dmg_shield, dmg_body, is_local, a
 	self._sync_dmg_leftover = 0
 
 	if dmg_shield and self._shield_health > 0 then
-		local damage_percent = nil
+		local damage_percent
 		local shield_dmg = damage ~= "death" and damage or self._SHIELD_HEALTH_INIT
 
 		if tweak_data.weapon[self._unit:base():get_name_id()].SHIELD_DAMAGE_CLAMP then
@@ -564,16 +576,20 @@ function SentryGunDamage:_apply_damage(damage, dmg_shield, dmg_body, is_local, a
 
 		if is_local then
 			shield_dmg = shield_dmg * tweak_data.weapon[self._unit:base():get_name_id()].SHIELD_DMG_MUL
+
 			local health_init_percent = self._SHIELD_HEALTH_INIT_PERCENT
+
 			damage_percent = math.clamp(shield_dmg / health_init_percent, 0, self._HEALTH_GRANULARITY)
+
 			local leftover_percent = damage_percent - math.floor(damage_percent)
+
 			self._sync_dmg_leftover = leftover_percent * health_init_percent
 			damage_percent = math.floor(damage_percent)
 			shield_dmg = damage_percent * health_init_percent
 		end
 
 		if shield_dmg > 0 then
-			if self._shield_health <= shield_dmg then
+			if shield_dmg >= self._shield_health then
 				damage = damage - self._shield_health
 				self._shield_health = 0
 				self._sync_dmg_leftover = 0
@@ -601,7 +617,7 @@ function SentryGunDamage:_apply_damage(damage, dmg_shield, dmg_body, is_local, a
 	end
 
 	if dmg_body then
-		local damage_percent = nil
+		local damage_percent
 		local body_damage = damage ~= "death" and damage or self._HEALTH_INIT
 
 		if tweak_data.weapon[self._unit:base():get_name_id()].BODY_DAMAGE_CLAMP then
@@ -610,8 +626,11 @@ function SentryGunDamage:_apply_damage(damage, dmg_shield, dmg_body, is_local, a
 
 		if is_local then
 			local health_init_percent = self._HEALTH_INIT_PERCENT
+
 			damage_percent = math.clamp(body_damage / health_init_percent, 0, self._HEALTH_GRANULARITY)
+
 			local leftover_percent = damage_percent - math.floor(damage_percent)
+
 			self._sync_dmg_leftover = self._sync_dmg_leftover + leftover_percent * health_init_percent
 			damage_percent = math.floor(damage_percent)
 			body_damage = damage_percent * health_init_percent
@@ -623,7 +642,7 @@ function SentryGunDamage:_apply_damage(damage, dmg_shield, dmg_body, is_local, a
 
 		local previous_health_ratio = self:health_ratio()
 
-		if self._health <= body_damage then
+		if body_damage >= self._health then
 			self:die(attacker_unit, variant)
 		else
 			self._health = self._health - body_damage
@@ -641,6 +660,7 @@ end
 
 function SentryGunDamage:update_shield_smoke_level(ratio, up)
 	ratio = math.clamp(ratio, 0, 1)
+
 	local num_shield_smoke_levels = self._num_shield_smoke_levels
 	local new_smoke_level = num_shield_smoke_levels - ratio * num_shield_smoke_levels
 
@@ -671,6 +691,7 @@ end
 
 function SentryGunDamage:save(save_data)
 	local my_save_data = {}
+
 	save_data.char_damage = my_save_data
 	my_save_data.ignore_client_damage = self._ignore_client_damage
 	my_save_data.health = self._health
@@ -686,6 +707,7 @@ function SentryGunDamage:load(save_data)
 	end
 
 	local my_save_data = save_data.char_damage
+
 	self._ignore_client_damage = my_save_data.ignore_client_damage
 	self._health = my_save_data.health
 	self._shield_health = my_save_data.shield_health

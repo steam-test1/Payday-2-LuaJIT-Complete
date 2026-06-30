@@ -25,6 +25,7 @@ function Storage:request_load()
 end
 
 function Storage:request_save()
+	return
 end
 
 function Storage:_common_save_params()
@@ -39,7 +40,8 @@ end
 
 function Storage:_start_load_task()
 	local save_param = self:_common_save_params()
-	local callback = nil
+	local callback
+
 	self._load_task = NewSave:load(save_param, callback)
 
 	self._load:task_started()
@@ -66,10 +68,11 @@ function Storage:_close_load_task()
 end
 
 function Storage:_fast_forward_profile_data(handler, profile_data, stored_version)
-	local func = nil
+	local func
 
 	repeat
 		local function_name = "convert_from_" .. tostring(stored_version) .. "_to_" .. tostring(stored_version + 1)
+
 		func = handler[function_name]
 
 		if func ~= nil then
@@ -94,15 +97,14 @@ function Storage:profile_data_is_loaded()
 end
 
 function Storage:_create_profile_data()
-	local profile_data = {
-		settings = {}
-	}
+	local profile_data = {}
+
+	profile_data.settings = {}
 	profile_data.settings.title_data = {}
 	profile_data.settings.version = 0
-	profile_data.progress = {
-		title_data = {},
-		version = 0
-	}
+	profile_data.progress = {}
+	profile_data.progress.title_data = {}
+	profile_data.progress.version = 0
 
 	self:_profile_data_loaded(profile_data)
 end

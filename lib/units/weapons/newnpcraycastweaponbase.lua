@@ -21,11 +21,13 @@ function NewNPCRaycastWeaponBase:init(unit)
 	self._setup = {}
 	self._digest_values = false
 	self._fires_blanks = Network:is_client()
+
 	local td = tweak_data.weapon[self._name_id]
 
 	if not self._do_shotgun_push then
 		local non_npc_id = self:non_npc_name_id()
 		local non_npc_td = tweak_data.weapon[non_npc_id]
+
 		self._do_shotgun_push = non_npc_td and non_npc_td.do_shotgun_push or self:is_category("shotgun") or false
 	end
 
@@ -136,6 +138,7 @@ function NewNPCRaycastWeaponBase:assemble(factory_id)
 	NewNPCRaycastWeaponBase.super:assemble(factory_id)
 
 	self._ammo_data = managers.weapon_factory:get_ammo_data_from_weapon(self._factory_id, self._blueprint) or {}
+
 	local ammo_muzzle_effect = self._ammo_data and self._ammo_data.muzzleflash
 
 	if ammo_muzzle_effect then
@@ -168,7 +171,7 @@ function NewNPCRaycastWeaponBase:check_npc()
 	local gadgets = self._gadgets
 
 	if gadgets then
-		local gadget = nil
+		local gadget
 
 		for _, i in ipairs(gadgets) do
 			gadget = self._parts[i]
@@ -204,13 +207,14 @@ function NewNPCRaycastWeaponBase:singleshot(...)
 end
 
 function NewNPCRaycastWeaponBase:trigger_held(...)
-	local fired = nil
+	local fired
 
 	if self._next_fire_allowed <= Application:time() then
 		fired = self:fire(...)
 
 		if fired then
 			local fire_rate = tweak_data.weapon[self._name_id] and tweak_data.weapon[self._name_id].auto and tweak_data.weapon[self._name_id].auto.fire_rate
+
 			fire_rate = fire_rate or 0.1
 			self._next_fire_allowed = self._next_fire_allowed + fire_rate
 		end
@@ -227,6 +231,7 @@ function NewNPCRaycastWeaponBase:auto_trigger_held(direction, impact, sub_ids, o
 
 		if fired then
 			local fire_rate = tweak_data.weapon[self._name_id] and tweak_data.weapon[self._name_id].auto and tweak_data.weapon[self._name_id].auto.fire_rate
+
 			fire_rate = fire_rate or 0.1
 			self._next_fire_allowed = self._next_fire_allowed + fire_rate
 		end
@@ -262,8 +267,8 @@ function NewNPCRaycastWeaponBase:auto_fire_blank(direction, impact, sub_ids, ove
 		for i = 1, num_rays do
 			local spread_x, spread_y = self:_get_spread(user_unit)
 			local theta = math.random() * 360
-			local ax = math.sin(theta) * math.random() * spread_x
-			local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
+			local ax = math.sin(theta) * (math.random() * spread_x)
+			local ay = math.cos(theta) * (math.random() * (spread_y or spread_x))
 
 			mvector3.set(mspread, direction)
 			mvector3.add(mspread, right * math.rad(ax))
@@ -279,7 +284,7 @@ function NewNPCRaycastWeaponBase:auto_fire_blank(direction, impact, sub_ids, ove
 				mvector3.set(self._trail_effect_table.normal, mspread)
 			end
 
-			local trail = nil
+			local trail
 
 			if not self:weapon_tweak_data().no_trail then
 				trail = alive(self._obj_fire) and (not col_ray or col_ray.distance > 650) and World:effect_manager():spawn(self._trail_effect_table) or nil
@@ -343,8 +348,8 @@ function NewNPCRaycastWeaponBase:fire_blank(direction, impact, sub_id, override_
 		for i = 1, num_rays do
 			local spread_x, spread_y = self:_get_spread(user_unit)
 			local theta = math.random() * 360
-			local ax = math.sin(theta) * math.random() * spread_x
-			local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
+			local ax = math.sin(theta) * (math.random() * spread_x)
+			local ay = math.cos(theta) * (math.random() * (spread_y or spread_x))
 
 			mvector3.set(mspread, direction)
 			mvector3.add(mspread, right * math.rad(ax))
@@ -360,7 +365,7 @@ function NewNPCRaycastWeaponBase:fire_blank(direction, impact, sub_id, override_
 				mvector3.set(self._trail_effect_table.normal, mspread)
 			end
 
-			local trail = nil
+			local trail
 
 			if not self:weapon_tweak_data().no_trail then
 				trail = alive(self._obj_fire) and (not col_ray or col_ray.distance > 650) and World:effect_manager():spawn(self._trail_effect_table) or nil
@@ -424,7 +429,7 @@ function NewNPCRaycastWeaponBase:_get_spread(user_unit)
 	local pose = user_unit:movement()._moving and "moving_standing" or "standing"
 	local spread_stat_value = math.clamp(weapon_tweak.stats.spread + (self._part_stats and self._part_stats.spread or 0), 1, #tweak_data.weapon.stats.spread)
 	local spread_pose_value = spread_values[pose] or 3
-	local spread_x, spread_y = nil
+	local spread_x, spread_y
 
 	if type(spread_pose_value) == "table" then
 		spread_x = spread_pose_value[1] * tweak_data.weapon.stats.spread[spread_stat_value]
@@ -498,7 +503,7 @@ local mvec1 = Vector3()
 
 function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, shoot_through_data)
 	local result = {}
-	local hit_unit = nil
+	local hit_unit
 	local ray_distance = shoot_through_data and shoot_through_data.ray_distance or self._weapon_range or 20000
 
 	mvector3.set(mvec_to, direction)
@@ -554,8 +559,8 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 			if i > 1 then
 				local spread_x, spread_y = self:_get_spread(user_unit)
 				local theta = math.random() * 360
-				local ax = math.sin(theta) * math.random() * spread_x
-				local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
+				local ax = math.sin(theta) * (math.random() * spread_x)
+				local ay = math.cos(theta) * (math.random() * (spread_y or spread_x))
 
 				mvector3.add(mvec_spread, right * math.rad(ax))
 				mvector3.add(mvec_spread, up * math.rad(ay))
@@ -587,7 +592,7 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 
 			local has_hit_wall = shoot_through_data and shoot_through_data.has_hit_wall
 			local has_passed_shield = shoot_through_data and shoot_through_data.has_passed_shield
-			local is_shoot_through, is_shield, is_wall = nil
+			local is_shoot_through, is_shield, is_wall
 
 			if not hit_unit then
 				local is_world_geometry = col_ray.unit:in_slot(managers.slot:get_mask("world_geometry"))
@@ -616,6 +621,7 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 			end
 
 			local ray_from_unit = (hit_unit or is_shield) and col_ray.unit
+
 			self._shoot_through_data.has_hit_wall = has_hit_wall or is_wall
 			self._shoot_through_data.has_passed_shield = has_passed_shield or is_shield
 			self._shoot_through_data.ray_from_unit = ray_from_unit

@@ -15,14 +15,15 @@ function PressureUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local interval_params = {
-		name_proportions = 1,
-		name = "Interval:",
 		ctrlr_proportions = 2,
-		tooltip = "Use this to set the interval in seconds when to add new pressure point (0 means it is disabled)",
-		min = 0,
 		floats = 0,
 		max = 600,
+		min = 0,
+		name = "Interval:",
+		name_proportions = 1,
+		tooltip = "Use this to set the interval in seconds when to add new pressure point (0 means it is disabled)",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.interval
@@ -39,13 +40,13 @@ function PressureUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local pressure_points_params = {
-		name_proportions = 1,
-		name = "Pressure points:",
 		ctrlr_proportions = 2,
-		tooltip = "Can add pressure points or cool down points",
-		min = -10,
 		floats = 0,
 		max = 10,
+		min = -10,
+		name = "Pressure points:",
+		name_proportions = 1,
+		tooltip = "Can add pressure points or cool down points",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.points
@@ -61,11 +62,11 @@ function PressureUnitElement:_build_panel(panel, panel_sizer)
 		ctrlr = pressure_points
 	})
 
-	local help = {
-		text = "If pressure points ~= 0 the interval value wont be used. Add negative pressure points value will generate cool down points. If interval is 0 it will be disabled.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "If pressure points ~= 0 the interval value wont be used. Add negative pressure points value will generate cool down points. If interval is 0 it will be disabled."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

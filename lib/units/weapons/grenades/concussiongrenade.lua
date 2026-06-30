@@ -4,6 +4,7 @@ ConcussionGrenade._PLAYER_FLASH_RANGE = 500
 function ConcussionGrenade:_setup_from_tweak_data()
 	local grenade_entry = self._tweak_projectile_entry or "concussion"
 	local tweak_entry = tweak_data.projectiles[grenade_entry]
+
 	self._init_timer = tweak_entry.init_timer or 2.5
 	self._mass_look_up_modifier = tweak_entry.mass_look_up_modifier
 	self._range = tweak_entry.range
@@ -12,7 +13,9 @@ function ConcussionGrenade:_setup_from_tweak_data()
 	self._damage = tweak_entry.damage
 	self._player_damage = tweak_entry.player_damage
 	self._alert_radius = tweak_entry.alert_radius
+
 	local sound_event = tweak_entry.sound_event or "grenade_explode"
+
 	self._custom_params = {
 		camera_shake_max_mul = 4,
 		effect = self._effect_name,
@@ -43,6 +46,7 @@ function ConcussionGrenade:_detonate(tag, unit, body, other_unit, other_body, po
 	end
 
 	self._detonated = true
+
 	local pos = self._unit:position()
 	local normal = math.UP
 	local range = self._range
@@ -74,7 +78,7 @@ end
 
 function ConcussionGrenade:_can_stun_unit(unit)
 	local can_stun = false
-	local unit_name = nil
+	local unit_name
 
 	if unit and unit:base() then
 		unit_name = unit:base()._tweak_table
@@ -97,6 +101,7 @@ function ConcussionGrenade:_detonate_on_client()
 	end
 
 	self._detonated = true
+
 	local pos = self._unit:position()
 	local range = self._range
 

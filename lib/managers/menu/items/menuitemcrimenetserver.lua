@@ -33,44 +33,48 @@ function MenuItemCrimeNetServer:setup_gui(node, row_item)
 
 	if mkey ~= "value_missing" and mkey ~= "value_pending" then
 		local num_mutators = tonumber(mkey)
+
 		mutators = num_mutators and num_mutators > 0
 	end
 
 	local owner_id = lobby:key_value("owner_id")
 	local owner_account_id = lobby:key_value("owner_account_id")
 	local is_friend = managers.network.matchmake:is_user_friend(owner_id, owner_account_id)
+
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
+
 	local server_panel = row_item.gui_panel:panel({
-		name = "server",
 		h = 64,
-		y = 32,
-		x = 10,
 		layer = 100,
+		name = "server",
+		x = 10,
+		y = 32,
 		w = row_item.gui_panel:w() - 20
 	})
 	local marker_dot = server_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_join",
-		name = "marker_dot",
 		h = 64,
-		y = 22,
+		layer = 1,
+		name = "marker_dot",
+		texture = "guis/textures/pd2/crimenet_marker_join",
 		w = 32,
 		x = 2,
-		layer = 1,
+		y = 22,
 		color = mutators and managers.mutators:get_category_color(mutator_category) or color
 	})
-	local cx, cy = nil
+	local cx, cy
 
 	for i = 1, 4 do
 		cx = 5 + 6 * (i - 1)
 		cy = 30
+
 		local player_marker = server_panel:bitmap({
-			texture = "guis/textures/pd2/crimenet_marker_peerflag",
-			h = 16,
-			w = 8,
 			blend_mode = "normal",
+			h = 16,
 			layer = 2,
+			texture = "guis/textures/pd2/crimenet_marker_peerflag",
+			w = 8,
 			name = tostring(i),
 			color = mutators and managers.mutators:get_category_color(mutator_category) or color,
 			visible = i <= num_plrs
@@ -83,9 +87,9 @@ function MenuItemCrimeNetServer:setup_gui(node, row_item)
 		x = 36
 	})
 	local host_name = side_panel:text({
+		blend_mode = "add",
 		name = "host_name",
 		vertical = "center",
-		blend_mode = "add",
 		text = lobby:key_value("owner_name"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -94,10 +98,10 @@ function MenuItemCrimeNetServer:setup_gui(node, row_item)
 	local job_tweak = tweak_data.narrative:job_data(job_id)
 	local job_string = job_id and managers.localization:to_upper_text(job_tweak.name_id) or level_name or "NO JOB"
 	local job_name = side_panel:text({
-		name = "job_name",
-		vertical = "center",
 		blend_mode = "normal",
 		layer = 0,
+		name = "job_name",
+		vertical = "center",
 		text = job_string,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -120,14 +124,13 @@ function MenuItemCrimeNetServer:setup_gui(node, row_item)
 	local desired_difficulty = difficulty_id - 2
 	local start_difficulty = 1
 	local num_difficulties = Global.SKIP_OVERKILL_290 and 5 or 6
-	local x = 0
-	local y = 0
+	local x, y = 0, 0
 
 	for i = start_difficulty, num_difficulties do
 		local skull = difficulty_panel:bitmap({
-			texture = "guis/textures/pd2/cn_miniskull",
 			h = 16,
 			layer = 0,
+			texture = "guis/textures/pd2/cn_miniskull",
 			w = 12,
 			x = x,
 			y = y,
@@ -141,10 +144,11 @@ function MenuItemCrimeNetServer:setup_gui(node, row_item)
 			blend_mode = desired_difficulty < i and "normal" or "add",
 			color = desired_difficulty < i and Color.black or tweak_data.screen_colors.risk
 		})
+
 		x = x + 11
 	end
 
-	row_item.gui_panel:set_left(node:_mid_align())
+	row_item.gui_panel:set_left(node._mid_align(node))
 	row_item.gui_panel:set_w(scaled_size.width - row_item.gui_panel:left())
 	row_item.gui_panel:set_h(server_panel:h() + 20)
 

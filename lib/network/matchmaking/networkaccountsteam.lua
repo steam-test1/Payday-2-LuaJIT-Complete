@@ -2,25 +2,25 @@ require("lib/network/matchmaking/NetworkAccount")
 
 NetworkAccountSTEAM = NetworkAccountSTEAM or class(NetworkAccount)
 NetworkAccountSTEAM.lb_diffs = {
+	easy = "Easy",
+	easy_wish = "Easy Wish",
 	hard = "Hard",
+	normal = "Normal",
 	overkill = "Very Hard",
 	overkill_145 = "Overkill",
-	normal = "Normal",
-	easy_wish = "Easy Wish",
 	overkill_290 = "Death Wish",
-	sm_wish = "SM Wish",
-	easy = "Easy"
+	sm_wish = "SM Wish"
 }
 NetworkAccountSTEAM.lb_levels = {
-	slaughter_house = "Slaughterhouse",
-	diamond_heist = "Diamond Heist",
-	hospital = "No Mercy",
-	suburbia = "Counterfeit",
-	bridge = "Green Bridge",
-	secret_stash = "Undercover",
 	apartment = "Panic Room",
 	bank = "First World Bank",
-	heat_street = "Heat Street"
+	bridge = "Green Bridge",
+	diamond_heist = "Diamond Heist",
+	heat_street = "Heat Street",
+	hospital = "No Mercy",
+	secret_stash = "Undercover",
+	slaughter_house = "Slaughterhouse",
+	suburbia = "Counterfeit"
 }
 
 function NetworkAccountSTEAM:init()
@@ -233,10 +233,11 @@ end
 
 function NetworkAccountSTEAM:get_global_stat(key, days)
 	local value = 0
-	local global_stat = nil
+	local global_stat
 
 	if days and days < 0 then
 		local day = math.abs(days) + 1
+
 		global_stat = Steam:sa_handler():get_global_stat(key, day)
 
 		return global_stat[day] or 0
@@ -269,13 +270,13 @@ function NetworkAccountSTEAM:publish_statistics(stats, force_store)
 	local err = false
 
 	for key, stat in pairs(stats) do
-		local res = nil
+		local res
 
 		if stat.type == "int" then
 			local val = math.max(0, handler:get_stat(key))
 
 			if stat.method == "lowest" then
-				if stat.value < val then
+				if val > stat.value then
 					res = handler:set_stat(key, stat.value)
 				else
 					res = true
@@ -304,6 +305,7 @@ function NetworkAccountSTEAM:publish_statistics(stats, force_store)
 		elseif stat.type == "float" then
 			if stat.value > 0 then
 				local val = handler:get_stat_float(key)
+
 				res = handler:set_stat_float(key, val + stat.value)
 			else
 				res = true
@@ -468,9 +470,8 @@ end
 
 function NetworkAccountSTEAM:_save_globals()
 	Global.steam = Global.steam or {}
-	Global.steam.account = {
-		outfit_signature = self._outfit_signature and Application:create_luabuffer(self._outfit_signature)
-	}
+	Global.steam.account = {}
+	Global.steam.account.outfit_signature = self._outfit_signature and Application:create_luabuffer(self._outfit_signature)
 end
 
 function NetworkAccountSTEAM:is_ready_to_close()
@@ -545,6 +546,7 @@ function NetworkAccountSTEAM:inventory_reward_unlock(safe, safe_instance_id, dri
 
 	safe_instance_id = safe_instance_id or managers.blackmarket:tradable_instance_id("safes", safe)
 	drill_instance_id = drill_instance_id or managers.blackmarket:tradable_instance_id("drills", safe_tweak.drill)
+
 	local safe_item = managers.blackmarket:tradable_receive_item_by_instance_id(safe_instance_id)
 	local drill_item = managers.blackmarket:tradable_receive_item_by_instance_id(drill_instance_id)
 
@@ -562,6 +564,7 @@ end
 function NetworkAccountSTEAM:inventory_reward_open(safe, safe_instance_id, reward_unlock_callback)
 	local safe_tweak = tweak_data.economy.safes[safe]
 	local content_tweak = safe_tweak and tweak_data.economy.contents[safe_tweak.content]
+
 	safe_instance_id = safe_instance_id or managers.blackmarket:tradable_instance_id("safes", safe)
 
 	if not safe_instance_id then
@@ -653,7 +656,8 @@ end
 function NetworkAccountSTEAM:inventory_repair_list(list)
 	if list then
 		self._inventory_is_converting_items = 0
-		local item_convert = nil
+
+		local item_convert
 
 		for _, item in pairs(list) do
 			if not item.category or item.category == "" or not item.entry or item.entry == "" then
@@ -732,6 +736,7 @@ end
 
 function NetworkAccountSTEAM:_on_drill_converted(data, error, items_new, items_removed)
 	local drills_to_convert, instance_id = unpack(data)
+
 	drills_to_convert[instance_id] = nil
 
 	if not error then
@@ -759,11 +764,12 @@ function NetworkAccountSTEAM:convert_drills_to_safes(list)
 	end
 
 	self._inventory_is_converting_drills = true
+
 	local drills_to_convert = {}
 	local drills_counter = {}
-	local drill_tweak, safe_tweak = nil
+	local drill_tweak, safe_tweak
 
-	table.remove_condition(list, function (data)
+	table.remove_condition(list, function(data)
 		drill_tweak = data.category == "drills" and tweak_data.economy.drills[data.entry]
 		safe_tweak = drill_tweak and tweak_data.economy.safes[drill_tweak.safe]
 
@@ -794,6 +800,7 @@ function NetworkAccountSTEAM.output_global_stats(file)
 	local num_days = 100
 	local sa = Steam:sa_handler()
 	local invalid = sa:get_global_stat("easy_slaughter_house_plays", num_days)
+
 	invalid[1] = 1
 	invalid[3] = 1
 	invalid[11] = 1
@@ -814,13 +821,14 @@ function NetworkAccountSTEAM.output_global_stats(file)
 			end
 		end
 
-		local num = nil
+		local num
 
 		if type(stat) == "string" then
 			num = sa:get_global_stat(diff .. "_" .. heist .. "_" .. stat, num_days)[i] or 0
 		else
 			local f = sa:get_global_stat(diff .. "_" .. heist .. "_" .. stat[1], num_days)[i] or 0
 			local s = sa:get_global_stat(diff .. "_" .. heist .. "_" .. stat[2], num_days)[i] or 1
+
 			num = f / (s == 0 and 1 or s)
 		end
 
@@ -838,13 +846,14 @@ function NetworkAccountSTEAM.output_global_stats(file)
 			end
 		end
 
-		local num = nil
+		local num
 
 		if type(stat) == "string" then
 			num = sa:get_global_stat(weapon .. "_" .. stat, num_days)[i] or 0
 		else
 			local f = sa:get_global_stat(weapon .. "_" .. stat[1], num_days)[i] or 0
 			local s = sa:get_global_stat(weapon .. "_" .. stat[2], num_days)[i] or 1
+
 			num = f / (s == 0 and 1 or s)
 		end
 

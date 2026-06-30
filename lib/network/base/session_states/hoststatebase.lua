@@ -1,9 +1,11 @@
 HostStateBase = HostStateBase or class()
 
 function HostStateBase:enter(data, enter_params)
+	return
 end
 
 function HostStateBase:exit(data, name, enter_params)
+	return
 end
 
 function HostStateBase:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
@@ -105,7 +107,7 @@ end
 function HostStateBase:on_handshake_confirmation(data, peer, introduced_peer_id)
 	cat_print("multiplayer_base", "[HostStateBase:on_handshake_confirmation]", inspect(peer), peer:id(), introduced_peer_id)
 
-	local has_mutual_connection = nil
+	local has_mutual_connection
 
 	if introduced_peer_id ~= 1 then
 		has_mutual_connection = self:_chk_mutual_connection_established(data, peer, introduced_peer_id)

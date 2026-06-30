@@ -13,14 +13,15 @@ function DangerZoneUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local level_params = {
-		name_proportions = 1,
-		name = "Level:",
 		ctrlr_proportions = 2,
-		tooltip = "Sets the level of danger. 1 is least dangerous.",
-		min = 1,
 		floats = 0,
 		max = 4,
+		min = 1,
+		name = "Level:",
+		name_proportions = 1,
+		tooltip = "Sets the level of danger. 1 is least dangerous.",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.level

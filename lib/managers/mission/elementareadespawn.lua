@@ -32,12 +32,13 @@ function ElementAreaDespawn:_find_units_in_shape(shape_element)
 	local position = shape_values.position
 	local rotation = shape_values.rotation
 	local slot_mask = World:make_slot_mask(unpack(self._values.slots))
-	local find_params = nil
+	local find_params
 
 	if shape_type == "box" then
 		local box_x = Vector3(shape_values.width * 0.5, 0, 0):rotate_with(rotation)
 		local box_y = Vector3(0, shape_values.depth * 0.5, 0):rotate_with(rotation)
 		local box_z = Vector3(0, 0, shape_values.height * 0.5):rotate_with(rotation)
+
 		find_params = {
 			"obb",
 			shape_values.position,
@@ -51,6 +52,7 @@ function ElementAreaDespawn:_find_units_in_shape(shape_element)
 		local half_z = Vector3(0, 0, shape_values.height * 0.5):rotate_with(rotation)
 		local base = center - half_z
 		local tip = center + half_z
+
 		find_params = {
 			"cylinder",
 			base,

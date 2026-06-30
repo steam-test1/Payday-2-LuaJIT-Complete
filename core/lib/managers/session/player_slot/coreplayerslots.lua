@@ -26,6 +26,7 @@ end
 function PlayerSlots:add_player_slot()
 	local new_index = #self._slots + 1
 	local new_slot = CorePlayerSlot.PlayerSlot:new(self, self._local_user_manager)
+
 	self._slots[new_index] = new_slot
 
 	return new_slot

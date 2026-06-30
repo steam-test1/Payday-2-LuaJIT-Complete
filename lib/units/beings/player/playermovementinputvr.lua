@@ -59,6 +59,7 @@ function TouchMovementInputStateMachine:change_state(state, ...)
 	end
 
 	self._current_state = state
+
 	local enter = self._states[self._current_state].enter
 
 	if enter then
@@ -165,10 +166,10 @@ function PlayerMovementInputVR:init(controller)
 	self._warp_only_mode = true
 	self._dead_zone = 0.1
 	self._state = {
-		warp = false,
-		move_length_scaled = 0,
-		warp_target = false,
 		move_length = 0,
+		move_length_scaled = 0,
+		warp = false,
+		warp_target = false,
 		move_axis = Vector3(0, 0, 0),
 		move_axis_normalized = Vector3(0, 0, 0)
 	}
@@ -203,17 +204,24 @@ end
 
 function PlayerMovementInputVR:update(t, dt, hand_rotation)
 	self._state.warp_target = self._controller:get_input_touch_bool("warp_target")
+
 	local run = self._controller:get_input_bool("run")
+
 	self._state.warp = self._controller:get_input_bool("warp")
+
 	local axis = self._controller:get_input_axis("touchpad_move")
 	local raw_move_length = mvector3.length(axis)
 	local warp_target = self._state.warp_target
+
 	self._is_movement_warp = self._warp_only_mode or self._input:update(raw_move_length, warp_target)
+
 	local dz = self._dead_zone
 
 	if not self._is_movement_warp and dz < raw_move_length then
 		self._state.run = self._state.run or run
+
 		local m = raw_move_length
+
 		m = math.clamp((m - dz) / (1 - dz), 0, 1)
 
 		if m > 0.98 then
@@ -221,14 +229,16 @@ function PlayerMovementInputVR:update(t, dt, hand_rotation)
 		end
 
 		self._state.move_length = m
+
 		local unscaled_edge = self._default_controls and 0.25 or 0.3
 
 		if unscaled_edge > raw_move_length - dz then
 			local edge = unscaled_edge / (1 - dz)
 			local x = m / (2 * edge)
+
 			x = x * x * (3 - 2 * x)
 			x = x * x * (3 - 2 * x)
-			m = x * 2 * edge
+			m = x * (2 * edge)
 		end
 
 		if math.abs(m) < 0.01 then
@@ -237,6 +247,7 @@ function PlayerMovementInputVR:update(t, dt, hand_rotation)
 		end
 
 		self._state.move_length_scaled = m
+
 		local forward = hand_rotation:y()
 
 		mvector3.set_z(forward, 0)
@@ -290,6 +301,7 @@ end
 
 function PlayerMovementInputVR:_dead_zone_size_changed(setting, old, new)
 	local dead_zone_size = math.lerp(self._default_dead_zone_size.min, self._default_dead_zone_size.max, new * 0.01)
+
 	self._dead_zone = dead_zone_size
 
 	self._input:set_dead_zone(self._dead_zone)

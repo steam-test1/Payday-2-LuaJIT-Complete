@@ -6,29 +6,31 @@ function NpcVehicleStatePursuit:init(unit)
 	self._vehicle = self._unit:vehicle()
 	self._next_checkpoint_distance = {
 		{
-			v_min = 30,
 			distance = 1200,
-			relative_angle_min = 30,
 			relative_angle_max = 60,
-			v_max = 40
+			relative_angle_min = 30,
+			v_max = 40,
+			v_min = 30
 		},
 		{
-			v_min = 40,
 			distance = 1400,
-			relative_angle_min = 30,
 			relative_angle_max = 90,
-			v_max = 60
+			relative_angle_min = 30,
+			v_max = 60,
+			v_min = 40
 		},
 		{
-			v_min = 60,
 			distance = 2000,
-			relative_angle_min = 30,
 			relative_angle_max = 90,
-			v_max = 90
+			relative_angle_min = 30,
+			v_max = 90,
+			v_min = 60
 		}
 	}
+
 	local cop_position = self._unit:position()
 	local delayed_tick = Application:time() + 5
+
 	self._tachograph = {
 		distance = 0,
 		timeframe = 1,
@@ -42,6 +44,7 @@ function NpcVehicleStatePursuit:on_enter(npc_driving_ext)
 
 	local cop_position = self._unit:position()
 	local delayed_tick = Application:time() + 5
+
 	self._tachograph = {
 		distance = 0,
 		timeframe = 1,
@@ -53,6 +56,7 @@ function NpcVehicleStatePursuit:on_enter(npc_driving_ext)
 end
 
 function NpcVehicleStatePursuit:update(t, dt)
+	return
 end
 
 function NpcVehicleStatePursuit:name()
@@ -61,6 +65,7 @@ end
 
 function NpcVehicleStatePursuit:calc_steering(angle)
 	self._desired_direction = angle
+
 	local direction = 0
 	local normalized_steer = 0
 	local scale_steering = 1
@@ -92,7 +97,7 @@ function NpcVehicleStatePursuit:calc_distance_threshold(angle)
 	local threshold = 1000
 
 	for _, data in ipairs(self._next_checkpoint_distance) do
-		if data.v_min < current_speed and current_speed <= data.v_max and data.relative_angle_min < angle and angle <= data.relative_angle_max then
+		if current_speed > data.v_min and current_speed <= data.v_max and angle > data.relative_angle_min and angle <= data.relative_angle_max then
 			threshold = data.distance
 		end
 	end
@@ -103,7 +108,7 @@ end
 function NpcVehicleStatePursuit:calc_speed_limit(path, unit_and_pos)
 	local default_speed_limit = path.default_speed_limit or -1
 	local retval = default_speed_limit
-	local points_in_direction = nil
+	local points_in_direction
 
 	if not unit_and_pos.direction or unit_and_pos.direction == "fwd" then
 		points_in_direction = path.points
@@ -136,7 +141,7 @@ function NpcVehicleStatePursuit:evasion_maneuvers(npc_driving_ext, target_steeri
 end
 
 function NpcVehicleStatePursuit:_loco_unit_proximity(npc_driving_ext, target_steering)
-	local retval = nil
+	local retval
 	local player_unit = npc_driving_ext:_get_target_unit()
 
 	if not player_unit then
@@ -171,8 +176,8 @@ function NpcVehicleStatePursuit:_loco_unit_proximity(npc_driving_ext, target_ste
 
 		retval = {
 			acceleration = 0,
-			handbrake = 1,
 			brake = 1,
+			handbrake = 1,
 			steering = target_steering
 		}
 	end
@@ -195,8 +200,9 @@ function NpcVehicleStatePursuit:handle_stuck_vehicle(npc_driving_ext, t, dt)
 		return
 	end
 
-	if self._tachograph.tick_at < t then
+	if t > self._tachograph.tick_at then
 		local cop_position = self._unit:position()
+
 		self._tachograph.tick_at = t + self._tachograph.timeframe
 		self._tachograph.distance = (cop_position - self._tachograph.last_pos):length() / 100
 		self._tachograph.last_pos = cop_position
@@ -208,7 +214,7 @@ function NpcVehicleStatePursuit:handle_stuck_vehicle(npc_driving_ext, t, dt)
 end
 
 function NpcVehicleStatePursuit:_choose_recovery_maneuver()
-	local recovery_maneuver = nil
+	local recovery_maneuver
 
 	if self._desired_direction >= 0 and self._desired_direction < 90 then
 		recovery_maneuver = NpcVehicleDrivingExt.STATE_MANEUVER_BACK_LEFT

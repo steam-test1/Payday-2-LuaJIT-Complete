@@ -7,11 +7,12 @@ function CopLogicGuard.enter(data, new_logic_name, enter_params)
 	local objective = data.objective
 	local guard_obj = objective.guard_obj
 	local my_data = {
-		unit = data.unit,
-		detection = data.char_tweak.detection.guard,
-		rsrv_pos = {},
-		guard_obj = guard_obj
+		unit = data.unit
 	}
+
+	my_data.detection = data.char_tweak.detection.guard
+	my_data.rsrv_pos = {}
+	my_data.guard_obj = guard_obj
 
 	if guard_obj and guard_obj.type == "door" then
 		CopLogicAttack._set_attention_on_pos(data, guard_obj.door.center + math.UP * 140)
@@ -67,10 +68,10 @@ function CopLogicGuard.update(data)
 	end
 
 	if guard_obj.type == "door" and not my_data.aiming and not my_data.from_seg_safe then
-		local shoot_action = {
-			type = "shoot",
-			body_part = 3
-		}
+		local shoot_action = {}
+
+		shoot_action.type = "shoot"
+		shoot_action.body_part = 3
 
 		CopLogicAttack._set_attention_on_pos(data, guard_obj.door.center + math.UP * 140)
 

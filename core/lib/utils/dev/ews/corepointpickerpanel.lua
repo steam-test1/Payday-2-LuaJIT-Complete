@@ -22,6 +22,7 @@ end
 
 function PointPickerPanel:_create_panel(parent_frame)
 	local panel_sizer = EWS:BoxSizer("HORIZONTAL")
+
 	self.__panel = EWS:Panel(parent_frame)
 
 	self.__panel:set_sizer(panel_sizer)

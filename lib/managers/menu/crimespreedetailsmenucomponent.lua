@@ -1,9 +1,11 @@
 CrimeSpreeDetailsMenuComponent = CrimeSpreeDetailsMenuComponent or class(MenuGuiComponentGeneric)
+
 local padding = 10
 local button_size = {
-	w = 164,
-	h = 96
+	h = 96,
+	w = 164
 }
+
 CrimeSpreeDetailsMenuComponent.disallowed_menus = {
 	"kit_menu",
 	"mission_end_menu"
@@ -38,6 +40,7 @@ function CrimeSpreeDetailsMenuComponent:_setup(is_start_page, component_data)
 	self._safe_panel = self._ws:panel():panel({
 		layer = self._init_layer
 	})
+
 	local is_host = Network:is_server() or Global.game_settings.single_player
 
 	if not is_host and managers.crime_spree:in_progress() then
@@ -138,11 +141,11 @@ function CrimeSpreeDetailsMenuComponent:_add_page_right_title()
 		end
 
 		local bg_text = self._fullscreen_panel:text({
+			align = "right",
+			alpha = 0.4,
+			h = 90,
 			name = "title_right_text_bg",
 			vertical = "top",
-			h = 90,
-			alpha = 0.4,
-			align = "right",
 			text = self._right_title_text:text(),
 			font_size = tweak_data.menu.pd2_massive_font_size,
 			font = tweak_data.menu.pd2_massive_font,
@@ -196,20 +199,21 @@ end
 function CrimeSpreeDetailsMenuComponent:populate_tabs_data(tabs_data)
 	table.insert(tabs_data, {
 		name_id = "menu_cs_modifiers",
-		width_multiplier = 1,
-		page_class = "CrimeSpreeModifierDetailsPage"
+		page_class = "CrimeSpreeModifierDetailsPage",
+		width_multiplier = 1
 	})
 
 	if not self:_is_in_preplanning() then
 		table.insert(tabs_data, {
 			name_id = "menu_cs_rewards",
-			width_multiplier = 1,
-			page_class = "CrimeSpreeRewardsDetailsPage"
+			page_class = "CrimeSpreeRewardsDetailsPage",
+			width_multiplier = 1
 		})
 	end
 end
 
 function CrimeSpreeDetailsMenuComponent:input_focus()
+	return
 end
 
 function CrimeSpreeDetailsMenuComponent:_setup_controller_input()
@@ -238,6 +242,7 @@ end
 
 function CrimeSpreeDetailsMenuComponent:perform_update()
 	local is_host = Network:is_server() or Global.game_settings.single_player
+
 	self._data = self:_start_page_data()
 
 	self:_add_page_title()
@@ -263,28 +268,28 @@ function CrimeSpreeDetailsMenuComponent:show_new_modifier(modifier_id)
 	end
 
 	self._modifier_panel = self._fullscreen_panel:panel({
-		w = 300,
 		alpha = 0,
 		h = 130,
+		w = 300,
 		layer = tweak_data.gui.CRIMENET_CHAT_LAYER + 100
 	})
 
 	self._modifier_panel:set_center_x(self._fullscreen_panel:w() * 0.5)
 	self._modifier_panel:set_center_y(self._fullscreen_panel:h() * 0.75)
 	self._modifier_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		layer = -1,
-		halign = "scale",
 		alpha = 1,
+		halign = "scale",
+		layer = -1,
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = self._modifier_panel:w(),
 		h = self._modifier_panel:h()
 	})
 	self._modifier_panel:rect({
 		alpha = 0.8,
-		valign = "scale",
 		halign = "scale",
+		valign = "scale",
 		color = Color.black
 	})
 	BoxGuiObject:new(self._modifier_panel, {
@@ -297,8 +302,8 @@ function CrimeSpreeDetailsMenuComponent:show_new_modifier(modifier_id)
 	})
 
 	local title = self._modifier_panel:text({
-		name = "title",
 		layer = 10,
+		name = "title",
 		text = managers.localization:to_upper_text(modifier_class.stealth and "menu_cs_new_modifier_stealth" or "menu_cs_new_modifier_loud"),
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		font = tweak_data.menu.pd2_medium_font,
@@ -311,13 +316,13 @@ function CrimeSpreeDetailsMenuComponent:show_new_modifier(modifier_id)
 
 	local texture, rect = tweak_data.hud_icons:get_icon_data(modifier.icon)
 	local image = self._modifier_panel:bitmap({
-		name = "icon",
+		blend_mode = "add",
 		h = 80,
+		halign = "grow",
+		layer = 10,
+		name = "icon",
 		valign = "grow",
 		w = 80,
-		layer = 10,
-		blend_mode = "add",
-		halign = "grow",
 		texture = texture,
 		texture_rect = rect
 	})
@@ -326,10 +331,10 @@ function CrimeSpreeDetailsMenuComponent:show_new_modifier(modifier_id)
 	image:set_left(padding)
 
 	local desc = self._modifier_panel:text({
+		layer = 10,
 		name = "desc",
 		word_wrap = true,
 		wrap = true,
-		layer = 10,
 		text = managers.crime_spree:make_modifier_description(modifier_id),
 		font_size = tweak_data.menu.pd2_small_font_size,
 		font = tweak_data.menu.pd2_small_font,
@@ -355,7 +360,7 @@ function CrimeSpreeDetailsMenuComponent:fade_in_modifier(o)
 	local start_y = o:y() - 40
 	local end_y = o:y()
 
-	over(0.25, function (p)
+	over(0.25, function(p)
 		o:set_alpha(math.lerp(0, 1, p))
 		o:set_y(math.lerp(start_y, end_y, p))
 	end)
@@ -365,7 +370,7 @@ function CrimeSpreeDetailsMenuComponent:fade_out_modifier(o)
 	local start_y = o:y()
 	local end_y = o:y() + 40
 
-	over(0.25, function (p)
+	over(0.25, function(p)
 		o:set_alpha(math.lerp(1, 0, p))
 		o:set_y(math.lerp(start_y, end_y, p))
 	end)
@@ -387,4 +392,5 @@ function CrimeSpreeDetailsPage:get_legend()
 end
 
 function CrimeSpreeDetailsPage:perform_update()
+	return
 end

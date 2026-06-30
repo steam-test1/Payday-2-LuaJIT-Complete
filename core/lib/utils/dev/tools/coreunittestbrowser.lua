@@ -13,6 +13,7 @@ end
 
 function CoreUnitTestBrowser:error_frame()
 	self._error_frame = EWS:Frame("Unit Test Browser", Vector3(100, 400, 0), Vector3(500, 500, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
+
 	local menu_bar = EWS:MenuBar()
 	local file_menu = EWS:Menu("")
 
@@ -42,9 +43,9 @@ function CoreUnitTestBrowser:error_frame()
 	self._error_frame:connect("", "EVT_CLOSE_WINDOW", callback(self, self, "on_close"), "")
 
 	local error_box = EWS:BoxSizer("VERTICAL")
-	self._error_box = {
-		tree_ctrl = EWS:TreeCtrl(self._error_frame, "", "")
-	}
+
+	self._error_box = {}
+	self._error_box.tree_ctrl = EWS:TreeCtrl(self._error_frame, "", "")
 
 	self._error_box.tree_ctrl:connect("", "EVT_COMMAND_TREE_SEL_CHANGED", callback(self, self, "on_tree_ctrl_change"), "")
 	self._error_box.tree_ctrl:connect("", "EVT_RIGHT_UP", callback(self, self, "on_popup"), "")
@@ -69,9 +70,9 @@ function CoreUnitTestBrowser:search_frame()
 
 	local search_box = EWS:BoxSizer("VERTICAL")
 	local top_search_box = EWS:BoxSizer("HORIZONTAL")
-	self._search_box = {
-		type_combobox = EWS:ComboBox(self._search_frame, "", "", "CB_READONLY")
-	}
+
+	self._search_box = {}
+	self._search_box.type_combobox = EWS:ComboBox(self._search_frame, "", "", "CB_READONLY")
 
 	self._search_box.type_combobox:connect("", "EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "on_search"), "")
 	self._search_box.type_combobox:append("Search By Author")
@@ -100,6 +101,7 @@ function CoreUnitTestBrowser:set_position(newpos)
 end
 
 function CoreUnitTestBrowser:update(t, dt)
+	return
 end
 
 function CoreUnitTestBrowser:on_popup()
@@ -445,6 +447,7 @@ function CoreUnitTestBrowser:init_tree_view()
 	local num_passed = 0
 	local num_failed = 0
 	local num_critical = 0
+
 	self._root_id = self._error_box.tree_ctrl:append_root("Units")
 	self._passed_id = self._error_box.tree_ctrl:append(self._root_id, "Passed")
 	self._failed_id = self._error_box.tree_ctrl:append(self._root_id, "Failed")
@@ -455,8 +458,10 @@ function CoreUnitTestBrowser:init_tree_view()
 	for unit_node in self._report_xml:children() do
 		if unit_node:name() == "unit" then
 			num_units = num_units + 1
+
 			local found_error = false
 			local found_critical = false
+
 			self._unit_msg[unit_node:parameter("name")] = {}
 			self._unit_msg[unit_node:parameter("name")].msg = ""
 			self._unit_msg[unit_node:parameter("name")].author = unit_node:parameter("author")
@@ -497,26 +502,24 @@ function CoreUnitTestBrowser:init_tree_view()
 		end
 	end
 
-	self._unit_msg.Units = {
-		msg = tostring(num_units) .. " units tested."
-	}
-	self._unit_msg.Passed = {
-		msg = tostring(num_passed) .. " / " .. tostring(num_units) .. " units passed the test."
-	}
-	self._unit_msg.Failed = {
-		msg = tostring(num_failed) .. " / " .. tostring(num_units) .. " units failed the test."
-	}
-	self._unit_msg.Critical = {
-		msg = tostring(num_critical) .. " / " .. tostring(num_units) .. " units is in a critical condition."
-	}
+	self._unit_msg.Units = {}
+	self._unit_msg.Units.msg = tostring(num_units) .. " units tested."
+	self._unit_msg.Passed = {}
+	self._unit_msg.Passed.msg = tostring(num_passed) .. " / " .. tostring(num_units) .. " units passed the test."
+	self._unit_msg.Failed = {}
+	self._unit_msg.Failed.msg = tostring(num_failed) .. " / " .. tostring(num_units) .. " units failed the test."
+	self._unit_msg.Critical = {}
+	self._unit_msg.Critical.msg = tostring(num_critical) .. " / " .. tostring(num_units) .. " units is in a critical condition."
 end
 
 CoreUnitTestBrowserInputDialog = CoreUnitTestBrowserInputDialog or class()
 
 function CoreUnitTestBrowserInputDialog:init(p)
 	self._dialog = EWS:Dialog(p, "Receiver", "", Vector3(0, 0, 0), Vector3(300, 86, 0), "CAPTION,SYSTEM_MENU")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._key_text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._key_text_ctrl:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_send_button"), "")
@@ -524,6 +527,7 @@ function CoreUnitTestBrowserInputDialog:init(p)
 	box:add(text_box, 0, 4, "ALL,EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._create = EWS:Button(self._dialog, "Send", "", "")
 
 	self._create:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_send_button"), "")
@@ -547,6 +551,7 @@ function CoreUnitTestBrowserInputDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val

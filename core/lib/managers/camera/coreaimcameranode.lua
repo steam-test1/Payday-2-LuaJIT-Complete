@@ -11,6 +11,7 @@ local mvector3_normalize = mvector3.normalize
 local mrotation_set_zero = mrotation.set_zero
 local mrotation_mul = mrotation.multiply
 local mrotation_inv = mrotation.invert
+
 AimCameraNode = AimCameraNode or CoreClass.class(CoreTransformCameraNode.TransformCameraNode)
 
 function AimCameraNode:init(settings)

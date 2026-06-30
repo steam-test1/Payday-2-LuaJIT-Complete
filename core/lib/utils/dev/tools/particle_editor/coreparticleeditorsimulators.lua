@@ -47,12 +47,13 @@ function CoreParticleEditorSimulators:create_scaledvelocityintegrator()
 	simulator:add_property(CoreEffectProperty:new("per_particle_age", "boolean", "false", help))
 
 	help = "Determines how velocity is scaled over time."
+
 	local scale_keys = CoreEffectProperty:new("scale_keys", "keys", "", help)
 
 	scale_keys:set_key_type("float")
 	scale_keys:add_key({
-		v = "1",
-		t = 0
+		t = 0,
+		v = "1"
 	})
 	scale_keys:set_min_max_keys(1, 4)
 	simulator:add_property(scale_keys)
@@ -107,11 +108,7 @@ function CoreParticleEditorSimulators:create_planecollision()
 
 	simulator:add_property(CoreEffectProperty:new("center", "vector3", "0 0 0", help))
 
-	help = [[
-Normal of plane.
-Coordinates are in centimeters and world coordinates.
-Coordinates are in centimeters and world coordinates.
-Parameter is runtime modifiable by script by referencing effect/atom name/simulator name/normal]]
+	help = "Normal of plane.\nCoordinates are in centimeters and world coordinates.\nCoordinates are in centimeters and world coordinates.\nParameter is runtime modifiable by script by referencing effect/atom name/simulator name/normal"
 
 	simulator:add_property(CoreEffectProperty:new("normal", "vector3", "0 0 1", help))
 
@@ -131,13 +128,7 @@ function CoreParticleEditorSimulators:create_constantacceleration()
 
 	simulator:set_description("Accelerates particles with a set acceleration. If this value must be runtime modifiable, use variableacceleration.")
 
-	local help = [[
-Determines how acceleration is treated:
-world - Acceleration is not transformed
-effect - Acceleration is transformed with effect system transform
-effect_inverse - Acceleration is transformed with inverse effect system transform,
-this means that it has the given direction when transformed by the effect system transform.
-use this for local position effects where acceleration is still expressed in world coordinates]]
+	local help = "Determines how acceleration is treated:\nworld - Acceleration is not transformed\neffect - Acceleration is transformed with effect system transform\neffect_inverse - Acceleration is transformed with inverse effect system transform,\nthis means that it has the given direction when transformed by the effect system transform.\nuse this for local position effects where acceleration is still expressed in world coordinates"
 	local p = CoreEffectProperty:new("relative", "value_list", "world", help)
 
 	p:add_value("effect")
@@ -173,12 +164,7 @@ function CoreParticleEditorSimulators:create_intervalrandomvelocity()
 
 	simulator:set_description("Randomly changes velocity of particles at a set interval.")
 
-	local help = [[
-Determines how velocities are treated:
-effect - Velocities are rotated with effect rotation
-world - Velocities are not rotated
-
-Velocities are always offsetted with effect spawn velocity.]]
+	local help = "Determines how velocities are treated:\neffect - Velocities are rotated with effect rotation\nworld - Velocities are not rotated\n\nVelocities are always offsetted with effect spawn velocity."
 	local p = CoreEffectProperty:new("relative", "value_list", "effect", help)
 
 	p:add_value("effect")
@@ -186,6 +172,7 @@ Velocities are always offsetted with effect spawn velocity.]]
 	simulator:add_property(p)
 
 	help = "Box inside which particle velocities will be randomly generated.\nCoordinates are in cm/s."
+
 	local p = CoreEffectProperty:new("box", "box", "", help)
 
 	p:set_min_max(Vector3(-100, -100, -100), Vector3(100, 100, 100))
@@ -201,13 +188,7 @@ function CoreParticleEditorSimulators:create_variableacceleration()
 	simulator:set_description("Accelerates particles with a set acceleration.\nAcceleration is runtime modifiable by script by referencing effect/atom name/simulator name/acceleration.")
 	simulator:add_property(CoreEffectProperty:new("name", "string", "", "Name of simulator.\nThis is an optional parameter which must be set if script wants to edit exposed parameters in simulator runtime."))
 
-	local help = [[
-Determines how acceleration is treated:
-world - Acceleration is not transformed
-effect - Acceleration is transformed with effect system transform
-effect_inverse - Acceleration is transformed with inverse effect system transform,
-this means that it has the given direction when transformed by the effect system transform.
-use this for local position effects where acceleration is still expressed in world coordinates]]
+	local help = "Determines how acceleration is treated:\nworld - Acceleration is not transformed\neffect - Acceleration is transformed with effect system transform\neffect_inverse - Acceleration is transformed with inverse effect system transform,\nthis means that it has the given direction when transformed by the effect system transform.\nuse this for local position effects where acceleration is still expressed in world coordinates"
 	local p = CoreEffectProperty:new("relative", "value_list", "world", help)
 
 	p:add_value("effect")
@@ -263,19 +244,10 @@ end
 function CoreParticleEditorSimulators:create_teleporter()
 	local simulator = CoreEffectStackMember:new("teleporter", "simulator", "Teleporter")
 
-	simulator:set_description([[
-Teleports particles to an new location, by a frequency determined by the set particle lifetime and the size of the atom.
-When a particle is teleported, its age is set to 0 and its position and velocity are reinitialized using a custom initializer -
-the initializerstack does not apply. This simulator is made for creating effect surface type effects, where particles are reused,
-for instance a smoke plume.
-To make initial particles invisible, initialize their age to a high value and make the opacity at that time 0.]])
+	simulator:set_description("Teleports particles to an new location, by a frequency determined by the set particle lifetime and the size of the atom.\nWhen a particle is teleported, its age is set to 0 and its position and velocity are reinitialized using a custom initializer -\nthe initializerstack does not apply. This simulator is made for creating effect surface type effects, where particles are reused,\nfor instance a smoke plume.\nTo make initial particles invisible, initialize their age to a high value and make the opacity at that time 0.")
 	simulator:add_property(CoreEffectProperty:new("name", "string", "", "Name of simulator, must be set if particle_lifetime will be changed runtime"))
 
-	local help = [[
-Lifetime of particle
-constant - use constant value, this may also be modified runtime by the script
-The name of the exposed variable is particle_lifetime. If this is set to -1, respawning is disabled.
-keys - use key curve over time]]
+	local help = "Lifetime of particle\nconstant - use constant value, this may also be modified runtime by the script\nThe name of the exposed variable is particle_lifetime. If this is set to -1, respawning is disabled.\nkeys - use key curve over time"
 	local lifetime_input = CoreEffectProperty:new("lifetime_input", "variant", "constant", help)
 	local constant_lifetime = CoreEffectProperty:new("particle_lifetime", "time", "1", "Constant lifetime of particles")
 
@@ -303,8 +275,8 @@ keys - use key curve over time]]
 
 	lifetime_keys:set_key_type("time")
 	lifetime_keys:add_key({
-		v = "1",
-		t = 0
+		t = 0,
+		v = "1"
 	})
 	lifetime_keys:set_min_max_keys(1, 4)
 	lifetime_input:add_variant("keys", lifetime_keys)
@@ -318,11 +290,7 @@ keys - use key curve over time]]
 	lifetime_prop:set_compound_container(lifetime_container)
 	lifetime_prop:set_save_to_child(false)
 
-	local help = [[
-Frequency of particle teleports
-constant - use constant value, this may also be modified runtime by the script
-The name of the exposed variable is particle_lifetime. If this is set to -1, respawning is disabled.
-keys - use key curve over time]]
+	local help = "Frequency of particle teleports\nconstant - use constant value, this may also be modified runtime by the script\nThe name of the exposed variable is particle_lifetime. If this is set to -1, respawning is disabled.\nkeys - use key curve over time"
 	local frequency_input = CoreEffectProperty:new("frequency_input", "variant", "constant", help)
 	local constant_frequency = CoreEffectProperty:new("frequency", "time", "1", "Constant frequency of teleports")
 
@@ -333,8 +301,8 @@ keys - use key curve over time]]
 
 	frequency_keys:set_key_type("time")
 	frequency_keys:add_key({
-		v = "1",
-		t = 0
+		t = 0,
+		v = "1"
 	})
 	frequency_keys:set_min_max_keys(1, 4)
 	frequency_input:add_variant("keys", frequency_keys)
@@ -382,6 +350,7 @@ keys - use key curve over time]]
 	simulator:add_property(p)
 
 	help = "Position initializer\ncircle - initializes positions in a circle around (0,0,1) relative to effect location"
+
 	local position_variant = CoreEffectProperty:new("positioner", "variant", "circle", help)
 
 	position_variant:set_silent(false)
@@ -396,11 +365,13 @@ keys - use key curve over time]]
 	position_variant:add_variant(p:name(), p)
 
 	p = CoreEffectProperty:new("box", "compound", "")
+
 	local box_positioner = CoreEffectPropertyContainer:new("box")
 
 	box_positioner:set_description("Initializes positions in a box relative to effect location.")
 
 	help = "Box inside which particle positions will be randomly generated.\nCoordinates are in cm."
+
 	local q = CoreEffectProperty:new("positions", "box", "", help)
 
 	q:set_min_max(Vector3(-100, -100, -100), Vector3(100, 100, 100))
@@ -416,11 +387,13 @@ keys - use key curve over time]]
 	simulator:add_property(position_variant)
 
 	help = "Velocity initializer\nnormal - initializes velocity along normal from positioner"
+
 	local velocity_variant = CoreEffectProperty:new("velocity", "variant", "normal", help)
 
 	velocity_variant:set_silent(true)
 
 	p = CoreEffectProperty:new("normal", "compound", "")
+
 	local normal_velocity = CoreEffectPropertyContainer:new("normal")
 
 	normal_velocity:set_description("Initializes velocity randomly along normal from positioner")
@@ -431,11 +404,13 @@ keys - use key curve over time]]
 	simulator:add_property(velocity_variant)
 
 	help = "Rotation initializer\nnone - no rotation is assigned\nrandom - initializes with a random rotation"
+
 	local rotation_variant = CoreEffectProperty:new("rotation", "variant", "none", help)
 
 	rotation_variant:set_silent(true)
 
 	p = CoreEffectProperty:new("random_rotation", "compound", "")
+
 	local random_rotation = CoreEffectPropertyContainer:new("random_rotation")
 
 	random_rotation:set_description("Initializes particle rotations to random values, with the normal within a specified box and a random angle around the normal.")

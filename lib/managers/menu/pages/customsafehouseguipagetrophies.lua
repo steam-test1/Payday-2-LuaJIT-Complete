@@ -9,6 +9,7 @@ local small_font_size = tweak_data.menu.pd2_small_font_size
 local PANEL_PADDING = 10
 local REWARD_SIZE = 100
 local MAX_REWARDS_DISPLAYED = 2
+
 CustomSafehouseGuiPageTrophies = CustomSafehouseGuiPageTrophies or class(CustomSafehouseGuiPage)
 
 function CustomSafehouseGuiPageTrophies:init(page_id, page_panel, fullscreen_panel, gui)
@@ -24,6 +25,7 @@ end
 
 function CustomSafehouseGuiPageTrophies:_setup_trophies_list()
 	self._trophies = {}
+
 	local scroll = ScrollablePanel:new(self:panel(), "TrophiesPanel", {
 		padding = 0
 	})
@@ -49,7 +51,7 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_list()
 		end
 	end
 
-	table.sort(trophies, function (a, b)
+	table.sort(trophies, function(a, b)
 		return managers.localization:text(a.name_id) < managers.localization:text(b.name_id)
 	end)
 
@@ -59,7 +61,7 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_list()
 		table.insert(self._trophies, trophy_btn)
 	end
 
-	table.sort(self._trophies, function (a, b)
+	table.sort(self._trophies, function(a, b)
 		return a:priority() < b:priority()
 	end)
 
@@ -87,7 +89,7 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 		name = "trophy_panel"
 	})
 	local buttons = {}
-	local button_panel_h = nil
+	local button_panel_h
 
 	if not Global.game_settings.is_playing then
 		if not managers.menu:is_pc_controller() then
@@ -118,10 +120,12 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	self._buttons = {}
 	self._controllers_pc_mapping = {}
 	self._controllers_mapping = {}
+
 	local btn_x = 10
 
 	for idx, btn_data in pairs(buttons) do
 		local new_button = CustomSafehouseGuiButtonItem:new(buttons_panel, btn_data, btn_x, idx)
+
 		self._buttons[idx] = new_button
 
 		if btn_data.pc_btn then
@@ -146,6 +150,7 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 			1
 		}
 	})
+
 	local scroll = ScrollablePanel:new(trophy_panel, "TrophyInfoPanel")
 
 	scroll:on_canvas_updated_callback(callback(self, self, "update_info_panel_width"))
@@ -163,13 +168,13 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	table.insert(self._scrollable_panels, scroll)
 
 	local trophy_title = scroll:canvas():text({
-		name = "TitleText",
-		blend_mode = "add",
 		align = "left",
-		vertical = "top",
-		valign = "top",
+		blend_mode = "add",
 		halign = "left",
 		layer = 1,
+		name = "TitleText",
+		valign = "top",
+		vertical = "top",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.title,
@@ -199,10 +204,10 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 		h = image_panel:h()
 	})
 	local image_scanlines = image_panel:bitmap({
-		texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
-		name = "TrophyImageScanlines",
-		wrap_mode = "wrap",
 		layer = 50,
+		name = "TrophyImageScanlines",
+		texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
+		wrap_mode = "wrap",
 		texture_rect = {
 			0,
 			0,
@@ -213,6 +218,7 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 		h = image_panel:h() * 4,
 		y = image_panel:h() * 2 * -1
 	})
+
 	self._scanline_effect = image_scanlines
 	self._image_outline = BoxGuiObject:new(image_panel, {
 		sides = {
@@ -233,34 +239,34 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 
 	complete_banner:set_top(image_panel:bottom() + PANEL_PADDING)
 	complete_banner:rect({
-		name = "CompleteBannerFill",
 		alpha = 0.4,
+		name = "CompleteBannerFill",
 		color = tweak_data.screen_colors.challenge_completed_color
 	})
 
 	local complete_text = complete_banner:text({
-		blend_mode = "add",
-		name = "CompleteText",
-		vertical = "top",
-		valign = "scale",
 		align = "center",
+		blend_mode = "add",
 		halign = "scale",
 		layer = 1,
+		name = "CompleteText",
+		valign = "scale",
+		vertical = "top",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.challenge_completed_color:with_alpha(0.8),
 		text = managers.localization:to_upper_text("menu_trophy_displayed")
 	})
 	local desc_text = scroll:canvas():text({
-		name = "DescText",
-		blend_mode = "add",
-		wrap = true,
 		align = "left",
-		word_wrap = true,
-		vertical = "top",
-		valign = "top",
+		blend_mode = "add",
 		halign = "left",
 		layer = 1,
+		name = "DescText",
+		valign = "top",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.title,
@@ -272,13 +278,13 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	self:make_fine_text(desc_text)
 
 	local unlock_text = scroll:canvas():text({
-		name = "ObjectiveHeader",
-		blend_mode = "add",
-		vertical = "top",
 		align = "left",
-		valign = "top",
+		blend_mode = "add",
 		halign = "left",
 		layer = 1,
+		name = "ObjectiveHeader",
+		valign = "top",
+		vertical = "top",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.challenge_title,
@@ -290,15 +296,15 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	unlock_text:set_top(desc_text:bottom() + PANEL_PADDING)
 
 	local objective_text = scroll:canvas():text({
-		name = "ObjectiveText",
-		blend_mode = "add",
-		wrap = true,
 		align = "left",
-		word_wrap = true,
-		vertical = "top",
-		valign = "top",
+		blend_mode = "add",
 		halign = "left",
 		layer = 1,
+		name = "ObjectiveText",
+		valign = "top",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.title,
@@ -310,13 +316,13 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	self:make_fine_text(objective_text)
 
 	local reward_header = scroll:canvas():text({
-		name = "RewardHeader",
-		blend_mode = "add",
-		vertical = "top",
 		align = "left",
-		valign = "top",
+		blend_mode = "add",
 		halign = "left",
 		layer = 1,
+		name = "RewardHeader",
+		valign = "top",
+		vertical = "top",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.challenge_title,
@@ -328,15 +334,15 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	reward_header:set_top(objective_text:bottom() + PANEL_PADDING)
 
 	local reward_text = scroll:canvas():text({
-		name = "RewardText",
-		blend_mode = "add",
-		wrap = true,
 		align = "left",
-		word_wrap = true,
-		vertical = "top",
-		valign = "top",
+		blend_mode = "add",
 		halign = "left",
 		layer = 1,
+		name = "RewardText",
+		valign = "top",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.title,
@@ -350,13 +356,13 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	self:make_fine_text(reward_text)
 
 	local progress_header = scroll:canvas():text({
-		name = "ProgressHeader",
-		blend_mode = "add",
 		align = "left",
-		vertical = "top",
-		valign = "top",
+		blend_mode = "add",
 		halign = "left",
 		layer = 1,
+		name = "ProgressHeader",
+		valign = "top",
+		vertical = "top",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.challenge_title,
@@ -388,6 +394,7 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_counter()
 		total = total,
 		completed = completed
 	})
+
 	self._trophy_counter = self._gui._panel:text({
 		visible = false,
 		text = text,
@@ -586,7 +593,7 @@ function CustomSafehouseGuiPageTrophies:_set_selected(trophy, skip_sound)
 	local scroll_panel = self._trophies_scroll:scroll_panel()
 	local y = self._trophies_scroll:canvas():y() + trophy:bottom()
 
-	if scroll_panel:h() < y then
+	if y > scroll_panel:h() then
 		self._trophies_scroll:perform_scroll(y - scroll_panel:h(), -1)
 	else
 		y = self._trophies_scroll:canvas():y() + trophy:top()
@@ -722,14 +729,13 @@ function CustomSafehouseGuiPageTrophies:mouse_moved(button, x, y)
 		end
 	end
 
-	local used, pointer = nil
+	local used, pointer
 
 	for _, button in ipairs(self._buttons) do
 		if button:inside(x, y) and not used then
 			button:set_selected(true)
 
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		else
 			button:set_selected(false)
 		end
@@ -893,7 +899,9 @@ function CustomSafehouseGuiTrophyItem:init(panel, data, x, priority)
 		w = panel:w() - x * 2,
 		h = large_font_size
 	})
+
 	local size = self._panel:h() - 16
+
 	self._complete_checkbox = self._panel:bitmap({
 		x = 8,
 		y = 8,
@@ -914,12 +922,12 @@ function CustomSafehouseGuiTrophyItem:init(panel, data, x, priority)
 	self._complete_checkbox_highlight:set_visible(false)
 
 	self._btn_text = self._panel:text({
-		text = "",
-		name = "text",
 		align = "left",
 		blend_mode = "add",
-		x = 10,
 		layer = 1,
+		name = "text",
+		text = "",
+		x = 10,
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.button_stage_3
@@ -928,10 +936,10 @@ function CustomSafehouseGuiTrophyItem:init(panel, data, x, priority)
 	self:set_text(managers.localization:text(data.name_id))
 
 	self._select_rect = self._panel:rect({
-		blend_mode = "add",
-		name = "select_rect",
-		halign = "scale",
 		alpha = 0.3,
+		blend_mode = "add",
+		halign = "scale",
+		name = "select_rect",
 		valign = "scale",
 		color = tweak_data.screen_colors.button_stage_3
 	})
@@ -1032,6 +1040,7 @@ function CustomSafehouseGuiTrophyItem:complete()
 	if not self._is_complete then
 		self._is_complete = true
 		self._priority = self._priority + #tweak_data.safehouse.trophies
+
 		local complete_color = tweak_data.screen_color_grey
 
 		self._complete_checkbox:set_image("guis/textures/pd2/mission_briefing/gui_tickbox_ready")
@@ -1075,13 +1084,13 @@ function CustomSafehouseGuiProgressItem:init(parent_panel, trophy_objective)
 		h = self.h
 	})
 	self._text = self._panel:text({
-		name = "text",
-		blend_mode = "add",
 		align = "left",
-		vertical = "center",
-		valign = "scale",
+		blend_mode = "add",
 		halign = "scale",
 		layer = 1,
+		name = "text",
+		valign = "scale",
+		vertical = "center",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.text,
@@ -1103,22 +1112,24 @@ function CustomSafehouseGuiProgressItem:init(parent_panel, trophy_objective)
 				1
 			}
 		})
+
 		local color = trophy_objective.completed and tweak_data.screen_colors.challenge_completed_color or tweak_data.screen_colors.button_stage_3
+
 		self._progress_fill = self._progress_panel:rect({
-			w = self._panel:w() * trophy_objective.progress / trophy_objective.max_progress,
+			w = self._panel:w() * (trophy_objective.progress / trophy_objective.max_progress),
 			color = color:with_alpha(0.4)
 		})
 
 		self._text:set_x(PANEL_PADDING)
 
 		self._progress_text = self._panel:text({
-			name = "progress_text",
-			blend_mode = "add",
 			align = "right",
-			vertical = "center",
-			valign = "scale",
+			blend_mode = "add",
 			halign = "scale",
 			layer = 1,
+			name = "progress_text",
+			valign = "scale",
+			vertical = "center",
 			font_size = small_font_size,
 			font = small_font,
 			color = tweak_data.screen_colors.text,
@@ -1128,19 +1139,19 @@ function CustomSafehouseGuiProgressItem:init(parent_panel, trophy_objective)
 			x = PANEL_PADDING
 		})
 	else
-		local texture = "guis/textures/menu_tickbox"
-		local texture_rect = {
+		local texture, texture_rect = "guis/textures/menu_tickbox", {
 			trophy_objective.completed and 24 or 0,
 			0,
 			24,
 			24
 		}
+
 		self._checkbox = self._panel:bitmap({
-			name = "checkbox",
-			layer = 1,
-			visible = true,
-			valign = "scale",
 			halign = "scale",
+			layer = 1,
+			name = "checkbox",
+			valign = "scale",
+			visible = true,
 			texture = texture,
 			texture_rect = texture_rect
 		})
@@ -1175,7 +1186,7 @@ function CustomSafehouseGuiProgressItem:set_w(w)
 
 	if alive(self._progress_panel) then
 		self._progress_panel:set_w(w)
-		self._progress_fill:set_w(w * self._objective.progress / self._objective.max_progress)
+		self._progress_fill:set_w(w * (self._objective.progress / self._objective.max_progress))
 		self._progress_text:set_w(self._panel:w() - PANEL_PADDING * 2)
 		self._progress_outline:close()
 

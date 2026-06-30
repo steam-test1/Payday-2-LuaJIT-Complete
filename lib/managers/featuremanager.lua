@@ -5,9 +5,8 @@ function FeatureManager:init()
 end
 
 function FeatureManager:_setup()
-	self._default = {
-		announcements = {}
-	}
+	self._default = {}
+	self._default.announcements = {}
 	self._default.announcements.crimenet_heat = 3
 	self._default.announcements.election_changes = 1
 	self._default.announcements.crimenet_welcome = 0
@@ -71,10 +70,10 @@ end
 function FeatureManager:save(data)
 	Application:debug("[FeatureManager:save]")
 
-	local save_data = {
-		announcements = deep_clone(self._global.announcements),
-		external_notifications = deep_clone(self._global.external_notifications)
-	}
+	local save_data = {}
+
+	save_data.announcements = deep_clone(self._global.announcements)
+	save_data.external_notifications = deep_clone(self._global.external_notifications)
 	data.feature_manager = save_data
 end
 
@@ -101,9 +100,8 @@ function FeatureManager:load(data, version)
 end
 
 function FeatureManager:reset()
-	Global.feature_manager = {
-		announcements = {}
-	}
+	Global.feature_manager = {}
+	Global.feature_manager.announcements = {}
 
 	for id, _ in pairs(self._default.announcements) do
 		Global.feature_manager.announcements[id] = 0
@@ -248,37 +246,40 @@ function FeatureManager:join_pd2_clan()
 	print("FeatureManager:join_pd2_clan()")
 
 	local params = {
-		texture = false,
-		video = "movies/join_community",
-		text = "menu_feature_join_pd2_clan_desc",
 		image_blend_mode = "add",
+		text = "menu_feature_join_pd2_clan_desc",
+		texture = false,
 		title = "menu_feature_join_pd2_clan",
+		video = "movies/join_community",
 		video_loop = true,
 		formating_color = tweak_data.screen_colors.button_stage_2
 	}
-	local ok_button = {
-		text = managers.localization:text("dialog_ok"),
-		cancel_button = true
-	}
+	local ok_button = {}
+
+	ok_button.text = managers.localization:text("dialog_ok")
+	ok_button.cancel_button = true
+
 	local button_list = {}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
-		local joining_pd2_clan_button = {
-			text = managers.localization:text("dialog_join_pd2_clan"),
-			callback_func = function ()
-				managers.network.account:overlay_activate("game", "OfficialGameGroup")
-			end
-		}
+		local joining_pd2_clan_button = {}
+
+		joining_pd2_clan_button.text = managers.localization:text("dialog_join_pd2_clan")
+
+		function joining_pd2_clan_button.callback_func()
+			managers.network.account:overlay_activate("game", "OfficialGameGroup")
+		end
 
 		table.insert(button_list, joining_pd2_clan_button)
 	end
 
-	local joining_nebula_button = {
-		text = managers.localization:text("menu_no_sbz_account"),
-		callback_func = function ()
-			managers.network.account:overlay_activate("url", tweak_data.gui.sbz_account_webpage)
-		end
-	}
+	local joining_nebula_button = {}
+
+	joining_nebula_button.text = managers.localization:text("menu_no_sbz_account")
+
+	function joining_nebula_button.callback_func()
+		managers.network.account:overlay_activate("url", tweak_data.gui.sbz_account_webpage)
+	end
 
 	table.insert(button_list, joining_nebula_button)
 	table.insert(button_list, ok_button)
@@ -334,13 +335,14 @@ function FeatureManager:thq_feature()
 	end
 
 	local button_list = {}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = yes_function
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no")
-	}
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = yes_function
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
 	button_list = {
 		yes_button,
 		no_button

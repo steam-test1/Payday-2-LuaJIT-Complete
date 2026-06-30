@@ -1,15 +1,13 @@
 local bezier3 = require("lib/utils/Bezier3")
 local distance2 = require("lib/utils/Bezier3Point").distance2
-local min = math.min
-local max = math.max
+local min, max = math.min, math.max
 local curve_recursion_limit = 64
 local curve_flatness_epsilon = 1 * 2^(-curve_recursion_limit - 1)
-local bezier3_to_bezier5, bezier5_roots, bezier5_crossing_count, bezier5_flat_enough, bezier5_split_in_half = nil
+local bezier3_to_bezier5, bezier5_roots, bezier5_crossing_count, bezier5_flat_enough, bezier5_split_in_half
 
 function bezier3.hit(x0, y0, x1, y1, x2, y2, x3, y3, x4, y4)
 	local ax1, ay1, ax2, ay2, ax3, ay3, ax4, ay4, ax5, ay5, ax6, ay6 = bezier3_to_bezier5(x0, y0, x1, y1, x2, y2, x3, y3, x4, y4)
-	local mind = inf
-	local minx, miny, mint = nil
+	local mind, minx, miny, mint = 1 / 0
 
 	local function test_solution(t)
 		assert(t >= 0 and t <= 1)
@@ -18,10 +16,7 @@ function bezier3.hit(x0, y0, x1, y1, x2, y2, x3, y3, x4, y4)
 		local d = distance2(x0, y0, x, y)
 
 		if d < mind then
-			mint = t
-			miny = y
-			minx = x
-			mind = d
+			mind, minx, miny, mint = d, x, y, t
 		end
 	end
 
@@ -30,36 +25,21 @@ function bezier3.hit(x0, y0, x1, y1, x2, y2, x3, y3, x4, y4)
 	local d = distance2(x0, y0, x1, y1)
 
 	if d < mind then
-		mint = 0
-		miny = y1
-		minx = x1
-		mind = d
+		mind, minx, miny, mint = d, x1, y1, 0
 	end
 
 	local d = distance2(x0, y0, x4, y4)
 
 	if d < mind then
-		mint = 1
-		miny = y4
-		minx = x4
-		mind = d
+		mind, minx, miny, mint = d, x4, y4, 1
 	end
 
 	return mind, minx, miny, mint
 end
 
-local cubicz11 = 1
-local cubicz12 = 0.6
-local cubicz13 = 0.3
-local cubicz14 = 0.1
-local cubicz21 = 0.4
-local cubicz22 = 0.6
-local cubicz23 = 0.6
-local cubicz24 = 0.4
-local cubicz31 = 0.1
-local cubicz32 = 0.3
-local cubicz33 = 0.6
-local cubicz34 = 1
+local cubicz11, cubicz12, cubicz13, cubicz14 = 1, 0.6, 0.3, 0.1
+local cubicz21, cubicz22, cubicz23, cubicz24 = 0.4, 0.6, 0.6, 0.4
+local cubicz31, cubicz32, cubicz33, cubicz34 = 0.1, 0.3, 0.6, 1
 
 local function dot_product(ax, ay, bx, by)
 	return ax * bx + ay * by
@@ -108,7 +88,7 @@ function bezier5_roots(write, x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6, de
 	if switch == 0 then
 		return {}
 	elseif switch == 1 then
-		if curve_recursion_limit <= depth then
+		if depth >= curve_recursion_limit then
 			write((x1 + x6) / 2)
 
 			return
@@ -183,12 +163,12 @@ function bezier5_flat_enough(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6)
 	local b2 = b
 	local c2 = c - max_distance_above
 	local det = a1 * b2 - a2 * b1
-	local intercept1 = (b1 * c2 - b2 * c1) * 1 / det
+	local intercept1 = (b1 * c2 - b2 * c1) * (1 / det)
 	local a2 = a
 	local b2 = b
 	local c2 = c - max_distance_below
 	local det = a1 * b2 - a2 * b1
-	local intercept2 = (b1 * c2 - b2 * c1) * 1 / det
+	local intercept2 = (b1 * c2 - b2 * c1) * (1 / det)
 	local left_intercept = min(intercept1, intercept2)
 	local right_intercept = max(intercept1, intercept2)
 	local error = right_intercept - left_intercept
@@ -204,7 +184,7 @@ function bezier5_xintercept(x1, y1, x6, y6)
 	local XMK = x1
 	local YMK = y1
 	local det = XNM * YLK - YNM * XLK
-	local S = (XNM * YMK - YNM * XMK) * 1 / det
+	local S = (XNM * YMK - YNM * XMK) * (1 / det)
 	local X = 0 + XLK * S
 
 	return X

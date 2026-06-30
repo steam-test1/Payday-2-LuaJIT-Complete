@@ -23,6 +23,7 @@ end
 
 function CoreChangeEnvCutsceneKey:evaluate(player, fast_forward)
 	self.__previous_environment_name = self.__previous_environment_name or managers.environment:get_current_environment_name()
+
 	local transition_time = self:transition_time()
 
 	if transition_time and transition_time > 0 then

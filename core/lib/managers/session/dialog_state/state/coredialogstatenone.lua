@@ -11,4 +11,5 @@ function None:destroy()
 end
 
 function None:transition()
+	return
 end

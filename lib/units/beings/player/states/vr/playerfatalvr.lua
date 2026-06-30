@@ -2,6 +2,7 @@ PlayerFatalVR = PlayerFatal or Application:error("PlayerFatalVR need PlayerFatal
 PlayerFatalVR._update_movement = PlayerBleedOutVR._update_movement
 PlayerFatalVR._start_action_dead = PlayerBleedOutVR._start_action_bleedout
 PlayerFatalVR._end_action_dead = PlayerBleedOutVR._end_action_bleedout
+
 local __enter = PlayerFatal.enter
 local __exit = PlayerFatal.exit
 local __destroy = PlayerFatal.destroy

@@ -11,7 +11,8 @@ function SantaBase:post_init()
 	self:set_anim_lod(1)
 
 	self._lod_stage = 1
-	local spawn_state = nil
+
+	local spawn_state
 
 	if self._spawn_state then
 		if self._spawn_state ~= "" then
