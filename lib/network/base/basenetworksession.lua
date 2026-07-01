@@ -1,7 +1,7 @@
 BaseNetworkSession = BaseNetworkSession or class()
 BaseNetworkSession.TIMEOUT_CHK_INTERVAL = 5
-BaseNetworkSession.CONNECTION_TIMEOUT = 30
-BaseNetworkSession.LOADING_CONNECTION_TIMEOUT = 60
+BaseNetworkSession.CONNECTION_TIMEOUT = 15
+BaseNetworkSession.LOADING_CONNECTION_TIMEOUT = 20
 BaseNetworkSession._LOAD_WAIT_TIME = 3
 
 function BaseNetworkSession:init()

@@ -87,6 +87,69 @@ function GrowPanel:row_w()
 	return self:w() - self._placer._border_padding_x * 2
 end
 
+ListGrowPanel = ListGrowPanel or class(GrowPanel)
+
+function ListGrowPanel:init(parent, config)
+	ListGrowPanel.super.init(self, parent, config)
+
+	self._all_items = {}
+	self._current_items = {}
+end
+
+function ListGrowPanel:register_child(item)
+	table.insert(self._all_items, item)
+end
+
+function ListGrowPanel:add_item(item, force_visible, at_index)
+	if force_visible ~= nil then
+		item:set_visible(force_visible)
+	end
+
+	if at_index then
+		table.insert(self._all_items, at_index, item)
+	else
+		table.insert(self._all_items, item)
+	end
+
+	self:place_items_in_order()
+
+	return item
+end
+
+function ListGrowPanel:remove_item(index, reverse_sort_order)
+	table.remove(self._current_items, index)
+	table.remove(self._all_items, index)
+	self:place_items_in_order(nil, nil, reverse_sort_order)
+end
+
+function ListGrowPanel:place_items_in_order(mod_placer, keep_selection, reverse_order)
+	local placer = self:placer()
+
+	placer:clear()
+
+	if mod_placer then
+		mod_placer(placer)
+	end
+
+	self._current_items = {}
+
+	for _, item in pairs(self._all_items) do
+		if item:visible() then
+			table.insert(self._current_items, item)
+		end
+	end
+
+	if reverse_order then
+		for _, item in table.reverse_ipairs(self._current_items) do
+			placer:add_row(item)
+		end
+	else
+		for _, item in pairs(self._current_items) do
+			placer:add_row(item)
+		end
+	end
+end
+
 ScrollGrowPanel = ScrollGrowPanel or class(GrowPanel)
 
 function ScrollGrowPanel:init(scroll, config)
@@ -378,6 +441,8 @@ function ScrollItemList:init(parent, scroll_config, canvas_config)
 	ScrollItemList.super.init(self, parent, scroll_config, canvas_config)
 
 	self._input_focus = scroll_config.input_focus
+	self._click_selection = scroll_config.click_selection
+	self._on_selected_callback = scroll_config.on_selected_callback
 	self._all_items = {}
 	self._current_items = {}
 end
@@ -423,7 +488,7 @@ function ScrollItemList:mouse_moved(button, x, y)
 				used, pointer = v:mouse_moved(button, x, y)
 			end
 
-			if self._selected_item ~= v then
+			if self._selected_item ~= v and not self._click_selection then
 				self:select_item(v)
 			end
 		end
@@ -445,6 +510,10 @@ function ScrollItemList:mouse_pressed(button, x, y)
 		if v:inside(x, y) then
 			if v.mouse_pressed then
 				v:mouse_pressed(button, x, y)
+			end
+
+			if self._selected_item ~= v and self._click_selection then
+				self:select_item(v)
 			end
 
 			break
@@ -517,6 +586,8 @@ function ScrollItemList:select_item(item)
 	end
 
 	if self._selected_item and self._selected_item._hover_changed then
+		self._selected_item._hover = false
+
 		self._selected_item:_hover_changed(false)
 
 		self._selected_item = nil
@@ -530,6 +601,7 @@ function ScrollItemList:select_item(item)
 
 	if item and item._hover_changed then
 		self._selected_item = item
+		item._hover = true
 
 		item:_hover_changed(true)
 	end
@@ -836,6 +908,13 @@ function BaseButton:special_btn_pressed(button)
 	end
 end
 
+function BaseButton:confirm_pressed()
+	if self._hover then
+		print("Hover!", self:name(), debug.traceback())
+		self:_trigger()
+	end
+end
+
 TextButton = TextButton or class(BaseButton)
 
 function TextButton:init(parent, text_config, func, panel_config)
@@ -845,6 +924,10 @@ function TextButton:init(parent, text_config, func, panel_config)
 
 	TextButton.super.init(self, parent, panel_config)
 
+	text_config = set_defaults(text_config, {
+		font = large_font,
+		font_size = small_font_size
+	})
 	self._normal_color = text_config.normal_color or text_config.color or tweak_data.screen_colors.button_stage_3
 	self._hover_color = text_config.hover_color or text_config.color or tweak_data.screen_colors.button_stage_2
 	self._disabled_color = text_config.disabled_color or tweak_data.menu.default_disabled_text_color
@@ -1007,7 +1090,7 @@ function CompositeButton:init(parent, composite_button_config, panel_config, fun
 	CompositeButton.super.init(self, parent, panel_config)
 
 	self._child_list = {}
-	self._trigger_func = func or function()
+	self._trigger_func = composite_button_config.trigger_func or func or function()
 		return
 	end
 	self._normal_color = composite_button_config.normal_color or composite_button_config.color or tweak_data.screen_colors.button_stage_3

@@ -42,6 +42,14 @@ function MenuGuiComponentGeneric:init(ws, fullscreen_ws, node)
 	self:set_layer(10)
 end
 
+function MenuGuiComponentGeneric:get_tab(name_id)
+	for _, tab in pairs(self._tabs) do
+		if tab.name_id == name_id then
+			return tab
+		end
+	end
+end
+
 function MenuGuiComponentGeneric:allow_input()
 	return true
 end
@@ -325,6 +333,7 @@ function MenuGuiComponentGeneric:_add_tabs()
 		tab_x = tab_item:next_page_position()
 
 		table.insert(self._tabs, {
+			name_id = tab_data.name_id,
 			tab = tab_item,
 			page = tab_page,
 			width_multiplier = tab_data.width_multiplier ~= nil and tab_data.width_multiplier or WIDTH_MULTIPLIER

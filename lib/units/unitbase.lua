@@ -31,7 +31,9 @@ end
 function UnitBase:pre_destroy(unit)
 	self._destroying = true
 
-	self._destroy_listener_holder:call(unit)
+	if self._destroy_listener_holder then
+		self._destroy_listener_holder:call(unit)
+	end
 end
 
 function UnitBase:destroy(unit)
@@ -39,7 +41,9 @@ function UnitBase:destroy(unit)
 		return
 	end
 
-	self._destroy_listener_holder:call(unit)
+	if self._destroy_listener_holder then
+		self._destroy_listener_holder:call(unit)
+	end
 end
 
 function UnitBase:set_slot(unit, slot)

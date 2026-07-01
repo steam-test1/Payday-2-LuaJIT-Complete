@@ -180,6 +180,8 @@ function TDVS:is_user_product_owned(account_id, dlc_data)
 		return true
 	end
 
+	Global.TDVS.peer_tickets = Global.TDVS.peer_tickets or {}
+
 	local peer_data = Global.TDVS.peer_tickets[account_id]
 
 	if not peer_data or not peer_data.owned_dlc then
