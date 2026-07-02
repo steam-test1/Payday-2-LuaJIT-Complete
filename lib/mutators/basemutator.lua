@@ -12,8 +12,8 @@ BaseMutator.icon_coords = {
 }
 BaseMutator.load_priority = 0
 BaseMutator.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 BaseMutator.disables_achievements = true
 
@@ -35,18 +35,23 @@ function BaseMutator:init(mutator_manager)
 end
 
 function BaseMutator:register_values(mutator_manager)
+	return
 end
 
 function BaseMutator:setup(mutator_manager)
+	return
 end
 
 function BaseMutator:on_game_started(mutator_manager)
+	return
 end
 
 function BaseMutator:sync_save(mutator_manager, sync_data)
+	return
 end
 
 function BaseMutator:sync_load(mutator_manager, sync_data)
+	return
 end
 
 function BaseMutator:_ensure_global_values()
@@ -77,9 +82,7 @@ function BaseMutator:longdesc()
 end
 
 function BaseMutator:icon()
-	local x = self.icon_coords[1]
-	local y = self.icon_coords[2]
-	local size = MutatorsManager._icon_size
+	local x, y, size = self.icon_coords[1], self.icon_coords[2], MutatorsManager._icon_size
 
 	return MutatorsManager._atlas_file, {
 		size * (x - 1),
@@ -146,6 +149,7 @@ function BaseMutator:get_experience_reduction()
 end
 
 function BaseMutator:update(t, dt)
+	return
 end
 
 function BaseMutator:_mutate_name(key)
@@ -168,10 +172,10 @@ end
 
 function BaseMutator:setup_options_gui(node)
 	local params = {
-		name = "default_item",
-		localize = false,
-		text_id = "No options!",
 		align = "right",
+		localize = false,
+		name = "default_item",
+		text_id = "No options!",
 		disabled_color = tweak_data.screen_colors.important_1
 	}
 	local data_node = {}
@@ -183,6 +187,7 @@ function BaseMutator:setup_options_gui(node)
 end
 
 function BaseMutator:reset_to_default()
+	return
 end
 
 function BaseMutator:options_fill()
@@ -206,6 +211,7 @@ end
 function BaseMutator:register_value(key, default, network_key)
 	if not network_key then
 		network_key = key
+
 		local splits = string.split(key, "[_]")
 
 		if splits then
@@ -343,6 +349,7 @@ function BaseMutator:uncompress_data(str_dat)
 		end
 
 		local new_value = string.sub(str_dat, 1, idx)
+
 		str_dat = string.sub(str_dat, idx + 1)
 
 		if type(default) == "number" then
@@ -375,6 +382,7 @@ function BaseMutator:partial_uncompress_data(str_dat)
 		end
 
 		local new_value = string.sub(str_dat, 1, idx)
+
 		str_dat = string.sub(str_dat, idx + 1)
 
 		if type(default) == "number" then
@@ -434,9 +442,11 @@ function BaseMutator:get_data_from_attribute_string(string_table)
 end
 
 function BaseMutator:modify_character_tweak_data(character_tweak)
+	return
 end
 
 function BaseMutator:modify_tweak_data(id, value)
+	return
 end
 
 function BaseMutator:modify_value(id, value)

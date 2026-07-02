@@ -20,6 +20,7 @@ function ElementOverlayEffect:on_executed(instigator)
 
 	if self._values.effect ~= "none" then
 		local effect = CoreTable.clone(managers.overlay_effect:presets()[self._values.effect])
+
 		effect.sustain = self._values.sustain or effect.sustain
 		effect.fade_in = self._values.fade_in or effect.fade_in
 		effect.fade_out = self._values.fade_out or effect.fade_out

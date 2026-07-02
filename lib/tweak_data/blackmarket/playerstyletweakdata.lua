@@ -2,13 +2,14 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	local characters_female, characters_female_big, characters_male, characters_male_big = self:_get_character_groups()
 	local characters_all = table.list_union(characters_female, characters_male, characters_female_big, characters_male_big)
 	local body_replacement_standard = {
-		head = false,
 		armor = true,
+		arms = true,
 		body = true,
 		hands = true,
-		vest = true,
-		arms = true
+		head = false,
+		vest = true
 	}
+
 	self.player_styles = {}
 	self.player_style_list = {}
 
@@ -20,60 +21,59 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		end
 	end
 
-	self.player_styles.none = {
-		name_id = "bm_suit_none",
-		desc_id = "bm_suit_none_desc",
-		unlocked = true,
-		texture_bundle_folder = "trd"
-	}
-	self.player_styles.jumpsuit = {
-		name_id = "bm_suit_jumpsuit",
-		desc_id = "bm_suit_jumpsuit_desc",
-		texture_bundle_folder = "trd",
-		global_value = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit",
-		material_variations = {}
-	}
+	self.player_styles.none = {}
+	self.player_styles.none.name_id = "bm_suit_none"
+	self.player_styles.none.desc_id = "bm_suit_none_desc"
+	self.player_styles.none.unlocked = true
+	self.player_styles.none.texture_bundle_folder = "trd"
+	self.player_styles.jumpsuit = {}
+	self.player_styles.jumpsuit.name_id = "bm_suit_jumpsuit"
+	self.player_styles.jumpsuit.desc_id = "bm_suit_jumpsuit_desc"
+	self.player_styles.jumpsuit.texture_bundle_folder = "trd"
+	self.player_styles.jumpsuit.global_value = "trd"
+	self.player_styles.jumpsuit.body_replacement = body_replacement_standard
+	self.player_styles.jumpsuit.third_body_replacement = body_replacement_standard
+	self.player_styles.jumpsuit.unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit"
+	self.player_styles.jumpsuit.material_variations = {}
 	self.player_styles.jumpsuit.material_variations.default = {
-		name_id = "bm_suit_var_jumpsuit_default",
+		desc_id = "bm_suit_var_jumpsuit_default_desc",
 		global_value = "trd",
-		desc_id = "bm_suit_var_jumpsuit_default_desc"
+		name_id = "bm_suit_var_jumpsuit_default"
 	}
 	self.player_styles.jumpsuit.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_jumpsuit_red_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_jumpsuit_red",
-		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_red"
+		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_red",
+		name_id = "bm_suit_var_jumpsuit_red"
 	}
 	self.player_styles.jumpsuit.material_variations.brown = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_jumpsuit_brown_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_jumpsuit_brown",
-		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_brown"
+		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_brown",
+		name_id = "bm_suit_var_jumpsuit_brown"
 	}
 	self.player_styles.jumpsuit.material_variations.green = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_jumpsuit_green_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_jumpsuit_green",
-		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_green"
+		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_green",
+		name_id = "bm_suit_var_jumpsuit_green"
 	}
 	self.player_styles.jumpsuit.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_jumpsuit_blue_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_jumpsuit_blue",
-		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_blue"
+		material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_fps_jumpsuit/trd_acc_fps_jumpsuit_blue",
+		name_id = "bm_suit_var_jumpsuit_blue"
 	}
 	self.player_styles.jumpsuit.characters = {}
-	local jumpsuit_characters_male = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_male_average/trd_acc_jumpsuit_male_average",
-		material_variations = {}
-	}
+
+	local jumpsuit_characters_male = {}
+
+	jumpsuit_characters_male.third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_male_average/trd_acc_jumpsuit_male_average"
+	jumpsuit_characters_male.material_variations = {}
 	jumpsuit_characters_male.material_variations.red = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_male_average/trd_acc_jumpsuit_male_average_red"
 	}
@@ -89,10 +89,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("jumpsuit", characters_male, jumpsuit_characters_male)
 
-	local jumpsuit_characters_male_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_male_big/trd_acc_jumpsuit_male_big",
-		material_variations = {}
-	}
+	local jumpsuit_characters_male_big = {}
+
+	jumpsuit_characters_male_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_male_big/trd_acc_jumpsuit_male_big"
+	jumpsuit_characters_male_big.material_variations = {}
 	jumpsuit_characters_male_big.material_variations.red = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_male_big/trd_acc_jumpsuit_male_big_red"
 	}
@@ -108,10 +108,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("jumpsuit", characters_male_big, jumpsuit_characters_male_big)
 
-	local jumpsuit_characters_female = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_female_average/trd_acc_jumpsuit_female_average",
-		material_variations = {}
-	}
+	local jumpsuit_characters_female = {}
+
+	jumpsuit_characters_female.third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_female_average/trd_acc_jumpsuit_female_average"
+	jumpsuit_characters_female.material_variations = {}
 	jumpsuit_characters_female.material_variations.red = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_female_average/trd_acc_jumpsuit_female_average_red"
 	}
@@ -127,10 +127,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("jumpsuit", characters_female, jumpsuit_characters_female)
 
-	local jumpsuit_characters_female_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_female_big/trd_acc_jumpsuit_female_big",
-		material_variations = {}
-	}
+	local jumpsuit_characters_female_big = {}
+
+	jumpsuit_characters_female_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_female_big/trd_acc_jumpsuit_female_big"
+	jumpsuit_characters_female_big.material_variations = {}
 	jumpsuit_characters_female_big.material_variations.red = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_jumpsuits/trd_acc_jumpsuit_female_big/trd_acc_jumpsuit_female_big_red"
 	}
@@ -146,54 +146,54 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("jumpsuit", characters_female_big, jumpsuit_characters_female_big)
 
-	self.player_styles.clown = {
-		name_id = "bm_suit_clown",
-		desc_id = "bm_suit_clown_desc",
-		texture_bundle_folder = "trd",
-		global_value = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown",
-		material_variations = {}
-	}
+	self.player_styles.clown = {}
+	self.player_styles.clown.name_id = "bm_suit_clown"
+	self.player_styles.clown.desc_id = "bm_suit_clown_desc"
+	self.player_styles.clown.texture_bundle_folder = "trd"
+	self.player_styles.clown.global_value = "trd"
+	self.player_styles.clown.body_replacement = body_replacement_standard
+	self.player_styles.clown.third_body_replacement = body_replacement_standard
+	self.player_styles.clown.unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown"
+	self.player_styles.clown.material_variations = {}
 	self.player_styles.clown.material_variations.default = {
-		name_id = "bm_suit_var_clown_default",
+		desc_id = "bm_suit_var_clown_default_desc",
 		global_value = "trd",
-		desc_id = "bm_suit_var_clown_default_desc"
+		name_id = "bm_suit_var_clown_default"
 	}
 	self.player_styles.clown.material_variations.black_and_white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_clown_black_and_white_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_clown_black_and_white",
-		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_black_and_white"
+		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_black_and_white",
+		name_id = "bm_suit_var_clown_black_and_white"
 	}
 	self.player_styles.clown.material_variations.black = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_clown_black_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_clown_black",
-		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_black"
+		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_black",
+		name_id = "bm_suit_var_clown_black"
 	}
 	self.player_styles.clown.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_clown_red_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_clown_red",
-		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_red"
+		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_red",
+		name_id = "bm_suit_var_clown_red"
 	}
 	self.player_styles.clown.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_clown_white_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_clown_white",
-		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_white"
+		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_white",
+		name_id = "bm_suit_var_clown_white"
 	}
 	self.player_styles.clown.characters = {}
-	local clown_characters_male = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_average/trd_acc_clown_male_average",
-		material_variations = {}
-	}
+
+	local clown_characters_male = {}
+
+	clown_characters_male.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_average/trd_acc_clown_male_average"
+	clown_characters_male.material_variations = {}
 	clown_characters_male.material_variations.black_and_white = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_average/trd_acc_clown_male_average_black_and_white"
 	}
@@ -209,10 +209,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("clown", characters_male, clown_characters_male)
 
-	local clown_characters_male_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_big/trd_acc_clown_male_big",
-		material_variations = {}
-	}
+	local clown_characters_male_big = {}
+
+	clown_characters_male_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_big/trd_acc_clown_male_big"
+	clown_characters_male_big.material_variations = {}
 	clown_characters_male_big.material_variations.black_and_white = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_big/trd_acc_clown_male_big_black_and_white"
 	}
@@ -228,10 +228,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("clown", characters_male_big, clown_characters_male_big)
 
-	local clown_characters_female = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_average/trd_acc_clown_female_average",
-		material_variations = {}
-	}
+	local clown_characters_female = {}
+
+	clown_characters_female.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_average/trd_acc_clown_female_average"
+	clown_characters_female.material_variations = {}
 	clown_characters_female.material_variations.black_and_white = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_average/trd_acc_clown_female_average_black_and_white"
 	}
@@ -247,10 +247,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("clown", characters_female, clown_characters_female)
 
-	local clown_characters_female_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_big/trd_acc_clown_female_big",
-		material_variations = {}
-	}
+	local clown_characters_female_big = {}
+
+	clown_characters_female_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_big/trd_acc_clown_female_big"
+	clown_characters_female_big.material_variations = {}
 	clown_characters_female_big.material_variations.black_and_white = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_big/trd_acc_clown_female_big_black_and_white"
 	}
@@ -266,112 +266,112 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("clown", characters_female_big, clown_characters_female_big)
 
-	self.player_styles.jail_pd2_clan = {
-		name_id = "bm_suit_jail_pd2_clan",
-		desc_id = "bm_suit_jail_pd2_clan_desc",
-		texture_bundle_folder = "trd",
-		global_value = "pd2_clan",
-		body_replacement = self.player_styles.clown.body_replacement,
-		third_body_replacement = self.player_styles.clown.third_body_replacement,
-		unit = self.player_styles.clown.unit,
-		material_variations = {}
-	}
+	self.player_styles.jail_pd2_clan = {}
+	self.player_styles.jail_pd2_clan.name_id = "bm_suit_jail_pd2_clan"
+	self.player_styles.jail_pd2_clan.desc_id = "bm_suit_jail_pd2_clan_desc"
+	self.player_styles.jail_pd2_clan.texture_bundle_folder = "trd"
+	self.player_styles.jail_pd2_clan.global_value = "pd2_clan"
+	self.player_styles.jail_pd2_clan.body_replacement = self.player_styles.clown.body_replacement
+	self.player_styles.jail_pd2_clan.third_body_replacement = self.player_styles.clown.third_body_replacement
+	self.player_styles.jail_pd2_clan.unit = self.player_styles.clown.unit
+	self.player_styles.jail_pd2_clan.material_variations = {}
 	self.player_styles.jail_pd2_clan.material_variations.default = {
 		material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_fps_clown/trd_acc_fps_clown_jail"
 	}
 	self.player_styles.jail_pd2_clan.characters = {}
-	local jail_characters_male = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_average/trd_acc_clown_male_average",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_average/trd_acc_clown_male_average_jail"
-			}
+
+	local jail_characters_male = {}
+
+	jail_characters_male.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_average/trd_acc_clown_male_average"
+	jail_characters_male.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_average/trd_acc_clown_male_average_jail"
 		}
 	}
 
 	set_characters_data("jail_pd2_clan", characters_male, jail_characters_male)
 
-	local jail_characters_male_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_big/trd_acc_clown_male_big",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_big/trd_acc_clown_male_big_jail"
-			}
+	local jail_characters_male_big = {}
+
+	jail_characters_male_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_big/trd_acc_clown_male_big"
+	jail_characters_male_big.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_male_big/trd_acc_clown_male_big_jail"
 		}
 	}
 
 	set_characters_data("jail_pd2_clan", characters_male_big, jail_characters_male_big)
 
-	local jail_characters_female = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_average/trd_acc_clown_female_average",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_average/trd_acc_clown_female_average_jail"
-			}
+	local jail_characters_female = {}
+
+	jail_characters_female.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_average/trd_acc_clown_female_average"
+	jail_characters_female.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_average/trd_acc_clown_female_average_jail"
 		}
 	}
 
 	set_characters_data("jail_pd2_clan", characters_female, jail_characters_female)
 
-	local jail_characters_female_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_big/trd_acc_clown_female_big",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_big/trd_acc_clown_female_big_jail"
-			}
+	local jail_characters_female_big = {}
+
+	jail_characters_female_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_big/trd_acc_clown_female_big"
+	jail_characters_female_big.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_trd/characters/trd_acc_clown/trd_acc_clown_female_big/trd_acc_clown_female_big_jail"
 		}
 	}
 
 	set_characters_data("jail_pd2_clan", characters_female_big, jail_characters_female_big)
 
-	self.player_styles.miami = {
-		name_id = "bm_suit_miami",
-		desc_id = "bm_suit_miami_desc",
-		texture_bundle_folder = "trd",
-		global_value = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami",
-		material_variations = {}
-	}
+	self.player_styles.miami = {}
+	self.player_styles.miami.name_id = "bm_suit_miami"
+	self.player_styles.miami.desc_id = "bm_suit_miami_desc"
+	self.player_styles.miami.texture_bundle_folder = "trd"
+	self.player_styles.miami.global_value = "trd"
+	self.player_styles.miami.body_replacement = body_replacement_standard
+	self.player_styles.miami.third_body_replacement = body_replacement_standard
+	self.player_styles.miami.unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami"
+	self.player_styles.miami.material_variations = {}
 	self.player_styles.miami.material_variations.default = {
-		name_id = "bm_suit_var_miami_default",
+		desc_id = "bm_suit_var_miami_default_desc",
 		global_value = "trd",
-		desc_id = "bm_suit_var_miami_default_desc"
+		name_id = "bm_suit_var_miami_default"
 	}
 	self.player_styles.miami.material_variations.grey = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_miami_grey_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_miami_grey",
-		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_grey"
+		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_grey",
+		name_id = "bm_suit_var_miami_grey"
 	}
 	self.player_styles.miami.material_variations.pink = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_miami_pink_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_miami_pink",
-		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_pink"
+		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_pink",
+		name_id = "bm_suit_var_miami_pink"
 	}
 	self.player_styles.miami.material_variations.black = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_miami_black_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_miami_black",
-		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_black"
+		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_black",
+		name_id = "bm_suit_var_miami_black"
 	}
 	self.player_styles.miami.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_miami_white_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_miami_white",
-		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_white"
+		material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_fps_miami/trd_acc_fps_miami_white",
+		name_id = "bm_suit_var_miami_white"
 	}
 	self.player_styles.miami.characters = {}
-	local miami_characters_male = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_average/trd_acc_miami_male_average",
-		material_variations = {}
-	}
+
+	local miami_characters_male = {}
+
+	miami_characters_male.third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_average/trd_acc_miami_male_average"
+	miami_characters_male.material_variations = {}
 	miami_characters_male.material_variations.grey = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_average/trd_acc_miami_male_average_grey"
 	}
@@ -387,10 +387,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("miami", characters_male, miami_characters_male)
 
-	local miami_characters_male_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_big/trd_acc_miami_male_big",
-		material_variations = {}
-	}
+	local miami_characters_male_big = {}
+
+	miami_characters_male_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_big/trd_acc_miami_male_big"
+	miami_characters_male_big.material_variations = {}
 	miami_characters_male_big.material_variations.grey = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_big/trd_acc_miami_male_big_grey"
 	}
@@ -406,10 +406,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("miami", characters_male_big, miami_characters_male_big)
 
-	local miami_characters_female = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_female_average/trd_acc_miami_female_average",
-		material_variations = {}
-	}
+	local miami_characters_female = {}
+
+	miami_characters_female.third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_female_average/trd_acc_miami_female_average"
+	miami_characters_female.material_variations = {}
 	miami_characters_female.material_variations.grey = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_female_average/trd_acc_miami_female_average_grey"
 	}
@@ -425,10 +425,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("miami", characters_female, miami_characters_female)
 
-	local miami_characters_female_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_female_big/trd_acc_miami_female_big",
-		material_variations = {}
-	}
+	local miami_characters_female_big = {}
+
+	miami_characters_female_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_female_big/trd_acc_miami_female_big"
+	miami_characters_female_big.material_variations = {}
 	miami_characters_female_big.material_variations.grey = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_female_big/trd_acc_miami_female_big_grey"
 	}
@@ -444,10 +444,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("miami", characters_female_big, miami_characters_female_big)
 
-	local miami_characters_ecp_male = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_big/trd_acc_miami_male_big",
-		material_variations = {}
-	}
+	local miami_characters_ecp_male = {}
+
+	miami_characters_ecp_male.third_unit = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_big/trd_acc_miami_male_big"
+	miami_characters_ecp_male.material_variations = {}
 	miami_characters_ecp_male.material_variations.grey = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_big/trd_acc_miami_male_big_grey"
 	}
@@ -461,54 +461,54 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_miami/trd_acc_miami_male_big/trd_acc_miami_male_big_white"
 	}
 	self.player_styles.miami.characters.ecp_male = miami_characters_ecp_male
-	self.player_styles.peacoat = {
-		name_id = "bm_suit_peacoat",
-		desc_id = "bm_suit_peacoat_desc",
-		texture_bundle_folder = "trd",
-		global_value = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat",
-		material_variations = {}
-	}
+	self.player_styles.peacoat = {}
+	self.player_styles.peacoat.name_id = "bm_suit_peacoat"
+	self.player_styles.peacoat.desc_id = "bm_suit_peacoat_desc"
+	self.player_styles.peacoat.texture_bundle_folder = "trd"
+	self.player_styles.peacoat.global_value = "trd"
+	self.player_styles.peacoat.body_replacement = body_replacement_standard
+	self.player_styles.peacoat.third_body_replacement = body_replacement_standard
+	self.player_styles.peacoat.unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat"
+	self.player_styles.peacoat.material_variations = {}
 	self.player_styles.peacoat.material_variations.default = {
-		name_id = "bm_suit_var_peacoat_default",
+		desc_id = "bm_suit_var_peacoat_default_desc",
 		global_value = "trd",
-		desc_id = "bm_suit_var_peacoat_default_desc"
+		name_id = "bm_suit_var_peacoat_default"
 	}
 	self.player_styles.peacoat.material_variations.brown = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_peacoat_brown_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_peacoat_brown",
-		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_brown"
+		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_brown",
+		name_id = "bm_suit_var_peacoat_brown"
 	}
 	self.player_styles.peacoat.material_variations.black = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_peacoat_black_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_peacoat_black",
-		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_black"
+		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_black",
+		name_id = "bm_suit_var_peacoat_black"
 	}
 	self.player_styles.peacoat.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_peacoat_blue_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_peacoat_blue",
-		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_blue"
+		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_blue",
+		name_id = "bm_suit_var_peacoat_blue"
 	}
 	self.player_styles.peacoat.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_peacoat_white_desc",
 		global_value = "trd",
-		auto_aquire = true,
-		name_id = "bm_suit_var_peacoat_white",
-		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_white"
+		material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_fps_peacoat/trd_acc_fps_peacoat_white",
+		name_id = "bm_suit_var_peacoat_white"
 	}
 	self.player_styles.peacoat.characters = {}
-	local peacoat_characters_male = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_average/trd_acc_peacoat_male_average",
-		material_variations = {}
-	}
+
+	local peacoat_characters_male = {}
+
+	peacoat_characters_male.third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_average/trd_acc_peacoat_male_average"
+	peacoat_characters_male.material_variations = {}
 	peacoat_characters_male.material_variations.brown = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_average/trd_acc_peacoat_male_average_brown"
 	}
@@ -524,10 +524,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("peacoat", characters_male, peacoat_characters_male)
 
-	local peacoat_characters_male_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_big/trd_acc_peacoat_male_big",
-		material_variations = {}
-	}
+	local peacoat_characters_male_big = {}
+
+	peacoat_characters_male_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_big/trd_acc_peacoat_male_big"
+	peacoat_characters_male_big.material_variations = {}
 	peacoat_characters_male_big.material_variations.brown = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_big/trd_acc_peacoat_male_big_brown"
 	}
@@ -543,10 +543,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("peacoat", characters_male_big, peacoat_characters_male_big)
 
-	local peacoat_characters_female = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_female_average/trd_acc_peacoat_female_average",
-		material_variations = {}
-	}
+	local peacoat_characters_female = {}
+
+	peacoat_characters_female.third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_female_average/trd_acc_peacoat_female_average"
+	peacoat_characters_female.material_variations = {}
 	peacoat_characters_female.material_variations.brown = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_female_average/trd_acc_peacoat_female_average_brown"
 	}
@@ -562,10 +562,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("peacoat", characters_female, peacoat_characters_female)
 
-	local peacoat_characters_female_big = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_female_big/trd_acc_peacoat_female_big",
-		material_variations = {}
-	}
+	local peacoat_characters_female_big = {}
+
+	peacoat_characters_female_big.third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_female_big/trd_acc_peacoat_female_big"
+	peacoat_characters_female_big.material_variations = {}
 	peacoat_characters_female_big.material_variations.brown = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_female_big/trd_acc_peacoat_female_big_brown"
 	}
@@ -581,10 +581,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("peacoat", characters_female_big, peacoat_characters_female_big)
 
-	local peacoat_characters_ecp_male = {
-		third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_big/trd_acc_peacoat_male_big",
-		material_variations = {}
-	}
+	local peacoat_characters_ecp_male = {}
+
+	peacoat_characters_ecp_male.third_unit = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_big/trd_acc_peacoat_male_big"
+	peacoat_characters_ecp_male.material_variations = {}
 	peacoat_characters_ecp_male.material_variations.brown = {
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_big/trd_acc_peacoat_male_big_brown"
 	}
@@ -598,36 +598,36 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_trd/characters/trd_acc_peacoat/trd_acc_peacoat_male_big/trd_acc_peacoat_male_big_white"
 	}
 	self.player_styles.peacoat.characters.ecp_male = peacoat_characters_ecp_male
-	self.player_styles.sneak_suit = {
-		name_id = "bm_suit_sneak_suit",
-		desc_id = "bm_suit_sneak_suit_desc",
-		locks = {
-			achievement = "dah_1"
-		},
-		texture_bundle_folder = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_dah/characters/dah_acc_fps_stealth_suit/dah_acc_fps_stealth_suit",
-		material_variations = {}
+	self.player_styles.sneak_suit = {}
+	self.player_styles.sneak_suit.name_id = "bm_suit_sneak_suit"
+	self.player_styles.sneak_suit.desc_id = "bm_suit_sneak_suit_desc"
+	self.player_styles.sneak_suit.locks = {
+		achievement = "dah_1"
 	}
+	self.player_styles.sneak_suit.texture_bundle_folder = "trd"
+	self.player_styles.sneak_suit.body_replacement = body_replacement_standard
+	self.player_styles.sneak_suit.third_body_replacement = body_replacement_standard
+	self.player_styles.sneak_suit.unit = "units/pd2_dlc_dah/characters/dah_acc_fps_stealth_suit/dah_acc_fps_stealth_suit"
+	self.player_styles.sneak_suit.material_variations = {}
 	self.player_styles.sneak_suit.material_variations.default = {
-		name_id = "bm_suit_sneak_suit",
 		desc_id = "bm_suit_sneak_suit_desc",
-		texture_bundle_folder = "pda10"
+		name_id = "bm_suit_sneak_suit"
 	}
+	self.player_styles.sneak_suit.material_variations.default.texture_bundle_folder = "pda10"
 	self.player_styles.sneak_suit.material_variations.camo = {
 		desc_id = "bm_suit_pda10_acc_tacticalbdu_camo_desc",
-		texture_bundle_folder = "pda10",
+		material = "units/pd2_dlc_pda10/characters/pda10_tacticalbdu_camo/acc_fps_tacticalbdu_camo",
 		name_id = "bm_suit_pda10_acc_tacticalbdu_camo",
-		third_material = "units/pd2_dlc_pda10/characters/pda10_tacticalbdu_camo/acc_tacticalbdu_camo",
-		material = "units/pd2_dlc_pda10/characters/pda10_tacticalbdu_camo/acc_fps_tacticalbdu_camo"
+		texture_bundle_folder = "pda10",
+		third_material = "units/pd2_dlc_pda10/characters/pda10_tacticalbdu_camo/acc_tacticalbdu_camo"
 	}
 	self.player_styles.sneak_suit.body_replacement = body_replacement_standard
 	self.player_styles.sneak_suit.third_body_replacement = body_replacement_standard
 	self.player_styles.sneak_suit.characters = {}
-	local sneak_suit_characters_male = {
-		third_unit = "units/pd2_dlc_dah/characters/dah_acc_stealth_suit/dah_acc_stealth_suit"
-	}
+
+	local sneak_suit_characters_male = {}
+
+	sneak_suit_characters_male.third_unit = "units/pd2_dlc_dah/characters/dah_acc_stealth_suit/dah_acc_stealth_suit"
 
 	set_characters_data("sneak_suit", characters_male, sneak_suit_characters_male)
 	set_characters_data("sneak_suit", characters_male_big, {
@@ -640,18 +640,17 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_unit = "units/pd2_dlc_dah/characters/dah_acc_stealth_suit_female_big/dah_acc_stealth_suit_female_big"
 	})
 
-	self.player_styles.scrub = {
-		name_id = "bm_suit_scrub",
-		desc_id = "bm_suit_scrub_desc",
-		locks = {
-			achievement = "nmh_1"
-		},
-		texture_bundle_folder = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_nmh/characters/nmh_acc_fps_scrubs/nmh_acc_fps_scrubs",
-		characters = {}
+	self.player_styles.scrub = {}
+	self.player_styles.scrub.name_id = "bm_suit_scrub"
+	self.player_styles.scrub.desc_id = "bm_suit_scrub_desc"
+	self.player_styles.scrub.locks = {
+		achievement = "nmh_1"
 	}
+	self.player_styles.scrub.texture_bundle_folder = "trd"
+	self.player_styles.scrub.body_replacement = body_replacement_standard
+	self.player_styles.scrub.third_body_replacement = body_replacement_standard
+	self.player_styles.scrub.unit = "units/pd2_dlc_nmh/characters/nmh_acc_fps_scrubs/nmh_acc_fps_scrubs"
+	self.player_styles.scrub.characters = {}
 	self.player_styles.scrub.characters.dallas = {
 		third_unit = "units/pd2_dlc_nmh/characters/nmh_acc_scrubs_male/nmh_acc_scrubs_male"
 	}
@@ -718,18 +717,17 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.scrub.characters.ecp_female = {
 		third_unit = "units/pd2_dlc_nmh/characters/nmh_acc_scrubs_female_lightblue/nmh_acc_scrubs_female_lightblue"
 	}
-	self.player_styles.raincoat = {
-		name_id = "bm_suit_raincoat",
-		desc_id = "bm_suit_raincoat_desc",
-		locks = {
-			achievement = "glace_1"
-		},
-		texture_bundle_folder = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_glace/characters/glc_acc_fps_raincoat/glc_acc_fps_raincoat",
-		characters = {}
+	self.player_styles.raincoat = {}
+	self.player_styles.raincoat.name_id = "bm_suit_raincoat"
+	self.player_styles.raincoat.desc_id = "bm_suit_raincoat_desc"
+	self.player_styles.raincoat.locks = {
+		achievement = "glace_1"
 	}
+	self.player_styles.raincoat.texture_bundle_folder = "trd"
+	self.player_styles.raincoat.body_replacement = body_replacement_standard
+	self.player_styles.raincoat.third_body_replacement = body_replacement_standard
+	self.player_styles.raincoat.unit = "units/pd2_dlc_glace/characters/glc_acc_fps_raincoat/glc_acc_fps_raincoat"
+	self.player_styles.raincoat.characters = {}
 
 	set_characters_data("raincoat", characters_male, {
 		third_unit = "units/pd2_dlc_glace/characters/glc_acc_raincoat_male/glc_acc_raincoat_male"
@@ -747,18 +745,17 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.raincoat.characters.ecp_male = {
 		third_unit = "units/pd2_dlc_glace/characters/glc_acc_raincoat_ethan/glc_acc_raincoat_ethan"
 	}
-	self.player_styles.murky_suit = {
-		name_id = "bm_suit_murky_suit",
-		desc_id = "bm_suit_murky_suit_desc",
-		locks = {
-			achievement = "mex_9"
-		},
-		texture_bundle_folder = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_vit/characters/vit_acc_fps_murky_suit/vit_acc_fps_murky_suit",
-		characters = {}
+	self.player_styles.murky_suit = {}
+	self.player_styles.murky_suit.name_id = "bm_suit_murky_suit"
+	self.player_styles.murky_suit.desc_id = "bm_suit_murky_suit_desc"
+	self.player_styles.murky_suit.locks = {
+		achievement = "mex_9"
 	}
+	self.player_styles.murky_suit.texture_bundle_folder = "trd"
+	self.player_styles.murky_suit.body_replacement = body_replacement_standard
+	self.player_styles.murky_suit.third_body_replacement = body_replacement_standard
+	self.player_styles.murky_suit.unit = "units/pd2_dlc_vit/characters/vit_acc_fps_murky_suit/vit_acc_fps_murky_suit"
+	self.player_styles.murky_suit.characters = {}
 
 	set_characters_data("murky_suit", characters_male, {
 		third_unit = "units/pd2_dlc_vit/characters/vit_acc_murky_suit/vit_acc_murky_suit"
@@ -773,77 +770,79 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_unit = "units/pd2_dlc_vit/characters/vit_acc_murky_suit_female_big/vit_acc_murky_suit_female_big"
 	})
 
-	self.player_styles.tux = {
-		name_id = "bm_suit_tux",
-		desc_id = "bm_suit_tux_desc",
-		locks = {
-			achievement = "sah_1"
-		},
-		texture_bundle_folder = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		characters = {}
+	self.player_styles.tux = {}
+	self.player_styles.tux.name_id = "bm_suit_tux"
+	self.player_styles.tux.desc_id = "bm_suit_tux_desc"
+	self.player_styles.tux.locks = {
+		achievement = "sah_1"
 	}
-	local tux_female_average = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_female_tux",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_female_tux_average/npc_acc_criminal_female_tux_average"
-	}
+	self.player_styles.tux.texture_bundle_folder = "trd"
+	self.player_styles.tux.body_replacement = body_replacement_standard
+	self.player_styles.tux.third_body_replacement = body_replacement_standard
+	self.player_styles.tux.characters = {}
+
+	local tux_female_average = {}
+
+	tux_female_average.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_female_tux"
+	tux_female_average.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_female_tux_average/npc_acc_criminal_female_tux_average"
 
 	set_characters_data("tux", characters_female, tux_female_average)
 
-	local tux_female_big = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_female_tux_02",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_female_tux_big/npc_acc_criminal_female_tux_big"
-	}
+	local tux_female_big = {}
+
+	tux_female_big.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_female_tux_02"
+	tux_female_big.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_female_tux_big/npc_acc_criminal_female_tux_big"
 
 	set_characters_data("tux", characters_female_big, tux_female_big)
 
-	local tux_male_average = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_average/npc_acc_criminal_male_tux_average"
-	}
+	local tux_male_average = {}
+
+	tux_male_average.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux"
+	tux_male_average.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_average/npc_acc_criminal_male_tux_average"
 
 	set_characters_data("tux", characters_male, tux_male_average)
 
-	local tux_male_big = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_big/npc_acc_criminal_male_tux_big"
-	}
+	local tux_male_big = {}
+
+	tux_male_big.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux"
+	tux_male_big.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_big/npc_acc_criminal_male_tux_big"
 
 	set_characters_data("tux", characters_male_big, tux_male_big)
 
-	local tux_male_dallas = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux_02",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_average_02/npc_acc_criminal_male_tux_average_02"
-	}
+	local tux_male_dallas = {}
+
+	tux_male_dallas.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux_02"
+	tux_male_dallas.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_average_02/npc_acc_criminal_male_tux_average_02"
 	self.player_styles.tux.characters.dallas = tux_male_dallas
-	local tux_male_dragon = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux_02",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_average_02/npc_acc_criminal_male_tux_average_02"
-	}
+
+	local tux_male_dragon = {}
+
+	tux_male_dragon.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux_02"
+	tux_male_dragon.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_average_02/npc_acc_criminal_male_tux_average_02"
 	self.player_styles.tux.characters.dragon = tux_male_dragon
-	local tux_female_sydney = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_female_tux_02",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_female_tux_average_02/npc_acc_criminal_female_tux_average_02"
-	}
+
+	local tux_female_sydney = {}
+
+	tux_female_sydney.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_female_tux_02"
+	tux_female_sydney.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_female_tux_average_02/npc_acc_criminal_female_tux_average_02"
 	self.player_styles.tux.characters.sydney = tux_female_sydney
-	local tux_male_fat = {
-		unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux",
-		third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_fat/npc_acc_criminal_male_tux_fat"
-	}
+
+	local tux_male_fat = {}
+
+	tux_male_fat.unit = "units/pd2_dlc_sah/characters/npc_acc_tux/fps_criminals_tux/sah_acc_fps_male_tux"
+	tux_male_fat.third_unit = "units/pd2_dlc_sah/characters/npc_acc_tux/npc_acc_criminal_male_tux_fat/npc_acc_criminal_male_tux_fat"
 	self.player_styles.tux.characters.ecp_male = tux_male_fat
-	self.player_styles.winter_suit = {
-		name_id = "bm_suit_winter_suit",
-		desc_id = "bm_suit_winter_suit_desc",
-		locks = {
-			achievement = "wwh_1"
-		},
-		texture_bundle_folder = "trd",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_wwh/characters/wwh_acc_fps_stealth_suit/wwh_acc_fps_stealth_suit",
-		characters = {}
+	self.player_styles.winter_suit = {}
+	self.player_styles.winter_suit.name_id = "bm_suit_winter_suit"
+	self.player_styles.winter_suit.desc_id = "bm_suit_winter_suit_desc"
+	self.player_styles.winter_suit.locks = {
+		achievement = "wwh_1"
 	}
+	self.player_styles.winter_suit.texture_bundle_folder = "trd"
+	self.player_styles.winter_suit.body_replacement = body_replacement_standard
+	self.player_styles.winter_suit.third_body_replacement = body_replacement_standard
+	self.player_styles.winter_suit.unit = "units/pd2_dlc_wwh/characters/wwh_acc_fps_stealth_suit/wwh_acc_fps_stealth_suit"
+	self.player_styles.winter_suit.characters = {}
 
 	set_characters_data("winter_suit", characters_male, {
 		third_unit = "units/pd2_dlc_wwh/characters/wwh_acc_stealth_suit/wwh_acc_stealth_suit"
@@ -861,18 +860,17 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.winter_suit.characters.ecp_male = {
 		third_unit = "units/pd2_dlc_wwh/characters/wwh_acc_stealth_suit_male_fat/wwh_acc_stealth_suit_male_fat"
 	}
-	self.player_styles.poolrepair = {
-		name_id = "bm_suit_poolrepair",
-		desc_id = "bm_suit_poolrepair_desc",
-		locks = {
-			achievement = "trk_cou_0"
-		},
-		texture_bundle_folder = "xmn",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_fps_poolrepair/xmn_acc_fps_poolrepair",
-		characters = {}
+	self.player_styles.poolrepair = {}
+	self.player_styles.poolrepair.name_id = "bm_suit_poolrepair"
+	self.player_styles.poolrepair.desc_id = "bm_suit_poolrepair_desc"
+	self.player_styles.poolrepair.locks = {
+		achievement = "trk_cou_0"
 	}
+	self.player_styles.poolrepair.texture_bundle_folder = "xmn"
+	self.player_styles.poolrepair.body_replacement = body_replacement_standard
+	self.player_styles.poolrepair.third_body_replacement = body_replacement_standard
+	self.player_styles.poolrepair.unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_fps_poolrepair/xmn_acc_fps_poolrepair"
+	self.player_styles.poolrepair.characters = {}
 
 	set_characters_data("poolrepair", characters_male, {
 		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_average/xmn_acc_poolrepair_male_average"
@@ -890,49 +888,48 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.poolrepair.characters.ecp_male = {
 		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_ethan/xmn_acc_poolrepair_male_ethan"
 	}
-	self.player_styles.xmas_tuxedo = {
-		name_id = "bm_suit_xmas_tuxedo",
-		desc_id = "bm_suit_xmas_tuxedo_desc",
-		texture_bundle_folder = "xmn",
-		global_value = "xmn",
-		body_replacement = body_replacement_standard
-	}
+	self.player_styles.xmas_tuxedo = {}
+	self.player_styles.xmas_tuxedo.name_id = "bm_suit_xmas_tuxedo"
+	self.player_styles.xmas_tuxedo.desc_id = "bm_suit_xmas_tuxedo_desc"
+	self.player_styles.xmas_tuxedo.texture_bundle_folder = "xmn"
+	self.player_styles.xmas_tuxedo.global_value = "xmn"
+	self.player_styles.xmas_tuxedo.body_replacement = body_replacement_standard
 	self.player_styles.xmas_tuxedo.third_body_replacement = self.player_styles.xmas_tuxedo.body_replacement
 	self.player_styles.xmas_tuxedo.unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/fps_criminals_xmas_tuxedo/fps_criminals_xmas_tuxedo"
-	self.player_styles.xmas_tuxedo.material_variations = {
-		default = {
-			name_id = "bm_suit_var_xmas_tuxedo_default",
-			global_value = "xmn",
-			desc_id = "bm_suit_var_xmas_tuxedo_default_desc"
-		},
-		black = {
-			desc_id = "bm_suit_var_xmas_tuxedo_black_desc",
-			global_value = "xmn",
-			auto_aquire = true,
-			name_id = "bm_suit_var_xmas_tuxedo_black",
-			material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/fps_criminals_xmas_tuxedo_black"
-		},
-		blue = {
-			desc_id = "bm_suit_var_xmas_tuxedo_blue_desc",
-			global_value = "xmn",
-			auto_aquire = true,
-			name_id = "bm_suit_var_xmas_tuxedo_blue",
-			material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/fps_criminals_xmas_tuxedo_blue"
-		},
-		green = {
-			"xmn",
-			name_id = "bm_suit_var_xmas_tuxedo_green",
-			material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/fps_criminals_xmas_tuxedo_green",
-			desc_id = "bm_suit_var_xmas_tuxedo_green_desc",
-			auto_aquire = true
-		}
+	self.player_styles.xmas_tuxedo.material_variations = {}
+	self.player_styles.xmas_tuxedo.material_variations.default = {
+		desc_id = "bm_suit_var_xmas_tuxedo_default_desc",
+		global_value = "xmn",
+		name_id = "bm_suit_var_xmas_tuxedo_default"
+	}
+	self.player_styles.xmas_tuxedo.material_variations.black = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_xmas_tuxedo_black_desc",
+		global_value = "xmn",
+		material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/fps_criminals_xmas_tuxedo_black",
+		name_id = "bm_suit_var_xmas_tuxedo_black"
+	}
+	self.player_styles.xmas_tuxedo.material_variations.blue = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_xmas_tuxedo_blue_desc",
+		global_value = "xmn",
+		material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/fps_criminals_xmas_tuxedo_blue",
+		name_id = "bm_suit_var_xmas_tuxedo_blue"
+	}
+	self.player_styles.xmas_tuxedo.material_variations.green = {
+		"xmn",
+		auto_aquire = true,
+		desc_id = "bm_suit_var_xmas_tuxedo_green_desc",
+		material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/fps_criminals_xmas_tuxedo_green",
+		name_id = "bm_suit_var_xmas_tuxedo_green"
 	}
 	self.player_styles.xmas_tuxedo.characters = {}
-	local xmas_tuxedo_female_average = {
-		unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux",
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_female_xmas_tux_average/npc_acc_criminal_female_xmas_tux_average",
-		material_variations = {}
-	}
+
+	local xmas_tuxedo_female_average = {}
+
+	xmas_tuxedo_female_average.unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux"
+	xmas_tuxedo_female_average.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_female_xmas_tux_average/npc_acc_criminal_female_xmas_tux_average"
+	xmas_tuxedo_female_average.material_variations = {}
 	xmas_tuxedo_female_average.material_variations.black = {
 		third_material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/npc_acc_xmas_tux_female_black"
 	}
@@ -945,11 +942,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("xmas_tuxedo", characters_female, xmas_tuxedo_female_average)
 
-	local xmas_tuxedo_female_big = {
-		unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux",
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_female_xmas_tux_big/npc_acc_criminal_female_xmas_tux_big",
-		material_variations = {}
-	}
+	local xmas_tuxedo_female_big = {}
+
+	xmas_tuxedo_female_big.unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux"
+	xmas_tuxedo_female_big.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_female_xmas_tux_big/npc_acc_criminal_female_xmas_tux_big"
+	xmas_tuxedo_female_big.material_variations = {}
 	xmas_tuxedo_female_big.material_variations.black = {
 		third_material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/npc_acc_xmas_tux_female_black"
 	}
@@ -962,11 +959,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("xmas_tuxedo", characters_female_big, xmas_tuxedo_female_big)
 
-	local xmas_tuxedo_male_average = {
-		unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux",
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_male_xmas_tux_average/npc_acc_criminal_male_xmas_tux_average",
-		material_variations = {}
-	}
+	local xmas_tuxedo_male_average = {}
+
+	xmas_tuxedo_male_average.unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux"
+	xmas_tuxedo_male_average.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_male_xmas_tux_average/npc_acc_criminal_male_xmas_tux_average"
+	xmas_tuxedo_male_average.material_variations = {}
 	xmas_tuxedo_male_average.material_variations.black = {
 		third_material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/npc_acc_xmas_tux_suit_black"
 	}
@@ -979,11 +976,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("xmas_tuxedo", characters_male, xmas_tuxedo_male_average)
 
-	local xmas_tuxedo_male_big = {
-		unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux",
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_male_xmas_tux_big/npc_acc_criminal_male_xmas_tux_big",
-		material_variations = {}
-	}
+	local xmas_tuxedo_male_big = {}
+
+	xmas_tuxedo_male_big.unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux"
+	xmas_tuxedo_male_big.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_male_xmas_tux_big/npc_acc_criminal_male_xmas_tux_big"
+	xmas_tuxedo_male_big.material_variations = {}
 	xmas_tuxedo_male_big.material_variations.black = {
 		third_material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/npc_acc_xmas_tux_suit_black"
 	}
@@ -996,11 +993,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("xmas_tuxedo", characters_male_big, xmas_tuxedo_male_big)
 
-	local xmas_tuxedo_male_fat = {
-		unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux",
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_male_xmas_tux_fat/npc_acc_criminal_male_xmas_tux_fat",
-		material_variations = {}
-	}
+	local xmas_tuxedo_male_fat = {}
+
+	xmas_tuxedo_male_fat.unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/fps_criminals_xmas_tux/xmn_acc_fps_male_xmas_tux"
+	xmas_tuxedo_male_fat.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/npc_acc_xmas_tux/npc_acc_criminal_male_xmas_tux_fat/npc_acc_criminal_male_xmas_tux_fat"
+	xmas_tuxedo_male_fat.material_variations = {}
 	xmas_tuxedo_male_fat.material_variations.black = {
 		third_material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/npc_acc_xmas_tux_suit_black"
 	}
@@ -1011,97 +1008,96 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_xmn/characters/xmn_acc_xmas_tuxedo/shared_materials/npc_acc_xmas_tux_suit_green"
 	}
 	self.player_styles.xmas_tuxedo.characters.ecp_male = xmas_tuxedo_male_fat
-	self.player_styles.cable_guy = {
-		name_id = "bm_suit_cable_guy",
-		desc_id = "bm_suit_cable_guy_desc",
-		texture_bundle_folder = "sawp",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_fps_poolrepair/xmn_acc_fps_poolrepair",
-		material_variations = {}
-	}
+	self.player_styles.cable_guy = {}
+	self.player_styles.cable_guy.name_id = "bm_suit_cable_guy"
+	self.player_styles.cable_guy.desc_id = "bm_suit_cable_guy_desc"
+	self.player_styles.cable_guy.texture_bundle_folder = "sawp"
+	self.player_styles.cable_guy.body_replacement = body_replacement_standard
+	self.player_styles.cable_guy.third_body_replacement = body_replacement_standard
+	self.player_styles.cable_guy.unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_fps_poolrepair/xmn_acc_fps_poolrepair"
+	self.player_styles.cable_guy.material_variations = {}
 	self.player_styles.cable_guy.material_variations.default = {
 		material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_fps_poolrepair"
 	}
 	self.player_styles.cable_guy.characters = {}
-	local cable_guy_female_average = {
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_female_average/xmn_acc_poolrepair_female_average",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_female_electric"
-			}
+
+	local cable_guy_female_average = {}
+
+	cable_guy_female_average.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_female_average/xmn_acc_poolrepair_female_average"
+	cable_guy_female_average.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_female_electric"
 		}
 	}
 
 	set_characters_data("cable_guy", characters_female, cable_guy_female_average)
 
-	local cable_guy_female_big = {
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_female_big/xmn_acc_poolrepair_female_big",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_female_electric"
-			}
+	local cable_guy_female_big = {}
+
+	cable_guy_female_big.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_female_big/xmn_acc_poolrepair_female_big"
+	cable_guy_female_big.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_female_electric"
 		}
 	}
 
 	set_characters_data("cable_guy", characters_female_big, cable_guy_female_big)
 
-	local cable_guy_male_average = {
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_average/xmn_acc_poolrepair_male_average",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_male_electric"
-			}
+	local cable_guy_male_average = {}
+
+	cable_guy_male_average.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_average/xmn_acc_poolrepair_male_average"
+	cable_guy_male_average.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_male_electric"
 		}
 	}
 
 	set_characters_data("cable_guy", characters_male, cable_guy_male_average)
 
-	local cable_guy_male_big = {
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_big/xmn_acc_poolrepair_male_big",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_male_electric"
-			}
+	local cable_guy_male_big = {}
+
+	cable_guy_male_big.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_big/xmn_acc_poolrepair_male_big"
+	cable_guy_male_big.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_male_electric"
 		}
 	}
 
 	set_characters_data("cable_guy", characters_male_big, cable_guy_male_big)
 
-	local cable_guy_male_fat = {
-		third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_ethan/xmn_acc_poolrepair_male_ethan",
-		material_variations = {
-			default = {
-				third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_male_electric"
-			}
+	local cable_guy_male_fat = {}
+
+	cable_guy_male_fat.third_unit = "units/pd2_dlc_xmn/characters/xmn_acc_poolrepair/xmn_acc_poolrepair_male_ethan/xmn_acc_poolrepair_male_ethan"
+	cable_guy_male_fat.material_variations = {
+		default = {
+			third_material = "units/pd2_dlc_sawp/characters/sawp_acc_poolrepair_electrician/shared_materials/sawp_acc_poolrepair_male_electric"
 		}
 	}
 	self.player_styles.cable_guy.characters.ecp_male = cable_guy_male_fat
-	self.player_styles.mariachi = {
-		name_id = "bm_suit_mariachi",
-		desc_id = "bm_suit_mariachi_desc",
-		locks = {
-			achievement = "bex_1"
-		},
-		texture_bundle_folder = "bex",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_fps_mariachi/bex_acc_fps_mariachi",
-		material_variations = {}
+	self.player_styles.mariachi = {}
+	self.player_styles.mariachi.name_id = "bm_suit_mariachi"
+	self.player_styles.mariachi.desc_id = "bm_suit_mariachi_desc"
+	self.player_styles.mariachi.locks = {
+		achievement = "bex_1"
 	}
+	self.player_styles.mariachi.texture_bundle_folder = "bex"
+	self.player_styles.mariachi.body_replacement = body_replacement_standard
+	self.player_styles.mariachi.third_body_replacement = body_replacement_standard
+	self.player_styles.mariachi.unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_fps_mariachi/bex_acc_fps_mariachi"
+	self.player_styles.mariachi.material_variations = {}
 	self.player_styles.mariachi.material_variations.default = {
-		name_id = "bm_suit_var_mariachi_default",
-		global_value = "normal",
 		desc_id = "bm_suit_var_mariachi_default_desc",
+		global_value = "normal",
+		name_id = "bm_suit_var_mariachi_default",
 		prio = 1
 	}
 	self.player_styles.mariachi.material_variations.black = {
 		desc_id = "bm_suit_var_mariachi_black_desc",
 		global_value = "normal",
-		prio = 7,
-		name_id = "bm_suit_var_mariachi_black",
-		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_black",
 		material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_fps_mariachi_black",
+		name_id = "bm_suit_var_mariachi_black",
+		prio = 7,
+		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_black",
 		locks = {
 			achievement = "bex_7"
 		}
@@ -1109,10 +1105,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.mariachi.material_variations.brown = {
 		desc_id = "bm_suit_var_mariachi_brown_desc",
 		global_value = "normal",
-		prio = 2,
-		name_id = "bm_suit_var_mariachi_brown",
-		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_brown",
 		material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_fps_mariachi_brown",
+		name_id = "bm_suit_var_mariachi_brown",
+		prio = 2,
+		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_brown",
 		locks = {
 			achievement = "bex_2"
 		}
@@ -1120,10 +1116,10 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.mariachi.material_variations.red = {
 		desc_id = "bm_suit_var_mariachi_red_desc",
 		global_value = "normal",
-		prio = 6,
-		name_id = "bm_suit_var_mariachi_red",
-		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_red",
 		material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_fps_mariachi_red",
+		name_id = "bm_suit_var_mariachi_red",
+		prio = 6,
+		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_red",
 		locks = {
 			achievement = "bex_6"
 		}
@@ -1131,2252 +1127,2253 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.mariachi.material_variations.white = {
 		desc_id = "bm_suit_var_mariachi_white_desc",
 		global_value = "normal",
-		prio = 4,
-		name_id = "bm_suit_var_mariachi_white",
-		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_white",
 		material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_fps_mariachi_white",
+		name_id = "bm_suit_var_mariachi_white",
+		prio = 4,
+		third_material = "units/pd2_dlc_bex/characters/bex_acc_mariachi/shared_materials/bex_acc_mariachi_white",
 		locks = {
 			achievement = "bex_4"
 		}
 	}
 	self.player_styles.mariachi.characters = {}
-	local mariachi_characters_male = {
-		third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_male_average/bex_acc_mariachi_male_average"
-	}
+
+	local mariachi_characters_male = {}
+
+	mariachi_characters_male.third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_male_average/bex_acc_mariachi_male_average"
 
 	set_characters_data("mariachi", characters_male, mariachi_characters_male)
 
-	local mariachi_characters_male_big = {
-		third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_male_big/bex_acc_mariachi_male_big"
-	}
+	local mariachi_characters_male_big = {}
+
+	mariachi_characters_male_big.third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_male_big/bex_acc_mariachi_male_big"
 
 	set_characters_data("mariachi", characters_male_big, mariachi_characters_male_big)
 
-	local mariachi_characters_female = {
-		third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_female_average/bex_acc_mariachi_female_average"
-	}
+	local mariachi_characters_female = {}
+
+	mariachi_characters_female.third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_female_average/bex_acc_mariachi_female_average"
 
 	set_characters_data("mariachi", characters_female, mariachi_characters_female)
 
-	local mariachi_characters_female_big = {
-		third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_female_big/bex_acc_mariachi_female_big"
-	}
+	local mariachi_characters_female_big = {}
+
+	mariachi_characters_female_big.third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_female_big/bex_acc_mariachi_female_big"
 
 	set_characters_data("mariachi", characters_female_big, mariachi_characters_female_big)
 
-	local mariachi_characters_male_fat = {
-		third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_male_fat/bex_acc_mariachi_male_fat",
-		sequence = "set_ehtan"
-	}
+	local mariachi_characters_male_fat = {}
+
+	mariachi_characters_male_fat.third_unit = "units/pd2_dlc_bex/characters/bex_acc_mariachi/bex_acc_mariachi_male_fat/bex_acc_mariachi_male_fat"
+	mariachi_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.mariachi.characters.ecp_male = mariachi_characters_male_fat
-	self.player_styles.desperado = {
-		name_id = "bm_suit_desperado",
-		desc_id = "bm_suit_desperado_desc",
-		global_value = "mbs",
-		texture_bundle_folder = "mbs",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_fps_desperado/mbs_acc_fps_desperado_male",
-		material_variations = {}
-	}
+	self.player_styles.desperado = {}
+	self.player_styles.desperado.name_id = "bm_suit_desperado"
+	self.player_styles.desperado.desc_id = "bm_suit_desperado_desc"
+	self.player_styles.desperado.global_value = "mbs"
+	self.player_styles.desperado.texture_bundle_folder = "mbs"
+	self.player_styles.desperado.body_replacement = body_replacement_standard
+	self.player_styles.desperado.third_body_replacement = body_replacement_standard
+	self.player_styles.desperado.unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_fps_desperado/mbs_acc_fps_desperado_male"
+	self.player_styles.desperado.material_variations = {}
 	self.player_styles.desperado.material_variations.default = {
-		name_id = "bm_suit_var_desperado_default",
+		desc_id = "bm_suit_var_desperado_default_desc",
 		global_value = "mbs",
-		desc_id = "bm_suit_var_desperado_default_desc"
+		name_id = "bm_suit_var_desperado_default"
 	}
 	self.player_styles.desperado.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_desperado_blue_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_blue",
 		name_id = "bm_suit_var_desperado_blue",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_blue",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_blue"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_blue"
 	}
 	self.player_styles.desperado.material_variations.green = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_desperado_green_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_green",
 		name_id = "bm_suit_var_desperado_green",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_green",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_green"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_green"
 	}
 	self.player_styles.desperado.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_desperado_red_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_red",
 		name_id = "bm_suit_var_desperado_red",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_red",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_red"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_red"
 	}
 	self.player_styles.desperado.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_desperado_white_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_white",
 		name_id = "bm_suit_var_desperado_white",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_white",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_fps_desperado_white"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/shared_materials/mbs_acc_desperado_white"
 	}
 	self.player_styles.desperado.characters = {}
-	local desperado_characters_male = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_male_average/mbs_acc_desperado_male_average"
-	}
+
+	local desperado_characters_male = {}
+
+	desperado_characters_male.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_male_average/mbs_acc_desperado_male_average"
 
 	set_characters_data("desperado", characters_male, desperado_characters_male)
 
-	local desperado_characters_male_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_male_big/mbs_acc_desperado_male_big"
-	}
+	local desperado_characters_male_big = {}
+
+	desperado_characters_male_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_male_big/mbs_acc_desperado_male_big"
 
 	set_characters_data("desperado", characters_male_big, desperado_characters_male_big)
 
-	local desperado_characters_female = {
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_fps_desperado/mbs_acc_fps_desperado_female",
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_female_average/mbs_acc_desperado_female_average"
-	}
+	local desperado_characters_female = {}
+
+	desperado_characters_female.unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_fps_desperado/mbs_acc_fps_desperado_female"
+	desperado_characters_female.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_female_average/mbs_acc_desperado_female_average"
 
 	set_characters_data("desperado", characters_female, desperado_characters_female)
 
-	local desperado_characters_female_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_female_big/mbs_acc_desperado_female_big"
-	}
+	local desperado_characters_female_big = {}
+
+	desperado_characters_female_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_female_big/mbs_acc_desperado_female_big"
 
 	set_characters_data("desperado", characters_female_big, desperado_characters_female_big)
 
-	local desperado_characters_male_fat = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_male_fat/mbs_acc_desperado_male_fat",
-		sequence = "set_ehtan"
-	}
+	local desperado_characters_male_fat = {}
+
+	desperado_characters_male_fat.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_desperado/mbs_acc_desperado_male_fat/mbs_acc_desperado_male_fat"
+	desperado_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.desperado.characters.ecp_male = desperado_characters_male_fat
-	self.player_styles.punk = {
-		name_id = "bm_suit_punk",
-		desc_id = "bm_suit_punk_desc",
-		global_value = "mbs",
-		texture_bundle_folder = "mbs",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_fps_punk/mbs_acc_fps_punk_male",
-		material_variations = {}
-	}
+	self.player_styles.punk = {}
+	self.player_styles.punk.name_id = "bm_suit_punk"
+	self.player_styles.punk.desc_id = "bm_suit_punk_desc"
+	self.player_styles.punk.global_value = "mbs"
+	self.player_styles.punk.texture_bundle_folder = "mbs"
+	self.player_styles.punk.body_replacement = body_replacement_standard
+	self.player_styles.punk.third_body_replacement = body_replacement_standard
+	self.player_styles.punk.unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_fps_punk/mbs_acc_fps_punk_male"
+	self.player_styles.punk.material_variations = {}
 	self.player_styles.punk.material_variations.default = {
-		name_id = "bm_suit_var_punk_default",
+		desc_id = "bm_suit_var_punk_default_desc",
 		global_value = "mbs",
-		desc_id = "bm_suit_var_punk_default_desc"
+		name_id = "bm_suit_var_punk_default"
 	}
 	self.player_styles.punk.material_variations.billieboy = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_punk_billieboy_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_default",
 		name_id = "bm_suit_var_punk_billieboy",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_billieboy",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_default"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_billieboy"
 	}
 	self.player_styles.punk.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_punk_blue_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_blue",
 		name_id = "bm_suit_var_punk_blue",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_blue",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_blue"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_blue"
 	}
 	self.player_styles.punk.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_punk_red_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_red",
 		name_id = "bm_suit_var_punk_red",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_red",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_red"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_red"
 	}
 	self.player_styles.punk.material_variations.scottish = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_punk_scottish_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_default",
 		name_id = "bm_suit_var_punk_scottish",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_scottish",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_fps_punk_default"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_punk/shared_materials/mbs_acc_punk_scottish"
 	}
 	self.player_styles.punk.characters = {}
-	local punk_characters_male = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_male_average/mbs_acc_punk_male_average"
-	}
+
+	local punk_characters_male = {}
+
+	punk_characters_male.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_male_average/mbs_acc_punk_male_average"
 
 	set_characters_data("punk", characters_male, punk_characters_male)
 
-	local punk_characters_male_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_male_big/mbs_acc_punk_male_big"
-	}
+	local punk_characters_male_big = {}
+
+	punk_characters_male_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_male_big/mbs_acc_punk_male_big"
 
 	set_characters_data("punk", characters_male_big, punk_characters_male_big)
 
-	local punk_characters_female = {
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_fps_punk/mbs_acc_fps_punk_female",
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_female_average/mbs_acc_punk_female_average"
-	}
+	local punk_characters_female = {}
+
+	punk_characters_female.unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_fps_punk/mbs_acc_fps_punk_female"
+	punk_characters_female.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_female_average/mbs_acc_punk_female_average"
 
 	set_characters_data("punk", characters_female, punk_characters_female)
 
-	local punk_characters_female_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_female_big/mbs_acc_punk_female_big"
-	}
+	local punk_characters_female_big = {}
+
+	punk_characters_female_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_female_big/mbs_acc_punk_female_big"
 
 	set_characters_data("punk", characters_female_big, punk_characters_female_big)
 
-	local punk_characters_male_fat = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_male_fat/mbs_acc_punk_male_fat",
-		sequence = "set_ehtan"
-	}
+	local punk_characters_male_fat = {}
+
+	punk_characters_male_fat.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_punk/mbs_acc_punk_male_fat/mbs_acc_punk_male_fat"
+	punk_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.punk.characters.ecp_male = punk_characters_male_fat
-	self.player_styles.hiphop = {
-		name_id = "bm_suit_hiphop",
-		desc_id = "bm_suit_hiphop_desc",
-		global_value = "mbs",
-		texture_bundle_folder = "mbs",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_fps_hiphop/mbs_acc_fps_hiphop_male",
-		material_variations = {}
-	}
+	self.player_styles.hiphop = {}
+	self.player_styles.hiphop.name_id = "bm_suit_hiphop"
+	self.player_styles.hiphop.desc_id = "bm_suit_hiphop_desc"
+	self.player_styles.hiphop.global_value = "mbs"
+	self.player_styles.hiphop.texture_bundle_folder = "mbs"
+	self.player_styles.hiphop.body_replacement = body_replacement_standard
+	self.player_styles.hiphop.third_body_replacement = body_replacement_standard
+	self.player_styles.hiphop.unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_fps_hiphop/mbs_acc_fps_hiphop_male"
+	self.player_styles.hiphop.material_variations = {}
 	self.player_styles.hiphop.material_variations.default = {
-		name_id = "bm_suit_var_hiphop_default",
+		desc_id = "bm_suit_var_hiphop_default_desc",
 		global_value = "mbs",
-		desc_id = "bm_suit_var_hiphop_default_desc"
+		name_id = "bm_suit_var_hiphop_default"
 	}
 	self.player_styles.hiphop.material_variations.beige = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hiphop_beige_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_beige",
 		name_id = "bm_suit_var_hiphop_beige",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_beige",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_beige"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_beige"
 	}
 	self.player_styles.hiphop.material_variations.green = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hiphop_green_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_green",
 		name_id = "bm_suit_var_hiphop_green",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_green",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_green"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_green"
 	}
 	self.player_styles.hiphop.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hiphop_red_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_red",
 		name_id = "bm_suit_var_hiphop_red",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_red",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_red"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_red"
 	}
 	self.player_styles.hiphop.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hiphop_white_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_white",
 		name_id = "bm_suit_var_hiphop_white",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_white",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_fps_hiphop_white"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/shared_materials/mbs_acc_hiphop_white"
 	}
 	self.player_styles.hiphop.characters = {}
-	local hiphop_characters_male = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_male_average/mbs_acc_hiphop_male_average"
-	}
+
+	local hiphop_characters_male = {}
+
+	hiphop_characters_male.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_male_average/mbs_acc_hiphop_male_average"
 
 	set_characters_data("hiphop", characters_male, hiphop_characters_male)
 
-	local hiphop_characters_male_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_male_big/mbs_acc_hiphop_male_big"
-	}
+	local hiphop_characters_male_big = {}
+
+	hiphop_characters_male_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_male_big/mbs_acc_hiphop_male_big"
 
 	set_characters_data("hiphop", characters_male_big, hiphop_characters_male_big)
 
-	local hiphop_characters_female = {
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_fps_hiphop/mbs_acc_fps_hiphop_female",
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_female_average/mbs_acc_hiphop_female_average"
-	}
+	local hiphop_characters_female = {}
+
+	hiphop_characters_female.unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_fps_hiphop/mbs_acc_fps_hiphop_female"
+	hiphop_characters_female.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_female_average/mbs_acc_hiphop_female_average"
 
 	set_characters_data("hiphop", characters_female, hiphop_characters_female)
 
-	local hiphop_characters_female_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_female_big/mbs_acc_hiphop_female_big"
-	}
+	local hiphop_characters_female_big = {}
+
+	hiphop_characters_female_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_female_big/mbs_acc_hiphop_female_big"
 
 	set_characters_data("hiphop", characters_female_big, hiphop_characters_female_big)
 
-	local hiphop_characters_male_fat = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_male_fat/mbs_acc_hiphop_male_fat",
-		sequence = "set_ehtan"
-	}
+	local hiphop_characters_male_fat = {}
+
+	hiphop_characters_male_fat.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hiphop/mbs_acc_hiphop_male_fat/mbs_acc_hiphop_male_fat"
+	hiphop_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.hiphop.characters.ecp_male = hiphop_characters_male_fat
-	self.player_styles.hippie = {
-		name_id = "bm_suit_hippie",
-		desc_id = "bm_suit_hippie_desc",
-		global_value = "mbs",
-		texture_bundle_folder = "mbs",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_fps_hippie/mbs_acc_fps_hippie_male",
-		material_variations = {}
-	}
+	self.player_styles.hippie = {}
+	self.player_styles.hippie.name_id = "bm_suit_hippie"
+	self.player_styles.hippie.desc_id = "bm_suit_hippie_desc"
+	self.player_styles.hippie.global_value = "mbs"
+	self.player_styles.hippie.texture_bundle_folder = "mbs"
+	self.player_styles.hippie.body_replacement = body_replacement_standard
+	self.player_styles.hippie.third_body_replacement = body_replacement_standard
+	self.player_styles.hippie.unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_fps_hippie/mbs_acc_fps_hippie_male"
+	self.player_styles.hippie.material_variations = {}
 	self.player_styles.hippie.material_variations.default = {
-		name_id = "bm_suit_var_hippie_default",
+		desc_id = "bm_suit_var_hippie_default_desc",
 		global_value = "mbs",
-		desc_id = "bm_suit_var_hippie_default_desc"
+		name_id = "bm_suit_var_hippie_default"
 	}
 	self.player_styles.hippie.material_variations.abstraction = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hippie_abstraction_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_abstraction",
 		name_id = "bm_suit_var_hippie_abstraction",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_abstraction",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_abstraction"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_abstraction"
 	}
 	self.player_styles.hippie.material_variations.flowerpower = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hippie_flowerpower_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_flowerpower",
 		name_id = "bm_suit_var_hippie_flowerpower",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_flowerpower",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_flowerpower"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_flowerpower"
 	}
 	self.player_styles.hippie.material_variations.native = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hippie_native_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_native",
 		name_id = "bm_suit_var_hippie_native",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_native",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_native"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_native"
 	}
 	self.player_styles.hippie.material_variations.tribe = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_hippie_tribe_desc",
 		global_value = "mbs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_tribe",
 		name_id = "bm_suit_var_hippie_tribe",
-		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_tribe",
-		material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_fps_hippie_tribe"
+		third_material = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/shared_materials/mbs_acc_hippie_tribe"
 	}
 	self.player_styles.hippie.characters = {}
-	local hippie_characters_male = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_male_average/mbs_acc_hippie_male_average"
-	}
+
+	local hippie_characters_male = {}
+
+	hippie_characters_male.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_male_average/mbs_acc_hippie_male_average"
 
 	set_characters_data("hippie", characters_male, hippie_characters_male)
 
-	local hippie_characters_male_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_male_big/mbs_acc_hippie_male_big"
-	}
+	local hippie_characters_male_big = {}
+
+	hippie_characters_male_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_male_big/mbs_acc_hippie_male_big"
 
 	set_characters_data("hippie", characters_male_big, hippie_characters_male_big)
 
-	local hippie_characters_female = {
-		unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_fps_hippie/mbs_acc_fps_hippie_female",
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_female_average/mbs_acc_hippie_female_average"
-	}
+	local hippie_characters_female = {}
+
+	hippie_characters_female.unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_fps_hippie/mbs_acc_fps_hippie_female"
+	hippie_characters_female.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_female_average/mbs_acc_hippie_female_average"
 
 	set_characters_data("hippie", characters_female, hippie_characters_female)
 
-	local hippie_characters_female_big = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_female_big/mbs_acc_hippie_female_big"
-	}
+	local hippie_characters_female_big = {}
+
+	hippie_characters_female_big.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_female_big/mbs_acc_hippie_female_big"
 
 	set_characters_data("hippie", characters_female_big, hippie_characters_female_big)
 
-	local hippie_characters_male_fat = {
-		third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_male_fat/mbs_acc_hippie_male_fat",
-		sequence = "set_ehtan"
-	}
+	local hippie_characters_male_fat = {}
+
+	hippie_characters_male_fat.third_unit = "units/pd2_dlc_mbs/characters/mbs_acc_hippie/mbs_acc_hippie_male_fat/mbs_acc_hippie_male_fat"
+	hippie_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.hippie.characters.ecp_male = hippie_characters_male_fat
-	self.player_styles.esport = {
-		name_id = "bm_suit_esport",
-		desc_id = "bm_suit_esport_desc",
-		global_value = "ess",
-		texture_bundle_folder = "ess",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_male",
-		material_variations = {}
-	}
+	self.player_styles.esport = {}
+	self.player_styles.esport.name_id = "bm_suit_esport"
+	self.player_styles.esport.desc_id = "bm_suit_esport_desc"
+	self.player_styles.esport.global_value = "ess"
+	self.player_styles.esport.texture_bundle_folder = "ess"
+	self.player_styles.esport.body_replacement = body_replacement_standard
+	self.player_styles.esport.third_body_replacement = body_replacement_standard
+	self.player_styles.esport.unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_male"
+	self.player_styles.esport.material_variations = {}
 	self.player_styles.esport.material_variations.default = {
-		name_id = "bm_suit_var_esport_default",
+		desc_id = "bm_suit_var_esport_default_desc",
 		global_value = "ess",
-		desc_id = "bm_suit_var_esport_default_desc"
+		name_id = "bm_suit_var_esport_default"
 	}
 	self.player_styles.esport.material_variations.yellow = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_esport_yellow_desc",
 		global_value = "ess",
-		auto_aquire = true,
+		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_yellow",
 		name_id = "bm_suit_var_esport_yellow",
-		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_yellow",
-		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_yellow"
+		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_yellow"
 	}
 	self.player_styles.esport.material_variations.green = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_esport_green_desc",
 		global_value = "ess",
-		auto_aquire = true,
+		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_green",
 		name_id = "bm_suit_var_esport_green",
-		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_green",
-		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_green"
+		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_green"
 	}
 	self.player_styles.esport.material_variations.black = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_esport_black_desc",
 		global_value = "ess",
-		auto_aquire = true,
+		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_black",
 		name_id = "bm_suit_var_esport_black",
-		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_black",
-		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_black"
+		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_black"
 	}
 	self.player_styles.esport.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_esport_white_desc",
 		global_value = "ess",
-		auto_aquire = true,
+		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_white",
 		name_id = "bm_suit_var_esport_white",
-		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_white",
-		material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_white"
+		third_material = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/shared_materials/ess_acc_esport_white"
 	}
 	self.player_styles.esport.characters = {}
-	local esport_characters_male = {
-		third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_male_average/ess_acc_esport_male_average"
-	}
+
+	local esport_characters_male = {}
+
+	esport_characters_male.third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_male_average/ess_acc_esport_male_average"
 
 	set_characters_data("esport", characters_male, esport_characters_male)
 
-	local esport_characters_male_big = {
-		third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_male_big/ess_acc_esport_male_big"
-	}
+	local esport_characters_male_big = {}
+
+	esport_characters_male_big.third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_male_big/ess_acc_esport_male_big"
 
 	set_characters_data("esport", characters_male_big, esport_characters_male_big)
 
-	local esport_characters_female = {
-		unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_female",
-		third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_female_average/ess_acc_esport_female_average"
-	}
+	local esport_characters_female = {}
+
+	esport_characters_female.unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_fps_esport/ess_acc_fps_esport_female"
+	esport_characters_female.third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_female_average/ess_acc_esport_female_average"
 
 	set_characters_data("esport", characters_female, esport_characters_female)
 
-	local esport_characters_female_big = {
-		third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_female_big/ess_acc_esport_female_big"
-	}
+	local esport_characters_female_big = {}
+
+	esport_characters_female_big.third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_female_big/ess_acc_esport_female_big"
 
 	set_characters_data("esport", characters_female_big, esport_characters_female_big)
 
-	local esport_characters_male_fat = {
-		third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_male_fat/ess_acc_esport_male_fat",
-		sequence = "set_ehtan"
-	}
+	local esport_characters_male_fat = {}
+
+	esport_characters_male_fat.third_unit = "units/pd2_dlc_ess/characters/ess_acc_esportgamer/ess_acc_esport_male_fat/ess_acc_esport_male_fat"
+	esport_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.esport.characters.ecp_male = esport_characters_male_fat
-	self.player_styles.slaughterhouse = {
-		locks = {
-			achievement = "trk_sh_0"
-		},
-		name_id = "bm_suit_slaughterhouse",
-		desc_id = "bm_suit_slaughterhouse_desc",
-		global_value = "sus",
-		texture_bundle_folder = "sus",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse",
-		characters = {}
+	self.player_styles.slaughterhouse = {}
+	self.player_styles.slaughterhouse.locks = {
+		achievement = "trk_sh_0"
 	}
-	local slaughterhouse_characters_male = {
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average/sus_acc_slaughterhouse_male_average"
-	}
+	self.player_styles.slaughterhouse.name_id = "bm_suit_slaughterhouse"
+	self.player_styles.slaughterhouse.desc_id = "bm_suit_slaughterhouse_desc"
+	self.player_styles.slaughterhouse.global_value = "sus"
+	self.player_styles.slaughterhouse.texture_bundle_folder = "sus"
+	self.player_styles.slaughterhouse.body_replacement = body_replacement_standard
+	self.player_styles.slaughterhouse.third_body_replacement = body_replacement_standard
+	self.player_styles.slaughterhouse.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse"
+	self.player_styles.slaughterhouse.characters = {}
+
+	local slaughterhouse_characters_male = {}
+
+	slaughterhouse_characters_male.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average/sus_acc_slaughterhouse_male_average"
 
 	set_characters_data("slaughterhouse", characters_male, slaughterhouse_characters_male)
 
-	local slaughterhouse_dragon = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_02",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_02/sus_acc_slaughterhouse_male_average_02"
-	}
+	local slaughterhouse_dragon = {}
+
+	slaughterhouse_dragon.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_02"
+	slaughterhouse_dragon.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_02/sus_acc_slaughterhouse_male_average_02"
 	self.player_styles.slaughterhouse.characters.dragon = slaughterhouse_dragon
-	local slaughterhouse_bodhi = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_bodhi",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_bodhi/sus_acc_slaughterhouse_male_average_bodhi"
-	}
+
+	local slaughterhouse_bodhi = {}
+
+	slaughterhouse_bodhi.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_bodhi"
+	slaughterhouse_bodhi.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_bodhi/sus_acc_slaughterhouse_male_average_bodhi"
 	self.player_styles.slaughterhouse.characters.bodhi = slaughterhouse_bodhi
-	local slaughterhouse_scarface = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_02",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_02/sus_acc_slaughterhouse_male_average_02"
-	}
+
+	local slaughterhouse_scarface = {}
+
+	slaughterhouse_scarface.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_02"
+	slaughterhouse_scarface.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_02/sus_acc_slaughterhouse_male_average_02"
 	self.player_styles.slaughterhouse.characters.chico = slaughterhouse_scarface
-	local slaughterhouse_chains = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_chains",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_chains/sus_acc_slaughterhouse_male_average_chains"
-	}
+
+	local slaughterhouse_chains = {}
+
+	slaughterhouse_chains.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_chains"
+	slaughterhouse_chains.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_average_chains/sus_acc_slaughterhouse_male_average_chains"
 	self.player_styles.slaughterhouse.characters.chains = slaughterhouse_chains
-	local slaughterhouse_characters_male_big = {
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_big/sus_acc_slaughterhouse_male_big"
-	}
+
+	local slaughterhouse_characters_male_big = {}
+
+	slaughterhouse_characters_male_big.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_big/sus_acc_slaughterhouse_male_big"
 
 	set_characters_data("slaughterhouse", characters_male_big, slaughterhouse_characters_male_big)
 
-	local slaughterhouse_sangres = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_sangres",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_big_sangres/sus_acc_slaughterhouse_male_big_sangres"
-	}
+	local slaughterhouse_sangres = {}
+
+	slaughterhouse_sangres.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_sangres"
+	slaughterhouse_sangres.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_big_sangres/sus_acc_slaughterhouse_male_big_sangres"
 	self.player_styles.slaughterhouse.characters.max = slaughterhouse_sangres
-	local slaughterhouse_characters_female = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_female",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_female_average/sus_acc_slaughterhouse_female_average"
-	}
+
+	local slaughterhouse_characters_female = {}
+
+	slaughterhouse_characters_female.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_female"
+	slaughterhouse_characters_female.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_female_average/sus_acc_slaughterhouse_female_average"
 
 	set_characters_data("slaughterhouse", characters_female, slaughterhouse_characters_female)
 
-	local slaughterhouse_sydney = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_female_sydney",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_female_average_sydney/sus_acc_slaughterhouse_female_average_sydney"
-	}
+	local slaughterhouse_sydney = {}
+
+	slaughterhouse_sydney.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_female_sydney"
+	slaughterhouse_sydney.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_female_average_sydney/sus_acc_slaughterhouse_female_average_sydney"
 	self.player_styles.slaughterhouse.characters.sydney = slaughterhouse_sydney
-	local slaughterhouse_joy = {
-		unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_female_joy",
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_female_average_joy/sus_acc_slaughterhouse_female_average_joy"
-	}
+
+	local slaughterhouse_joy = {}
+
+	slaughterhouse_joy.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_female_joy"
+	slaughterhouse_joy.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_female_average_joy/sus_acc_slaughterhouse_female_average_joy"
 	self.player_styles.slaughterhouse.characters.joy = slaughterhouse_joy
+
 	local slaughterhouse_characters_female_big = {}
+
 	slaughterhouse_characters_female.unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_fps_slaughterhouse/sus_acc_fps_slaughterhouse_female"
 	slaughterhouse_characters_female_big.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_female_big/sus_acc_slaughterhouse_female_big"
 
 	set_characters_data("slaughterhouse", characters_female_big, slaughterhouse_characters_female_big)
 
-	local slaughterhouse_characters_male_fat = {
-		third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_fat/sus_acc_slaughterhouse_male_fat",
-		sequence = "set_ehtan"
-	}
+	local slaughterhouse_characters_male_fat = {}
+
+	slaughterhouse_characters_male_fat.third_unit = "units/pd2_dlc_sus/characters/sus_acc_slaughterhouse/sus_acc_slaughterhouse_male_fat/sus_acc_slaughterhouse_male_fat"
+	slaughterhouse_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.slaughterhouse.characters.ecp_male = slaughterhouse_characters_male_fat
-	self.player_styles.continental = {
-		name_id = "bm_suit_contintental",
-		desc_id = "bm_suit_contintental_desc",
-		global_value = "anv",
-		texture_bundle_folder = "anv",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_fps_continental/anv_acc_fps_continental",
-		characters = {}
-	}
-	local continental_characters_male = {
-		third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_male_average/anv_acc_continental_male_average"
-	}
+	self.player_styles.continental = {}
+	self.player_styles.continental.name_id = "bm_suit_contintental"
+	self.player_styles.continental.desc_id = "bm_suit_contintental_desc"
+	self.player_styles.continental.global_value = "anv"
+	self.player_styles.continental.texture_bundle_folder = "anv"
+	self.player_styles.continental.body_replacement = body_replacement_standard
+	self.player_styles.continental.third_body_replacement = body_replacement_standard
+	self.player_styles.continental.unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_fps_continental/anv_acc_fps_continental"
+	self.player_styles.continental.characters = {}
+
+	local continental_characters_male = {}
+
+	continental_characters_male.third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_male_average/anv_acc_continental_male_average"
 
 	set_characters_data("continental", characters_male, continental_characters_male)
 
-	local continental_characters_male_big = {
-		third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_male_big/anv_acc_continental_male_big"
-	}
+	local continental_characters_male_big = {}
+
+	continental_characters_male_big.third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_male_big/anv_acc_continental_male_big"
 
 	set_characters_data("continental", characters_male_big, continental_characters_male_big)
 
-	local continental_characters_female = {
-		third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_female_average/anv_acc_continental_female_average"
-	}
+	local continental_characters_female = {}
+
+	continental_characters_female.third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_female_average/anv_acc_continental_female_average"
 
 	set_characters_data("continental", characters_female, continental_characters_female)
 
-	local continental_characters_female_big = {
-		third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_female_big/anv_acc_continental_female_big"
-	}
+	local continental_characters_female_big = {}
+
+	continental_characters_female_big.third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_female_big/anv_acc_continental_female_big"
 
 	set_characters_data("continental", characters_female_big, continental_characters_female_big)
 
-	local continental_characters_male_fat = {
-		third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_male_fat/anv_acc_continental_male_fat",
-		sequence = "set_ehtan"
-	}
+	local continental_characters_male_fat = {}
+
+	continental_characters_male_fat.third_unit = "units/pd2_dlc_anv/characters/anv_acc_continental/anv_acc_continental_male_fat/anv_acc_continental_male_fat"
+	continental_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.continental.characters.ecp_male = continental_characters_male_fat
-	self.player_styles.gentleman = {
-		name_id = "bm_suit_gentleman",
-		desc_id = "bm_suit_gentleman_desc",
-		global_value = "pgo",
-		texture_bundle_folder = "pgo",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_fps_gentleman_male/pgo_acc_fps_gentleman_male",
-		material_variations = {}
-	}
+	self.player_styles.gentleman = {}
+	self.player_styles.gentleman.name_id = "bm_suit_gentleman"
+	self.player_styles.gentleman.desc_id = "bm_suit_gentleman_desc"
+	self.player_styles.gentleman.global_value = "pgo"
+	self.player_styles.gentleman.texture_bundle_folder = "pgo"
+	self.player_styles.gentleman.body_replacement = body_replacement_standard
+	self.player_styles.gentleman.third_body_replacement = body_replacement_standard
+	self.player_styles.gentleman.unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_fps_gentleman_male/pgo_acc_fps_gentleman_male"
+	self.player_styles.gentleman.material_variations = {}
 	self.player_styles.gentleman.material_variations.default = {
-		name_id = "bm_suit_var_gentleman_default",
+		desc_id = "bm_suit_var_gentleman_default_desc",
 		global_value = "pgo",
-		desc_id = "bm_suit_var_gentleman_default_desc"
+		name_id = "bm_suit_var_gentleman_default"
 	}
 	self.player_styles.gentleman.characters = {}
-	self.player_styles.gentleman.material_variations = {
-		default = {
-			name_id = "bm_suit_var_gentleman_default",
-			global_value = "pgo",
-			desc_id = "bm_suit_var_gentleman_default_desc"
-		},
-		father = {
-			desc_id = "bm_suit_var_gentleman_father_desc",
-			global_value = "pgo",
-			auto_aquire = true,
-			name_id = "bm_suit_var_gentleman_father",
-			third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_gentleman_father",
-			material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_fps_gentleman_father"
-		},
-		marine = {
-			desc_id = "bm_suit_var_gentleman_marine_desc",
-			global_value = "pgo",
-			auto_aquire = true,
-			name_id = "bm_suit_var_gentleman_marine",
-			third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_gentleman_marine",
-			material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_fps_gentleman_marine"
-		},
-		veteran = {
-			desc_id = "bm_suit_var_gentleman_veteran_desc",
-			global_value = "pgo",
-			auto_aquire = true,
-			name_id = "bm_suit_var_gentleman_veteran",
-			third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_gentleman_veteran",
-			material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_fps_gentleman_veteran"
-		}
+	self.player_styles.gentleman.material_variations = {}
+	self.player_styles.gentleman.material_variations.default = {
+		desc_id = "bm_suit_var_gentleman_default_desc",
+		global_value = "pgo",
+		name_id = "bm_suit_var_gentleman_default"
 	}
-	local gentleman_characters_male = {
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_male_average/pgo_acc_gentleman_male_average"
+	self.player_styles.gentleman.material_variations.father = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_gentleman_father_desc",
+		global_value = "pgo",
+		material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_fps_gentleman_father",
+		name_id = "bm_suit_var_gentleman_father",
+		third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_gentleman_father"
 	}
+	self.player_styles.gentleman.material_variations.marine = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_gentleman_marine_desc",
+		global_value = "pgo",
+		material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_fps_gentleman_marine",
+		name_id = "bm_suit_var_gentleman_marine",
+		third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_gentleman_marine"
+	}
+	self.player_styles.gentleman.material_variations.veteran = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_gentleman_veteran_desc",
+		global_value = "pgo",
+		material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_fps_gentleman_veteran",
+		name_id = "bm_suit_var_gentleman_veteran",
+		third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/shared_materials/pgo_acc_gentleman_veteran"
+	}
+
+	local gentleman_characters_male = {}
+
+	gentleman_characters_male.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_male_average/pgo_acc_gentleman_male_average"
 
 	set_characters_data("gentleman", characters_male, gentleman_characters_male)
 
-	local gentleman_characters_male_big = {
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_male_big/pgo_acc_gentleman_male_big"
-	}
+	local gentleman_characters_male_big = {}
+
+	gentleman_characters_male_big.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_male_big/pgo_acc_gentleman_male_big"
 
 	set_characters_data("gentleman", characters_male_big, gentleman_characters_male_big)
 
-	local gentleman_characters_female = {
-		unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_fps_gentleman_female/pgo_acc_fps_gentleman_female",
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_female_average/pgo_acc_gentleman_female_average"
-	}
+	local gentleman_characters_female = {}
+
+	gentleman_characters_female.unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_fps_gentleman_female/pgo_acc_fps_gentleman_female"
+	gentleman_characters_female.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_female_average/pgo_acc_gentleman_female_average"
 
 	set_characters_data("gentleman", characters_female, gentleman_characters_female)
 
-	local gentleman_characters_female_big = {
-		unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_fps_gentleman_female/pgo_acc_fps_gentleman_female",
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_female_fat/pgo_acc_gentleman_female_fat"
-	}
+	local gentleman_characters_female_big = {}
+
+	gentleman_characters_female_big.unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_fps_gentleman_female/pgo_acc_fps_gentleman_female"
+	gentleman_characters_female_big.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_female_fat/pgo_acc_gentleman_female_fat"
 
 	set_characters_data("gentleman", characters_female_big, gentleman_characters_female_big)
 
-	local gentleman_characters_male_fat = {
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_male_fat/pgo_acc_gentleman_male_fat",
-		sequence = "set_ehtan"
-	}
+	local gentleman_characters_male_fat = {}
+
+	gentleman_characters_male_fat.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gentleman/pgo_acc_gentleman_male_fat/pgo_acc_gentleman_male_fat"
+	gentleman_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.gentleman.characters.ecp_male = gentleman_characters_male_fat
-	self.player_styles.gunslinger = {
-		name_id = "bm_suit_gunslinger",
-		desc_id = "bm_suit_gunslinger_desc",
-		global_value = "pgo",
-		texture_bundle_folder = "pgo",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_fps_gunslinger_male/pgo_acc_fps_gunslinger_male",
-		material_variations = {}
-	}
+	self.player_styles.gunslinger = {}
+	self.player_styles.gunslinger.name_id = "bm_suit_gunslinger"
+	self.player_styles.gunslinger.desc_id = "bm_suit_gunslinger_desc"
+	self.player_styles.gunslinger.global_value = "pgo"
+	self.player_styles.gunslinger.texture_bundle_folder = "pgo"
+	self.player_styles.gunslinger.body_replacement = body_replacement_standard
+	self.player_styles.gunslinger.third_body_replacement = body_replacement_standard
+	self.player_styles.gunslinger.unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_fps_gunslinger_male/pgo_acc_fps_gunslinger_male"
+	self.player_styles.gunslinger.material_variations = {}
 	self.player_styles.gunslinger.material_variations.default = {
-		name_id = "bm_suit_var_gunslinger_default",
+		desc_id = "bm_suit_var_gunslinger_default_desc",
 		global_value = "pgo",
-		desc_id = "bm_suit_var_gunslinger_default_desc"
+		name_id = "bm_suit_var_gunslinger_default"
 	}
 	self.player_styles.gunslinger.characters = {}
-	self.player_styles.gunslinger.material_variations = {
-		default = {
-			name_id = "bm_suit_var_gunslinger_default",
-			global_value = "pgo",
-			desc_id = "bm_suit_var_gunslinger_default_desc"
-		},
-		casual = {
-			desc_id = "bm_suit_var_gunslinger_casual_desc",
-			global_value = "pgo",
-			auto_aquire = true,
-			name_id = "bm_suit_var_gunslinger_casual",
-			third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_gunslinger_casual",
-			material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_fps_gunslinger_casual"
-		},
-		piro = {
-			desc_id = "bm_suit_var_gunslinger_piro_desc",
-			global_value = "pgo",
-			auto_aquire = true,
-			name_id = "bm_suit_var_gunslinger_piro",
-			third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_gunslinger_piro",
-			material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_fps_gunslinger_piro"
-		},
-		red = {
-			desc_id = "bm_suit_var_gunslinger_red_desc",
-			global_value = "pgo",
-			auto_aquire = true,
-			name_id = "bm_suit_var_gunslinger_red",
-			third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_gunslinger_red",
-			material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_fps_gunslinger_red"
-		}
+	self.player_styles.gunslinger.material_variations = {}
+	self.player_styles.gunslinger.material_variations.default = {
+		desc_id = "bm_suit_var_gunslinger_default_desc",
+		global_value = "pgo",
+		name_id = "bm_suit_var_gunslinger_default"
 	}
-	local gunslinger_characters_male = {
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_male_average/pgo_acc_gunslinger_male_average"
+	self.player_styles.gunslinger.material_variations.casual = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_gunslinger_casual_desc",
+		global_value = "pgo",
+		material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_fps_gunslinger_casual",
+		name_id = "bm_suit_var_gunslinger_casual",
+		third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_gunslinger_casual"
 	}
+	self.player_styles.gunslinger.material_variations.piro = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_gunslinger_piro_desc",
+		global_value = "pgo",
+		material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_fps_gunslinger_piro",
+		name_id = "bm_suit_var_gunslinger_piro",
+		third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_gunslinger_piro"
+	}
+	self.player_styles.gunslinger.material_variations.red = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_gunslinger_red_desc",
+		global_value = "pgo",
+		material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_fps_gunslinger_red",
+		name_id = "bm_suit_var_gunslinger_red",
+		third_material = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/shared_materials/pgo_acc_gunslinger_red"
+	}
+
+	local gunslinger_characters_male = {}
+
+	gunslinger_characters_male.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_male_average/pgo_acc_gunslinger_male_average"
 
 	set_characters_data("gunslinger", characters_male, gunslinger_characters_male)
 
-	local gunslinger_characters_male_big = {
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_male_big/pgo_acc_gunslinger_male_big"
-	}
+	local gunslinger_characters_male_big = {}
+
+	gunslinger_characters_male_big.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_male_big/pgo_acc_gunslinger_male_big"
 
 	set_characters_data("gunslinger", characters_male_big, gunslinger_characters_male_big)
 
-	local gunslinger_characters_female = {
-		unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_fps_gunslinger_female/pgo_acc_fps_gunslinger_female",
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_female_average/pgo_acc_gunslinger_female_average"
-	}
+	local gunslinger_characters_female = {}
+
+	gunslinger_characters_female.unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_fps_gunslinger_female/pgo_acc_fps_gunslinger_female"
+	gunslinger_characters_female.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_female_average/pgo_acc_gunslinger_female_average"
 
 	set_characters_data("gunslinger", characters_female, gunslinger_characters_female)
 
-	local gunslinger_characters_female_big = {
-		unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_fps_gunslinger_female/pgo_acc_fps_gunslinger_female",
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_female_fat/pgo_acc_gunslinger_female_fat"
-	}
+	local gunslinger_characters_female_big = {}
+
+	gunslinger_characters_female_big.unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_fps_gunslinger_female/pgo_acc_fps_gunslinger_female"
+	gunslinger_characters_female_big.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_female_fat/pgo_acc_gunslinger_female_fat"
 
 	set_characters_data("gunslinger", characters_female_big, gunslinger_characters_female_big)
 
-	local gunslinger_characters_male_fat = {
-		third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_male_fat/pgo_acc_gunslinger_male_fat",
-		sequence = "set_ehtan"
-	}
+	local gunslinger_characters_male_fat = {}
+
+	gunslinger_characters_male_fat.third_unit = "units/pd2_dlc_pgo/characters/pgo_acc_gunslinger/pgo_acc_gunslinger_male_fat/pgo_acc_gunslinger_male_fat"
+	gunslinger_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.gunslinger.characters.ecp_male = gunslinger_characters_male_fat
-	self.player_styles.t800 = {
-		name_id = "bm_suit_t800",
-		desc_id = "bm_suit_t800_desc",
-		global_value = "inf",
-		texture_bundle_folder = "inf",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_fps_t800_male/inf3_acc_fps_t800_male",
-		characters = {},
-		material_variations = {}
-	}
+	self.player_styles.t800 = {}
+	self.player_styles.t800.name_id = "bm_suit_t800"
+	self.player_styles.t800.desc_id = "bm_suit_t800_desc"
+	self.player_styles.t800.global_value = "inf"
+	self.player_styles.t800.texture_bundle_folder = "inf"
+	self.player_styles.t800.body_replacement = body_replacement_standard
+	self.player_styles.t800.third_body_replacement = body_replacement_standard
+	self.player_styles.t800.unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_fps_t800_male/inf3_acc_fps_t800_male"
+	self.player_styles.t800.characters = {}
+	self.player_styles.t800.material_variations = {}
 	self.player_styles.t800.material_variations.default = {
-		name_id = "bm_suit_var_t800_default",
+		desc_id = "bm_suit_var_t800_default_desc",
 		global_value = "inf",
-		desc_id = "bm_suit_var_t800_default_desc"
+		name_id = "bm_suit_var_t800_default"
 	}
 	self.player_styles.t800.material_variations.cowboy = {
 		desc_id = "bm_suit_var_t800_cowboy_desc",
 		global_value = "inf",
+		material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_fps_t800_cowboy",
 		name_id = "bm_suit_var_t800_cowboy",
-		third_material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_t800_cowboy",
-		material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_fps_t800_cowboy"
+		third_material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_t800_cowboy"
 	}
 	self.player_styles.t800.material_variations.toughboy = {
 		desc_id = "bm_suit_var_t800_toughboy_desc",
 		global_value = "inf",
+		material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_fps_t800_toughboy",
 		name_id = "bm_suit_var_t800_toughboy",
-		third_material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_t800_toughboy",
-		material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_fps_t800_toughboy"
+		third_material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_t800_toughboy"
 	}
 	self.player_styles.t800.material_variations.red = {
 		desc_id = "bm_suit_var_t800_red_desc",
 		global_value = "inf",
+		material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_fps_t800_red",
 		name_id = "bm_suit_var_t800_red",
-		third_material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_t800_red",
-		material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_fps_t800_red"
+		third_material = "units/pd2_dlc_inf3/characters/inf3_acc_t800/shared_materials/inf3_acc_t800_red"
 	}
-	local t800_characters_male = {
-		third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_male_average/inf3_acc_t800_male_average"
-	}
+
+	local t800_characters_male = {}
+
+	t800_characters_male.third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_male_average/inf3_acc_t800_male_average"
 
 	set_characters_data("t800", characters_male, t800_characters_male)
 
-	local t800_characters_male_big = {
-		third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_male_big/inf3_acc_t800_male_big"
-	}
+	local t800_characters_male_big = {}
+
+	t800_characters_male_big.third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_male_big/inf3_acc_t800_male_big"
 
 	set_characters_data("t800", characters_male_big, t800_characters_male_big)
 
-	local t800_characters_female = {
-		unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_fps_t800_female/inf3_acc_fps_t800_female",
-		third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_female_average/inf3_acc_t800_female_average"
-	}
+	local t800_characters_female = {}
+
+	t800_characters_female.unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_fps_t800_female/inf3_acc_fps_t800_female"
+	t800_characters_female.third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_female_average/inf3_acc_t800_female_average"
 
 	set_characters_data("t800", characters_female, t800_characters_female)
 
-	local t800_characters_female_big = {
-		unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_fps_t800_female/inf3_acc_fps_t800_female",
-		third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_female_fat/inf3_acc_t800_female_fat"
-	}
+	local t800_characters_female_big = {}
+
+	t800_characters_female_big.unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_fps_t800_female/inf3_acc_fps_t800_female"
+	t800_characters_female_big.third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_female_fat/inf3_acc_t800_female_fat"
 
 	set_characters_data("t800", characters_female_big, t800_characters_female_big)
 
-	local t800_characters_male_fat = {
-		third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_male_fat/inf3_acc_t800_male_fat",
-		sequence = "set_ehtan"
-	}
+	local t800_characters_male_fat = {}
+
+	t800_characters_male_fat.third_unit = "units/pd2_dlc_inf3/characters/inf3_acc_t800/inf3_acc_t800_male_fat/inf3_acc_t800_male_fat"
+	t800_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.t800.characters.ecp_male = t800_characters_male_fat
-	self.player_styles.candycane = {
-		name_id = "bm_suit_candycane",
-		desc_id = "bm_suit_candycane_desc",
-		global_value = "xm20",
-		texture_bundle_folder = "xm20",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_fps_candycane_male/xm20_acc_fps_candycane_male",
-		material_variations = {}
-	}
+	self.player_styles.candycane = {}
+	self.player_styles.candycane.name_id = "bm_suit_candycane"
+	self.player_styles.candycane.desc_id = "bm_suit_candycane_desc"
+	self.player_styles.candycane.global_value = "xm20"
+	self.player_styles.candycane.texture_bundle_folder = "xm20"
+	self.player_styles.candycane.body_replacement = body_replacement_standard
+	self.player_styles.candycane.third_body_replacement = body_replacement_standard
+	self.player_styles.candycane.unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_fps_candycane_male/xm20_acc_fps_candycane_male"
+	self.player_styles.candycane.material_variations = {}
 	self.player_styles.candycane.material_variations.default = {
-		name_id = "bm_suit_var_candycane_default",
+		desc_id = "bm_suit_var_candycane_default_desc",
 		global_value = "xm20",
-		desc_id = "bm_suit_var_candycane_default_desc"
+		name_id = "bm_suit_var_candycane_default"
 	}
-	local candycane_characters_male_average = {
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_male_average/xm20_acc_candycane_male_average"
-	}
+
+	local candycane_characters_male_average = {}
+
+	candycane_characters_male_average.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_male_average/xm20_acc_candycane_male_average"
 
 	set_characters_data("candycane", characters_male, candycane_characters_male_average)
 
-	local candycane_characters_male_big = {
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_male_average/xm20_acc_candycane_male_average"
-	}
+	local candycane_characters_male_big = {}
+
+	candycane_characters_male_big.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_male_average/xm20_acc_candycane_male_average"
 
 	set_characters_data("candycane", characters_male_big, candycane_characters_male_big)
 
-	local candycane_characters_male_fat = {
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_male_average/xm20_acc_candycane_male_average",
-		sequence = "set_ehtan"
-	}
+	local candycane_characters_male_fat = {}
+
+	candycane_characters_male_fat.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_male_average/xm20_acc_candycane_male_average"
+	candycane_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.candycane.characters.ecp_male = candycane_characters_male_fat
-	local candycane_characters_female_average = {
-		unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_fps_candycane_male/xm20_acc_fps_candycane_male",
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_female_average/xm20_acc_candycane_female_average"
-	}
+
+	local candycane_characters_female_average = {}
+
+	candycane_characters_female_average.unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_fps_candycane_male/xm20_acc_fps_candycane_male"
+	candycane_characters_female_average.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_female_average/xm20_acc_candycane_female_average"
 
 	set_characters_data("candycane", characters_female, candycane_characters_female_average)
 
-	local candycane_characters_female_fat = {
-		unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_fps_candycane_male/xm20_acc_fps_candycane_male",
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_female_average/xm20_acc_candycane_female_average"
-	}
+	local candycane_characters_female_fat = {}
+
+	candycane_characters_female_fat.unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_fps_candycane_male/xm20_acc_fps_candycane_male"
+	candycane_characters_female_fat.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_candycane/xm20_acc_candycane_female_average/xm20_acc_candycane_female_average"
 
 	set_characters_data("candycane", characters_female_big, candycane_characters_female_fat)
 
-	self.player_styles.badsanta = {
-		name_id = "bm_suit_badsanta",
-		desc_id = "bm_suit_badsanta_desc",
-		global_value = "xm20",
-		texture_bundle_folder = "xm20",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_fps_badsanta_male/xm20_acc_fps_badsanta_male",
-		material_variations = {}
-	}
+	self.player_styles.badsanta = {}
+	self.player_styles.badsanta.name_id = "bm_suit_badsanta"
+	self.player_styles.badsanta.desc_id = "bm_suit_badsanta_desc"
+	self.player_styles.badsanta.global_value = "xm20"
+	self.player_styles.badsanta.texture_bundle_folder = "xm20"
+	self.player_styles.badsanta.body_replacement = body_replacement_standard
+	self.player_styles.badsanta.third_body_replacement = body_replacement_standard
+	self.player_styles.badsanta.unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_fps_badsanta_male/xm20_acc_fps_badsanta_male"
+	self.player_styles.badsanta.material_variations = {}
 	self.player_styles.badsanta.material_variations.default = {
-		name_id = "bm_suit_var_badsanta_default",
+		desc_id = "bm_suit_var_badsanta_default_desc",
 		global_value = "xm20",
-		desc_id = "bm_suit_var_badsanta_default_desc"
+		name_id = "bm_suit_var_badsanta_default"
 	}
-	local badsanta_characters_male_average = {
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_male_average/xm20_acc_badsanta_male_average"
-	}
+
+	local badsanta_characters_male_average = {}
+
+	badsanta_characters_male_average.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_male_average/xm20_acc_badsanta_male_average"
 
 	set_characters_data("badsanta", characters_male, badsanta_characters_male_average)
 
-	local badsanta_characters_male_big = {
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_male_average/xm20_acc_badsanta_male_average"
-	}
+	local badsanta_characters_male_big = {}
+
+	badsanta_characters_male_big.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_male_average/xm20_acc_badsanta_male_average"
 
 	set_characters_data("badsanta", characters_male_big, badsanta_characters_male_big)
 
-	local badsanta_characters_male_fat = {
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_male_average/xm20_acc_badsanta_male_average",
-		sequence = "set_ehtan"
-	}
+	local badsanta_characters_male_fat = {}
+
+	badsanta_characters_male_fat.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_male_average/xm20_acc_badsanta_male_average"
+	badsanta_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.badsanta.characters.ecp_male = badsanta_characters_male_fat
-	local badsanta_characters_female_average = {
-		unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_fps_badsanta_male/xm20_acc_fps_badsanta_male",
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_female_average/xm20_acc_badsanta_female_average"
-	}
+
+	local badsanta_characters_female_average = {}
+
+	badsanta_characters_female_average.unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_fps_badsanta_male/xm20_acc_fps_badsanta_male"
+	badsanta_characters_female_average.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_female_average/xm20_acc_badsanta_female_average"
 
 	set_characters_data("badsanta", characters_female, badsanta_characters_female_average)
 
-	local badsanta_characters_female_fat = {
-		unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_fps_badsanta_male/xm20_acc_fps_badsanta_male",
-		third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_female_average/xm20_acc_badsanta_female_average"
-	}
+	local badsanta_characters_female_fat = {}
+
+	badsanta_characters_female_fat.unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_fps_badsanta_male/xm20_acc_fps_badsanta_male"
+	badsanta_characters_female_fat.third_unit = "units/pd2_dlc_xm20/characters/xm20_acc_badsanta/xm20_acc_badsanta_female_average/xm20_acc_badsanta_female_average"
 
 	set_characters_data("badsanta", characters_female_big, badsanta_characters_female_fat)
 
-	self.player_styles.cartelboss = {
-		name_id = "bm_suit_cartelboss",
-		desc_id = "bm_suit_cartelboss_desc",
-		texture_bundle_folder = "fex",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_fps_cartelboss_male/fex_acc_fps_cartelboss_male",
-		material_variations = {}
-	}
+	self.player_styles.cartelboss = {}
+	self.player_styles.cartelboss.name_id = "bm_suit_cartelboss"
+	self.player_styles.cartelboss.desc_id = "bm_suit_cartelboss_desc"
+	self.player_styles.cartelboss.texture_bundle_folder = "fex"
+	self.player_styles.cartelboss.body_replacement = body_replacement_standard
+	self.player_styles.cartelboss.third_body_replacement = body_replacement_standard
+	self.player_styles.cartelboss.unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_fps_cartelboss_male/fex_acc_fps_cartelboss_male"
+	self.player_styles.cartelboss.material_variations = {}
 	self.player_styles.cartelboss.material_variations.default = {
-		name_id = "bm_suit_var_cartelboss_default",
+		desc_id = "bm_suit_var_cartelboss_default_desc",
 		global_value = "fex",
-		desc_id = "bm_suit_var_cartelboss_default_desc"
+		name_id = "bm_suit_var_cartelboss_default"
 	}
 	self.player_styles.cartelboss.characters = {}
-	local cartelboss_characters_male = {
-		third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_male_average/fex_acc_cartelboss_male_average"
-	}
+
+	local cartelboss_characters_male = {}
+
+	cartelboss_characters_male.third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_male_average/fex_acc_cartelboss_male_average"
 
 	set_characters_data("cartelboss", characters_male, cartelboss_characters_male)
 
-	local cartelboss_characters_male_big = {
-		third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_male_big/fex_acc_cartelboss_male_big"
-	}
+	local cartelboss_characters_male_big = {}
+
+	cartelboss_characters_male_big.third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_male_big/fex_acc_cartelboss_male_big"
 
 	set_characters_data("cartelboss", characters_male_big, cartelboss_characters_male_big)
 
-	local cartelboss_characters_female = {
-		third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_female_average/fex_acc_cartelboss_female_average"
-	}
+	local cartelboss_characters_female = {}
+
+	cartelboss_characters_female.third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_female_average/fex_acc_cartelboss_female_average"
 
 	set_characters_data("cartelboss", characters_female, cartelboss_characters_female)
 
-	local cartelboss_characters_female_big = {
-		third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_female_fat/fex_acc_cartelboss_female_fat"
-	}
+	local cartelboss_characters_female_big = {}
+
+	cartelboss_characters_female_big.third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_female_fat/fex_acc_cartelboss_female_fat"
 
 	set_characters_data("cartelboss", characters_female_big, cartelboss_characters_female_big)
 
-	local cartelboss_characters_male_fat = {
-		third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_male_fat/fex_acc_cartelboss_male_fat",
-		sequence = "set_ehtan"
-	}
+	local cartelboss_characters_male_fat = {}
+
+	cartelboss_characters_male_fat.third_unit = "units/pd2_dlc_fex/characters/fex_acc_cartelboss/fex_acc_cartelboss_male_fat/fex_acc_cartelboss_male_fat"
+	cartelboss_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.cartelboss.characters.ecp_male = cartelboss_characters_male_fat
-	self.player_styles.leather = {
-		name_id = "bm_suit_leather",
-		desc_id = "bm_suit_leather_desc",
-		texture_bundle_folder = "in31",
-		global_value = "in31",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_fps_leather_male/in31_acc_fps_leather_male",
-		material_variations = {}
-	}
+	self.player_styles.leather = {}
+	self.player_styles.leather.name_id = "bm_suit_leather"
+	self.player_styles.leather.desc_id = "bm_suit_leather_desc"
+	self.player_styles.leather.texture_bundle_folder = "in31"
+	self.player_styles.leather.global_value = "in31"
+	self.player_styles.leather.body_replacement = body_replacement_standard
+	self.player_styles.leather.third_body_replacement = body_replacement_standard
+	self.player_styles.leather.unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_fps_leather_male/in31_acc_fps_leather_male"
+	self.player_styles.leather.material_variations = {}
 	self.player_styles.leather.material_variations.default = {
-		name_id = "bm_suit_var_leather_default",
+		desc_id = "bm_suit_var_leather_default_desc",
 		global_value = "in31",
-		desc_id = "bm_suit_var_leather_default_desc"
+		name_id = "bm_suit_var_leather_default"
 	}
 	self.player_styles.leather.characters = {}
-	self.player_styles.leather.material_variations = {
-		default = {
-			name_id = "bm_suit_var_leather_default",
-			global_value = "in31",
-			desc_id = "bm_suit_var_leather_default_desc"
-		},
-		black = {
-			desc_id = "bm_suit_var_leather_black_desc",
-			global_value = "in31",
-			name_id = "bm_suit_var_leather_black",
-			third_material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_leather_black",
-			material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_fps_leather_black"
-		},
-		red = {
-			desc_id = "bm_suit_var_leather_red_desc",
-			global_value = "in31",
-			name_id = "bm_suit_var_leather_red",
-			third_material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_leather_red",
-			material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_fps_leather_red"
-		},
-		white = {
-			desc_id = "bm_suit_var_leather_white_desc",
-			global_value = "in31",
-			name_id = "bm_suit_var_leather_white",
-			third_material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_leather_white",
-			material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_fps_leather_white"
-		}
+	self.player_styles.leather.material_variations = {}
+	self.player_styles.leather.material_variations.default = {
+		desc_id = "bm_suit_var_leather_default_desc",
+		global_value = "in31",
+		name_id = "bm_suit_var_leather_default"
 	}
-	local leather_characters_male = {
-		third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_male_average/in31_acc_leather_male_average"
+	self.player_styles.leather.material_variations.black = {
+		desc_id = "bm_suit_var_leather_black_desc",
+		global_value = "in31",
+		material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_fps_leather_black",
+		name_id = "bm_suit_var_leather_black",
+		third_material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_leather_black"
 	}
+	self.player_styles.leather.material_variations.red = {
+		desc_id = "bm_suit_var_leather_red_desc",
+		global_value = "in31",
+		material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_fps_leather_red",
+		name_id = "bm_suit_var_leather_red",
+		third_material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_leather_red"
+	}
+	self.player_styles.leather.material_variations.white = {
+		desc_id = "bm_suit_var_leather_white_desc",
+		global_value = "in31",
+		material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_fps_leather_white",
+		name_id = "bm_suit_var_leather_white",
+		third_material = "units/pd2_dlc_in31/characters/in31_acc_leather/shared_materials/in31_acc_leather_white"
+	}
+
+	local leather_characters_male = {}
+
+	leather_characters_male.third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_male_average/in31_acc_leather_male_average"
 
 	set_characters_data("leather", characters_male, leather_characters_male)
 
-	local leather_characters_male_big = {
-		third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_male_big/in31_acc_leather_male_big"
-	}
+	local leather_characters_male_big = {}
+
+	leather_characters_male_big.third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_male_big/in31_acc_leather_male_big"
 
 	set_characters_data("leather", characters_male_big, leather_characters_male_big)
 
-	local leather_characters_female = {
-		third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_female_average/in31_acc_leather_female_average"
-	}
+	local leather_characters_female = {}
+
+	leather_characters_female.third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_female_average/in31_acc_leather_female_average"
 
 	set_characters_data("leather", characters_female, leather_characters_female)
 
-	local leather_characters_female_big = {
-		third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_female_fat/in31_acc_leather_female_fat"
-	}
+	local leather_characters_female_big = {}
+
+	leather_characters_female_big.third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_female_fat/in31_acc_leather_female_fat"
 
 	set_characters_data("leather", characters_female_big, leather_characters_female_big)
 
-	local leather_characters_male_fat = {
-		third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_male_fat/in31_acc_leather_male_fat",
-		sequence = "set_ehtan"
-	}
+	local leather_characters_male_fat = {}
+
+	leather_characters_male_fat.third_unit = "units/pd2_dlc_in31/characters/in31_acc_leather/in31_acc_leather_male_fat/in31_acc_leather_male_fat"
+	leather_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.leather.characters.ecp_male = leather_characters_male_fat
-	self.player_styles.hitman = {
-		name_id = "bm_suit_tstp_hitman",
-		desc_id = "bm_suit_tstp_hitman_desc",
-		texture_bundle_folder = "tstp",
-		global_value = "tstp",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_fps_hitman_male/tstp_acc_fps_hitman_male",
-		material_variations = {}
-	}
+	self.player_styles.hitman = {}
+	self.player_styles.hitman.name_id = "bm_suit_tstp_hitman"
+	self.player_styles.hitman.desc_id = "bm_suit_tstp_hitman_desc"
+	self.player_styles.hitman.texture_bundle_folder = "tstp"
+	self.player_styles.hitman.global_value = "tstp"
+	self.player_styles.hitman.body_replacement = body_replacement_standard
+	self.player_styles.hitman.third_body_replacement = body_replacement_standard
+	self.player_styles.hitman.unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_fps_hitman_male/tstp_acc_fps_hitman_male"
+	self.player_styles.hitman.material_variations = {}
 	self.player_styles.hitman.material_variations.default = {
-		name_id = "bm_suit_tstp_hitman_default",
+		desc_id = "bm_suit_tstp_hitman_default_desc",
 		global_value = "tstp",
-		desc_id = "bm_suit_tstp_hitman_default_desc"
+		name_id = "bm_suit_tstp_hitman_default"
 	}
 	self.player_styles.hitman.characters = {}
-	self.player_styles.hitman.material_variations = {
-		default = {
-			name_id = "bm_suit_tstp_hitman_default",
-			global_value = "tstp",
-			desc_id = "bm_suit_tstp_hitman_default_desc",
-			auto_aquire = true
-		},
-		blue = {
-			desc_id = "bm_suit_tstp_hitman_blue_desc",
-			global_value = "tstp",
-			auto_aquire = true,
-			name_id = "bm_suit_tstp_hitman_blue",
-			third_material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_hitman_blue",
-			material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_fps_hitman_blue"
-		},
-		red = {
-			desc_id = "bm_suit_tstp_hitman_red_desc",
-			global_value = "tstp",
-			auto_aquire = true,
-			name_id = "bm_suit_tstp_hitman_red",
-			third_material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_hitman_red",
-			material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_fps_hitman_red"
-		},
-		brown = {
-			desc_id = "bm_suit_tstp_hitman_brown_desc",
-			global_value = "tstp",
-			auto_aquire = true,
-			name_id = "bm_suit_tstp_hitman_brown",
-			third_material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_hitman_brown",
-			material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_fps_hitman_brown"
-		}
+	self.player_styles.hitman.material_variations = {}
+	self.player_styles.hitman.material_variations.default = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_hitman_default_desc",
+		global_value = "tstp",
+		name_id = "bm_suit_tstp_hitman_default"
 	}
-	local hitman_characters_male = {
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_male_average/tstp_acc_hitman_male_average"
+	self.player_styles.hitman.material_variations.blue = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_hitman_blue_desc",
+		global_value = "tstp",
+		material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_fps_hitman_blue",
+		name_id = "bm_suit_tstp_hitman_blue",
+		third_material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_hitman_blue"
 	}
+	self.player_styles.hitman.material_variations.red = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_hitman_red_desc",
+		global_value = "tstp",
+		material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_fps_hitman_red",
+		name_id = "bm_suit_tstp_hitman_red",
+		third_material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_hitman_red"
+	}
+	self.player_styles.hitman.material_variations.brown = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_hitman_brown_desc",
+		global_value = "tstp",
+		material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_fps_hitman_brown",
+		name_id = "bm_suit_tstp_hitman_brown",
+		third_material = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/shared_materials/tstp_acc_hitman_brown"
+	}
+
+	local hitman_characters_male = {}
+
+	hitman_characters_male.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_male_average/tstp_acc_hitman_male_average"
 
 	set_characters_data("hitman", characters_male, hitman_characters_male)
 
-	local hitman_characters_male_big = {
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_male_big/tstp_acc_hitman_male_big"
-	}
+	local hitman_characters_male_big = {}
+
+	hitman_characters_male_big.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_male_big/tstp_acc_hitman_male_big"
 
 	set_characters_data("hitman", characters_male_big, hitman_characters_male_big)
 
-	local hitman_characters_female = {
-		unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_fps_hitman_female/tstp_acc_fps_hitman_female",
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_female_average/tstp_acc_hitman_female_average"
-	}
+	local hitman_characters_female = {}
+
+	hitman_characters_female.unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_fps_hitman_female/tstp_acc_fps_hitman_female"
+	hitman_characters_female.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_female_average/tstp_acc_hitman_female_average"
 
 	set_characters_data("hitman", characters_female, hitman_characters_female)
 
-	local hitman_characters_female_big = {
-		unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_fps_hitman_female/tstp_acc_fps_hitman_female",
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_female_fat/tstp_acc_hitman_female_fat"
-	}
+	local hitman_characters_female_big = {}
+
+	hitman_characters_female_big.unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_fps_hitman_female/tstp_acc_fps_hitman_female"
+	hitman_characters_female_big.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_female_fat/tstp_acc_hitman_female_fat"
 
 	set_characters_data("hitman", characters_female_big, hitman_characters_female_big)
 
-	local hitman_characters_male_fat = {
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_male_fat/tstp_acc_hitman_male_fat",
-		sequence = "set_ehtan"
-	}
+	local hitman_characters_male_fat = {}
+
+	hitman_characters_male_fat.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_hitman/tstp_acc_hitman_male_fat/tstp_acc_hitman_male_fat"
+	hitman_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.hitman.characters.ecp_male = hitman_characters_male_fat
-	self.player_styles.traditional = {
-		name_id = "bm_suit_tstp_traditional",
-		desc_id = "bm_suit_tstp_traditional_desc",
-		texture_bundle_folder = "tstp",
-		global_value = "tstp",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_fps_traditional_male/tstp_acc_fps_traditional_male",
-		material_variations = {}
-	}
+	self.player_styles.traditional = {}
+	self.player_styles.traditional.name_id = "bm_suit_tstp_traditional"
+	self.player_styles.traditional.desc_id = "bm_suit_tstp_traditional_desc"
+	self.player_styles.traditional.texture_bundle_folder = "tstp"
+	self.player_styles.traditional.global_value = "tstp"
+	self.player_styles.traditional.body_replacement = body_replacement_standard
+	self.player_styles.traditional.third_body_replacement = body_replacement_standard
+	self.player_styles.traditional.unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_fps_traditional_male/tstp_acc_fps_traditional_male"
+	self.player_styles.traditional.material_variations = {}
 	self.player_styles.traditional.material_variations.default = {
-		name_id = "bm_suit_tstp_traditional_default",
+		desc_id = "bm_suit_tstp_traditional_default_desc",
 		global_value = "tstp",
-		desc_id = "bm_suit_tstp_traditional_default_desc"
+		name_id = "bm_suit_tstp_traditional_default"
 	}
 	self.player_styles.traditional.characters = {}
-	self.player_styles.traditional.material_variations = {
-		default = {
-			name_id = "bm_suit_tstp_traditional_default",
-			global_value = "tstp",
-			desc_id = "bm_suit_tstp_traditional_default_desc",
-			auto_aquire = true
-		},
-		blue = {
-			desc_id = "bm_suit_tstp_traditional_blue_desc",
-			global_value = "tstp",
-			auto_aquire = true,
-			name_id = "bm_suit_tstp_traditional_blue",
-			third_material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_traditional_blue",
-			material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_fps_traditional_blue"
-		},
-		red = {
-			desc_id = "bm_suit_tstp_traditional_red_desc",
-			global_value = "tstp",
-			auto_aquire = true,
-			name_id = "bm_suit_tstp_traditional_red",
-			third_material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_traditional_red",
-			material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_fps_traditional_red"
-		},
-		brown = {
-			desc_id = "bm_suit_tstp_traditional_brown_desc",
-			global_value = "tstp",
-			auto_aquire = true,
-			name_id = "bm_suit_tstp_traditional_brown",
-			third_material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_traditional_brown",
-			material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_fps_traditional_brown"
-		}
+	self.player_styles.traditional.material_variations = {}
+	self.player_styles.traditional.material_variations.default = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_traditional_default_desc",
+		global_value = "tstp",
+		name_id = "bm_suit_tstp_traditional_default"
 	}
-	local traditional_characters_male = {
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_male_average/tstp_acc_traditional_male_average"
+	self.player_styles.traditional.material_variations.blue = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_traditional_blue_desc",
+		global_value = "tstp",
+		material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_fps_traditional_blue",
+		name_id = "bm_suit_tstp_traditional_blue",
+		third_material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_traditional_blue"
 	}
+	self.player_styles.traditional.material_variations.red = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_traditional_red_desc",
+		global_value = "tstp",
+		material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_fps_traditional_red",
+		name_id = "bm_suit_tstp_traditional_red",
+		third_material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_traditional_red"
+	}
+	self.player_styles.traditional.material_variations.brown = {
+		auto_aquire = true,
+		desc_id = "bm_suit_tstp_traditional_brown_desc",
+		global_value = "tstp",
+		material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_fps_traditional_brown",
+		name_id = "bm_suit_tstp_traditional_brown",
+		third_material = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/shared_materials/tstp_acc_traditional_brown"
+	}
+
+	local traditional_characters_male = {}
+
+	traditional_characters_male.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_male_average/tstp_acc_traditional_male_average"
 
 	set_characters_data("traditional", characters_male, traditional_characters_male)
 
-	local traditional_characters_male_big = {
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_male_big/tstp_acc_traditional_male_big"
-	}
+	local traditional_characters_male_big = {}
+
+	traditional_characters_male_big.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_male_big/tstp_acc_traditional_male_big"
 
 	set_characters_data("traditional", characters_male_big, traditional_characters_male_big)
 
-	local traditional_characters_female = {
-		unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_fps_traditional_female/tstp_acc_fps_traditional_female",
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_female_average/tstp_acc_traditional_female_average"
-	}
+	local traditional_characters_female = {}
+
+	traditional_characters_female.unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_fps_traditional_female/tstp_acc_fps_traditional_female"
+	traditional_characters_female.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_female_average/tstp_acc_traditional_female_average"
 
 	set_characters_data("traditional", characters_female, traditional_characters_female)
 
-	local traditional_characters_female_big = {
-		unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_fps_traditional_female/tstp_acc_fps_traditional_female",
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_female_fat/tstp_acc_traditional_female_fat"
-	}
+	local traditional_characters_female_big = {}
+
+	traditional_characters_female_big.unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_fps_traditional_female/tstp_acc_fps_traditional_female"
+	traditional_characters_female_big.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_female_fat/tstp_acc_traditional_female_fat"
 
 	set_characters_data("traditional", characters_female_big, traditional_characters_female_big)
 
-	local traditional_characters_male_fat = {
-		third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_male_fat/tstp_acc_traditional_male_fat",
-		sequence = "set_ehtan"
-	}
+	local traditional_characters_male_fat = {}
+
+	traditional_characters_male_fat.third_unit = "units/pd2_dlc_tstp/characters/tstp_acc_traditional/tstp_acc_traditional_male_fat/tstp_acc_traditional_male_fat"
+	traditional_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.traditional.characters.ecp_male = traditional_characters_male_fat
-	self.player_styles.thug = {
-		name_id = "bm_suit_mar21_thug",
-		desc_id = "bm_suit_mar21_thug_desc",
-		texture_bundle_folder = "mar21",
-		global_value = "mar21",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_fps_thug_male/mar21_acc_fps_thug_male",
-		material_variations = {}
-	}
+	self.player_styles.thug = {}
+	self.player_styles.thug.name_id = "bm_suit_mar21_thug"
+	self.player_styles.thug.desc_id = "bm_suit_mar21_thug_desc"
+	self.player_styles.thug.texture_bundle_folder = "mar21"
+	self.player_styles.thug.global_value = "mar21"
+	self.player_styles.thug.body_replacement = body_replacement_standard
+	self.player_styles.thug.third_body_replacement = body_replacement_standard
+	self.player_styles.thug.unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_fps_thug_male/mar21_acc_fps_thug_male"
+	self.player_styles.thug.material_variations = {}
 	self.player_styles.thug.material_variations.default = {
-		name_id = "bm_suit_mar21_thug_default",
+		desc_id = "bm_suit_mar21_thug_default_desc",
 		global_value = "mar21",
-		desc_id = "bm_suit_mar21_thug_default_desc"
+		name_id = "bm_suit_mar21_thug_default"
 	}
 	self.player_styles.thug.characters = {}
-	self.player_styles.thug.material_variations = {
-		default = {
-			name_id = "bm_suit_mar21_thug_default",
-			global_value = "mar21",
-			desc_id = "bm_suit_mar21_thug_default_desc",
-			prio = 0
-		},
-		black = {
-			desc_id = "bm_suit_jun21_thug_black_desc",
-			global_value = "jun21",
-			prio = 1,
-			auto_aquire = true,
-			name_id = "bm_suit_jun21_thug_black",
-			third_material = "units/pd2_dlc_jun21/characters/shared_materials/jun21_acc_thug_black",
-			material = "units/pd2_dlc_jun21/characters/shared_materials/jun21_acc_fps_thug_black"
-		},
-		red = {
-			desc_id = "bm_suit_oct21_thug_red_desc",
-			global_value = "oct21",
-			prio = 2,
-			auto_aquire = true,
-			name_id = "bm_suit_oct21_thug_red",
-			third_material = "units/pd2_dlc_oct21/characters/shared_materials/oct21_acc_thug_red",
-			material = "units/pd2_dlc_oct21/characters/shared_materials/oct21_acc_fps_thug_red"
-		},
-		white = {
-			desc_id = "bm_suit_mar22_thug_white_desc",
-			global_value = "mar22",
-			prio = 3,
-			auto_aquire = true,
-			name_id = "bm_suit_mar22_thug_white",
-			third_material = "units/pd2_dlc_mar22/characters/shared_materials/mar22_acc_thug_white",
-			material = "units/pd2_dlc_mar22/characters/shared_materials/mar22_acc_fps_thug_white"
-		},
-		gold = {
-			desc_id = "bm_suit_pda10_thug_gold_desc",
-			global_value = "pda10",
-			texture_bundle_folder = "pda10",
-			prio = 4,
-			name_id = "bm_suit_pda10_thug_gold",
-			third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gdragon/pda10_acc_gdragon",
-			material = "units/pd2_dlc_pda10/characters/pda10_acc_gdragon/pda10_acc_fps_gdragon"
-		}
+	self.player_styles.thug.material_variations = {}
+	self.player_styles.thug.material_variations.default = {
+		desc_id = "bm_suit_mar21_thug_default_desc",
+		global_value = "mar21",
+		name_id = "bm_suit_mar21_thug_default",
+		prio = 0
 	}
-	local thug_characters_male = {
-		third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_male_average/mar21_acc_thug_male_average"
+	self.player_styles.thug.material_variations.black = {
+		auto_aquire = true,
+		desc_id = "bm_suit_jun21_thug_black_desc",
+		global_value = "jun21",
+		material = "units/pd2_dlc_jun21/characters/shared_materials/jun21_acc_fps_thug_black",
+		name_id = "bm_suit_jun21_thug_black",
+		prio = 1,
+		third_material = "units/pd2_dlc_jun21/characters/shared_materials/jun21_acc_thug_black"
 	}
+	self.player_styles.thug.material_variations.red = {
+		auto_aquire = true,
+		desc_id = "bm_suit_oct21_thug_red_desc",
+		global_value = "oct21",
+		material = "units/pd2_dlc_oct21/characters/shared_materials/oct21_acc_fps_thug_red",
+		name_id = "bm_suit_oct21_thug_red",
+		prio = 2,
+		third_material = "units/pd2_dlc_oct21/characters/shared_materials/oct21_acc_thug_red"
+	}
+	self.player_styles.thug.material_variations.white = {
+		auto_aquire = true,
+		desc_id = "bm_suit_mar22_thug_white_desc",
+		global_value = "mar22",
+		material = "units/pd2_dlc_mar22/characters/shared_materials/mar22_acc_fps_thug_white",
+		name_id = "bm_suit_mar22_thug_white",
+		prio = 3,
+		third_material = "units/pd2_dlc_mar22/characters/shared_materials/mar22_acc_thug_white"
+	}
+	self.player_styles.thug.material_variations.gold = {
+		desc_id = "bm_suit_pda10_thug_gold_desc",
+		global_value = "pda10",
+		material = "units/pd2_dlc_pda10/characters/pda10_acc_gdragon/pda10_acc_fps_gdragon",
+		name_id = "bm_suit_pda10_thug_gold",
+		prio = 4,
+		texture_bundle_folder = "pda10",
+		third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gdragon/pda10_acc_gdragon"
+	}
+
+	local thug_characters_male = {}
+
+	thug_characters_male.third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_male_average/mar21_acc_thug_male_average"
 
 	set_characters_data("thug", characters_male, thug_characters_male)
 
-	local thug_characters_male_big = {
-		third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_male_big/mar21_acc_thug_male_big"
-	}
+	local thug_characters_male_big = {}
+
+	thug_characters_male_big.third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_male_big/mar21_acc_thug_male_big"
 
 	set_characters_data("thug", characters_male_big, thug_characters_male_big)
 
-	local thug_characters_female = {
-		unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_fps_thug_female/mar21_acc_fps_thug_female",
-		third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_female_average/mar21_acc_thug_female_average"
-	}
+	local thug_characters_female = {}
+
+	thug_characters_female.unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_fps_thug_female/mar21_acc_fps_thug_female"
+	thug_characters_female.third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_female_average/mar21_acc_thug_female_average"
 
 	set_characters_data("thug", characters_female, thug_characters_female)
 
-	local thug_characters_female_big = {
-		unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_fps_thug_female/mar21_acc_fps_thug_female",
-		third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_female_fat/mar21_acc_thug_female_fat"
-	}
+	local thug_characters_female_big = {}
+
+	thug_characters_female_big.unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_fps_thug_female/mar21_acc_fps_thug_female"
+	thug_characters_female_big.third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_female_fat/mar21_acc_thug_female_fat"
 
 	set_characters_data("thug", characters_female_big, thug_characters_female_big)
 
-	local thug_characters_male_fat = {
-		third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_male_fat/mar21_acc_thug_male_fat",
-		sequence = "set_ehtan"
-	}
+	local thug_characters_male_fat = {}
+
+	thug_characters_male_fat.third_unit = "units/pd2_dlc_mar21/characters/mar21_acc_thug/mar21_acc_thug_male_fat/mar21_acc_thug_male_fat"
+	thug_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.thug.characters.ecp_male = thug_characters_male_fat
-	self.player_styles.gangstercoat = {
-		name_id = "bm_suit_gangstercoat",
-		desc_id = "bm_suit_gangstercoat_desc",
-		texture_bundle_folder = "in32",
-		global_value = "in32",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_fps_gangstercoat/in32_acc_fps_gangstercoat",
-		material_variations = {}
-	}
+	self.player_styles.gangstercoat = {}
+	self.player_styles.gangstercoat.name_id = "bm_suit_gangstercoat"
+	self.player_styles.gangstercoat.desc_id = "bm_suit_gangstercoat_desc"
+	self.player_styles.gangstercoat.texture_bundle_folder = "in32"
+	self.player_styles.gangstercoat.global_value = "in32"
+	self.player_styles.gangstercoat.body_replacement = body_replacement_standard
+	self.player_styles.gangstercoat.third_body_replacement = body_replacement_standard
+	self.player_styles.gangstercoat.unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_fps_gangstercoat/in32_acc_fps_gangstercoat"
+	self.player_styles.gangstercoat.material_variations = {}
 	self.player_styles.gangstercoat.material_variations.default = {
-		name_id = "bm_suit_gangstercoat",
+		desc_id = "bm_suit_gangstercoat_desc",
 		global_value = "in32",
-		desc_id = "bm_suit_gangstercoat_desc"
+		name_id = "bm_suit_gangstercoat"
 	}
 	self.player_styles.gangstercoat.characters = {}
-	self.player_styles.gangstercoat.material_variations = {
-		default = {
-			name_id = "bm_suit_var_gangstercoat_default",
-			global_value = "in32",
-			desc_id = "bm_suit_var_gangstercoat_default_desc"
-		},
-		irish = {
-			desc_id = "bm_suit_var_gangstercoat_irish_desc",
-			global_value = "in32",
-			name_id = "bm_suit_var_gangstercoat_irish",
-			third_material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_irish",
-			material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_fps_irish"
-		},
-		british = {
-			desc_id = "bm_suit_var_gangstercoat_british_desc",
-			global_value = "in32",
-			name_id = "bm_suit_var_gangstercoat_british",
-			third_material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_british",
-			material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_fps_british"
-		},
-		french = {
-			desc_id = "bm_suit_var_gangstercoat_french_desc",
-			global_value = "in32",
-			name_id = "bm_suit_var_gangstercoat_french",
-			third_material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_french",
-			material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_fps_french"
-		}
+	self.player_styles.gangstercoat.material_variations = {}
+	self.player_styles.gangstercoat.material_variations.default = {
+		desc_id = "bm_suit_var_gangstercoat_default_desc",
+		global_value = "in32",
+		name_id = "bm_suit_var_gangstercoat_default"
 	}
-	local gangstercoat_characters_male = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_male_average/in32_acc_gangstercoat_male_average"
+	self.player_styles.gangstercoat.material_variations.irish = {
+		desc_id = "bm_suit_var_gangstercoat_irish_desc",
+		global_value = "in32",
+		material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_fps_irish",
+		name_id = "bm_suit_var_gangstercoat_irish",
+		third_material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_irish"
 	}
+	self.player_styles.gangstercoat.material_variations.british = {
+		desc_id = "bm_suit_var_gangstercoat_british_desc",
+		global_value = "in32",
+		material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_fps_british",
+		name_id = "bm_suit_var_gangstercoat_british",
+		third_material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_british"
+	}
+	self.player_styles.gangstercoat.material_variations.french = {
+		desc_id = "bm_suit_var_gangstercoat_french_desc",
+		global_value = "in32",
+		material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_fps_french",
+		name_id = "bm_suit_var_gangstercoat_french",
+		third_material = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/shared_materials/in32_acc_gangstercoat_french"
+	}
+
+	local gangstercoat_characters_male = {}
+
+	gangstercoat_characters_male.third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_male_average/in32_acc_gangstercoat_male_average"
 
 	set_characters_data("gangstercoat", characters_male, gangstercoat_characters_male)
 
-	local gangstercoat_characters_male_big = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_male_big/in32_acc_gangstercoat_male_big"
-	}
+	local gangstercoat_characters_male_big = {}
+
+	gangstercoat_characters_male_big.third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_male_big/in32_acc_gangstercoat_male_big"
 
 	set_characters_data("gangstercoat", characters_male_big, gangstercoat_characters_male_big)
 
-	local gangstercoat_characters_female = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_female_average/in32_acc_gangstercoat_female_average"
-	}
+	local gangstercoat_characters_female = {}
+
+	gangstercoat_characters_female.third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_female_average/in32_acc_gangstercoat_female_average"
 
 	set_characters_data("gangstercoat", characters_female, gangstercoat_characters_female)
 
-	local gangstercoat_characters_female_big = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_female_fat/in32_acc_gangstercoat_female_fat"
-	}
+	local gangstercoat_characters_female_big = {}
+
+	gangstercoat_characters_female_big.third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_female_fat/in32_acc_gangstercoat_female_fat"
 
 	set_characters_data("gangstercoat", characters_female_big, gangstercoat_characters_female_big)
 
-	local gangstercoat_characters_male_fat = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_male_fat/in32_acc_gangstercoat_male_fat",
-		sequence = "set_ehtan"
-	}
+	local gangstercoat_characters_male_fat = {}
+
+	gangstercoat_characters_male_fat.third_unit = "units/pd2_dlc_in32/characters/in32_acc_gangstercoat/in32_acc_gangstercoat_male_fat/in32_acc_gangstercoat_male_fat"
+	gangstercoat_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.gangstercoat.characters.ecp_male = gangstercoat_characters_male_fat
-	self.player_styles.general = {
-		name_id = "bm_suit_general",
-		desc_id = "bm_suit_general_desc",
-		texture_bundle_folder = "in32",
-		global_value = "in32",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_fps_general/in32_acc_fps_general",
-		material_variations = {}
-	}
+	self.player_styles.general = {}
+	self.player_styles.general.name_id = "bm_suit_general"
+	self.player_styles.general.desc_id = "bm_suit_general_desc"
+	self.player_styles.general.texture_bundle_folder = "in32"
+	self.player_styles.general.global_value = "in32"
+	self.player_styles.general.body_replacement = body_replacement_standard
+	self.player_styles.general.third_body_replacement = body_replacement_standard
+	self.player_styles.general.unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_fps_general/in32_acc_fps_general"
+	self.player_styles.general.material_variations = {}
 	self.player_styles.general.material_variations.default = {
-		name_id = "bm_suit_general",
+		desc_id = "bm_suit_general_desc",
 		global_value = "in32",
-		desc_id = "bm_suit_general_desc"
+		name_id = "bm_suit_general"
 	}
 	self.player_styles.general.characters = {}
-	self.player_styles.general.material_variations = {
-		default = {
-			name_id = "bm_suit_var_general_default",
-			global_value = "in32",
-			desc_id = "bm_suit_var_general_default_desc"
-		},
-		blue = {
-			desc_id = "bm_suit_var_general_blue_desc",
-			global_value = "in32",
-			name_id = "bm_suit_var_general_blue",
-			third_material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_general_blue",
-			material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_fps_general_blue"
-		},
-		red = {
-			desc_id = "bm_suit_var_general_red_desc",
-			global_value = "in32",
-			name_id = "bm_suit_var_general_red",
-			third_material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_general_red",
-			material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_fps_general_red"
-		},
-		white = {
-			desc_id = "bm_suit_var_general_white_desc",
-			global_value = "in32",
-			name_id = "bm_suit_var_general_white",
-			third_material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_general_white",
-			material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_fps_general_white"
-		}
+	self.player_styles.general.material_variations = {}
+	self.player_styles.general.material_variations.default = {
+		desc_id = "bm_suit_var_general_default_desc",
+		global_value = "in32",
+		name_id = "bm_suit_var_general_default"
 	}
-	local general_characters_male = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_male_average/in32_acc_general_male_average"
+	self.player_styles.general.material_variations.blue = {
+		desc_id = "bm_suit_var_general_blue_desc",
+		global_value = "in32",
+		material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_fps_general_blue",
+		name_id = "bm_suit_var_general_blue",
+		third_material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_general_blue"
 	}
+	self.player_styles.general.material_variations.red = {
+		desc_id = "bm_suit_var_general_red_desc",
+		global_value = "in32",
+		material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_fps_general_red",
+		name_id = "bm_suit_var_general_red",
+		third_material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_general_red"
+	}
+	self.player_styles.general.material_variations.white = {
+		desc_id = "bm_suit_var_general_white_desc",
+		global_value = "in32",
+		material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_fps_general_white",
+		name_id = "bm_suit_var_general_white",
+		third_material = "units/pd2_dlc_in32/characters/in32_acc_general/shared_materials/in32_acc_general_white"
+	}
+
+	local general_characters_male = {}
+
+	general_characters_male.third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_male_average/in32_acc_general_male_average"
 
 	set_characters_data("general", characters_male, general_characters_male)
 
-	local general_characters_male_big = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_male_big/in32_acc_general_male_big"
-	}
+	local general_characters_male_big = {}
+
+	general_characters_male_big.third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_male_big/in32_acc_general_male_big"
 
 	set_characters_data("general", characters_male_big, general_characters_male_big)
 
-	local general_characters_female = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_female_average/in32_acc_general_female_average"
-	}
+	local general_characters_female = {}
+
+	general_characters_female.third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_female_average/in32_acc_general_female_average"
 
 	set_characters_data("general", characters_female, general_characters_female)
 
-	local general_characters_female_big = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_female_fat/in32_acc_general_female_fat"
-	}
+	local general_characters_female_big = {}
+
+	general_characters_female_big.third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_female_fat/in32_acc_general_female_fat"
 
 	set_characters_data("general", characters_female_big, general_characters_female_big)
 
-	local general_characters_male_fat = {
-		third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_male_fat/in32_acc_general_male_fat",
-		sequence = "set_ehtan"
-	}
+	local general_characters_male_fat = {}
+
+	general_characters_male_fat.third_unit = "units/pd2_dlc_in32/characters/in32_acc_general/in32_acc_general_male_fat/in32_acc_general_male_fat"
+	general_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.general.characters.ecp_male = general_characters_male_fat
-	self.player_styles.boss = {
-		name_id = "bm_suit_boss",
-		desc_id = "bm_suit_boss_desc",
-		texture_bundle_folder = "srtr",
-		global_value = "srtr",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_fps_boss_male/srtr_acc_fps_boss_male",
-		material_variations = {}
-	}
+	self.player_styles.boss = {}
+	self.player_styles.boss.name_id = "bm_suit_boss"
+	self.player_styles.boss.desc_id = "bm_suit_boss_desc"
+	self.player_styles.boss.texture_bundle_folder = "srtr"
+	self.player_styles.boss.global_value = "srtr"
+	self.player_styles.boss.body_replacement = body_replacement_standard
+	self.player_styles.boss.third_body_replacement = body_replacement_standard
+	self.player_styles.boss.unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_fps_boss_male/srtr_acc_fps_boss_male"
+	self.player_styles.boss.material_variations = {}
 	self.player_styles.boss.material_variations.default = {
-		name_id = "bm_suit_boss",
+		desc_id = "bm_suit_boss_desc",
 		global_value = "srtr",
-		desc_id = "bm_suit_boss_desc"
+		name_id = "bm_suit_boss"
 	}
 	self.player_styles.boss.characters = {}
-	local boss_characters_male = {
-		third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_male_average/srtr_acc_boss_male_average"
-	}
+
+	local boss_characters_male = {}
+
+	boss_characters_male.third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_male_average/srtr_acc_boss_male_average"
 
 	set_characters_data("boss", characters_male, boss_characters_male)
 
-	local boss_characters_male_big = {
-		third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_male_big/srtr_acc_boss_male_big"
-	}
+	local boss_characters_male_big = {}
+
+	boss_characters_male_big.third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_male_big/srtr_acc_boss_male_big"
 
 	set_characters_data("boss", characters_male_big, boss_characters_male_big)
 
-	local boss_characters_female = {
-		third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_female_average/srtr_acc_boss_female_average"
-	}
+	local boss_characters_female = {}
+
+	boss_characters_female.third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_female_average/srtr_acc_boss_female_average"
 
 	set_characters_data("boss", characters_female, boss_characters_female)
 
-	local boss_characters_female_big = {
-		third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_female_fat/srtr_acc_boss_female_fat"
-	}
+	local boss_characters_female_big = {}
+
+	boss_characters_female_big.third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_female_fat/srtr_acc_boss_female_fat"
 
 	set_characters_data("boss", characters_female_big, boss_characters_female_big)
 
-	local boss_characters_male_fat = {
-		third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_male_fat/srtr_acc_boss_male_fat",
-		sequence = "set_ehtan"
-	}
+	local boss_characters_male_fat = {}
+
+	boss_characters_male_fat.third_unit = "units/pd2_dlc_srtr/characters/srtr_acc_boss/srtr_acc_boss_male_fat/srtr_acc_boss_male_fat"
+	boss_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.boss.characters.ecp_male = boss_characters_male_fat
-	self.player_styles.lowinttech = {
-		name_id = "bm_suit_lowinttech",
-		desc_id = "bm_suit_lowinttech_desc",
-		texture_bundle_folder = "sdtp",
-		global_value = "sdtp",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_fps_lowinttech_male/sdtp_acc_fps_lowinttech_male",
-		material_variations = {}
-	}
+	self.player_styles.lowinttech = {}
+	self.player_styles.lowinttech.name_id = "bm_suit_lowinttech"
+	self.player_styles.lowinttech.desc_id = "bm_suit_lowinttech_desc"
+	self.player_styles.lowinttech.texture_bundle_folder = "sdtp"
+	self.player_styles.lowinttech.global_value = "sdtp"
+	self.player_styles.lowinttech.body_replacement = body_replacement_standard
+	self.player_styles.lowinttech.third_body_replacement = body_replacement_standard
+	self.player_styles.lowinttech.unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_fps_lowinttech_male/sdtp_acc_fps_lowinttech_male"
+	self.player_styles.lowinttech.material_variations = {}
 	self.player_styles.lowinttech.material_variations.default = {
-		name_id = "bm_suit_lowinttech",
+		desc_id = "bm_suit_lowinttech_desc",
 		global_value = "sdtp",
-		desc_id = "bm_suit_lowinttech_desc"
+		name_id = "bm_suit_lowinttech"
 	}
 	self.player_styles.lowinttech.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_lowinttech_blue_desc",
 		global_value = "sdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_fps_lowinttech_blue",
 		name_id = "bm_suit_var_lowinttech_blue",
-		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_lowinttech_blue",
-		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_fps_lowinttech_blue"
+		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_lowinttech_blue"
 	}
 	self.player_styles.lowinttech.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_lowinttech_red_desc",
 		global_value = "sdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_fps_lowinttech_red",
 		name_id = "bm_suit_var_lowinttech_red",
-		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_lowinttech_red",
-		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_fps_lowinttech_red"
+		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_lowinttech_red"
 	}
 	self.player_styles.lowinttech.material_variations.yellow = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_lowinttech_yellow_desc",
 		global_value = "sdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_fps_lowinttech_yellow",
 		name_id = "bm_suit_var_lowinttech_yellow",
-		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_lowinttech_yellow",
-		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_fps_lowinttech_yellow"
+		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/shared_materials/sdtp_acc_lowinttech_yellow"
 	}
 	self.player_styles.lowinttech.characters = {}
-	local lowinttech_characters_male = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_male_average/sdtp_acc_lowinttech_male_average"
-	}
+
+	local lowinttech_characters_male = {}
+
+	lowinttech_characters_male.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_male_average/sdtp_acc_lowinttech_male_average"
 
 	set_characters_data("lowinttech", characters_male, lowinttech_characters_male)
 
-	local lowinttech_characters_male_big = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_male_big/sdtp_acc_lowinttech_male_big"
-	}
+	local lowinttech_characters_male_big = {}
+
+	lowinttech_characters_male_big.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_male_big/sdtp_acc_lowinttech_male_big"
 
 	set_characters_data("lowinttech", characters_male_big, lowinttech_characters_male_big)
 
-	local lowinttech_characters_female = {
-		unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_fps_lowinttech_female/sdtp_acc_fps_lowinttech_female",
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_female_average/sdtp_acc_lowinttech_female_average"
-	}
+	local lowinttech_characters_female = {}
+
+	lowinttech_characters_female.unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_fps_lowinttech_female/sdtp_acc_fps_lowinttech_female"
+	lowinttech_characters_female.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_female_average/sdtp_acc_lowinttech_female_average"
 
 	set_characters_data("lowinttech", characters_female, lowinttech_characters_female)
 
-	local lowinttech_characters_female_big = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_female_fat/sdtp_acc_lowinttech_female_fat"
-	}
+	local lowinttech_characters_female_big = {}
+
+	lowinttech_characters_female_big.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_female_fat/sdtp_acc_lowinttech_female_fat"
 
 	set_characters_data("lowinttech", characters_female_big, lowinttech_characters_female_big)
 
-	local lowinttech_characters_male_fat = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_male_fat/sdtp_acc_lowinttech_male_fat",
-		sequence = "set_ehtan"
-	}
+	local lowinttech_characters_male_fat = {}
+
+	lowinttech_characters_male_fat.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_lowinttech/sdtp_acc_lowinttech_male_fat/sdtp_acc_lowinttech_male_fat"
+	lowinttech_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.lowinttech.characters.ecp_male = lowinttech_characters_male_fat
-	self.player_styles.highinttech = {
-		name_id = "bm_suit_highinttech",
-		desc_id = "bm_suit_highinttech_desc",
-		texture_bundle_folder = "sdtp",
-		global_value = "sdtp",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_fps_highinttech_male/sdtp_acc_fps_highinttech_male",
-		material_variations = {}
-	}
+	self.player_styles.highinttech = {}
+	self.player_styles.highinttech.name_id = "bm_suit_highinttech"
+	self.player_styles.highinttech.desc_id = "bm_suit_highinttech_desc"
+	self.player_styles.highinttech.texture_bundle_folder = "sdtp"
+	self.player_styles.highinttech.global_value = "sdtp"
+	self.player_styles.highinttech.body_replacement = body_replacement_standard
+	self.player_styles.highinttech.third_body_replacement = body_replacement_standard
+	self.player_styles.highinttech.unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_fps_highinttech_male/sdtp_acc_fps_highinttech_male"
+	self.player_styles.highinttech.material_variations = {}
 	self.player_styles.highinttech.material_variations.default = {
-		name_id = "bm_suit_highinttech",
+		desc_id = "bm_suit_highinttech_desc",
 		global_value = "sdtp",
-		desc_id = "bm_suit_highinttech_desc"
+		name_id = "bm_suit_highinttech"
 	}
 	self.player_styles.highinttech.characters = {}
-	self.player_styles.highinttech.material_variations = {
-		default = {
-			name_id = "bm_suit_var_highinttech_default",
-			global_value = "sdtp",
-			desc_id = "bm_suit_var_highinttech_default_desc"
-		},
-		blue = {
-			desc_id = "bm_suit_var_highinttech_blue_desc",
-			global_value = "sdtp",
-			auto_aquire = true,
-			name_id = "bm_suit_var_highinttech_blue",
-			third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_highinttech_blue",
-			material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_fps_highinttech_male_blue"
-		},
-		orange = {
-			desc_id = "bm_suit_var_highinttech_orange_desc",
-			global_value = "sdtp",
-			auto_aquire = true,
-			name_id = "bm_suit_var_highinttech_orange",
-			third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_highinttech_orange",
-			material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_fps_highinttech_male_orange"
-		},
-		green = {
-			desc_id = "bm_suit_var_highinttech_green_desc",
-			global_value = "sdtp",
-			auto_aquire = true,
-			name_id = "bm_suit_var_highinttech_green",
-			third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_highinttech_green",
-			material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_fps_highinttech_male_green"
-		}
+	self.player_styles.highinttech.material_variations = {}
+	self.player_styles.highinttech.material_variations.default = {
+		desc_id = "bm_suit_var_highinttech_default_desc",
+		global_value = "sdtp",
+		name_id = "bm_suit_var_highinttech_default"
 	}
-	local highinttech_characters_male = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_male_average/sdtp_acc_highinttech_male_average"
+	self.player_styles.highinttech.material_variations.blue = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_highinttech_blue_desc",
+		global_value = "sdtp",
+		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_fps_highinttech_male_blue",
+		name_id = "bm_suit_var_highinttech_blue",
+		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_highinttech_blue"
 	}
+	self.player_styles.highinttech.material_variations.orange = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_highinttech_orange_desc",
+		global_value = "sdtp",
+		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_fps_highinttech_male_orange",
+		name_id = "bm_suit_var_highinttech_orange",
+		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_highinttech_orange"
+	}
+	self.player_styles.highinttech.material_variations.green = {
+		auto_aquire = true,
+		desc_id = "bm_suit_var_highinttech_green_desc",
+		global_value = "sdtp",
+		material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_fps_highinttech_male_green",
+		name_id = "bm_suit_var_highinttech_green",
+		third_material = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/shared_materials/sdtp_acc_highinttech_green"
+	}
+
+	local highinttech_characters_male = {}
+
+	highinttech_characters_male.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_male_average/sdtp_acc_highinttech_male_average"
 
 	set_characters_data("highinttech", characters_male, highinttech_characters_male)
 
-	local highinttech_characters_male_big = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_male_big/sdtp_acc_highinttech_male_big"
-	}
+	local highinttech_characters_male_big = {}
+
+	highinttech_characters_male_big.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_male_big/sdtp_acc_highinttech_male_big"
 
 	set_characters_data("highinttech", characters_male_big, highinttech_characters_male_big)
 
-	local highinttech_characters_female = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_female_average/sdtp_acc_highinttech_female_average"
-	}
+	local highinttech_characters_female = {}
+
+	highinttech_characters_female.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_female_average/sdtp_acc_highinttech_female_average"
 
 	set_characters_data("highinttech", characters_female, highinttech_characters_female)
 
-	local highinttech_characters_female_big = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_female_fat/sdtp_acc_highinttech_female_fat"
-	}
+	local highinttech_characters_female_big = {}
+
+	highinttech_characters_female_big.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_female_fat/sdtp_acc_highinttech_female_fat"
 
 	set_characters_data("highinttech", characters_female_big, highinttech_characters_female_big)
 
-	local highinttech_characters_male_fat = {
-		third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_male_fat/sdtp_acc_highinttech_male_fat",
-		sequence = "set_ehtan"
-	}
+	local highinttech_characters_male_fat = {}
+
+	highinttech_characters_male_fat.third_unit = "units/pd2_dlc_sdtp/characters/sdtp_acc_highinttech/sdtp_acc_highinttech_male_fat/sdtp_acc_highinttech_male_fat"
+	highinttech_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.highinttech.characters.ecp_male = highinttech_characters_male_fat
-	self.player_styles.baron = {
-		name_id = "bm_suit_baron",
-		desc_id = "bm_suit_baron_desc",
-		texture_bundle_folder = "pda8",
-		global_value = "pda8",
-		material_variations = {}
-	}
+	self.player_styles.baron = {}
+	self.player_styles.baron.name_id = "bm_suit_baron"
+	self.player_styles.baron.desc_id = "bm_suit_baron_desc"
+	self.player_styles.baron.texture_bundle_folder = "pda8"
+	self.player_styles.baron.global_value = "pda8"
+	self.player_styles.baron.material_variations = {}
 	self.player_styles.baron.material_variations.default = {
-		name_id = "bm_suit_var_baron_default",
+		desc_id = "bm_suit_var_baron_default_desc",
 		global_value = "pda8",
-		desc_id = "bm_suit_var_baron_default_desc"
+		name_id = "bm_suit_var_baron_default"
 	}
 	self.player_styles.baron.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_baron_blue_desc",
 		global_value = "pda8",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pda8/characters/pda8_acc_baron/shared_materials/pda8_acc_fps_baron_male_blue",
 		name_id = "bm_suit_var_baron_blue",
-		third_material = "units/pd2_dlc_pda8/characters/pda8_acc_baron/shared_materials/pda8_acc_baron_blue",
-		material = "units/pd2_dlc_pda8/characters/pda8_acc_baron/shared_materials/pda8_acc_fps_baron_male_blue"
+		third_material = "units/pd2_dlc_pda8/characters/pda8_acc_baron/shared_materials/pda8_acc_baron_blue"
 	}
 	self.player_styles.baron.body_replacement = body_replacement_standard
 	self.player_styles.baron.third_body_replacement = body_replacement_standard
 	self.player_styles.baron.unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_fps_baron_male/pda8_acc_fps_baron_male"
 	self.player_styles.baron.characters = {}
-	local baron_characters_male = {
-		third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_male_average/pda8_acc_baron_male_average"
-	}
+
+	local baron_characters_male = {}
+
+	baron_characters_male.third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_male_average/pda8_acc_baron_male_average"
 
 	set_characters_data("baron", characters_male, baron_characters_male)
 
-	local baron_characters_male_big = {
-		third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_male_big/pda8_acc_baron_male_big"
-	}
+	local baron_characters_male_big = {}
+
+	baron_characters_male_big.third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_male_big/pda8_acc_baron_male_big"
 
 	set_characters_data("baron", characters_male_big, baron_characters_male_big)
 
-	local baron_characters_female = {
-		third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_female_average/pda8_acc_baron_female_average"
-	}
+	local baron_characters_female = {}
+
+	baron_characters_female.third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_female_average/pda8_acc_baron_female_average"
 
 	set_characters_data("baron", characters_female, baron_characters_female)
 
-	local baron_characters_female_big = {
-		third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_female_fat/pda8_acc_baron_female_fat"
-	}
+	local baron_characters_female_big = {}
+
+	baron_characters_female_big.third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_female_fat/pda8_acc_baron_female_fat"
 
 	set_characters_data("baron", characters_female_big, baron_characters_female_big)
 
-	local baron_characters_male_fat = {
-		third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_male_fat/pda8_acc_baron_male_fat",
-		sequence = "set_ehtan"
-	}
+	local baron_characters_male_fat = {}
+
+	baron_characters_male_fat.third_unit = "units/pd2_dlc_pda8/characters/pda8_acc_baron/pda8_acc_baron_male_fat/pda8_acc_baron_male_fat"
+	baron_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.baron.characters.ecp_male = baron_characters_male_fat
-	self.player_styles.cyberhoodie = {
-		name_id = "bm_suit_cyberhoodie",
-		desc_id = "bm_suit_cyberhoodie_desc",
-		texture_bundle_folder = "cctp",
-		global_value = "cctp",
-		material_variations = {}
-	}
+	self.player_styles.cyberhoodie = {}
+	self.player_styles.cyberhoodie.name_id = "bm_suit_cyberhoodie"
+	self.player_styles.cyberhoodie.desc_id = "bm_suit_cyberhoodie_desc"
+	self.player_styles.cyberhoodie.texture_bundle_folder = "cctp"
+	self.player_styles.cyberhoodie.global_value = "cctp"
+	self.player_styles.cyberhoodie.material_variations = {}
 	self.player_styles.cyberhoodie.material_variations.default = {
-		name_id = "bm_suit_var_cyberhoodie_default",
+		desc_id = "bm_suit_var_cyberhoodie_default_desc",
 		global_value = "cctp",
-		desc_id = "bm_suit_var_cyberhoodie_default_desc"
+		name_id = "bm_suit_var_cyberhoodie_default"
 	}
 	self.player_styles.cyberhoodie.material_variations.vpr = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_cyberhoodie_vpr_desc",
 		global_value = "cctp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_fps_cyberhoodie_vpr",
 		name_id = "bm_suit_var_cyberhoodie_vpr",
-		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_cyberhoodie_vpr",
-		material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_fps_cyberhoodie_vpr"
+		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_cyberhoodie_vpr"
 	}
 	self.player_styles.cyberhoodie.material_variations.tgr = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_cyberhoodie_tgr_desc",
 		global_value = "cctp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_fps_cyberhoodie_tgr",
 		name_id = "bm_suit_var_cyberhoodie_tgr",
-		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_cyberhoodie_tgr",
-		material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_fps_cyberhoodie_tgr"
+		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_cyberhoodie_tgr"
 	}
 	self.player_styles.cyberhoodie.material_variations.mnt = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_cyberhoodie_mnt_desc",
 		global_value = "cctp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_fps_cyberhoodie_mnt",
 		name_id = "bm_suit_var_cyberhoodie_mnt",
-		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_cyberhoodie_mnt",
-		material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_fps_cyberhoodie_mnt"
+		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/shared_materials/cctp_acc_cyberhoodie_mnt"
 	}
 	self.player_styles.cyberhoodie.body_replacement = body_replacement_standard
 	self.player_styles.cyberhoodie.third_body_replacement = body_replacement_standard
 	self.player_styles.cyberhoodie.unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_fps_cyberhoodie_male/cctp_acc_fps_cyberhoodie_male"
 	self.player_styles.cyberhoodie.characters = {}
-	local cyberhoodie_characters_male = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_male_average/cctp_acc_cyberhoodie_male_average"
-	}
+
+	local cyberhoodie_characters_male = {}
+
+	cyberhoodie_characters_male.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_male_average/cctp_acc_cyberhoodie_male_average"
 
 	set_characters_data("cyberhoodie", characters_male, cyberhoodie_characters_male)
 
-	local cyberhoodie_characters_male_big = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_male_big/cctp_acc_cyberhoodie_male_big"
-	}
+	local cyberhoodie_characters_male_big = {}
+
+	cyberhoodie_characters_male_big.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_male_big/cctp_acc_cyberhoodie_male_big"
 
 	set_characters_data("cyberhoodie", characters_male_big, cyberhoodie_characters_male_big)
 
-	local cyberhoodie_characters_female = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_female_average/cctp_acc_cyberhoodie_female_average"
-	}
+	local cyberhoodie_characters_female = {}
+
+	cyberhoodie_characters_female.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_female_average/cctp_acc_cyberhoodie_female_average"
 
 	set_characters_data("cyberhoodie", characters_female, cyberhoodie_characters_female)
 
-	local cyberhoodie_characters_female_big = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_female_fat/cctp_acc_cyberhoodie_female_fat"
-	}
+	local cyberhoodie_characters_female_big = {}
+
+	cyberhoodie_characters_female_big.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_female_fat/cctp_acc_cyberhoodie_female_fat"
 
 	set_characters_data("cyberhoodie", characters_female_big, cyberhoodie_characters_female_big)
 
-	local cyberhoodie_characters_male_fat = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_male_fat/cctp_acc_cyberhoodie_male_fat",
-		sequence = "set_ehtan"
-	}
+	local cyberhoodie_characters_male_fat = {}
+
+	cyberhoodie_characters_male_fat.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cyberhoodie/cctp_acc_cyberhoodie_male_fat/cctp_acc_cyberhoodie_male_fat"
+	cyberhoodie_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.cyberhoodie.characters.ecp_male = cyberhoodie_characters_male_fat
-	self.player_styles.cybertrench = {
-		name_id = "bm_suit_cybertrench",
-		desc_id = "bm_suit_cybertrench_desc",
-		texture_bundle_folder = "cctp",
-		global_value = "cctp",
-		material_variations = {}
-	}
+	self.player_styles.cybertrench = {}
+	self.player_styles.cybertrench.name_id = "bm_suit_cybertrench"
+	self.player_styles.cybertrench.desc_id = "bm_suit_cybertrench_desc"
+	self.player_styles.cybertrench.texture_bundle_folder = "cctp"
+	self.player_styles.cybertrench.global_value = "cctp"
+	self.player_styles.cybertrench.material_variations = {}
 	self.player_styles.cybertrench.material_variations.default = {
-		name_id = "bm_suit_var_cybertrench_default",
+		desc_id = "bm_suit_var_cybertrench_default_desc",
 		global_value = "cctp",
-		desc_id = "bm_suit_var_cybertrench_default_desc"
+		name_id = "bm_suit_var_cybertrench_default"
 	}
 	self.player_styles.cybertrench.material_variations.vpr = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_cybertrench_vpr_desc",
 		global_value = "cctp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_fps_cybertrench_vpr",
 		name_id = "bm_suit_var_cybertrench_vpr",
-		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_cybertrench_vpr",
-		material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_fps_cybertrench_vpr"
+		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_cybertrench_vpr"
 	}
 	self.player_styles.cybertrench.material_variations.tgr = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_cybertrench_tgr_desc",
 		global_value = "cctp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_fps_cybertrench_tgr",
 		name_id = "bm_suit_var_cybertrench_tgr",
-		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_cybertrench_tgr",
-		material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_fps_cybertrench_tgr"
+		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_cybertrench_tgr"
 	}
 	self.player_styles.cybertrench.material_variations.mnt = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_cybertrench_mnt_desc",
 		global_value = "cctp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_fps_cybertrench_mnt",
 		name_id = "bm_suit_var_cybertrench_mnt",
-		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_cybertrench_mnt",
-		material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_fps_cybertrench_mnt"
+		third_material = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/shared_materials/cctp_acc_cybertrench_mnt"
 	}
 	self.player_styles.cybertrench.body_replacement = body_replacement_standard
 	self.player_styles.cybertrench.third_body_replacement = body_replacement_standard
 	self.player_styles.cybertrench.unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_fps_cybertrench_male/cctp_acc_fps_cybertrench_male"
 	self.player_styles.cybertrench.characters = {}
-	local cybertrench_characters_male = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_male_average/cctp_acc_cybertrench_male_average"
-	}
+
+	local cybertrench_characters_male = {}
+
+	cybertrench_characters_male.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_male_average/cctp_acc_cybertrench_male_average"
 
 	set_characters_data("cybertrench", characters_male, cybertrench_characters_male)
 
-	local cybertrench_characters_male_big = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_male_big/cctp_acc_cybertrench_male_big"
-	}
+	local cybertrench_characters_male_big = {}
+
+	cybertrench_characters_male_big.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_male_big/cctp_acc_cybertrench_male_big"
 
 	set_characters_data("cybertrench", characters_male_big, cybertrench_characters_male_big)
 
-	local cybertrench_characters_female = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_female_average/cctp_acc_cybertrench_female_average"
-	}
+	local cybertrench_characters_female = {}
+
+	cybertrench_characters_female.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_female_average/cctp_acc_cybertrench_female_average"
 
 	set_characters_data("cybertrench", characters_female, cybertrench_characters_female)
 
-	local cybertrench_characters_female_big = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_female_fat/cctp_acc_cybertrench_female_fat"
-	}
+	local cybertrench_characters_female_big = {}
+
+	cybertrench_characters_female_big.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_female_fat/cctp_acc_cybertrench_female_fat"
 
 	set_characters_data("cybertrench", characters_female_big, cybertrench_characters_female_big)
 
-	local cybertrench_characters_male_fat = {
-		third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_male_fat/cctp_acc_cybertrench_male_fat",
-		sequence = "set_ehtan"
-	}
+	local cybertrench_characters_male_fat = {}
+
+	cybertrench_characters_male_fat.third_unit = "units/pd2_dlc_cctp/characters/cctp_acc_cybertrench/cctp_acc_cybertrench_male_fat/cctp_acc_cybertrench_male_fat"
+	cybertrench_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.cybertrench.characters.ecp_male = cybertrench_characters_male_fat
-	self.player_styles.clown_2 = {
-		name_id = "bm_suit_clown_2",
-		desc_id = "bm_suit_clown_desc_2",
-		texture_bundle_folder = "a10th",
-		global_value = "a10th",
-		material_variations = {}
-	}
+	self.player_styles.clown_2 = {}
+	self.player_styles.clown_2.name_id = "bm_suit_clown_2"
+	self.player_styles.clown_2.desc_id = "bm_suit_clown_desc_2"
+	self.player_styles.clown_2.texture_bundle_folder = "a10th"
+	self.player_styles.clown_2.global_value = "a10th"
+	self.player_styles.clown_2.material_variations = {}
 	self.player_styles.clown_2.material_variations.default = {
-		name_id = "bm_suit_var_clown_2_default",
+		desc_id = "bm_suit_var_clown_2_default_desc",
 		global_value = "a10th",
-		desc_id = "bm_suit_var_clown_2_default_desc"
+		name_id = "bm_suit_var_clown_2_default"
 	}
 	self.player_styles.clown_2.material_variations.orange = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_clown_2_orange_desc",
 		global_value = "a10th",
-		auto_aquire = true,
+		material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_fps_clown_orange",
 		name_id = "bm_suit_var_clown_2_orange",
-		third_material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_clown_orange",
-		material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_fps_clown_orange"
+		third_material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_clown_orange"
 	}
 	self.player_styles.clown_2.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_clown_2_white_desc",
 		global_value = "a10th",
-		auto_aquire = true,
+		material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_fps_clown_white",
 		name_id = "bm_suit_var_clown_2_white",
-		third_material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_clown_white",
-		material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_fps_clown_white"
+		third_material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_clown_white"
 	}
 	self.player_styles.clown_2.material_variations.yellow = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_clown_2_yellow_desc",
 		global_value = "a10th",
-		auto_aquire = true,
+		material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_fps_clown_yellow",
 		name_id = "bm_suit_var_clown_2_yellow",
-		third_material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_clown_yellow",
-		material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_fps_clown_yellow"
+		third_material = "units/pd2_dlc_a10th/characters/a10th_acc_clown/shared_materials/a10th_acc_clown_yellow"
 	}
 	self.player_styles.clown_2.body_replacement = body_replacement_standard
 	self.player_styles.clown_2.third_body_replacement = body_replacement_standard
 	self.player_styles.clown_2.unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_fps_clown_male/a10th_acc_fps_clown_male"
 	self.player_styles.clown_2.characters = {}
-	local clown_2_characters_male = {
-		third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_male_average/a10th_acc_clown_male_average"
-	}
+
+	local clown_2_characters_male = {}
+
+	clown_2_characters_male.third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_male_average/a10th_acc_clown_male_average"
 
 	set_characters_data("clown_2", characters_male, clown_2_characters_male)
 
-	local clown_2_characters_male_big = {
-		third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_male_big/a10th_acc_clown_male_big"
-	}
+	local clown_2_characters_male_big = {}
+
+	clown_2_characters_male_big.third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_male_big/a10th_acc_clown_male_big"
 
 	set_characters_data("clown_2", characters_male_big, clown_2_characters_male_big)
 
-	local clown_2_characters_female = {
-		third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_female_average/a10th_acc_clown_female_average"
-	}
+	local clown_2_characters_female = {}
+
+	clown_2_characters_female.third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_female_average/a10th_acc_clown_female_average"
 
 	set_characters_data("clown_2", characters_female, clown_2_characters_female)
 
-	local clown_2_characters_female_big = {
-		third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_female_fat/a10th_acc_clown_female_fat"
-	}
+	local clown_2_characters_female_big = {}
+
+	clown_2_characters_female_big.third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_female_fat/a10th_acc_clown_female_fat"
 
 	set_characters_data("clown_2", characters_female_big, clown_2_characters_female_big)
 
-	local clown_2_characters_male_fat = {
-		third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_male_fat/a10th_acc_clown_male_fat",
-		sequence = "set_ehtan"
-	}
+	local clown_2_characters_male_fat = {}
+
+	clown_2_characters_male_fat.third_unit = "units/pd2_dlc_a10th/characters/a10th_acc_clown/a10th_acc_clown_male_fat/a10th_acc_clown_male_fat"
+	clown_2_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.clown_2.characters.ecp_male = clown_2_characters_male_fat
-	self.player_styles.overkillpunk = {
-		name_id = "bm_suit_overkillpunk",
-		desc_id = "bm_suit_overkillpunk_desc",
-		texture_bundle_folder = "in33",
-		global_value = "in33",
-		body_replacement = body_replacement_standard,
-		third_body_replacement = body_replacement_standard,
-		unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_fps_overkillpunk_male/in33_acc_fps_overkillpunk_male",
-		material_variations = {}
-	}
+	self.player_styles.overkillpunk = {}
+	self.player_styles.overkillpunk.name_id = "bm_suit_overkillpunk"
+	self.player_styles.overkillpunk.desc_id = "bm_suit_overkillpunk_desc"
+	self.player_styles.overkillpunk.texture_bundle_folder = "in33"
+	self.player_styles.overkillpunk.global_value = "in33"
+	self.player_styles.overkillpunk.body_replacement = body_replacement_standard
+	self.player_styles.overkillpunk.third_body_replacement = body_replacement_standard
+	self.player_styles.overkillpunk.unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_fps_overkillpunk_male/in33_acc_fps_overkillpunk_male"
+	self.player_styles.overkillpunk.material_variations = {}
 	self.player_styles.overkillpunk.material_variations.default = {
-		name_id = "bm_suit_var_overkillpunk_default",
+		desc_id = "bm_suit_var_overkillpunk_default_desc",
 		global_value = "in33",
-		desc_id = "bm_suit_var_overkillpunk_default_desc"
+		name_id = "bm_suit_var_overkillpunk_default"
 	}
 	self.player_styles.overkillpunk.characters = {}
-	local overkillpunk_characters_male = {
-		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_average/in33_acc_overkillpunk_male_average"
-	}
+
+	local overkillpunk_characters_male = {}
+
+	overkillpunk_characters_male.third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_average/in33_acc_overkillpunk_male_average"
 
 	set_characters_data("overkillpunk", characters_male, overkillpunk_characters_male)
 
-	local overkillpunk_characters_male_big = {
-		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_big/in33_acc_overkillpunk_male_big"
-	}
+	local overkillpunk_characters_male_big = {}
+
+	overkillpunk_characters_male_big.third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_big/in33_acc_overkillpunk_male_big"
 
 	set_characters_data("overkillpunk", characters_male_big, overkillpunk_characters_male_big)
 
-	local overkillpunk_characters_female = {
-		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_female_average/in33_acc_overkillpunk_female_average"
-	}
+	local overkillpunk_characters_female = {}
+
+	overkillpunk_characters_female.third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_female_average/in33_acc_overkillpunk_female_average"
 
 	set_characters_data("overkillpunk", characters_female, overkillpunk_characters_female)
 
-	local overkillpunk_characters_female_big = {
-		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_female_fat/in33_acc_overkillpunk_female_fat"
-	}
+	local overkillpunk_characters_female_big = {}
+
+	overkillpunk_characters_female_big.third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_female_fat/in33_acc_overkillpunk_female_fat"
 
 	set_characters_data("overkillpunk", characters_female_big, overkillpunk_characters_female_big)
 
-	local overkillpunk_characters_male_fat = {
-		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_fat/in33_acc_overkillpunk_male_fat",
-		sequence = "set_ehtan"
-	}
+	local overkillpunk_characters_male_fat = {}
+
+	overkillpunk_characters_male_fat.third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_fat/in33_acc_overkillpunk_male_fat"
+	overkillpunk_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.overkillpunk.characters.ecp_male = overkillpunk_characters_male_fat
-	self.player_styles.classyske = {
-		name_id = "bm_suit_classyske",
-		desc_id = "bm_suit_classyske_desc",
-		texture_bundle_folder = "trik",
-		global_value = "trik",
-		material_variations = {}
-	}
+	self.player_styles.classyske = {}
+	self.player_styles.classyske.name_id = "bm_suit_classyske"
+	self.player_styles.classyske.desc_id = "bm_suit_classyske_desc"
+	self.player_styles.classyske.texture_bundle_folder = "trik"
+	self.player_styles.classyske.global_value = "trik"
+	self.player_styles.classyske.material_variations = {}
 	self.player_styles.classyske.material_variations.default = {
-		name_id = "bm_suit_var_classyske_default",
+		desc_id = "bm_suit_var_classyske_default_desc",
 		global_value = "trik",
-		desc_id = "bm_suit_var_classyske_default_desc"
+		name_id = "bm_suit_var_classyske_default"
 	}
 	self.player_styles.classyske.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_classyske_red_desc",
 		global_value = "trik",
-		auto_aquire = true,
+		material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_fps_classyske_red",
 		name_id = "bm_suit_var_classyske_red",
-		third_material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_classyske_red",
-		material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_fps_classyske_red"
+		third_material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_classyske_red"
 	}
 	self.player_styles.classyske.material_variations.cream = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_classyske_cream_desc",
 		global_value = "trik",
-		auto_aquire = true,
+		material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_fps_classyske_cream",
 		name_id = "bm_suit_var_classyske_cream",
-		third_material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_classyske_cream",
-		material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_fps_classyske_cream"
+		third_material = "units/pd2_dlc_trik/characters/trik_acc_classyske/shared_materials/trik_acc_classyske_cream"
 	}
 	self.player_styles.classyske.body_replacement = body_replacement_standard
 	self.player_styles.classyske.third_body_replacement = body_replacement_standard
 	self.player_styles.classyske.unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_fps_classyske_male/trik_acc_fps_classyske_male"
 	self.player_styles.classyske.characters = {}
-	local classyske_characters_male = {
-		third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_male_average/trik_acc_classyske_male_average"
-	}
+
+	local classyske_characters_male = {}
+
+	classyske_characters_male.third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_male_average/trik_acc_classyske_male_average"
 
 	set_characters_data("classyske", characters_male, classyske_characters_male)
 
-	local classyske_characters_male_big = {
-		third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_male_big/trik_acc_classyske_male_big"
-	}
+	local classyske_characters_male_big = {}
+
+	classyske_characters_male_big.third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_male_big/trik_acc_classyske_male_big"
 
 	set_characters_data("classyske", characters_male_big, classyske_characters_male_big)
 
-	local classyske_characters_female = {
-		third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_female_average/trik_acc_classyske_female_average"
-	}
+	local classyske_characters_female = {}
+
+	classyske_characters_female.third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_female_average/trik_acc_classyske_female_average"
 
 	set_characters_data("classyske", characters_female, classyske_characters_female)
 
-	local classyske_characters_female_big = {
-		third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_female_fat/trik_acc_classyske_female_fat"
-	}
+	local classyske_characters_female_big = {}
+
+	classyske_characters_female_big.third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_female_fat/trik_acc_classyske_female_fat"
 
 	set_characters_data("classyske", characters_female_big, classyske_characters_female_big)
 
-	local classyske_characters_male_fat = {
-		third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_male_fat/trik_acc_classyske_male_fat",
-		sequence = "set_ehtan"
-	}
+	local classyske_characters_male_fat = {}
+
+	classyske_characters_male_fat.third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_male_fat/trik_acc_classyske_male_fat"
+	classyske_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.classyske.characters.ecp_male = classyske_characters_male_fat
-	self.player_styles.elegantscarf = {
-		name_id = "bm_suit_elegantscarf",
-		desc_id = "bm_suit_elegantscarf_desc",
-		texture_bundle_folder = "sbzac2",
-		global_value = "sbzac_elegantscarf",
-		material_variations = {}
-	}
+	self.player_styles.elegantscarf = {}
+	self.player_styles.elegantscarf.name_id = "bm_suit_elegantscarf"
+	self.player_styles.elegantscarf.desc_id = "bm_suit_elegantscarf_desc"
+	self.player_styles.elegantscarf.texture_bundle_folder = "sbzac2"
+	self.player_styles.elegantscarf.global_value = "sbzac_elegantscarf"
+	self.player_styles.elegantscarf.material_variations = {}
 	self.player_styles.elegantscarf.material_variations.default = {
-		name_id = "bm_suit_var_elegantscarf_default",
+		desc_id = "bm_suit_var_elegantscarf_default_desc",
 		global_value = "sbzac_elegantscarf",
-		desc_id = "bm_suit_var_elegantscarf_default_desc"
+		name_id = "bm_suit_var_elegantscarf_default"
 	}
 	self.player_styles.elegantscarf.body_replacement = body_replacement_standard
 	self.player_styles.elegantscarf.third_body_replacement = body_replacement_standard
 	self.player_styles.elegantscarf.unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_fps_elegantscarf_male/sbzac2_acc_fps_elegantscarf_male"
 	self.player_styles.elegantscarf.characters = {}
-	local elegantscarf_characters_male = {
-		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_average/sbzac2_acc_elegantscarf_male_average"
-	}
+
+	local elegantscarf_characters_male = {}
+
+	elegantscarf_characters_male.third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_average/sbzac2_acc_elegantscarf_male_average"
 
 	set_characters_data("elegantscarf", characters_male, elegantscarf_characters_male)
 
-	local elegantscarf_characters_male_big = {
-		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_big/sbzac2_acc_elegantscarf_male_big"
-	}
+	local elegantscarf_characters_male_big = {}
+
+	elegantscarf_characters_male_big.third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_big/sbzac2_acc_elegantscarf_male_big"
 
 	set_characters_data("elegantscarf", characters_male_big, elegantscarf_characters_male_big)
 
-	local elegantscarf_characters_female = {
-		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_female_average/sbzac2_acc_elegantscarf_female_average"
-	}
+	local elegantscarf_characters_female = {}
+
+	elegantscarf_characters_female.third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_female_average/sbzac2_acc_elegantscarf_female_average"
 
 	set_characters_data("elegantscarf", characters_female, elegantscarf_characters_female)
 
-	local elegantscarf_characters_female_big = {
-		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_female_fat/sbzac2_acc_elegantscarf_female_fat"
-	}
+	local elegantscarf_characters_female_big = {}
+
+	elegantscarf_characters_female_big.third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_female_fat/sbzac2_acc_elegantscarf_female_fat"
 
 	set_characters_data("elegantscarf", characters_female_big, elegantscarf_characters_female_big)
 
-	local elegantscarf_characters_male_fat = {
-		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_fat/sbzac2_acc_elegantscarf_male_fat",
-		sequence = "set_ehtan"
-	}
+	local elegantscarf_characters_male_fat = {}
+
+	elegantscarf_characters_male_fat.third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_fat/sbzac2_acc_elegantscarf_male_fat"
+	elegantscarf_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.elegantscarf.characters.ecp_male = elegantscarf_characters_male_fat
-	self.player_styles.rusbear = {
-		name_id = "bm_suit_rusbear",
-		desc_id = "bm_suit_rusbear_desc",
-		texture_bundle_folder = "snow",
-		global_value = "snow",
-		material_variations = {}
-	}
+	self.player_styles.rusbear = {}
+	self.player_styles.rusbear.name_id = "bm_suit_rusbear"
+	self.player_styles.rusbear.desc_id = "bm_suit_rusbear_desc"
+	self.player_styles.rusbear.texture_bundle_folder = "snow"
+	self.player_styles.rusbear.global_value = "snow"
+	self.player_styles.rusbear.material_variations = {}
 	self.player_styles.rusbear.material_variations.default = {
-		name_id = "bm_suit_var_rusbear_default",
+		desc_id = "bm_suit_var_rusbear_default_desc",
 		global_value = "snow",
-		desc_id = "bm_suit_var_rusbear_default_desc"
+		name_id = "bm_suit_var_rusbear_default"
 	}
 	self.player_styles.rusbear.material_variations.arctic = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_rusbear_arctic_desc",
 		global_value = "snow",
-		auto_aquire = true,
+		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_arctic",
 		name_id = "bm_suit_var_rusbear_arctic",
-		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_arctic",
-		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_arctic"
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_arctic"
 	}
 	self.player_styles.rusbear.material_variations.blacmor = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_rusbear_blacmor_desc",
 		global_value = "snow",
-		auto_aquire = true,
+		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_blackmor",
 		name_id = "bm_suit_var_rusbear_blacmor",
-		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_blacmor",
-		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_blackmor"
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_blacmor"
 	}
 	self.player_styles.rusbear.material_variations.quilt = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_rusbear_quilt_desc",
 		global_value = "snow",
-		auto_aquire = true,
+		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_quilt",
 		name_id = "bm_suit_var_rusbear_quilt",
-		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_quilt",
-		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_quilt"
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_quilt"
 	}
 	self.player_styles.rusbear.body_replacement = body_replacement_standard
 	self.player_styles.rusbear.third_body_replacement = body_replacement_standard
 	self.player_styles.rusbear.unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_fps_rusbear_male/snow_acc_fps_rusbear_male"
 	self.player_styles.rusbear.characters = {}
-	local rusbear_characters_male = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_average/snow_acc_rusbear_male_average"
-	}
+
+	local rusbear_characters_male = {}
+
+	rusbear_characters_male.third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_average/snow_acc_rusbear_male_average"
 
 	set_characters_data("rusbear", characters_male, rusbear_characters_male)
 
-	local rusbear_characters_male_big = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_big/snow_acc_rusbear_male_big"
-	}
+	local rusbear_characters_male_big = {}
+
+	rusbear_characters_male_big.third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_big/snow_acc_rusbear_male_big"
 
 	set_characters_data("rusbear", characters_male_big, rusbear_characters_male_big)
 
-	local rusbear_characters_female = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_female_average/snow_acc_rusbear_female_average"
-	}
+	local rusbear_characters_female = {}
+
+	rusbear_characters_female.third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_female_average/snow_acc_rusbear_female_average"
 
 	set_characters_data("rusbear", characters_female, rusbear_characters_female)
 
-	local rusbear_characters_female_big = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_female_fat/snow_acc_rusbear_female_fat"
-	}
+	local rusbear_characters_female_big = {}
+
+	rusbear_characters_female_big.third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_female_fat/snow_acc_rusbear_female_fat"
 
 	set_characters_data("rusbear", characters_female_big, rusbear_characters_female_big)
 
-	local rusbear_characters_male_fat = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_fat/snow_acc_rusbear_male_fat",
-		sequence = "set_ehtan"
-	}
+	local rusbear_characters_male_fat = {}
+
+	rusbear_characters_male_fat.third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_fat/snow_acc_rusbear_male_fat"
+	rusbear_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.rusbear.characters.ecp_male = rusbear_characters_male_fat
-	self.player_styles.lonorwa = {
-		name_id = "bm_suit_lonorwa",
-		desc_id = "bm_suit_lonorwa_desc",
-		texture_bundle_folder = "snow",
-		global_value = "snow",
-		material_variations = {}
-	}
+	self.player_styles.lonorwa = {}
+	self.player_styles.lonorwa.name_id = "bm_suit_lonorwa"
+	self.player_styles.lonorwa.desc_id = "bm_suit_lonorwa_desc"
+	self.player_styles.lonorwa.texture_bundle_folder = "snow"
+	self.player_styles.lonorwa.global_value = "snow"
+	self.player_styles.lonorwa.material_variations = {}
 	self.player_styles.lonorwa.material_variations.default = {
-		name_id = "bm_suit_var_lonorwa_default",
+		desc_id = "bm_suit_var_lonorwa_default_desc",
 		global_value = "snow",
-		desc_id = "bm_suit_var_lonorwa_default_desc"
+		name_id = "bm_suit_var_lonorwa_default"
 	}
 	self.player_styles.lonorwa.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_lonorwa_blue_desc",
 		global_value = "snow",
-		auto_aquire = true,
+		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_blue",
 		name_id = "bm_suit_var_lonorwa_blue",
-		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_blue",
-		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_blue"
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_blue"
 	}
 	self.player_styles.lonorwa.material_variations.orange = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_lonorwa_orange_desc",
 		global_value = "snow",
-		auto_aquire = true,
+		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_orange",
 		name_id = "bm_suit_var_lonorwa_orange",
-		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_orange",
-		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_orange"
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_orange"
 	}
 	self.player_styles.lonorwa.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_lonorwa_white_desc",
 		global_value = "snow",
-		auto_aquire = true,
+		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_white",
 		name_id = "bm_suit_var_lonorwa_white",
-		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_white",
-		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_white"
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_white"
 	}
 	self.player_styles.lonorwa.body_replacement = body_replacement_standard
 	self.player_styles.lonorwa.third_body_replacement = body_replacement_standard
 	self.player_styles.lonorwa.unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_fps_lonorwa_male/snow_acc_fps_lonorwa_male"
 	self.player_styles.lonorwa.characters = {}
-	local lonorwa_characters_male = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_average/snow_acc_lonorwa_male_average"
-	}
+
+	local lonorwa_characters_male = {}
+
+	lonorwa_characters_male.third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_average/snow_acc_lonorwa_male_average"
 
 	set_characters_data("lonorwa", characters_male, lonorwa_characters_male)
 
-	local lonorwa_characters_male_big = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_big/snow_acc_lonorwa_male_big"
-	}
+	local lonorwa_characters_male_big = {}
+
+	lonorwa_characters_male_big.third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_big/snow_acc_lonorwa_male_big"
 
 	set_characters_data("lonorwa", characters_male_big, lonorwa_characters_male_big)
 
-	local lonorwa_characters_female = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_female_average/snow_acc_lonorwa_female_average"
-	}
+	local lonorwa_characters_female = {}
+
+	lonorwa_characters_female.third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_female_average/snow_acc_lonorwa_female_average"
 
 	set_characters_data("lonorwa", characters_female, lonorwa_characters_female)
 
-	local lonorwa_characters_female_big = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_female_fat/snow_acc_lonorwa_female_fat"
-	}
+	local lonorwa_characters_female_big = {}
+
+	lonorwa_characters_female_big.third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_female_fat/snow_acc_lonorwa_female_fat"
 
 	set_characters_data("lonorwa", characters_female_big, lonorwa_characters_female_big)
 
-	local lonorwa_characters_male_fat = {
-		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_fat/snow_acc_lonorwa_male_fat",
-		sequence = "set_ehtan"
-	}
+	local lonorwa_characters_male_fat = {}
+
+	lonorwa_characters_male_fat.third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_fat/snow_acc_lonorwa_male_fat"
+	lonorwa_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.lonorwa.characters.ecp_male = lonorwa_characters_male_fat
-	self.player_styles.bunny = {
-		name_id = "bm_suit_bunny",
-		desc_id = "bm_suit_bunny_desc",
-		texture_bundle_folder = "ccmt",
-		global_value = "pd2_clan",
-		material_variations = {}
-	}
+	self.player_styles.bunny = {}
+	self.player_styles.bunny.name_id = "bm_suit_bunny"
+	self.player_styles.bunny.desc_id = "bm_suit_bunny_desc"
+	self.player_styles.bunny.texture_bundle_folder = "ccmt"
+	self.player_styles.bunny.global_value = "pd2_clan"
+	self.player_styles.bunny.material_variations = {}
 	self.player_styles.bunny.material_variations.default = {
-		name_id = "bm_suit_var_bunny_default",
+		desc_id = "bm_suit_var_bunny_default_desc",
 		global_value = "pd2_clan",
-		desc_id = "bm_suit_var_bunny_default_desc"
+		name_id = "bm_suit_var_bunny_default"
 	}
 	self.player_styles.bunny.body_replacement = body_replacement_standard
 	self.player_styles.bunny.third_body_replacement = body_replacement_standard
 	self.player_styles.bunny.unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_fps_bunny_male/ccmt_acc_fps_bunny_male"
 	self.player_styles.bunny.characters = {}
-	local bunny_characters_male = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_male_average/ccmt_acc_bunny_male_average"
-	}
+
+	local bunny_characters_male = {}
+
+	bunny_characters_male.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_male_average/ccmt_acc_bunny_male_average"
 
 	set_characters_data("bunny", characters_male, bunny_characters_male)
 
-	local bunny_characters_male_big = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_male_big/ccmt_acc_bunny_male_big"
-	}
+	local bunny_characters_male_big = {}
+
+	bunny_characters_male_big.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_male_big/ccmt_acc_bunny_male_big"
 
 	set_characters_data("bunny", characters_male_big, bunny_characters_male_big)
 
-	local bunny_characters_female = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_female_average/ccmt_acc_bunny_female_average"
-	}
+	local bunny_characters_female = {}
+
+	bunny_characters_female.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_female_average/ccmt_acc_bunny_female_average"
 
 	set_characters_data("bunny", characters_female, bunny_characters_female)
 
-	local bunny_characters_female_big = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_female_fat/ccmt_acc_bunny_female_fat"
-	}
+	local bunny_characters_female_big = {}
+
+	bunny_characters_female_big.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_female_fat/ccmt_acc_bunny_female_fat"
 
 	set_characters_data("bunny", characters_female_big, bunny_characters_female_big)
 
-	local bunny_characters_male_fat = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_male_fat/ccmt_acc_bunny_male_fat",
-		sequence = "set_ehtan"
-	}
+	local bunny_characters_male_fat = {}
+
+	bunny_characters_male_fat.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_bunny/ccmt_acc_bunny_male_fat/ccmt_acc_bunny_male_fat"
+	bunny_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.bunny.characters.ecp_male = bunny_characters_male_fat
-	self.player_styles.sparkle = {
-		name_id = "bm_suit_sparkle",
-		desc_id = "bm_suit_sparkle_desc",
-		texture_bundle_folder = "ccmt",
-		global_value = "pd2_clan",
-		material_variations = {}
-	}
+	self.player_styles.sparkle = {}
+	self.player_styles.sparkle.name_id = "bm_suit_sparkle"
+	self.player_styles.sparkle.desc_id = "bm_suit_sparkle_desc"
+	self.player_styles.sparkle.texture_bundle_folder = "ccmt"
+	self.player_styles.sparkle.global_value = "pd2_clan"
+	self.player_styles.sparkle.material_variations = {}
 	self.player_styles.sparkle.material_variations.default = {
-		name_id = "bm_suit_var_sparkle_default",
+		desc_id = "bm_suit_var_sparkle_default_desc",
 		global_value = "pd2_clan",
-		desc_id = "bm_suit_var_sparkle_default_desc"
+		name_id = "bm_suit_var_sparkle_default"
 	}
 	self.player_styles.sparkle.body_replacement = body_replacement_standard
 	self.player_styles.sparkle.third_body_replacement = body_replacement_standard
 	self.player_styles.sparkle.unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_fps_sparkle_male/ccmt_acc_fps_sparkle_male"
 	self.player_styles.sparkle.characters = {}
-	local sparkle_characters_male = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_male_average/ccmt_acc_sparkle_male_average"
-	}
+
+	local sparkle_characters_male = {}
+
+	sparkle_characters_male.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_male_average/ccmt_acc_sparkle_male_average"
 
 	set_characters_data("sparkle", characters_male, sparkle_characters_male)
 
-	local sparkle_characters_male_big = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_male_big/ccmt_acc_sparkle_male_big"
-	}
+	local sparkle_characters_male_big = {}
+
+	sparkle_characters_male_big.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_male_big/ccmt_acc_sparkle_male_big"
 
 	set_characters_data("sparkle", characters_male_big, sparkle_characters_male_big)
 
-	local sparkle_characters_female = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_female_average/ccmt_acc_sparkle_female_average"
-	}
+	local sparkle_characters_female = {}
+
+	sparkle_characters_female.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_female_average/ccmt_acc_sparkle_female_average"
 
 	set_characters_data("sparkle", characters_female, sparkle_characters_female)
 
-	local sparkle_characters_female_big = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_female_fat/ccmt_acc_sparkle_female_fat"
-	}
+	local sparkle_characters_female_big = {}
+
+	sparkle_characters_female_big.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_female_fat/ccmt_acc_sparkle_female_fat"
 
 	set_characters_data("sparkle", characters_female_big, sparkle_characters_female_big)
 
-	local sparkle_characters_male_fat = {
-		third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_male_fat/ccmt_acc_sparkle_male_fat",
-		sequence = "set_ehtan"
-	}
+	local sparkle_characters_male_fat = {}
+
+	sparkle_characters_male_fat.third_unit = "units/pd2_dlc_ccmt/characters/ccmt_acc_sparkle/ccmt_acc_sparkle_male_fat/ccmt_acc_sparkle_male_fat"
+	sparkle_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.sparkle.characters.ecp_male = sparkle_characters_male_fat
-	self.player_styles.kungfumaster = {
-		name_id = "bm_suit_kungfumaster",
-		desc_id = "bm_suit_kungfumaster_desc",
-		locks = {
-			achievement = "pent_11"
-		},
-		texture_bundle_folder = "pent",
-		material_variations = {}
+	self.player_styles.kungfumaster = {}
+	self.player_styles.kungfumaster.name_id = "bm_suit_kungfumaster"
+	self.player_styles.kungfumaster.desc_id = "bm_suit_kungfumaster_desc"
+	self.player_styles.kungfumaster.locks = {
+		achievement = "pent_11"
 	}
+	self.player_styles.kungfumaster.texture_bundle_folder = "pent"
+	self.player_styles.kungfumaster.material_variations = {}
 	self.player_styles.kungfumaster.material_variations.default = {
-		name_id = "bm_suit_var_kungfumaster_default",
+		desc_id = "bm_suit_var_kungfumaster_default_desc",
 		global_value = "normal",
-		desc_id = "bm_suit_var_kungfumaster_default_desc"
+		name_id = "bm_suit_var_kungfumaster_default"
 	}
 	self.player_styles.kungfumaster.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_kungfumaster_red_desc",
 		global_value = "normal",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_red",
 		name_id = "bm_suit_var_kungfumaster_red",
 		third_material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_kungfumaster_red",
-		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_red",
 		locks = {
 			achievement = "pent_11"
 		}
 	}
 	self.player_styles.kungfumaster.material_variations.black = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_kungfumaster_black_desc",
 		global_value = "normal",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_black",
 		name_id = "bm_suit_var_kungfumaster_black",
 		third_material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_kungfumaster_black",
-		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_black",
 		locks = {
 			achievement = "pent_11"
 		}
 	}
 	self.player_styles.kungfumaster.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_kungfumaster_white_desc",
 		global_value = "normal",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_white",
 		name_id = "bm_suit_var_kungfumaster_white",
 		third_material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_kungfumaster_white",
-		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_white",
 		locks = {
 			achievement = "pent_11"
 		}
@@ -3385,283 +3382,284 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.kungfumaster.third_body_replacement = body_replacement_standard
 	self.player_styles.kungfumaster.unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_fps_kungfumaster_male/pent_acc_fps_kungfumaster_male"
 	self.player_styles.kungfumaster.characters = {}
-	local kungfumaster_characters_male = {
-		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_average/pent_acc_kungfumaster_male_average"
-	}
+
+	local kungfumaster_characters_male = {}
+
+	kungfumaster_characters_male.third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_average/pent_acc_kungfumaster_male_average"
 
 	set_characters_data("kungfumaster", characters_male, kungfumaster_characters_male)
 
-	local kungfumaster_characters_male_big = {
-		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_big/pent_acc_kungfumaster_male_big"
-	}
+	local kungfumaster_characters_male_big = {}
+
+	kungfumaster_characters_male_big.third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_big/pent_acc_kungfumaster_male_big"
 
 	set_characters_data("kungfumaster", characters_male_big, kungfumaster_characters_male_big)
 
-	local kungfumaster_characters_female = {
-		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_female_average/pent_acc_kungfumaster_female_average"
-	}
+	local kungfumaster_characters_female = {}
+
+	kungfumaster_characters_female.third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_female_average/pent_acc_kungfumaster_female_average"
 
 	set_characters_data("kungfumaster", characters_female, kungfumaster_characters_female)
 
-	local kungfumaster_characters_female_big = {
-		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_female_fat/pent_acc_kungfumaster_female_fat"
-	}
+	local kungfumaster_characters_female_big = {}
+
+	kungfumaster_characters_female_big.third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_female_fat/pent_acc_kungfumaster_female_fat"
 
 	set_characters_data("kungfumaster", characters_female_big, kungfumaster_characters_female_big)
 
-	local kungfumaster_characters_male_fat = {
-		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_fat/pent_acc_kungfumaster_male_fat",
-		sequence = "set_ehtan"
-	}
+	local kungfumaster_characters_male_fat = {}
+
+	kungfumaster_characters_male_fat.third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_fat/pent_acc_kungfumaster_male_fat"
+	kungfumaster_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.kungfumaster.characters.ecp_male = kungfumaster_characters_male_fat
-	self.player_styles.enforcer = {
-		name_id = "bm_suit_enforcer_suit",
-		desc_id = "bm_suit_enforcer_suit_desc",
-		texture_bundle_folder = "gdtp",
-		global_value = "gdtp",
-		material_variations = {}
-	}
+	self.player_styles.enforcer = {}
+	self.player_styles.enforcer.name_id = "bm_suit_enforcer_suit"
+	self.player_styles.enforcer.desc_id = "bm_suit_enforcer_suit_desc"
+	self.player_styles.enforcer.texture_bundle_folder = "gdtp"
+	self.player_styles.enforcer.global_value = "gdtp"
+	self.player_styles.enforcer.material_variations = {}
 	self.player_styles.enforcer.material_variations.default = {
-		name_id = "bm_suit_var_enforcer_suit_default",
+		desc_id = "bm_suit_var_enforcer_suit_default_desc",
 		global_value = "gdtp",
-		desc_id = "bm_suit_var_enforcer_suit_default_desc"
+		name_id = "bm_suit_var_enforcer_suit_default"
 	}
 	self.player_styles.enforcer.material_variations.blood = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_enforcer_suit_blood_desc",
 		global_value = "gdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_white",
 		name_id = "bm_suit_var_enforcer_suit_blood",
-		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_white",
-		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_white"
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_white"
 	}
 	self.player_styles.enforcer.material_variations.dragon = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_enforcer_suit_dragon_desc",
 		global_value = "gdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_brown",
 		name_id = "bm_suit_var_enforcer_suit_dragon",
-		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_brown",
-		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_brown"
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_brown"
 	}
 	self.player_styles.enforcer.material_variations.red_dragon = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_enforcer_suit_red_dragon_desc",
 		global_value = "gdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_purple",
 		name_id = "bm_suit_var_enforcer_suit_red_dragon",
-		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_purple",
-		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_purple"
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_purple"
 	}
 	self.player_styles.enforcer.body_replacement = body_replacement_standard
 	self.player_styles.enforcer.third_body_replacement = body_replacement_standard
 	self.player_styles.enforcer.unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_fps_enforcer_male/gdtp_acc_fps_enforcer_male"
 	self.player_styles.enforcer.characters = {}
-	local enforcer_characters_male = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_average/gdtp_acc_enforcer_male_average"
-	}
+
+	local enforcer_characters_male = {}
+
+	enforcer_characters_male.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_average/gdtp_acc_enforcer_male_average"
 
 	set_characters_data("enforcer", characters_male, enforcer_characters_male)
 
-	local enforcer_characters_male_big = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_big/gdtp_acc_enforcer_male_big"
-	}
+	local enforcer_characters_male_big = {}
+
+	enforcer_characters_male_big.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_big/gdtp_acc_enforcer_male_big"
 
 	set_characters_data("enforcer", characters_male_big, enforcer_characters_male_big)
 
-	local enforcer_characters_female = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_female_average/gdtp_acc_enforcer_female_average"
-	}
+	local enforcer_characters_female = {}
+
+	enforcer_characters_female.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_female_average/gdtp_acc_enforcer_female_average"
 
 	set_characters_data("enforcer", characters_female, enforcer_characters_female)
 
-	local enforcer_characters_female_big = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_female_fat/gdtp_acc_enforcer_female_fat"
-	}
+	local enforcer_characters_female_big = {}
+
+	enforcer_characters_female_big.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_female_fat/gdtp_acc_enforcer_female_fat"
 
 	set_characters_data("enforcer", characters_female_big, enforcer_characters_female_big)
 
-	local enforcer_characters_male_fat = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_fat/gdtp_acc_enforcer_male_fat",
-		sequence = "set_ehtan"
-	}
+	local enforcer_characters_male_fat = {}
+
+	enforcer_characters_male_fat.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_fat/gdtp_acc_enforcer_male_fat"
+	enforcer_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.enforcer.characters.ecp_male = enforcer_characters_male_fat
-	self.player_styles.boss_gdtp = {
-		name_id = "bm_suit_boss_suit",
-		desc_id = "bm_suit_boss_suit_desc",
-		texture_bundle_folder = "gdtp",
-		global_value = "gdtp",
-		material_variations = {}
-	}
+	self.player_styles.boss_gdtp = {}
+	self.player_styles.boss_gdtp.name_id = "bm_suit_boss_suit"
+	self.player_styles.boss_gdtp.desc_id = "bm_suit_boss_suit_desc"
+	self.player_styles.boss_gdtp.texture_bundle_folder = "gdtp"
+	self.player_styles.boss_gdtp.global_value = "gdtp"
+	self.player_styles.boss_gdtp.material_variations = {}
 	self.player_styles.boss_gdtp.material_variations.default = {
-		name_id = "bm_suit_var_boss_suit_default",
+		desc_id = "bm_suit_var_boss_suit_default_desc",
 		global_value = "gdtp",
-		desc_id = "bm_suit_var_boss_suit_default_desc"
+		name_id = "bm_suit_var_boss_suit_default"
 	}
 	self.player_styles.boss_gdtp.material_variations.green = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_boss_suit_green_desc",
 		global_value = "gdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_green",
 		name_id = "bm_suit_var_boss_suit_green",
-		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_green",
-		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_green"
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_green"
 	}
 	self.player_styles.boss_gdtp.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_boss_suit_red_desc",
 		global_value = "gdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_red",
 		name_id = "bm_suit_var_boss_suit_red",
-		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_red",
-		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_red"
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_red"
 	}
 	self.player_styles.boss_gdtp.material_variations.yellow = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_boss_suit_yellow_desc",
 		global_value = "gdtp",
-		auto_aquire = true,
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_yellow",
 		name_id = "bm_suit_var_boss_suit_yellow",
-		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_yellow",
-		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_yellow"
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_yellow"
 	}
 	self.player_styles.boss_gdtp.body_replacement = body_replacement_standard
 	self.player_styles.boss_gdtp.third_body_replacement = body_replacement_standard
 	self.player_styles.boss_gdtp.unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_fps_boss_male/gdtp_acc_fps_boss_male"
 	self.player_styles.boss_gdtp.characters = {}
-	local boss_gdtp_characters_male = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_average/gdtp_acc_boss_male_average"
-	}
+
+	local boss_gdtp_characters_male = {}
+
+	boss_gdtp_characters_male.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_average/gdtp_acc_boss_male_average"
 
 	set_characters_data("boss_gdtp", characters_male, boss_gdtp_characters_male)
 
-	local boss_gdtp_characters_male_big = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_big/gdtp_acc_boss_male_big"
-	}
+	local boss_gdtp_characters_male_big = {}
+
+	boss_gdtp_characters_male_big.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_big/gdtp_acc_boss_male_big"
 
 	set_characters_data("boss_gdtp", characters_male_big, boss_gdtp_characters_male_big)
 
-	local boss_gdtp_characters_female = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_average/gdtp_acc_boss_female_average"
-	}
+	local boss_gdtp_characters_female = {}
+
+	boss_gdtp_characters_female.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_average/gdtp_acc_boss_female_average"
 
 	set_characters_data("boss_gdtp", characters_female, boss_gdtp_characters_female)
 
-	local boss_gdtp_characters_female_big = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_fat/gdtp_acc_boss_female_fat"
-	}
+	local boss_gdtp_characters_female_big = {}
+
+	boss_gdtp_characters_female_big.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_fat/gdtp_acc_boss_female_fat"
 
 	set_characters_data("boss_gdtp", characters_female_big, boss_gdtp_characters_female_big)
 
-	local boss_gdtp_characters_male_fat = {
-		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_fat/gdtp_acc_boss_male_fat",
-		sequence = "set_ehtan"
-	}
+	local boss_gdtp_characters_male_fat = {}
+
+	boss_gdtp_characters_male_fat.third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_fat/gdtp_acc_boss_male_fat"
+	boss_gdtp_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.boss_gdtp.characters.ecp_male = boss_gdtp_characters_male_fat
-	self.player_styles.bullranch = {
-		name_id = "bm_suit_bullranch_suit",
-		desc_id = "bm_suit_bullranch_suit_desc",
-		texture_bundle_folder = "txt1",
-		global_value = "txt1",
-		material_variations = {}
-	}
+	self.player_styles.bullranch = {}
+	self.player_styles.bullranch.name_id = "bm_suit_bullranch_suit"
+	self.player_styles.bullranch.desc_id = "bm_suit_bullranch_suit_desc"
+	self.player_styles.bullranch.texture_bundle_folder = "txt1"
+	self.player_styles.bullranch.global_value = "txt1"
+	self.player_styles.bullranch.material_variations = {}
 	self.player_styles.bullranch.material_variations.default = {
-		name_id = "bm_suit_var_bullranch_suit_default",
+		desc_id = "bm_suit_var_bullranch_suit_default_desc",
 		global_value = "txt1",
-		desc_id = "bm_suit_var_bullranch_suit_default_desc"
+		name_id = "bm_suit_var_bullranch_suit_default"
 	}
 	self.player_styles.bullranch.material_variations.black = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_bullranch_suit_black_desc",
 		global_value = "txt1",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_black",
 		name_id = "bm_suit_var_bullranch_suit_black",
-		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_black",
-		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_black"
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_black"
 	}
 	self.player_styles.bullranch.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_bullranch_suit_blue_desc",
 		global_value = "txt1",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_blue",
 		name_id = "bm_suit_var_bullranch_suit_blue",
-		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_blue",
-		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_blue"
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_blue"
 	}
 	self.player_styles.bullranch.material_variations.brown = {
+		auto_aquire = true,
 		desc_id = "bm_suit_var_bullranch_suit_brown_desc",
 		global_value = "txt1",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_brown",
 		name_id = "bm_suit_var_bullranch_suit_brown",
-		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_brown",
-		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_brown"
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_brown"
 	}
 	self.player_styles.bullranch.body_replacement = body_replacement_standard
 	self.player_styles.bullranch.third_body_replacement = body_replacement_standard
 	self.player_styles.bullranch.unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_fps_bullranch_male/txt1_acc_fps_bullranch_male"
 	self.player_styles.bullranch.characters = {}
-	local bullranch_characters_male = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_average/txt1_acc_bullranch_male_average"
-	}
+
+	local bullranch_characters_male = {}
+
+	bullranch_characters_male.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_average/txt1_acc_bullranch_male_average"
 
 	set_characters_data("bullranch", characters_male, bullranch_characters_male)
 
-	local bullranch_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_big/txt1_acc_bullranch_male_big"
-	}
+	local bullranch_characters_male_big = {}
+
+	bullranch_characters_male_big.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_big/txt1_acc_bullranch_male_big"
 
 	set_characters_data("bullranch", characters_male_big, bullranch_characters_male_big)
 
-	local bullranch_characters_female = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_female_average/txt1_acc_bullranch_female_average"
-	}
+	local bullranch_characters_female = {}
+
+	bullranch_characters_female.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_female_average/txt1_acc_bullranch_female_average"
 
 	set_characters_data("bullranch", characters_female, bullranch_characters_female)
 
-	local bullranch_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_female_fat/txt1_acc_bullranch_female_fat"
-	}
+	local bullranch_characters_female_big = {}
+
+	bullranch_characters_female_big.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_female_fat/txt1_acc_bullranch_female_fat"
 
 	set_characters_data("bullranch", characters_female_big, bullranch_characters_female_big)
 
-	local bullranch_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_fat/txt1_acc_bullranch_male_fat",
-		sequence = "set_ehtan"
-	}
+	local bullranch_characters_male_fat = {}
+
+	bullranch_characters_male_fat.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_fat/txt1_acc_bullranch_male_fat"
+	bullranch_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.bullranch.characters.ecp_male = bullranch_characters_male_fat
-	self.player_styles.texvest = {
-		name_id = "bm_suit_texvest",
-		desc_id = "bm_suit_texvest_desc",
-		texture_bundle_folder = "txt1",
-		global_value = "txt1",
-		material_variations = {}
-	}
+	self.player_styles.texvest = {}
+	self.player_styles.texvest.name_id = "bm_suit_texvest"
+	self.player_styles.texvest.desc_id = "bm_suit_texvest_desc"
+	self.player_styles.texvest.texture_bundle_folder = "txt1"
+	self.player_styles.texvest.global_value = "txt1"
+	self.player_styles.texvest.material_variations = {}
 	self.player_styles.texvest.material_variations.default = {
-		name_id = "bm_suit_var_texvest_default",
+		desc_id = "bm_suit_var_texvest_default_desc",
 		global_value = "txt1",
-		desc_id = "bm_suit_var_texvest_default_desc"
+		name_id = "bm_suit_var_texvest_default"
 	}
 	self.player_styles.texvest.material_variations.black = {
+		auto_aquire = true,
 		desc_id = "bm_suit_texvest_black_desc",
 		global_value = "txt1",
-		auto_aquire = true,
-		name_id = "bm_suit_texvest_black",
-		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black"
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black",
+		name_id = "bm_suit_texvest_black"
 	}
 	self.player_styles.texvest.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_texvest_blue_desc",
 		global_value = "txt1",
-		auto_aquire = true,
-		name_id = "bm_suit_texvest_blue",
-		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_blue"
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_blue",
+		name_id = "bm_suit_texvest_blue"
 	}
 	self.player_styles.texvest.material_variations.green = {
+		auto_aquire = true,
 		desc_id = "bm_suit_texvest_green_desc",
 		global_value = "txt1",
-		auto_aquire = true,
-		name_id = "bm_suit_texvest_green",
-		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_green"
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_green",
+		name_id = "bm_suit_texvest_green"
 	}
 	self.player_styles.texvest.body_replacement = body_replacement_standard
 	self.player_styles.texvest.third_body_replacement = body_replacement_standard
 	self.player_styles.texvest.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest"
 	self.player_styles.texvest.characters = {}
-	local texvest_characters_male = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average/txt1_acc_texvest_male_average",
-		material_variations = {}
-	}
+
+	local texvest_characters_male = {}
+
+	texvest_characters_male.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average/txt1_acc_texvest_male_average"
+	texvest_characters_male.material_variations = {}
 	texvest_characters_male.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average/txt1_acc_texvest_male_average_black"
@@ -3677,11 +3675,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("texvest", characters_male, texvest_characters_male)
 
-	local texvest_characters_dragon = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02",
-		material_variations = {}
-	}
+	local texvest_characters_dragon = {}
+
+	texvest_characters_dragon.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02"
+	texvest_characters_dragon.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02"
+	texvest_characters_dragon.material_variations = {}
 	texvest_characters_dragon.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_black"
@@ -3695,11 +3693,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_green"
 	}
 	self.player_styles.texvest.characters.dragon = texvest_characters_dragon
-	local texvest_characters_bodhi = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_bodhi",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi",
-		material_variations = {}
-	}
+
+	local texvest_characters_bodhi = {}
+
+	texvest_characters_bodhi.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_bodhi"
+	texvest_characters_bodhi.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi"
+	texvest_characters_bodhi.material_variations = {}
 	texvest_characters_bodhi.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_bodhi_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi_black"
@@ -3713,11 +3712,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi_green"
 	}
 	self.player_styles.texvest.characters.bodhi = texvest_characters_bodhi
-	local texvest_characters_scarface = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02",
-		material_variations = {}
-	}
+
+	local texvest_characters_scarface = {}
+
+	texvest_characters_scarface.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02"
+	texvest_characters_scarface.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02"
+	texvest_characters_scarface.material_variations = {}
 	texvest_characters_scarface.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_black"
@@ -3731,11 +3731,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_green"
 	}
 	self.player_styles.texvest.characters.chico = texvest_characters_scarface
-	local texvest_characters_chains = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_chains",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains",
-		material_variations = {}
-	}
+
+	local texvest_characters_chains = {}
+
+	texvest_characters_chains.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_chains"
+	texvest_characters_chains.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains"
+	texvest_characters_chains.material_variations = {}
 	texvest_characters_chains.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_chains_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains_black"
@@ -3749,10 +3750,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains_green"
 	}
 	self.player_styles.texvest.characters.chains = texvest_characters_chains
-	local texvest_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big/txt1_acc_texvest_male_big",
-		material_variations = {}
-	}
+
+	local texvest_characters_male_big = {}
+
+	texvest_characters_male_big.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big/txt1_acc_texvest_male_big"
+	texvest_characters_male_big.material_variations = {}
 	texvest_characters_male_big.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big/txt1_acc_texvest_male_big_black"
@@ -3768,11 +3770,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("texvest", characters_male_big, texvest_characters_male_big)
 
-	local texvest_characters_sangres = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_sangres",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres",
-		material_variations = {}
-	}
+	local texvest_characters_sangres = {}
+
+	texvest_characters_sangres.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_sangres"
+	texvest_characters_sangres.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres"
+	texvest_characters_sangres.material_variations = {}
 	texvest_characters_sangres.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_sangres_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres_black"
@@ -3786,11 +3788,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres_green"
 	}
 	self.player_styles.texvest.characters.max = texvest_characters_sangres
-	local texvest_characters_female = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average/txt1_acc_texvest_female_average",
-		material_variations = {}
-	}
+
+	local texvest_characters_female = {}
+
+	texvest_characters_female.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female"
+	texvest_characters_female.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average/txt1_acc_texvest_female_average"
+	texvest_characters_female.material_variations = {}
 	texvest_characters_female.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average/txt1_acc_texvest_female_average_black"
@@ -3806,11 +3809,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("texvest", characters_female, texvest_characters_female)
 
-	local texvest_characters_sydney = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_sydney",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney",
-		material_variations = {}
-	}
+	local texvest_characters_sydney = {}
+
+	texvest_characters_sydney.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_sydney"
+	texvest_characters_sydney.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney"
+	texvest_characters_sydney.material_variations = {}
 	texvest_characters_sydney.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_sydney_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney_black"
@@ -3824,11 +3827,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney_green"
 	}
 	self.player_styles.texvest.characters.sydney = texvest_characters_sydney
-	local texvest_characters_joy = {
-		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_joy",
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy",
-		material_variations = {}
-	}
+
+	local texvest_characters_joy = {}
+
+	texvest_characters_joy.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_joy"
+	texvest_characters_joy.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy"
+	texvest_characters_joy.material_variations = {}
 	texvest_characters_joy.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_joy_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy_black"
@@ -3842,30 +3846,31 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy_green"
 	}
 	self.player_styles.texvest.characters.joy = texvest_characters_joy
+
 	local texvest_characters_female_big = {}
+
 	texvest_characters_female.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female"
 	texvest_characters_female_big.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat"
-	texvest_characters_female_big.material_variations = {
-		black = {
-			material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_black",
-			third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_black"
-		},
-		blue = {
-			material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_blue",
-			third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_blue"
-		},
-		green = {
-			material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_green",
-			third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_green"
-		}
+	texvest_characters_female_big.material_variations = {}
+	texvest_characters_female_big.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_black"
+	}
+	texvest_characters_female_big.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_blue"
+	}
+	texvest_characters_female_big.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_green"
 	}
 
 	set_characters_data("texvest", characters_female_big, texvest_characters_female_big)
 
-	local texvest_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_fat/txt1_acc_texvest_male_fat",
-		material_variations = {}
-	}
+	local texvest_characters_male_fat = {}
+
+	texvest_characters_male_fat.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_fat/txt1_acc_texvest_male_fat"
+	texvest_characters_male_fat.material_variations = {}
 	texvest_characters_male_fat.material_variations.black = {
 		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black",
 		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_fat/txt1_acc_texvest_male_fat_black"
@@ -3880,182 +3885,182 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	}
 	texvest_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.texvest.characters.ecp_male = texvest_characters_male_fat
-	self.player_styles.fighterpilot = {
-		name_id = "bm_suit_fighterpilot",
-		desc_id = "bm_suit_fighterpilot_desc",
-		texture_bundle_folder = "m422",
-		global_value = "pd2_clan",
-		material_variations = {}
-	}
+	self.player_styles.fighterpilot = {}
+	self.player_styles.fighterpilot.name_id = "bm_suit_fighterpilot"
+	self.player_styles.fighterpilot.desc_id = "bm_suit_fighterpilot_desc"
+	self.player_styles.fighterpilot.texture_bundle_folder = "m422"
+	self.player_styles.fighterpilot.global_value = "pd2_clan"
+	self.player_styles.fighterpilot.material_variations = {}
 	self.player_styles.fighterpilot.material_variations.default = {
-		name_id = "bm_suit_var_fighterpilot_suit_default",
+		desc_id = "bm_suit_var_fighterpilot_suit_default_desc",
 		global_value = "pd2_clan",
-		desc_id = "bm_suit_var_fighterpilot_suit_default_desc"
+		name_id = "bm_suit_var_fighterpilot_suit_default"
 	}
 	self.player_styles.fighterpilot.body_replacement = body_replacement_standard
 	self.player_styles.fighterpilot.third_body_replacement = body_replacement_standard
 	self.player_styles.fighterpilot.unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fps_fighterpilot_male/m422_acc_fps_fighterpilot_male"
 	self.player_styles.fighterpilot.characters = {}
-	local fighterpilot_characters_male = {
-		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_average/m422_acc_fighterpilot_male_average"
-	}
+
+	local fighterpilot_characters_male = {}
+
+	fighterpilot_characters_male.third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_average/m422_acc_fighterpilot_male_average"
 
 	set_characters_data("fighterpilot", characters_male, fighterpilot_characters_male)
 
-	local fighterpilot_characters_male_big = {
-		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_big/m422_acc_fighterpilot_male_big"
-	}
+	local fighterpilot_characters_male_big = {}
+
+	fighterpilot_characters_male_big.third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_big/m422_acc_fighterpilot_male_big"
 
 	set_characters_data("fighterpilot", characters_male_big, fighterpilot_characters_male_big)
 
-	local fighterpilot_characters_female = {
-		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_female_average/m422_acc_fighterpilot_female_average"
-	}
+	local fighterpilot_characters_female = {}
+
+	fighterpilot_characters_female.third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_female_average/m422_acc_fighterpilot_female_average"
 
 	set_characters_data("fighterpilot", characters_female, fighterpilot_characters_female)
 
-	local fighterpilot_characters_female_big = {
-		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_female_fat/m422_acc_fighterpilot_female_fat"
-	}
+	local fighterpilot_characters_female_big = {}
+
+	fighterpilot_characters_female_big.third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_female_fat/m422_acc_fighterpilot_female_fat"
 
 	set_characters_data("fighterpilot", characters_female_big, fighterpilot_characters_female_big)
 
-	local fighterpilot_characters_male_fat = {
-		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_fat/m422_acc_fighterpilot_male_fat",
-		sequence = "set_ehtan"
-	}
+	local fighterpilot_characters_male_fat = {}
+
+	fighterpilot_characters_male_fat.third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_fat/m422_acc_fighterpilot_male_fat"
+	fighterpilot_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.fighterpilot.characters.ecp_male = fighterpilot_characters_male_fat
-	self.player_styles.mocow = {
-		name_id = "bm_suit_mocow",
-		desc_id = "bm_suit_mocow_desc",
-		texture_bundle_folder = "rat",
-		global_value = "rat_mocow",
-		material_variations = {}
-	}
+	self.player_styles.mocow = {}
+	self.player_styles.mocow.name_id = "bm_suit_mocow"
+	self.player_styles.mocow.desc_id = "bm_suit_mocow_desc"
+	self.player_styles.mocow.texture_bundle_folder = "rat"
+	self.player_styles.mocow.global_value = "rat_mocow"
+	self.player_styles.mocow.material_variations = {}
 	self.player_styles.mocow.material_variations.default = {
-		name_id = "bm_suit_var_mocow_suit_default",
+		desc_id = "bm_suit_var_mocow_suit_default_desc",
 		global_value = "rat_mocow",
-		desc_id = "bm_suit_var_mocow_suit_default_desc"
+		name_id = "bm_suit_var_mocow_suit_default"
 	}
 	self.player_styles.mocow.body_replacement = body_replacement_standard
 	self.player_styles.mocow.third_body_replacement = body_replacement_standard
 	self.player_styles.mocow.unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_fps_mocow_male/rat_acc_fps_mocow_male"
 	self.player_styles.mocow.characters = {}
-	local mocow_characters_male = {
-		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_average/rat_acc_mocow_male_average"
-	}
+
+	local mocow_characters_male = {}
+
+	mocow_characters_male.third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_average/rat_acc_mocow_male_average"
 
 	set_characters_data("mocow", characters_male, mocow_characters_male)
 
-	local mocow_characters_male_big = {
-		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_big/rat_acc_mocow_male_big"
-	}
+	local mocow_characters_male_big = {}
+
+	mocow_characters_male_big.third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_big/rat_acc_mocow_male_big"
 
 	set_characters_data("mocow", characters_male_big, mocow_characters_male_big)
 
-	local mocow_characters_female = {
-		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_female_average/rat_acc_mocow_female_average"
-	}
+	local mocow_characters_female = {}
+
+	mocow_characters_female.third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_female_average/rat_acc_mocow_female_average"
 
 	set_characters_data("mocow", characters_female, mocow_characters_female)
 
-	local mocow_characters_female_big = {
-		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_female_fat/rat_acc_mocow_female_fat"
-	}
+	local mocow_characters_female_big = {}
+
+	mocow_characters_female_big.third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_female_fat/rat_acc_mocow_female_fat"
 
 	set_characters_data("mocow", characters_female_big, mocow_characters_female_big)
 
-	local mocow_characters_male_fat = {
-		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_fat/rat_acc_mocow_male_fat",
-		sequence = "set_ehtan"
-	}
+	local mocow_characters_male_fat = {}
+
+	mocow_characters_male_fat.third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_fat/rat_acc_mocow_male_fat"
+	mocow_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.mocow.characters.ecp_male = mocow_characters_male_fat
-	self.player_styles.newhorizon = {
-		name_id = "bm_suit_newhorizon",
-		desc_id = "bm_suit_newhorizon_desc",
-		texture_bundle_folder = "prim",
-		global_value = "prim_newhorizon",
-		material_variations = {}
-	}
+	self.player_styles.newhorizon = {}
+	self.player_styles.newhorizon.name_id = "bm_suit_newhorizon"
+	self.player_styles.newhorizon.desc_id = "bm_suit_newhorizon_desc"
+	self.player_styles.newhorizon.texture_bundle_folder = "prim"
+	self.player_styles.newhorizon.global_value = "prim_newhorizon"
+	self.player_styles.newhorizon.material_variations = {}
 	self.player_styles.newhorizon.material_variations.default = {
-		name_id = "bm_suit_var_newhorizon_suit_default",
+		desc_id = "bm_suit_var_newhorizon_suit_default_desc",
 		global_value = "prim_newhorizon",
-		desc_id = "bm_suit_var_newhorizon_suit_default_desc"
+		name_id = "bm_suit_var_newhorizon_suit_default"
 	}
 	self.player_styles.newhorizon.body_replacement = body_replacement_standard
 	self.player_styles.newhorizon.third_body_replacement = body_replacement_standard
 	self.player_styles.newhorizon.unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_fps_newhorizon_male/prim_acc_fps_newhorizon_male"
 	self.player_styles.newhorizon.characters = {}
-	local newhorizon_characters_male = {
-		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_average/prim_acc_newhorizon_male_average"
-	}
+
+	local newhorizon_characters_male = {}
+
+	newhorizon_characters_male.third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_average/prim_acc_newhorizon_male_average"
 
 	set_characters_data("newhorizon", characters_male, newhorizon_characters_male)
 
-	local newhorizon_characters_male_big = {
-		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_big/prim_acc_newhorizon_male_big"
-	}
+	local newhorizon_characters_male_big = {}
+
+	newhorizon_characters_male_big.third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_big/prim_acc_newhorizon_male_big"
 
 	set_characters_data("newhorizon", characters_male_big, newhorizon_characters_male_big)
 
-	local newhorizon_characters_female = {
-		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_female_average/prim_acc_newhorizon_female_average"
-	}
+	local newhorizon_characters_female = {}
+
+	newhorizon_characters_female.third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_female_average/prim_acc_newhorizon_female_average"
 
 	set_characters_data("newhorizon", characters_female, newhorizon_characters_female)
 
-	local newhorizon_characters_female_big = {
-		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_female_fat/prim_acc_newhorizon_female_fat"
-	}
+	local newhorizon_characters_female_big = {}
+
+	newhorizon_characters_female_big.third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_female_fat/prim_acc_newhorizon_female_fat"
 
 	set_characters_data("newhorizon", characters_female_big, newhorizon_characters_female_big)
 
-	local newhorizon_characters_male_fat = {
-		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_fat/prim_acc_newhorizon_male_fat",
-		sequence = "set_ehtan"
-	}
+	local newhorizon_characters_male_fat = {}
+
+	newhorizon_characters_male_fat.third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_fat/prim_acc_newhorizon_male_fat"
+	newhorizon_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.newhorizon.characters.ecp_male = newhorizon_characters_male_fat
-	self.player_styles.bikervest = {
-		name_id = "bm_suit_bikervest",
-		desc_id = "bm_suit_bikervest_desc",
-		texture_bundle_folder = "txt2",
-		global_value = "txt2",
-		material_variations = {}
-	}
+	self.player_styles.bikervest = {}
+	self.player_styles.bikervest.name_id = "bm_suit_bikervest"
+	self.player_styles.bikervest.desc_id = "bm_suit_bikervest_desc"
+	self.player_styles.bikervest.texture_bundle_folder = "txt2"
+	self.player_styles.bikervest.global_value = "txt2"
+	self.player_styles.bikervest.material_variations = {}
 	self.player_styles.bikervest.material_variations.default = {
-		name_id = "bm_suit_var_bikervest_default",
+		desc_id = "bm_suit_var_bikervest_default_desc",
 		global_value = "txt2",
-		desc_id = "bm_suit_var_bikervest_default_desc"
+		name_id = "bm_suit_var_bikervest_default"
 	}
 	self.player_styles.bikervest.material_variations.camo = {
+		auto_aquire = true,
 		desc_id = "bm_suit_bikervest_camo_desc",
 		global_value = "txt2",
-		auto_aquire = true,
-		name_id = "bm_suit_bikervest_camo",
-		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo"
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo",
+		name_id = "bm_suit_bikervest_camo"
 	}
 	self.player_styles.bikervest.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_bikervest_red_desc",
 		global_value = "txt2",
-		auto_aquire = true,
-		name_id = "bm_suit_bikervest_red",
-		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_red"
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_red",
+		name_id = "bm_suit_bikervest_red"
 	}
 	self.player_styles.bikervest.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_bikervest_white_desc",
 		global_value = "txt2",
-		auto_aquire = true,
-		name_id = "bm_suit_bikervest_white",
-		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_white"
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_white",
+		name_id = "bm_suit_bikervest_white"
 	}
 	self.player_styles.bikervest.body_replacement = body_replacement_standard
 	self.player_styles.bikervest.third_body_replacement = body_replacement_standard
 	self.player_styles.bikervest.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest"
 	self.player_styles.bikervest.characters = {}
-	local bikervest_characters_male = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average/txt2_acc_bikervest_male_average",
-		material_variations = {}
-	}
+
+	local bikervest_characters_male = {}
+
+	bikervest_characters_male.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average/txt2_acc_bikervest_male_average"
+	bikervest_characters_male.material_variations = {}
 	bikervest_characters_male.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average/txt2_acc_bikervest_male_average_camo"
@@ -4071,11 +4076,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("bikervest", characters_male, bikervest_characters_male)
 
-	local bikervest_characters_dragon = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02",
-		material_variations = {}
-	}
+	local bikervest_characters_dragon = {}
+
+	bikervest_characters_dragon.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02"
+	bikervest_characters_dragon.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02"
+	bikervest_characters_dragon.material_variations = {}
 	bikervest_characters_dragon.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_camo"
@@ -4089,11 +4094,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_white"
 	}
 	self.player_styles.bikervest.characters.dragon = bikervest_characters_dragon
-	local bikervest_characters_bodhi = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_bodhi",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi",
-		material_variations = {}
-	}
+
+	local bikervest_characters_bodhi = {}
+
+	bikervest_characters_bodhi.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_bodhi"
+	bikervest_characters_bodhi.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi"
+	bikervest_characters_bodhi.material_variations = {}
 	bikervest_characters_bodhi.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_bodhi_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi_camo"
@@ -4107,11 +4113,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi_white"
 	}
 	self.player_styles.bikervest.characters.bodhi = bikervest_characters_bodhi
-	local bikervest_characters_scarface = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02",
-		material_variations = {}
-	}
+
+	local bikervest_characters_scarface = {}
+
+	bikervest_characters_scarface.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02"
+	bikervest_characters_scarface.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02"
+	bikervest_characters_scarface.material_variations = {}
 	bikervest_characters_scarface.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_camo"
@@ -4125,11 +4132,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_white"
 	}
 	self.player_styles.bikervest.characters.chico = bikervest_characters_scarface
-	local bikervest_characters_chains = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_chains",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains",
-		material_variations = {}
-	}
+
+	local bikervest_characters_chains = {}
+
+	bikervest_characters_chains.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_chains"
+	bikervest_characters_chains.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains"
+	bikervest_characters_chains.material_variations = {}
 	bikervest_characters_chains.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_chains_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains_camo"
@@ -4143,10 +4151,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains_white"
 	}
 	self.player_styles.bikervest.characters.chains = bikervest_characters_chains
-	local bikervest_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big/txt2_acc_bikervest_male_big",
-		material_variations = {}
-	}
+
+	local bikervest_characters_male_big = {}
+
+	bikervest_characters_male_big.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big/txt2_acc_bikervest_male_big"
+	bikervest_characters_male_big.material_variations = {}
 	bikervest_characters_male_big.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big/txt2_acc_bikervest_male_big_camo"
@@ -4162,11 +4171,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("bikervest", characters_male_big, bikervest_characters_male_big)
 
-	local bikervest_characters_sangres = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_sangres",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres",
-		material_variations = {}
-	}
+	local bikervest_characters_sangres = {}
+
+	bikervest_characters_sangres.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_sangres"
+	bikervest_characters_sangres.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres"
+	bikervest_characters_sangres.material_variations = {}
 	bikervest_characters_sangres.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_sangres_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres_camo"
@@ -4180,11 +4189,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres_white"
 	}
 	self.player_styles.bikervest.characters.max = bikervest_characters_sangres
-	local bikervest_characters_female = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average/txt2_acc_bikervest_female_average",
-		material_variations = {}
-	}
+
+	local bikervest_characters_female = {}
+
+	bikervest_characters_female.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female"
+	bikervest_characters_female.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average/txt2_acc_bikervest_female_average"
+	bikervest_characters_female.material_variations = {}
 	bikervest_characters_female.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average/txt2_acc_bikervest_female_average_camo"
@@ -4200,11 +4210,11 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("bikervest", characters_female, bikervest_characters_female)
 
-	local bikervest_characters_sydney = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_sydney",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney",
-		material_variations = {}
-	}
+	local bikervest_characters_sydney = {}
+
+	bikervest_characters_sydney.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_sydney"
+	bikervest_characters_sydney.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney"
+	bikervest_characters_sydney.material_variations = {}
 	bikervest_characters_sydney.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_sydney_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney_camo"
@@ -4218,11 +4228,12 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney_white"
 	}
 	self.player_styles.bikervest.characters.sydney = bikervest_characters_sydney
-	local bikervest_characters_joy = {
-		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_joy",
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy",
-		material_variations = {}
-	}
+
+	local bikervest_characters_joy = {}
+
+	bikervest_characters_joy.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_joy"
+	bikervest_characters_joy.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy"
+	bikervest_characters_joy.material_variations = {}
 	bikervest_characters_joy.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_joy_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy_camo"
@@ -4236,30 +4247,31 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy_white"
 	}
 	self.player_styles.bikervest.characters.joy = bikervest_characters_joy
+
 	local bikervest_characters_female_big = {}
+
 	bikervest_characters_female.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female"
 	bikervest_characters_female_big.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big"
-	bikervest_characters_female_big.material_variations = {
-		camo = {
-			material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_camo",
-			third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_camo"
-		},
-		red = {
-			material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_red",
-			third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_red"
-		},
-		white = {
-			material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_white",
-			third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_white"
-		}
+	bikervest_characters_female_big.material_variations = {}
+	bikervest_characters_female_big.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_camo"
+	}
+	bikervest_characters_female_big.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_red"
+	}
+	bikervest_characters_female_big.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_white"
 	}
 
 	set_characters_data("bikervest", characters_female_big, bikervest_characters_female_big)
 
-	local bikervest_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_fat/txt2_acc_bikervest_male_fat",
-		material_variations = {}
-	}
+	local bikervest_characters_male_fat = {}
+
+	bikervest_characters_male_fat.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_fat/txt2_acc_bikervest_male_fat"
+	bikervest_characters_male_fat.material_variations = {}
 	bikervest_characters_male_fat.material_variations.camo = {
 		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo",
 		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_fat/txt2_acc_bikervest_male_fat_camo"
@@ -4274,624 +4286,623 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	}
 	bikervest_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.bikervest.characters.ecp_male = bikervest_characters_male_fat
-	self.player_styles.bikerjacket = {
-		name_id = "bm_suit_bikerjacket",
-		desc_id = "bm_suit_bikerjacket_desc",
-		texture_bundle_folder = "txt2",
-		global_value = "txt2",
-		material_variations = {}
-	}
+	self.player_styles.bikerjacket = {}
+	self.player_styles.bikerjacket.name_id = "bm_suit_bikerjacket"
+	self.player_styles.bikerjacket.desc_id = "bm_suit_bikerjacket_desc"
+	self.player_styles.bikerjacket.texture_bundle_folder = "txt2"
+	self.player_styles.bikerjacket.global_value = "txt2"
+	self.player_styles.bikerjacket.material_variations = {}
 	self.player_styles.bikerjacket.material_variations.default = {
-		name_id = "bm_suit_var_bikerjacket_suit_default",
+		desc_id = "bm_suit_var_bikerjacket_suit_default_desc",
 		global_value = "txt2",
-		desc_id = "bm_suit_var_bikerjacket_suit_default_desc"
+		name_id = "bm_suit_var_bikerjacket_suit_default"
 	}
 	self.player_styles.bikerjacket.body_replacement = body_replacement_standard
 	self.player_styles.bikerjacket.third_body_replacement = body_replacement_standard
 	self.player_styles.bikerjacket.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_fps_bikerjacket_male/txt2_acc_fps_bikerjacket_male"
 	self.player_styles.bikerjacket.material_variations.green = {
+		auto_aquire = true,
 		desc_id = "bm_suit_bikerjacket_green_desc",
 		global_value = "txt2",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_green",
 		name_id = "bm_suit_bikerjacket_green",
-		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_green",
-		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_green"
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_green"
 	}
 	self.player_styles.bikerjacket.material_variations.gray = {
+		auto_aquire = true,
 		desc_id = "bm_suit_bikerjacket_gray_desc",
 		global_value = "txt2",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_gray",
 		name_id = "bm_suit_bikerjacket_gray",
-		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_gray",
-		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_gray"
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_gray"
 	}
 	self.player_styles.bikerjacket.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_bikerjacket_red_desc",
 		global_value = "txt2",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_red",
 		name_id = "bm_suit_bikerjacket_red",
-		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_red",
-		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_red"
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_red"
 	}
 	self.player_styles.bikerjacket.characters = {}
-	local bikerjacket_characters_male = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_average/txt2_acc_bikerjacket_male_average"
-	}
+
+	local bikerjacket_characters_male = {}
+
+	bikerjacket_characters_male.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_average/txt2_acc_bikerjacket_male_average"
 
 	set_characters_data("bikerjacket", characters_male, bikerjacket_characters_male)
 
-	local bikerjacket_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_big/txt2_acc_bikerjacket_male_big"
-	}
+	local bikerjacket_characters_male_big = {}
+
+	bikerjacket_characters_male_big.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_big/txt2_acc_bikerjacket_male_big"
 
 	set_characters_data("bikerjacket", characters_male_big, bikerjacket_characters_male_big)
 
-	local bikerjacket_characters_female = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_female_average/txt2_acc_bikerjacket_female_average"
-	}
+	local bikerjacket_characters_female = {}
+
+	bikerjacket_characters_female.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_female_average/txt2_acc_bikerjacket_female_average"
 
 	set_characters_data("bikerjacket", characters_female, bikerjacket_characters_female)
 
-	local bikerjacket_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_female_fat/txt2_acc_bikerjacket_female_fat"
-	}
+	local bikerjacket_characters_female_big = {}
+
+	bikerjacket_characters_female_big.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_female_fat/txt2_acc_bikerjacket_female_fat"
 
 	set_characters_data("bikerjacket", characters_female_big, bikerjacket_characters_female_big)
 
-	local bikerjacket_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_fat/txt2_acc_bikerjacket_male_fat",
-		sequence = "set_ehtan"
-	}
+	local bikerjacket_characters_male_fat = {}
+
+	bikerjacket_characters_male_fat.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_fat/txt2_acc_bikerjacket_male_fat"
+	bikerjacket_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.bikerjacket.characters.ecp_male = bikerjacket_characters_male_fat
-	self.player_styles.moneysuit = {
-		name_id = "bm_suit_moneysuit",
-		desc_id = "bm_suit_moneysuit_desc",
-		texture_bundle_folder = "pda9",
-		global_value = "pda9",
-		material_variations = {}
-	}
+	self.player_styles.moneysuit = {}
+	self.player_styles.moneysuit.name_id = "bm_suit_moneysuit"
+	self.player_styles.moneysuit.desc_id = "bm_suit_moneysuit_desc"
+	self.player_styles.moneysuit.texture_bundle_folder = "pda9"
+	self.player_styles.moneysuit.global_value = "pda9"
+	self.player_styles.moneysuit.material_variations = {}
 	self.player_styles.moneysuit.material_variations.default = {
-		name_id = "bm_suit_moneysuit_default",
+		desc_id = "bm_suit_moneysuit_default_desc",
 		global_value = "pda9",
-		desc_id = "bm_suit_moneysuit_default_desc"
+		name_id = "bm_suit_moneysuit_default"
 	}
 	self.player_styles.moneysuit.body_replacement = body_replacement_standard
 	self.player_styles.moneysuit.third_body_replacement = body_replacement_standard
 	self.player_styles.moneysuit.unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_fps_moneysuit_male/pda9_acc_fps_moneysuit_male"
 	self.player_styles.moneysuit.material_variations.money = {
+		auto_aquire = true,
 		desc_id = "bm_suit_moneysuit_money_desc",
 		global_value = "pda9",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_fps_moneysuit_money",
 		name_id = "bm_suit_moneysuit_money",
-		third_material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_moneysuit_money",
-		material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_fps_moneysuit_money"
+		third_material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_moneysuit_money"
 	}
 	self.player_styles.moneysuit.material_variations.gold = {
 		desc_id = "bm_suit_moneysuit_gold_desc",
 		global_value = "pda9",
+		material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_fps_moneysuit_gold",
 		name_id = "bm_suit_moneysuit_gold",
-		third_material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_moneysuit_gold",
-		material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_fps_moneysuit_gold"
+		third_material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_moneysuit_gold"
 	}
 	self.player_styles.moneysuit.characters = {}
-	local moneysuit_characters_male = {
-		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_average/pda9_acc_moneysuit_male_average"
-	}
+
+	local moneysuit_characters_male = {}
+
+	moneysuit_characters_male.third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_average/pda9_acc_moneysuit_male_average"
 
 	set_characters_data("moneysuit", characters_male, moneysuit_characters_male)
 
-	local moneysuit_characters_male_big = {
-		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_big/pda9_acc_moneysuit_male_big"
-	}
+	local moneysuit_characters_male_big = {}
+
+	moneysuit_characters_male_big.third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_big/pda9_acc_moneysuit_male_big"
 
 	set_characters_data("moneysuit", characters_male_big, moneysuit_characters_male_big)
 
-	local moneysuit_characters_female = {
-		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_female_average/pda9_acc_moneysuit_female_average"
-	}
+	local moneysuit_characters_female = {}
+
+	moneysuit_characters_female.third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_female_average/pda9_acc_moneysuit_female_average"
 
 	set_characters_data("moneysuit", characters_female, moneysuit_characters_female)
 
-	local moneysuit_characters_female_big = {
-		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_female_fat/pda9_acc_moneysuit_female_fat"
-	}
+	local moneysuit_characters_female_big = {}
+
+	moneysuit_characters_female_big.third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_female_fat/pda9_acc_moneysuit_female_fat"
 
 	set_characters_data("moneysuit", characters_female_big, moneysuit_characters_female_big)
 
-	local moneysuit_characters_male_fat = {
-		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_fat/pda9_acc_moneysuit_male_fat",
-		sequence = "set_ehtan"
-	}
+	local moneysuit_characters_male_fat = {}
+
+	moneysuit_characters_male_fat.third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_fat/pda9_acc_moneysuit_male_fat"
+	moneysuit_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.moneysuit.characters.ecp_male = moneysuit_characters_male_fat
-	self.player_styles.dodsuit = {
-		name_id = "bm_suit_dodsuit",
-		desc_id = "bm_suit_dodsuit_desc",
-		texture_bundle_folder = "tma1",
-		global_value = "tma1",
-		material_variations = {}
-	}
+	self.player_styles.dodsuit = {}
+	self.player_styles.dodsuit.name_id = "bm_suit_dodsuit"
+	self.player_styles.dodsuit.desc_id = "bm_suit_dodsuit_desc"
+	self.player_styles.dodsuit.texture_bundle_folder = "tma1"
+	self.player_styles.dodsuit.global_value = "tma1"
+	self.player_styles.dodsuit.material_variations = {}
 	self.player_styles.dodsuit.material_variations.default = {
-		name_id = "bm_suit_dodsuit_default",
+		desc_id = "bm_suit_dodsuit_default_desc",
 		global_value = "tma1",
-		desc_id = "bm_suit_dodsuit_default_desc"
+		name_id = "bm_suit_dodsuit_default"
 	}
 	self.player_styles.dodsuit.body_replacement = body_replacement_standard
 	self.player_styles.dodsuit.third_body_replacement = body_replacement_standard
 	self.player_styles.dodsuit.unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_fps_dod_male/tma1_acc_fps_dod_male"
 	self.player_styles.dodsuit.characters = {}
-	local dodsuit_characters_male = {
-		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_average/tma1_acc_dod_male_average"
-	}
+
+	local dodsuit_characters_male = {}
+
+	dodsuit_characters_male.third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_average/tma1_acc_dod_male_average"
 
 	set_characters_data("dodsuit", characters_male, dodsuit_characters_male)
 
-	local dodsuit_characters_male_big = {
-		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_big/tma1_acc_dod_male_big"
-	}
+	local dodsuit_characters_male_big = {}
+
+	dodsuit_characters_male_big.third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_big/tma1_acc_dod_male_big"
 
 	set_characters_data("dodsuit", characters_male_big, dodsuit_characters_male_big)
 
-	local dodsuit_characters_female = {
-		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_female_average/tma1_acc_dod_female_average"
-	}
+	local dodsuit_characters_female = {}
+
+	dodsuit_characters_female.third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_female_average/tma1_acc_dod_female_average"
 
 	set_characters_data("dodsuit", characters_female, dodsuit_characters_female)
 
-	local dodsuit_characters_female_big = {
-		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_female_fat/tma1_acc_dod_female_fat"
-	}
+	local dodsuit_characters_female_big = {}
+
+	dodsuit_characters_female_big.third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_female_fat/tma1_acc_dod_female_fat"
 
 	set_characters_data("dodsuit", characters_female_big, dodsuit_characters_female_big)
 
-	local dodsuit_characters_male_fat = {
-		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_fat/tma1_acc_dod_male_fat",
-		sequence = "set_ehtan"
-	}
+	local dodsuit_characters_male_fat = {}
+
+	dodsuit_characters_male_fat.third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_fat/tma1_acc_dod_male_fat"
+	dodsuit_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.dodsuit.characters.ecp_male = dodsuit_characters_male_fat
-	self.player_styles.railroad = {
-		name_id = "bm_suit_railroad",
-		desc_id = "bm_suit_railroad_desc",
-		texture_bundle_folder = "trt",
-		global_value = "trt_railroad",
-		material_variations = {}
-	}
+	self.player_styles.railroad = {}
+	self.player_styles.railroad.name_id = "bm_suit_railroad"
+	self.player_styles.railroad.desc_id = "bm_suit_railroad_desc"
+	self.player_styles.railroad.texture_bundle_folder = "trt"
+	self.player_styles.railroad.global_value = "trt_railroad"
+	self.player_styles.railroad.material_variations = {}
 	self.player_styles.railroad.material_variations.default = {
-		name_id = "bm_suit_railroad_default",
+		desc_id = "bm_suit_railroad_default_desc",
 		global_value = "trt",
-		desc_id = "bm_suit_railroad_default_desc"
+		name_id = "bm_suit_railroad_default"
 	}
 	self.player_styles.railroad.body_replacement = body_replacement_standard
 	self.player_styles.railroad.third_body_replacement = body_replacement_standard
 	self.player_styles.railroad.unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_fps_railroad_male/trt_acc_fps_railroad_male"
 	self.player_styles.railroad.characters = {}
-	local railroad_characters_male = {
-		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_average/trt_acc_railroad_male_average"
-	}
+
+	local railroad_characters_male = {}
+
+	railroad_characters_male.third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_average/trt_acc_railroad_male_average"
 
 	set_characters_data("railroad", characters_male, railroad_characters_male)
 
-	local railroad_characters_male_big = {
-		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_big/trt_acc_railroad_male_big"
-	}
+	local railroad_characters_male_big = {}
+
+	railroad_characters_male_big.third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_big/trt_acc_railroad_male_big"
 
 	set_characters_data("railroad", characters_male_big, railroad_characters_male_big)
 
-	local railroad_characters_female = {
-		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_female_average/trt_acc_railroad_female_average"
-	}
+	local railroad_characters_female = {}
+
+	railroad_characters_female.third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_female_average/trt_acc_railroad_female_average"
 
 	set_characters_data("railroad", characters_female, railroad_characters_female)
 
-	local railroad_characters_female_big = {
-		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_female_fat/trt_acc_railroad_female_fat"
-	}
+	local railroad_characters_female_big = {}
+
+	railroad_characters_female_big.third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_female_fat/trt_acc_railroad_female_fat"
 
 	set_characters_data("railroad", characters_female_big, railroad_characters_female_big)
 
-	local railroad_characters_male_fat = {
-		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_fat/trt_acc_railroad_male_fat",
-		sequence = "set_ehtan"
-	}
+	local railroad_characters_male_fat = {}
+
+	railroad_characters_male_fat.third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_fat/trt_acc_railroad_male_fat"
+	railroad_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.railroad.characters.ecp_male = railroad_characters_male_fat
-	self.player_styles.corl = {
-		name_id = "bm_suit_corl",
-		desc_id = "bm_suit_corl_desc",
-		texture_bundle_folder = "a11th",
-		global_value = "a11th_corl",
-		material_variations = {}
-	}
+	self.player_styles.corl = {}
+	self.player_styles.corl.name_id = "bm_suit_corl"
+	self.player_styles.corl.desc_id = "bm_suit_corl_desc"
+	self.player_styles.corl.texture_bundle_folder = "a11th"
+	self.player_styles.corl.global_value = "a11th_corl"
+	self.player_styles.corl.material_variations = {}
 	self.player_styles.corl.material_variations.default = {
-		name_id = "bm_suit_corl_default",
+		desc_id = "bm_suit_corl_default_desc",
 		global_value = "a11th",
-		desc_id = "bm_suit_corl_default_desc"
+		name_id = "bm_suit_corl_default"
 	}
 	self.player_styles.corl.body_replacement = body_replacement_standard
 	self.player_styles.corl.third_body_replacement = body_replacement_standard
 	self.player_styles.corl.unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_fps_corl_male/a11th_acc_fps_corl_male"
 	self.player_styles.corl.characters = {}
-	local corl_characters_male = {
-		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_average/a11th_acc_corl_male_average"
-	}
+
+	local corl_characters_male = {}
+
+	corl_characters_male.third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_average/a11th_acc_corl_male_average"
 
 	set_characters_data("corl", characters_male, corl_characters_male)
 
-	local corl_characters_male_big = {
-		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_big/a11th_acc_corl_male_big"
-	}
+	local corl_characters_male_big = {}
+
+	corl_characters_male_big.third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_big/a11th_acc_corl_male_big"
 
 	set_characters_data("corl", characters_male_big, corl_characters_male_big)
 
-	local corl_characters_female = {
-		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_female_average/a11th_acc_corl_female_average"
-	}
+	local corl_characters_female = {}
+
+	corl_characters_female.third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_female_average/a11th_acc_corl_female_average"
 
 	set_characters_data("corl", characters_female, corl_characters_female)
 
-	local corl_characters_female_big = {
-		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_female_fat/a11th_acc_corl_female_fat"
-	}
+	local corl_characters_female_big = {}
+
+	corl_characters_female_big.third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_female_fat/a11th_acc_corl_female_fat"
 
 	set_characters_data("corl", characters_female_big, corl_characters_female_big)
 
-	local corl_characters_male_fat = {
-		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_fat/a11th_acc_corl_male_fat",
-		sequence = "set_ehtan"
-	}
+	local corl_characters_male_fat = {}
+
+	corl_characters_male_fat.third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_fat/a11th_acc_corl_male_fat"
+	corl_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.corl.characters.ecp_male = corl_characters_male_fat
-	self.player_styles.ghostly = {
-		name_id = "bm_suit_ghostly",
-		desc_id = "bm_suit_ghostly_desc",
-		texture_bundle_folder = "h22",
-		global_value = "h22_ghostly",
-		material_variations = {}
-	}
+	self.player_styles.ghostly = {}
+	self.player_styles.ghostly.name_id = "bm_suit_ghostly"
+	self.player_styles.ghostly.desc_id = "bm_suit_ghostly_desc"
+	self.player_styles.ghostly.texture_bundle_folder = "h22"
+	self.player_styles.ghostly.global_value = "h22_ghostly"
+	self.player_styles.ghostly.material_variations = {}
 	self.player_styles.ghostly.material_variations.default = {
-		name_id = "bm_suit_ghostly_default",
+		desc_id = "bm_suit_ghostly_default_desc",
 		global_value = "h22_ghostly",
-		desc_id = "bm_suit_ghostly_default_desc"
+		name_id = "bm_suit_ghostly_default"
 	}
 	self.player_styles.ghostly.body_replacement = body_replacement_standard
 	self.player_styles.ghostly.third_body_replacement = body_replacement_standard
 	self.player_styles.ghostly.unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_fps_ghostly_male/h22_acc_fps_ghostly_male"
 	self.player_styles.ghostly.characters = {}
-	local ghostly_characters_male = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_male_average/h22_acc_ghostly_male_average"
-	}
+
+	local ghostly_characters_male = {}
+
+	ghostly_characters_male.third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_male_average/h22_acc_ghostly_male_average"
 
 	set_characters_data("ghostly", characters_male, ghostly_characters_male)
 
-	local ghostly_characters_male_big = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_male_big/h22_acc_ghostly_male_big"
-	}
+	local ghostly_characters_male_big = {}
+
+	ghostly_characters_male_big.third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_male_big/h22_acc_ghostly_male_big"
 
 	set_characters_data("ghostly", characters_male_big, ghostly_characters_male_big)
 
-	local ghostly_characters_female = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_female_average/h22_acc_ghostly_female_average"
-	}
+	local ghostly_characters_female = {}
+
+	ghostly_characters_female.third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_female_average/h22_acc_ghostly_female_average"
 
 	set_characters_data("ghostly", characters_female, ghostly_characters_female)
 
-	local ghostly_characters_female_big = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_female_fat/h22_acc_ghostly_female_fat"
-	}
+	local ghostly_characters_female_big = {}
+
+	ghostly_characters_female_big.third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_female_fat/h22_acc_ghostly_female_fat"
 
 	set_characters_data("ghostly", characters_female_big, ghostly_characters_female_big)
 
-	local ghostly_characters_male_fat = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_male_fat/h22_acc_ghostly_male_fat",
-		sequence = "set_ehtan"
-	}
+	local ghostly_characters_male_fat = {}
+
+	ghostly_characters_male_fat.third_unit = "units/pd2_dlc_h22/characters/h22_acc_ghostly/h22_acc_ghostly_male_fat/h22_acc_ghostly_male_fat"
+	ghostly_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.ghostly.characters.ecp_male = ghostly_characters_male_fat
-	self.player_styles.darkprince = {
-		name_id = "bm_suit_darkprince",
-		desc_id = "bm_suit_darkprince_desc",
-		texture_bundle_folder = "h22",
-		global_value = "h22_darkprince",
-		third_redirect_decals = true,
-		material_variations = {}
-	}
+	self.player_styles.darkprince = {}
+	self.player_styles.darkprince.name_id = "bm_suit_darkprince"
+	self.player_styles.darkprince.desc_id = "bm_suit_darkprince_desc"
+	self.player_styles.darkprince.texture_bundle_folder = "h22"
+	self.player_styles.darkprince.global_value = "h22_darkprince"
+	self.player_styles.darkprince.third_redirect_decals = true
+	self.player_styles.darkprince.material_variations = {}
 	self.player_styles.darkprince.material_variations.default = {
-		name_id = "bm_suit_darkprince_default",
+		desc_id = "bm_suit_darkprince_default_desc",
 		global_value = "h22_darkprince",
-		desc_id = "bm_suit_darkprince_default_desc"
+		name_id = "bm_suit_darkprince_default"
 	}
 	self.player_styles.darkprince.body_replacement = body_replacement_standard
 	self.player_styles.darkprince.third_body_replacement = body_replacement_standard
 	self.player_styles.darkprince.unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_fps_darkprince_male/h22_acc_fps_darkprince_male"
 	self.player_styles.darkprince.characters = {}
-	local darkprince_characters_male = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_male_average/h22_acc_darkprince_male_average"
-	}
+
+	local darkprince_characters_male = {}
+
+	darkprince_characters_male.third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_male_average/h22_acc_darkprince_male_average"
 
 	set_characters_data("darkprince", characters_male, darkprince_characters_male)
 
-	local darkprince_characters_male_big = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_male_big/h22_acc_darkprince_male_big"
-	}
+	local darkprince_characters_male_big = {}
+
+	darkprince_characters_male_big.third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_male_big/h22_acc_darkprince_male_big"
 
 	set_characters_data("darkprince", characters_male_big, darkprince_characters_male_big)
 
-	local darkprince_characters_female = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_female_average/h22_acc_darkprince_female_average"
-	}
+	local darkprince_characters_female = {}
+
+	darkprince_characters_female.third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_female_average/h22_acc_darkprince_female_average"
 
 	set_characters_data("darkprince", characters_female, darkprince_characters_female)
 
-	local darkprince_characters_female_big = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_female_fat/h22_acc_darkprince_female_fat"
-	}
+	local darkprince_characters_female_big = {}
+
+	darkprince_characters_female_big.third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_female_fat/h22_acc_darkprince_female_fat"
 
 	set_characters_data("darkprince", characters_female_big, darkprince_characters_female_big)
 
-	local darkprince_characters_male_fat = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_male_fat/h22_acc_darkprince_male_fat",
-		sequence = "set_ehtan"
-	}
+	local darkprince_characters_male_fat = {}
+
+	darkprince_characters_male_fat.third_unit = "units/pd2_dlc_h22/characters/h22_acc_darkprince/h22_acc_darkprince_male_fat/h22_acc_darkprince_male_fat"
+	darkprince_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.darkprince.characters.ecp_male = darkprince_characters_male_fat
-	self.player_styles.nightwalker = {
-		name_id = "bm_suit_nightwalker",
-		desc_id = "bm_suit_nightwalker_desc",
-		texture_bundle_folder = "h22",
-		global_value = "h22_nightwalker",
-		material_variations = {}
-	}
+	self.player_styles.nightwalker = {}
+	self.player_styles.nightwalker.name_id = "bm_suit_nightwalker"
+	self.player_styles.nightwalker.desc_id = "bm_suit_nightwalker_desc"
+	self.player_styles.nightwalker.texture_bundle_folder = "h22"
+	self.player_styles.nightwalker.global_value = "h22_nightwalker"
+	self.player_styles.nightwalker.material_variations = {}
 	self.player_styles.nightwalker.material_variations.default = {
-		name_id = "bm_suit_nightwalker_default",
+		desc_id = "bm_suit_nightwalker_default_desc",
 		global_value = "h22_nightwalker",
-		desc_id = "bm_suit_nightwalker_default_desc"
+		name_id = "bm_suit_nightwalker_default"
 	}
 	self.player_styles.nightwalker.body_replacement = body_replacement_standard
 	self.player_styles.nightwalker.third_body_replacement = body_replacement_standard
 	self.player_styles.nightwalker.unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_fps_nightwalker_male/h22_acc_fps_nightwalker_male"
 	self.player_styles.nightwalker.characters = {}
-	local nightwalker_characters_male = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_male_average/h22_acc_nightwalker_male_average"
-	}
+
+	local nightwalker_characters_male = {}
+
+	nightwalker_characters_male.third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_male_average/h22_acc_nightwalker_male_average"
 
 	set_characters_data("nightwalker", characters_male, nightwalker_characters_male)
 
-	local nightwalker_characters_male_big = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_male_big/h22_acc_nightwalker_male_big"
-	}
+	local nightwalker_characters_male_big = {}
+
+	nightwalker_characters_male_big.third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_male_big/h22_acc_nightwalker_male_big"
 
 	set_characters_data("nightwalker", characters_male_big, nightwalker_characters_male_big)
 
-	local nightwalker_characters_female = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_female_average/h22_acc_nightwalker_female_average"
-	}
+	local nightwalker_characters_female = {}
+
+	nightwalker_characters_female.third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_female_average/h22_acc_nightwalker_female_average"
 
 	set_characters_data("nightwalker", characters_female, nightwalker_characters_female)
 
-	local nightwalker_characters_female_big = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_female_fat/h22_acc_nightwalker_female_fat"
-	}
+	local nightwalker_characters_female_big = {}
+
+	nightwalker_characters_female_big.third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_female_fat/h22_acc_nightwalker_female_fat"
 
 	set_characters_data("nightwalker", characters_female_big, nightwalker_characters_female_big)
 
-	local nightwalker_characters_male_fat = {
-		third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_male_fat/h22_acc_nightwalker_male_fat",
-		sequence = "set_ehtan"
-	}
+	local nightwalker_characters_male_fat = {}
+
+	nightwalker_characters_male_fat.third_unit = "units/pd2_dlc_h22/characters/h22_acc_nightwalker/h22_acc_nightwalker_male_fat/h22_acc_nightwalker_male_fat"
+	nightwalker_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.nightwalker.characters.ecp_male = nightwalker_characters_male_fat
-	self.player_styles.cargocasual = {
-		name_id = "bm_suit_cargocasual",
-		desc_id = "bm_suit_cargocasual_desc",
-		texture_bundle_folder = "txt3",
-		global_value = "txt3",
-		material_variations = {}
-	}
+	self.player_styles.cargocasual = {}
+	self.player_styles.cargocasual.name_id = "bm_suit_cargocasual"
+	self.player_styles.cargocasual.desc_id = "bm_suit_cargocasual_desc"
+	self.player_styles.cargocasual.texture_bundle_folder = "txt3"
+	self.player_styles.cargocasual.global_value = "txt3"
+	self.player_styles.cargocasual.material_variations = {}
 	self.player_styles.cargocasual.material_variations.default = {
-		name_id = "bm_suit_var_cargocasual_suit_default",
+		desc_id = "bm_suit_var_cargocasual_suit_default_desc",
 		global_value = "txt3",
-		desc_id = "bm_suit_var_cargocasual_suit_default_desc"
+		name_id = "bm_suit_var_cargocasual_suit_default"
 	}
 	self.player_styles.cargocasual.body_replacement = body_replacement_standard
 	self.player_styles.cargocasual.third_body_replacement = body_replacement_standard
 	self.player_styles.cargocasual.unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_fps_cargocasual_male/txt3_acc_fps_cargocasual_male"
 	self.player_styles.cargocasual.material_variations.cassette = {
+		auto_aquire = true,
 		desc_id = "bm_suit_cargocasual_cassette_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_cassette",
 		name_id = "bm_suit_cargocasual_cassette",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_cassette",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_cassette"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_cassette"
 	}
 	self.player_styles.cargocasual.material_variations.monke = {
+		auto_aquire = true,
 		desc_id = "bm_suit_cargocasual_monke_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_monke",
 		name_id = "bm_suit_cargocasual_monke",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_monke",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_monke"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_monke"
 	}
 	self.player_styles.cargocasual.material_variations.texas = {
+		auto_aquire = true,
 		desc_id = "bm_suit_cargocasual_texas_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_texas",
 		name_id = "bm_suit_cargocasual_texas",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_texas",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_texas"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_texas"
 	}
 	self.player_styles.cargocasual.characters = {}
-	local cargocasual_characters_male = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_average/txt3_acc_cargocasual_male_average"
-	}
+
+	local cargocasual_characters_male = {}
+
+	cargocasual_characters_male.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_average/txt3_acc_cargocasual_male_average"
 
 	set_characters_data("cargocasual", characters_male, cargocasual_characters_male)
 
-	local cargocasual_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_big/txt3_acc_cargocasual_male_big"
-	}
+	local cargocasual_characters_male_big = {}
+
+	cargocasual_characters_male_big.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_big/txt3_acc_cargocasual_male_big"
 
 	set_characters_data("cargocasual", characters_male_big, cargocasual_characters_male_big)
 
-	local cargocasual_characters_female = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_female_average/txt3_acc_cargocasual_female_average"
-	}
+	local cargocasual_characters_female = {}
+
+	cargocasual_characters_female.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_female_average/txt3_acc_cargocasual_female_average"
 
 	set_characters_data("cargocasual", characters_female, cargocasual_characters_female)
 
-	local cargocasual_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_female_fat/txt3_acc_cargocasual_female_fat"
-	}
+	local cargocasual_characters_female_big = {}
+
+	cargocasual_characters_female_big.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_female_fat/txt3_acc_cargocasual_female_fat"
 
 	set_characters_data("cargocasual", characters_female_big, cargocasual_characters_female_big)
 
-	local cargocasual_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_fat/txt3_acc_cargocasual_male_fat",
-		sequence = "set_ehtan"
-	}
+	local cargocasual_characters_male_fat = {}
+
+	cargocasual_characters_male_fat.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_fat/txt3_acc_cargocasual_male_fat"
+	cargocasual_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.cargocasual.characters.ecp_male = cargocasual_characters_male_fat
-	self.player_styles.leatherfluff = {
-		name_id = "bm_suit_leatherfluff",
-		desc_id = "bm_suit_leatherfluff_desc",
-		texture_bundle_folder = "txt3",
-		global_value = "txt3",
-		material_variations = {}
-	}
+	self.player_styles.leatherfluff = {}
+	self.player_styles.leatherfluff.name_id = "bm_suit_leatherfluff"
+	self.player_styles.leatherfluff.desc_id = "bm_suit_leatherfluff_desc"
+	self.player_styles.leatherfluff.texture_bundle_folder = "txt3"
+	self.player_styles.leatherfluff.global_value = "txt3"
+	self.player_styles.leatherfluff.material_variations = {}
 	self.player_styles.leatherfluff.material_variations.default = {
-		name_id = "bm_suit_var_leatherfluff_suit_default",
+		desc_id = "bm_suit_var_leatherfluff_suit_default_desc",
 		global_value = "txt3",
-		desc_id = "bm_suit_var_leatherfluff_suit_default_desc"
+		name_id = "bm_suit_var_leatherfluff_suit_default"
 	}
 	self.player_styles.leatherfluff.body_replacement = body_replacement_standard
 	self.player_styles.leatherfluff.third_body_replacement = body_replacement_standard
 	self.player_styles.leatherfluff.unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_fps_leatherfluff_male/txt3_acc_fps_leatherfluff_male"
 	self.player_styles.leatherfluff.material_variations.bats = {
+		auto_aquire = true,
 		desc_id = "bm_suit_leatherfluff_bats_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_bats",
 		name_id = "bm_suit_leatherfluff_bats",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_bats",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_bats"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_bats"
 	}
 	self.player_styles.leatherfluff.material_variations.dots = {
+		auto_aquire = true,
 		desc_id = "bm_suit_leatherfluff_dots_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_dots",
 		name_id = "bm_suit_leatherfluff_dots",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_dots",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_dots"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_dots"
 	}
 	self.player_styles.leatherfluff.material_variations.lightning = {
+		auto_aquire = true,
 		desc_id = "bm_suit_leatherfluff_lightning_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_lightning",
 		name_id = "bm_suit_leatherfluff_lightning",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_lightning",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_lightning"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_lightning"
 	}
 	self.player_styles.leatherfluff.characters = {}
-	local leatherfluff_characters_male = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_average/txt3_acc_leatherfluff_male_average"
-	}
+
+	local leatherfluff_characters_male = {}
+
+	leatherfluff_characters_male.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_average/txt3_acc_leatherfluff_male_average"
 
 	set_characters_data("leatherfluff", characters_male, leatherfluff_characters_male)
 
-	local leatherfluff_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_big/txt3_acc_leatherfluff_male_big"
-	}
+	local leatherfluff_characters_male_big = {}
+
+	leatherfluff_characters_male_big.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_big/txt3_acc_leatherfluff_male_big"
 
 	set_characters_data("leatherfluff", characters_male_big, leatherfluff_characters_male_big)
 
-	local leatherfluff_characters_female = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_female_average/txt3_acc_leatherfluff_female_average"
-	}
+	local leatherfluff_characters_female = {}
+
+	leatherfluff_characters_female.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_female_average/txt3_acc_leatherfluff_female_average"
 
 	set_characters_data("leatherfluff", characters_female, leatherfluff_characters_female)
 
-	local leatherfluff_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_female_fat/txt3_acc_leatherfluff_female_fat"
-	}
+	local leatherfluff_characters_female_big = {}
+
+	leatherfluff_characters_female_big.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_female_fat/txt3_acc_leatherfluff_female_fat"
 
 	set_characters_data("leatherfluff", characters_female_big, leatherfluff_characters_female_big)
 
-	local leatherfluff_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_fat/txt3_acc_leatherfluff_male_fat",
-		sequence = "set_ehtan"
-	}
+	local leatherfluff_characters_male_fat = {}
+
+	leatherfluff_characters_male_fat.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_fat/txt3_acc_leatherfluff_male_fat"
+	leatherfluff_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.leatherfluff.characters.ecp_male = leatherfluff_characters_male_fat
-	self.player_styles.puffervest = {
-		name_id = "bm_suit_puffervest",
-		desc_id = "bm_suit_puffervest_desc",
-		texture_bundle_folder = "txt3",
-		global_value = "txt3",
-		material_variations = {}
-	}
+	self.player_styles.puffervest = {}
+	self.player_styles.puffervest.name_id = "bm_suit_puffervest"
+	self.player_styles.puffervest.desc_id = "bm_suit_puffervest_desc"
+	self.player_styles.puffervest.texture_bundle_folder = "txt3"
+	self.player_styles.puffervest.global_value = "txt3"
+	self.player_styles.puffervest.material_variations = {}
 	self.player_styles.puffervest.material_variations.default = {
-		name_id = "bm_suit_var_puffervest_suit_default",
+		desc_id = "bm_suit_var_puffervest_suit_default_desc",
 		global_value = "txt3",
-		desc_id = "bm_suit_var_puffervest_suit_default_desc"
+		name_id = "bm_suit_var_puffervest_suit_default"
 	}
 	self.player_styles.puffervest.body_replacement = body_replacement_standard
 	self.player_styles.puffervest.third_body_replacement = body_replacement_standard
 	self.player_styles.puffervest.unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_fps_puffervest_male/txt3_acc_fps_puffervest_male"
 	self.player_styles.puffervest.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_puffervest_blue_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_blue",
 		name_id = "bm_suit_puffervest_blue",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_blue",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_blue"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_blue"
 	}
 	self.player_styles.puffervest.material_variations.grey = {
+		auto_aquire = true,
 		desc_id = "bm_suit_puffervest_grey_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_grey",
 		name_id = "bm_suit_puffervest_grey",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_grey",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_grey"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_grey"
 	}
 	self.player_styles.puffervest.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_puffervest_red_desc",
 		global_value = "txt3",
-		auto_aquire = true,
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_red",
 		name_id = "bm_suit_puffervest_red",
-		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_red",
-		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_red"
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_red"
 	}
 	self.player_styles.puffervest.characters = {}
-	local puffervest_characters_male = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_average/txt3_acc_puffervest_male_average"
-	}
+
+	local puffervest_characters_male = {}
+
+	puffervest_characters_male.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_average/txt3_acc_puffervest_male_average"
 
 	set_characters_data("puffervest", characters_male, puffervest_characters_male)
 
-	local puffervest_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_big/txt3_acc_puffervest_male_big"
-	}
+	local puffervest_characters_male_big = {}
+
+	puffervest_characters_male_big.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_big/txt3_acc_puffervest_male_big"
 
 	set_characters_data("puffervest", characters_male_big, puffervest_characters_male_big)
 
-	local puffervest_characters_female = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_female_average/txt3_acc_puffervest_female_average"
-	}
+	local puffervest_characters_female = {}
+
+	puffervest_characters_female.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_female_average/txt3_acc_puffervest_female_average"
 
 	set_characters_data("puffervest", characters_female, puffervest_characters_female)
 
-	local puffervest_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_female_fat/txt3_acc_puffervest_female_fat"
-	}
+	local puffervest_characters_female_big = {}
+
+	puffervest_characters_female_big.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_female_fat/txt3_acc_puffervest_female_fat"
 
 	set_characters_data("puffervest", characters_female_big, puffervest_characters_female_big)
 
-	local puffervest_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_fat/txt3_acc_puffervest_male_fat",
-		sequence = "set_ehtan"
-	}
+	local puffervest_characters_male_fat = {}
+
+	puffervest_characters_male_fat.third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_fat/txt3_acc_puffervest_male_fat"
+	puffervest_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.puffervest.characters.ecp_male = puffervest_characters_male_fat
-	self.player_styles.elfsuit = {
-		name_id = "bm_suit_elfsuit",
-		desc_id = "bm_suit_elfsuit_desc",
-		texture_bundle_folder = "xm22",
-		global_value = "xm22",
-		material_variations = {}
-	}
+	self.player_styles.elfsuit = {}
+	self.player_styles.elfsuit.name_id = "bm_suit_elfsuit"
+	self.player_styles.elfsuit.desc_id = "bm_suit_elfsuit_desc"
+	self.player_styles.elfsuit.texture_bundle_folder = "xm22"
+	self.player_styles.elfsuit.global_value = "xm22"
+	self.player_styles.elfsuit.material_variations = {}
 	self.player_styles.elfsuit.material_variations.default = {
-		name_id = "bm_suit_elfsuit_default",
+		desc_id = "bm_suit_elfsuit_default_desc",
 		global_value = "xm22",
-		desc_id = "bm_suit_elfsuit_default_desc"
+		name_id = "bm_suit_elfsuit_default"
 	}
 	self.player_styles.elfsuit.body_replacement = body_replacement_standard
 	self.player_styles.elfsuit.third_body_replacement = body_replacement_standard
@@ -4899,567 +4910,568 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 	self.player_styles.elfsuit.material_variations.red = {
 		desc_id = "bm_suit_elfsuit_red_desc",
 		global_value = "xm22",
+		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_red",
 		name_id = "bm_suit_elfsuit_red",
-		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_red",
-		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_red"
+		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_red"
 	}
 	self.player_styles.elfsuit.material_variations.violet = {
 		desc_id = "bm_suit_elfsuit_violet_desc",
 		global_value = "xm22",
+		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_violet",
 		name_id = "bm_suit_elfsuit_violet",
-		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_violet",
-		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_violet"
+		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_violet"
 	}
 	self.player_styles.elfsuit.material_variations.yellow = {
 		desc_id = "bm_suit_elfsuit_yellow_desc",
 		global_value = "xm22",
+		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_yellow",
 		name_id = "bm_suit_elfsuit_yellow",
-		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_yellow",
-		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_yellow"
+		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_yellow"
 	}
 	self.player_styles.elfsuit.characters = {}
-	local elf_characters_male = {
-		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_average/xm22_acc_elf_male_average"
-	}
+
+	local elf_characters_male = {}
+
+	elf_characters_male.third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_average/xm22_acc_elf_male_average"
 
 	set_characters_data("elfsuit", characters_male, elf_characters_male)
 
-	local elfsuit_characters_male_big = {
-		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_big/xm22_acc_elf_male_big"
-	}
+	local elfsuit_characters_male_big = {}
+
+	elfsuit_characters_male_big.third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_big/xm22_acc_elf_male_big"
 
 	set_characters_data("elfsuit", characters_male_big, elfsuit_characters_male_big)
 
-	local elfsuit_characters_female = {
-		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_female_average/xm22_acc_elf_female_average"
-	}
+	local elfsuit_characters_female = {}
+
+	elfsuit_characters_female.third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_female_average/xm22_acc_elf_female_average"
 
 	set_characters_data("elfsuit", characters_female, elfsuit_characters_female)
 
-	local elfsuit_characters_female_big = {
-		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_female_fat/xm22_acc_elf_female_fat"
-	}
+	local elfsuit_characters_female_big = {}
+
+	elfsuit_characters_female_big.third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_female_fat/xm22_acc_elf_female_fat"
 
 	set_characters_data("elfsuit", characters_female_big, elfsuit_characters_female_big)
 
-	local elfsuit_characters_male_fat = {
-		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_fat/xm22_acc_elf_male_fat",
-		sequence = "set_ehtan"
-	}
+	local elfsuit_characters_male_fat = {}
+
+	elfsuit_characters_male_fat.third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_fat/xm22_acc_elf_male_fat"
+	elfsuit_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.elfsuit.characters.ecp_male = elfsuit_characters_male_fat
-	self.player_styles.throwables_bag = {
-		unavailable = true,
-		material_variations = {}
-	}
+	self.player_styles.throwables_bag = {}
+	self.player_styles.throwables_bag.unavailable = true
+	self.player_styles.throwables_bag.material_variations = {}
 	self.player_styles.throwables_bag.material_variations.default = {}
 	self.player_styles.throwables_bag.third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_male_average/mxm_acc_throwables_bag_male_average"
 	self.player_styles.throwables_bag.characters = {}
-	local throwables_bag_characters_male_big = {
-		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_male_big/mxm_acc_throwables_bag_male_big"
-	}
+
+	local throwables_bag_characters_male_big = {}
+
+	throwables_bag_characters_male_big.third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_male_big/mxm_acc_throwables_bag_male_big"
 
 	set_characters_data("throwables_bag", characters_male_big, throwables_bag_characters_male_big)
 
-	local throwables_bag_characters_female = {
-		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_average/mxm_acc_throwables_bag_female_average"
-	}
+	local throwables_bag_characters_female = {}
+
+	throwables_bag_characters_female.third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_average/mxm_acc_throwables_bag_female_average"
 
 	set_characters_data("throwables_bag", characters_female, throwables_bag_characters_female)
 
-	local throwables_bag_characters_female_big = {
-		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_fat/mxm_acc_throwables_bag_female_fat"
-	}
+	local throwables_bag_characters_female_big = {}
+
+	throwables_bag_characters_female_big.third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_fat/mxm_acc_throwables_bag_female_fat"
 
 	set_characters_data("throwables_bag", characters_female_big, throwables_bag_characters_female_big)
 
-	local throwables_bag_characters_male_fat = {
-		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_fat/mxm_acc_throwables_bag_female_fat",
-		sequence = "set_ehtan"
-	}
+	local throwables_bag_characters_male_fat = {}
+
+	throwables_bag_characters_male_fat.third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_fat/mxm_acc_throwables_bag_female_fat"
+	throwables_bag_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.throwables_bag.characters.ecp_male = throwables_bag_characters_male_fat
-	self.player_styles.sleekygent = {
-		name_id = "bm_suit_sleekygent",
-		desc_id = "bm_suit_sleekygent_desc",
-		texture_bundle_folder = "cot",
-		global_value = "cot_sleekygent",
-		material_variations = {}
-	}
+	self.player_styles.sleekygent = {}
+	self.player_styles.sleekygent.name_id = "bm_suit_sleekygent"
+	self.player_styles.sleekygent.desc_id = "bm_suit_sleekygent_desc"
+	self.player_styles.sleekygent.texture_bundle_folder = "cot"
+	self.player_styles.sleekygent.global_value = "cot_sleekygent"
+	self.player_styles.sleekygent.material_variations = {}
 	self.player_styles.sleekygent.material_variations.default = {
-		name_id = "bm_suit_sleekygent_default",
+		desc_id = "bm_suit_sleekygent_default_desc",
 		global_value = "cot_sleekygent",
-		desc_id = "bm_suit_sleekygent_default_desc"
+		name_id = "bm_suit_sleekygent_default"
 	}
 	self.player_styles.sleekygent.body_replacement = body_replacement_standard
 	self.player_styles.sleekygent.third_body_replacement = body_replacement_standard
 	self.player_styles.sleekygent.unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_fps_sleekygent_male/cot_acc_fps_sleekygent_male"
 	self.player_styles.sleekygent.characters = {}
-	local sleekygent_characters_male = {
-		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_average/cot_acc_sleekygent_male_average"
-	}
+
+	local sleekygent_characters_male = {}
+
+	sleekygent_characters_male.third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_average/cot_acc_sleekygent_male_average"
 
 	set_characters_data("sleekygent", characters_male, sleekygent_characters_male)
 
-	local sleekygent_characters_male_big = {
-		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_big/cot_acc_sleekygent_male_big"
-	}
+	local sleekygent_characters_male_big = {}
+
+	sleekygent_characters_male_big.third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_big/cot_acc_sleekygent_male_big"
 
 	set_characters_data("sleekygent", characters_male_big, sleekygent_characters_male_big)
 
-	local sleekygent_characters_female = {
-		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_female_average/cot_acc_sleekygent_female_average"
-	}
+	local sleekygent_characters_female = {}
+
+	sleekygent_characters_female.third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_female_average/cot_acc_sleekygent_female_average"
 
 	set_characters_data("sleekygent", characters_female, sleekygent_characters_female)
 
-	local sleekygent_characters_female_big = {
-		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_female_fat/cot_acc_sleekygent_female_fat"
-	}
+	local sleekygent_characters_female_big = {}
+
+	sleekygent_characters_female_big.third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_female_fat/cot_acc_sleekygent_female_fat"
 
 	set_characters_data("sleekygent", characters_female_big, sleekygent_characters_female_big)
 
-	local sleekygent_characters_male_fat = {
-		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_fat/cot_acc_sleekygent_male_fat",
-		sequence = "set_ehtan"
-	}
+	local sleekygent_characters_male_fat = {}
+
+	sleekygent_characters_male_fat.third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_fat/cot_acc_sleekygent_male_fat"
+	sleekygent_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.sleekygent.characters.ecp_male = sleekygent_characters_male_fat
-	self.player_styles.bthekid = {
-		name_id = "bm_suit_bthekid",
-		desc_id = "bm_suit_bthekid_desc",
-		texture_bundle_folder = "txt4",
-		global_value = "txt4",
-		material_variations = {}
-	}
+	self.player_styles.bthekid = {}
+	self.player_styles.bthekid.name_id = "bm_suit_bthekid"
+	self.player_styles.bthekid.desc_id = "bm_suit_bthekid_desc"
+	self.player_styles.bthekid.texture_bundle_folder = "txt4"
+	self.player_styles.bthekid.global_value = "txt4"
+	self.player_styles.bthekid.material_variations = {}
 	self.player_styles.bthekid.material_variations.default = {
-		name_id = "bm_suit_bthekid",
+		desc_id = "bm_suit_bthekid_desc",
 		global_value = "txt4",
-		desc_id = "bm_suit_bthekid_desc"
+		name_id = "bm_suit_bthekid"
 	}
 	self.player_styles.bthekid.body_replacement = body_replacement_standard
 	self.player_styles.bthekid.third_body_replacement = body_replacement_standard
 	self.player_styles.bthekid.unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_fps_bthekid_male/txt4_acc_fps_bthekid_male"
 	self.player_styles.bthekid.characters = {}
-	local bthekid_characters_male = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_average/txt4_acc_bthekid_male_average"
-	}
+
+	local bthekid_characters_male = {}
+
+	bthekid_characters_male.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_average/txt4_acc_bthekid_male_average"
 
 	set_characters_data("bthekid", characters_male, bthekid_characters_male)
 
-	local bthekid_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_big/txt4_acc_bthekid_male_big"
-	}
+	local bthekid_characters_male_big = {}
+
+	bthekid_characters_male_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_big/txt4_acc_bthekid_male_big"
 
 	set_characters_data("bthekid", characters_male_big, bthekid_characters_male_big)
 
-	local bthekid_characters_female = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_female_average/txt4_acc_bthekid_female_average"
-	}
+	local bthekid_characters_female = {}
+
+	bthekid_characters_female.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_female_average/txt4_acc_bthekid_female_average"
 
 	set_characters_data("bthekid", characters_female, bthekid_characters_female)
 
-	local bthekid_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_female_fat/txt4_acc_bthekid_female_fat"
-	}
+	local bthekid_characters_female_big = {}
+
+	bthekid_characters_female_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_female_fat/txt4_acc_bthekid_female_fat"
 
 	set_characters_data("bthekid", characters_female_big, bthekid_characters_female_big)
 
-	local bthekid_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_fat/txt4_acc_bthekid_male_fat",
-		sequence = "set_ehtan"
-	}
+	local bthekid_characters_male_fat = {}
+
+	bthekid_characters_male_fat.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_fat/txt4_acc_bthekid_male_fat"
+	bthekid_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.bthekid.characters.ecp_male = bthekid_characters_male_fat
-	self.player_styles.cassidy = {
-		name_id = "bm_suit_cassidy",
-		desc_id = "bm_suit_cassidy_desc",
-		texture_bundle_folder = "txt4",
-		global_value = "txt4",
-		material_variations = {}
-	}
+	self.player_styles.cassidy = {}
+	self.player_styles.cassidy.name_id = "bm_suit_cassidy"
+	self.player_styles.cassidy.desc_id = "bm_suit_cassidy_desc"
+	self.player_styles.cassidy.texture_bundle_folder = "txt4"
+	self.player_styles.cassidy.global_value = "txt4"
+	self.player_styles.cassidy.material_variations = {}
 	self.player_styles.cassidy.material_variations.default = {
-		name_id = "bm_suit_cassidy",
+		desc_id = "bm_suit_cassidy_desc",
 		global_value = "txt4",
-		desc_id = "bm_suit_cassidy_desc"
+		name_id = "bm_suit_cassidy"
 	}
 	self.player_styles.cassidy.body_replacement = body_replacement_standard
 	self.player_styles.cassidy.third_body_replacement = body_replacement_standard
 	self.player_styles.cassidy.unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_fps_cassidy_male/txt4_acc_fps_cassidy_male"
 	self.player_styles.cassidy.characters = {}
-	local cassidy_characters_male = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_average/txt4_acc_cassidy_male_average"
-	}
+
+	local cassidy_characters_male = {}
+
+	cassidy_characters_male.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_average/txt4_acc_cassidy_male_average"
 
 	set_characters_data("cassidy", characters_male, cassidy_characters_male)
 
-	local cassidy_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_big/txt4_acc_cassidy_male_big"
-	}
+	local cassidy_characters_male_big = {}
+
+	cassidy_characters_male_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_big/txt4_acc_cassidy_male_big"
 
 	set_characters_data("cassidy", characters_male_big, cassidy_characters_male_big)
 
-	local cassidy_characters_female = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_female_average/txt4_acc_cassidy_female_average"
-	}
+	local cassidy_characters_female = {}
+
+	cassidy_characters_female.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_female_average/txt4_acc_cassidy_female_average"
 
 	set_characters_data("cassidy", characters_female, cassidy_characters_female)
 
-	local cassidy_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_female_fat/txt4_acc_cassidy_female_fat"
-	}
+	local cassidy_characters_female_big = {}
+
+	cassidy_characters_female_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_female_fat/txt4_acc_cassidy_female_fat"
 
 	set_characters_data("cassidy", characters_female_big, cassidy_characters_female_big)
 
-	local cassidy_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_fat/txt4_acc_cassidy_male_fat",
-		sequence = "set_ehtan"
-	}
+	local cassidy_characters_male_fat = {}
+
+	cassidy_characters_male_fat.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_fat/txt4_acc_cassidy_male_fat"
+	cassidy_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.cassidy.characters.ecp_male = cassidy_characters_male_fat
-	self.player_styles.jessjames = {
-		name_id = "bm_suit_jessjames",
-		desc_id = "bm_suit_jessjames_desc",
-		texture_bundle_folder = "txt4",
-		global_value = "txt4",
-		material_variations = {}
-	}
+	self.player_styles.jessjames = {}
+	self.player_styles.jessjames.name_id = "bm_suit_jessjames"
+	self.player_styles.jessjames.desc_id = "bm_suit_jessjames_desc"
+	self.player_styles.jessjames.texture_bundle_folder = "txt4"
+	self.player_styles.jessjames.global_value = "txt4"
+	self.player_styles.jessjames.material_variations = {}
 	self.player_styles.jessjames.material_variations.default = {
-		name_id = "bm_suit_jessjames",
+		desc_id = "bm_suit_jessjames_desc",
 		global_value = "txt4",
-		desc_id = "bm_suit_jessjames_desc"
+		name_id = "bm_suit_jessjames"
 	}
 	self.player_styles.jessjames.body_replacement = body_replacement_standard
 	self.player_styles.jessjames.third_body_replacement = body_replacement_standard
 	self.player_styles.jessjames.unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_fps_jessjames_male/txt4_acc_fps_jessjames_male"
 	self.player_styles.jessjames.characters = {}
-	local jessjames_characters_male = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_average/txt4_acc_jessjames_male_average"
-	}
+
+	local jessjames_characters_male = {}
+
+	jessjames_characters_male.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_average/txt4_acc_jessjames_male_average"
 
 	set_characters_data("jessjames", characters_male, jessjames_characters_male)
 
-	local jessjames_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_big/txt4_acc_jessjames_male_big"
-	}
+	local jessjames_characters_male_big = {}
+
+	jessjames_characters_male_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_big/txt4_acc_jessjames_male_big"
 
 	set_characters_data("jessjames", characters_male_big, jessjames_characters_male_big)
 
-	local jessjames_characters_female = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_female_average/txt4_acc_jessjames_female_average"
-	}
+	local jessjames_characters_female = {}
+
+	jessjames_characters_female.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_female_average/txt4_acc_jessjames_female_average"
 
 	set_characters_data("jessjames", characters_female, jessjames_characters_female)
 
-	local jessjames_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_female_fat/txt4_acc_jessjames_female_fat"
-	}
+	local jessjames_characters_female_big = {}
+
+	jessjames_characters_female_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_female_fat/txt4_acc_jessjames_female_fat"
 
 	set_characters_data("jessjames", characters_female_big, jessjames_characters_female_big)
 
-	local jessjames_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_fat/txt4_acc_jessjames_male_fat",
-		sequence = "set_ehtan"
-	}
+	local jessjames_characters_male_fat = {}
+
+	jessjames_characters_male_fat.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_fat/txt4_acc_jessjames_male_fat"
+	jessjames_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.jessjames.characters.ecp_male = jessjames_characters_male_fat
-	self.player_styles.sambass = {
-		name_id = "bm_suit_sambass",
-		desc_id = "bm_suit_sambass_desc",
-		texture_bundle_folder = "txt4",
-		global_value = "txt4",
-		material_variations = {}
-	}
+	self.player_styles.sambass = {}
+	self.player_styles.sambass.name_id = "bm_suit_sambass"
+	self.player_styles.sambass.desc_id = "bm_suit_sambass_desc"
+	self.player_styles.sambass.texture_bundle_folder = "txt4"
+	self.player_styles.sambass.global_value = "txt4"
+	self.player_styles.sambass.material_variations = {}
 	self.player_styles.sambass.material_variations.default = {
-		name_id = "bm_suit_sambass",
+		desc_id = "bm_suit_sambass_desc",
 		global_value = "txt4",
-		desc_id = "bm_suit_sambass_desc"
+		name_id = "bm_suit_sambass"
 	}
 	self.player_styles.sambass.body_replacement = body_replacement_standard
 	self.player_styles.sambass.third_body_replacement = body_replacement_standard
 	self.player_styles.sambass.unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_fps_sambass_male/txt4_acc_fps_sambass_male"
 	self.player_styles.sambass.characters = {}
-	local sambass_characters_male = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_average/txt4_acc_sambass_male_average"
-	}
+
+	local sambass_characters_male = {}
+
+	sambass_characters_male.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_average/txt4_acc_sambass_male_average"
 
 	set_characters_data("sambass", characters_male, sambass_characters_male)
 
-	local sambass_characters_male_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_big/txt4_acc_sambass_male_big"
-	}
+	local sambass_characters_male_big = {}
+
+	sambass_characters_male_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_big/txt4_acc_sambass_male_big"
 
 	set_characters_data("sambass", characters_male_big, sambass_characters_male_big)
 
-	local sambass_characters_female = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_female_average/txt4_acc_sambass_female_average"
-	}
+	local sambass_characters_female = {}
+
+	sambass_characters_female.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_female_average/txt4_acc_sambass_female_average"
 
 	set_characters_data("sambass", characters_female, sambass_characters_female)
 
-	local sambass_characters_female_big = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_female_fat/txt4_acc_sambass_female_fat"
-	}
+	local sambass_characters_female_big = {}
+
+	sambass_characters_female_big.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_female_fat/txt4_acc_sambass_female_fat"
 
 	set_characters_data("sambass", characters_female_big, sambass_characters_female_big)
 
-	local sambass_characters_male_fat = {
-		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_fat/txt4_acc_sambass_male_fat",
-		sequence = "set_ehtan"
-	}
+	local sambass_characters_male_fat = {}
+
+	sambass_characters_male_fat.third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_fat/txt4_acc_sambass_male_fat"
+	sambass_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.sambass.characters.ecp_male = sambass_characters_male_fat
-	self.player_styles.bossflag = {
-		name_id = "bm_suit_bossflag",
-		desc_id = "bm_suit_bossflag_desc",
-		texture_bundle_folder = "deep",
-		locks = {
-			achievement = "deep_10"
-		},
-		material_variations = {}
+	self.player_styles.bossflag = {}
+	self.player_styles.bossflag.name_id = "bm_suit_bossflag"
+	self.player_styles.bossflag.desc_id = "bm_suit_bossflag_desc"
+	self.player_styles.bossflag.texture_bundle_folder = "deep"
+	self.player_styles.bossflag.locks = {
+		achievement = "deep_10"
 	}
+	self.player_styles.bossflag.material_variations = {}
 	self.player_styles.bossflag.material_variations.default = {
-		name_id = "bm_suit_bossflag",
+		desc_id = "bm_suit_bossflag_desc",
 		global_value = "normal",
-		desc_id = "bm_suit_bossflag_desc"
+		name_id = "bm_suit_bossflag"
 	}
 	self.player_styles.bossflag.body_replacement = body_replacement_standard
 	self.player_styles.bossflag.third_body_replacement = body_replacement_standard
 	self.player_styles.bossflag.unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_fps_bossflag_male/deep_acc_fps_bossflag_male"
 	self.player_styles.bossflag.characters = {}
-	local bossflag_characters_male = {
-		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_average/deep_acc_bossflag_male_average"
-	}
+
+	local bossflag_characters_male = {}
+
+	bossflag_characters_male.third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_average/deep_acc_bossflag_male_average"
 
 	set_characters_data("bossflag", characters_male, bossflag_characters_male)
 
-	local bossflag_characters_male_big = {
-		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_big/deep_acc_bossflag_male_big"
-	}
+	local bossflag_characters_male_big = {}
+
+	bossflag_characters_male_big.third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_big/deep_acc_bossflag_male_big"
 
 	set_characters_data("bossflag", characters_male_big, bossflag_characters_male_big)
 
-	local bossflag_characters_female = {
-		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_female_average/deep_acc_bossflag_female_average"
-	}
+	local bossflag_characters_female = {}
+
+	bossflag_characters_female.third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_female_average/deep_acc_bossflag_female_average"
 
 	set_characters_data("bossflag", characters_female, bossflag_characters_female)
 
-	local bossflag_characters_female_big = {
-		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_female_fat/deep_acc_bossflag_female_fat"
-	}
+	local bossflag_characters_female_big = {}
+
+	bossflag_characters_female_big.third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_female_fat/deep_acc_bossflag_female_fat"
 
 	set_characters_data("bossflag", characters_female_big, bossflag_characters_female_big)
 
-	local bossflag_characters_male_fat = {
-		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_fat/deep_acc_bossflag_male_fat",
-		sequence = "set_ehtan"
-	}
+	local bossflag_characters_male_fat = {}
+
+	bossflag_characters_male_fat.third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_fat/deep_acc_bossflag_male_fat"
+	bossflag_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.bossflag.characters.ecp_male = bossflag_characters_male_fat
-	self.player_styles.roclown = {
-		name_id = "bm_suit_roclown",
-		desc_id = "bm_suit_roclown_desc",
-		texture_bundle_folder = "dot",
-		global_value = "dot_roclown_suit",
-		material_variations = {}
-	}
+	self.player_styles.roclown = {}
+	self.player_styles.roclown.name_id = "bm_suit_roclown"
+	self.player_styles.roclown.desc_id = "bm_suit_roclown_desc"
+	self.player_styles.roclown.texture_bundle_folder = "dot"
+	self.player_styles.roclown.global_value = "dot_roclown_suit"
+	self.player_styles.roclown.material_variations = {}
 	self.player_styles.roclown.material_variations.default = {
-		name_id = "bm_suit_roclown",
+		desc_id = "bm_suit_roclown_desc",
 		global_value = "dot_roclown_suit",
-		desc_id = "bm_suit_roclown_desc"
+		name_id = "bm_suit_roclown"
 	}
 	self.player_styles.roclown.body_replacement = body_replacement_standard
 	self.player_styles.roclown.third_body_replacement = body_replacement_standard
 	self.player_styles.roclown.unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_fps_rodeoclownsuit_male/dot_acc_fps_rodeoclownsuit_male"
 	self.player_styles.roclown.characters = {}
-	local roclown_characters_male = {
-		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_average/dot_acc_rodeoclownsuit_male_average"
-	}
+
+	local roclown_characters_male = {}
+
+	roclown_characters_male.third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_average/dot_acc_rodeoclownsuit_male_average"
 
 	set_characters_data("roclown", characters_male, roclown_characters_male)
 
-	local roclown_characters_male_big = {
-		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_big/dot_acc_rodeoclownsuit_male_big"
-	}
+	local roclown_characters_male_big = {}
+
+	roclown_characters_male_big.third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_big/dot_acc_rodeoclownsuit_male_big"
 
 	set_characters_data("roclown", characters_male_big, roclown_characters_male_big)
 
-	local roclown_characters_female = {
-		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_female_average/dot_acc_rodeoclownsuit_female_average"
-	}
+	local roclown_characters_female = {}
+
+	roclown_characters_female.third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_female_average/dot_acc_rodeoclownsuit_female_average"
 
 	set_characters_data("roclown", characters_female, roclown_characters_female)
 
-	local roclown_characters_female_big = {
-		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_female_fat/dot_acc_rodeoclownsuit_female_fat"
-	}
+	local roclown_characters_female_big = {}
+
+	roclown_characters_female_big.third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_female_fat/dot_acc_rodeoclownsuit_female_fat"
 
 	set_characters_data("roclown", characters_female_big, roclown_characters_female_big)
 
-	local roclown_characters_male_fat = {
-		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_fat/dot_acc_rodeoclownsuit_male_fat",
-		sequence = "set_ehtan"
-	}
+	local roclown_characters_male_fat = {}
+
+	roclown_characters_male_fat.third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_fat/dot_acc_rodeoclownsuit_male_fat"
+	roclown_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.roclown.characters.ecp_male = roclown_characters_male_fat
-	self.player_styles.gangzsta = {
-		name_id = "bm_suit_gangzsta",
-		desc_id = "bm_suit_gangzsta_desc",
-		texture_bundle_folder = "pda10",
-		global_value = "pda10",
-		material_variations = {}
-	}
+	self.player_styles.gangzsta = {}
+	self.player_styles.gangzsta.name_id = "bm_suit_gangzsta"
+	self.player_styles.gangzsta.desc_id = "bm_suit_gangzsta_desc"
+	self.player_styles.gangzsta.texture_bundle_folder = "pda10"
+	self.player_styles.gangzsta.global_value = "pda10"
+	self.player_styles.gangzsta.material_variations = {}
 	self.player_styles.gangzsta.material_variations.default = {
-		name_id = "bm_suit_gangzsta_default",
+		desc_id = "bm_suit_gangzsta_default_desc",
 		global_value = "pda10",
-		desc_id = "bm_suit_gangzsta_default_desc"
+		name_id = "bm_suit_gangzsta_default"
 	}
 	self.player_styles.gangzsta.body_replacement = body_replacement_standard
 	self.player_styles.gangzsta.third_body_replacement = body_replacement_standard
 	self.player_styles.gangzsta.unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_fps_gangzsta_male/pda10_acc_fps_gangzsta_male"
 	self.player_styles.gangzsta.material_variations.red = {
+		auto_aquire = true,
 		desc_id = "bm_suit_gangzsta_red_desc",
 		global_value = "pda10",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_fps_gangzsta_male_red",
 		name_id = "bm_suit_gangzsta_red",
-		third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_gangzsta_red",
-		material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_fps_gangzsta_male_red"
+		third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_gangzsta_red"
 	}
 	self.player_styles.gangzsta.material_variations.blue = {
+		auto_aquire = true,
 		desc_id = "bm_suit_gangzsta_blue_desc",
 		global_value = "pda10",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_fps_gangzsta_male_blue",
 		name_id = "bm_suit_gangzsta_blue",
-		third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_gangzsta_blue",
-		material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_fps_gangzsta_male_blue"
+		third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_gangzsta_blue"
 	}
 	self.player_styles.gangzsta.material_variations.yellow = {
+		auto_aquire = true,
 		desc_id = "bm_suit_gangzsta_yellow_desc",
 		global_value = "pda10",
-		auto_aquire = true,
+		material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_fps_gangzsta_male_yellow",
 		name_id = "bm_suit_gangzsta_yellow",
-		third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_gangzsta_yellow",
-		material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_fps_gangzsta_male_yellow"
+		third_material = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/shared_materials/pda10_acc_gangzsta_yellow"
 	}
 	self.player_styles.gangzsta.characters = {}
-	local gangzsta_characters_male = {
-		third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_male_average/pda10_acc_gangzsta_male_average"
-	}
+
+	local gangzsta_characters_male = {}
+
+	gangzsta_characters_male.third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_male_average/pda10_acc_gangzsta_male_average"
 
 	set_characters_data("gangzsta", characters_male, gangzsta_characters_male)
 
-	local gangzsta_characters_male_big = {
-		third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_male_big/pda10_acc_gangzsta_male_big"
-	}
+	local gangzsta_characters_male_big = {}
+
+	gangzsta_characters_male_big.third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_male_big/pda10_acc_gangzsta_male_big"
 
 	set_characters_data("gangzsta", characters_male_big, gangzsta_characters_male_big)
 
-	local gangzsta_characters_female = {
-		third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_female_average/pda10_acc_gangzsta_female_average"
-	}
+	local gangzsta_characters_female = {}
+
+	gangzsta_characters_female.third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_female_average/pda10_acc_gangzsta_female_average"
 
 	set_characters_data("gangzsta", characters_female, gangzsta_characters_female)
 
-	local gangzsta_characters_female_big = {
-		third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_female_fat/pda10_acc_gangzsta_female_fat"
-	}
+	local gangzsta_characters_female_big = {}
+
+	gangzsta_characters_female_big.third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_female_fat/pda10_acc_gangzsta_female_fat"
 
 	set_characters_data("gangzsta", characters_female_big, gangzsta_characters_female_big)
 
-	local gangzsta_characters_male_fat = {
-		third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_male_fat/pda10_acc_gangzsta_male_fat",
-		sequence = "set_ehtan"
-	}
+	local gangzsta_characters_male_fat = {}
+
+	gangzsta_characters_male_fat.third_unit = "units/pd2_dlc_pda10/characters/pda10_acc_gangzsta/pda10_acc_gangzsta_male_fat/pda10_acc_gangzsta_male_fat"
+	gangzsta_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.gangzsta.characters.ecp_male = gangzsta_characters_male_fat
-	self.player_styles.dgame = {
-		name_id = "bm_suit_dgame",
-		desc_id = "bm_suit_dgame_desc",
-		texture_bundle_folder = "dgs",
-		global_value = "dgs",
-		material_variations = {}
-	}
+	self.player_styles.dgame = {}
+	self.player_styles.dgame.name_id = "bm_suit_dgame"
+	self.player_styles.dgame.desc_id = "bm_suit_dgame_desc"
+	self.player_styles.dgame.texture_bundle_folder = "dgs"
+	self.player_styles.dgame.global_value = "dgs"
+	self.player_styles.dgame.material_variations = {}
 	self.player_styles.dgame.material_variations.default = {
-		name_id = "bm_suit_dgame_default",
+		desc_id = "bm_suit_dgame_default_desc",
 		global_value = "dgs",
-		desc_id = "bm_suit_dgame_default_desc"
+		name_id = "bm_suit_dgame_default"
 	}
 	self.player_styles.dgame.body_replacement = body_replacement_standard
 	self.player_styles.dgame.third_body_replacement = body_replacement_standard
 	self.player_styles.dgame.unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_fps_dgame_male/dgs_acc_fps_dgame_male"
 	self.player_styles.dgame.material_variations.white = {
+		auto_aquire = true,
 		desc_id = "bm_suit_dgame_white_desc",
 		global_value = "dgs",
-		auto_aquire = true,
+		material = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/shared_materials/dgs_acc_fps_dgame_white",
 		name_id = "bm_suit_dgame_white",
-		third_material = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/shared_materials/dgs_acc_dgame_white",
-		material = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/shared_materials/dgs_acc_fps_dgame_white"
+		third_material = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/shared_materials/dgs_acc_dgame_white"
 	}
 	self.player_styles.dgame.characters = {}
-	local dgame_characters_male = {
-		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_average/dgs_acc_dgame_male_average"
-	}
+
+	local dgame_characters_male = {}
+
+	dgame_characters_male.third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_average/dgs_acc_dgame_male_average"
 
 	set_characters_data("dgame", characters_male, dgame_characters_male)
 
-	local dgame_characters_male_big = {
-		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_big/dgs_acc_dgame_male_big"
-	}
+	local dgame_characters_male_big = {}
+
+	dgame_characters_male_big.third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_big/dgs_acc_dgame_male_big"
 
 	set_characters_data("dgame", characters_male_big, dgame_characters_male_big)
 
-	local dgame_characters_female = {
-		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_female_average/dgs_acc_dgame_female_average"
-	}
+	local dgame_characters_female = {}
+
+	dgame_characters_female.third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_female_average/dgs_acc_dgame_female_average"
 
 	set_characters_data("dgame", characters_female, dgame_characters_female)
 
-	local dgame_characters_female_big = {
-		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_female_fat/dgs_acc_dgame_female_fat"
-	}
+	local dgame_characters_female_big = {}
+
+	dgame_characters_female_big.third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_female_fat/dgs_acc_dgame_female_fat"
 
 	set_characters_data("dgame", characters_female_big, dgame_characters_female_big)
 
-	local dgame_characters_male_fat = {
-		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_fat/dgs_acc_dgame_male_fat",
-		sequence = "set_ehtan"
-	}
+	local dgame_characters_male_fat = {}
+
+	dgame_characters_male_fat.third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_fat/dgs_acc_dgame_male_fat"
+	dgame_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.dgame.characters.ecp_male = dgame_characters_male_fat
-	self.player_styles.hacksuit = {
-		name_id = "bm_suit_hacksuit",
-		desc_id = "bm_suit_hacksuit_desc",
-		texture_bundle_folder = "lrfo",
-		global_value = "lrfo",
-		material_variations = {}
-	}
+	self.player_styles.hacksuit = {}
+	self.player_styles.hacksuit.name_id = "bm_suit_hacksuit"
+	self.player_styles.hacksuit.desc_id = "bm_suit_hacksuit_desc"
+	self.player_styles.hacksuit.texture_bundle_folder = "lrfo"
+	self.player_styles.hacksuit.global_value = "lrfo"
+	self.player_styles.hacksuit.material_variations = {}
 	self.player_styles.hacksuit.material_variations.default = {
-		name_id = "bm_suit_hacksuit_default",
+		desc_id = "bm_suit_hacksuit_default_desc",
 		global_value = "lrfo",
-		desc_id = "bm_suit_hacksuit_default_desc"
+		name_id = "bm_suit_hacksuit_default"
 	}
 	self.player_styles.hacksuit.body_replacement = body_replacement_standard
 	self.player_styles.hacksuit.third_body_replacement = body_replacement_standard
 	self.player_styles.hacksuit.unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_fps_hacksuit_male/lrfo_acc_fps_hacksuit_male"
 	self.player_styles.hacksuit.characters = {}
-	local hacksuit_characters_male = {
-		third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_male_average/lrfo_acc_hacksuit_male_average"
-	}
+
+	local hacksuit_characters_male = {}
+
+	hacksuit_characters_male.third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_male_average/lrfo_acc_hacksuit_male_average"
 
 	set_characters_data("hacksuit", characters_male, hacksuit_characters_male)
 
-	local hacksuit_characters_male_big = {
-		third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_male_big/lrfo_acc_hacksuit_male_big"
-	}
+	local hacksuit_characters_male_big = {}
+
+	hacksuit_characters_male_big.third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_male_big/lrfo_acc_hacksuit_male_big"
 
 	set_characters_data("hacksuit", characters_male_big, hacksuit_characters_male_big)
 
-	local hacksuit_characters_female = {
-		third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_female_average/lrfo_acc_hacksuit_female_average"
-	}
+	local hacksuit_characters_female = {}
+
+	hacksuit_characters_female.third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_female_average/lrfo_acc_hacksuit_female_average"
 
 	set_characters_data("hacksuit", characters_female, hacksuit_characters_female)
 
-	local hacksuit_characters_female_big = {
-		third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_female_fat/lrfo_acc_hacksuit_female_fat"
-	}
+	local hacksuit_characters_female_big = {}
+
+	hacksuit_characters_female_big.third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_female_fat/lrfo_acc_hacksuit_female_fat"
 
 	set_characters_data("hacksuit", characters_female_big, hacksuit_characters_female_big)
 
-	local hacksuit_characters_male_fat = {
-		third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_male_fat/lrfo_acc_hacksuit_male_fat",
-		sequence = "set_ehtan"
-	}
+	local hacksuit_characters_male_fat = {}
+
+	hacksuit_characters_male_fat.third_unit = "units/pd2_dlc_lrfo/characters/lrfo_acc_hacksuit/lrfo_acc_hacksuit_male_fat/lrfo_acc_hacksuit_male_fat"
+	hacksuit_characters_male_fat.sequence = "set_ehtan"
 	self.player_styles.hacksuit.characters.ecp_male = hacksuit_characters_male_fat
 end
 
@@ -5469,6 +5481,7 @@ function BlackMarketTweakData:get_player_style_value(player_style, character_nam
 	end
 
 	player_style = player_style or "none"
+
 	local data = self.player_styles[player_style]
 
 	if data == nil then
@@ -5476,6 +5489,7 @@ function BlackMarketTweakData:get_player_style_value(player_style, character_nam
 	end
 
 	character_name = CriminalsManager.convert_old_to_new_character_workname(character_name)
+
 	local character_value = data.characters and data.characters[character_name] and data.characters[character_name][key]
 
 	if character_value ~= nil then
@@ -5494,6 +5508,7 @@ function BlackMarketTweakData:get_suit_variation_value(player_style, material_va
 
 	player_style = player_style or "none"
 	material_variation = material_variation or "default"
+
 	local data = self.player_styles[player_style]
 	local variation_data = data and data.material_variations and data.material_variations[material_variation]
 
@@ -5502,6 +5517,7 @@ function BlackMarketTweakData:get_suit_variation_value(player_style, material_va
 	end
 
 	character_name = CriminalsManager.convert_old_to_new_character_workname(character_name)
+
 	local character_material_variations = data.characters and data.characters[character_name] and data.characters[character_name].material_variations
 	local character_value = character_material_variations and character_material_variations[material_variation] and character_material_variations[material_variation][key]
 
@@ -5559,9 +5575,9 @@ function BlackMarketTweakData:get_suit_variations_sorted(player_style)
 		end
 	end
 
-	local x_prio, y_prio = nil
+	local x_prio, y_prio
 
-	table.sort(suit_variations, function (x, y)
+	table.sort(suit_variations, function(x, y)
 		if x == "default" then
 			return true
 		end
@@ -5586,7 +5602,9 @@ end
 function BlackMarketTweakData:get_player_style_units(player_style, key)
 	local units = {}
 	local data = self.player_styles[player_style]
+
 	key = key or "all"
+
 	local include_fps = key == "all" or key == "fps"
 	local include_third = key == "all" or key == "third"
 
@@ -5623,7 +5641,7 @@ end
 
 function BlackMarketTweakData:create_suit_strings()
 	local suit_strings = {}
-	local suit_variations = nil
+	local suit_variations
 
 	for _, player_style in ipairs(self.player_style_list) do
 		if self:have_suit_variations(player_style) then
@@ -5641,7 +5659,7 @@ function BlackMarketTweakData:create_suit_strings()
 end
 
 function BlackMarketTweakData:build_player_style_list(tweak_data)
-	local x_td, y_td, x_gv, y_gv, x_sn, y_sn = nil
+	local x_td, y_td, x_gv, y_gv, x_sn, y_sn
 
 	local function map_func(x)
 		x_td = self.player_styles[x]

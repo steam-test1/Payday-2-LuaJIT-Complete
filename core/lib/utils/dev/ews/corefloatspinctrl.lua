@@ -23,7 +23,9 @@ function FloatSpinCtrl:init(parent, min, max, step, value, dec, style)
 	self:_add_style(string.find(self._style, "SP_HORIZONTAL") and "SP_HORIZONTAL" or "SP_VERTICAL")
 
 	self._panel = EWS:Panel(parent)
+
 	local box = EWS:BoxSizer("HORIZONTAL")
+
 	self._text = EWS:TextCtrl(self._panel, "", str, "TE_PROCESS_ENTER")
 
 	self._text:connect("", "EVT_COMMAND_TEXT_UPDATED", callback(self, self, "_text_update_cb"), "")
@@ -84,7 +86,7 @@ end
 function FloatSpinCtrl:_text_update_cb(data, event)
 	local value = tonumber(event:get_string())
 
-	if value and self._min <= value and value <= self._max then
+	if value and value >= self._min and value <= self._max then
 		self:_set_valid(true)
 
 		self._value = value

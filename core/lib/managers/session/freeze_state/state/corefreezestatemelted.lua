@@ -11,4 +11,5 @@ function Melted:destroy()
 end
 
 function Melted:transition()
+	return
 end

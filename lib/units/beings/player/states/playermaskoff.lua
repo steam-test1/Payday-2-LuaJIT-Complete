@@ -88,7 +88,7 @@ end
 function PlayerMaskOff:update(t, dt)
 	PlayerMaskOff.super.update(self, t, dt)
 
-	if self._show_casing_t and self._show_casing_t < t then
+	if self._show_casing_t and t > self._show_casing_t then
 		self._show_casing_t = nil
 
 		managers.hud:show_casing()
@@ -97,12 +97,14 @@ end
 
 function PlayerMaskOff:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
+
 	self._stick_move = self._controller:get_input_axis("move")
 
 	if mvector3.length(self._stick_move) < 0.1 or self:_interacting() then
 		self._move_dir = nil
 	else
 		self._move_dir = mvector3.copy(self._stick_move)
+
 		local cam_flat_rot = Rotation(self._cam_fwd_flat, math.UP)
 
 		mvector3.rotate_with(self._move_dir, cam_flat_rot)
@@ -156,17 +158,15 @@ function PlayerMaskOff:_update_check_actions(t, dt)
 end
 
 function PlayerMaskOff:_check_action_interact(t, input)
-	local pressed, released, holding = nil
+	local pressed, released, holding
 
 	if self._interact_expire_t and not self._start_standard_expire_t then
 		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_interact_press, input.btn_interact_release, input.btn_interact_state)
 	else
-		holding = input.btn_interact_state
-		released = input.btn_interact_release
-		pressed = input.btn_interact_press
+		pressed, released, holding = input.btn_interact_press, input.btn_interact_release, input.btn_interact_state
 	end
 
-	local new_action, timer, interact_object = nil
+	local new_action, timer, interact_object
 
 	if pressed then
 		if _G.IS_VR then
@@ -186,7 +186,7 @@ function PlayerMaskOff:_check_action_interact(t, input)
 				self:_chk_tap_to_interact_enable(t, timer, interact_object)
 			end
 
-			if not new_action and (not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t) then
+			if not new_action and (not self._intimidate_t or t - self._intimidate_t > tweak_data.player.movement_state.interaction_delay) then
 				self._intimidate_t = t
 				new_action = self:mark_units("f11", t, true)
 			end
@@ -250,17 +250,15 @@ function PlayerMaskOff:_upd_attention()
 end
 
 function PlayerMaskOff:_check_use_item(t, input)
-	local pressed, released, holding = nil
+	local pressed, released, holding
 
 	if self._start_standard_expire_t and not self._interact_expire_t then
 		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_use_item_press, input.btn_use_item_release, input.btn_use_item_state)
 	else
-		holding = input.btn_use_item_state
-		released = input.btn_use_item_release
-		pressed = input.btn_use_item_press
+		pressed, released, holding = input.btn_use_item_press, input.btn_use_item_release, input.btn_use_item_state
 	end
 
-	local new_action = nil
+	local new_action
 
 	if pressed then
 		local action_forbidden = self._use_item_expire_t or self:_changing_weapon() or self:_interacting()
@@ -283,7 +281,7 @@ function PlayerMaskOff:_update_start_standard_timers(t)
 	if self._start_standard_expire_t then
 		managers.hud:set_progress_timer_bar_width(tweak_data.player.put_on_mask_time - (self._start_standard_expire_t - t), tweak_data.player.put_on_mask_time)
 
-		if self._start_standard_expire_t <= t then
+		if t >= self._start_standard_expire_t then
 			self:_end_action_start_standard(t)
 
 			self._start_standard_expire_t = nil
@@ -295,6 +293,7 @@ end
 
 function PlayerMaskOff:_start_action_state_standard(t)
 	local mask_on_time = tweak_data.player.put_on_mask_time
+
 	self._start_standard_expire_t = t + mask_on_time
 
 	managers.hud:show_progress_timer_bar(0, mask_on_time)
@@ -328,7 +327,7 @@ function PlayerMaskOff:mark_units(line, t, no_gesture, skip_alert)
 	local mark_sec_camera = managers.player:has_category_upgrade("player", "sec_camera_highlight_mask_off")
 	local mark_special_enemies = managers.player:has_category_upgrade("player", "special_enemy_highlight_mask_off")
 	local voice_type, plural, prime_target = self:_get_unit_intimidation_action(mark_special_enemies, false, false, false, false)
-	local interact_type, sound_name = nil
+	local interact_type, sound_name
 
 	if voice_type == "mark_cop" or voice_type == "mark_cop_quiet" then
 		interact_type = "cmd_point"

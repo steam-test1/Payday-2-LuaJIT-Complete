@@ -5,10 +5,13 @@ function HuskPlayerDamage:init(unit)
 	self._spine2_obj = unit:get_object(Idstring("Spine2"))
 	self._listener_holder = EventListenerHolder:new()
 	self._mission_damage_blockers = {}
+
 	local revives = Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT
+
 	revives = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", revives)
 	self._revives = revives
 	self._revives_max = revives
+
 	local level_tweak = tweak_data.levels[managers.job:current_level_id()]
 
 	if level_tweak and level_tweak.is_safehouse and not level_tweak.is_safehouse_combat then
@@ -35,8 +38,8 @@ function HuskPlayerDamage:sync_damage_bullet(attacker_unit, damage, i_body, heig
 		attack_dir = attacker_unit and attacker_unit:movement():m_pos() - self._unit:movement():m_pos() or Vector3(1, 0, 0),
 		pos = mvector3.copy(self._unit:movement():m_head_pos()),
 		result = {
-			variant = "bullet",
-			type = "hurt"
+			type = "hurt",
+			variant = "bullet"
 		}
 	}
 
@@ -92,6 +95,7 @@ function HuskPlayerDamage:get_mission_blocker(type)
 end
 
 function HuskPlayerDamage:dead()
+	return
 end
 
 function HuskPlayerDamage:damage_bullet(attack_data)

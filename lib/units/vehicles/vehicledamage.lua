@@ -59,8 +59,8 @@ end
 function VehicleDamage:damage_mission(dmg)
 	local damage_info = {
 		result = {
-			variant = "killzone",
-			type = "hurt"
+			type = "hurt",
+			variant = "killzone"
 		}
 	}
 	local attack_data = {
@@ -70,9 +70,10 @@ function VehicleDamage:damage_mission(dmg)
 	local result = damage_info.result
 	local damage = attack_data.damage
 	local damage_percent = math.ceil(math.clamp(damage / self._HEALTH_INIT_PRECENT, 1, self._HEALTH_GRANULARITY))
+
 	damage = damage_percent * self._HEALTH_INIT_PRECENT
 
-	if self._health <= damage then
+	if damage >= self._health then
 		attack_data.damage = self._health
 		result = {
 			type = "death",
@@ -106,17 +107,13 @@ function VehicleDamage:damage_bullet(attack_data)
 
 	local damage_info = {
 		result = {
-			variant = "bullet",
-			type = "hurt"
+			type = "hurt",
+			variant = "bullet"
 		},
 		attacker_unit = attack_data.attacker_unit
 	}
 
-	if Global.god_mode then
-		if attack_data.damage > 0 then
-			-- Nothing
-		end
-
+	if Global.god_mode and (not (attack_data.damage > 0) or true) then
 		self:_call_listeners(damage_info)
 
 		return
@@ -135,11 +132,12 @@ function VehicleDamage:damage_bullet(attack_data)
 	local result = damage_info.result
 	local damage = attack_data.damage
 	local damage_percent = math.ceil(math.clamp(damage / self._HEALTH_INIT_PRECENT, 1, self._HEALTH_GRANULARITY))
+
 	damage = damage_percent * self._HEALTH_INIT_PRECENT
 
 	self:_hit_direction(attack_data.col_ray)
 
-	if self._health <= damage then
+	if damage >= self._health then
 		attack_data.damage = self._health
 		result = {
 			type = "death",
@@ -192,7 +190,8 @@ function VehicleDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body,
 	mvector3.set_z(hit_pos, hit_pos.z + hit_offset_height)
 
 	attack_data.pos = hit_pos
-	local attack_dir, distance = nil
+
+	local attack_dir, distance
 
 	if attacker_unit then
 		attack_dir = hit_pos - attacker_unit:position()
@@ -202,19 +201,20 @@ function VehicleDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body,
 	end
 
 	attack_data.attack_dir = attack_dir
-	local result = nil
+
+	local result
 
 	if death then
 		result = {
-			variant = "bullet",
-			type = "death"
+			type = "death",
+			variant = "bullet"
 		}
 
 		self:die(attack_data.variant)
 	else
 		result = {
-			variant = "bullet",
-			type = "hurt"
+			type = "hurt",
+			variant = "bullet"
 		}
 		self._health = self._health - damage
 		self._health_ratio = self._health / self._current_max_health
@@ -231,6 +231,7 @@ function VehicleDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body,
 end
 
 function VehicleDamage:_send_sync_bullet_attack_result(attack_data, hit_offset_height)
+	return
 end
 
 function VehicleDamage:stun_hit(attack_data)
@@ -248,8 +249,8 @@ function VehicleDamage:damage_explosion(attack_data)
 
 	local damage_info = {
 		result = {
-			variant = "explosion",
-			type = "hurt"
+			type = "hurt",
+			variant = "explosion"
 		}
 	}
 
@@ -264,9 +265,10 @@ function VehicleDamage:damage_explosion(attack_data)
 	local result = damage_info.result
 	local damage = attack_data.damage
 	local damage_percent = math.ceil(damage / self._HEALTH_INIT_PRECENT)
+
 	damage = damage_percent * self._HEALTH_INIT_PRECENT
 
-	if self._health <= damage then
+	if damage >= self._health then
 		attack_data.damage = self._health
 		result = {
 			type = "death",
@@ -285,6 +287,7 @@ function VehicleDamage:damage_explosion(attack_data)
 
 	attack_data.result = result
 	attack_data.pos = attack_data.col_ray.position
+
 	local attacker = attack_data.attacker_unit
 
 	if not attacker or attacker:id() == -1 then
@@ -314,7 +317,7 @@ function VehicleDamage:sync_damage_explosion(attacker_unit, damage_percent, i_at
 	local attack_data = {
 		variant = variant
 	}
-	local result = nil
+	local result
 
 	if death then
 		result = {
@@ -325,8 +328,8 @@ function VehicleDamage:sync_damage_explosion(attacker_unit, damage_percent, i_at
 		self:die(attack_data.variant)
 
 		local data = {
-			variant = "explosion",
 			head_shot = false,
+			variant = "explosion",
 			name = self._unit:base()._tweak_table,
 			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
 		}
@@ -341,7 +344,8 @@ function VehicleDamage:sync_damage_explosion(attacker_unit, damage_percent, i_at
 	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
-	local attack_dir = nil
+
+	local attack_dir
 
 	if direction then
 		attack_dir = direction
@@ -369,6 +373,7 @@ function VehicleDamage:sync_damage_explosion(attacker_unit, damage_percent, i_at
 end
 
 function VehicleDamage:_send_sync_explosion_attack_result(attack_data)
+	return
 end
 
 function VehicleDamage:damage_fire(attack_data)
@@ -380,8 +385,8 @@ function VehicleDamage:damage_fire(attack_data)
 
 	local damage_info = {
 		result = {
-			variant = "fire",
-			type = "hurt"
+			type = "hurt",
+			variant = "fire"
 		}
 	}
 
@@ -396,9 +401,10 @@ function VehicleDamage:damage_fire(attack_data)
 	local result = damage_info.result
 	local damage = attack_data.damage
 	local damage_percent = math.ceil(damage / self._HEALTH_INIT_PRECENT)
+
 	damage = damage_percent * self._HEALTH_INIT_PRECENT
 
-	if self._health <= damage then
+	if damage >= self._health then
 		attack_data.damage = self._health
 		result = {
 			type = "death",
@@ -417,6 +423,7 @@ function VehicleDamage:damage_fire(attack_data)
 
 	attack_data.result = result
 	attack_data.pos = attack_data.col_ray.position
+
 	local attacker = attack_data.attacker_unit
 
 	if not attacker or attacker:id() == -1 then
@@ -446,7 +453,7 @@ function VehicleDamage:sync_damage_fire(attacker_unit, damage_percent, i_attack_
 	local attack_data = {
 		variant = variant
 	}
-	local result = nil
+	local result
 
 	if death then
 		result = {
@@ -457,8 +464,8 @@ function VehicleDamage:sync_damage_fire(attacker_unit, damage_percent, i_attack_
 		self:die(attack_data.variant)
 
 		local data = {
-			variant = "fire",
 			head_shot = false,
+			variant = "fire",
 			name = self._unit:base()._tweak_table,
 			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
 		}
@@ -473,7 +480,8 @@ function VehicleDamage:sync_damage_fire(attacker_unit, damage_percent, i_attack_
 	attack_data.attacker_unit = attacker_unit
 	attack_data.result = result
 	attack_data.damage = damage
-	local attack_dir = nil
+
+	local attack_dir
 
 	if direction then
 		attack_dir = direction
@@ -499,10 +507,11 @@ function VehicleDamage:sync_damage_fire(attacker_unit, damage_percent, i_attack_
 end
 
 function VehicleDamage:_send_sync_fire_attack_result(attack_data)
+	return
 end
 
 function VehicleDamage:damage_collision(attack_data)
-	local local_player_seat = nil
+	local local_player_seat
 
 	if managers.player:local_player() and managers.player:local_player():movement() and managers.player:local_player():movement()._current_state then
 		local_player_seat = managers.player:local_player():movement()._current_state._seat
@@ -515,16 +524,12 @@ function VehicleDamage:damage_collision(attack_data)
 
 		local damage_info = {
 			result = {
-				variant = "collision",
-				type = "hurt"
+				type = "hurt",
+				variant = "collision"
 			}
 		}
 
-		if Global.god_mode then
-			if attack_data.damage > 0 then
-				-- Nothing
-			end
-
+		if Global.god_mode and (not (attack_data.damage > 0) or true) then
 			self:_call_listeners(damage_info)
 
 			return
@@ -538,7 +543,7 @@ function VehicleDamage:damage_collision(attack_data)
 
 		local damage = attack_data.damage
 
-		if self._health <= damage then
+		if damage >= self._health then
 			attack_data.damage = self._health
 
 			self:die(attack_data.variant)
@@ -581,6 +586,7 @@ end
 
 function VehicleDamage:_calc_health_damage(attack_data)
 	local health_subtracted = 0
+
 	health_subtracted = self:get_real_health()
 
 	self:change_health(-attack_data.damage)
@@ -647,12 +653,13 @@ end
 function VehicleDamage:_chk_dmg_too_soon(damage)
 	local next_allowed_dmg_t = type(self._next_allowed_dmg_t) == "number" and self._next_allowed_dmg_t or Application:digest_value(self._next_allowed_dmg_t, false)
 
-	if damage <= self._last_received_dmg + 0.01 and managers.player:player_timer():time() < next_allowed_dmg_t then
+	if damage <= self._last_received_dmg + 0.01 and next_allowed_dmg_t > managers.player:player_timer():time() then
 		return true
 	end
 end
 
 function VehicleDamage:_hit_direction(col_ray)
+	return
 end
 
 function VehicleDamage:_call_listeners(damage_info)

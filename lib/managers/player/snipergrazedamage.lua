@@ -79,7 +79,7 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 end
 
 function SniperGrazeDamage.sort_units_target_prio(rays)
-	table.sort(rays, function (rays_a, rays_b)
+	table.sort(rays, function(rays_a, rays_b)
 		local base_a_ext = alive(rays_a.unit) and rays_a.unit:base()
 		local base_b_ext = alive(rays_b.unit) and rays_b.unit:base()
 
@@ -89,7 +89,7 @@ function SniperGrazeDamage.sort_units_target_prio(rays)
 			local priority_a = char_a_tweak and char_a_tweak.target_priority or 0
 			local priority_b = char_b_tweak and char_b_tweak.target_priority or 0
 
-			return priority_a > priority_b
+			return priority_b < priority_a
 		end
 
 		return false

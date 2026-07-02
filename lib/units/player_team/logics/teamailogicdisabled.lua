@@ -11,6 +11,7 @@ function TeamAILogicDisabled.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.combat
 	my_data.enemy_detect_slotmask = managers.slot:get_mask("enemies")
@@ -26,6 +27,7 @@ function TeamAILogicDisabled.enter(data, new_logic_name, enter_params)
 	end
 
 	local key_str = tostring(data.key)
+
 	my_data.detection_task_key = "TeamAILogicDisabled._upd_enemy_detection" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, TeamAILogicDisabled._upd_enemy_detection, data, data.t)
@@ -54,6 +56,7 @@ function TeamAILogicDisabled.exit(data, new_logic_name, enter_params)
 	TeamAILogicBase.exit(data, new_logic_name, enter_params)
 
 	local my_data = data.internal_data
+
 	my_data.exiting = true
 
 	TeamAILogicDisabled._unregister_revive_SO(my_data)
@@ -79,6 +82,7 @@ end
 
 function TeamAILogicDisabled._upd_enemy_detection(data)
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local delay = CopLogicBase._upd_attention_obj_detection(data, AIAttentionObject.REACT_SURPRISED, nil)
 	local new_attention, new_prio_slot, new_reaction = TeamAILogicIdle._get_priority_attention(data, data.detected_attention_objects, nil, data.cool)
@@ -89,10 +93,12 @@ function TeamAILogicDisabled._upd_enemy_detection(data)
 end
 
 function TeamAILogicDisabled.on_intimidated(data, amount, aggressor_unit)
+	return
 end
 
 function TeamAILogicDisabled._consider_surrender(data, my_data)
 	my_data.stay_cool_chk_t = TimerManager:game():time()
+
 	local my_health_ratio = data.unit:character_damage():health_ratio()
 
 	if my_health_ratio < 0.1 then
@@ -105,6 +111,7 @@ function TeamAILogicDisabled._consider_surrender(data, my_data)
 	for e_key, e_data in pairs(data.detected_attention_objects) do
 		if e_data.verified and e_data.unit:in_slot(data.enemy_slotmask) then
 			local scare = tweak_data.character[e_data.unit:base()._tweak_table].HEALTH_INIT / my_health
+
 			scare = scare * (1 - math.clamp(e_data.verified_dis - 300, 0, 2500) / 2500)
 			total_scare = total_scare + scare
 		end
@@ -140,12 +147,12 @@ function TeamAILogicDisabled._consider_surrender(data, my_data)
 end
 
 function TeamAILogicDisabled._upd_aim(data, my_data)
-	local shoot, aim = nil
+	local shoot, aim
 	local focus_enemy = data.attention_obj
 
 	if my_data.stay_cool then
 		-- Nothing
-	elseif focus_enemy and AIAttentionObject.REACT_SHOOT <= focus_enemy.reaction then
+	elseif focus_enemy and focus_enemy.reaction >= AIAttentionObject.REACT_SHOOT then
 		if focus_enemy.verified then
 			if focus_enemy.verified_dis < 2000 or my_data.alert_t and data.t - my_data.alert_t < 7 then
 				shoot = true
@@ -173,7 +180,7 @@ function TeamAILogicDisabled._upd_aim(data, my_data)
 		end
 	else
 		if my_data.shooting then
-			local new_action = nil
+			local new_action
 
 			if data.unit:anim_data().reload then
 				new_action = {
@@ -233,37 +240,37 @@ function TeamAILogicDisabled._register_revive_SO(data, my_data, rescue_type)
 		scan = true,
 		type = "act",
 		action = {
-			variant = "crouch",
 			body_part = 1,
 			type = "act",
+			variant = "crouch",
 			blocks = {
-				heavy_hurt = -1,
-				hurt = -1,
 				action = -1,
 				aim = -1,
+				heavy_hurt = -1,
+				hurt = -1,
 				walk = -1
 			}
 		}
 	}
 	local objective = {
-		type = "revive",
 		called = true,
-		scan = true,
 		destroy_clbk_key = false,
+		scan = true,
+		type = "revive",
 		follow_unit = data.unit,
 		nav_seg = data.unit:movement():nav_tracker():nav_segment(),
 		fail_clbk = callback(TeamAILogicDisabled, TeamAILogicDisabled, "on_revive_SO_failed", data),
 		action = {
 			align_sync = true,
-			type = "act",
 			body_part = 1,
+			type = "act",
 			variant = rescue_type,
 			blocks = {
-				light_hurt = -1,
-				hurt = -1,
 				action = -1,
-				heavy_hurt = -1,
 				aim = -1,
+				heavy_hurt = -1,
+				hurt = -1,
+				light_hurt = -1,
 				walk = -1
 			}
 		},
@@ -271,17 +278,18 @@ function TeamAILogicDisabled._register_revive_SO(data, my_data, rescue_type)
 		followup_objective = followup_objective
 	}
 	local so_descriptor = {
-		interval = 6,
-		search_dis_sq = 1000000,
 		AI_group = "friendlies",
 		base_chance = 1,
 		chance_inc = 0,
+		interval = 6,
+		search_dis_sq = 1000000,
 		usage_amount = 1,
 		objective = objective,
 		search_pos = mvector3.copy(data.m_pos),
 		admin_clbk = callback(TeamAILogicDisabled, TeamAILogicDisabled, "on_revive_SO_administered", data)
 	}
 	local so_id = "TeamAIrevive" .. tostring(data.key)
+
 	my_data.SO_id = so_id
 
 	managers.groupai:state():add_special_objective(so_id, so_descriptor)
@@ -298,6 +306,7 @@ function TeamAILogicDisabled._unregister_revive_SO(my_data)
 
 	if my_data.rescuer then
 		local rescuer = my_data.rescuer
+
 		my_data.rescuer = nil
 
 		if rescuer:brain():objective() then
@@ -336,6 +345,7 @@ end
 
 function TeamAILogicDisabled.on_revive_SO_administered(ignore_this, data, receiver_unit)
 	local my_data = data.internal_data
+
 	my_data.rescuer = receiver_unit
 	my_data.SO_id = nil
 end

@@ -97,17 +97,21 @@ function IngameWaitingForPlayersState:sync_start(variant, soundtrack, music_ext)
 	end
 
 	local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
+
 	self._intro_text_id = level_data and level_data.intro_text_id
 	self._intro_event = level_data and (variant == 0 and level_data.intro_event or level_data.intro_event[variant])
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		local piggybank_mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+
 		self._intro_event = piggybank_mutator:get_intro_event(self._intro_event)
 	elseif managers.mutators:is_mutator_active(MutatorCG22) then
 		local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
+
 		self._intro_event = cg22_mutator:get_intro_event(self._intro_event)
 	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
 		local piggyrevenge_mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+
 		self._intro_event = piggyrevenge_mutator:get_intro_event(self._intro_event)
 	end
 
@@ -147,7 +151,7 @@ function IngameWaitingForPlayersState:_start_audio()
 		managers.menu_component:kill_preplanning_map_gui()
 	end
 
-	local event_started = nil
+	local event_started
 	local job_data = managers.job:current_job_data()
 
 	if job_data and managers.job:current_job_id() == "safehouse" and Global.mission_manager.saved_job_values.playedSafeHouseBefore then
@@ -182,6 +186,7 @@ function IngameWaitingForPlayersState:_create_blackscreen_loading_icon()
 		fade_out = tweak_data.overlay_effects.level_fade_in.fade_out,
 		color = tweak_data.overlay_effects.level_fade_in.color
 	}
+
 	self._fadeout_loading_icon = FadeoutGuiObject:new(settings)
 end
 
@@ -211,11 +216,11 @@ function IngameWaitingForPlayersState:update(t, dt)
 		return
 	end
 
-	if self._camera_data.next_t < t then
+	if t > self._camera_data.next_t then
 		self:_next_camera()
 	end
 
-	if self._briefing_start_t and self._briefing_start_t < t then
+	if self._briefing_start_t and t > self._briefing_start_t then
 		self._briefing_start_t = nil
 
 		if managers.job:has_active_job() then
@@ -243,7 +248,7 @@ function IngameWaitingForPlayersState:update(t, dt)
 		end
 	end
 
-	if self._delay_audio_t and self._delay_audio_t < t then
+	if self._delay_audio_t and t > self._delay_audio_t then
 		self._delay_audio_t = nil
 
 		self:_start_audio()
@@ -252,7 +257,7 @@ function IngameWaitingForPlayersState:update(t, dt)
 	if self._delay_start_t then
 		if self._file_streamer_max_workload or Network:is_server() and not managers.network:session():are_peers_done_streaming() or not managers.network:session():are_all_peer_assets_loaded() then
 			self._delay_start_t = Application:time() + 1
-		elseif self._delay_start_t < t then
+		elseif t > self._delay_start_t then
 			self._delay_start_t = nil
 
 			managers.hud:blackscreen_fade_out_mid_text()
@@ -263,7 +268,7 @@ function IngameWaitingForPlayersState:update(t, dt)
 		end
 	end
 
-	if self._delay_spawn_t and self._delay_spawn_t < t then
+	if self._delay_spawn_t and t > self._delay_spawn_t then
 		self._delay_spawn_t = nil
 
 		managers.network:session():spawn_players()
@@ -287,8 +292,8 @@ function IngameWaitingForPlayersState:update(t, dt)
 
 				if btn_skip_press and not self._skip_data then
 					self._skip_data = {
-						total = 1,
-						current = 0
+						current = 0,
+						total = 1
 					}
 				elseif not btn_skip_press and self._skip_data then
 					self._skip_data = nil
@@ -302,7 +307,7 @@ function IngameWaitingForPlayersState:update(t, dt)
 
 				managers.hud:set_blackscreen_skip_circle(self._skip_data.current, self._skip_data.total)
 
-				if self._skip_data.total < self._skip_data.current then
+				if self._skip_data.current > self._skip_data.total then
 					managers.hud:blackscreen_skip_circle_done()
 					self:_skip()
 				end
@@ -367,9 +372,8 @@ function IngameWaitingForPlayersState:at_enter()
 	self:_get_cameras()
 
 	self._cam_unit = CoreUnit.safe_spawn_unit("units/gui/background_camera_01/waiting_camera_01", Vector3(), Rotation())
-	self._camera_data = {
-		index = 0
-	}
+	self._camera_data = {}
+	self._camera_data.index = 0
 
 	self:_next_camera()
 
@@ -435,7 +439,9 @@ function IngameWaitingForPlayersState:clbk_file_streamer_status(workload)
 	end
 
 	self._file_streamer_max_workload = math.max(self._file_streamer_max_workload, workload)
+
 	local progress = self._file_streamer_max_workload > 0 and 1 - workload / self._file_streamer_max_workload or 1
+
 	progress = math.ceil(progress * 100)
 
 	if progress > 99 and (workload ~= 0 or TextureCache.check_textures_loaded and not TextureCache:check_textures_loaded()) then
@@ -549,17 +555,9 @@ function IngameWaitingForPlayersState:at_exit(next_state)
 	end
 
 	local is_safe_house = managers.job:current_job_data() and managers.job:current_job_id() == "safehouse"
-	local rich_presence = nil
+	local rich_presence
 
-	if not game_state_machine:verify_game_state(GameStateFilters.any_ingame, next_state:name()) then
-		rich_presence = "Idle"
-	elseif is_safe_house then
-		rich_presence = "SafeHousePlaying"
-	elseif Global.game_settings.single_player then
-		rich_presence = "SPPlaying"
-	else
-		rich_presence = "MPPlaying"
-	end
+	rich_presence = not game_state_machine:verify_game_state(GameStateFilters.any_ingame, next_state:name()) and "Idle" or is_safe_house and "SafeHousePlaying" or Global.game_settings.single_player and "SPPlaying" or "MPPlaying"
 
 	managers.game_play_central:start_heist_timer()
 	managers.platform:set_presence("Playing")

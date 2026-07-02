@@ -7,6 +7,7 @@ function ElementDifficulty:init(...)
 end
 
 function ElementDifficulty:client_on_executed(...)
+	return
 end
 
 function ElementDifficulty:on_executed(instigator)

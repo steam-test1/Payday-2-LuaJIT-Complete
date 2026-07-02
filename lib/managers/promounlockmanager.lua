@@ -13,6 +13,7 @@ function PromoUnlockManager:init()
 end
 
 function PromoUnlockManager:check_unlocks()
+	return
 end
 
 function PromoUnlockManager:_check_achievement(achievement_id)
@@ -60,10 +61,10 @@ function PromoUnlockManager:get_data_for_weapon(weapon_id)
 end
 
 function PromoUnlockManager:save(cache)
-	local data = {
-		version = self.save_version,
-		items = {}
-	}
+	local data = {}
+
+	data.version = self.save_version
+	data.items = {}
 
 	for item_id, item in pairs(self._items) do
 		data.items[item_id] = item.unlocked or false

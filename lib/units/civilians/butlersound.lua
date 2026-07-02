@@ -1,4 +1,5 @@
 ButlerSound = ButlerSound or class(SafehouseNPCSound)
+
 local _butler_talk_anims = {
 	Idstring("so_butler_talk_loop_var2"),
 	Idstring("so_butler_talk_loop_var3"),
@@ -32,6 +33,7 @@ function ButlerSound:_mirroring_clbk()
 	if managers.butler_mirroring:has_sound_event() then
 		self._snd_clbk = callback(self, self, "_mirroring_sound_callback")
 		self._snd_start_clbk = callback(self, self, "_sound_start_mirroring")
+
 		local count = #_butler_talk_anims
 		local rnd_idx = math.random(1, count)
 
@@ -63,7 +65,7 @@ function ButlerSound:_sound_start_mirroring()
 end
 
 function ButlerSound:_sound_start_muttering()
-	local override_sound = nil
+	local override_sound
 
 	if not override_sound and (self._raid_idle_count < 5 and math.random() < 0.8 or math.random() < 0.4) then
 		override_sound = "Play_btl_raid_rem_01"

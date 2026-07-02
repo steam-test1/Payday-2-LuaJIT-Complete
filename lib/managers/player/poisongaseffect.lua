@@ -69,11 +69,13 @@ function PoisonGasEffect:update(t, dt)
 
 			if self._damage_tick_timer <= 0 then
 				self._damage_tick_timer = self._tweak_data.poison_gas_tick_time or 0.1
+
 				local nearby_units = World:find_units_quick("sphere", self._position, self._range, managers.slot:get_mask("enemies"))
 
 				for _, unit in ipairs(nearby_units) do
 					if not self._unit_list[unit:key()] then
 						self._unit_list[unit:key()] = true
+
 						local data = {
 							unit = unit,
 							dot_data = self._dot_data,

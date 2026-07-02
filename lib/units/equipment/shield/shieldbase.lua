@@ -10,6 +10,7 @@ function ShieldBase:get_use_data()
 end
 
 function ShieldBase:request_use(t)
+	return
 end
 
 function ShieldBase:_setup_priority_bodies()
@@ -55,9 +56,8 @@ function SyncedShieldBase:save(data)
 	SyncedShieldBase.super.save(self, data)
 
 	if managers.enemy:is_shield_registered(self._unit) then
-		data.SyncedShieldBase = {
-			register_dropped_shield = true
-		}
+		data.SyncedShieldBase = {}
+		data.SyncedShieldBase.register_dropped_shield = true
 	end
 end
 
@@ -65,7 +65,7 @@ function SyncedShieldBase:load(data)
 	SyncedShieldBase.super.load(self, data)
 
 	if data.SyncedShieldBase and data.SyncedShieldBase.register_dropped_shield then
-		call_on_next_update(function ()
+		call_on_next_update(function()
 			if not alive(self._unit) then
 				return
 			end
@@ -83,6 +83,7 @@ function SyncedShieldBase:load(data)
 end
 
 local tmp_vec1 = Vector3()
+
 ShieldFlashBase = ShieldFlashBase or class(SyncedShieldBase)
 
 function ShieldFlashBase:init(...)
@@ -93,6 +94,7 @@ function ShieldFlashBase:init(...)
 	end
 
 	self._flash_charge_cooldown_t = 0
+
 	local shield_tweak_data = self._shield_tweak_name and tweak_data.group_ai.flash_shields[self._shield_tweak_name]
 
 	if not shield_tweak_data then
@@ -124,8 +126,11 @@ function ShieldFlashBase:init(...)
 	self._beep_speeds = shield_tweak_data.beep_speeds
 	self._beep_effect = shield_tweak_data.beep_effect and Idstring(shield_tweak_data.beep_effect) or nil
 	self._beep_sound = shield_tweak_data.beep_sound
+
 	local light_data = shield_tweak_data.beep_light_data
+
 	self._beep_light_data = light_data
+
 	local light_par_obj_str = self._effect_parent_obj_name or "e_01"
 	local parent_obj = self._unit:get_object(Idstring(light_par_obj_str))
 
@@ -139,6 +144,7 @@ function ShieldFlashBase:init(...)
 
 	if light_data then
 		local light = World:create_light(light_data.type_str)
+
 		self._beep_light_obj = light
 
 		light:link(parent_obj)
@@ -333,9 +339,9 @@ function ShieldFlashBase:clbk_seq_flash(pos, dir)
 
 	if Network:is_server() then
 		managers.explosion:detect_and_stun({
-			damage = 0,
-			curve_pow = 1,
 			alert_radius = 10000,
+			curve_pow = 1,
+			damage = 0,
 			player_damage = 0,
 			hit_pos = pos,
 			to_pos = pos + dir * range,
@@ -390,8 +396,14 @@ function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync
 	if event_sync_idx then
 		self._already_countered_lookup = self._already_countered_lookup or {}
 		self._already_countered_lookup[event_sync_idx] = true
+
 		local has_authority = false
-		has_authority = (not Network:is_server() or attacker_unit and attacker_unit:base() and not attacker_unit:base().is_husk_player and false) and attacker_unit and attacker_unit:base() and attacker_unit:base().is_local_player
+
+		if Network:is_server() then
+			has_authority = not attacker_unit or not attacker_unit:base() or not attacker_unit:base().is_husk_player
+		else
+			has_authority = attacker_unit and attacker_unit:base() and attacker_unit:base().is_local_player
+		end
 
 		if has_authority then
 			managers.network:session():send_to_peers_synched("sync_shield_flash_counter_stun", self._unit, attacker_unit, pos, normal, event_sync_idx)
@@ -411,10 +423,10 @@ function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync
 
 	if Network:is_server() then
 		managers.explosion:detect_and_stun({
-			damage = 0,
-			curve_pow = 1,
-			player_damage = 0,
 			alert_radius = 10000,
+			curve_pow = 1,
+			damage = 0,
+			player_damage = 0,
 			hit_pos = pos,
 			range = range,
 			collision_slotmask = slot_mask,
@@ -466,7 +478,7 @@ function ShieldFlashBase:_flash_local_player(detonate_pos, dir, range)
 			mvector3.multiply(tmp_vec1, range)
 			mvector3.add(tmp_vec1, detonate_pos)
 
-			if self._flash_shape_radius < math.distance_to_segment(head_pos, detonate_pos, tmp_vec1) then
+			if math.distance_to_segment(head_pos, detonate_pos, tmp_vec1) > self._flash_shape_radius then
 				return
 			end
 		else
@@ -572,6 +584,7 @@ end
 
 function ShieldFlashBase:destroy_light()
 	local light = self._beep_light_obj
+
 	self._beep_light_obj = nil
 
 	if light then

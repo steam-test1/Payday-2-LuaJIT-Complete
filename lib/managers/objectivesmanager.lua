@@ -43,6 +43,7 @@ function ObjectivesManager:_parse_objective(data)
 
 	for _, sub in ipairs(data) do
 		local sub_text = managers.localization:text(sub.text)
+
 		sub_objectives[sub.id] = {
 			id = sub.id,
 			text = sub_text
@@ -72,7 +73,7 @@ end
 
 function ObjectivesManager:update(t, dt)
 	for id, data in pairs(self._remind_objectives) do
-		if data.next_t < t then
+		if t > data.next_t then
 			self:_remind_objetive(id)
 		end
 	end
@@ -103,6 +104,7 @@ function ObjectivesManager:_remind_objetive(id, title_id)
 
 	if managers.user:get_setting("objective_reminder") then
 		title_id = title_id or "hud_objective_reminder"
+
 		local objective = self._objectives[id]
 		local title_message = managers.localization:text(title_id)
 		local text = objective.text
@@ -177,6 +179,7 @@ function ObjectivesManager:activate_objective(id, load_data, data)
 
 	objective.current_amount = load_data and load_data.current_amount or data and data.amount and 0 or objective.current_amount
 	objective.amount = load_data and load_data.amount or data and data.amount or objective.amount
+
 	local activate_params = {
 		id = id,
 		text = objective.text,
@@ -185,6 +188,7 @@ function ObjectivesManager:activate_objective(id, load_data, data)
 		current_amount = objective.current_amount,
 		amount_text = objective.amount_text
 	}
+
 	self._delayed_presentation = nil
 
 	if data and data.delay_presentation then
@@ -239,6 +243,7 @@ function ObjectivesManager:activate_objective_countdown(id, load_data, data)
 	objective.current_amount = load_data and load_data.current_amount or data and data.amount and 0 or objective.current_amount
 	objective.amount = load_data and load_data.amount or data and data.amount or objective.amount
 	objective.countdown = true
+
 	local activate_params = {
 		id = id,
 		text = objective.text,
@@ -247,6 +252,7 @@ function ObjectivesManager:activate_objective_countdown(id, load_data, data)
 		current_amount = objective.amount - objective.current_amount,
 		amount_text = objective.amount_text
 	}
+
 	self._delayed_presentation = nil
 
 	if data and data.delay_presentation then
@@ -592,6 +598,7 @@ function ObjectivesManager:_check_xp_weight(level_id)
 
 	for obj, data in pairs(self._objectives_level_id[level_id]) do
 		local xp = math.round(data.xp_weight / total_xp_weight * tweak_data:get_value("experience_manager", "total_level_objectives"))
+
 		total_xp = total_xp + xp
 
 		print(obj, xp)
@@ -618,6 +625,7 @@ function ObjectivesManager:save(data)
 	if next(self._active_objectives) or next(self._completed_objectives) or next(self._read_objectives) then
 		local state = {}
 		local objective_map = {}
+
 		state.completed_objectives_ordered = self._completed_objectives_ordered
 
 		for name, objective in pairs(self._objectives) do

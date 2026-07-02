@@ -12,6 +12,7 @@ function MenuItemKitSlot:init(data_node, parameters)
 
 	if self._parameters.category == "weapon" then
 		self._options = managers.player:availible_weapons(self._parameters.slot)
+
 		local selected_weapon = managers.player:weapon_in_slot(self._parameters.slot)
 
 		for i, option in ipairs(self._options) do
@@ -23,6 +24,7 @@ function MenuItemKitSlot:init(data_node, parameters)
 		end
 	elseif self._parameters.category == "equipment" then
 		self._options = managers.player:availible_equipment(self._parameters.slot)
+
 		local selected = managers.player:equipment_in_slot(self._parameters.slot)
 
 		for i, option in ipairs(self._options) do
@@ -222,10 +224,11 @@ end
 function MenuItemKitSlot:setup_gui(node, row_item)
 	local category = self:parameters().category
 	local slot = self:parameters().slot
+
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
-	row_item.gui_text = node:_text_item_part(row_item, row_item.gui_panel, node:_right_align(), "right")
+	row_item.gui_text = node._text_item_part(node, row_item, row_item.gui_panel, node._right_align(node), "right")
 
 	row_item.gui_text:set_wrap(true)
 	row_item.gui_text:set_word_wrap(true)
@@ -234,26 +237,28 @@ function MenuItemKitSlot:setup_gui(node, row_item)
 		w = node.item_panel:w()
 	})
 	row_item.choice_text = row_item.choice_panel:text({
+		align = "left",
 		halign = "center",
 		vertical = "center",
-		align = "left",
 		y = 0,
 		font_size = node.font_size,
-		x = node:_right_align(),
+		x = node._right_align(node),
 		font = row_item.font,
 		color = self:arrow_visible() and tweak_data.menu.default_changeable_text_color or tweak_data.menu.default_disabled_text_color,
 		layer = node.layers.items,
 		text = string.upper(self:text()),
 		render_template = Idstring("VertexColorTextured")
 	})
+
 	local w = 20
 	local h = 20
 	local base = 20
 	local height = 15
+
 	row_item.arrow_left = row_item.gui_panel:bitmap({
 		texture = "guis/textures/menu_arrows",
-		y = 0,
 		x = 0,
+		y = 0,
 		texture_rect = {
 			0,
 			0,
@@ -265,10 +270,10 @@ function MenuItemKitSlot:setup_gui(node, row_item)
 		layer = node.layers.items
 	})
 	row_item.arrow_right = row_item.gui_panel:bitmap({
+		rotation = 180,
 		texture = "guis/textures/menu_arrows",
 		x = 0,
 		y = 0,
-		rotation = 180,
 		texture_rect = {
 			0,
 			0,
@@ -290,25 +295,27 @@ function MenuItemKitSlot:setup_gui(node, row_item)
 	row_item.description_panel_bg = row_item.description_panel:rect({
 		color = Color.black:with_alpha(0.5)
 	})
+
 	local icon, texture_rect = tweak_data.hud_icons:get_icon_data("fallback")
+
 	row_item.description_icon = row_item.description_panel:bitmap({
-		name = "description_icon",
 		h = 48,
-		y = 0,
+		name = "description_icon",
 		w = 48,
 		x = 0,
+		y = 0,
 		texture = icon,
 		layer = node.layers.items,
 		texture_rect = texture_rect
 	})
 	row_item.description_progress_text = row_item.description_panel:text({
+		align = "left",
 		halign = "left",
 		vertical = "bottom",
 		word_wrap = false,
 		wrap = false,
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font_size = node.font_size,
 		font = row_item.font,
 		color = row_item.color,
@@ -316,23 +323,25 @@ function MenuItemKitSlot:setup_gui(node, row_item)
 		text = managers.localization:text("menu_upgrade_progress"),
 		render_template = Idstring("VertexColorTextured")
 	})
+
 	local _, _, w, h = row_item.description_progress_text:text_rect()
+
 	row_item.progress_bg = row_item.description_panel:rect({
+		align = "center",
+		h = 22,
 		halign = "center",
 		vertical = "center",
-		h = 22,
 		w = 256,
-		align = "center",
 		y = 0,
 		x = 52 + w + 4,
 		color = Color.black:with_alpha(0.5),
 		layer = node.layers.items - 1
 	})
 	row_item.progress_bar = row_item.description_panel:gradient({
-		vertical = "center",
 		align = "center",
 		halign = "center",
 		orientation = "vertical",
+		vertical = "center",
 		gradient_points = {
 			0,
 			Color(1, 1, 0.6588235294117647, 0),
@@ -346,11 +355,11 @@ function MenuItemKitSlot:setup_gui(node, row_item)
 		layer = node.layers.items
 	})
 	row_item.progress_text = row_item.description_panel:text({
-		y = 0,
-		vertical = "center",
 		align = "center",
 		halign = "center",
 		valign = "center",
+		vertical = "center",
+		y = 0,
 		font_size = tweak_data.menu.stats_font_size,
 		x = row_item.progress_bg:x(),
 		h = h,
@@ -362,13 +371,13 @@ function MenuItemKitSlot:setup_gui(node, row_item)
 		render_template = Idstring("VertexColorTextured")
 	})
 	row_item.description_text = row_item.description_panel:text({
+		align = "left",
 		halign = "left",
 		vertical = "top",
 		word_wrap = true,
 		wrap = true,
-		align = "left",
-		y = 0,
 		x = 0,
+		y = 0,
 		font_size = tweak_data.menu.small_font_size,
 		font = tweak_data.menu.small_font,
 		color = row_item.color,
@@ -438,7 +447,7 @@ function MenuItemKitSlot:_layout(node, row_item)
 	row_item.gui_panel:set_width(safe_rect.width / 2 + xl_pad)
 	row_item.gui_panel:set_x(safe_rect.width / 2 - xl_pad)
 	row_item.arrow_right:set_size(24 * tweak_data.scale.multichoice_arrow_multiplier, 24 * tweak_data.scale.multichoice_arrow_multiplier)
-	row_item.arrow_right:set_right(node:_left_align() - row_item.gui_panel:x())
+	row_item.arrow_right:set_right(node._left_align(node) - row_item.gui_panel:x())
 	row_item.arrow_left:set_size(24 * tweak_data.scale.multichoice_arrow_multiplier, 24 * tweak_data.scale.multichoice_arrow_multiplier)
 	row_item.arrow_left:set_right(row_item.arrow_right:left() + 2 * (1 - tweak_data.scale.multichoice_arrow_multiplier))
 	row_item.gui_text:set_width(row_item.arrow_left:left() - node._align_line_padding * 2)
@@ -446,9 +455,9 @@ function MenuItemKitSlot:_layout(node, row_item)
 	local x, y, w, h = row_item.gui_text:text_rect()
 
 	row_item.gui_text:set_h(h)
-	row_item.choice_panel:set_w(safe_rect.width - node:_right_align())
+	row_item.choice_panel:set_w(safe_rect.width - node._right_align(node))
 	row_item.choice_panel:set_h(h)
-	row_item.choice_panel:set_left(node:_right_align() - row_item.gui_panel:x())
+	row_item.choice_panel:set_left(node._right_align(node) - row_item.gui_panel:x())
 	row_item.choice_text:set_w(row_item.choice_panel:w())
 	row_item.choice_text:set_h(h)
 	row_item.choice_text:set_left(0)

@@ -17,6 +17,7 @@ end
 
 function CoreUnitReloader:create_main_frame()
 	self._unitreloader_frame = EWS:Frame("Unit Reloader", Vector3(100, 400, 0), Vector3(250, 350, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
+
 	local menu_bar = EWS:MenuBar()
 	local file_menu = EWS:Menu("")
 
@@ -38,9 +39,8 @@ function CoreUnitReloader:create_main_frame()
 
 	main_box:add(EWS:BitmapButton(self._unitreloader_frame, "dock.bmp", "", ""), 0, 0, "EXPAND")
 
-	self._main_box = {
-		unit_combo_box = EWS:ComboBox(self._unitreloader_frame, "", "", "CB_SORT")
-	}
+	self._main_box = {}
+	self._main_box.unit_combo_box = EWS:ComboBox(self._unitreloader_frame, "", "", "CB_SORT")
 
 	self._main_box.unit_combo_box:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_reload"), "")
 	main_box:add(self._main_box.unit_combo_box, 0, 0, "EXPAND")
@@ -69,6 +69,7 @@ end
 function CoreUnitReloader:update(t, dt)
 	if not self._initialized then
 		self._initialized = true
+
 		local units_in_world = World:find_units_quick("all")
 
 		self._main_box.unit_combo_box:clear()
@@ -109,6 +110,7 @@ end
 function CoreUnitReloader:on_reload_all()
 	if self._warning_reload_all_dialog:show_modal() == "ID_OK" then
 		self._initialized = false
+
 		local units_in_world = World:find_units_quick("all")
 
 		self._main_box.unit_combo_box:clear()

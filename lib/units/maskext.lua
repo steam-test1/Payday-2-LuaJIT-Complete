@@ -1,6 +1,7 @@
 require("lib/managers/BlackMarketManager")
 
 MaskExt = MaskExt or class()
+
 local mvec1 = Vector3()
 local mvec2 = Vector3()
 local mvec3 = Vector3()
@@ -44,6 +45,7 @@ function MaskExt:_init_tintable_materials()
 
 		for _, v in ipairs(tmp_mat_tintables_a) do
 			local split = string.split(v, ":")
+
 			self._mat_tintables_a[split[1]] = split[2]
 			self._mat_tintables_a_default[split[1]] = self._unit:material(Idstring(split[1])):get_variable(Idstring(split[2]))
 		end
@@ -57,6 +59,7 @@ function MaskExt:_init_tintable_materials()
 
 		for _, v in ipairs(tmp_mat_tintables_b) do
 			local split = string.split(v, ":")
+
 			self._mat_tintables_b[split[1]] = split[2]
 			self._mat_tintables_b_default[split[1]] = self._unit:material(Idstring(split[1])):get_variable(Idstring(split[2]))
 		end
@@ -84,25 +87,23 @@ function MaskExt:swap_to_fps()
 	end
 
 	for _, material in ipairs(self._unit:get_objects_by_type(IDS_MATERIAL)) do
-		if material:name() ~= mtr_hair_solid_id_string and material:name() ~= mtr_opacity and material:name() ~= mtr_feathers and material:name() ~= mtr_hair_effect_id_string and not glow_tint_stat_id_strings[material:name():key()] then
-			if glow_tint_anim_id_strings[material:name():key()] then
-				-- Nothing
-			elseif material:name() == glass_id_string then
-				material:set_render_template(Idstring("opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE:FPS"))
-			elseif material:name() == mat_shadow then
-				print("[MASK]  SHADOW MATERIAL")
-				material:set_render_template(Idstring("effect:DIFFUSE0_TEXTURE:FPS:INTERSECTION_FADEOUT"))
-			elseif material:name() == mtr_bloom_glow_id_string then
-				material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM"))
-			elseif glow_id_strings[material:name():key()] then
-				material:set_render_template(Idstring("effect:BLEND_ADD:DIFFUSE0_TEXTURE"))
-			elseif sweep_id_strings[material:name():key()] then
-				material:set_render_template(Idstring("effect:BLEND_ADD:DIFFUSE0_TEXTURE:DIFFUSE0_THRESHOLD_SWEEP"))
-			elseif material:render_template() == IDS_RT_OLD then
-				material:set_render_template(IDS_RT_DEPTH_OLD)
-			else
-				material:set_render_template(IDS_RT_DEPTH_NEW)
-			end
+		if material:name() == mtr_hair_solid_id_string or material:name() == mtr_opacity or material:name() == mtr_feathers or material:name() == mtr_hair_effect_id_string or glow_tint_stat_id_strings[material:name():key()] or glow_tint_anim_id_strings[material:name():key()] then
+			-- Nothing
+		elseif material:name() == glass_id_string then
+			material:set_render_template(Idstring("opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE:FPS"))
+		elseif material:name() == mat_shadow then
+			print("[MASK]  SHADOW MATERIAL")
+			material:set_render_template(Idstring("effect:DIFFUSE0_TEXTURE:FPS:INTERSECTION_FADEOUT"))
+		elseif material:name() == mtr_bloom_glow_id_string then
+			material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM"))
+		elseif glow_id_strings[material:name():key()] then
+			material:set_render_template(Idstring("effect:BLEND_ADD:DIFFUSE0_TEXTURE"))
+		elseif sweep_id_strings[material:name():key()] then
+			material:set_render_template(Idstring("effect:BLEND_ADD:DIFFUSE0_TEXTURE:DIFFUSE0_THRESHOLD_SWEEP"))
+		elseif material:render_template() == IDS_RT_OLD then
+			material:set_render_template(IDS_RT_DEPTH_OLD)
+		else
+			material:set_render_template(IDS_RT_DEPTH_NEW)
 		end
 	end
 end
@@ -119,6 +120,7 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 
 	if not self._materials and not self._materials_mat3 then
 		local materials = self._unit:get_objects_by_type(IDS_MATERIAL)
+
 		self._materials = {}
 		self._materials_mat3 = {}
 
@@ -137,9 +139,11 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 	local color_a_id = blueprint.color_a.id
 	local color_b_id = blueprint.color_b.id
 	local color_c_id = blueprint.color_c and blueprint.color_c.id or "strip_paint"
+
 	self._tint_color_a = mvec1
 	self._tint_color_b = mvec2
 	self._tint_color_c = mvec3
+
 	local material_data = td_bm_mats[material_id]
 	local color_a_data = td_bm_mats[color_a_id]
 	local color_b_data = td_bm_mats[color_b_id]
@@ -173,8 +177,8 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 
 		if old_reflection ~= new_reflection then
 			self._textures.reflection = {
-				texture = false,
 				ready = 0,
+				texture = false,
 				name = new_reflection,
 				target = IDS_REFLECTION_TEXTURE
 			}
@@ -186,8 +190,8 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 
 	if old_pattern ~= new_pattern then
 		self._textures.pattern = {
-			texture = false,
 			ready = 0,
+			texture = false,
 			name = new_pattern,
 			target = IDS_MATERIAL_TEXTURE
 		}
@@ -199,8 +203,8 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 
 		if old_color_a ~= new_color_a then
 			self._textures.color_a = {
-				texture = false,
 				ready = 0,
+				texture = false,
 				name = new_color_a,
 				target = IDS_DIFFUSE_LAYER0_TEXTURE
 			}
@@ -213,8 +217,8 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 
 		if old_color_b ~= new_color_b then
 			self._textures.color_b = {
-				texture = false,
 				ready = 0,
+				texture = false,
 				name = new_color_b,
 				target = IDS_DIFFUSE_LAYER1_TEXTURE
 			}
@@ -227,8 +231,8 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 
 		if old_color_c ~= new_color_c then
 			self._textures.color_c = {
-				texture = false,
 				ready = 0,
+				texture = false,
 				name = new_color_c,
 				target = IDS_DIFFUSE_LAYER2_TEXTURE
 			}

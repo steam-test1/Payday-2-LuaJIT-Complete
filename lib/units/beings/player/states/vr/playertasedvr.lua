@@ -1,4 +1,5 @@
 PlayerTasedVR = PlayerTased or Application:error("PlayerTasedVR need PlayerTased!")
+
 local __update_movement = PlayerTased._update_movement
 local __enter = PlayerTased.enter
 local __exit = PlayerTased.exit
@@ -70,7 +71,7 @@ function PlayerTasedVR:_check_action_shock(t, input)
 	local has_akimbo = alive(self._equipped_unit) and self._equipped_unit:base().akimbo
 	local use_akimbo = has_akimbo and math.random() > 0.5
 
-	if self._next_shock < t then
+	if t > self._next_shock then
 		self._num_shocks = self._num_shocks + 1
 		self._next_shock = t + 0.25 + math.rand(1)
 		self._taser_value = math.max(self._taser_value - 0.25, 0)
@@ -105,7 +106,7 @@ function PlayerTasedVR:_check_action_shock(t, input)
 			end
 		end
 
-		if self._recoil_t < t then
+		if t > self._recoil_t then
 			self._recoil_t = nil
 
 			self._camera_unit:base():stop_shooting()
@@ -114,10 +115,13 @@ function PlayerTasedVR:_check_action_shock(t, input)
 end
 
 function PlayerTasedVR:_check_action_primary_attack(t, input)
-	local new_action = nil
+	local new_action
 	local action_forbidden = self:chk_action_forbidden("primary_attack")
+
 	action_forbidden = action_forbidden or self:_is_reloading() or self:_changing_weapon() or self._melee_expire_t or self._use_item_expire_t or self:_interacting() or alive(self._counter_taser_unit)
+
 	local action_wanted = input.btn_primary_attack_state or input.btn_akimbo_fire_state
+
 	action_wanted = action_wanted or self:is_shooting_count()
 	action_wanted = action_wanted or self:_is_charging_weapon()
 
@@ -128,10 +132,7 @@ function PlayerTasedVR:_check_action_primary_attack(t, input)
 			self._ext_inventory:equip_selected_primary(false)
 
 			if self._equipped_unit then
-				if self._equipped_unit:base().akimbo then
-					new_action = self:_check_fire_per_weapon(t, input.btn_akimbo_fire_press, input.btn_akimbo_fire_state, input.btn_akimbo_fire_release, self._equipped_unit:base()._second_gun:base(), true) or new_action
-				end
-
+				new_action = self._equipped_unit:base().akimbo and self:_check_fire_per_weapon(t, input.btn_akimbo_fire_press, input.btn_akimbo_fire_state, input.btn_akimbo_fire_release, self._equipped_unit:base()._second_gun:base(), true) or new_action
 				new_action = self:_check_fire_per_weapon(t, input.btn_primary_attack_press, input.btn_primary_attack_state, input.btn_primary_attack_release, self._equipped_unit:base()) or new_action
 			end
 		elseif self:_is_reloading() and self._equipped_unit:base():reload_interuptable() and (input.btn_primary_attack_press or input.btn_akimbo_fire_press) then
@@ -156,6 +157,7 @@ end
 
 function PlayerTasedVR:_check_fire_per_weapon(t, pressed, held, released, weap_base, akimbo)
 	local action_wanted = held
+
 	action_wanted = action_wanted or self:is_shooting_count()
 	action_wanted = action_wanted or self:_is_charging_weapon()
 
@@ -181,6 +183,7 @@ function PlayerTasedVR:_check_fire_per_weapon(t, pressed, held, released, weap_b
 	else
 		if not self._shooting and weap_base:start_shooting_allowed() then
 			local start = fire_mode == "single" and pressed
+
 			start = start or fire_mode == "auto" and held
 			start = start or fire_mode == "burst" and pressed
 			start = start or fire_mode == "volley" and pressed
@@ -219,12 +222,14 @@ function PlayerTasedVR:_check_fire_per_weapon(t, pressed, held, released, weap_b
 		if damage_health_ratio > 0 then
 			local upgrade_name = primary_category == "saw" and "melee_damage_health_ratio_multiplier" or "damage_health_ratio_multiplier"
 			local damage_ratio = damage_health_ratio
+
 			dmg_mul = dmg_mul * (1 + managers.player:upgrade_value("player", upgrade_name, 0) * damage_ratio)
 		end
 
 		dmg_mul = dmg_mul * managers.player:temporary_upgrade_value("temporary", "berserker_damage_multiplier", 1)
 		dmg_mul = dmg_mul * managers.player:get_property("trigger_happy", 1)
-		local fired = nil
+
+		local fired
 
 		if fire_mode == "single" then
 			if pressed then
@@ -281,6 +286,7 @@ function PlayerTasedVR:_check_fire_per_weapon(t, pressed, held, released, weap_b
 					nil,
 					0
 				}
+
 				local stack = self._state_data.stacking_dmg_mul[primary_category]
 
 				if fired.hit_enemy then

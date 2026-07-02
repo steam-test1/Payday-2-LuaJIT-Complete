@@ -92,6 +92,7 @@ function CoreMaterialEditorParameter:update_live()
 end
 
 function CoreMaterialEditorParameter:update(t, dt)
+	return
 end
 
 function CoreMaterialEditorParameter:destroy()
@@ -126,7 +127,9 @@ function CoreMaterialEditorParameter:_create_node()
 		self._parameter_node:set_parameter("value", str)
 	elseif self._parameter_info.type == "texture" then
 		self._parameter_node = self._editor._current_material_node:make_child(self._parameter_info.name:s())
+
 		local str = tostring(self._value)
+
 		self._global_texture = false
 
 		self._parameter_node:set_parameter("file", str)
@@ -180,7 +183,7 @@ function CoreMaterialEditorParameter:_load_value()
 end
 
 function CoreMaterialEditorParameter:_copy_to_parent(name)
-	local material_node = nil
+	local material_node
 
 	if name then
 		material_node = self._editor._global_material_config_node:make_child("material")
@@ -190,7 +193,7 @@ function CoreMaterialEditorParameter:_copy_to_parent(name)
 		material_node = self._editor:_find_node(self._editor._global_material_config_node, "material", "name", self._editor._parent_combo_box:get_value())
 	end
 
-	local parent_param_node = nil
+	local parent_param_node
 
 	if self._parameter_info.type == "texture" then
 		parent_param_node = self._editor:_get_node(material_node, self._parameter_info.name:s())

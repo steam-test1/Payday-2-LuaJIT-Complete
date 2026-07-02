@@ -15,8 +15,8 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	end
 
 	local assault_panel = self._hud_panel:panel({
-		name = "assault_panel",
 		h = 100,
+		name = "assault_panel",
 		visible = false,
 		w = size * 2
 	})
@@ -30,6 +30,7 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 
 	if managers.mutators:are_mutators_active() then
 		local mutator_color = managers.mutators:get_category_color(managers.mutators:get_enabled_active_mutator_category())
+
 		self._assault_color = mutator_color
 		self._vip_assault_color = Color(mutator_color.a, mutator_color.b, mutator_color.g, mutator_color.r)
 	end
@@ -40,18 +41,19 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 
 	self._assault_survived_color = Color(1, 0.12549019607843137, 0.9019607843137255, 0.12549019607843137)
 	self._current_assault_color = self._assault_color
+
 	local icon_assaultbox = assault_panel:bitmap({
-		texture = "guis/textures/pd2/hud_icon_assaultbox",
-		name = "icon_assaultbox",
-		h = 24,
-		layer = 0,
-		w = 24,
-		y = 0,
-		visible = true,
 		blend_mode = "add",
+		h = 24,
 		halign = "right",
-		x = 0,
+		layer = 0,
+		name = "icon_assaultbox",
+		texture = "guis/textures/pd2/hud_icon_assaultbox",
 		valign = "top",
+		visible = true,
+		w = 24,
+		x = 0,
+		y = 0,
 		color = self._assault_color
 	})
 
@@ -59,8 +61,8 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 
 	self._bg_box_size = size * 1.5 - 58
 	self._bg_box = HUDBGBox_create(assault_panel, {
-		x = 0,
 		h = 38,
+		x = 0,
 		y = 0,
 		w = self._bg_box_size
 	}, {
@@ -71,9 +73,9 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	self._bg_box:set_right(icon_assaultbox:left() - 3)
 
 	local yellow_tape = assault_panel:rect({
+		layer = 1,
 		name = "yellow_tape",
 		visible = false,
-		layer = 1,
 		h = tweak_data.hud.location_font_size * 1.5,
 		w = size * 3,
 		color = Color(1, 0.8, 0)
@@ -83,8 +85,8 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	yellow_tape:set_rotation(30)
 	yellow_tape:set_blend_mode("add")
 	assault_panel:panel({
-		name = "text_panel",
 		layer = 1,
+		name = "text_panel",
 		w = yellow_tape:w()
 	}):set_center(yellow_tape:center())
 
@@ -92,9 +94,7 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 		self._hud_panel:remove(self._hud_panel:child("hostages_panel"))
 	end
 
-	local hostage_w = 70
-	local hostage_h = 38
-	local hostage_box = 38
+	local hostage_w, hostage_h, hostage_box = 70, 38, 38
 	local hostages_panel = self._hud_panel:panel({
 		name = "hostages_panel",
 		w = hostage_w,
@@ -102,13 +102,14 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 		x = self._hud_panel:w() - hostage_w
 	})
 	local hostages_icon = hostages_panel:bitmap({
-		texture = "guis/textures/pd2/hud_icon_hostage",
-		name = "hostages_icon",
 		layer = 1,
-		y = 0,
+		name = "hostages_icon",
+		texture = "guis/textures/pd2/hud_icon_hostage",
+		valign = "top",
 		x = 0,
-		valign = "top"
+		y = 0
 	})
+
 	self._hostages_bg_box = HUDBGBox_create(hostages_panel, {
 		x = 0,
 		y = 0,
@@ -121,14 +122,14 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	self._hostages_bg_box:set_right(hostages_icon:left())
 
 	local num_hostages = self._hostages_bg_box:text({
-		layer = 1,
-		vertical = "center",
-		name = "num_hostages",
 		align = "center",
+		layer = 1,
+		name = "num_hostages",
 		text = "0",
-		y = 0,
-		x = 0,
 		valign = "center",
+		vertical = "center",
+		x = 0,
+		y = 0,
 		w = self._hostages_bg_box:w(),
 		h = self._hostages_bg_box:h(),
 		color = Color.white,
@@ -148,24 +149,26 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 
 	local size = 300
 	local point_of_no_return_panel = self._hud_panel:panel({
-		name = "point_of_no_return_panel",
 		h = 40,
+		name = "point_of_no_return_panel",
 		visible = false,
 		w = size,
 		x = self._hud_panel:w() - size
 	})
+
 	self._noreturn_data = self:_get_noreturn_data()
+
 	local icon_noreturnbox = point_of_no_return_panel:bitmap({
-		name = "icon_noreturnbox",
-		h = 24,
-		layer = 0,
-		w = 24,
-		y = 0,
-		visible = true,
 		blend_mode = "add",
+		h = 24,
 		halign = "right",
-		x = 0,
+		layer = 0,
+		name = "icon_noreturnbox",
 		valign = "top",
+		visible = true,
+		w = 24,
+		x = 0,
+		y = 0,
 		color = self._noreturn_data.color,
 		texture = self._noreturn_data.icon_texture,
 		texture_rect = self._noreturn_data.icon_texture_rect
@@ -174,8 +177,8 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	icon_noreturnbox:set_right(icon_noreturnbox:parent():w())
 
 	self._noreturn_bg_box = HUDBGBox_create(point_of_no_return_panel, {
-		x = 0,
 		h = 38,
+		x = 0,
 		y = 0,
 		w = self._bg_box_size
 	}, {
@@ -188,15 +191,15 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	local w = point_of_no_return_panel:w()
 	local size = 200 - tweak_data.hud.location_font_size
 	local point_of_no_return_text = self._noreturn_bg_box:text({
+		align = "right",
+		blend_mode = "add",
+		layer = 1,
+		name = "point_of_no_return_text",
+		text = "",
 		valign = "center",
 		vertical = "center",
-		name = "point_of_no_return_text",
-		blend_mode = "add",
-		align = "right",
-		text = "",
-		y = 0,
 		x = 0,
-		layer = 1,
+		y = 0,
 		color = self._noreturn_data.color,
 		font_size = tweak_data.hud_corner.noreturn_size,
 		font = tweak_data.hud_corner.assault_font
@@ -208,15 +211,15 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	point_of_no_return_text:set_size(self._noreturn_bg_box:w(), self._noreturn_bg_box:h())
 
 	local point_of_no_return_timer = self._noreturn_bg_box:text({
+		align = "center",
+		blend_mode = "add",
+		layer = 1,
+		name = "point_of_no_return_timer",
+		text = "",
 		valign = "center",
 		vertical = "center",
-		name = "point_of_no_return_timer",
-		blend_mode = "add",
-		align = "center",
-		text = "",
-		y = 0,
 		x = 0,
-		layer = 1,
+		y = 0,
 		color = self._noreturn_data.color,
 		font_size = tweak_data.hud_corner.noreturn_size,
 		font = tweak_data.hud_corner.assault_font
@@ -234,33 +237,35 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 
 	local size = 300
 	local casing_panel = self._hud_panel:panel({
-		name = "casing_panel",
 		h = 40,
+		name = "casing_panel",
 		visible = false,
 		w = size,
 		x = self._hud_panel:w() - size
 	})
+
 	self._casing_color = Color.white
+
 	local icon_casingbox = casing_panel:bitmap({
-		texture = "guis/textures/pd2/hud_icon_stealthbox",
-		name = "icon_casingbox",
-		h = 24,
-		layer = 0,
-		w = 24,
-		y = 0,
-		visible = true,
 		blend_mode = "add",
+		h = 24,
 		halign = "right",
-		x = 0,
+		layer = 0,
+		name = "icon_casingbox",
+		texture = "guis/textures/pd2/hud_icon_stealthbox",
 		valign = "top",
+		visible = true,
+		w = 24,
+		x = 0,
+		y = 0,
 		color = self._casing_color
 	})
 
 	icon_casingbox:set_right(icon_casingbox:parent():w())
 
 	self._casing_bg_box = HUDBGBox_create(casing_panel, {
-		x = 0,
 		h = 38,
+		x = 0,
 		y = 0,
 		w = self._bg_box_size
 	}, {
@@ -274,8 +279,8 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	local size = 200 - tweak_data.hud.location_font_size
 
 	casing_panel:panel({
-		name = "text_panel",
 		layer = 1,
+		name = "text_panel",
 		w = yellow_tape:w()
 	}):set_center(yellow_tape:center())
 
@@ -286,34 +291,36 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	local width = 200
 	local x = assault_panel:left() + self._bg_box:left() - 3 - width
 	local buffs_panel = self._hud_panel:panel({
-		name = "buffs_panel",
 		h = 38,
+		name = "buffs_panel",
 		visible = false,
 		w = width,
 		x = x
 	})
+
 	self._vip_bg_box_bg_color = Color(1, 0, 0.6666666666666666, 1)
 	self._vip_bg_box = HUDBGBox_create(buffs_panel, {
-		w = 38,
 		h = 38,
+		w = 38,
 		y = 0,
 		x = width - 38
 	}, {
 		color = Color.white,
 		bg_color = self._vip_bg_box_bg_color
 	})
+
 	local vip_icon = self._vip_bg_box:bitmap({
-		texture = "guis/textures/pd2/hud_buff_shield",
-		name = "vip_icon",
-		h = 38,
-		layer = 0,
-		w = 38,
-		y = 0,
-		visible = true,
 		blend_mode = "add",
+		h = 38,
 		halign = "center",
-		x = 0,
+		layer = 0,
+		name = "vip_icon",
+		texture = "guis/textures/pd2/hud_buff_shield",
 		valign = "center",
+		visible = true,
+		w = 38,
+		x = 0,
+		y = 0,
 		color = Color.white
 	})
 
@@ -322,15 +329,15 @@ end
 
 function HUDAssaultCorner:_get_noreturn_data(id)
 	local noreturn_tweak_data = id and tweak_data.point_of_no_returns[id] or tweak_data.point_of_no_returns.noreturn
-	local noreturn_data = {
-		color = noreturn_tweak_data.color or Color(1, 1, 0, 0),
-		flash_color = noreturn_tweak_data.timer_flash_color or noreturn_tweak_data.color or Color(1, 1, 0.8, 0.2),
-		attention_color = noreturn_tweak_data.attention_color or Color.white,
-		icon_texture = noreturn_tweak_data.texture or "guis/textures/pd2/hud_icon_noreturnbox",
-		icon_texture_rect = noreturn_tweak_data.texture_rect or nil,
-		scale_box = noreturn_tweak_data.scale_box or false,
-		text_id = noreturn_tweak_data.text_id
-	}
+	local noreturn_data = {}
+
+	noreturn_data.color = noreturn_tweak_data.color or Color(1, 1, 0, 0)
+	noreturn_data.flash_color = noreturn_tweak_data.timer_flash_color or noreturn_tweak_data.color or Color(1, 1, 0.8, 0.2)
+	noreturn_data.attention_color = noreturn_tweak_data.attention_color or Color.white
+	noreturn_data.icon_texture = noreturn_tweak_data.texture or "guis/textures/pd2/hud_icon_noreturnbox"
+	noreturn_data.icon_texture_rect = noreturn_tweak_data.texture_rect or nil
+	noreturn_data.scale_box = noreturn_tweak_data.scale_box or false
+	noreturn_data.text_id = noreturn_tweak_data.text_id
 
 	if not noreturn_data.text_id then
 		if _G.IS_VR then
@@ -374,6 +381,7 @@ function HUDAssaultCorner:_update_noreturn(id)
 
 		if noreturn_data.scale_box then
 			local text_x, text_y, text_w, text_h = point_of_no_return_text:text_rect()
+
 			bg_box_size = text_w + point_of_no_return_timer:w() + 10
 		end
 
@@ -401,8 +409,8 @@ function HUDAssaultCorner:setup_wave_display(top, right)
 			145,
 			38
 		}
-		local wave_w = 38
-		local wave_h = 38
+
+		local wave_w, wave_h = 38, 38
 		local wave_panel = self._hud_panel:panel({
 			name = "wave_panel",
 			w = self._wave_panel_size[1],
@@ -413,12 +421,12 @@ function HUDAssaultCorner:setup_wave_display(top, right)
 		wave_panel:set_right(right)
 
 		local waves_icon = wave_panel:bitmap({
-			texture = "guis/textures/pd2/specialization/icons_atlas",
-			name = "waves_icon",
 			layer = 1,
+			name = "waves_icon",
+			texture = "guis/textures/pd2/specialization/icons_atlas",
 			valign = "top",
-			y = 0,
 			x = 0,
+			y = 0,
 			texture_rect = {
 				192,
 				64,
@@ -428,6 +436,7 @@ function HUDAssaultCorner:setup_wave_display(top, right)
 			w = wave_w,
 			h = wave_h
 		})
+
 		self._wave_bg_box = HUDBGBox_create(wave_panel, {
 			w = 100,
 			x = 0,
@@ -442,14 +451,14 @@ function HUDAssaultCorner:setup_wave_display(top, right)
 		self._wave_bg_box:set_right(waves_icon:left())
 
 		local num_waves = self._wave_bg_box:text({
-			vertical = "center",
-			name = "num_waves",
-			layer = 1,
 			align = "center",
-			y = 0,
 			halign = "right",
-			x = 0,
+			layer = 1,
+			name = "num_waves",
 			valign = "center",
+			vertical = "center",
+			x = 0,
+			y = 0,
 			text = self:get_completed_waves_string(),
 			w = self._wave_bg_box:w(),
 			h = self._wave_bg_box:h(),
@@ -501,12 +510,12 @@ function HUDAssaultCorner:_animate_text(text_panel, bg_box, color, color_functio
 
 		local mod_color = color_function and color_function() or color or self._assault_color
 		local text = text_panel:text({
-			vertical = "center",
-			h = 10,
-			w = 10,
 			align = "center",
 			blend_mode = "add",
+			h = 10,
 			layer = 1,
+			vertical = "center",
+			w = 10,
 			text = text_string,
 			color = mod_color,
 			font_size = tweak_data.hud_corner.assault_size,
@@ -584,6 +593,7 @@ function HUDAssaultCorner:sync_set_assault_mode(mode)
 	end
 
 	self._assault_mode = mode
+
 	local color = self._assault_color
 
 	if mode == "phalanx" then
@@ -635,6 +645,7 @@ end
 
 function HUDAssaultCorner:set_assault_wave_number(assault_number)
 	self._wave_number = assault_number
+
 	local panel = self._hud_panel:child("wave_panel")
 
 	print("found panel")
@@ -743,6 +754,7 @@ end
 function HUDAssaultCorner:_set_text_list(text_list)
 	local assault_panel = self._hud_panel:child("assault_panel")
 	local text_panel = assault_panel:child("text_panel")
+
 	text_panel:script().text_list = text_panel:script().text_list or {}
 
 	while #text_panel:script().text_list > 0 do
@@ -765,12 +777,14 @@ function HUDAssaultCorner:_start_assault(text_list)
 	text_list = text_list or {
 		""
 	}
+
 	local assault_panel = self._hud_panel:child("assault_panel")
 	local text_panel = assault_panel:child("text_panel")
 
 	self:_set_text_list(text_list)
 
 	local started_now = not self._assault
+
 	self._assault = true
 
 	if self._bg_box:child("text_panel") then
@@ -797,7 +811,8 @@ function HUDAssaultCorner:_start_assault(text_list)
 	}
 
 	self._bg_box:stop()
-	self._bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, self._bg_box_size, function ()
+	self._bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, self._bg_box_size, function()
+		return
 	end, config)
 
 	local box_text_panel = self._bg_box:child("text_panel")
@@ -830,6 +845,7 @@ function HUDAssaultCorner:_end_assault()
 	self:_set_feedback_color(nil)
 
 	self._assault = false
+
 	local box_text_panel = self._bg_box:child("text_panel")
 
 	box_text_panel:stop()
@@ -837,6 +853,7 @@ function HUDAssaultCorner:_end_assault()
 
 	self._remove_hostage_offset = true
 	self._start_assault_after_hostage_offset = nil
+
 	local icon_assaultbox = self._hud_panel:child("assault_panel"):child("icon_assaultbox")
 
 	icon_assaultbox:stop()
@@ -880,8 +897,10 @@ function HUDAssaultCorner:_show_icon_assaultbox(icon_assaultbox)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local alpha = math.round(math.abs(math.sin(t * 360 * 2)))
+
+		local alpha = math.round(math.abs((math.sin(t * 360 * 2))))
 
 		icon_assaultbox:set_alpha(alpha)
 	end
@@ -895,8 +914,10 @@ function HUDAssaultCorner:_hide_icon_assaultbox(icon_assaultbox)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local alpha = math.round(math.abs(math.cos(t * 360 * 2)))
+
+		local alpha = math.round(math.abs((math.cos(t * 360 * 2))))
 
 		icon_assaultbox:set_alpha(alpha)
 
@@ -928,6 +949,7 @@ end
 
 function HUDAssaultCorner:_set_hostage_offseted(is_offseted)
 	local hostage_panel = self._hud_panel:child("hostages_panel")
+
 	self._remove_hostage_offset = nil
 
 	hostage_panel:stop()
@@ -948,9 +970,11 @@ function HUDAssaultCorner:_offset_hostage(is_offseted, hostage_panel)
 	local target_y = is_offseted and OFFSET or 0
 	local t = (1 - math.abs(hostage_panel:y() - target_y) / OFFSET) * TOTAL_T
 
-	while TOTAL_T > t do
+	while t < TOTAL_T do
 		local dt = coroutine.yield()
+
 		t = math.min(t + dt, TOTAL_T)
+
 		local lerp = t / TOTAL_T
 
 		hostage_panel:set_y(math.lerp(from_y, target_y, lerp))
@@ -980,6 +1004,7 @@ end
 
 function HUDAssaultCorner:feed_point_of_no_return_timer(time, is_inside)
 	time = math.floor(time)
+
 	local minutes = math.floor(time / 60)
 	local seconds = math.round(time - minutes * 60)
 	local text = (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
@@ -1019,6 +1044,7 @@ function HUDAssaultCorner:flash_point_of_no_return_timer(beep)
 
 		while t < 0.5 do
 			t = t + coroutine.yield()
+
 			local color = self._noreturn_data.color or Color(1, 1, 0, 0)
 			local flash_color = self._noreturn_data.flash_color or Color(1, 1, 0.8, 0.2)
 			local n = 1 - math.sin(t * 180)
@@ -1043,9 +1069,11 @@ function HUDAssaultCorner:show_casing(mode)
 
 	local casing_panel = self._hud_panel:child("casing_panel")
 	local text_panel = casing_panel:child("text_panel")
+
 	text_panel:script().text_list = {}
 	self._casing_bg_box:script().text_list = {}
-	local msg = nil
+
+	local msg
 
 	if mode == "civilian" then
 		msg = {
@@ -1124,6 +1152,7 @@ function HUDAssaultCorner:_animate_simple_text(text)
 
 	while true do
 		local dt = coroutine.yield()
+
 		t = t + dt
 		x = x - speed * dt
 
@@ -1146,6 +1175,7 @@ function HUDAssaultCorner:_animate_show_casing(casing_panel, delay_time)
 	icon_casingbox:animate(callback(self, self, "_show_icon_assaultbox"))
 
 	local function open_done()
+		return
 	end
 
 	self._casing_bg_box:stop()
@@ -1185,6 +1215,7 @@ function HUDAssaultCorner:_animate_show_noreturn(point_of_no_return_panel, delay
 
 	if self._noreturn_data.scale_box then
 		local text_x, text_y, text_w, text_h = point_of_no_return_text:text_rect()
+
 		bg_box_size = text_w + point_of_no_return_timer:w() + 10
 	end
 
@@ -1205,8 +1236,10 @@ function HUDAssaultCorner:_animate_show_texts(anim_object, texts)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local alpha = math.round(math.abs(math.sin(t * 360 * 3)))
+
+		local alpha = math.round(math.abs((math.sin(t * 360 * 3))))
 
 		for _, text in ipairs(texts) do
 			text:set_alpha(alpha)
@@ -1230,7 +1263,9 @@ function HUDAssaultCorner:_animate_test_point_of_no_return(panel)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
+
 		local sec = math.floor(t)
 
 		if sec < math.floor(prev_time) then
@@ -1262,6 +1297,7 @@ end
 
 function HUDAssaultCorner:_update_feedback_alpha(t, dt)
 	self._feedback_color_t = self._feedback_color_t - dt
+
 	local alpha_curve = math.sin(self._feedback_color_t * 180)
 	local alpha = math.abs(alpha_curve)
 	local color = self._feedback_color
@@ -1336,8 +1372,8 @@ end
 
 function HUDAssaultCorner:_popup_wave(text, color)
 	local popup_panel = self._hud_panel:panel({
-		w = 250,
 		name = "wave_popup",
+		w = 250,
 		h = tweak_data.hud_corner.assault_size + 10
 	})
 
@@ -1359,9 +1395,9 @@ function HUDAssaultCorner:_popup_wave(text, color)
 		color = color:with_alpha(0.3)
 	})
 	popup_panel:text({
+		align = "center",
 		name = "text",
 		vertical = "center",
-		align = "center",
 		text = text,
 		font = tweak_data.hud_corner.assault_font,
 		font_size = tweak_data.hud_corner.assault_size,
@@ -1371,7 +1407,7 @@ function HUDAssaultCorner:_popup_wave(text, color)
 	local function animate_popup(panel)
 		local cx = panel:center_x()
 
-		over(0.25, function (p)
+		over(0.25, function(p)
 			if alive(panel) then
 				panel:set_w(p * 250)
 				panel:set_center_x(cx)
@@ -1379,7 +1415,7 @@ function HUDAssaultCorner:_popup_wave(text, color)
 			end
 		end)
 		wait(2.5)
-		over(0.25, function (p)
+		over(0.25, function(p)
 			if alive(panel) then
 				panel:set_w((1 - p) * 250)
 				panel:set_center_x(cx)

@@ -53,9 +53,9 @@ function Pickup:delete_unit()
 end
 
 function Pickup:save(data)
-	local state = {
-		active = self._active
-	}
+	local state = {}
+
+	state.active = self._active
 	data.Pickup = state
 end
 
@@ -68,7 +68,9 @@ function Pickup:load(data)
 end
 
 function Pickup:sync_net_event(event, peer)
+	return
 end
 
 function Pickup:destroy(unit)
+	return
 end

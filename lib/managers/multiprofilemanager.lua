@@ -18,6 +18,7 @@ function MultiProfileManager:save_current()
 	local profile = self:current_profile() or {}
 	local blm = managers.blackmarket
 	local skt = managers.skilltree._global
+
 	profile.primary = blm:equipped_weapon_slot("primaries")
 	profile.secondary = blm:equipped_weapon_slot("secondaries")
 	profile.melee = blm:equipped_melee_weapon()
@@ -31,6 +32,7 @@ function MultiProfileManager:save_current()
 	profile.glove_id = blm:equipped_glove_id()
 	profile.skillset = skt.selected_skill_switch
 	profile.perk_deck = Application:digest_value(skt.specializations.current_specialization, false)
+
 	local perk_choices = managers.skilltree:get_specialization_value(profile.perk_deck, "choices")
 
 	if perk_choices then
@@ -61,6 +63,7 @@ end
 function MultiProfileManager:load_current()
 	Global.block_update_outfit_information = true
 	Global.block_publish_equipped_to_steam = true
+
 	local profile = self:current_profile()
 	local blm = managers.blackmarket
 	local skt = managers.skilltree
@@ -158,7 +161,7 @@ function MultiProfileManager:profile_count()
 end
 
 function MultiProfileManager:set_current_profile(index)
-	if index < 0 or self:profile_count() < index then
+	if index < 0 or index > self:profile_count() then
 		return
 	end
 
@@ -223,6 +226,7 @@ function MultiProfileManager:move_profile(old_index, new_index)
 		self:save_current()
 	elseif change_start <= current_index and current_index <= change_end then
 		local index_change = old_index < new_index and -1 or 1
+
 		self._global._current_profile = self._global._current_profile + index_change
 
 		self:save_current()
@@ -230,11 +234,11 @@ function MultiProfileManager:move_profile(old_index, new_index)
 end
 
 function MultiProfileManager:open_quick_select()
-	local dialog_data = {
-		title = "",
-		text = "",
-		button_list = {}
-	}
+	local dialog_data = {}
+
+	dialog_data.title = ""
+	dialog_data.text = ""
+	dialog_data.button_list = {}
 
 	for idx, profile in pairs(self._global._profiles) do
 		local text = profile.name or "Profile " .. idx
@@ -246,27 +250,31 @@ function MultiProfileManager:open_quick_select()
 
 		table.insert(dialog_data.button_list, {
 			text = text,
-			callback_func = function ()
+			callback_func = function()
 				self:set_current_profile(idx)
 			end,
-			focus_callback_func = function ()
+			focus_callback_func = function()
+				return
 			end
 		})
 	end
 
-	local divider = {
-		no_text = true,
-		no_selection = true
-	}
+	local divider = {}
+
+	divider.no_text = true
+	divider.no_selection = true
 
 	table.insert(dialog_data.button_list, divider)
 
-	local no_button = {
-		text = managers.localization:text("dialog_cancel"),
-		focus_callback_func = function ()
-		end,
-		cancel_button = true
-	}
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_cancel")
+
+	function no_button.focus_callback_func()
+		return
+	end
+
+	no_button.cancel_button = true
 
 	table.insert(dialog_data.button_list, no_button)
 
@@ -288,6 +296,7 @@ end
 
 function MultiProfileManager:save(data)
 	local save_data = deep_clone(self._global._profiles)
+
 	save_data.current_profile = self._global._current_profile
 	save_data.SKILL_SWITCH_SWITCHED = 1
 	data.multi_profile = save_data
@@ -312,7 +321,7 @@ function MultiProfileManager:load(data)
 end
 
 function MultiProfileManager:reset()
-	local name = nil
+	local name
 	local current_profile = self._global._current_profile
 
 	for idx, profile in pairs(self._global._profiles) do
@@ -344,11 +353,12 @@ function MultiProfileManager:_check_amount()
 		table.crop(self._global._profiles, wanted_amount)
 
 		self._global._current_profile = math.min(self._global._current_profile, wanted_amount)
-	elseif self:profile_count() < wanted_amount then
+	elseif wanted_amount > self:profile_count() then
 		local prev_current = self._global._current_profile
+
 		self._global._current_profile = self:profile_count()
 
-		while self._global._current_profile < wanted_amount do
+		while wanted_amount > self._global._current_profile do
 			self._global._current_profile = self._global._current_profile + 1
 
 			self:save_current()

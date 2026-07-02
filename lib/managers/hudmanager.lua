@@ -22,9 +22,11 @@ core:import("CoreEvent")
 
 function HUDManager:init()
 	self._component_map = {}
+
 	local safe_rect_pixels = managers.viewport:get_safe_rect_pixels()
 	local safe_rect = managers.viewport:get_safe_rect()
 	local res = RenderSettings.resolution
+
 	self._workspace_size = {
 		x = 0,
 		y = 0,
@@ -55,13 +57,12 @@ function HUDManager:init()
 
 	self._chatinput_changed_callback_handler = CoreEvent.CallbackEventHandler:new()
 	self._chat_focus = false
-	HUDManager.HIDEABLE_HUDS = {
-		[PlayerBase.PLAYER_INFO_HUD_PD2:key()] = true,
-		[PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2:key()] = true,
-		[PlayerBase.PLAYER_DOWNED_HUD:key()] = true,
-		[IngameWaitingForRespawnState.GUI_SPECTATOR:key()] = true,
-		[Idstring("guis/mask_off_hud"):key()] = true
-	}
+	HUDManager.HIDEABLE_HUDS = {}
+	HUDManager.HIDEABLE_HUDS[PlayerBase.PLAYER_INFO_HUD_PD2:key()] = true
+	HUDManager.HIDEABLE_HUDS[PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2:key()] = true
+	HUDManager.HIDEABLE_HUDS[PlayerBase.PLAYER_DOWNED_HUD:key()] = true
+	HUDManager.HIDEABLE_HUDS[IngameWaitingForRespawnState.GUI_SPECTATOR:key()] = true
+	HUDManager.HIDEABLE_HUDS[Idstring("guis/mask_off_hud"):key()] = true
 
 	if Global.debug_show_coords then
 		self:debug_show_coordinates()
@@ -81,8 +82,8 @@ function HUDManager:init()
 
 	self._waiting_index = {}
 
-	call_on_next_update(function ()
-		managers.custom_safehouse:register_trophy_unlocked_callback(function (...)
+	call_on_next_update(function()
+		managers.custom_safehouse:register_trophy_unlocked_callback(function(...)
 			if managers.hud then
 				managers.hud:safe_house_challenge_popup(...)
 			end
@@ -200,7 +201,7 @@ function HUDManager:init_finalize()
 	end
 
 	if not self:exists(IngameAccessCamera.GUI_SAFERECT) then
-		local group = nil
+		local group
 
 		if _G.IS_VR then
 			group = "menu"
@@ -242,8 +243,10 @@ function HUDManager:load_hud(name, visible, using_collision, using_saferect, mut
 	end
 
 	local bounding_box = {}
+
 	group = group or "overlay"
-	local panel = nil
+
+	local panel
 
 	if using_16_9_fullscreen then
 		panel = self._workspaces[group].fullscreen_workspace:panel():gui(name, {})
@@ -441,8 +444,8 @@ end
 function HUDManager:_recompile(dir)
 	local source_files = self:_source_files(dir)
 	local t = {
-		target_db_name = "all",
 		send_idstrings = false,
+		target_db_name = "all",
 		verbose = false,
 		platform = string.lower(SystemInfo:platform():s()),
 		source_root = managers.database:root_path() .. "/assets",
@@ -558,6 +561,7 @@ function HUDManager:hide(name)
 	end
 
 	self._visible_huds_states[name:key()] = nil
+
 	local panel = self:script(name).panel
 
 	if panel:has_script() then
@@ -580,6 +584,7 @@ function HUDManager:hide(name)
 end
 
 function HUDManager:set_hud_chat(hud)
+	return
 end
 
 function HUDManager:visible(name)
@@ -591,7 +596,7 @@ function HUDManager:visible(name)
 end
 
 function HUDManager:_collision(rect1_map, rect2_map)
-	if rect2_map.x2 <= rect1_map.x1 then
+	if rect1_map.x1 >= rect2_map.x2 then
 		return false
 	end
 
@@ -599,7 +604,7 @@ function HUDManager:_collision(rect1_map, rect2_map)
 		return false
 	end
 
-	if rect2_map.y2 <= rect1_map.y1 then
+	if rect1_map.y1 >= rect2_map.y2 then
 		return false
 	end
 
@@ -611,19 +616,19 @@ function HUDManager:_collision(rect1_map, rect2_map)
 end
 
 function HUDManager:_inside(rect1_map, rect2_map)
-	if rect1_map.x1 < rect2_map.x1 or rect2_map.x2 < rect1_map.x1 then
+	if rect1_map.x1 < rect2_map.x1 or rect1_map.x1 > rect2_map.x2 then
 		return false
 	end
 
-	if rect1_map.y1 < rect2_map.y1 or rect2_map.y2 < rect1_map.y1 then
+	if rect1_map.y1 < rect2_map.y1 or rect1_map.y1 > rect2_map.y2 then
 		return false
 	end
 
-	if rect1_map.x2 < rect2_map.x1 or rect2_map.x2 < rect1_map.x2 then
+	if rect1_map.x2 < rect2_map.x1 or rect1_map.x2 > rect2_map.x2 then
 		return false
 	end
 
-	if rect1_map.y2 < rect2_map.x1 or rect2_map.y2 < rect1_map.y2 then
+	if rect1_map.y2 < rect2_map.x1 or rect1_map.y2 > rect2_map.y2 then
 		return false
 	end
 
@@ -739,6 +744,7 @@ function HUDManager:resolution_changed()
 end
 
 function HUDManager:_additional_layout()
+	return
 end
 
 function HUDManager:update(t, dt)
@@ -792,12 +798,14 @@ function HUDManager:_update_name_labels(t, dt)
 	mrotation.y(cam_rot, nl_cam_forward)
 
 	local to_remove = {}
-	local panel = nil
+	local panel
 
 	for _, data in ipairs(self._hud.name_labels) do
 		local label_panel = data.panel
+
 		panel = panel or label_panel:parent()
-		local pos = nil
+
+		local pos
 
 		if data.movement then
 			if not alive(data.movement._unit) then
@@ -926,8 +934,8 @@ function HUDManager:add_waypoint(id, data)
 	local arrow_icon, arrow_texture_rect = tweak_data.hud_icons:get_icon_data("wp_arrow")
 	local arrow = waypoint_panel:bitmap({
 		layer = 0,
-		visible = false,
 		rotation = 360,
+		visible = false,
 		name = "arrow" .. id,
 		texture = arrow_icon,
 		texture_rect = arrow_texture_rect,
@@ -936,17 +944,17 @@ function HUDManager:add_waypoint(id, data)
 		h = arrow_texture_rect[4],
 		blend_mode = data.blend_mode
 	})
-	local distance = nil
+	local distance
 
 	if data.distance then
 		distance = waypoint_panel:text({
-			vertical = "center",
-			h = 24,
-			w = 128,
 			align = "center",
-			text = "16.5",
-			rotation = 360,
+			h = 24,
 			layer = 0,
+			rotation = 360,
+			text = "16.5",
+			vertical = "center",
+			w = 128,
 			name = "distance" .. id,
 			color = data.color or Color.white,
 			font = tweak_data.hud.medium_font_noshadow,
@@ -958,34 +966,37 @@ function HUDManager:add_waypoint(id, data)
 	end
 
 	local timer = data.timer and waypoint_panel:text({
+		align = "center",
 		font_size = 32,
 		h = 32,
+		layer = 0,
+		rotation = 360,
 		vertical = "center",
 		w = 32,
-		align = "center",
-		rotation = 360,
-		layer = 0,
 		name = "timer" .. id,
 		text = (math.round(data.timer) < 10 and "0" or "") .. math.round(data.timer),
 		font = tweak_data.hud.medium_font_noshadow
 	})
+
 	text = waypoint_panel:text({
+		align = "center",
 		h = 24,
+		layer = 0,
+		rotation = 360,
 		vertical = "center",
 		w = 512,
-		align = "center",
-		rotation = 360,
-		layer = 0,
 		name = "text" .. id,
 		text = utf8.to_upper(" " .. text),
 		font = tweak_data.hud.small_font,
 		font_size = tweak_data.hud.small_font_size
 	})
+
 	local _, _, w, _ = text:text_rect()
 
 	text:set_w(w)
 
 	local w, h = bitmap:size()
+
 	self._hud.waypoints[id] = {
 		move_speed = 1,
 		init_data = data,
@@ -1007,6 +1018,7 @@ function HUDManager:add_waypoint(id, data)
 		waypoint_origin = data.waypoint_origin or nil
 	}
 	self._hud.waypoints[id].init_data.position = data.position or data.unit:position()
+
 	local slot = 1
 	local t = {}
 
@@ -1144,7 +1156,9 @@ function HUDManager:add_mugshot_by_unit(unit)
 		name = character_name,
 		unit = unit
 	})
+
 	unit:unit_data().name_label_id = name_label_id
+
 	local is_husk_player = unit:base().is_husk_player
 	local character_name_id = managers.criminals:character_name_by_unit(unit)
 
@@ -1166,7 +1180,7 @@ function HUDManager:add_mugshot_by_unit(unit)
 		end
 	end
 
-	local peer, peer_id = nil
+	local peer, peer_id
 
 	if is_husk_player then
 		peer = unit:network():peer()
@@ -1180,6 +1194,7 @@ function HUDManager:add_mugshot_by_unit(unit)
 		peer_id = peer_id,
 		character_name_id = character_name_id
 	})
+
 	unit:unit_data().mugshot_id = mugshot_id
 
 	if peer and peer:is_cheater() then
@@ -1210,7 +1225,9 @@ end
 
 function HUDManager:add_mugshot(data)
 	local panel_id = self:add_teammate_panel(data.character_name_id, data.name, not data.use_lifebar, data.peer_id)
+
 	managers.criminals:character_data_by_name(data.character_name_id).panel_id = panel_id
+
 	local last_id = self._hud.mugshots[#self._hud.mugshots] and self._hud.mugshots[#self._hud.mugshots].id or 0
 	local id = last_id + 1
 
@@ -1289,8 +1306,8 @@ function HUDManager:set_mugshot_armor(id, amount)
 	for i, data in ipairs(self._hud.mugshots) do
 		if data.id == id then
 			self:set_teammate_armor(managers.criminals:character_data_by_name(data.character_name_id).panel_id, {
-				total = 1,
 				max = 1,
+				total = 1,
 				current = amount
 			})
 
@@ -1307,8 +1324,8 @@ function HUDManager:set_mugshot_health(id, amount)
 	for i, data in ipairs(self._hud.mugshots) do
 		if data.id == id then
 			self:set_teammate_health(managers.criminals:character_data_by_name(data.character_name_id).panel_id, {
-				total = 1,
 				max = 1,
+				total = 1,
 				current = amount
 			})
 
@@ -1366,14 +1383,14 @@ function HUDManager:set_mugshot_custody(id)
 		local i = managers.criminals:character_data_by_name(data.character_name_id).panel_id
 
 		self:set_teammate_health(i, {
-			total = 100,
 			current = 0,
-			no_hint = true
+			no_hint = true,
+			total = 100
 		})
 		self:set_teammate_armor(i, {
-			total = 100,
 			current = 0,
-			no_hint = true
+			no_hint = true,
+			total = 100
 		})
 	end
 end
@@ -1408,6 +1425,7 @@ function HUDManager:update_name_label_by_peer(peer)
 			if peer:level() then
 				local color_range_offset = utf8.len(name) + 2
 				local experience, color_ranges = managers.experience:gui_string(peer:level(), peer:rank(), color_range_offset)
+
 				data.name_color_ranges = color_ranges
 				name = name .. " (" .. experience .. ")"
 			end
@@ -1461,6 +1479,7 @@ function HUDManager:start_anticipation(data)
 end
 
 function HUDManager:sync_start_anticipation()
+	return
 end
 
 function HUDManager:check_start_anticipation_music(t)
@@ -1493,80 +1512,81 @@ end
 
 function HUDManager:setup_anticipation(total_t)
 	local exists = self._anticipation_dialogs and true or false
+
 	self._anticipation_dialogs = {}
 
 	if not exists then
 		if total_t >= 30 then
 			if total_t >= 35 then
 				table.insert(self._anticipation_dialogs, {
-					time = 35,
-					dialog = 1
+					dialog = 1,
+					time = 35
 				})
 			end
 
 			table.insert(self._anticipation_dialogs, {
-				time = 30,
-				dialog = 2
+				dialog = 2,
+				time = 30
 			})
 			table.insert(self._anticipation_dialogs, {
-				time = 20,
-				dialog = 3
+				dialog = 3,
+				time = 20
 			})
 			table.insert(self._anticipation_dialogs, {
-				time = 10,
-				dialog = 4
+				dialog = 4,
+				time = 10
 			})
 		elseif total_t >= 20 then
 			table.insert(self._anticipation_dialogs, {
-				time = 20,
-				dialog = 3
+				dialog = 3,
+				time = 20
 			})
 			table.insert(self._anticipation_dialogs, {
-				time = 10,
-				dialog = 4
+				dialog = 4,
+				time = 10
 			})
 		elseif total_t >= 10 then
 			table.insert(self._anticipation_dialogs, {
-				time = 10,
-				dialog = 4
+				dialog = 4,
+				time = 10
 			})
 		elseif total_t >= 5 then
 			table.insert(self._anticipation_dialogs, {
-				time = 5,
-				dialog = 1
+				dialog = 1,
+				time = 5
 			})
 		end
 	elseif total_t >= 30 then
 		table.insert(self._anticipation_dialogs, {
-			time = 30,
-			dialog = 6
+			dialog = 6,
+			time = 30
 		})
 		table.insert(self._anticipation_dialogs, {
-			time = 20,
-			dialog = 3
+			dialog = 3,
+			time = 20
 		})
 		table.insert(self._anticipation_dialogs, {
-			time = 10,
-			dialog = 4
+			dialog = 4,
+			time = 10
 		})
 	elseif total_t >= 20 then
 		table.insert(self._anticipation_dialogs, {
-			time = 20,
-			dialog = 7
+			dialog = 7,
+			time = 20
 		})
 		table.insert(self._anticipation_dialogs, {
-			time = 10,
-			dialog = 4
+			dialog = 4,
+			time = 10
 		})
 	elseif total_t >= 10 then
 		table.insert(self._anticipation_dialogs, {
-			time = 10,
-			dialog = 8
+			dialog = 8,
+			time = 10
 		})
 	elseif total_t >= 5 then
 		table.insert(self._anticipation_dialogs, {
-			time = 5,
-			dialog = 1
+			dialog = 1,
+			time = 5
 		})
 	end
 end
@@ -1595,12 +1615,15 @@ function HUDManager:sync_assault_dialog(index)
 end
 
 function HUDManager:set_crosshair_offset(offset)
+	return
 end
 
 function HUDManager:set_crosshair_visible(visible)
+	return
 end
 
 function HUDManager:_set_crosshair_panel_visible(visible)
+	return
 end
 
 function HUDManager:present_mid_text(params)
@@ -1610,12 +1633,15 @@ function HUDManager:present_mid_text(params)
 end
 
 function HUDManager:_kick_crosshair_offset(offset)
+	return
 end
 
 function HUDManager:_layout_crosshair()
+	return
 end
 
 function HUDManager:_update_crosshair_offset(t, dt)
+	return
 end
 
 local wp_pos = Vector3()
@@ -1846,6 +1872,7 @@ function HUDManager:_update_waypoints(t, dt)
 
 			if data.pause_timer == 0 then
 				data.timer = data.timer - dt
+
 				local text = data.timer < 0 and "00" or (math.round(data.timer) < 10 and "0" or "") .. math.round(data.timer)
 
 				data.timer_gui:set_text(text)
@@ -1890,6 +1917,7 @@ end
 
 function HUDManager:hide_stats_screen()
 	self._showing_stats_screen = false
+
 	local safe = self.STATS_SCREEN_SAFERECT
 	local full = self.STATS_SCREEN_FULLSCREEN
 
@@ -1924,7 +1952,7 @@ function HUDManager:pd_start_progress(current, total, msg, icon_id)
 	local function feed_circle(o, total)
 		local t = 0
 
-		while total > t do
+		while t < total do
 			t = t + coroutine.yield()
 
 			self._pd2_hud_interaction:set_interaction_bar_width(t, total)
@@ -1960,6 +1988,7 @@ function HUDManager:pd_start_timer(data)
 
 	local time = data.time or 10
 	local hud = managers.hud:script(PlayerBase.PLAYER_DOWNED_HUD)
+
 	self._hud.timer_thread = hud.timer:animate(hud.start_timer, time)
 
 	self._hud_player_downed:hide_arrest_finished()
@@ -2015,17 +2044,16 @@ function HUDManager:debug_show_coordinates()
 		return
 	end
 
-	self._debug = {
-		ws = Overlay:newgui():create_screen_workspace()
-	}
+	self._debug = {}
+	self._debug.ws = Overlay:newgui():create_screen_workspace()
 	self._debug.panel = self._debug.ws:panel()
 	self._debug.coord = self._debug.panel:text({
-		text = "",
-		name = "debug_coord",
-		y = 14,
 		font_size = 14,
-		x = 14,
 		layer = 2000,
+		name = "debug_coord",
+		text = "",
+		x = 14,
+		y = 14,
 		font = tweak_data.hud.small_font,
 		color = Color.white
 	})

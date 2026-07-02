@@ -5,12 +5,12 @@ SpawnCivilianUnitElement = SpawnCivilianUnitElement or class(MissionElement)
 SpawnCivilianUnitElement.USES_POINT_ORIENTATION = true
 SpawnCivilianUnitElement.INSTANCE_VAR_NAMES = {
 	{
-		value = "enemy",
-		type = "civilian"
+		type = "civilian",
+		value = "enemy"
 	},
 	{
-		value = "state",
-		type = "civilian_spawn_state"
+		type = "civilian_spawn_state",
+		value = "state"
 	}
 }
 
@@ -78,6 +78,7 @@ function SpawnCivilianUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local enemy_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	panel_sizer:add(enemy_sizer, 0, 0, "EXPAND")
@@ -135,8 +136,8 @@ function SpawnCivilianUnitElement:add_to_mission_package()
 
 			for _, file in ipairs(sequence_files) do
 				managers.editor:add_to_world_package({
-					init = true,
 					category = "script_data",
+					init = true,
 					name = file:s() .. ".sequence_manager",
 					continent = self._unit:unit_data().continent
 				})

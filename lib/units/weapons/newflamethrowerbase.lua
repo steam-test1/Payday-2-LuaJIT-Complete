@@ -2,6 +2,7 @@ NewFlamethrowerBase = NewFlamethrowerBase or class(NewRaycastWeaponBase)
 NewFlamethrowerBase.EVENT_IDS = {
 	flamethrower_effect = 1
 }
+
 local mvec3_set = mvector3.set
 local mvec3_add = mvector3.add
 local mvec3_mul = mvector3.multiply
@@ -38,7 +39,7 @@ function NewFlamethrowerBase:update(unit, t, dt)
 	if self._showing_nozzle_effect then
 		local time_since_firing = self._timer:time() - self._last_fire_t
 
-		if self._nozzle_expire_t <= time_since_firing then
+		if time_since_firing >= self._nozzle_expire_t then
 			self._showing_nozzle_effect = false
 
 			if self._visible then
@@ -53,15 +54,16 @@ function NewFlamethrowerBase:update(unit, t, dt)
 	local flame_collection = self._flame_effect_collection
 
 	if flame_collection then
-		local effect_entry, effect_id = nil
+		local effect_entry, effect_id
 		local move_func = effect_manager.move
 		local alive_func = effect_manager.alive
 		local move_vec = tmp_vec1
-		local needs_cleaning, lifetime, duration = nil
+		local needs_cleaning, lifetime, duration
 
 		for i = 1, #flame_collection do
 			effect_entry = flame_collection[i]
 			effect_id = effect_entry.id
+
 			local can_continue = true
 
 			if not alive_func(effect_manager, effect_id) then
@@ -185,7 +187,8 @@ function NewFlamethrowerBase:on_disabled(...)
 	if flame_collection then
 		self._last_effect_t = -100
 		self._flame_effect_collection = {}
-		local effect_entry = nil
+
+		local effect_entry
 		local kill_func = effect_manager.kill
 
 		for i = 1, #flame_collection do
@@ -250,7 +253,8 @@ function NewFlamethrowerBase:kill_effects()
 
 	if flame_collection then
 		self._flame_effect_collection = nil
-		local effect_entry = nil
+
+		local effect_entry
 
 		for i = 1, #flame_collection do
 			effect_entry = flame_collection[i]
@@ -267,13 +271,17 @@ function NewFlamethrowerBase:setup_default()
 
 	local unit = self._unit
 	local nozzle_obj = unit:get_object(Idstring("fire"))
+
 	self._nozzle_obj = nozzle_obj
+
 	local name_id = self._name_id
 	local weap_tweak = tweak_data.weapon[name_id]
 	local flame_effect_range = weap_tweak.flame_max_range
+
 	self._range = flame_effect_range
 	self._flame_max_range = flame_effect_range
 	self._flame_radius = weap_tweak.flame_radius or 40
+
 	local flame_effect = weap_tweak.flame_effect
 
 	if flame_effect then
@@ -281,7 +289,9 @@ function NewFlamethrowerBase:setup_default()
 		self._flame_effect_collection = {}
 		self._flame_effect_ids = Idstring(flame_effect)
 		self._flame_max_range_sq = flame_effect_range * flame_effect_range
+
 		local effect_duration = weap_tweak.single_flame_effect_duration
+
 		self._single_flame_effect_duration = effect_duration
 		self._single_flame_effect_cooldown = effect_duration * 0.1
 	else
@@ -299,7 +309,7 @@ function NewFlamethrowerBase:setup_default()
 	local pilot_effect = weap_tweak.pilot_effect
 
 	if pilot_effect then
-		local parent_obj = nil
+		local parent_obj
 		local parent_name = weap_tweak.pilot_parent_name
 
 		if parent_name then
@@ -311,7 +321,8 @@ function NewFlamethrowerBase:setup_default()
 		end
 
 		parent_obj = parent_obj or nozzle_obj
-		local force_synch = self.is_npc and not self:is_npc()
+
+		local force_synch = not not self.is_npc and not self:is_npc()
 		local pilot_offset = weap_tweak.pilot_offset or nil
 		local normal = weap_tweak.pilot_normal or Vector3(0, 0, 1)
 		local pilot_effect_id = effect_manager:spawn({
@@ -321,7 +332,9 @@ function NewFlamethrowerBase:setup_default()
 			position = pilot_offset,
 			normal = normal
 		})
+
 		self._pilot_effect = pilot_effect_id
+
 		local state = (not self._enabled or not self._visible) and true or false
 
 		effect_manager:set_hidden(pilot_effect_id, state)
@@ -335,7 +348,8 @@ function NewFlamethrowerBase:setup_default()
 	if nozzle_effect then
 		self._last_fire_t = -100
 		self._nozzle_expire_t = weap_tweak.nozzle_expire_time or 0.2
-		local force_synch = self.is_npc and not self:is_npc()
+
+		local force_synch = not not self.is_npc and not self:is_npc()
 		local normal = weap_tweak.nozzle_normal or Vector3(0, 1, 0)
 		local nozzle_effect_id = effect_manager:spawn({
 			effect = Idstring(nozzle_effect),
@@ -343,6 +357,7 @@ function NewFlamethrowerBase:setup_default()
 			force_synch = force_synch,
 			normal = normal
 		})
+
 		self._nozzle_effect = nozzle_effect_id
 
 		effect_manager:set_hidden(nozzle_effect_id, true)
@@ -382,14 +397,14 @@ end
 
 function NewFlamethrowerBase:_create_use_setups()
 	local use_data = {}
-	local player_setup = {
-		selection_index = tweak_data.weapon[self._name_id].use_data.selection_index,
-		equip = {
-			align_place = tweak_data.weapon[self._name_id].use_data.align_place or "left_hand"
-		},
-		unequip = {
-			align_place = "back"
-		}
+	local player_setup = {}
+
+	player_setup.selection_index = tweak_data.weapon[self._name_id].use_data.selection_index
+	player_setup.equip = {
+		align_place = tweak_data.weapon[self._name_id].use_data.align_place or "left_hand"
+	}
+	player_setup.unequip = {
+		align_place = "back"
 	}
 	use_data.player = player_setup
 	self._use_data = use_data
@@ -436,6 +451,7 @@ function NewFlamethrowerBase:get_damage_falloff(damage, col_ray, user_unit)
 end
 
 function NewFlamethrowerBase:_spawn_muzzle_effect(to_pos, direction)
+	return
 end
 
 function NewFlamethrowerBase:_spawn_flame_effect(to_pos, direction, skip_t_check)
@@ -443,7 +459,7 @@ function NewFlamethrowerBase:_spawn_flame_effect(to_pos, direction, skip_t_check
 		return
 	end
 
-	local t = nil
+	local t
 	local effect_manager = self._effect_manager
 	local nozzle_effect_id = not skip_t_check and self._nozzle_effect
 
@@ -466,7 +482,8 @@ function NewFlamethrowerBase:_spawn_flame_effect(to_pos, direction, skip_t_check
 
 	if flame_effect_ids then
 		t = t or self._timer:time()
-		local can_spawn_effect = skip_t_check or self._single_flame_effect_cooldown < t - self._last_effect_t
+
+		local can_spawn_effect = skip_t_check or t - self._last_effect_t > self._single_flame_effect_cooldown
 
 		if can_spawn_effect then
 			if not skip_t_check then
@@ -484,9 +501,7 @@ function NewFlamethrowerBase:_spawn_flame_effect(to_pos, direction, skip_t_check
 
 			local duration_lerp = mvec3_dis_sq(nozzle_pos, to_pos) / self._flame_max_range_sq
 
-			if duration_lerp > 1 then
-				duration_lerp = 1
-			end
+			duration_lerp = duration_lerp > 1 and 1 or duration_lerp
 
 			local duration = math_lerp(0, self._single_flame_effect_duration, duration_lerp)
 			local flame_collection = self._flame_effect_collection
@@ -495,6 +510,7 @@ function NewFlamethrowerBase:_spawn_flame_effect(to_pos, direction, skip_t_check
 				position = nozzle_pos,
 				rotation = dir_rot
 			})
+
 			flame_collection[#flame_collection + 1] = {
 				been_alive = false,
 				lifetime = 0,
@@ -529,9 +545,7 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 	if col_ray then
 		local col_dis = col_ray.distance
 
-		if col_dis < damage_range then
-			damage_range = col_dis or damage_range
-		end
+		damage_range = col_dis < damage_range and col_dis or damage_range
 
 		mvec3_set(mvec_to, direction)
 		mvec3_mul(mvec_to, damage_range)
@@ -544,52 +558,59 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 	local weap_unit = self._unit
 	local enemies_hit = {}
 	local valid_hit_bodies = {}
-	local units_hit = {}
-	local hit_body, hit_unit, hit_u_key = nil
-	local ignore_units = self._setup.ignore_units
-	local t_contains = table.contains
-	local in_slot_f = Unit.in_slot
-	local enemy_mask = self.enemy_mask
 
-	for i = 1, #hit_bodies do
-		hit_body = hit_bodies[i]
-		hit_unit = hit_body:unit()
+	do
+		local units_hit = {}
+		local hit_body, hit_unit, hit_u_key
+		local ignore_units = self._setup.ignore_units
+		local t_contains = table.contains
+		local in_slot_f = Unit.in_slot
+		local enemy_mask = self.enemy_mask
 
-		if not t_contains(ignore_units, hit_unit) then
-			hit_u_key = hit_unit:key()
+		for i = 1, #hit_bodies do
+			hit_body = hit_bodies[i]
+			hit_unit = hit_body:unit()
 
-			if not units_hit[hit_u_key] then
-				units_hit[hit_u_key] = true
-				valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
+			if not t_contains(ignore_units, hit_unit) then
+				hit_u_key = hit_unit:key()
 
-				if in_slot_f(hit_unit, enemy_mask) then
-					enemies_hit[hit_u_key] = hit_unit
+				if not units_hit[hit_u_key] then
+					units_hit[hit_u_key] = true
+					valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
+
+					if in_slot_f(hit_unit, enemy_mask) then
+						enemies_hit[hit_u_key] = hit_unit
+					end
 				end
 			end
 		end
 	end
 
 	local hit_count = 0
-	local bullet_class = self:bullet_class()
-	local hit_body, fake_ray_dir, fake_ray_dis = nil
 
-	for i = 1, #valid_hit_bodies do
-		hit_body = valid_hit_bodies[i]
-		fake_ray_dir = hit_body:center_of_mass()
-		fake_ray_dis = mvec3_dir(fake_ray_dir, from_pos, fake_ray_dir)
-		local hit_pos = hit_body:position()
-		local fake_ray = {
-			body = hit_body,
-			unit = hit_body:unit(),
-			ray = fake_ray_dir,
-			normal = fake_ray_dir,
-			distance = fake_ray_dis,
-			position = hit_pos,
-			hit_position = hit_pos
-		}
+	do
+		local bullet_class = self:bullet_class()
+		local hit_body, fake_ray_dir, fake_ray_dis
 
-		if bullet_class:on_collision(fake_ray, weap_unit, user_unit, damage) then
-			hit_count = hit_count + 1
+		for i = 1, #valid_hit_bodies do
+			hit_body = valid_hit_bodies[i]
+			fake_ray_dir = hit_body:center_of_mass()
+			fake_ray_dis = mvec3_dir(fake_ray_dir, from_pos, fake_ray_dir)
+
+			local hit_pos = hit_body:position()
+			local fake_ray = {
+				body = hit_body,
+				unit = hit_body:unit(),
+				ray = fake_ray_dir,
+				normal = fake_ray_dir,
+				distance = fake_ray_dis,
+				position = hit_pos,
+				hit_position = hit_pos
+			}
+
+			if bullet_class:on_collision(fake_ray, weap_unit, user_unit, damage) then
+				hit_count = hit_count + 1
+			end
 		end
 	end
 

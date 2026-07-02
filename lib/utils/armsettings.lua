@@ -6,7 +6,6 @@ local function set_enum()
 	return enum
 end
 
-ArmSetting = {
-	SET_ARM_ANIMATOR_ENABLED = set_enum(),
-	SET_ARM_ANIMATOR_PRESENT = set_enum()
-}
+ArmSetting = {}
+ArmSetting.SET_ARM_ANIMATOR_ENABLED = set_enum()
+ArmSetting.SET_ARM_ANIMATOR_PRESENT = set_enum()

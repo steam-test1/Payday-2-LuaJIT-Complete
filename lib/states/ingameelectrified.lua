@@ -7,6 +7,7 @@ function IngameElectrifiedState:init(game_state_machine)
 end
 
 function IngameElectrifiedState:update(t, dt)
+	return
 end
 
 function IngameElectrifiedState:at_enter()

@@ -8,22 +8,22 @@ function HUDHeistTimer:init(hud, tweak_hud)
 	end
 
 	self._heist_timer_panel = self._hud_panel:panel({
-		y = 0,
-		name = "heist_timer_panel",
 		h = 40,
-		visible = true,
 		layer = 0,
-		valign = "top"
+		name = "heist_timer_panel",
+		valign = "top",
+		visible = true,
+		y = 0
 	})
 	self._timer_text = self._heist_timer_panel:text({
+		align = "center",
+		font_size = 28,
+		layer = 1,
 		name = "timer_text",
+		text = "00:00",
 		vertical = "top",
 		word_wrap = false,
 		wrap = false,
-		font_size = 28,
-		align = "center",
-		text = "00:00",
-		layer = 1,
 		font = tweak_data.hud.medium_font_noshadow,
 		color = Color.white
 	})
@@ -49,10 +49,15 @@ function HUDHeistTimer:set_time(time)
 
 	self._last_time = time
 	time = math.floor(time)
+
 	local hours = math.floor(time / 3600)
+
 	time = time - hours * 3600
+
 	local minutes = math.floor(time / 60)
+
 	time = time - minutes * 60
+
 	local seconds = math.round(time)
 	local text = hours > 0 and (hours < 10 and "0" .. hours or hours) .. ":" or ""
 	local text = text .. (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)

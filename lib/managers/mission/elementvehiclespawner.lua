@@ -12,9 +12,9 @@ function ElementVehicleSpawner:init(...)
 	ElementVehicleSpawner.super.init(self, ...)
 
 	self._vehicles = {
-		muscle = "units/pd2_dlc_shoutout_raid/vehicles/fps_vehicle_muscle_1/fps_vehicle_muscle_1",
 		escape_van = "units/pd2_dlc_drive/vehicles/fps_vehicle_van_1/fps_vehicle_van_1",
-		falcogini = "units/pd2_dlc_cage/vehicles/fps_vehicle_falcogini_1/fps_vehicle_falcogini_1"
+		falcogini = "units/pd2_dlc_cage/vehicles/fps_vehicle_falcogini_1/fps_vehicle_falcogini_1",
+		muscle = "units/pd2_dlc_shoutout_raid/vehicles/fps_vehicle_muscle_1/fps_vehicle_muscle_1"
 	}
 	self._vehicle_units = {}
 end

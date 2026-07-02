@@ -18,9 +18,9 @@ MutatorPiggyBank.sequre_zone_units = {
 	"units/pd2_dlc_pda9/props/pda9_circle_marker/pda9_prop_circle_marker_stage_3"
 }
 MutatorPiggyBank.bag_expire_custom_params = {
-	sound_event = "PD9A_BagDespawn",
+	camera_shake_mul = 0,
 	effect = "effects/payday2/particles/explosions/burnpuff",
-	camera_shake_mul = 0
+	sound_event = "PD9A_BagDespawn"
 }
 MutatorPiggyBank.briefing_dialog = "Play_alm_pda9_brf"
 MutatorPiggyBank.briefing_event = "Play_alm_pda9_cbf"
@@ -28,12 +28,14 @@ MutatorPiggyBank.disables_achievements = false
 MutatorPiggyBank.categories = {
 	"event"
 }
+
 local mvec1 = Vector3()
 local mvec2 = Vector3()
 local mrot1 = Rotation()
 local mrot2 = Rotation()
 
 function MutatorPiggyBank:register_values(mutator_manager)
+	return
 end
 
 function MutatorPiggyBank:setup(mutator_manager)
@@ -47,7 +49,9 @@ function MutatorPiggyBank:setup(mutator_manager)
 	self._exploded_pig_level = false
 	self._piggybank_units = {}
 	self._sequre_zone_units = {}
+
 	local spawn_data = self._tweakdata.level_coordinates[Global.level_data.level_id]
+
 	self._position = spawn_data and spawn_data.position or Vector3()
 	self._rotation = spawn_data and spawn_data.rotation or Rotation()
 	self._pig_feed_slotmask = World:make_slot_mask(14)
@@ -61,6 +65,7 @@ function MutatorPiggyBank:on_game_started(mutator_manager)
 	print("MutatorPiggyBank:on_game_started")
 
 	local piggy_unit_index = self._current_pig_level_tweak.piggy_unit_index
+
 	self._announcer_unit = World:spawn_unit(Idstring(MutatorPiggyBank.announcer_unit), self._position + Vector3(0, 0, 100), self._rotation)
 
 	for index, unit_name in ipairs(MutatorPiggyBank.pig_units) do
@@ -101,24 +106,24 @@ function MutatorPiggyBank:on_game_started(mutator_manager)
 	self._reminder_dialog = "Play_alm_pda9_02"
 	self._dialog_count_trigger = {
 		headshot = {
-			sync_index = 1,
 			count = 400,
-			dialog = "Play_alm_pda9_18"
+			dialog = "Play_alm_pda9_18",
+			sync_index = 1
 		},
 		moneyshot = {
-			sync_index = 2,
 			count = 400,
-			dialog = "Play_alm_pda9_19"
+			dialog = "Play_alm_pda9_19",
+			sync_index = 2
 		},
 		bag_spawn_1 = {
-			sync_index = 3,
 			count = 1,
-			dialog = "Play_alm_pda9_03"
+			dialog = "Play_alm_pda9_03",
+			sync_index = 3
 		},
 		bag_spawn_10 = {
-			sync_index = 4,
 			count = 10,
-			dialog = "Play_alm_pda9_04"
+			dialog = "Play_alm_pda9_04",
+			sync_index = 4
 		}
 	}
 end
@@ -167,6 +172,7 @@ end
 
 function MutatorPiggyBank:sync_save(mutator_manager, save_data)
 	local my_save_data = {}
+
 	save_data.piggybank_mutator = my_save_data
 	my_save_data.pig_level = self._pig_level
 	my_save_data.exploded_pig_level = self._exploded_pig_level
@@ -177,7 +183,9 @@ end
 
 function MutatorPiggyBank:sync_load(mutator_manager, load_data)
 	local my_load_data = load_data.piggybank_mutator
+
 	self._pig_level = my_load_data.pig_level
+
 	local old_piggybank_unit = self._piggybank_units[self._current_pig_level_tweak.piggy_unit_index]
 
 	old_piggybank_unit:set_enabled(false)
@@ -205,8 +213,9 @@ function MutatorPiggyBank:server_feed_piggybank(bag_unit)
 	print("MutatorPiggyBank:server_feed_piggybank", bag_unit)
 
 	self._pig_fed_count = self._pig_fed_count + 1
+
 	local next_pig_level = self._tweakdata.pig_levels[self._pig_level + 1]
-	local reached_next_level = next_pig_level and next_pig_level.bag_requirement <= self._pig_fed_count
+	local reached_next_level = next_pig_level and self._pig_fed_count >= next_pig_level.bag_requirement
 
 	managers.network:session():send_to_peers_synched("sync_feed_piggybank", bag_unit, reached_next_level)
 	self:sync_feed_piggybank(bag_unit, reached_next_level)
@@ -330,14 +339,14 @@ function MutatorPiggyBank:update(t, dt)
 		}
 
 		if alive(player_unit) and not managers.interaction:active_unit() and not table.contains(invalid_states, current_state) then
-			local text_string, text_icon = nil
+			local text_string, text_icon
 			local current_player_state = managers.player:get_current_state()
 			local fwd_ray = current_player_state and current_player_state.get_fwd_ray and current_player_state:get_fwd_ray()
 
 			if fwd_ray and table.contains(self._piggybank_units, fwd_ray.unit) then
 				local progress_range = self._tweakdata.progress_range or 1000
 
-				if fwd_ray.distance < progress_range then
+				if progress_range > fwd_ray.distance then
 					local next_pig_level_tweak = self._tweakdata.pig_levels[self._pig_level + 1]
 
 					if next_pig_level_tweak then
@@ -388,6 +397,7 @@ function MutatorPiggyBank:update(t, dt)
 
 		if self._pig_feed_check_t < 0 then
 			self._pig_feed_check_t = self._pig_feed_check_t + 0.1
+
 			local pos = mvec1
 
 			piggybank_unit:get_object(Idstring("c_sphere_01")):m_position(pos)
@@ -445,8 +455,9 @@ function MutatorPiggyBank:on_enemy_killed(dead_unit, attack_data)
 
 	self._feed_drop_count = self._feed_drop_count + feed_amount
 
-	if is_player_character and self._tweakdata.drop_count <= self._feed_drop_count then
+	if is_player_character and self._feed_drop_count >= self._tweakdata.drop_count then
 		self._feed_drop_count = 0
+
 		local pos = mvec1
 
 		dead_unit:m_position(pos)
@@ -457,6 +468,7 @@ function MutatorPiggyBank:on_enemy_killed(dead_unit, attack_data)
 		mrotation.set_zero(rot)
 
 		local unit = World:spawn_unit(Idstring(MutatorPiggyBank.bag_unit), pos, rot)
+
 		unit:carry_data().EXPIRE_CUSTOM_PARAMS = MutatorPiggyBank.bag_expire_custom_params
 
 		self:progress_dialog_count("bag_spawn_1", 1)

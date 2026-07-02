@@ -52,12 +52,12 @@ function SideJobGenericDLCManager:save(cache)
 	local challenges = {}
 
 	for idx, challenge in ipairs(self._global.challenges) do
-		local challenge_data = {
-			id = challenge.id,
-			objectives = {},
-			rewards = {},
-			completed = challenge.completed
-		}
+		local challenge_data = {}
+
+		challenge_data.id = challenge.id
+		challenge_data.objectives = {}
+		challenge_data.rewards = {}
+		challenge_data.completed = challenge.completed
 
 		for _, objective in ipairs(challenge.objectives) do
 			local objective_data = {}
@@ -82,6 +82,7 @@ function SideJobGenericDLCManager:save(cache)
 		version = self.save_version,
 		challenges = challenges
 	}
+
 	cache[self.save_table_name] = save_data
 end
 
@@ -117,6 +118,7 @@ function SideJobGenericDLCManager:load(cache, version)
 				end
 
 				challenge.completed = objectives_complete
+
 				local all_rewarded = true
 
 				for i, reward in ipairs(saved_challenge.rewards) do
@@ -204,8 +206,9 @@ function SideJobGenericDLCManager:_update_challenge_progress(challenge, key, id,
 				print("[SideJobGenericDLCManager] awarding:", id)
 
 				local pass = true
+
 				objective.progress = math.floor(math.min((objective.progress or 0) + amount, objective.max_progress))
-				objective.completed = objective.max_progress <= objective.progress
+				objective.completed = objective.progress >= objective.max_progress
 
 				for _, objective in ipairs(challenge.objectives) do
 					if not objective.completed then
@@ -293,6 +296,7 @@ function SideJobGenericDLCManager:claim_reward(challenge_id, reward_id)
 	self:_award_reward(reward)
 
 	reward.rewarded = true
+
 	local all_rewarded = true
 
 	for _, r in ipairs(challenge.rewards) do

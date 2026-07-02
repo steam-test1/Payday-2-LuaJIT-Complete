@@ -69,6 +69,7 @@ function FilterUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local h_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	panel_sizer:add(h_sizer, 0, 0, "EXPAND")

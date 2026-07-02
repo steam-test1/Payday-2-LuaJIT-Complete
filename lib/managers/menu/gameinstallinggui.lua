@@ -6,9 +6,9 @@ function GameInstallingGui:init(ws)
 	self._panel = self._ws:panel():panel()
 
 	self._panel:text({
-		text = "",
-		name = "installing_text",
 		alpha = 0.5,
+		name = "installing_text",
+		text = "",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		visible = self._show_installing_text

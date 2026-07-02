@@ -5,37 +5,37 @@ function HUDBGBox_create(panel, params, config)
 	local blend_mode = config and config.blend_mode
 
 	box_panel:rect({
-		blend_mode = "normal",
-		name = "bg",
-		halign = "grow",
 		alpha = 0.25,
+		blend_mode = "normal",
+		halign = "grow",
 		layer = -1,
+		name = "bg",
 		valign = "grow",
 		color = bg_color
 	})
 
 	local left_top = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "left_top",
-		visible = true,
-		layer = 0,
-		y = 0,
 		halign = "left",
-		x = 0,
+		layer = 0,
+		name = "left_top",
+		texture = "guis/textures/pd2/hud_corner",
 		valign = "top",
+		visible = true,
+		x = 0,
+		y = 0,
 		color = color,
 		blend_mode = blend_mode
 	})
 	local left_bottom = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "left_bottom",
-		visible = true,
+		halign = "left",
 		layer = 0,
+		name = "left_bottom",
+		rotation = -90,
+		texture = "guis/textures/pd2/hud_corner",
+		valign = "bottom",
+		visible = true,
 		x = 0,
 		y = 0,
-		halign = "left",
-		rotation = -90,
-		valign = "bottom",
 		color = color,
 		blend_mode = blend_mode
 	})
@@ -43,15 +43,15 @@ function HUDBGBox_create(panel, params, config)
 	left_bottom:set_bottom(box_panel:h())
 
 	local right_top = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "right_top",
-		visible = true,
+		halign = "right",
 		layer = 0,
+		name = "right_top",
+		rotation = 90,
+		texture = "guis/textures/pd2/hud_corner",
+		valign = "top",
+		visible = true,
 		x = 0,
 		y = 0,
-		halign = "right",
-		rotation = 90,
-		valign = "top",
 		color = color,
 		blend_mode = blend_mode
 	})
@@ -59,15 +59,15 @@ function HUDBGBox_create(panel, params, config)
 	right_top:set_right(box_panel:w())
 
 	local right_bottom = box_panel:bitmap({
-		texture = "guis/textures/pd2/hud_corner",
-		name = "right_bottom",
-		visible = true,
+		halign = "right",
 		layer = 0,
+		name = "right_bottom",
+		rotation = 180,
+		texture = "guis/textures/pd2/hud_corner",
+		valign = "bottom",
+		visible = true,
 		x = 0,
 		y = 0,
-		halign = "right",
-		rotation = 180,
-		valign = "bottom",
 		color = color,
 		blend_mode = blend_mode
 	})
@@ -112,6 +112,7 @@ function HUDBGBox_animate_open_right(panel, wait_t, target_w, done_cb)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		panel:set_w((1 - t / TOTAL_T) * target_w)
@@ -129,6 +130,7 @@ function HUDBGBox_animate_close_right(panel, done_cb)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		panel:set_w(t / TOTAL_T * cw)
@@ -169,6 +171,7 @@ function HUDBGBox_animate_open_left(panel, wait_t, target_w, done_cb, config)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		panel:set_w((1 - t / TOTAL_T) * target_w)
@@ -189,6 +192,7 @@ function HUDBGBox_animate_close_left(panel, done_cb)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		panel:set_w(t / TOTAL_T * cw)
@@ -229,6 +233,7 @@ function HUDBGBox_animate_open_center(panel, wait_t, target_w, done_cb, config)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		panel:set_w((1 - t / TOTAL_T) * target_w)
@@ -252,6 +257,7 @@ function HUDBGBox_animate_close_center(panel, done_cb)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		panel:set_w(t / TOTAL_T * cw)
@@ -275,8 +281,10 @@ function HUDBGBox_animate_bg_attention(bg, config)
 
 	while t > 0 or forever do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local cv = math.abs(math.sin(t * 180 * 1))
+
+		local cv = math.abs((math.sin(t * 180 * 1)))
 		local mod_color = attention_color_function and attention_color_function() or color
 
 		bg:set_color(Color(1, mod_color.red * cv, mod_color.green * cv, mod_color.blue * cv))
@@ -295,42 +303,44 @@ function HUDObjectives:init(hud)
 	end
 
 	local objectives_panel = self._hud_panel:panel({
-		y = 0,
-		name = "objectives_panel",
 		h = 100,
+		name = "objectives_panel",
+		valign = "top",
 		visible = false,
 		w = 500,
 		x = 0,
-		valign = "top"
-	})
-	local icon_objectivebox = objectives_panel:bitmap({
-		texture = "guis/textures/pd2/hud_icon_objectivebox",
-		name = "icon_objectivebox",
-		h = 24,
-		layer = 0,
-		w = 24,
-		y = 0,
-		visible = true,
-		blend_mode = "normal",
-		halign = "left",
-		x = 0,
-		valign = "top"
-	})
-	self._bg_box = HUDBGBox_create(objectives_panel, {
-		w = 200,
-		x = 26,
-		h = 38,
 		y = 0
 	})
+	local icon_objectivebox = objectives_panel:bitmap({
+		blend_mode = "normal",
+		h = 24,
+		halign = "left",
+		layer = 0,
+		name = "icon_objectivebox",
+		texture = "guis/textures/pd2/hud_icon_objectivebox",
+		valign = "top",
+		visible = true,
+		w = 24,
+		x = 0,
+		y = 0
+	})
+
+	self._bg_box = HUDBGBox_create(objectives_panel, {
+		h = 38,
+		w = 200,
+		x = 26,
+		y = 0
+	})
+
 	local objective_text = objectives_panel:text({
-		y = 8,
-		name = "objective_text",
-		vertical = "top",
 		align = "left",
+		layer = 2,
+		name = "objective_text",
 		text = "",
+		vertical = "top",
 		visible = false,
 		x = 0,
-		layer = 2,
+		y = 8,
 		color = Color.white,
 		font_size = tweak_data.hud.active_objective_title_font_size,
 		font = tweak_data.hud.medium_font_noshadow
@@ -340,14 +350,14 @@ function HUDObjectives:init(hud)
 	objective_text:set_y(6)
 
 	local amount_text = objectives_panel:text({
-		y = 0,
-		name = "amount_text",
-		vertical = "top",
 		align = "left",
+		layer = 2,
+		name = "amount_text",
 		text = "1/4",
+		vertical = "top",
 		visible = true,
 		x = 6,
-		layer = 2,
+		y = 0,
 		color = Color.white,
 		font_size = tweak_data.hud.active_objective_title_font_size,
 		font = tweak_data.hud.medium_font_noshadow
@@ -361,6 +371,7 @@ function HUDObjectives:activate_objective(data)
 	print("[HUDObjectives] activate_objective", data.id, data.amount)
 
 	self._active_objective_id = data.id
+
 	local objectives_panel = self._hud_panel:child("objectives_panel")
 	local objective_text = objectives_panel:child("objective_text")
 
@@ -446,8 +457,10 @@ function HUDObjectives:_animate_show_text(objective_text, amount_text)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local alpha = math.round(math.abs(math.sin(t * 360 * 3)))
+
+		local alpha = math.round(math.abs((math.sin(t * 360 * 3))))
 
 		objective_text:set_alpha(alpha)
 
@@ -475,8 +488,10 @@ function HUDObjectives:_animate_complete_objective(objectives_panel)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
-		local vis = math.round(math.abs(math.cos(t * 360 * 3)))
+
+		local vis = math.round(math.abs((math.cos(t * 360 * 3))))
 
 		objective_text:set_alpha(vis)
 
@@ -517,9 +532,10 @@ function HUDObjectives:_animate_icon_objectivebox(icon_objectivebox)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
-		icon_objectivebox:set_y(math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * 12 * t / TOTAL_T))
+		icon_objectivebox:set_y(math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * (12 * (t / TOTAL_T))))
 	end
 
 	icon_objectivebox:set_y(0)

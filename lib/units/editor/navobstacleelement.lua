@@ -1,11 +1,11 @@
 NavObstacleElement = NavObstacleElement or class(MissionElement)
 NavObstacleElement.LINK_VALUES = {
 	{
+		layer = "Statics",
 		output = true,
-		type = "obstacle",
 		table_key = "unit_id",
 		table_value = "obstacle_list",
-		layer = "Statics"
+		type = "obstacle"
 	}
 }
 
@@ -124,7 +124,9 @@ end
 
 function NavObstacleElement:_check_add_unit(unit)
 	local all_object_names = self:_get_objects_by_unit(unit)
+
 	self._obstacle_units[unit:unit_data().unit_id] = unit
+
 	local obstacle_list_data = {
 		unit_id = unit:unit_data().unit_id,
 		obj_name = Idstring(self._unindent_obj_name(all_object_names[1]))
@@ -203,21 +205,23 @@ function NavObstacleElement:_add_unit(unit, all_object_names, obstacle_list_data
 	panel_sizer:add(h_sizer, 0, 1, "EXPAND,LEFT")
 
 	local obj_names_params = {
-		name = "Object:",
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select an object from the combobox",
-		sorted = true,
 		ctrlr_proportions = 2,
+		name = "Object:",
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = true,
+		tooltip = "Select an object from the combobox",
 		panel = panel,
 		sizer = h_sizer,
 		options = all_object_names,
 		value = self._get_indented_obj_name(nil, unit, obstacle_list_data.obj_name)
 	}
 	local obj_names = CoreEws.combobox(obj_names_params)
+
 	self._guis_id = self._guis_id or 0
 	self._guis_id = self._guis_id + 1
 	obstacle_list_data.guis_id = self._guis_id
+
 	local toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	toolbar:add_tool("SELECT", "Select dialog", CoreEws.image_path("toolbar\\delete_16x16.png"), nil)
@@ -310,9 +314,11 @@ function NavObstacleElement:_get_objects_by_unit(unit)
 
 	if unit then
 		local root_obj = unit:orientation_object()
+
 		all_object_names = {}
+
 		local tree_depth = 1
-		local _process_object_tree = nil
+		local _process_object_tree
 
 		function _process_object_tree(obj, depth)
 			local indented_name = obj:name():s()
@@ -345,9 +351,7 @@ function NavObstacleElement._unindent_obj_name(obj_name)
 end
 
 function NavObstacleElement._get_indented_obj_name(obj, parent, obj_name)
-	if parent then
-		obj = parent:get_object(obj_name) or obj
-	end
+	obj = parent and parent:get_object(obj_name) or obj
 
 	local obj_name = (obj_name or obj:name()):s()
 

@@ -1,11 +1,12 @@
 AIForceAttentionOperatorElement = AIForceAttentionOperatorElement or class(MissionElement)
 AIForceAttentionOperatorElement.LINK_VALUES = {
 	{
-		value = "element_id",
 		output = true,
-		type = "operator"
+		type = "operator",
+		value = "element_id"
 	}
 }
+
 local element_unit_name_id = Idstring("units/dev_tools/mission_elements/ai_force_attention/ai_force_attention")
 local valid_operations = {
 	"disable"
@@ -33,6 +34,7 @@ function AIForceAttentionOperatorElement:select_element(label)
 
 	local dialog = SingleSelectUnitByNameModal:new("Select Unit", f)
 	local unit = dialog:_selected_item_unit()
+
 	self._hed.element_id = unit and unit:unit_data().unit_id or self._hed.element_id
 
 	if unit then
@@ -45,6 +47,7 @@ function AIForceAttentionOperatorElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local element_unit_panel_sizer = EWS:StaticBoxSizer(panel, "HORIZONTAL", "Force Attention Element")
 
 	panel_sizer:add(element_unit_panel_sizer, 0, 1, "EXPAND,LEFT")

@@ -58,6 +58,7 @@ function ElementMotionPathTrigger:on_script_activated()
 end
 
 function ElementMotionPathTrigger:client_on_executed(...)
+	return
 end
 
 function ElementMotionPathTrigger:on_executed(instigator)

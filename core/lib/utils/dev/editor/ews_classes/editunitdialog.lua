@@ -90,9 +90,11 @@ function EditUnitBase:init()
 end
 
 function EditUnitBase:update()
+	return
 end
 
 function EditUnitBase:dialog_closed()
+	return
 end
 
 function EditUnitBase:update_debug(ctrlr)

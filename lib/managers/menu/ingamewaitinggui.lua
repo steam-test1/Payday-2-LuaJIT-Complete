@@ -1,4 +1,5 @@
 IngameWaitingGui = IngameWaitingGui or class()
+
 local PADDING = 10
 local text_font = tweak_data.menu.pd2_medium_font
 local text_font_size = tweak_data.menu.pd2_medium_font_size
@@ -35,31 +36,34 @@ function IngameWaitingGui:init(ws)
 		layer = -1,
 		color = Color(255, 0, 170, 255) / 255
 	})
+
 	local color = tweak_data.screen_colors.text
+
 	self._info_panel = self._content_panel:panel({
-		name = "self._info_panel",
 		h = 42,
+		name = "self._info_panel",
 		x = PADDING,
 		y = PADDING
 	})
+
 	local detection = self._info_panel:panel({
-		w = 42,
-		name = "detection",
 		h = 42,
-		visible = false
+		name = "detection",
+		visible = false,
+		w = 42
 	})
 	local detection_ring_left_bg = detection:bitmap({
+		alpha = 0.2,
 		blend_mode = "add",
 		name = "detection_left_bg",
-		alpha = 0.2,
 		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 		w = detection:w(),
 		h = detection:h()
 	})
 	local detection_ring_right_bg = detection:bitmap({
+		alpha = 0.2,
 		blend_mode = "add",
 		name = "detection_right_bg",
-		alpha = 0.2,
 		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 		w = detection:w(),
 		h = detection:h()
@@ -69,19 +73,19 @@ function IngameWaitingGui:init(ws)
 
 	local detection_ring_left = detection:bitmap({
 		blend_mode = "add",
-		name = "detection_left",
-		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-		render_template = "VertexColorTexturedRadial",
 		layer = 1,
+		name = "detection_left",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 		w = detection:w(),
 		h = detection:h()
 	})
 	local detection_ring_right = detection:bitmap({
 		blend_mode = "add",
-		name = "detection_right",
-		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-		render_template = "VertexColorTexturedRadial",
 		layer = 1,
+		name = "detection_right",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
 		w = detection:w(),
 		h = detection:h()
 	})
@@ -89,10 +93,10 @@ function IngameWaitingGui:init(ws)
 	detection_ring_right:set_texture_rect(detection_ring_right:texture_width(), 0, -detection_ring_right:texture_width(), detection_ring_right:texture_height())
 
 	local detection_value = self._info_panel:text({
-		text = "",
-		name = "detection_value",
 		align = "center",
 		blend_mode = "add",
+		name = "detection_value",
+		text = "",
 		vertical = "center",
 		font_size = text_font_size,
 		font = text_font,
@@ -106,9 +110,9 @@ function IngameWaitingGui:init(ws)
 	self._detection = detection
 	self._detection_value = detection_value
 	self._name_text = self._info_panel:text({
-		text = "",
-		name = "peer_name",
 		align = "left",
+		name = "peer_name",
+		text = "",
 		vertical = "center",
 		font_size = text_font_size,
 		font = text_font,
@@ -299,7 +303,9 @@ function IngameWaitingGui:add_button(panel, text, binding, func_name, padding)
 	local params = {
 		MY_BTN = managers.localization:btn_macro(binding, true, true) or ""
 	}
+
 	text = managers.localization:text(text, params)
+
 	local btn, btn_panel = IngameWaitingButton:new(panel, text, binding, callback(self, self, func_name))
 
 	btn_panel:set_x(panel:w())
@@ -335,8 +341,8 @@ function IngameWaitingGui:try_get_dummy()
 end
 
 IngameWaitingGui.game_state_blacklist = {
-	victoryscreen = true,
-	gameoverscreen = true
+	gameoverscreen = true,
+	victoryscreen = true
 }
 
 function IngameWaitingGui:update(t, dt)
@@ -403,6 +409,7 @@ function IngameWaitingGui:set_panel_for(peer_id)
 		local str = managers.localization:text("menu_waiting_peer_left", {
 			name = name
 		})
+
 		self._loadout_panel = self._content_panel:panel()
 
 		self._detection:set_visible(false)
@@ -410,8 +417,8 @@ function IngameWaitingGui:set_panel_for(peer_id)
 		self._name_text:set_visible(false)
 
 		local text = self._loadout_panel:text({
-			vertical = "center",
 			align = "left",
+			vertical = "center",
 			text = str,
 			font = text_font,
 			font_size = text_font_size
@@ -432,6 +439,7 @@ function IngameWaitingGui:set_panel_for(peer_id)
 	end
 
 	self._saved_names[peer_id] = self._peer:name()
+
 	local kit_menu = managers.menu:get_menu("kit_menu")
 
 	if not kit_menu or not kit_menu.renderer then
@@ -478,13 +486,14 @@ function IngameWaitingGui:set_panel_for(peer_id)
 	self._name_text:set_visible(true)
 
 	self._loadout_panel = self._content_panel:panel()
+
 	local primary_panel = self._loadout_panel:panel({
-		w = 128,
-		h = 128
+		h = 128,
+		w = 128
 	})
 	local secondary_panel = self._loadout_panel:panel({
-		w = 128,
-		h = 128
+		h = 128,
+		w = 128
 	})
 
 	self:create_weapon(outfit.primary, primary_panel)
@@ -499,20 +508,20 @@ function IngameWaitingGui:set_panel_for(peer_id)
 		color = Color(255, 0, 0, 0) / 255
 	})
 	local melee_panel = self._loadout_panel:panel({
-		w = 128,
-		h = 64
+		h = 64,
+		w = 128
 	})
 	local throw_panel = self._loadout_panel:panel({
-		w = 128,
-		h = 64
+		h = 64,
+		w = 128
 	})
 	local deploy_panel = self._loadout_panel:panel({
-		w = 64,
-		h = 64
+		h = 64,
+		w = 64
 	})
 	local armor_panel = self._loadout_panel:panel({
-		w = 64,
-		h = 64
+		h = 64,
+		w = 64
 	})
 
 	self:create_melee(melee_panel, outfit, tweak_data.blackmarket.melee_weapons[outfit.melee_weapon], "textures/pd2/blackmarket/icons/melee_weapons/")
@@ -566,8 +575,8 @@ end
 
 function IngameWaitingGui:create_empty(panel)
 	local empty_bitmap = panel:bitmap({
-		texture = "guis/textures/pd2/none_icon",
 		alpha = 0.8,
+		texture = "guis/textures/pd2/none_icon",
 		w = panel:w(),
 		h = panel:h()
 	})
@@ -618,7 +627,7 @@ function IngameWaitingGui:create_weapon(weapon, panel)
 				th = 1
 			end
 
-			local sw = math.min(pw, ph * tw / th)
+			local sw = math.min(pw, ph * (tw / th))
 			local sh = math.min(ph, pw / (tw / th))
 
 			rarity_bitmap:set_size(math.round(sw), math.round(sh))
@@ -635,10 +644,10 @@ function IngameWaitingGui:create_weapon(weapon, panel)
 
 					if DB:has(Idstring("texture"), texture) then
 						local perk_object = panel:bitmap({
-							w = 16,
-							h = 16,
 							alpha = 0.8,
+							h = 16,
 							layer = 2,
+							w = 16,
 							texture = texture
 						})
 
@@ -652,19 +661,14 @@ function IngameWaitingGui:create_weapon(weapon, panel)
 
 		local factory = tweak_data.weapon.factory.parts
 		local parts = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("bonus", weapon.factory_id, weapon.blueprint) or {}
-		local stats, custom_stats, has_stat, has_team = nil
+		local stats, custom_stats, has_stat, has_team
 		local textures = {}
 
 		for _, part_id in ipairs(parts) do
 			stats = factory[part_id] and factory[part_id].stats or false
 			custom_stats = factory[part_id] and factory[part_id].custom_stats or false
 			has_stat = stats and table.size(stats) > 1 and true or false
-
-			if custom_stats and (custom_stats.exp_multiplier or custom_stats.money_multiplier) then
-				has_team = true
-			else
-				has_team = false
-			end
+			has_team = custom_stats and (custom_stats.exp_multiplier or custom_stats.money_multiplier) and true or false
 
 			if has_stat then
 				table.insert(textures, "guis/textures/pd2/blackmarket/inv_mod_bonus_stats")
@@ -677,6 +681,7 @@ function IngameWaitingGui:create_weapon(weapon, panel)
 
 		if #textures == 0 and weapon.cosmetics and weapon.cosmetics.bonus and not managers.job:is_current_job_competitive() then
 			local bonus_data = tweak_data.economy.bonuses[tweak_data.blackmarket.weapon_skins[weapon.cosmetics.id].bonus]
+
 			has_stat = bonus_data and bonus_data.stats and true or false
 			has_team = bonus_data and (bonus_data.exp_multiplier or bonus_data.money_multiplier) and true or false
 
@@ -692,10 +697,10 @@ function IngameWaitingGui:create_weapon(weapon, panel)
 		for _, texture in ipairs(table.list_union(textures)) do
 			if DB:has(Idstring("texture"), texture) then
 				local perk_object = panel:bitmap({
-					w = 16,
-					h = 16,
 					alpha = 0.8,
+					h = 16,
 					layer = 2,
+					w = 16,
 					texture = texture
 				})
 
@@ -846,12 +851,15 @@ end
 
 function IngameWaitingGui:set_current_button(index)
 	index = math.clamp(1, index or 1, #self._buttons)
+
 	local current = self._current_btn.button
 	local target = self._buttons[index]
+
 	self._current_btn = {
 		button = target,
 		index = index
 	}
+
 	local t1 = current and current:set_highlighted(false)
 	local t0 = target and target:set_highlighted(self._highlighted)
 end

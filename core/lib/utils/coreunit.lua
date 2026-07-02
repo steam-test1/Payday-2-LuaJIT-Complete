@@ -107,7 +107,7 @@ function safe_spawn_unit_without_extensions(unit_name, ...)
 end
 
 function detach_unit_from_network(unit)
-	local ext = nil
+	local ext
 	local extensions = unit:extensions()
 
 	for idx, ext_name in ipairs(extensions) do

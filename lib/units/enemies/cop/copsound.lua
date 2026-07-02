@@ -3,11 +3,13 @@ CopSound = CopSound or class()
 function CopSound:init(unit)
 	self._unit = unit
 	self._speak_expire_t = 0
+
 	local char_tweak = tweak_data.character[unit:base()._tweak_table]
 
 	self:set_voice_prefix(nil)
 
 	local nr_variations = char_tweak.speech_prefix_count
+
 	self._prefix = (char_tweak.speech_prefix_p1 or "") .. (nr_variations and tostring(math.random(nr_variations)) or "") .. (char_tweak.speech_prefix_p2 or "") .. "_"
 
 	if self._unit:base():char_tweak().spawn_sound_event then
@@ -35,13 +37,13 @@ function CopSound:set_voice_prefix(index)
 end
 
 function CopSound:_play(sound_name, source_name, clbk)
-	local source = nil
+	local source
 
 	if source_name then
 		source = Idstring(source_name)
 	end
 
-	local event = nil
+	local event
 
 	if clbk then
 		event = self._unit:sound_source(source):post_event(sound_name, clbk, nil, "end_of_event")
@@ -53,7 +55,7 @@ function CopSound:_play(sound_name, source_name, clbk)
 end
 
 function CopSound:play(sound_name, source_name, sync)
-	local event_id = nil
+	local event_id
 
 	if type(sound_name) == "number" then
 		event_id = sound_name
@@ -62,6 +64,7 @@ function CopSound:play(sound_name, source_name, sync)
 
 	if sync then
 		event_id = event_id or SoundDevice:string_to_id(sound_name)
+
 		local sync_source_name = source_name or ""
 
 		self._unit:network():send("unit_sound_play", event_id, sync_source_name)
@@ -73,7 +76,7 @@ function CopSound:play(sound_name, source_name, sync)
 end
 
 function CopSound:corpse_play(sound_name, source_name, sync, important, clbk)
-	local event_id = nil
+	local event_id
 
 	if type(sound_name) == "number" then
 		event_id = sound_name
@@ -82,6 +85,7 @@ function CopSound:corpse_play(sound_name, source_name, sync, important, clbk)
 
 	if sync then
 		event_id = event_id or SoundDevice:string_to_id(sound_name)
+
 		local sync_source_name = source_name or ""
 		local u_id = managers.enemy:get_corpse_unit_data_from_key(self._unit:key()).u_id
 
@@ -101,7 +105,7 @@ function CopSound:corpse_play(sound_name, source_name, sync, important, clbk)
 end
 
 function CopSound:stop(source_name)
-	local source = nil
+	local source
 
 	if source_name then
 		source = Idstring(source_name)
@@ -115,7 +119,7 @@ function CopSound:say(sound_name, sync, skip_prefix, important, callback)
 		self._last_speech:stop()
 	end
 
-	local full_sound = nil
+	local full_sound
 
 	if skip_prefix then
 		full_sound = sound_name
@@ -123,7 +127,7 @@ function CopSound:say(sound_name, sync, skip_prefix, important, callback)
 		full_sound = self._prefix .. sound_name
 	end
 
-	local event_id = nil
+	local event_id
 
 	if type(full_sound) == "number" then
 		event_id = full_sound

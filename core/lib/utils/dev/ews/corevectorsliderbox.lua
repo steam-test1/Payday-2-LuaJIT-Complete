@@ -47,7 +47,8 @@ function VectorSliderBox:_create_slider()
 end
 
 function VectorSliderBox:_create_mute_button()
-	local box, mute_button = nil
+	local box, mute_button
+
 	box = EWS:BoxSizer("HORIZONTAL")
 	mute_button = EWS:ToggleButton(self._parent_frame, "Feed Zero", "", "BU_EXACTFIT,NO_BORDER")
 
@@ -59,7 +60,8 @@ function VectorSliderBox:_create_mute_button()
 end
 
 function VectorSliderBox:_create_sizer()
-	local box, text_ctrl, slider = nil
+	local box, text_ctrl, slider
+
 	box = EWS:BoxSizer("HORIZONTAL")
 	slider = self:_create_slider()
 	text_ctrl = EWS:TextCtrl(self._parent_frame, string.format("%.3f", self._min), "", "TE_PROCESS_ENTER")
@@ -102,7 +104,8 @@ function VectorSliderBox:_slider_to_actual(value)
 end
 
 function VectorSliderBox:_update_values()
-	local x, y, z = nil
+	local x, y, z
+
 	x = self:_slider_to_actual(self.__slider_x:get_value())
 	y = self:_slider_to_actual(self.__slider_y:get_value())
 	z = self:_slider_to_actual(self.__slider_z:get_value())
@@ -112,7 +115,8 @@ function VectorSliderBox:_update_values()
 end
 
 function VectorSliderBox:_update_text()
-	local x, y, z = nil
+	local x, y, z
+
 	x = self:_slider_to_actual(self.__slider_x:get_value())
 	y = self:_slider_to_actual(self.__slider_y:get_value())
 	z = self:_slider_to_actual(self.__slider_z:get_value())
@@ -127,7 +131,8 @@ function VectorSliderBox:_set_text(x, y, z)
 end
 
 function VectorSliderBox:_on_update_textctrl()
-	local x, y, z = nil
+	local x, y, z
+
 	x = self:_check_input(self.__slider_x_textctrl:get_value())
 	y = self:_check_input(self.__slider_y_textctrl:get_value())
 	z = self:_check_input(self.__slider_z_textctrl:get_value())
@@ -140,7 +145,7 @@ function VectorSliderBox:_check_input(input)
 
 	if type(value) ~= "number" then
 		value = self._min
-	elseif value < self._min or self._max < value then
+	elseif value < self._min or value > self._max then
 		value = self._min
 	end
 

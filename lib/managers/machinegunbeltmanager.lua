@@ -3,6 +3,7 @@ require("lib/managers/CharmManager")
 local mrot_set = mrotation.set_yaw_pitch_roll
 local mrot_pitch = mrotation.pitch
 local math_clamp = math.clamp
+
 MachineGunBeltManager = MachineGunBeltManager or class(CharmManager)
 MachineGunBeltManager.damping_constant = 0.12
 MachineGunBeltManager.menu_left_roll_angle = -90
@@ -45,9 +46,9 @@ function MachineGunBeltManager:add_weapon(weapon_unit, parts, user_unit, is_menu
 				local charm_unit = charm_part.unit
 
 				if charm_unit then
-					local custom_body_name = part_tweak.body_name
-					local custom_parent_name = part_tweak.parent_name
+					local custom_body_name, custom_parent_name = part_tweak.body_name, part_tweak.parent_name
 					local charm_entry = self:get_charm_data(charm_data, charm_unit, custom_body_name, custom_parent_name, is_menu)
+
 					belt_data[index] = charm_entry
 					index = index + 1
 				end
@@ -62,6 +63,7 @@ function MachineGunBeltManager:add_weapon(weapon_unit, parts, user_unit, is_menu
 		mov_data = self:get_movement_data(weapon_unit, user_unit, is_menu),
 		belt_data = belt_data
 	}
+
 	existing_entries[u_key] = entry
 	self._enabled_weapons[u_key] = entry
 
@@ -129,6 +131,7 @@ function MachineGunBeltManager:simulate_ingame_standard(entry, mov_data, charm_d
 
 			for i = 1, #entry.belt_data do
 				local c_data = entry.belt_data[i]
+
 				c_data.prev_rot = c_data.ring:local_rotation()
 			end
 		end
@@ -152,7 +155,7 @@ function MachineGunBeltManager:simulate_ingame_standard(entry, mov_data, charm_d
 		if entry._lerping_flag then
 			rot = Rotation(c_data.prev_rot:yaw() * (1 - alpha) + rot:yaw() * alpha, c_data.prev_rot:pitch() * (1 - alpha) + rot:pitch() * alpha, c_data.prev_rot:roll() * (1 - alpha) + rot:roll() * alpha)
 
-			if self.lerping_duration < entry._lerping_time then
+			if entry._lerping_time > self.lerping_duration then
 				entry._lerping_flag = false
 			end
 		end
@@ -168,6 +171,7 @@ function MachineGunBeltManager:_calculate_belt_damping(c_data, dist, belt_length
 	end
 
 	local v = (belt_length - (dist - 1)) / belt_length
+
 	c_data.damping_factor = self.damping_constant * v
 
 	return c_data.damping_factor
@@ -175,6 +179,7 @@ end
 
 function MachineGunBeltManager:_curve(x, max)
 	x = x / max
+
 	local ret = (-32.6401 * math.pow(x, 4) + 70.4845 * math.pow(x, 3) - 46.9253 * math.pow(x, 2) + 9.9483 * x + 0.1004) * max
 
 	return ret

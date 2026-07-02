@@ -6,6 +6,7 @@ function DebugDrawFonts:init(ws)
 		layer = 1000
 	})
 	self._toggle = false
+
 	local massive_font = tweak_data.menu.pd2_massive_font
 	local large_font = tweak_data.menu.pd2_large_font
 	local medium_font = tweak_data.menu.pd2_medium_font
@@ -38,15 +39,15 @@ function DebugDrawFonts:init(ws)
 	})
 
 	local blur = self._panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		render_template = "VertexColorTexturedBlur3D",
 		layer = -1,
+		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._panel:w(),
 		h = self._panel:h()
 	})
 
 	local function func(o)
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(p)
 		end)
 	end
@@ -78,9 +79,9 @@ function DebugDrawFonts:init(ws)
 
 		for _, font_data in ipairs(fonts) do
 			local text = side:text({
-				wrap = true,
-				word_wrap = true,
 				layer = 2,
+				word_wrap = true,
+				wrap = true,
 				font = font_data[1],
 				font_size = font_data[2],
 				x = x,
@@ -94,11 +95,13 @@ function DebugDrawFonts:init(ws)
 			end
 
 			local _, _, tw, th = text:text_rect()
+
 			y = y + math.round(th + 0)
+
 			local text = side:text({
-				wrap = true,
-				word_wrap = true,
 				layer = 2,
+				word_wrap = true,
+				wrap = true,
 				font = font_data[1],
 				font_size = font_data[2],
 				x = x,
@@ -133,7 +136,7 @@ end
 
 function DebugDrawFonts:reload()
 	self:close()
-	self:init(self._ws)
+	self.init(self, self._ws)
 end
 
 function DebugDrawFonts:set_enabled(enabled)

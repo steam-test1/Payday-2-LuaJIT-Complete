@@ -1,14 +1,13 @@
 SkinEditor = SkinEditor or class()
 SkinEditor.allowed_extensions = {
+	dds = true,
 	png = true,
-	tga = true,
-	dds = true
+	tga = true
 }
 
 function SkinEditor:init()
-	Global.skin_editor = {
-		skins = {}
-	}
+	Global.skin_editor = {}
+	Global.skin_editor.skins = {}
 	self._global = Global.skin_editor
 	self._current_skin = 1
 	self._active = false
@@ -74,7 +73,9 @@ end
 
 function SkinEditor:select_skin(local_skin_id)
 	local is_reload = self._current_skin == local_skin_id
+
 	self._current_skin = local_skin_id
+
 	local skin = self:get_current_skin()
 
 	if not skin then
@@ -99,6 +100,7 @@ function SkinEditor:select_skin(local_skin_id)
 	end
 
 	local id = skin:config().data.name_id or new_cosmetics_data.weapon_id .. "_default"
+
 	id = string.sub(id, string.len(new_cosmetics_data.weapon_id .. "_") + 1, -1)
 	new_cosmetics_data.id = id
 
@@ -113,6 +115,7 @@ function SkinEditor:select_skin(local_skin_id)
 		managers.menu_scene:update(TimerManager:main():time(), TimerManager:main():delta_time())
 
 		managers.menu_scene._disable_item_updates = true
+
 		local unsaved = self._unsaved
 
 		self:apply_changes(new_cosmetics_data)
@@ -135,6 +138,7 @@ function SkinEditor:save_skin(skin, name, data)
 	skin:config().name = name or skin:config().name
 	skin:config().data = data or skin:config().data
 	skin:config().type = "weapon_skin"
+
 	local tags = self:get_current_weapon_tags()
 
 	skin:clear_tags()
@@ -164,14 +168,17 @@ function SkinEditor:publish_skin(skin, title, desc, changelog, callb)
 				managers.network.account:overlay_activate("url", "steam://url/CommunityFilePage/" .. id)
 			end
 		else
-			local dialog_data = {
-				title = managers.localization:text("dialog_error_title")
-			}
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("dialog_error_title")
+
 			local result_text = managers.localization:exists(result) and managers.localization:text(result) or result
+
 			dialog_data.text = managers.localization:text("debug_wskn_submit_failed") .. "\n" .. result_text
-			local ok_button = {
-				text = managers.localization:text("dialog_ok")
-			}
+
+			local ok_button = {}
+
+			ok_button.text = managers.localization:text("dialog_ok")
 			dialog_data.button_list = {
 				ok_button
 			}
@@ -238,11 +245,12 @@ function SkinEditor:publish_skin(skin, title, desc, changelog, callb)
 			if skin:submit(changelog, cb) then
 				local bar_radius = 20
 				local panel = managers.menu:active_menu().renderer.ws:panel()
+
 				self._publish_bar = CircleBitmapGuiObject:new(panel, {
-					use_bg = true,
-					current = 0,
 					blend_mode = "add",
+					current = 0,
 					layer = 2,
+					use_bg = true,
 					radius = bar_radius,
 					sides = bar_radius,
 					total = bar_radius,
@@ -304,6 +312,7 @@ function SkinEditor:enter_screenshot_mode()
 		managers.menu_scene:update(TimerManager:main():time(), TimerManager:main():delta_time())
 
 		managers.menu_scene._disable_item_updates = true
+
 		local unsaved = self._unsaved
 
 		self:apply_changes()
@@ -316,6 +325,7 @@ function SkinEditor:enter_screenshot_mode()
 	end
 
 	local vp = managers.environment_controller._vp:vp()
+
 	self._old_bloom_setting = vp:get_post_processor_effect_name("World", Idstring("bloom_combine_post_processor"))
 
 	vp:set_post_processor_effect("World", Idstring("bloom_combine_post_processor"), Idstring("bloom_combine_empty"))
@@ -347,11 +357,12 @@ function SkinEditor:_spawn_screenshot_background()
 	local offset_x = Vector3(0, 500, 0):rotate_with(self._weapon_unit:rotation())
 	local offset_y = Vector3(0, 0, 500):rotate_with(self._weapon_unit:rotation())
 	local pos_offset = Vector3(-50, 250, 250):rotate_with(self._weapon_unit:rotation())
+
 	self._screenshot_ws = gui:create_world_workspace(500, 500, self._weapon_unit:position() - pos_offset, offset_x, offset_y)
 
 	self._screenshot_ws:panel():rect({
-		name = "bg",
 		layer = 20000,
+		name = "bg",
 		color = Color(0, 1, 0)
 	})
 	self._screenshot_ws:set_billboard(Workspace.BILLBOARD_BOTH)
@@ -436,6 +447,7 @@ end
 
 function SkinEditor:get_texture_list(skin, path)
 	path = path or skin:path()
+
 	local texture_list = {}
 	local file_list = SystemFS:list(path, false)
 
@@ -481,11 +493,13 @@ function SkinEditor:load_textures(skin, path_or_tex_type)
 	local textures = tex_type and self:get_texture_list_by_type(skin, tex_type) or self:get_texture_list(skin, path)
 	local new_textures = {}
 	local type_texture_id = Idstring("texture")
+
 	path = path or skin:path()
 
 	for _, texture in ipairs(textures) do
 		local texture_id = self:get_texture_idstring(skin, texture, tex_type)
 		local rel_path = Application:nice_path(path, true)
+
 		rel_path = string.sub(rel_path, string.len(Application:base_path()) + 1)
 		rel_path = string.gsub(rel_path, "\\", "/")
 
@@ -563,7 +577,7 @@ function SkinEditor:get_screenshot_name()
 	end
 
 	local id = #SystemFS:list(path)
-	local name = nil
+	local name
 
 	repeat
 		id = id + 1
@@ -593,13 +607,15 @@ function SkinEditor:apply_changes(cosmetics_data)
 
 	self:weapon_unit():base()._cosmetics_data = self:get_current_skin():config().data
 
-	self:weapon_unit():base():_apply_cosmetics(function ()
+	self:weapon_unit():base():_apply_cosmetics(function()
+		return
 	end)
 
 	if self:second_weapon_unit() then
 		self:second_weapon_unit():base()._cosmetics_data = self:get_current_skin():config().data
 
-		self:second_weapon_unit():base():_apply_cosmetics(function ()
+		self:second_weapon_unit():base():_apply_cosmetics(function()
+			return
 		end)
 	end
 end
@@ -627,11 +643,9 @@ end
 
 function SkinEditor:get_screenshot_rect()
 	local gui_rect = managers.gui_data:full_16_9_size()
-	local x = 0
-	local y = gui_rect.y
+	local x, y = 0, gui_rect.y
 	local screen_res = Application:screen_resolution()
-	local w = screen_res.x
-	local h = screen_res.y - gui_rect.y
+	local w, h = screen_res.x, screen_res.y - gui_rect.y
 
 	return x, y, w, h
 end
@@ -729,6 +743,7 @@ function SkinEditor:add_literal_paths(skin)
 			if type(k) == "string" and string.find(k, "_name$") and type(v) == "string" and string.find(v, "%..+$") then
 				local new_key = string.gsub(k, "_name$", "")
 				local path = self:get_texture_string(skin, v, add_type and new_key)
+
 				data[new_key] = path
 			elseif type(v) == "table" then
 				table.insert(to_process, data[k])
@@ -779,6 +794,7 @@ end
 
 function SkinEditor:clear_current_skin()
 	local skin = self:get_current_skin()
+
 	skin:config().data = {
 		wear_and_tear = 1,
 		weapon_id = self._current_weapon_id,

@@ -13,15 +13,16 @@ end
 
 function MenuItemUpgrade:setup_gui(node, row_item)
 	local upgrade_id = self:parameters().upgrade_id
+
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
-	row_item.upgrade_name = node:_text_item_part(row_item, row_item.gui_panel, node:_right_align())
+	row_item.upgrade_name = node._text_item_part(node, row_item, row_item.gui_panel, node._right_align(node))
 
 	row_item.upgrade_name:set_font_size(tweak_data.menu.upgrades_font_size)
 
 	if self:parameters().topic_text then
-		row_item.topic_text = node:_text_item_part(row_item, row_item.gui_panel, node:_left_align())
+		row_item.topic_text = node._text_item_part(node, row_item, row_item.gui_panel, node._left_align(node))
 
 		row_item.topic_text:set_align("right")
 		row_item.topic_text:set_font_size(tweak_data.menu.upgrades_font_size)
@@ -50,32 +51,34 @@ function MenuItemUpgrade:setup_gui(node, row_item)
 
 	if self:name() ~= "upgrade_lock" then
 		row_item.gui_info_panel = node.safe_rect_panel:panel({
-			y = 0,
 			visible = false,
 			x = 0,
+			y = 0,
 			layer = node.layers.items,
-			w = node:_left_align(),
+			w = node._left_align(node),
 			h = node._item_panel_parent:h()
 		})
+
 		local image, rect = managers.upgrades:image(upgrade_id)
+
 		row_item.upgrade_info_image_rect = rect
 		row_item.upgrade_info_image = row_item.gui_info_panel:bitmap({
-			y = 0,
 			h = 150,
 			visible = true,
 			w = 340,
 			x = 0,
+			y = 0,
 			texture = image,
 			texture_rect = rect
 		})
 		row_item.upgrade_info_title = row_item.gui_info_panel:text({
+			align = "left",
 			halign = "top",
 			vertical = "top",
 			word_wrap = true,
 			wrap = true,
-			align = "left",
-			y = 0,
 			x = 0,
+			y = 0,
 			font_size = node.font_size,
 			font = row_item.font,
 			color = Color.white,
@@ -83,13 +86,13 @@ function MenuItemUpgrade:setup_gui(node, row_item)
 			text = string.upper(managers.upgrades:complete_title(upgrade_id, " > "))
 		})
 		row_item.upgrade_info_text = row_item.gui_info_panel:text({
+			align = "left",
 			halign = "top",
 			vertical = "top",
 			word_wrap = true,
 			wrap = true,
-			align = "left",
-			y = 0,
 			x = 0,
+			y = 0,
 			font = tweak_data.menu.small_font,
 			font_size = tweak_data.menu.small_font_size,
 			color = Color.white,
@@ -112,14 +115,14 @@ function MenuItemUpgrade:setup_gui(node, row_item)
 
 			if managers.upgrades:aquired(upgrade_id) then
 				row_item.toggle_text = row_item.gui_info_panel:text({
+					align = "left",
 					halign = "top",
+					text = "",
 					vertical = "top",
 					word_wrap = true,
 					wrap = true,
-					align = "left",
-					text = "",
-					y = 0,
 					x = 0,
+					y = 0,
 					font = tweak_data.menu.small_font,
 					font_size = tweak_data.menu.small_font_size,
 					color = Color.white,
@@ -140,7 +143,7 @@ function MenuItemUpgrade:reload(row_item, node)
 	local upgrade_id = self:parameters().upgrade_id
 
 	if row_item.toggle_text then
-		local text = nil
+		local text
 
 		if not managers.upgrades:visual_weapon_upgrade_active(upgrade_id) then
 			text = managers.localization:text("menu_show_upgrade_info", {
@@ -215,7 +218,7 @@ function MenuItemUpgrade:_layout(node, row_item)
 	local x, y, w, h = row_item.upgrade_name:text_rect()
 
 	row_item.upgrade_name:set_height(h)
-	row_item.upgrade_name:set_left(node:_right_align() - row_item.gui_panel:x())
+	row_item.upgrade_name:set_left(node._right_align(node) - row_item.gui_panel:x())
 	row_item.gui_panel:set_height(h)
 
 	if row_item.topic_text then
@@ -227,12 +230,12 @@ function MenuItemUpgrade:_layout(node, row_item)
 		local s = math.min(32, h * 1.75)
 
 		row_item.upgrade_icon:set_size(s, s)
-		row_item.upgrade_icon:set_left(node:_right_align() - row_item.gui_panel:x() + w + node._align_line_padding)
+		row_item.upgrade_icon:set_left(node._right_align(node) - row_item.gui_panel:x() + w + node._align_line_padding)
 		row_item.upgrade_icon:set_center_y(h / 2)
 	end
 
 	if row_item.gui_info_panel then
-		node:_align_item_gui_info_panel(row_item.gui_info_panel)
+		node._align_item_gui_info_panel(node, row_item.gui_info_panel)
 
 		local w = row_item.gui_info_panel:w()
 		local m = row_item.upgrade_info_image_rect[3] / row_item.upgrade_info_image_rect[4]

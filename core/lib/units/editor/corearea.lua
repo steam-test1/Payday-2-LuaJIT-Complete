@@ -90,6 +90,7 @@ function CoreAreaHubElement:set_altitude_spin(data)
 
 	if data.type == "start" then
 		local z = self._hed.shapes[self._current_shape].position.z + data.step
+
 		self._hed.shapes[self._current_shape].position = self._hed.shapes[self._current_shape].position:with_z(z)
 	elseif data.type == "height" then
 		self._hed.shapes[self._current_shape].height = self._hed.shapes[self._current_shape].height + data.step
@@ -200,7 +201,7 @@ function CoreAreaHubElement:draw(shape, r, g, b)
 		Application:draw_cylinder(position + Vector3(0, 0, start_z), position + Vector3(0, 0, height + start_z), shape.radious * shape.size_mul, r, g, b)
 	elseif shape.type == "box" then
 		local start = position + Vector3(0, 0, start_z)
-		local center = (start + start + Vector3(shape.width * shape.size_mul, shape.length * shape.size_mul, height)) / 2
+		local center = (start + (start + Vector3(shape.width * shape.size_mul, shape.length * shape.size_mul, height))) / 2
 
 		self._brush:box(center, Vector3(shape.width * shape.size_mul / 2, 0, 0), Vector3(0, shape.length * shape.size_mul / 2, 0), Vector3(0, 0, height / 2))
 		Application:draw_box(position + Vector3(0, 0, start_z), position + Vector3(shape.width * shape.size_mul, shape.length * shape.size_mul, height + start_z), r, g, b)
@@ -239,6 +240,7 @@ function CoreAreaHubElement:update_editing(t, dt)
 	local p2 = managers.editor:get_cursor_look_point(100)
 	local current_shape = self._hed.shapes[self._current_shape]
 	local t = p1.z / (p1.z - p2.z)
+
 	self._current_pos = p1 + (p2 - p1) * t
 
 	if self._grid_size > 0 then
@@ -260,7 +262,7 @@ function CoreAreaHubElement:update_editing(t, dt)
 	end
 
 	local kb = Input:keyboard()
-	local mov_vec = nil
+	local mov_vec
 
 	if self._move_shape_rep:update(t, dt) then
 		if kb:down("up") then
@@ -285,7 +287,7 @@ function CoreAreaHubElement:update_editing(t, dt)
 	end
 
 	if current_shape then
-		local rot_axis = nil
+		local rot_axis
 
 		if kb:down("num 4") then
 			rot_axis = Vector3(0, 0, 1)
@@ -310,17 +312,21 @@ function CoreAreaHubElement:load_data(data)
 
 	for _, shape in ipairs(data._shapes) do
 		self._current_shape = self:new_shape_name()
-		local properties = nil
+
+		local properties
 		local s_pos = shape._generic._position
 
 		if shape._type == "sphere" then
 			local e_pos = shape._generic._position + Vector3(shape._radious, 0, shape._height)
+
 			properties = self:set_shape_properties(shape._type, s_pos, e_pos)
 		elseif shape._type == "box" then
 			local e_pos = shape._generic._position + Vector3(shape._width, shape._length, shape._height)
+
 			properties = self:set_shape_properties(shape._type, s_pos, e_pos)
 		elseif shape._type == "plane" then
 			local e_pos = shape._generic._position + shape._generic._rotation:x() * shape._width
+
 			properties = self:set_shape_properties(shape._type, s_pos, e_pos)
 			properties.height = shape._height
 		end
@@ -337,6 +343,7 @@ function CoreAreaHubElement:create_shape()
 	local p1 = managers.editor:get_cursor_look_point(0)
 	local p2 = managers.editor:get_cursor_look_point(100)
 	local t = p1.z / (p1.z - p2.z)
+
 	self._start_pos = p1 + (p2 - p1) * t
 
 	if self._grid_size > 0 then
@@ -344,7 +351,9 @@ function CoreAreaHubElement:create_shape()
 	end
 
 	self._current_shape = self:new_shape_name()
+
 	local properties = self:set_shape_properties(self._shape_type, self._start_pos, self._start_pos)
+
 	self._hed.shapes[self._current_shape] = properties
 
 	self._shapes_list:append(self._current_shape)
@@ -366,11 +375,12 @@ end
 
 function CoreAreaHubElement:set_shape_properties(type, pos, end_pos)
 	local t = {
-		type = type,
-		position = pos,
-		rotation = Rotation(),
-		size_mul = 1
+		type = type
 	}
+
+	t.position = pos
+	t.rotation = Rotation()
+	t.size_mul = 1
 	t.height = end_pos.z - t.position.z
 
 	if type == "sphere" then
@@ -382,6 +392,7 @@ function CoreAreaHubElement:set_shape_properties(type, pos, end_pos)
 		local x = (end_pos - t.position):normalized()
 		local z = Vector3(0, 0, 1)
 		local y = z:cross(x)
+
 		t.rotation = Rotation(x, y, z)
 		t.width = (end_pos - t.position):length()
 	end
@@ -436,6 +447,7 @@ end
 
 function CoreAreaHubElement:set_interval(data)
 	local value = tonumber(data.ctrlr:get_value())
+
 	value = math.clamp(value, 0, 1000000)
 	self._hed.area_interval = value
 
@@ -447,6 +459,7 @@ function CoreAreaHubElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local interval_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	interval_sizer:add(EWS:StaticText(panel, "Check Interval:", 0, ""), 2, 0, "ALIGN_CENTER_VERTICAL")
@@ -502,6 +515,7 @@ function CoreAreaHubElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(shape_names_sizer, 0, 0, "EXPAND")
 
 	local shapes_sizer = EWS:StaticBoxSizer(panel, "VERTICAL", "Shapes")
+
 	self._shapes_list = EWS:ListBox(panel, "", "LB_SINGLE,LB_HSCROLL,LB_NEEDED_SB,LB_SORT")
 
 	shapes_sizer:add(self._shapes_list, 0, 0, "EXPAND")
@@ -515,6 +529,7 @@ function CoreAreaHubElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(shapes_sizer, 0, 0, "EXPAND")
 
 	local altitude_sizer = EWS:StaticBoxSizer(panel, "VERTICAL", "Altitude")
+
 	self._start_altitude = EWS:Slider(panel, 0, -20000, 20000, "", "")
 	self._height = EWS:Slider(panel, 0, 0, 30000, "", "")
 	self._start_altitude_text, self._start_altitude_spin = self:_altitude_ctrlr(panel, "Start Altitude:", 0, "start", altitude_sizer)
@@ -536,6 +551,7 @@ function CoreAreaHubElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(altitude_sizer, 1, 0, "EXPAND")
 
 	local size_sizer = EWS:StaticBoxSizer(panel, "VERTICAL", "Size")
+
 	self._size = EWS:Slider(panel, 10, 1, 40, "", "")
 
 	size_sizer:add(self._size, 1, 0, "EXPAND")
@@ -585,4 +601,5 @@ function CoreAreaHubElement:_altitude_ctrlr(panel, name, value, type, sizer)
 end
 
 function CoreAreaHubElement:destroy()
+	return
 end

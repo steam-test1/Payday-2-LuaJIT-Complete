@@ -91,10 +91,12 @@ function CoreShapeUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local _, shape_type_params = self:_build_value_combobox(panel, panel_sizer, "shape_type", {
 		"box",
 		"cylinder"
 	}, "Select shape for area")
+
 	self._shape_type_params = shape_type_params
 
 	if not self._shape then
@@ -111,12 +113,12 @@ function CoreShapeUnitElement:_build_panel(panel, panel_sizer)
 	self._width_params = width_params
 
 	width:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "width",
-		property = "width"
+		property = "width",
+		value = "width"
 	})
 	width:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "width",
-		property = "width"
+		property = "width",
+		value = "width"
 	})
 
 	local depth, depth_params = self:_build_value_number(panel, panel_sizer, "depth", {
@@ -129,12 +131,12 @@ function CoreShapeUnitElement:_build_panel(panel, panel_sizer)
 	self._depth_params = depth_params
 
 	depth:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "depth",
-		property = "depth"
+		property = "depth",
+		value = "depth"
 	})
 	depth:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "depth",
-		property = "depth"
+		property = "depth",
+		value = "depth"
 	})
 
 	local height, height_params = self:_build_value_number(panel, panel_sizer, "height", {
@@ -147,12 +149,12 @@ function CoreShapeUnitElement:_build_panel(panel, panel_sizer)
 	self._height_params = height_params
 
 	height:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "height",
-		property = "height"
+		property = "height",
+		value = "height"
 	})
 	height:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "height",
-		property = "height"
+		property = "height",
+		value = "height"
 	})
 
 	local radius, radius_params = self:_build_value_number(panel, panel_sizer, "radius", {
@@ -165,12 +167,12 @@ function CoreShapeUnitElement:_build_panel(panel, panel_sizer)
 	self._radius_params = radius_params
 
 	radius:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_shape_property"), {
-		value = "radius",
-		property = "radius"
+		property = "radius",
+		value = "radius"
 	})
 	radius:connect("EVT_KILL_FOCUS", callback(self, self, "set_shape_property"), {
-		value = "radius",
-		property = "radius"
+		property = "radius",
+		value = "radius"
 	})
 	self:scale_slider(panel, panel_sizer, width_params, "width", "Width scale:")
 	self:scale_slider(panel, panel_sizer, depth_params, "depth", "Depth scale:")

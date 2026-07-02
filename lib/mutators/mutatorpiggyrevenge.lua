@@ -18,9 +18,9 @@ MutatorPiggyRevenge.secure_zone_units = {
 	"units/pd2_dlc_pda9/props/pda9_circle_marker/pda9_prop_circle_marker_stage_3"
 }
 MutatorPiggyRevenge.bag_expire_custom_params = {
-	sound_event = "PD9A_BagDespawn",
+	camera_shake_mul = 0,
 	effect = "effects/payday2/particles/explosions/burnpuff",
-	camera_shake_mul = 0
+	sound_event = "PD9A_BagDespawn"
 }
 MutatorPiggyRevenge.AOE_TRAIL_EFFECT = Idstring("effects/payday2/particles/weapons/trail_adam")
 MutatorPiggyRevenge.briefing_dialog = "Play_alm_pda9_brf"
@@ -32,6 +32,7 @@ MutatorPiggyRevenge.disables_achievements = false
 MutatorPiggyRevenge.categories = {
 	"event"
 }
+
 local mvec1 = Vector3()
 local mvec2 = Vector3()
 local mvec3 = Vector3()
@@ -42,6 +43,7 @@ local idstr_simulator_length = Idstring("simulator_length")
 local idstr_size = Idstring("size")
 
 function MutatorPiggyRevenge:register_values(mutator_manager)
+	return
 end
 
 function MutatorPiggyRevenge:next_interupt_stage(interupt)
@@ -64,7 +66,9 @@ function MutatorPiggyRevenge:setup(mutator_manager)
 	self._boss_spawn_que = {}
 	self._boss_count = 0
 	self._boss_bag_fountains = {}
+
 	local spawn_data = self._tweakdata.level_coordinates[Global.level_data.level_id]
+
 	self._position = spawn_data and spawn_data.position or Vector3()
 	self._rotation = spawn_data and spawn_data.rotation or Rotation()
 	self._pig_feed_slotmask = World:make_slot_mask(14)
@@ -83,6 +87,7 @@ function MutatorPiggyRevenge:on_game_started(mutator_manager)
 	print("MutatorPiggyRevenge:on_game_started")
 
 	local piggy_unit_index = self._current_pig_level_tweak.piggy_unit_index
+
 	self._announcer_unit = World:spawn_unit(Idstring(MutatorPiggyRevenge.announcer_unit), self._position + Vector3(0, 0, 100), self._rotation)
 
 	for index, unit_name in ipairs(MutatorPiggyRevenge.pig_units) do
@@ -116,24 +121,24 @@ function MutatorPiggyRevenge:on_game_started(mutator_manager)
 	self._reminder_dialog = "Play_alm_pda9_02"
 	self._dialog_count_trigger = {
 		headshot = {
-			sync_index = 1,
 			count = 400,
-			dialog = "Play_alm_pda9_18"
+			dialog = "Play_alm_pda9_18",
+			sync_index = 1
 		},
 		moneyshot = {
-			sync_index = 2,
 			count = 400,
-			dialog = "Play_alm_pda9_19"
+			dialog = "Play_alm_pda9_19",
+			sync_index = 2
 		},
 		bag_spawn_1 = {
-			sync_index = 3,
 			count = 1,
-			dialog = "Play_alm_pda9_03"
+			dialog = "Play_alm_pda9_03",
+			sync_index = 3
 		},
 		bag_spawn_10 = {
-			sync_index = 4,
 			count = 10,
-			dialog = "Play_alm_pda9_04"
+			dialog = "Play_alm_pda9_04",
+			sync_index = 4
 		}
 	}
 end
@@ -199,6 +204,7 @@ end
 
 function MutatorPiggyRevenge:sync_save(mutator_manager, save_data)
 	local my_save_data = {}
+
 	save_data.piggyrevenge_mutator = my_save_data
 	my_save_data.pig_level = self._pig_level
 	my_save_data.exploded_pig_level = self._exploded_pig_level
@@ -211,7 +217,9 @@ end
 
 function MutatorPiggyRevenge:sync_load(mutator_manager, load_data)
 	local my_load_data = load_data.piggyrevenge_mutator
+
 	self._pig_level = my_load_data.pig_level
+
 	local old_piggybank_unit = self._piggybank_units[self._current_pig_level_tweak.piggy_unit_index]
 
 	old_piggybank_unit:set_enabled(false)
@@ -250,10 +258,10 @@ function MutatorPiggyRevenge:sync_load(mutator_manager, load_data)
 	if self._boss_count > 0 then
 		managers.hud:add_buff({
 			buff_id = "piggydozer_spawn",
-			name_id = "hud_buff_piggydozer_warning",
-			time_left = -1,
 			icon_texture = "guis/textures/pd2/hud_icon_assaultbox",
+			name_id = "hud_buff_piggydozer_warning",
 			negative = -1,
+			time_left = -1,
 			color = tweak_data.screen_colors.important_1,
 			icon_texture_rect = {
 				0,
@@ -269,8 +277,9 @@ function MutatorPiggyRevenge:server_feed_piggybank(bag_unit)
 	print("MutatorPiggyRevenge:server_feed_piggybank", bag_unit)
 
 	self._pig_fed_count = self._pig_fed_count + 1
+
 	local next_pig_level = self._tweakdata.pig_levels[self._pig_level + 1]
-	local reached_next_level = next_pig_level and next_pig_level.bag_requirement <= self._pig_fed_count
+	local reached_next_level = next_pig_level and self._pig_fed_count >= next_pig_level.bag_requirement
 	local last_carried_player = alive(bag_unit) and bag_unit:carry_data() and bag_unit:carry_data():latest_peer_id() or nil
 
 	managers.network:session():send_to_peers_synched("sync_feed_piggybank", bag_unit, reached_next_level, last_carried_player)
@@ -413,11 +422,11 @@ function MutatorPiggyRevenge:update(t, dt)
 		}
 
 		if alive(player_unit) and not managers.interaction:active_unit() and not table.contains(invalid_states, current_state) then
-			local text_string, text_icon = nil
+			local text_string, text_icon
 			local current_player_state = managers.player:get_current_state()
 			local progress_range = self._tweakdata.progress_range or 1000
 			local show_progress = false
-			local hand_id, hand_unit = nil
+			local hand_id, hand_unit
 
 			if _G.IS_VR then
 				local hand_ids = player_unit:hand():interaction_ids()
@@ -446,7 +455,7 @@ function MutatorPiggyRevenge:update(t, dt)
 				local fwd_ray = current_player_state and current_player_state.get_fwd_ray and current_player_state:get_fwd_ray()
 
 				if fwd_ray and table.contains(self._piggybank_units, fwd_ray.unit) then
-					show_progress = fwd_ray.distance < progress_range
+					show_progress = progress_range > fwd_ray.distance
 				end
 			end
 
@@ -518,6 +527,7 @@ function MutatorPiggyRevenge:update(t, dt)
 
 		for i = #self._boss_bag_fountains, 1, -1 do
 			local fountain = self._boss_bag_fountains[i]
+
 			fountain.next_spawn_t = fountain.next_spawn_t - dt
 
 			if fountain.next_spawn_t <= 0 then
@@ -548,6 +558,7 @@ function MutatorPiggyRevenge:update(t, dt)
 
 			if self._pig_feed_check_t < 0 then
 				self._pig_feed_check_t = self._pig_feed_check_t + 0.1
+
 				local pos = mvec1
 
 				piggybank_unit:get_object(Idstring("c_sphere_01")):m_position(pos)
@@ -628,7 +639,7 @@ function MutatorPiggyRevenge:on_enemy_killed(dead_unit, attack_data)
 	else
 		self._feed_drop_count = self._feed_drop_count + feed_amount
 
-		if is_player_character and not is_sniper_kill and self._tweakdata.drop_count <= self._feed_drop_count then
+		if is_player_character and not is_sniper_kill and self._feed_drop_count >= self._tweakdata.drop_count then
 			self._feed_drop_count = 0
 
 			self:server_spawn_bag(dead_unit:position(), Rotation(), 200)
@@ -650,6 +661,7 @@ function MutatorPiggyRevenge:server_spawn_bag(wanted_pos, wanted_rot, push_force
 		mrotation.multiply(rot, wanted_rot)
 
 		local unit = World:spawn_unit(Idstring(MutatorPiggyRevenge.bag_unit), pos, rot)
+
 		unit:carry_data().EXPIRE_CUSTOM_PARAMS = MutatorPiggyRevenge.bag_expire_custom_params
 
 		if push_force then
@@ -1002,10 +1014,10 @@ function MutatorPiggyRevenge:sync_on_snowman_spawned()
 	if self._boss_count == 1 then
 		managers.hud:add_buff({
 			buff_id = "piggydozer_spawn",
-			name_id = "hud_buff_piggydozer_warning",
-			time_left = -1,
 			icon_texture = "guis/textures/pd2/hud_icon_assaultbox",
+			name_id = "hud_buff_piggydozer_warning",
 			negative = -1,
+			time_left = -1,
 			color = tweak_data.screen_colors.important_1,
 			icon_texture_rect = {
 				0,
@@ -1071,7 +1083,7 @@ function MutatorPiggyRevenge:get_mass_drop_data()
 		return nil
 	end
 
-	local cash = nil
+	local cash
 
 	if rewards.cash_multiplier then
 		cash = managers.money:heist_spending() * (rewards.cash_multiplier - 1)

@@ -89,6 +89,7 @@ function ToolHub:create()
 	self._main_frame:connect("", "EVT_CLOSE_WINDOW", callback(self, self, "on_close"), "")
 
 	local main_box = EWS:BoxSizer("VERTICAL")
+
 	self._main_panel = EWS:Panel(self._main_frame)
 
 	main_box:add(self._main_panel, 1, 0, "EXPAND")

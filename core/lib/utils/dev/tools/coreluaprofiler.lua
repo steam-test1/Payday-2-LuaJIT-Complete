@@ -2,6 +2,7 @@ core:import("CoreLuaDump")
 
 CoreLuaProfiler = CoreLuaProfiler or class()
 core_lua_profiler_reload = true
+
 local SETTINGS_PATH = "lib\\utils\\dev\\editor\\xml\\lua_profiler.xml"
 
 function CoreLuaProfiler:init()
@@ -41,7 +42,7 @@ function CoreLuaProfiler:create_main_frame()
 	local sort_by_name = self._resource_sort_func
 
 	local function sort_by_mem_use(a, b)
-		return b._used < a._used
+		return a._used > b._used
 	end
 
 	local menu_bar = EWS:MenuBar()
@@ -79,18 +80,20 @@ function CoreLuaProfiler:create_main_frame()
 	self._main_frame:connect("", "EVT_CLOSE_WINDOW", callback(self, self, "on_close"), "")
 
 	local main_box = EWS:BoxSizer("VERTICAL")
+
 	self._main_notebook = EWS:Notebook(self._main_frame, "", "")
 
 	self._main_notebook:connect("", "EVT_COMMAND_NOTEBOOK_PAGE_CHANGING", callback(self, self, "on_notebook_changing"), "")
 	main_box:add(self._main_notebook, 1, 0, "EXPAND")
 
-	self._main_frame_table = {
-		_main_panel = EWS:Panel(self._main_notebook, "", ""),
-		_main_panel_box = EWS:BoxSizer("VERTICAL")
-	}
+	self._main_frame_table = {}
+	self._main_frame_table._main_panel = EWS:Panel(self._main_notebook, "", "")
+	self._main_frame_table._main_panel_box = EWS:BoxSizer("VERTICAL")
+
 	local panel_box = EWS:BoxSizer("VERTICAL")
 	local splitter_box = EWS:BoxSizer("HORIZONTAL")
 	local function_box = EWS:BoxSizer("VERTICAL")
+
 	self._main_frame_table._function_list_ctrl = EWS:ListCtrl(self._main_frame_table._main_panel, "Watch Data", "LC_REPORT")
 
 	self._main_frame_table._function_list_ctrl:connect("", "EVT_COMMAND_LIST_ITEM_ACTIVATED", callback(self, self, "on_select_function"), "")
@@ -124,10 +127,9 @@ function CoreLuaProfiler:create_main_frame()
 	self._main_frame_table._main_panel:set_sizer(panel_box)
 	self._main_frame_table._main_panel_box:add(self._main_frame_table._main_panel, 1, 0, "EXPAND")
 
-	self._resources_frame_table = {
-		_main_panel = EWS:Panel(self._main_notebook, "", ""),
-		_main_panel_box = EWS:BoxSizer("VERTICAL")
-	}
+	self._resources_frame_table = {}
+	self._resources_frame_table._main_panel = EWS:Panel(self._main_notebook, "", "")
+	self._resources_frame_table._main_panel_box = EWS:BoxSizer("VERTICAL")
 	self._resources_frame_table._tree_ctrl = EWS:TreeCtrl(self._resources_frame_table._main_panel, "", "TR_HAS_BUTTONS,TR_LINES_AT_ROOT,TR_DEFAULT_STYLE,SUNKEN_BORDER,TR_HIDE_ROOT")
 
 	self._resources_frame_table._tree_ctrl:connect("", "EVT_COMMAND_TREE_SEL_CHANGED", callback(self, self, "on_tree_ctrl_change"), "")
@@ -179,7 +181,7 @@ function CoreLuaProfiler:on_check_news()
 end
 
 function CoreLuaProfiler:check_news(new_only)
-	local news = nil
+	local news
 
 	if new_only then
 		news = managers.news:get_news("lua_profiler", self._main_frame)
@@ -188,7 +190,7 @@ function CoreLuaProfiler:check_news(new_only)
 	end
 
 	if news then
-		local str = nil
+		local str
 
 		for _, n in ipairs(news) do
 			if not str then
@@ -224,7 +226,7 @@ function CoreLuaProfiler:dump_tree_expand(node)
 end
 
 function CoreLuaProfiler:on_dump_search()
-	local found = nil
+	local found
 	local str = self._dump_frame_table._search_text_ctrl:get_value()
 	local len = #self._dump_tree_id_table
 	local max = str ~= "" and len * 2 or len
@@ -293,6 +295,7 @@ function CoreLuaProfiler:open_dump()
 
 	local root_name = "lua_dump"
 	local root_id = self._dump_frame_table._tree_ctrl:append_root(root_name)
+
 	self._dump_tree_id_table[root_id] = {
 		_id = root_id,
 		_name = root_name
@@ -326,6 +329,7 @@ function CoreLuaProfiler:fill_dump_tree_ctrl(node, id)
 		end
 
 		local new_id = self._dump_frame_table._tree_ctrl:append(id, name)
+
 		self._dump_tree_id_table[new_id] = {
 			_id = new_id,
 			_name = n:name(),
@@ -334,13 +338,16 @@ function CoreLuaProfiler:fill_dump_tree_ctrl(node, id)
 
 		for k, v in pairs(n:parameter_map()) do
 			local new_k_id = self._dump_frame_table._tree_ctrl:append(new_id, k)
+
 			self._dump_tree_id_table[new_k_id] = {
 				_id = new_k_id,
 				_name = k,
 				_parent = new_id
 			}
+
 			local bin_str = self:binary_to_string(v)
 			local new_v_id = self._dump_frame_table._tree_ctrl:append(new_k_id, self:binary_to_string(v))
+
 			self._dump_tree_id_table[new_v_id] = {
 				_id = new_v_id,
 				_name = bin_str,
@@ -365,6 +372,7 @@ function CoreLuaProfiler:load_profilers()
 
 		for class_node in node:children() do
 			self._class_name = class_node:parameter("name")
+
 			local c = rawget(_G, self._class_name)
 
 			if c then
@@ -478,7 +486,7 @@ function CoreLuaProfiler:on_select_profiler()
 	local selected_idices = self._main_frame_table._profiler_list_ctrl:selected_items()
 	local sources = {}
 
-	table.sort(selected_idices, function (a, b)
+	table.sort(selected_idices, function(a, b)
 		return b < a
 	end)
 
@@ -490,6 +498,7 @@ function CoreLuaProfiler:on_select_profiler()
 	for _, source in ipairs(sources) do
 		if self._profilers[source] then
 			local f = self._profilers[source]._old_func
+
 			rawget(_G, self._profilers[source]._class_name)[self._profilers[source]._function_name] = f
 			self._profilers[source] = nil
 
@@ -514,16 +523,16 @@ function CoreLuaProfiler:add_profiler(name)
 	local func_table = self:find_function(name)
 
 	if not self._profilers[func_table._source] then
-		self._profilers[func_table._source] = {
-			_class_name = self._class_name,
-			_function_name = func_table._name,
-			_calls = 0,
-			_time = 0
-		}
-		local f = rawget(_G, self._class_name)[func_table._name]
-		self._profilers[func_table._source]._old_func = f
+		self._profilers[func_table._source] = {}
+		self._profilers[func_table._source]._class_name = self._class_name
+		self._profilers[func_table._source]._function_name = func_table._name
+		self._profilers[func_table._source]._calls = 0
+		self._profilers[func_table._source]._time = 0
 
-		rawget(_G, self._class_name)[func_table._name] = function (...)
+		local f = rawget(_G, self._class_name)[func_table._name]
+
+		self._profilers[func_table._source]._old_func = f
+		rawget(_G, self._class_name)[func_table._name] = function(...)
 			local profiler_id = Profiler:start(func_table._source)
 			local ret_list = {
 				f(...)
@@ -552,6 +561,7 @@ end
 
 function CoreLuaProfiler:on_select_table()
 	local name = self._main_frame_table._table_list_ctrl:get_item(self._main_frame_table._table_list_ctrl:selected_item(), 0)
+
 	self._class_table = {}
 	self._class_name = name
 
@@ -573,7 +583,7 @@ function CoreLuaProfiler:close()
 end
 
 function CoreLuaProfiler:reset_profilers()
-	if self._frames_sample_steps <= self._frames_since_profilers_reset then
+	if self._frames_since_profilers_reset >= self._frames_sample_steps then
 		self._frames_since_profilers_reset = 1
 
 		for k, v in pairs(self._profilers) do
@@ -637,7 +647,9 @@ end
 function CoreLuaProfiler:update(t, dt)
 	self:notebook_change()
 
-	if self:notebook_selected() ~= 0 then
+	if self:notebook_selected() == 0 then
+		-- Nothing
+	else
 		if core_lua_profiler_reload then
 			core_lua_profiler_reload = false
 
@@ -649,7 +661,7 @@ function CoreLuaProfiler:update(t, dt)
 		if self._frames_sample_steps > 1 or not self._last_update or t - self._last_update > 0.5 then
 			self._last_update = t
 
-			if self._frames_sample_steps <= self._frames_since_profilers_reset then
+			if self._frames_since_profilers_reset >= self._frames_sample_steps then
 				self:update_profiler_list()
 				self:update_mem()
 			end
@@ -665,19 +677,19 @@ function CoreLuaProfiler:find_methods(in_table, out_table)
 			local info = debug.getinfo(v, "S")
 
 			if info.what == "Lua" then
-				local info_table = {
-					_name = k,
-					_table = v,
-					_source = info.source .. ":" .. info.linedefined
-				}
+				local info_table = {}
+
+				info_table._name = k
+				info_table._table = v
+				info_table._source = info.source .. ":" .. info.linedefined
 
 				table.insert(out_table, info_table)
 			end
 		elseif type(v) == "table" and v.type_name ~= k then
-			local info_table = {
-				_name = k,
-				_table = v
-			}
+			local info_table = {}
+
+			info_table._name = k
+			info_table._table = v
 
 			table.insert(out_table, info_table)
 		end
@@ -685,6 +697,7 @@ function CoreLuaProfiler:find_methods(in_table, out_table)
 end
 
 function CoreLuaProfiler:on_tree_ctrl_change()
+	return
 end
 
 function CoreLuaProfiler:on_update_resources()
@@ -703,6 +716,7 @@ function CoreLuaProfiler:on_update_resources()
 			}
 		else
 			local prev = mem_report[unit:name()]
+
 			prev._num = prev._num + 1
 		end
 	end
@@ -763,8 +777,10 @@ CoreLuaProfilerSampleRateDialog = CoreLuaProfilerSampleRateDialog or class()
 
 function CoreLuaProfilerSampleRateDialog:init(p)
 	self._dialog = EWS:Dialog(p, "Sample Rate", "", Vector3(-1, -1, 0), Vector3(200, 86, 0), "CAPTION,SYSTEM_MENU")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._key_text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._key_text_ctrl:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_set_button"), "")
@@ -772,6 +788,7 @@ function CoreLuaProfilerSampleRateDialog:init(p)
 	box:add(text_box, 0, 4, "ALL,EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._set = EWS:Button(self._dialog, "Set", "", "")
 
 	self._set:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_set_button"), "")
@@ -795,6 +812,7 @@ function CoreLuaProfilerSampleRateDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val

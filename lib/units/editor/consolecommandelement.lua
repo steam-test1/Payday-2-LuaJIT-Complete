@@ -13,6 +13,7 @@ function ConsoleCommandUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local text = EWS:TextCtrl(panel, self._hed.cmd, "", "TE_MULTILINE,TE_PROCESS_ENTER")
 
 	text:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "set_element_data"), {

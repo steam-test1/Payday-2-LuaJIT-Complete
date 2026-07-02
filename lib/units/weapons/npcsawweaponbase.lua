@@ -20,7 +20,7 @@ function NPCSawWeaponBase:_play_sound_idle()
 end
 
 function NPCSawWeaponBase:update(unit, t, dt)
-	if self._check_shooting_expired and self._check_shooting_expired.check_t < t then
+	if self._check_shooting_expired and t > self._check_shooting_expired.check_t then
 		self._check_shooting_expired = nil
 
 		self._unit:set_extension_update_enabled(Idstring("base"), false)
@@ -72,12 +72,14 @@ function NPCSawWeaponBase:_sound_autofire_start(nr_shots)
 	self._sound_fire:stop()
 
 	local sound = self._sound_fire:post_event(tweak_sound.fire, callback(self, self, "_on_auto_fire_stop"), nil, "end_of_event")
+
 	sound = sound or self._sound_fire:post_event(tweak_sound.fire)
 end
 
 function NPCSawWeaponBase:_sound_autofire_end()
 	local tweak_sound = tweak_data.weapon[self._name_id].sounds or {}
 	local sound = self._sound_fire:post_event(tweak_sound.stop_fire)
+
 	sound = sound or self._sound_fire:post_event(tweak_sound.stop_fire)
 end
 

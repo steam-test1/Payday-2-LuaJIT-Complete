@@ -8,10 +8,10 @@ function CustomSafehouseGui:init(...)
 	if self._in_game then
 		self._bg = self._fullscreen_panel:gradient({
 			blend_mode = "normal",
-			visible = true,
 			orientation = "vertical",
-			y = 0,
 			valign = "center",
+			visible = true,
+			y = 0,
 			w = self._fullscreen_panel:w(),
 			h = self._fullscreen_panel:h(),
 			gradient_points = {
@@ -27,9 +27,9 @@ function CustomSafehouseGui:init(...)
 end
 
 function CustomSafehouseGui:_start_page_data()
-	local data = {
-		topic_id = "menu_custom_safehouse"
-	}
+	local data = {}
+
+	data.topic_id = "menu_custom_safehouse"
 
 	return data
 end

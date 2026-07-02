@@ -8,6 +8,7 @@ function SpoocLogicAttack.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.combat
 
@@ -22,6 +23,7 @@ function SpoocLogicAttack.enter(data, new_logic_name, enter_params)
 	end
 
 	local key_str = tostring(data.key)
+
 	my_data.update_queue_id = "SpoocLogicAttack.queued_update" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.update_queue_id, SpoocLogicAttack.queued_update, data, data.t)
@@ -77,7 +79,9 @@ end
 
 function SpoocLogicAttack.queued_update(data)
 	local t = TimerManager:game():time()
+
 	data.t = t
+
 	local unit = data.unit
 	local my_data = data.internal_data
 
@@ -138,7 +142,7 @@ function SpoocLogicAttack.queued_update(data)
 		return
 	end
 
-	if AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+	if data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
 		my_data.want_to_take_cover = CopLogicAttack._chk_wants_to_take_cover(data, my_data)
 
 		CopLogicAttack._update_cover(data)
@@ -213,7 +217,7 @@ end
 function SpoocLogicAttack._upd_spooc_attack(data, my_data)
 	local focus_enemy = data.attention_obj
 
-	if focus_enemy.nav_tracker and focus_enemy.is_person and focus_enemy.criminal_record and not focus_enemy.criminal_record.status and not my_data.spooc_attack and AIAttentionObject.REACT_SHOOT <= focus_enemy.reaction and data.spooc_attack_timeout_t < data.t and focus_enemy.verified_dis < (my_data.want_to_take_cover and 1500 or 2500) and not data.unit:movement():chk_action_forbidden("walk") and not SpoocLogicAttack._is_last_standing_criminal(focus_enemy) and not focus_enemy.unit:movement():zipline_unit() and focus_enemy.unit:movement():is_SPOOC_attack_allowed() then
+	if focus_enemy.nav_tracker and focus_enemy.is_person and focus_enemy.criminal_record and not focus_enemy.criminal_record.status and not my_data.spooc_attack and focus_enemy.reaction >= AIAttentionObject.REACT_SHOOT and data.t > data.spooc_attack_timeout_t and focus_enemy.verified_dis < (my_data.want_to_take_cover and 1500 or 2500) and not data.unit:movement():chk_action_forbidden("walk") and not SpoocLogicAttack._is_last_standing_criminal(focus_enemy) and not focus_enemy.unit:movement():zipline_unit() and focus_enemy.unit:movement():is_SPOOC_attack_allowed() then
 		if focus_enemy.verified and ActionSpooc.chk_can_start_spooc_sprint(data.unit, focus_enemy.unit) and not data.unit:raycast("ray", data.unit:movement():m_head_pos(), focus_enemy.m_head_pos, "slot_mask", managers.slot:get_mask("bullet_impact_targets_no_criminals"), "ignore_unit", focus_enemy.unit, "report") then
 			if my_data.attention_unit ~= focus_enemy.u_key then
 				CopLogicBase._set_attention(data, focus_enemy)
@@ -276,16 +280,16 @@ function SpoocLogicAttack._chk_request_action_spooc_attack(data, my_data, flying
 
 	if flying_strike then
 		new_action_data.blocks = {
-			light_hurt = -1,
-			heavy_hurt = -1,
-			idle = -1,
-			turn = -1,
-			fire_hurt = -1,
-			walk = -1,
 			act = -1,
-			hurt = -1,
 			expl_hurt = -1,
-			taser_tased = -1
+			fire_hurt = -1,
+			heavy_hurt = -1,
+			hurt = -1,
+			idle = -1,
+			light_hurt = -1,
+			taser_tased = -1,
+			turn = -1,
+			walk = -1
 		}
 	end
 

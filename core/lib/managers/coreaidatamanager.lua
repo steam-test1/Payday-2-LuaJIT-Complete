@@ -8,9 +8,8 @@ function AiDataManager:init()
 end
 
 function AiDataManager:_setup()
-	self._data = {
-		patrol_paths = {}
-	}
+	self._data = {}
+	self._data.patrol_paths = {}
 end
 
 function AiDataManager:add_patrol_path(name)

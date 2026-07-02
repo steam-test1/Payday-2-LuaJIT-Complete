@@ -20,7 +20,8 @@ function Prioritizer:remove_layer_description(input_layer_description_descriptio
 	assert(self._layer_descriptions[input_layer_description_description] ~= nil)
 
 	self._layer_descriptions[input_layer_description_description] = nil
-	local best_layer_description = nil
+
+	local best_layer_description
 
 	for _, layer_description in pairs(self._layer_descriptions) do
 		if not best_layer_description or layer_description:priority() < best_layer_description:priority() then

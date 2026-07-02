@@ -71,7 +71,8 @@ function CameraMixer:update(cud, cud_class, time, dt)
 
 	for index, _camera in ipairs(self._cameras) do
 		_camera.time = _camera.time + dt
-		local factor = nil
+
+		local factor
 
 		if index > 1 then
 			factor = math.sin(math.clamp(safe_divide(_camera.time, _camera.blend_time), 0, 1) * 90)
@@ -101,7 +102,7 @@ function CameraMixer:debug_render(t, dt)
 
 	for _, camera in ipairs(self._cameras) do
 		local cam = camera.camera
-		local parent_node = nil
+		local parent_node
 
 		for _, node in ipairs(cam._nodes) do
 			node:debug_render(t, dt)

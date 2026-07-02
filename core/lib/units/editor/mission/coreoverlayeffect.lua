@@ -19,6 +19,7 @@ end
 function CoreOverlayEffectUnitElement:test_element()
 	if self._hed.effect ~= "none" then
 		local effect = clone(managers.overlay_effect:presets()[self._hed.effect])
+
 		effect.sustain = self._hed.sustain or effect.sustain
 		effect.fade_in = self._hed.fade_in or effect.fade_in
 		effect.fade_out = self._hed.fade_out or effect.fade_out
@@ -66,6 +67,7 @@ function CoreOverlayEffectUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local options = {}
 
 	for name, _ in pairs(managers.overlay_effect:presets()) do
@@ -73,12 +75,12 @@ function CoreOverlayEffectUnitElement:_build_panel(panel, panel_sizer)
 	end
 
 	local effect_params = {
+		ctrlr_proportions = 2,
 		default = "none",
 		name = "Effect:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select a preset effect for the combo box",
 		sorted = true,
+		tooltip = "Select a preset effect for the combo box",
 		panel = panel,
 		sizer = panel_sizer,
 		options = options,

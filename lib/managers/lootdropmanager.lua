@@ -54,6 +54,7 @@ end
 
 function LootDropManager:_setup_items()
 	local pc_items = {}
+
 	Global.lootdrop_manager.pc_items = pc_items
 
 	local function sort_pc(type, data)
@@ -91,7 +92,7 @@ function LootDropManager:_setup_items()
 		end
 	end
 
-	local k, v = nil
+	local k, v
 
 	for key, data in pairs(tweak_data.blackmarket) do
 		if type(data) == "table" then
@@ -113,6 +114,7 @@ function LootDropManager:droppable_items(item_pc, infamous_success, skip_types)
 
 	for type, items in pairs(pc_items) do
 		local type_tweak = tweak_data.blackmarket[type]
+
 		droppable_items[type] = {}
 		maxed_inventory_items[type] = {}
 
@@ -201,6 +203,7 @@ function LootDropManager:infamous_chance(setup_data)
 
 	if not setup_data or not setup_data.disable_difficulty then
 		local difficulty_stars = managers.job:current_difficulty_stars() or 0
+
 		infamous_diff = tweak_data.lootdrop.risk_infamous_multiplier[difficulty_stars] or 1
 	end
 
@@ -227,7 +230,7 @@ function LootDropManager:_get_random_item_pc(debug, debug_stars, setup_data)
 	local pcs = tweak_data.lootdrop.STARS[stars].pcs
 	local chance_curve = tweak_data.lootdrop.STARS_CURVES[stars]
 	local start_chance = tweak_data.lootdrop.PC_CHANCE[stars]
-	local no_pcs, item_pc = nil
+	local no_pcs, item_pc
 
 	if setup_data and setup_data.max_pcs then
 		no_pcs = setup_data.max_pcs
@@ -275,8 +278,11 @@ function LootDropManager:_new_make_drop(debug, add_to_inventory, debug_stars, re
 	return_data.player_level = plvl
 	return_data.player_stars = pstars
 	return_data.payclass = pc
+
 	local item_pc = self:_get_random_item_pc(debug, debug_stars, setup_data)
+
 	return_data.item_payclass = item_pc
+
 	local infamous_chance, infamous_base_chance, infamous_base_multiplier = self:infamous_chance(setup_data)
 	local infamous_roll = math.rand(1)
 	local infamous_success = infamous_roll < infamous_chance
@@ -300,6 +306,7 @@ function LootDropManager:_new_make_drop(debug, add_to_inventory, debug_stars, re
 
 	if setup_data and setup_data.preferred_type and setup_data.preferred_chance then
 		local increase = setup_data.preferred_chance * sum
+
 		weighted_type_chance[setup_data.preferred_type] = (weighted_type_chance[setup_data.preferred_type] or 0) + increase
 		sum = sum + increase
 	end
@@ -320,7 +327,7 @@ function LootDropManager:_new_make_drop(debug, add_to_inventory, debug_stars, re
 
 	local pc_type = setup_data and setup_data.preferred_type_drop or self:_get_type_items(normalized_chance, debug)
 	local drop_table = droppable_items[pc_type] or maxed_inventory_items[pc_type]
-	local global_value, entry = nil
+	local global_value, entry
 
 	if drop_table then
 		sum = 0
@@ -369,17 +376,19 @@ function LootDropManager:new_make_mass_drop(amount, item_pc, return_data, setup_
 	local pcs = tweak_data.lootdrop.STARS[stars].pcs
 	local chance_curve = tweak_data.lootdrop.STARS_CURVES[stars]
 	local start_chance = tweak_data.lootdrop.PC_CHANCE[stars]
+
 	return_data = return_data or {}
 	return_data.job_stars = stars
 	return_data.total_stars = stars
 	return_data.player_level = plvl
 	return_data.player_stars = pstars
 	return_data.payclass = pc
+
 	local infamous_chance, infamous_base_chance, infamous_base_multiplier = self:infamous_chance(setup_data)
 	local infamous_success = false
 
 	for i = 1, amount do
-		if math.rand(1) < infamous_chance then
+		if infamous_chance > math.rand(1) then
 			infamous_success = true
 
 			break
@@ -387,12 +396,14 @@ function LootDropManager:new_make_mass_drop(amount, item_pc, return_data, setup_
 	end
 
 	local droppable_items, maxed_inventory_items = self:droppable_items(item_pc or 40, infamous_success, setup_data and setup_data.skip_types)
-	local global_value, entry = nil
+	local global_value, entry
+
 	return_data.items = {}
 	return_data.progress = {
 		total = amount
 	}
-	local co = coroutine.create(function ()
+
+	local co = coroutine.create(function()
 		local itr = 0
 
 		for i = 1, amount do
@@ -406,6 +417,7 @@ function LootDropManager:new_make_mass_drop(amount, item_pc, return_data, setup_
 
 			if setup_data and setup_data.preferred_type and setup_data.preferred_chance then
 				local increase = setup_data.preferred_chance * sum
+
 				weighted_type_chance[setup_data.preferred_type] = (weighted_type_chance[setup_data.preferred_type] or 0) + increase
 				sum = sum + increase
 			end
@@ -469,13 +481,14 @@ end
 function LootDropManager:debug_drop(amount, add_to_inventory, stars)
 	amount = amount or 10
 	add_to_inventory = add_to_inventory or false
+
 	local debug_infamous = 0
 	local debug_max_pc = 0
 
 	if stars == "random" then
 		-- Nothing
-	elseif not stars then
-		stars = 5
+	else
+		stars = stars or 5
 	end
 
 	self._debug_drop_result = {}
@@ -483,6 +496,7 @@ function LootDropManager:debug_drop(amount, add_to_inventory, stars)
 	for i = 1, amount do
 		local s = stars == "random" and math.random(10) or stars
 		local global_value, category, id, pc = self:_make_drop(true, add_to_inventory, s)
+
 		self._debug_drop_result[global_value] = self._debug_drop_result[global_value] or {}
 		self._debug_drop_result[global_value][category] = self._debug_drop_result[global_value][category] or {}
 		self._debug_drop_result[global_value][category][id] = (self._debug_drop_result[global_value][category][id] or 0) + 1
@@ -512,27 +526,35 @@ end
 function LootDropManager:_make_drop(debug, add_to_inventory, debug_stars, return_data)
 	local plvl = managers.experience:current_level()
 	local stars = debug_stars or managers.job:current_job_stars()
+
 	return_data = return_data or {}
 	return_data.job_stars = stars
 	return_data.player_level = plvl
+
 	local difficulty = Global.game_settings.difficulty or "easy"
 	local difficulty_id = math.max(0, (tweak_data:difficulty_to_index(difficulty) or 0) - 2)
+
 	stars = stars + difficulty_id
+
 	local player_stars = math.max(math.ceil(plvl / 10), 1)
+
 	difficulty_id = math.min(difficulty_id, stars - return_data.job_stars)
 	stars = player_stars
 	return_data.player_stars = player_stars
 	return_data.difficulty_stars = difficulty_id
 	return_data.total_stars = stars
+
 	local pc = math.lerp(0, 100, stars / 10)
+
 	return_data.payclass = pc
+
 	local drop_pc = stars * 10
 	local pcs = tweak_data.lootdrop.STARS[stars].pcs
 	local chance_risk_mod = tweak_data.lootdrop.risk_pc_multiplier[difficulty_id] or 0
 	local chance_curve = tweak_data.lootdrop.STARS_CURVES[stars]
 	local start_chance = tweak_data.lootdrop.PC_CHANCE[stars]
 	local no_pcs = #pcs
-	local pc = nil
+	local pc
 
 	for i = 1, no_pcs do
 		local chance = math.lerp(start_chance, 1, math.pow((i - 1) / (no_pcs - 1), chance_curve))
@@ -561,7 +583,7 @@ function LootDropManager:_make_drop(debug, add_to_inventory, debug_stars, return
 		normalized_chance[type] = weighted_type_chance[type] / sum
 	end
 
-	local has_result = nil
+	local has_result
 
 	while not has_result do
 		local type_items = self:_get_type_items(normalized_chance, debug)
@@ -571,7 +593,7 @@ function LootDropManager:_make_drop(debug, add_to_inventory, debug_stars, return
 		local block_item = false
 		local blackmarket_item_entry = tweak_data.blackmarket[type_items][item_entry]
 
-		if not blackmarket_item_entry.qlvl or blackmarket_item_entry.qlvl <= plvl then
+		if not blackmarket_item_entry.qlvl or plvl >= blackmarket_item_entry.qlvl then
 			local global_value_chance = math.rand(1)
 			local quality_mul = managers.player:upgrade_value("player", "passive_loot_drop_multiplier", 1) * managers.player:upgrade_value("player", "loot_drop_multiplier", 1)
 
@@ -579,10 +601,13 @@ function LootDropManager:_make_drop(debug, add_to_inventory, debug_stars, return
 				global_value = "infamous"
 			else
 				local dlcs = blackmarket_item_entry.dlcs or {}
-				local dlc = blackmarket_item_entry.dlc
 
-				if dlc then
-					table.insert(dlcs, dlc)
+				do
+					local dlc = blackmarket_item_entry.dlc
+
+					if dlc then
+						table.insert(dlcs, dlc)
+					end
 				end
 
 				local dlc_global_values = {}
@@ -603,7 +628,7 @@ function LootDropManager:_make_drop(debug, add_to_inventory, debug_stars, return
 
 			if block_item then
 				-- Nothing
-			elseif blackmarket_item_entry.max_in_inventory and blackmarket_item_entry.max_in_inventory <= managers.blackmarket:get_item_amount(global_value, type_items, item_entry, true) then
+			elseif blackmarket_item_entry.max_in_inventory and managers.blackmarket:get_item_amount(global_value, type_items, item_entry, true) >= blackmarket_item_entry.max_in_inventory then
 				-- Nothing
 			elseif not blackmarket_item_entry.infamous or global_value == "infamous" then
 				has_result = true
@@ -648,7 +673,7 @@ function LootDropManager:can_drop_weapon_mods()
 			local pass_infamous = true
 			local pass_dlc = true
 			local pass_qlvl = not got_qlvl or got_qlvl <= plvl
-			local pass_max_in_inventory = nil
+			local pass_max_in_inventory
 			local global_value = "normal"
 
 			if is_infamous then
@@ -676,6 +701,7 @@ function LootDropManager:can_drop_weapon_mods()
 			end
 
 			local amount_in_inventory = managers.blackmarket:get_item_amount(global_value, "weapon_mods", item, true)
+
 			pass_max_in_inventory = not item_tweak.max_in_inventory or amount_in_inventory < item_tweak.max_in_inventory
 
 			if pass_infamous and pass_dlc and pass_qlvl and pass_max_in_inventory then
@@ -770,8 +796,11 @@ function LootDropManager:set_mass_drop(data)
 	end
 
 	local amount_lootdrops = data.inventory_reward and 0 or 1
+
 	amount_lootdrops = amount_lootdrops + (data.additional_lootdrops or 0)
+
 	local item_pc = managers.lootdrop:get_random_item_pc()
+
 	data.coroutine = self:new_make_mass_drop(amount_lootdrops, item_pc, data)
 
 	return true
@@ -782,14 +811,15 @@ function LootDropManager:fetch_mass_lootdrops(data)
 		local status = coroutine.status(data.coroutine)
 
 		if status == "dead" then
-			local lootdrops = {
-				items = clone(data.items)
-			}
+			local lootdrops = {}
+
+			lootdrops.items = clone(data.items)
 
 			table.list_append(lootdrops.items, data.special_rewards or {})
 
 			lootdrops.cash = data.cash
 			lootdrops.xp = data.xp
+
 			local amount_coins = data.coins or 0
 
 			if amount_coins > 0 then

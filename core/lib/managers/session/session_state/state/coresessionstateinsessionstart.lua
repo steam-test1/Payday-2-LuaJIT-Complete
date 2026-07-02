@@ -10,6 +10,7 @@ function InSessionStart:init(session)
 end
 
 function InSessionStart:destroy()
+	return
 end
 
 function InSessionStart:transition()

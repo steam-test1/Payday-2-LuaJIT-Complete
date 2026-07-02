@@ -16,12 +16,12 @@ local ids_single = Idstring("single")
 local ids_auto = Idstring("auto")
 local ids_burst = Idstring("burst")
 local ids_volley = Idstring("volley")
-local FIRE_MODE_IDS = {
-	single = ids_single,
-	auto = ids_auto,
-	burst = ids_burst,
-	volley = ids_volley
-}
+local FIRE_MODE_IDS = {}
+
+FIRE_MODE_IDS.single = ids_single
+FIRE_MODE_IDS.auto = ids_auto
+FIRE_MODE_IDS.burst = ids_burst
+FIRE_MODE_IDS.volley = ids_volley
 NewRaycastWeaponBase = NewRaycastWeaponBase or class(RaycastWeaponBase)
 
 require("lib/units/weapons/CosmeticsWeaponBase")
@@ -46,6 +46,7 @@ function NewRaycastWeaponBase:init(unit)
 	self._fire_mode_category = self:weapon_tweak_data().FIRE_MODE
 	self._burst_count = self:weapon_tweak_data().BURST_COUNT or 3
 	self._fire_mode_data = {}
+
 	local fire_mode_data = self:weapon_tweak_data().fire_mode_data or {}
 
 	for id, ids in pairs(FIRE_MODE_IDS) do
@@ -147,6 +148,7 @@ function NewRaycastWeaponBase:_chk_charm_upd_state()
 			if c_data.update_enabled then
 				if not cur_upd_state then
 					c_data.update_enabled = false
+
 					local charm_body = c_data.body
 					local orig_parent = c_data.orig_body_parent
 
@@ -224,6 +226,7 @@ function NewRaycastWeaponBase:_default_damage_falloff()
 		optimal_range = weapon_tweak.damage_near,
 		far_falloff = weapon_tweak.damage_far
 	}
+
 	self._optimal_distance = falloff_data.optimal_distance or 0
 	self._optimal_range = falloff_data.optimal_range or 0
 	self._near_falloff = falloff_data.near_falloff or 0
@@ -276,6 +279,7 @@ function NewRaycastWeaponBase:set_factory_data(factory_id)
 end
 
 function NewRaycastWeaponBase:fire_mode_category()
+	return
 end
 
 function NewRaycastWeaponBase:_check_thq_align_anim()
@@ -309,7 +313,9 @@ end
 function NewRaycastWeaponBase:assemble(factory_id)
 	local third_person = self:_third_person()
 	local skip_queue = self:skip_queue()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person, self:is_npc(), callback(self, self, "clbk_assembly_complete", function ()
+
+	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person, self:is_npc(), callback(self, self, "clbk_assembly_complete", function()
+		return
 	end), skip_queue)
 
 	self:_check_thq_align_anim()
@@ -319,7 +325,9 @@ end
 function NewRaycastWeaponBase:assemble_from_blueprint(factory_id, blueprint, clbk)
 	local third_person = self:_third_person()
 	local skip_queue = self:skip_queue()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person, self:is_npc(), callback(self, self, "clbk_assembly_complete", clbk or function ()
+
+	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person, self:is_npc(), callback(self, self, "clbk_assembly_complete", clbk or function()
+		return
 	end), skip_queue)
 
 	self:_check_thq_align_anim()
@@ -333,10 +341,10 @@ function NewRaycastWeaponBase:_refresh_gadget_list()
 		return
 	end
 
-	local part_a, part_b = nil
+	local part_a, part_b
 	local part_factory = tweak_data.weapon.factory.parts
 
-	table.sort(self._gadgets, function (a, b)
+	table.sort(self._gadgets, function(a, b)
 		part_a = self._parts[a]
 		part_b = self._parts[b]
 
@@ -348,7 +356,7 @@ function NewRaycastWeaponBase:_refresh_gadget_list()
 			return true
 		end
 
-		return part_b.unit:base().GADGET_TYPE < part_a.unit:base().GADGET_TYPE
+		return part_a.unit:base().GADGET_TYPE > part_b.unit:base().GADGET_TYPE
 	end)
 end
 
@@ -375,6 +383,7 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 		"magazine_extra_3",
 		"magazine_extra_4"
 	}
+
 	self._bullet_objects = {}
 
 	for _, type in ipairs(bullet_object_parts) do
@@ -405,11 +414,13 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 
 			if bullet_belt then
 				local parent_id = managers.weapon_factory:get_part_id_from_weapon_by_type(type, self._blueprint)
+
 				self._custom_units = self._custom_units or {}
 				self._custom_units.bullet_belt = {
 					parent = parent_id,
 					parts = bullet_belt
 				}
+
 				local parts_tweak = tweak_data.weapon.factory.parts
 				local bullet_index = bullet_objects and 1 + bullet_objects.amount + (bullet_objects.offset or 0) or 1
 
@@ -454,7 +465,8 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	end
 
 	self:setup_underbarrel_data()
-	self:_apply_cosmetics(clbk or function ()
+	self:_apply_cosmetics(clbk or function()
+		return
 	end)
 	self:apply_texture_switches()
 	self:apply_material_parameters()
@@ -539,20 +551,23 @@ end
 
 function NewRaycastWeaponBase:apply_texture_switches()
 	local parts_tweak = tweak_data.weapon.factory.parts
+
 	self._parts_texture_switches = self._parts_texture_switches or {}
 
 	if self._texture_switches then
-		local texture_switch, part_data, unit, material_ids, material_config, switch_material = nil
+		local texture_switch, part_data, unit, material_ids, material_config, switch_material
 
 		for part_id, texture_data in pairs(self._texture_switches) do
 			if self._parts_texture_switches[part_id] ~= texture_data then
 				local switch_materials = {}
+
 				texture_switch = parts_tweak[part_id] and parts_tweak[part_id].texture_switch
 				part_data = self._parts and self._parts[part_id]
 
 				if texture_switch and part_data then
 					unit = part_data.unit
 					material_config = unit:get_objects_by_type(Idstring("material"))
+
 					local ids = {}
 
 					if type(texture_switch.material) == "table" then
@@ -597,6 +612,7 @@ function NewRaycastWeaponBase:apply_texture_switches()
 end
 
 function NewRaycastWeaponBase:check_npc()
+	return
 end
 
 function NewRaycastWeaponBase:has_range_distance_scope()
@@ -608,7 +624,7 @@ function NewRaycastWeaponBase:_chk_has_range_distance_scope()
 		return false
 	end
 
-	local part, digital_gui, digital_gui_upper = nil
+	local part, digital_gui, digital_gui_upper
 
 	for i, part_id in ipairs(self._scopes) do
 		part = self._parts[part_id]
@@ -629,10 +645,11 @@ function NewRaycastWeaponBase:set_scope_range_distance(distance)
 	end
 
 	if self._scopes and self._parts then
-		local part = nil
+		local part
 
 		for i, part_id in ipairs(self._scopes) do
 			part = self._parts[part_id]
+
 			local digital_gui = part and part.unit:digital_gui()
 
 			if digital_gui and digital_gui.number_set then
@@ -657,7 +674,7 @@ function NewRaycastWeaponBase:_chk_has_unit_health_display()
 		return false
 	end
 
-	local part, digital_gui_thd = nil
+	local part, digital_gui_thd
 
 	for i, part_id in ipairs(self._unit_health_displays) do
 		part = self._parts[part_id]
@@ -682,16 +699,16 @@ function NewRaycastWeaponBase:set_unit_health_display(unit)
 	local health = false
 
 	if unit then
-		if unit:in_slot(8) and alive(unit:parent()) then
-			unit = unit:parent() or unit
-		end
+		unit = unit:in_slot(8) and alive(unit:parent()) and unit:parent() or unit
 
 		local char_dmg_ext = unit:character_damage()
+
 		health = char_dmg_ext and char_dmg_ext.health and char_dmg_ext:health() or false
 	end
 
 	health = health and math.round(health) * 10
-	local part, digital_gui_thd = nil
+
+	local part, digital_gui_thd
 
 	for i, part_id in ipairs(self._unit_health_displays) do
 		part = self._parts[part_id]
@@ -713,13 +730,16 @@ function NewRaycastWeaponBase:call_on_digital_gui(func_name, ...)
 
 	if self._scopes and self._parts then
 		local params = {
-			[#params + 1] = false,
 			...
 		}
-		local part = nil
+
+		params[#params + 1] = false
+
+		local part
 
 		for i, part_id in ipairs(self._scopes) do
 			part = self._parts[part_id]
+
 			local digital_gui = part and part.unit:digital_gui()
 
 			if digital_gui and digital_gui[func_name] then
@@ -744,9 +764,7 @@ function NewRaycastWeaponBase:check_highlight_unit(unit)
 		return
 	end
 
-	if unit:in_slot(8) and alive(unit:parent()) then
-		unit = unit:parent() or unit
-	end
+	unit = unit:in_slot(8) and alive(unit:parent()) and unit:parent() or unit
 
 	if not unit or not unit:base() then
 		return
@@ -849,6 +867,7 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	self:_check_sound_switch()
 
 	self._silencer = managers.weapon_factory:has_perk("silencer", self._factory_id, self._blueprint)
+
 	local weapon_perks = managers.weapon_factory:get_perks(self._factory_id, self._blueprint) or {}
 
 	if weapon_perks.fire_mode_auto then
@@ -869,10 +888,13 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	self._can_shoot_through_enemy = tweak_data.weapon[self._name_id].can_shoot_through_enemy
 	self._can_shoot_through_wall = tweak_data.weapon[self._name_id].can_shoot_through_wall
 	self._armor_piercing_chance = self:weapon_tweak_data().armor_piercing_chance or 0
+
 	local categories = self:categories()
 	local primary_category = categories and categories[1]
+
 	self._movement_penalty = tweak_data.upgrades.weapon_movement_penalty[primary_category] or 1
 	self._burst_count = self:weapon_tweak_data().BURST_COUNT or 3
+
 	local fire_mode_data = self:weapon_tweak_data().fire_mode_data or {}
 	local volley_fire_mode = fire_mode_data.volley
 
@@ -884,69 +906,73 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	end
 
 	local custom_stats = managers.weapon_factory:get_custom_stats_from_weapon(self._factory_id, self._blueprint)
-	local part_data = nil
-	local is_underbarrel = self.is_underbarrel and self:is_underbarrel()
-	local weap_factory_parts = tweak_data.weapon.factory.parts
 
-	for part_id, stats in pairs(custom_stats) do
-		part_data = weap_factory_parts[part_id]
-		local can_apply = true
+	do
+		local part_data
+		local is_underbarrel = self.is_underbarrel and self:is_underbarrel()
+		local weap_factory_parts = tweak_data.weapon.factory.parts
 
-		if part_data.type == "underbarrel_ammo" then
-			can_apply = is_underbarrel
-		elseif part_data.type == "ammo" then
-			can_apply = not is_underbarrel
-		end
+		for part_id, stats in pairs(custom_stats) do
+			part_data = weap_factory_parts[part_id]
 
-		if can_apply then
-			if stats.movement_speed then
-				self._movement_penalty = self._movement_penalty * stats.movement_speed
+			local can_apply = true
+
+			if part_data.type == "underbarrel_ammo" then
+				can_apply = is_underbarrel
+			elseif part_data.type == "ammo" then
+				can_apply = not is_underbarrel
 			end
 
-			if part_data.type ~= "ammo" and part_data.type ~= "underbarrel_ammo" then
-				if stats.ammo_pickup_min_mul then
-					self._ammo_data.ammo_pickup_min_mul = self._ammo_data.ammo_pickup_min_mul and self._ammo_data.ammo_pickup_min_mul * stats.ammo_pickup_min_mul or stats.ammo_pickup_min_mul
+			if can_apply then
+				if stats.movement_speed then
+					self._movement_penalty = self._movement_penalty * stats.movement_speed
 				end
 
-				if stats.ammo_pickup_max_mul then
-					self._ammo_data.ammo_pickup_max_mul = self._ammo_data.ammo_pickup_max_mul and self._ammo_data.ammo_pickup_max_mul * stats.ammo_pickup_max_mul or stats.ammo_pickup_max_mul
+				if part_data.type ~= "ammo" and part_data.type ~= "underbarrel_ammo" then
+					if stats.ammo_pickup_min_mul then
+						self._ammo_data.ammo_pickup_min_mul = self._ammo_data.ammo_pickup_min_mul and self._ammo_data.ammo_pickup_min_mul * stats.ammo_pickup_min_mul or stats.ammo_pickup_min_mul
+					end
+
+					if stats.ammo_pickup_max_mul then
+						self._ammo_data.ammo_pickup_max_mul = self._ammo_data.ammo_pickup_max_mul and self._ammo_data.ammo_pickup_max_mul * stats.ammo_pickup_max_mul or stats.ammo_pickup_max_mul
+					end
+
+					if stats.ammo_offset then
+						self._ammo_data.ammo_offset = (self._ammo_data.ammo_offset or 0) + stats.ammo_offset
+					end
+
+					if stats.fire_rate_multiplier then
+						self._ammo_data.fire_rate_multiplier = (self._ammo_data.fire_rate_multiplier or 0) + (stats.fire_rate_multiplier - 1)
+					end
 				end
 
-				if stats.ammo_offset then
-					self._ammo_data.ammo_offset = (self._ammo_data.ammo_offset or 0) + stats.ammo_offset
+				if stats.burst_count then
+					self._burst_count = stats.burst_count
 				end
 
-				if stats.fire_rate_multiplier then
-					self._ammo_data.fire_rate_multiplier = (self._ammo_data.fire_rate_multiplier or 0) + stats.fire_rate_multiplier - 1
+				if stats.volley_spread_mul then
+					self._volley_spread_mul = stats.volley_spread_mul
 				end
-			end
 
-			if stats.burst_count then
-				self._burst_count = stats.burst_count
-			end
+				if stats.volley_damage_mul then
+					self._volley_damage_mul = stats.volley_damage_mul
+				end
 
-			if stats.volley_spread_mul then
-				self._volley_spread_mul = stats.volley_spread_mul
-			end
+				if stats.volley_ammo_usage then
+					self._volley_ammo_usage = stats.volley_ammo_usage
+				end
 
-			if stats.volley_damage_mul then
-				self._volley_damage_mul = stats.volley_damage_mul
-			end
+				if stats.volley_rays then
+					self._volley_rays = stats.volley_rays
+				end
 
-			if stats.volley_ammo_usage then
-				self._volley_ammo_usage = stats.volley_ammo_usage
-			end
+				if stats.launch_speed_mul then
+					self._launch_speed_mul = stats.launch_speed_mul
+				end
 
-			if stats.volley_rays then
-				self._volley_rays = stats.volley_rays
-			end
-
-			if stats.launch_speed_mul then
-				self._launch_speed_mul = stats.launch_speed_mul
-			end
-
-			if stats.charge_speed_mul then
-				self._charge_speed_mul = stats.charge_speed_mul
+				if stats.charge_speed_mul then
+					self._charge_speed_mul = stats.charge_speed_mul
+				end
 			end
 		end
 	end
@@ -1027,6 +1053,7 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 		position = Vector3(),
 		normal = Vector3()
 	}
+
 	local base_stats = self:weapon_tweak_data().stats
 
 	if not base_stats then
@@ -1124,6 +1151,7 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
+
 	self._fire_rate_multiplier = managers.blackmarket:fire_rate_multiplier(self._name_id, categories, self._silencer, nil, current_state, self._blueprint)
 
 	if self._ammo_data.fire_rate_multiplier then
@@ -1149,6 +1177,7 @@ function NewRaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
 
 	if current_state and current_state:in_steelsight() then
 		local mul = managers.player:upgrade_value(primary_category, "steelsight_range_inc", 1)
+
 		optimal_end = optimal_end * mul
 		far_dist = far_dist * mul
 	end
@@ -1184,27 +1213,16 @@ function NewRaycastWeaponBase:is_weak_hit(distance, user_unit)
 
 	if current_state and current_state:in_steelsight() then
 		local mul = managers.player:upgrade_value(primary_category, "steelsight_range_inc", 1)
+
 		far_distance = far_distance * mul
 	end
 
 	local scale_mul = 1
 
 	if distance < near_distance then
-		if self._near_multiplier < 1 then
-			if 0.5 or self._near_multiplier > 1 then
-				scale_mul = 1.2
-
-				if 1.2 then
-					-- Nothing
-				end
-			end
-		end
-	elseif far_distance < distance then
-		if self._far_multiplier < 1 then
-			scale_mul = 0.5
-		elseif self._far_multiplier > 1 then
-			scale_mul = 1.2
-		end
+		scale_mul = self._near_multiplier < 1 and 0.5 or self._near_multiplier > 1 and 1.2 or scale_mul
+	else
+		scale_mul = far_distance < distance and (self._far_multiplier < 1 and 0.5 or self._far_multiplier > 1 and 1.2) or scale_mul
 	end
 
 	return scale_mul
@@ -1220,6 +1238,7 @@ end
 
 function NewRaycastWeaponBase:_check_reticle_obj()
 	self._reticle_obj = nil
+
 	local part = managers.weapon_factory:get_part_from_weapon_by_type("sight", self._parts)
 
 	if part then
@@ -1240,10 +1259,9 @@ function NewRaycastWeaponBase:_check_second_sight()
 
 		for _, part_id in ipairs(self._gadgets) do
 			if factory.parts[part_id].sub_type == "second_sight" then
-				self._second_sight_data = {
-					part_id = part_id,
-					unit = self._parts and self._parts[part_id] and alive(self._parts[part_id].unit) and self._parts[part_id].unit
-				}
+				self._second_sight_data = {}
+				self._second_sight_data.part_id = part_id
+				self._second_sight_data.unit = self._parts and self._parts[part_id] and alive(self._parts[part_id].unit) and self._parts[part_id].unit
 
 				break
 			end
@@ -1324,8 +1342,10 @@ function NewRaycastWeaponBase:replenish()
 	end
 
 	ammo_max_multiplier = managers.modifiers:modify_value("WeaponBase:GetMaxAmmoMultiplier", ammo_max_multiplier)
+
 	local ammo_max_per_clip = self:calculate_ammo_max_per_clip()
 	local ammo_max = math.round((tweak_data.weapon[self._name_id].AMMO_MAX + managers.player:upgrade_value(self._name_id, "clip_amount_increase") * ammo_max_per_clip) * ammo_max_multiplier)
+
 	ammo_max_per_clip = math.min(ammo_max_per_clip, ammo_max)
 
 	self:set_ammo_max_per_clip(ammo_max_per_clip)
@@ -1375,6 +1395,7 @@ function NewRaycastWeaponBase:calculate_ammo_max_per_clip()
 	end
 
 	local ammo = tweak_data.weapon[self._name_id].CLIP_AMMO_MAX + added
+
 	ammo = ammo + managers.player:upgrade_value(self._name_id, "clip_ammo_increase")
 
 	if not self:upgrade_blocked("weapon", "clip_ammo_increase") then
@@ -1409,9 +1430,12 @@ function NewRaycastWeaponBase:stance_mod()
 		return nil
 	end
 
-	local second_sight_data = self:get_active_second_sight()
+	do
+		local second_sight_data = self:get_active_second_sight()
 
-	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, second_sight_data and second_sight_data.part_id)
+		return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, second_sight_data and second_sight_data.part_id)
+	end
+
 	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, self:is_second_sight_on())
 end
 
@@ -1470,12 +1494,14 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 	end
 
 	self._active_animation_effects[anim] = {}
+
 	local data = tweak_data.weapon.factory[self._factory_id]
 
 	if data.animations and data.animations[unit_anim] then
 		local anim_name = data.animations[unit_anim]
 		local ids_anim_name = Idstring(anim_name)
 		local length = self._unit:anim_length(ids_anim_name)
+
 		speed_multiplier = speed_multiplier or 1
 
 		self._unit:anim_stop(ids_anim_name)
@@ -1494,6 +1520,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 		if effect_table then
 			effect_table = clone(effect_table)
 			effect_table.parent = effect_table.parent and self._unit:get_object(effect_table.parent)
+
 			local effect = effect_manager:spawn(effect_table)
 
 			table.insert(self._active_animation_effects[anim], effect)
@@ -1505,6 +1532,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 			local anim_name = data.animations[unit_anim]
 			local ids_anim_name = Idstring(anim_name)
 			local length = data.unit:anim_length(ids_anim_name)
+
 			speed_multiplier = speed_multiplier or 1
 
 			data.unit:anim_stop(ids_anim_name)
@@ -1523,6 +1551,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 			if effect_table then
 				effect_table = clone(effect_table)
 				effect_table.parent = effect_table.parent and data.unit:get_object(effect_table.parent)
+
 				local effect = effect_manager:spawn(effect_table)
 
 				table.insert(self._active_animation_effects[anim], effect)
@@ -1545,6 +1574,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play_at_end(anim, speed_multiplier
 		local anim_name = data.animations[unit_anim]
 		local ids_anim_name = Idstring(anim_name)
 		local length = self._unit:anim_length(ids_anim_name)
+
 		speed_multiplier = speed_multiplier or 1
 
 		self._unit:anim_stop(ids_anim_name)
@@ -1557,6 +1587,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play_at_end(anim, speed_multiplier
 			local anim_name = data.animations[unit_anim]
 			local ids_anim_name = Idstring(anim_name)
 			local length = data.unit:anim_length(ids_anim_name)
+
 			speed_multiplier = speed_multiplier or 1
 
 			data.unit:anim_stop(ids_anim_name)
@@ -1634,7 +1665,7 @@ end
 
 function NewRaycastWeaponBase:_set_parts_enabled(enabled)
 	if self._parts then
-		local anim_groups = nil
+		local anim_groups
 		local empty_s = Idstring("")
 
 		for part_id, data in pairs(self._parts) do
@@ -1699,7 +1730,7 @@ end
 function NewRaycastWeaponBase:_set_parts_visible(visible)
 	if self._parts then
 		local empty_s = Idstring("")
-		local anim_groups, is_visible = nil
+		local anim_groups, is_visible
 		local is_player = self._setup.user_unit == managers.player:player_unit()
 		local steelsight_swap_state = false
 
@@ -1841,6 +1872,7 @@ function NewRaycastWeaponBase:stop_shooting()
 		local weapon_tweak_data = self:weapon_tweak_data()
 		local fire_mode_data = weapon_tweak_data.fire_mode_data or {}
 		local next_fire = (fire_mode_data.burst_cooldown or self:weapon_fire_rate()) / self:fire_rate_multiplier()
+
 		self._next_fire_allowed = math.max(self._next_fire_allowed, self._unit:timer():time() + next_fire)
 		self._shooting_count = 0
 	elseif self._fire_mode == ids_volley then
@@ -1947,8 +1979,10 @@ function NewRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 	if self._fire_mode == ids_volley then
 		local ammo_usage_ratio = math.clamp(ammo_usage > 0 and ammo_usage / (self._volley_ammo_usage or ammo_usage) or 1, 0, 1)
 		local rays = math.ceil(ammo_usage_ratio * (self._volley_rays or 1))
+
 		spread_mul = spread_mul * (self._volley_spread_mul or 1)
 		dmg_mul = dmg_mul * (self._volley_damage_mul or 1)
+
 		local result = {
 			rays = {}
 		}
@@ -2029,7 +2063,7 @@ function NewRaycastWeaponBase:update_firemode_gui_ammo()
 		low_ammo = ammo < self:ammo_usage()
 	end
 
-	local color = nil
+	local color
 
 	if out_of_ammo then
 		color = Color(1, 0.8, 0, 0)
@@ -2176,7 +2210,7 @@ function NewRaycastWeaponBase:update_ammo_objects()
 			local queue_index = self._shotgun_queue_index % queue_num + 1
 			local queue_data = shotgun_reload_tweak.reload_queue[queue_index]
 			local queue_shell_order = queue_data and queue_data.shell_order
-			local reload_num = nil
+			local reload_num
 			local ammo_to_reload = 0
 
 			repeat
@@ -2185,7 +2219,7 @@ function NewRaycastWeaponBase:update_ammo_objects()
 				ammo_available = ammo_available - reload_num
 			until ammo_available <= 0 or queue_data and queue_data.stop_update_ammo
 
-			local is_visible, object_i = nil
+			local is_visible, object_i
 
 			for i, objects in pairs(self._ammo_objects) do
 				for _, object in ipairs(objects) do
@@ -2269,7 +2303,8 @@ function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, c
 	end
 
 	self._gadget_on = gadget_on or self._gadget_on
-	local gadget = nil
+
+	local gadget
 
 	for i, id in ipairs(gadgets or self._gadgets) do
 		gadget = self._parts[id]
@@ -2294,7 +2329,7 @@ function NewRaycastWeaponBase:get_active_gadget()
 	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
 
 	if gadgets then
-		local gadget = nil
+		local gadget
 
 		for i, id in ipairs(gadgets) do
 			gadget = self._parts[id]
@@ -2318,7 +2353,7 @@ function NewRaycastWeaponBase:set_gadget_color(color)
 	local gadgets = self._gadgets
 
 	if gadgets then
-		local gadget = nil
+		local gadget
 
 		for i, id in ipairs(gadgets) do
 			gadget = self._parts[id]
@@ -2362,7 +2397,7 @@ function NewRaycastWeaponBase:set_gadget_rotation(rot)
 end
 
 function NewRaycastWeaponBase:is_gadget_of_type_on(gadget_type)
-	local gadget = nil
+	local gadget
 
 	for i, id in ipairs(gadgets) do
 		gadget = self._parts[id]
@@ -2413,7 +2448,8 @@ function NewRaycastWeaponBase:set_second_sight_on(second_sight_on, ignore_enable
 	end
 
 	self._second_sight_on = second_sight_on or self._second_sight_on
-	local second_sight = nil
+
+	local second_sight
 
 	for i, data in ipairs(second_sights or self._second_sights) do
 		second_sight = data
@@ -2474,7 +2510,7 @@ end
 function NewRaycastWeaponBase:_refresh_second_sight_list()
 	local second_sights = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("second_sight", self._factory_id, self._blueprint)
 
-	table.sort(second_sights, function (a, b)
+	table.sort(second_sights, function(a, b)
 		return b < a
 	end)
 
@@ -2491,7 +2527,7 @@ end
 function NewRaycastWeaponBase:is_bipod_usable()
 	local retval = false
 	local bipod_part = managers.weapon_factory:get_parts_from_weapon_by_perk("bipod", self._parts)
-	local bipod_unit = nil
+	local bipod_unit
 
 	if bipod_part and bipod_part[1] then
 		bipod_unit = bipod_part[1].unit:base()
@@ -2536,6 +2572,7 @@ function NewRaycastWeaponBase:check_stats()
 	local tweak_data = tweak_data.weapon.stats
 	local modifier_stats = self:weapon_tweak_data().stats_modifiers
 	local primary_category = self:categories() and self:categories()[1]
+
 	stats.zoom = math.min(stats.zoom + managers.player:upgrade_value(primary_category, "zoom_increase", 0), #tweak_data.zoom)
 
 	for stat, _ in pairs(stats) do
@@ -2587,7 +2624,7 @@ function NewRaycastWeaponBase:_get_spread(user_unit)
 	end
 
 	local current_spread_value = spread_values[current_state:get_movement_state()]
-	local spread_x, spread_y = nil
+	local spread_x, spread_y
 
 	if type(current_spread_value) == "number" then
 		spread_x = self:_get_spread_from_number(user_unit, current_state, current_spread_value)
@@ -2598,14 +2635,14 @@ function NewRaycastWeaponBase:_get_spread(user_unit)
 
 	if current_state:in_steelsight() then
 		local steelsight_tweak = spread_values.steelsight
-		local multi_x, multi_y = nil
+		local multi_x, multi_y
 
 		if type(steelsight_tweak) == "number" then
-			multi_x = 1 + 1 - steelsight_tweak
+			multi_x = 1 + (1 - steelsight_tweak)
 			multi_y = multi_x
 		else
-			multi_x = 1 + 1 - steelsight_tweak[1]
-			multi_y = 1 + 1 - steelsight_tweak[2]
+			multi_x = 1 + (1 - steelsight_tweak[1])
+			multi_y = 1 + (1 - steelsight_tweak[2])
 		end
 
 		spread_x = spread_x * multi_x
@@ -2634,7 +2671,7 @@ end
 
 function NewRaycastWeaponBase:_get_spread_indices(current_state)
 	local spread_index = self._current_stats_indices and self._current_stats_indices.spread or 1
-	local spread_idx_x, spread_idx_y = nil
+	local spread_idx_x, spread_idx_y
 
 	if type(spread_index) == "number" then
 		spread_idx_x = self:_get_spread_index(current_state, spread_index)
@@ -2650,10 +2687,13 @@ end
 function NewRaycastWeaponBase:_get_spread_index(current_state, spread_index)
 	local cond_spread_addend = self:conditional_accuracy_addend(current_state)
 	local spread_multiplier = 1
+
 	spread_multiplier = spread_multiplier - (1 - self:spread_multiplier(current_state))
 	spread_multiplier = spread_multiplier - (1 - self:conditional_accuracy_multiplier(current_state))
 	spread_multiplier = self:_convert_add_to_mul(spread_multiplier)
+
 	local spread_addend = self:spread_index_addend(current_state) + cond_spread_addend
+
 	spread_index = math.ceil((spread_index + spread_addend) * spread_multiplier)
 	spread_index = math.clamp(spread_index, 1, #tweak_data.weapon.stats.spread)
 
@@ -2702,20 +2742,20 @@ function NewRaycastWeaponBase:conditional_accuracy_multiplier(current_state)
 	local pm = managers.player
 
 	if current_state:in_steelsight() and self:is_single_shot() then
-		mul = mul + 1 - pm:upgrade_value("player", "single_shot_accuracy_inc", 1)
+		mul = mul + (1 - pm:upgrade_value("player", "single_shot_accuracy_inc", 1))
 	end
 
 	if current_state:in_steelsight() then
 		for _, category in ipairs(self:categories()) do
-			mul = mul + 1 - managers.player:upgrade_value(category, "steelsight_accuracy_inc", 1)
+			mul = mul + (1 - managers.player:upgrade_value(category, "steelsight_accuracy_inc", 1))
 		end
 	end
 
 	if current_state._moving then
-		mul = mul + 1 - pm:upgrade_value("player", "weapon_movement_stability", 1)
+		mul = mul + (1 - pm:upgrade_value("player", "weapon_movement_stability", 1))
 	end
 
-	mul = mul + 1 - pm:get_property("desperado", 1)
+	mul = mul + (1 - pm:get_property("desperado", 1))
 
 	return self:_convert_add_to_mul(mul)
 end
@@ -2795,7 +2835,7 @@ function NewRaycastWeaponBase:recoil_multiplier()
 	end
 
 	if self._shooting_count and self._shooting_count >= 1 then
-		multiplier = multiplier * 1 / (self._shooting_count + 1)
+		multiplier = multiplier * (1 / (self._shooting_count + 1))
 	end
 
 	return multiplier
@@ -2806,18 +2846,18 @@ function NewRaycastWeaponBase:enter_steelsight_speed_multiplier()
 	local categories = self:categories()
 
 	for _, category in ipairs(categories) do
-		multiplier = multiplier + 1 - managers.player:upgrade_value(category, "enter_steelsight_speed_multiplier", 1)
+		multiplier = multiplier + (1 - managers.player:upgrade_value(category, "enter_steelsight_speed_multiplier", 1))
 	end
 
-	multiplier = multiplier + 1 - managers.player:temporary_upgrade_value("temporary", "combat_medic_enter_steelsight_speed_multiplier", 1)
-	multiplier = multiplier + 1 - managers.player:upgrade_value(self._name_id, "enter_steelsight_speed_multiplier", 1)
-	multiplier = multiplier + 1 - managers.player:upgrade_value("weapon", "enter_steelsight_speed_multiplier", 1)
+	multiplier = multiplier + (1 - managers.player:temporary_upgrade_value("temporary", "combat_medic_enter_steelsight_speed_multiplier", 1))
+	multiplier = multiplier + (1 - managers.player:upgrade_value(self._name_id, "enter_steelsight_speed_multiplier", 1))
+	multiplier = multiplier + (1 - managers.player:upgrade_value("weapon", "enter_steelsight_speed_multiplier", 1))
 
 	if self._silencer then
-		multiplier = multiplier + 1 - managers.player:upgrade_value("weapon", "silencer_enter_steelsight_speed_multiplier", 1)
+		multiplier = multiplier + (1 - managers.player:upgrade_value("weapon", "silencer_enter_steelsight_speed_multiplier", 1))
 
 		for _, category in ipairs(categories) do
-			multiplier = multiplier + 1 - managers.player:upgrade_value(category, "silencer_enter_steelsight_speed_multiplier", 1)
+			multiplier = multiplier + (1 - managers.player:upgrade_value(category, "silencer_enter_steelsight_speed_multiplier", 1))
 		end
 	end
 
@@ -2832,35 +2872,35 @@ function NewRaycastWeaponBase:reload_speed_multiplier()
 	local multiplier = 1
 
 	for _, category in ipairs(self:categories()) do
-		multiplier = multiplier + 1 - managers.player:upgrade_value(category, "reload_speed_multiplier", 1)
+		multiplier = multiplier + (1 - managers.player:upgrade_value(category, "reload_speed_multiplier", 1))
 	end
 
-	multiplier = multiplier + 1 - managers.player:upgrade_value("weapon", "passive_reload_speed_multiplier", 1)
-	multiplier = multiplier + 1 - managers.player:upgrade_value(self._name_id, "reload_speed_multiplier", 1)
+	multiplier = multiplier + (1 - managers.player:upgrade_value("weapon", "passive_reload_speed_multiplier", 1))
+	multiplier = multiplier + (1 - managers.player:upgrade_value(self._name_id, "reload_speed_multiplier", 1))
 
 	if self._setup and alive(self._setup.user_unit) and self._setup.user_unit:movement() then
 		local morale_boost_bonus = self._setup.user_unit:movement():morale_boost()
 
 		if morale_boost_bonus then
-			multiplier = multiplier + 1 - morale_boost_bonus.reload_speed_bonus
+			multiplier = multiplier + (1 - morale_boost_bonus.reload_speed_bonus)
 		end
 
 		if self._setup.user_unit:movement():next_reload_speed_multiplier() then
-			multiplier = multiplier + 1 - self._setup.user_unit:movement():next_reload_speed_multiplier()
+			multiplier = multiplier + (1 - self._setup.user_unit:movement():next_reload_speed_multiplier())
 		end
 	end
 
 	if managers.player:has_activate_temporary_upgrade("temporary", "reload_weapon_faster") then
-		multiplier = multiplier + 1 - managers.player:temporary_upgrade_value("temporary", "reload_weapon_faster", 1)
+		multiplier = multiplier + (1 - managers.player:temporary_upgrade_value("temporary", "reload_weapon_faster", 1))
 	end
 
 	if managers.player:has_activate_temporary_upgrade("temporary", "single_shot_fast_reload") then
-		multiplier = multiplier + 1 - managers.player:temporary_upgrade_value("temporary", "single_shot_fast_reload", 1)
+		multiplier = multiplier + (1 - managers.player:temporary_upgrade_value("temporary", "single_shot_fast_reload", 1))
 	end
 
-	multiplier = multiplier + 1 - managers.player:get_property("shock_and_awe_reload_multiplier", 1)
-	multiplier = multiplier + 1 - managers.player:get_temporary_property("bloodthirst_reload_speed", 1)
-	multiplier = multiplier + 1 - managers.player:upgrade_value("team", "crew_faster_reload", 1)
+	multiplier = multiplier + (1 - managers.player:get_property("shock_and_awe_reload_multiplier", 1))
+	multiplier = multiplier + (1 - managers.player:get_temporary_property("bloodthirst_reload_speed", 1))
+	multiplier = multiplier + (1 - managers.player:upgrade_value("team", "crew_faster_reload", 1))
 	multiplier = self:_convert_add_to_mul(multiplier)
 	multiplier = multiplier * self:reload_speed_stat()
 	multiplier = managers.modifiers:modify_value("WeaponBase:GetReloadSpeedMultiplier", multiplier)
@@ -2901,7 +2941,7 @@ function NewRaycastWeaponBase:reload_expire_t(is_not_empty)
 		if shotgun_reload_tweak and shotgun_reload_tweak.reload_queue then
 			local reload_expire_t = 0
 			local queue_index = 0
-			local queue_data = nil
+			local queue_data
 			local queue_num = #shotgun_reload_tweak.reload_queue
 
 			while ammo_to_reload > 0 do
@@ -2991,13 +3031,16 @@ function NewRaycastWeaponBase:start_reload(...)
 
 	if self._use_shotgun_reload then
 		self._started_reload_empty = self:clip_empty()
+
 		local speed_multiplier = self:reload_speed_multiplier()
 		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(not self._started_reload_empty)
 		local t = managers.player:player_timer():time()
 
 		if shotgun_reload_tweak and shotgun_reload_tweak.reload_queue then
 			self._shotgun_queue_index = 0
+
 			local next_queue_data = shotgun_reload_tweak.reload_queue[1]
+
 			self._next_shell_reloded_t = t + next_queue_data.expire_t / speed_multiplier
 
 			if not next_queue_data.skip_update_ammo then
@@ -3022,11 +3065,11 @@ function NewRaycastWeaponBase:started_reload_empty()
 end
 
 function NewRaycastWeaponBase:update_reloading(t, dt, time_left)
-	if self._use_shotgun_reload and self._next_shell_reloded_t and self._next_shell_reloded_t < t then
+	if self._use_shotgun_reload and self._next_shell_reloded_t and t > self._next_shell_reloded_t then
 		local speed_multiplier = self:reload_speed_multiplier()
 		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(not self._started_reload_empty)
 		local ammo_to_reload = 1
-		local next_queue_data = nil
+		local next_queue_data
 
 		if shotgun_reload_tweak and shotgun_reload_tweak.reload_queue then
 			self._shotgun_queue_index = self._shotgun_queue_index % #shotgun_reload_tweak.reload_queue + 1
@@ -3036,6 +3079,7 @@ function NewRaycastWeaponBase:update_reloading(t, dt, time_left)
 			end
 
 			local queue_data = shotgun_reload_tweak.reload_queue[self._shotgun_queue_index]
+
 			ammo_to_reload = queue_data and queue_data.reload_num or 1
 			next_queue_data = shotgun_reload_tweak.reload_queue[self._shotgun_queue_index + 1]
 			self._next_shell_reloded_t = self._next_shell_reloded_t + (next_queue_data and next_queue_data.expire_t or 0.5666666666666667) / speed_multiplier
@@ -3080,6 +3124,7 @@ function NewRaycastWeaponBase:shotgun_shell_data()
 			if reload_shell_data.ammo_units then
 				local ammo_remaining_in_clip = self:get_ammo_remaining_in_clip()
 				local ammo_available = math.min(self:get_ammo_total() - ammo_remaining_in_clip, self:get_ammo_max_per_clip() - ammo_remaining_in_clip)
+
 				unit_name = reload_shell_data.ammo_units[math.clamp(ammo_available, 1, #reload_shell_data.ammo_units)]
 			elseif reload_shell_data.unit_name then
 				unit_name = reload_shell_data.unit_name
@@ -3100,6 +3145,7 @@ end
 function NewRaycastWeaponBase:on_reload_stop()
 	self._bloodthist_value_during_reload = 0
 	self._current_reload_speed_multiplier = nil
+
 	local user_unit = managers.player:player_unit()
 
 	if user_unit then
@@ -3182,7 +3228,7 @@ end
 function NewRaycastWeaponBase:gadget_overrides_weapon_functions()
 	if self._cached_gadget == nil and self._assembly_complete then
 		local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("underbarrel", self._factory_id, self._blueprint)
-		local gadget = nil
+		local gadget
 
 		for i, id in ipairs(gadgets) do
 			gadget = self._parts[id]
@@ -3213,8 +3259,9 @@ end
 function NewRaycastWeaponBase:get_all_override_weapon_gadgets()
 	if self._cached_gadgets == nil and self._assembly_complete then
 		self._cached_gadgets = {}
+
 		local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("underbarrel", self._factory_id, self._blueprint)
-		local gadget = nil
+		local gadget
 
 		for i, id in ipairs(gadgets) do
 			gadget = self._parts[id]

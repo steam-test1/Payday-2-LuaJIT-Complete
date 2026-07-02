@@ -68,6 +68,7 @@ end
 
 function InteractionEditorGenericPanel:_build_ui(desc, node)
 	self._prop_box = EWS:BoxSizer("VERTICAL")
+
 	local properties = desc:node_properties(node)
 
 	if #properties > 0 then
@@ -77,7 +78,7 @@ function InteractionEditorGenericPanel:_build_ui(desc, node)
 			local prop_type = desc:property_type(node, prop)
 			local prop_value = desc:property_value(node, prop)
 			local box = EWS:StaticBoxSizer(self._scrolled_window, "VERTICAL", prop)
-			local widget = nil
+			local widget
 
 			if prop_type == "number" then
 				local w = CoreFloatSpinCtrl.FloatSpinCtrl:new(self._scrolled_window, 0, 1, 0.05, prop_value)
@@ -132,6 +133,7 @@ function InteractionEditorGenericPanel:_build_ui(desc, node)
 				table.insert(self._events, d.t)
 			elseif prop_type == "string" then
 				widget = EWS:TextCtrl(self._scrolled_window, prop_value:s(), "", "")
+
 				local d = {
 					t = "EVT_COMMAND_TEXT_ENTER",
 					widget = widget,
@@ -163,6 +165,7 @@ function InteractionEditorGenericPanel:_build_ui(desc, node)
 				widget:set_enabled(false)
 			else
 				widget = EWS:TextCtrl(self._scrolled_window, tostring(prop_value), "", "")
+
 				local d = {
 					t = "EVT_COMMAND_TEXT_ENTER",
 					widget = widget,
@@ -292,7 +295,7 @@ function InteractionEditorGenericPanel:_build_ui(desc, node)
 end
 
 function InteractionEditorGenericPanel:on_update_prop(data, event)
-	local v = nil
+	local v
 
 	if data.dtype == "number" then
 		v = tonumber(data.widget:get_value())

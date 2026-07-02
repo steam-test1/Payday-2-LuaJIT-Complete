@@ -1,4 +1,5 @@
 local tmp_vec1 = Vector3()
+
 CopLogicPhalanxMinion = class(CopLogicBase)
 CopLogicPhalanxMinion.on_alert = CopLogicIdle.on_alert
 CopLogicPhalanxMinion.on_new_objective = CopLogicIdle.on_new_objective
@@ -46,7 +47,9 @@ function CopLogicPhalanxMinion.enter(data, new_logic_name, enter_params)
 		unit = data.unit
 	}
 	local is_cool = data.unit:movement():cool()
+
 	my_data.detection = data.char_tweak.detection.combat
+
 	local old_internal_data = data.internal_data
 
 	if old_internal_data then
@@ -64,16 +67,20 @@ function CopLogicPhalanxMinion.enter(data, new_logic_name, enter_params)
 		end
 
 		local lower_body_action = data.unit:movement()._active_actions[2]
+
 		my_data.advancing = lower_body_action and lower_body_action:type() == "walk" and lower_body_action
 	end
 
 	data.internal_data = my_data
+
 	local key_str = tostring(data.unit:key())
+
 	my_data.detection_task_key = "CopLogicPhalanxMinion.update" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicPhalanxMinion.queued_update, data, data.t)
 
 	local objective = data.objective
+
 	objective.attitude = "engage"
 
 	CopLogicPhalanxMinion._chk_has_old_action(data, my_data)
@@ -219,6 +226,7 @@ function CopLogicPhalanxMinion._upd_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local delay = CopLogicBase._upd_attention_obj_detection(data, nil, nil)
 	local new_attention, new_prio_slot, new_reaction = CopLogicIdle._get_priority_attention(data, data.detected_attention_objects)
@@ -348,8 +356,10 @@ end
 function CopLogicPhalanxMinion._reposition_phalanx(fixed_angle)
 	local phalanx_minion_count = managers.groupai:state():get_phalanx_minion_count()
 	local center_pos = managers.groupai:state()._phalanx_center_pos
+
 	fixed_angle = fixed_angle or CopLogicPhalanxMinion._get_random_angle()
 	fixed_angle = math.round(fixed_angle, 2)
+
 	local phalanx_minions = managers.groupai:state():phalanx_minions()
 	local diffs_to_fixed_angle = {}
 	local fixed_angle_free = true
@@ -369,6 +379,7 @@ function CopLogicPhalanxMinion._reposition_phalanx(fixed_angle)
 				if added_phalanx then
 					local temp_unit = diffs_to_fixed_angle[diff]
 					local temp_diff = diff + 1
+
 					diffs_to_fixed_angle[temp_diff] = temp_unit
 				else
 					diff = diff + 1
@@ -389,6 +400,7 @@ function CopLogicPhalanxMinion._reposition_phalanx(fixed_angle)
 
 		if unit:brain() and unit:brain():objective() then
 			local phalanx_objective = unit:brain():objective()
+
 			phalanx_objective.type = "phalanx"
 			phalanx_objective.angle = angle_to_move_to
 			phalanx_objective.pos = CopLogicPhalanxMinion._calc_pos_on_phalanx_circle(center_pos, angle_to_move_to, phalanx_minion_count)
@@ -405,8 +417,11 @@ function CopLogicPhalanxMinion.calc_initial_phalanx_pos(own_pos, objective)
 		local phalanx_current_minion_count = managers.groupai:state():get_phalanx_minion_count()
 		local total_minion_amount = tweak_data.group_ai.phalanx.minions.amount
 		local fixed_angle = own_pos:angle(center_pos)
+
 		fixed_angle = (fixed_angle + 180) % 360
+
 		local angle_to_move_to = CopLogicPhalanxMinion._get_next_neighbour_angle(phalanx_current_minion_count - 1, total_minion_amount, fixed_angle)
+
 		objective.angle = angle_to_move_to
 		objective.pos = CopLogicPhalanxMinion._calc_pos_on_phalanx_circle(center_pos, angle_to_move_to, total_minion_amount)
 	end

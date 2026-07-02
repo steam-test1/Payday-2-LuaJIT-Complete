@@ -113,7 +113,7 @@ function MenuNodeEconomySafe:_find_replace_raffle_panel()
 	local i, _ = self:_current_raffle_panel()
 	local max_steps = 7 + math.random(5)
 	local steps = 0
-	local j = nil
+	local j
 
 	while steps <= max_steps do
 		i = i + 1
@@ -122,7 +122,7 @@ function MenuNodeEconomySafe:_find_replace_raffle_panel()
 			i = 1
 		end
 
-		if self._raffle_panel:w() < self._raffle_panels[i]:x() then
+		if self._raffle_panels[i]:x() > self._raffle_panel:w() then
 			j = i
 		elseif j then
 			print("LIMIT TO RIGHT REACHED")
@@ -193,7 +193,7 @@ function MenuNodeEconomySafe._item_probability_list(item_list)
 		local rarity_tweak = tweak_data.economy.rarities[rarity]
 
 		if rarity_tweak and rarity_tweak.fake_chance then
-			local current_ratio = nil
+			local current_ratio
 			local ratio = rarity_tweak.fake_chance / table.size(item_list)
 
 			for _, data in pairs(item_list) do
@@ -224,15 +224,18 @@ function MenuNodeEconomySafe:_build_raffle_panel(safe_entry)
 	local content_entry = safe_data.content
 	local item_list = MenuNodeEconomySafe._item_probability_list(tweak_data.economy.contents[content_entry].contains)
 	local random_item_list = self:_create_random_item_list(item_list)
+
 	self._raffle_max_speed = 1000
 	self._raffle_min_speed = 2
 	self._raffle_speed = self._raffle_max_speed
 	self._raffle_panel_width = 180
+
 	local safe_rect_pixels = managers.gui_data:scaled_size()
 	local res = RenderSettings.resolution
 	local w_pad = 200
 	local width = self._raffle_panel_width * 4.5
 	local x = math.round((safe_rect_pixels.width - width) / 2)
+
 	self._raffle_panel_alpha = 0
 	self._raffle_panel_alpha_target = 1
 	self._raffle_panel = self.safe_rect_panel:panel({
@@ -245,9 +248,9 @@ function MenuNodeEconomySafe:_build_raffle_panel(safe_entry)
 	})
 
 	self._raffle_panel:bitmap({
-		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/header_white",
-		name = "",
 		h = 24,
+		name = "",
+		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/header_white",
 		w = self._raffle_panel:w()
 	})
 
@@ -257,46 +260,47 @@ function MenuNodeEconomySafe:_build_raffle_panel(safe_entry)
 	})
 
 	self._raffle_panel:text({
-		halign = "left",
-		vertical = "center",
-		h = 24,
-		name = "title",
-		font_size = 20,
 		align = "left",
-		y = 0,
-		x = 2,
+		font_size = 20,
+		h = 24,
+		halign = "left",
 		layer = 1,
+		name = "title",
+		vertical = "center",
+		x = 2,
+		y = 0,
 		text = title,
 		font = self.font,
 		color = Color.black
 	})
 	self._raffle_panel:bitmap({
-		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/scroller_edges",
-		name = "",
-		y = 24,
-		x = 0,
 		layer = 18,
+		name = "",
+		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/scroller_edges",
+		x = 0,
+		y = 24,
 		w = self._raffle_panel:w(),
 		h = self._raffle_panel:h() - 24
 	})
 
 	self._needle_panel = self._raffle_panel:panel({
-		w = 8,
 		layer = 20,
+		w = 8,
 		y = 24
 	})
 
 	self._needle_panel:set_center_x(self._raffle_panel:w() / 2)
 	self._needle_panel:bitmap({
-		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/scroller_line",
 		name = "",
-		y = 0,
+		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/scroller_line",
 		w = 8,
 		x = 1,
+		y = 0,
 		h = self._needle_panel:h()
 	})
 
 	self._raffle_panels = {}
+
 	local j = 1
 
 	while #random_item_list > 0 do
@@ -341,9 +345,9 @@ function MenuNodeEconomySafe:_create_raffle_panel(x, data, index)
 	})
 
 	image_panel:bitmap({
-		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/bg_black",
-		name = "bg_black",
 		layer = -1,
+		name = "bg_black",
+		texture = "guis/dlcs/cash/textures/pd2/safe_raffle/bg_black",
 		w = image_panel:w(),
 		h = image_panel:h()
 	})
@@ -352,16 +356,17 @@ function MenuNodeEconomySafe:_create_raffle_panel(x, data, index)
 
 	table.insert(self._raffle_panels, index, p)
 
-	local texture_name = nil
+	local texture_name
 	local name_id = "bm_none"
 	local rarity_color = Color.white
 	local texture_rarity_name = "guis/dlcs/cash/textures/pd2/safe_raffle/header_col_common"
 	local is_legendary = false
-	local bonuses = nil
+	local bonuses
 
 	if tweak_data.blackmarket[data.category] then
 		local entry_data = tweak_data.blackmarket[data.category][data.entry]
 		local weapon_id = entry_data.weapon_id or entry_data.weapons[1]
+
 		is_legendary = entry_data.rarity == "legendary"
 		texture_name = is_legendary and "guis/dlcs/cash/textures/pd2/safe_raffle/icon_legendary" or managers.blackmarket:get_weapon_icon_path(weapon_id, {
 			id = data.entry
@@ -375,6 +380,7 @@ function MenuNodeEconomySafe:_create_raffle_panel(x, data, index)
 		end
 	elseif tweak_data.economy[data.category] then
 		local entry_data = tweak_data.economy[data.category][data.entry]
+
 		name_id = entry_data.name_id
 		texture_name = "guis/dlcs/" .. entry_data.texture_bundle_folder .. "/" .. data.category .. "/" .. data.entry
 		rarity_color = tweak_data.economy.rarities[entry_data.rarity].color
@@ -388,32 +394,32 @@ function MenuNodeEconomySafe:_create_raffle_panel(x, data, index)
 	end
 
 	p:text({
-		halign = "left",
-		vertical = "top",
-		name = "number",
 		align = "center",
-		visible = false,
+		halign = "left",
 		layer = 10,
+		name = "number",
+		vertical = "top",
+		visible = false,
 		text = "" .. index,
 		font_size = self.font_size,
 		font = self.font
 	})
 	p:bitmap({
-		name = "",
 		h = 24,
+		name = "",
 		texture = texture_rarity_name,
 		y = p:h() - 24,
 		w = p:w()
 	})
 	p:text({
-		halign = "left",
-		vertical = "center",
-		h = 24,
-		name = "name",
-		font_size = 20,
 		align = "left",
-		x = 8,
+		font_size = 20,
+		h = 24,
+		halign = "left",
 		layer = 10,
+		name = "name",
+		vertical = "center",
+		x = 8,
 		text = name,
 		y = p:h() - 24,
 		font = self.font
@@ -424,10 +430,10 @@ function MenuNodeEconomySafe:_create_raffle_panel(x, data, index)
 
 		for _, texture_path in ipairs(bonuses) do
 			local bonus_bitmap = p:bitmap({
-				name = "bonus",
 				h = 16,
-				w = 16,
 				layer = 1,
+				name = "bonus",
+				w = 16,
 				texture = texture_path,
 				x = p:w() - 24,
 				y = p:h() - 24
@@ -456,15 +462,15 @@ function MenuNodeEconomySafe:set_raffle_speed(speed)
 end
 
 function MenuNodeEconomySafe:stop_at(at, offset, stopped_clbk)
-	self._stop_data = {
-		max_speed = self._raffle_speed,
-		lerp_value = 0,
-		at = at,
-		decc = (0 - self._raffle_speed * self._raffle_speed) / 2 / 1000,
-		start_time = Application:time(),
-		distance = 0,
-		stopped_clbk = stopped_clbk
-	}
+	self._stop_data = {}
+	self._stop_data.max_speed = self._raffle_speed
+	self._stop_data.lerp_value = 0
+	self._stop_data.at = at
+	self._stop_data.decc = (0 - self._raffle_speed * self._raffle_speed) / 2 / 1000
+	self._stop_data.start_time = Application:time()
+	self._stop_data.distance = 0
+	self._stop_data.stopped_clbk = stopped_clbk
+
 	local total_length = #self._raffle_panels * self._raffle_panels[1]:w()
 
 	print("total_length", total_length)
@@ -484,7 +490,7 @@ function MenuNodeEconomySafe:_current_raffle_panel()
 	local needle_x = self._needle_panel:center_x()
 
 	for i, panel in ipairs(self._raffle_panels) do
-		if panel:x() < needle_x and needle_x < panel:right() then
+		if needle_x > panel:x() and needle_x < panel:right() then
 			return i, panel
 		end
 	end
@@ -513,11 +519,13 @@ function MenuNodeEconomySafe:update(t, dt)
 				self._stop_data.start_stop_at = nil
 				self._stop_data.deaccelerating = true
 				self._stop_data.distance = 0
+
 				local overshoot = self._needle_panel:center_x() - panel:center_x()
 
 				print("overshoot", overshoot)
 
 				local rand_offset = math.rand(-(self._raffle_panel_width / 2 - 1), self._raffle_panel_width / 2 - 1)
+
 				self._stop_data.total_distance = self._stop_data.offset * self._raffle_panel_width - overshoot + rand_offset
 				self._stop_data.distance_to_go = self._stop_data.total_distance
 
@@ -527,6 +535,7 @@ function MenuNodeEconomySafe:update(t, dt)
 
 		if self._stop_data.deaccelerating then
 			self._stop_data.lerp_value = math.min(self._stop_data.lerp_value + dt / 5, 1)
+
 			local dist_lerp = math.lerp(self._stop_data.distance_to_go / self._stop_data.total_distance, 0, self._stop_data.lerp_value)
 
 			if self._stop_data.lerp_value == 1 then
@@ -534,6 +543,7 @@ function MenuNodeEconomySafe:update(t, dt)
 			end
 
 			local bez = math.lerp(1, 0, self._stop_data.lerp_value)
+
 			bez = math.lerp(bez, 0, 1 - bez)
 			self._raffle_speed = self._stop_data.max_speed * bez
 			self._raffle_speed = math.clamp(self._stop_data.distance_to_go * 1, self._raffle_min_speed, self._raffle_max_speed)
@@ -587,14 +597,16 @@ function MenuNodeEconomySafe:_build_result_panel()
 	local w_pad = 200
 	local width = 800
 	local x = 0
+
 	self._result_panel = self.safe_rect_panel:panel({
-		name = "result_panel",
 		h = 132,
+		name = "result_panel",
 		visible = true,
 		x = x,
 		y = safe_rect_pixels.height - 132,
 		w = width
 	})
+
 	local name_text = managers.localization:text(item_data.name_id)
 	local quality_data = self._result.quality and tweak_data.economy.qualities[self._result.quality] or nil
 	local quality_text = quality_data and managers.localization:text(quality_data.name_id) or ""
@@ -603,15 +615,15 @@ function MenuNodeEconomySafe:_build_result_panel()
 		name = name_text
 	})
 	local name = self._result_panel:text({
-		halign = "left",
-		vertical = "bottom",
-		name = "name",
+		align = "left",
 		blend_mode = "add",
 		font_size = 24,
-		align = "left",
-		y = 0,
-		x = 2,
+		halign = "left",
 		layer = 1,
+		name = "name",
+		vertical = "bottom",
+		x = 2,
+		y = 0,
 		text = result_text,
 		font = self.font,
 		color = Color.white
@@ -625,18 +637,19 @@ function MenuNodeEconomySafe:_build_result_panel()
 		if bonus_data then
 			local bonuses = item_data.bonus and tweak_data.economy:get_bonus_icons(item_data.bonus) or {}
 			local _, _, w, h = name:text_rect()
-			local bonus_bitmap = nil
+			local bonus_bitmap
 			local x = w + 16
 
 			for i = #bonuses, 1, -1 do
 				local texture_path = bonuses[i]
+
 				bonus_bitmap = self._result_panel:bitmap({
-					name = "bonus",
 					h = 16,
-					y = 0,
+					layer = 1,
+					name = "bonus",
 					w = 16,
 					x = 0,
-					layer = 1,
+					y = 0,
 					texture = texture_path
 				})
 
@@ -651,15 +664,15 @@ function MenuNodeEconomySafe:_build_result_panel()
 				team_bonus = bonus_value
 			}) or ""
 			local bonus_text = self._result_panel:text({
-				halign = "left",
-				vertical = "bottom",
-				name = "bonus_text",
+				align = "left",
 				blend_mode = "add",
 				font_size = 24,
-				align = "left",
-				y = 0,
-				x = 2,
+				halign = "left",
 				layer = 1,
+				name = "bonus_text",
+				vertical = "bottom",
+				x = 2,
+				y = 0,
 				text = bonus_title,
 				font = self.font,
 				color = Color.white

@@ -1,4 +1,5 @@
 local bezier3 = require("lib/utils/Bezier3")
+
 MotionpathMarkerUnitElement = MotionpathMarkerUnitElement or class(MissionElement)
 MotionpathMarkerUnitElement._bezier_points = {}
 MotionpathMarkerUnitElement._linked_markers = {}
@@ -17,9 +18,8 @@ function MotionpathMarkerUnitElement:init(unit)
 	self._hed.path_type = "airborne"
 	self._hed.marker_target_speed = 50
 	self._hed.bridges = {}
-	self._hed.markers = {
-		units = {}
-	}
+	self._hed.markers = {}
+	self._hed.markers.units = {}
 	self._hed.path_id = nil
 	self._hed.motion_state = "move"
 
@@ -80,6 +80,7 @@ function MotionpathMarkerUnitElement:add_trigger(id, outcome, callback)
 end
 
 function MotionpathMarkerUnitElement:on_unselected()
+	return
 end
 
 function MotionpathMarkerUnitElement:clear()
@@ -253,8 +254,8 @@ function MotionpathMarkerUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 		if draw and unit then
 			self:_draw_link({
-				g = 0.849,
 				b = 0.01,
+				g = 0.849,
 				r = 0.514,
 				from_unit = unit,
 				to_unit = self._unit
@@ -269,8 +270,8 @@ function MotionpathMarkerUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 			if draw and alive(unit) and alive(self._unit) then
 				self:_draw_link({
-					g = 0.449,
 					b = 0.01,
+					g = 0.449,
 					r = 0.8,
 					from_unit = unit,
 					to_unit = self._unit
@@ -286,8 +287,8 @@ function MotionpathMarkerUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 			if alive(marker_from) and alive(marker_to) then
 				self:_draw_link({
-					g = 1,
 					b = 0.01,
+					g = 1,
 					r = 1,
 					from_unit = marker_from,
 					to_unit = marker_to
@@ -314,15 +315,16 @@ function MotionpathMarkerUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local cp_length_params = {
-		name = "Control Point Length:",
 		ctrlr_proportions = 2,
-		slider_ctrlr_proportions = 3,
-		name_proportions = 1,
-		number_ctrlr_proportions = 1,
-		min = 1,
 		floats = 3,
 		max = 10000,
+		min = 1,
+		name = "Control Point Length:",
+		name_proportions = 1,
+		number_ctrlr_proportions = 1,
+		slider_ctrlr_proportions = 3,
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.cp_length
@@ -351,13 +353,13 @@ function MotionpathMarkerUnitElement:_build_panel(panel, panel_sizer)
 	}, "Units on this marker will either wait or move through it.")
 
 	local speed_params = {
-		name_proportions = 1,
-		name = "Speed [km/h]:",
 		ctrlr_proportions = 2,
-		tooltip = "Set the target unit speed at this marker in km/h. Set to -1 to ignore.",
-		min = -1,
 		floats = 1,
 		max = 1000,
+		min = -1,
+		name = "Speed [km/h]:",
+		name_proportions = 1,
+		tooltip = "Set the target unit speed at this marker in km/h. Set to -1 to ignore.",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.marker_target_speed
@@ -406,6 +408,7 @@ local angle_tolerance = 0
 local cusp_limit = 0
 
 function MotionpathMarkerUnitElement:update_unselected(t, dt, selected_unit, all_units)
+	return
 end
 
 function MotionpathMarkerUnitElement:update_selected(t, dt, selected_unit, all_units)
@@ -451,7 +454,7 @@ function MotionpathMarkerUnitElement:_add_marker_to_path()
 end
 
 function MotionpathMarkerUnitElement:_get_middle_point(path, selected_marker_id, target_marker_id)
-	local selected_point_offset, target_point_offset = nil
+	local selected_point_offset, target_point_offset
 
 	for idx, checkpoint in pairs(path.marker_checkpoints) do
 		if checkpoint == selected_marker_id then
@@ -475,6 +478,7 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 
 	self._last_marker_pos = selected_unit:position()
 	self._last_marker_rot = selected_unit:rotation()
+
 	local current_marker_unit = selected_unit
 	local parent_marker_unit = self:_get_unit(selected_unit:mission_element_data().markers.parent)
 
@@ -484,6 +488,7 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 	end
 
 	MotionpathMarkerUnitElement._linked_markers = {}
+
 	local linked_markers = MotionpathMarkerUnitElement._linked_markers
 
 	table.insert(linked_markers, current_marker_unit)
@@ -494,6 +499,7 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 
 	while child_marker_unit and alive(child_marker_unit) do
 		local distance = mvector3.distance(last_child:position(), child_marker_unit:position())
+
 		path_length = path_length + distance
 
 		table.insert(linked_markers, 1, child_marker_unit)
@@ -519,6 +525,7 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 
 			marker_checkpoints[#entire_path_points + 1] = from_unit:unit_data().unit_id
 			bline = self:_build_points(from_unit, to_unit)
+
 			local n1 = self:bez_draw("bline", bline, 1)
 
 			table.insert(self._bezier_points, 1, Vector3(from_unit:position().x, from_unit:position().y, from_unit:position().z))
@@ -559,7 +566,7 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 			local speed_step = (to_unit:mission_element_data().marker_target_speed - from_unit:mission_element_data().marker_target_speed) / points_in_batch
 			local current_z = from_unit:position().z
 			local current_speed = to_unit:mission_element_data().marker_target_speed
-			local final_speed = nil
+			local final_speed
 
 			for _, point in ipairs(self._bezier_points) do
 				current_z = current_z + z_step
@@ -586,19 +593,20 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 	end
 
 	marker_checkpoints[#entire_path_points] = linked_markers[#linked_markers]:unit_data().unit_id
+
 	local marker_ids = {}
 
 	for _, marker in ipairs(linked_markers) do
 		table.insert(marker_ids, marker:unit_data().unit_id)
 	end
 
-	local first_marker_id = nil
+	local first_marker_id
 
 	if linked_markers[1] then
 		first_marker_id = linked_markers[1]:unit_data().unit_id
 	end
 
-	local path_id, path_type = nil
+	local path_id, path_type
 	local existing_path = managers.motion_path:get_path_of_marker(first_marker_id)
 
 	if existing_path then
@@ -640,6 +648,7 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 		units = units_on_path,
 		marker_checkpoints = marker_checkpoints
 	}
+
 	self._hed.path_id = path_id
 
 	managers.motion_path:update_path(path, skip_recreate)
@@ -663,9 +672,12 @@ function MotionpathMarkerUnitElement:_build_points(from_unit, to_unit)
 	local y3 = 0
 	local x4 = 0
 	local y4 = 0
+
 	x4 = to_unit:position().x
 	y4 = to_unit:position().y
+
 	local cp2 = to_unit:position() + to_unit:rotation():y() * to_unit:mission_element_data().cp_length
+
 	x3 = cp2.x
 	y3 = cp2.y
 
@@ -683,9 +695,10 @@ end
 
 function MotionpathMarkerUnitElement:bez_interpolate(x1, y1, x2, y2, x3, y3, x4, y4, ...)
 	local n = 0
+
 	self._bezier_points = {}
 
-	bezier3.interpolate(function (s, x, y)
+	bezier3.interpolate(function(s, x, y)
 		table.insert(self._bezier_points, Vector3(x, y, 500))
 
 		n = n + 1

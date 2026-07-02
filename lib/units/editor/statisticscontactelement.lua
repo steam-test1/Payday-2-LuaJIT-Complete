@@ -24,6 +24,7 @@ function StatisticsContactElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local contact_list = {}
 
 	for contact, _ in pairs(tweak_data.narrative.contacts) do

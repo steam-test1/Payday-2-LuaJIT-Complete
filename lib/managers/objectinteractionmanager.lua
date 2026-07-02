@@ -136,7 +136,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 
 		if alive(unit) and unit:interaction():active() then
 			local distance = mvec3_dis(player_pos, unit:interaction():interact_position())
-			local should_remove = unit:interaction():interact_distance() < distance or distance < unit:interaction():max_interact_distance()
+			local should_remove = distance > unit:interaction():interact_distance() or distance < unit:interaction():max_interact_distance()
 
 			if _G.IS_VR then
 				should_remove = should_remove or hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
@@ -147,7 +147,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 				local max_interact_distance = unit:interaction():max_interact_distance()
 				local interact_distance_sq = interact_distance * interact_distance
 				local max_interact_distance_sq = max_interact_distance * max_interact_distance
-				local distance_sq = nil
+				local distance_sq
 
 				for _, locator in pairs(unit:interaction():ray_objects()) do
 					distance_sq = mvec3_distance_sq(player_unit:position(), locator:position())
@@ -174,7 +174,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 	end
 
 	for i = 1, self._close_freq do
-		if self._interactive_count <= self._close_index then
+		if self._close_index >= self._interactive_count then
 			self._close_index = 1
 		else
 			self._close_index = self._close_index + 1
@@ -184,7 +184,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 
 		if alive(unit) and unit:interaction():active() and not self:_in_close_list(unit, hand_id) then
 			local distance = mvec3_dis(player_pos, unit:interaction():interact_position())
-			local valid = distance <= unit:interaction():interact_distance() and unit:interaction():max_interact_distance() <= distance
+			local valid = distance <= unit:interaction():interact_distance() and distance >= unit:interaction():max_interact_distance()
 
 			if _G.IS_VR then
 				valid = valid and not hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
@@ -199,7 +199,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 				local max_interact_distance = unit:interaction():max_interact_distance()
 				local interact_distance_sq = interact_distance * interact_distance
 				local max_interact_distance_sq = max_interact_distance * max_interact_distance
-				local distance_sq = nil
+				local distance_sq
 
 				for _, locator in pairs(unit:interaction():ray_objects()) do
 					distance_sq = mvec3_distance_sq(player_unit:position(), locator:position())
@@ -226,6 +226,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 			self._active_object_locked_data = nil
 		else
 			local distance = mvec3_dis(player_pos, self._active_unit:interaction():interact_position())
+
 			locked = self._active_unit:interaction():interact_dont_interupt_on_distance() or distance <= self._active_unit:interaction():interact_distance()
 			locked = locked or _G.IS_VR
 
@@ -243,13 +244,13 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 	local last_active_locator = self._active_locator
 	local last_dot = last_active and self._current_dot or nil
 	local blocked = player_unit:movement():object_interaction_blocked()
-	local active_unit = nil
+	local active_unit
 
 	if #close_units_list > 0 and not blocked then
-		local current_dot, closest_locator = nil
+		local current_dot, closest_locator
 		local has_distance_passed = false
 		local current_distance = 10000
-		local player_fwd, camera_pos = nil
+		local player_fwd, camera_pos
 
 		if _G.IS_VR then
 			player_fwd = hand_unit:rotation():y()
@@ -276,7 +277,9 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 		} or close_units_list) do
 			if alive(unit) then
 				local dot_limit = unit:interaction():dot_limit()
+
 				current_dot = last_dot or dot_limit
+
 				local int_ray_objects = unit:interaction():ray_objects()
 
 				if int_ray_objects and (unit:vehicle_driving() or unit:interaction().use_locators and unit:interaction():use_locators()) then
@@ -319,14 +322,9 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 
 					if _G.IS_VR then
 						local distance_pass = distance < 30 and distance < current_distance
+
 						has_distance_passed = has_distance_passed or distance_pass
-
-						if not distance_pass then
-							if has_distance_passed then
-								interaction_passed = false
-							end
-						end
-
+						interaction_passed = distance_pass or not has_distance_passed and interaction_passed
 						current_distance = math.min(distance, current_distance)
 					end
 

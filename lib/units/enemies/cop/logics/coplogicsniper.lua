@@ -1,4 +1,5 @@
 local tmp_vec1 = Vector3()
+
 CopLogicSniper = class(CopLogicBase)
 CopLogicSniper.damage_clbk = CopLogicIdle.damage_clbk
 CopLogicSniper.on_detected_enemy_destroyed = CopLogicAttack.on_detected_enemy_destroyed
@@ -18,9 +19,10 @@ function CopLogicSniper.enter(data, new_logic_name, enter_params)
 
 	local old_internal_data = data.internal_data
 	local my_data = {
-		unit = data.unit,
-		detection = data.char_tweak.detection.recon
+		unit = data.unit
 	}
+
+	my_data.detection = data.char_tweak.detection.recon
 
 	if old_internal_data then
 		my_data.turning = old_internal_data.turning
@@ -50,7 +52,9 @@ function CopLogicSniper.enter(data, new_logic_name, enter_params)
 	end
 
 	data.internal_data = my_data
+
 	local key_str = tostring(data.unit:key())
+
 	my_data.detection_task_key = "CopLogicSniper._upd_enemy_detection" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicSniper._upd_enemy_detection, data, data.t)
@@ -136,6 +140,7 @@ function CopLogicSniper._upd_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local min_reaction = AIAttentionObject.REACT_AIM
 	local delay = CopLogicBase._upd_attention_obj_detection(data, min_reaction, nil)
@@ -144,9 +149,9 @@ function CopLogicSniper._upd_enemy_detection(data)
 
 	CopLogicBase._set_attention_obj(data, new_attention, new_reaction)
 
-	if new_reaction and AIAttentionObject.REACT_SCARED <= new_reaction then
+	if new_reaction and new_reaction >= AIAttentionObject.REACT_SCARED then
 		local objective = data.objective
-		local wanted_state = nil
+		local wanted_state
 		local allow_trans, obj_failed = CopLogicBase.is_obstructed(data, objective, nil, new_attention)
 
 		if allow_trans and obj_failed then
@@ -214,7 +219,7 @@ function CopLogicSniper.action_complete_clbk(data, action)
 end
 
 function CopLogicSniper._upd_aim(data, my_data)
-	local shoot, aim = nil
+	local shoot, aim
 	local focus_enemy = data.attention_obj
 
 	if focus_enemy then
@@ -284,6 +289,7 @@ function CopLogicSniper._upd_aim(data, my_data)
 
 	if my_data.reposition and not action_taken and not my_data.advancing then
 		local objective = data.objective
+
 		my_data.advance_path = {
 			mvector3.copy(data.m_pos),
 			mvector3.copy(objective.pos)
@@ -319,7 +325,7 @@ function CopLogicSniper._upd_aim(data, my_data)
 		end
 	else
 		if my_data.shooting then
-			local new_action = nil
+			local new_action
 
 			if data.unit:anim_data().reload then
 				new_action = {

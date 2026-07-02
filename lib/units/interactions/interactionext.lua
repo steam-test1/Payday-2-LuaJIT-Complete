@@ -1,13 +1,11 @@
 BaseInteractionExt = BaseInteractionExt or class()
-BaseInteractionExt.EVENT_IDS = {
-	at_interact_start = 1,
-	at_interact_interupt = 2
-}
-BaseInteractionExt.SKILL_IDS = {
-	none = 1,
-	basic = 2,
-	aced = 3
-}
+BaseInteractionExt.EVENT_IDS = {}
+BaseInteractionExt.EVENT_IDS.at_interact_start = 1
+BaseInteractionExt.EVENT_IDS.at_interact_interupt = 2
+BaseInteractionExt.SKILL_IDS = {}
+BaseInteractionExt.SKILL_IDS.none = 1
+BaseInteractionExt.SKILL_IDS.basic = 2
+BaseInteractionExt.SKILL_IDS.aced = 3
 BaseInteractionExt.INFO_IDS = {
 	1,
 	2,
@@ -49,6 +47,7 @@ local ids_material = Idstring("material")
 
 function BaseInteractionExt:refresh_material()
 	self._materials = {}
+
 	local all_materials = self._unit:get_objects_by_type(ids_material)
 
 	for _, m in ipairs(all_materials) do
@@ -63,6 +62,7 @@ function BaseInteractionExt:external_upd_interaction_topology()
 end
 
 function BaseInteractionExt:on_interaction_released(data)
+	return
 end
 
 function BaseInteractionExt:_upd_interaction_topology()
@@ -73,7 +73,9 @@ function BaseInteractionExt:_upd_interaction_topology()
 	end
 
 	self._interact_position = self._interact_obj and self._interact_obj:position() or self._unit:position()
+
 	local rotation = self._interact_obj and self._interact_obj:rotation() or self._unit:rotation()
+
 	self._interact_axis = self._tweak_data.axis and rotation[self._tweak_data.axis](rotation) or nil
 
 	if self._tweak_data.dot_limit then
@@ -189,6 +191,7 @@ end
 function BaseInteractionExt:_update_interact_axis()
 	if self._tweak_data.axis and self._unit:moving() then
 		local rotation = self._interact_obj and self._interact_obj:rotation() or self._unit:rotation()
+
 		self._interact_axis = self._tweak_data.axis and rotation[self._tweak_data.axis](rotation) or nil
 	end
 end
@@ -206,6 +209,7 @@ function BaseInteractionExt:interact_dont_interupt_on_distance()
 end
 
 function BaseInteractionExt:update(distance_to_player)
+	return
 end
 
 function BaseInteractionExt:_btn_interact()
@@ -231,7 +235,7 @@ function BaseInteractionExt:can_select(player, locator)
 		return false
 	end
 
-	local blockers = nil
+	local blockers
 
 	if type(self._tweak_data.special_equipment_block) == "string" then
 		blockers = {
@@ -291,7 +295,9 @@ function BaseInteractionExt:update_show_interact(player, locator)
 
 		print("[BaseInteractionExt:update_show_interact] equipment_data", equipment_data and inspect(equipment_data))
 
-		if not equipment_data then
+		if equipment_data then
+			-- Nothing
+		else
 			local has_special_equipment = false
 
 			if self._tweak_data.possible_special_equipment then
@@ -417,6 +423,7 @@ end
 function BaseInteractionExt:_interact_say(data)
 	local player = data[1]
 	local say_line = data[2]
+
 	self._interact_say_clbk = nil
 
 	player:sound():say(say_line, true)
@@ -438,8 +445,11 @@ function BaseInteractionExt:interact_start(player, data)
 
 	if sound and sound ~= "" then
 		local delay = (self:_timer_value() or 0) * managers.player:toolset_value()
+
 		delay = delay / 3 + math.random() * delay / 3
+
 		local say_t = Application:time() + delay
+
 		self._interact_say_clbk = "interact_say_waiting"
 
 		managers.enemy:add_delayed_clbk(self._interact_say_clbk, callback(self, self, "_interact_say", {
@@ -448,7 +458,7 @@ function BaseInteractionExt:interact_start(player, data)
 		}), say_t)
 	end
 
-	local mutator = nil
+	local mutator
 
 	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
@@ -510,6 +520,7 @@ function BaseInteractionExt:_get_timer()
 	if managers.player:has_category_upgrade("player", "level_interaction_timer_multiplier") then
 		local data = managers.player:upgrade_value("player", "level_interaction_timer_multiplier") or {}
 		local player_level = managers.experience:current_level() or 0
+
 		multiplier = multiplier * (1 - (data[1] or 0) * math.ceil(player_level / (data[2] or 1)))
 	end
 
@@ -731,9 +742,9 @@ function BaseInteractionExt:set_contour_override(state)
 end
 
 function BaseInteractionExt:save(data)
-	local state = {
-		active = self._active
-	}
+	local state = {}
+
+	state.active = self._active
 
 	if self.drop_in_sync_tweak_data then
 		state.tweak_data = self.tweak_data
@@ -1192,7 +1203,7 @@ function ReviveInteractionExt:set_active(active, sync, down_time)
 		return
 	end
 
-	local panel_id = nil
+	local panel_id
 
 	if managers.criminals:has_character_by_unit(self._unit) then
 		panel_id = managers.criminals:character_data_by_unit(self._unit).panel_id
@@ -1215,6 +1226,7 @@ function ReviveInteractionExt:set_active(active, sync, down_time)
 
 		if not self._active_wp then
 			down_time = down_time or 999
+
 			local text = managers.localization:text(self.tweak_data == "revive" and "debug_team_mate_need_revive" or "debug_team_mate_need_free")
 			local icon = self.tweak_data == "revive" and "wp_revive" or "wp_rescue"
 			local timer = self.tweak_data == "revive" and (self._unit:base().is_husk_player and down_time or tweak_data.character[self._unit:base()._tweak_table].damage.DOWNED_TIME) or self._unit:base().is_husk_player and tweak_data.player.damage.ARRESTED_TIME or tweak_data.character[self._unit:base()._tweak_table].damage.ARRESTED_TIME
@@ -1318,10 +1330,10 @@ end
 function ReviveInteractionExt:save(data)
 	ReviveInteractionExt.super.save(self, data)
 
-	local state = {
-		active_wp = self._active_wp,
-		wp_id = self._wp_id
-	}
+	local state = {}
+
+	state.active_wp = self._active_wp
+	state.wp_id = self._wp_id
 	data.ReviveInteractionExt = state
 end
 
@@ -1422,6 +1434,7 @@ local function sentry_gun_interaction_add_string_macros(macros, ammo_ratio)
 		macros.AMMO_LEFT = 100
 	elseif ammo_ratio > 0 then
 		local ammo_left = string.format("%.2f", tostring(ammo_ratio))
+
 		ammo_left = string.sub(ammo_left, 3, 4)
 		macros.AMMO_LEFT = ammo_left
 	else
@@ -1443,6 +1456,7 @@ SentryGunFireModeInteractionExt = SentryGunFireModeInteractionExt or class(UseIn
 
 function SentryGunFireModeInteractionExt:setup(sentry_gun_weapon)
 	self._sentry_gun_weapon = sentry_gun_weapon
+
 	local unit = sentry_gun_weapon.unit and sentry_gun_weapon:unit()
 
 	if unit then
@@ -1556,7 +1570,7 @@ function MultipleEquipmentBagInteractionExt:interact(player)
 	local equipment_name = self._special_equipment or "c4"
 	local max_player_can_carry = tweak_data.equipments.specials[equipment_name].quantity or 1
 	local player_equipment = managers.player:has_special_equipment(equipment_name)
-	local amount_wanted = nil
+	local amount_wanted
 
 	if player_equipment then
 		amount_wanted = max_player_can_carry - Application:digest_value(player_equipment.amount, false)
@@ -1586,7 +1600,9 @@ function MultipleEquipmentBagInteractionExt:sync_interacted(peer, player, amount
 
 	local equipment_name = self._special_equipment or "c4"
 	local starting_quantity = tweak_data.equipments.specials[equipment_name] and tweak_data.equipments.specials[equipment_name].quantity or 1
+
 	self._current_quantity = self._current_quantity or starting_quantity
+
 	local amount_to_give = math.min(self._current_quantity, amount_wanted)
 
 	if peer then
@@ -1859,7 +1875,7 @@ function IntimitateInteractionExt:interact(player)
 				table.insert(memory, new_memory)
 
 				for i = #memory, 1, -1 do
-					if achievement_data.timer <= t - memory[i].time then
+					if t - memory[i].time >= achievement_data.timer then
 						table.remove(memory, i)
 					end
 				end
@@ -1877,7 +1893,7 @@ function IntimitateInteractionExt:interact(player)
 				total_memory_value = total_memory_value + m_data.value
 			end
 
-			if achievement_data.total_value <= total_memory_value then
+			if total_memory_value >= achievement_data.total_value then
 				managers.achievment:award(achievement_data.award)
 			end
 		end
@@ -1960,6 +1976,7 @@ function IntimitateInteractionExt:_at_interact_start(player, timer)
 		end
 
 		self._in_progress = true
+
 		local event = self._unit:brain():_get_radio_id("dsp_radio_checking_1")
 
 		player:sound():say(event, true, true)
@@ -2168,7 +2185,7 @@ function IntimitateInteractionExt:_interact_blocked(player)
 
 		return not managers.player:can_carry("person")
 	elseif self.tweak_data == "hostage_convert" then
-		return not managers.player:has_category_upgrade("player", "convert_enemies") or managers.player:chk_minion_limit_reached() or managers.groupai:state():whisper_mode()
+		return not managers.player:has_category_upgrade("player", "convert_enemies") or not not managers.player:chk_minion_limit_reached() or managers.groupai:state():whisper_mode()
 	elseif self.tweak_data == "hostage_move" then
 		if not self._unit:anim_data().tied then
 			return true
@@ -2176,7 +2193,7 @@ function IntimitateInteractionExt:_interact_blocked(player)
 
 		local following_hostages = managers.groupai:state():get_following_hostages(player)
 
-		if following_hostages and tweak_data.player.max_nr_following_hostages <= table.size(following_hostages) then
+		if following_hostages and table.size(following_hostages) >= tweak_data.player.max_nr_following_hostages then
 			return true, nil, "hint_hostage_follow_limit"
 		end
 	elseif self.tweak_data == "hostage_stay" then
@@ -2230,7 +2247,7 @@ function CarryInteractionExt:interact(player)
 			local kill_count_no_carry = managers.job:get_memory("kill_count_no_carry", true) or 0
 			local peta_4_data = tweak_data.achievement.peta_4
 
-			if peta_4_data and carry_id == peta_4_data.carry_id and peta_4_data.count <= kill_count_no_carry then
+			if peta_4_data and carry_id == peta_4_data.carry_id and kill_count_no_carry >= peta_4_data.count then
 				managers.achievment:award(peta_4_data.award)
 			end
 		end
@@ -2257,6 +2274,7 @@ end
 
 function CarryInteractionExt:sync_interacted(peer, player, status, skip_alive_check)
 	local no_player = player == nil
+
 	player = player or peer:unit()
 
 	if peer and not managers.player:register_carry(peer, self._unit:carry_data() and self._unit:carry_data():carry_id()) then
@@ -2338,7 +2356,7 @@ function CarryInteractionExt:_get_modified_timer()
 		return 0
 	end
 
-	local mutator = nil
+	local mutator
 
 	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
@@ -2460,8 +2478,11 @@ function EventIDInteractionExt:interact_start(player)
 
 	if sound and sound ~= "" then
 		local delay = (self._tweak_data.timer or 0) * managers.player:toolset_value()
+
 		delay = delay / 3 + math.random() * delay / 3
+
 		local say_t = Application:time() + delay
+
 		self._interact_say_clbk = "interact_say_waiting"
 
 		managers.enemy:add_delayed_clbk(self._interact_say_clbk, callback(self, self, "_interact_say", {
@@ -2590,7 +2611,7 @@ function MissionDoorDeviceInteractionExt:server_place_mission_door_device(player
 	local is_drill = self._unit:base() and self._unit:base().is_drill
 
 	if is_saw or is_drill then
-		local user_unit = nil
+		local user_unit
 
 		if player and player:base() and not player:base().is_local_player then
 			user_unit = player
@@ -2833,14 +2854,15 @@ end
 function MissionElementInteractionExt:save(data)
 	MissionElementInteractionExt.super.save(self, data)
 
-	local state = {
-		override_timer_value = self._override_timer_value
-	}
+	local state = {}
+
+	state.override_timer_value = self._override_timer_value
 	data.MissionElementInteractionExt = state
 end
 
 function MissionElementInteractionExt:load(data)
 	local state = data.MissionElementInteractionExt
+
 	self._override_timer_value = state.override_timer_value
 
 	MissionElementInteractionExt.super.load(self, data)
@@ -2918,6 +2940,7 @@ function DrivingInteractionExt:selected(player, locator)
 
 	self._action = action
 	self._selected_locator = locator
+
 	local res = DrivingInteractionExt.super.selected(self, player)
 
 	return res
@@ -2941,6 +2964,7 @@ function DrivingInteractionExt:can_select(player, locator)
 	if can_select then
 		local vehicle_ext = self._unit:vehicle_driving()
 		local action = vehicle_ext:get_action_for_interaction(player:position(), locator)
+
 		can_select = vehicle_ext:is_interaction_enabled(action)
 
 		if managers.player:is_carrying() and action == VehicleDrivingExt.INTERACT_LOOT then
@@ -2961,6 +2985,7 @@ function DrivingInteractionExt:can_interact(player)
 		local skip_exit_secure = carry_tweak_data and carry_tweak_data.skip_exit_secure
 		local vehicle_ext = self._unit and self._unit:vehicle_driving()
 		local secure_carry_on_enter = vehicle_ext and vehicle_ext.secure_carry_on_enter
+
 		can_enter_with_carry = secure_carry_on_enter and not skip_exit_secure
 	end
 
@@ -3127,11 +3152,10 @@ function CivilianHeisterInteractionExt:update_character()
 	self._unit:sound():set_voice(self.heister_data.voice)
 	self._unit:sound():set_room_level(character_tier)
 
-	self._lines = {
-		answering = self:get_character_voice_line("answer_lines", character_tier),
-		idle = self:get_character_voice_line("idle_lines", character_tier),
-		anim = {}
-	}
+	self._lines = {}
+	self._lines.answering = self:get_character_voice_line("answer_lines", character_tier)
+	self._lines.idle = self:get_character_voice_line("idle_lines", character_tier)
+	self._lines.anim = {}
 	self._lines.anim.answering = self:get_character_anim_voice_lines("answering", character_tier)
 	self._lines.anim.idle = self:get_character_anim_voice_lines("idle", character_tier)
 	self._idle_count = 0
@@ -3150,7 +3174,8 @@ function CivilianHeisterInteractionExt:get_character_voice_line(key, character_t
 		local use = not data.requirements
 
 		if not use then
-			local pass_tier, pass_trophy = nil
+			local pass_tier, pass_trophy
+
 			pass_tier = not data.requirements.tiers or table.contains(data.requirements.tiers, character_tier)
 			pass_trophy = not data.requirements.trophies
 
@@ -3203,7 +3228,8 @@ function CivilianHeisterInteractionExt:get_character_anim_voice_lines(key, chara
 		local use = not data.requirements
 
 		if not use then
-			local pass_tier, pass_trophy = nil
+			local pass_tier, pass_trophy
+
 			pass_tier = not data.requirements.tiers or table.contains(data.requirements.tiers, character_tier)
 			pass_trophy = not data.requirements.trophies
 
@@ -3339,7 +3365,7 @@ function CivilianHeisterInteractionExt:update(unit, t, dt)
 	end
 
 	local can_play_idle_line = false
-	local closest_unit = nil
+	local closest_unit
 
 	for id, data in pairs(managers.criminals:characters()) do
 		if data.taken and alive(data.unit) and data.unit:id() ~= -1 then
@@ -3363,13 +3389,13 @@ function CivilianHeisterInteractionExt:update(unit, t, dt)
 	end
 
 	if self.heister_data.idle_limit then
-		can_play_idle_line = self._idle_count < self.heister_data.idle_limit
+		can_play_idle_line = self.heister_data.idle_limit > self._idle_count
 	end
 
 	if can_play_idle_line and not self._is_speaking then
 		self._next_idle_time = self._next_idle_time or t + math.rand(self.heister_data.idle_line_time[1], self.heister_data.idle_line_time[2])
 
-		if self._next_idle_time and self._next_idle_time <= t then
+		if self._next_idle_time and t >= self._next_idle_time then
 			self._next_idle_time = nil
 
 			self:_play_idle_line()
@@ -3577,6 +3603,7 @@ function PlayerTurretInteractionExt:interact(player, locator)
 		local turret_unit = self._unit
 		local peer_id = managers.network:session():local_peer():id()
 		local player_unit = managers.player:player_unit()
+
 		success = managers.player:server_player_turret_action(action, turret_unit, peer_id, player_unit)
 	else
 		managers.network:session():send_to_host("sync_request_player_turret_action", action, self._unit)
@@ -3623,6 +3650,7 @@ end
 function PlayerTurretInteractionExt:can_select(player, locator)
 	local action = self._unit:base():get_action_for_interaction(player, locator)
 	local can_select = PlayerTurretInteractionExt.super.can_select(self, player, locator)
+
 	can_select = can_select and not managers.player:is_carrying()
 	can_select = can_select and not self._unit:brain():is_active()
 	can_select = can_select and action ~= PlayerTurretBase.INTERACT_INVALID
@@ -3633,6 +3661,7 @@ end
 function PlayerTurretInteractionExt:can_interact(player)
 	local action = self._unit:base():get_action_for_interaction(player, self._selected_locator)
 	local can_interact = PlayerTurretInteractionExt.super.can_interact(self, player)
+
 	can_interact = can_interact and not managers.player:is_berserker()
 	can_interact = can_interact and not managers.player:is_carrying()
 	can_interact = can_interact and not self._unit:brain():is_active()
@@ -3733,6 +3762,7 @@ function SpyAccessCameraInteractionExt:dot_limit()
 		local max_distance = self:max_interact_distance()
 		local distance = mvector3.distance(self._interact_position, player_unit:position())
 		local dot_ratio = math.min(max_distance / distance, 1)
+
 		dot_ratio = dot_ratio * dot_ratio
 		dot = math.lerp(1, dot, dot_ratio)
 	end

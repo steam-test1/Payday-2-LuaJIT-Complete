@@ -12,12 +12,12 @@ function HUDPlayerDowned:init(hud)
 		name = "downed_panel"
 	})
 	local timer_msg = downed_panel:text({
-		text = "BLEH BLEH IN",
-		vertical = "center",
+		align = "center",
 		h = 40,
 		name = "timer_msg",
+		text = "BLEH BLEH IN",
+		vertical = "center",
 		w = 400,
-		align = "center",
 		font = tweak_data.hud.medium_font_noshadow,
 		font_size = tweak_data.hud_downed.timer_message_size
 	})

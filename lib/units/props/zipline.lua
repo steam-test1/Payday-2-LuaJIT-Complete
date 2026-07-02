@@ -4,16 +4,15 @@ ZipLine.TYPES = {
 	"bag",
 	"both"
 }
-ZipLine.NET_EVENTS = {
-	request_access = 1,
-	access_denied = 2,
-	access_granted = 3,
-	set_user = 4,
-	remove_user = 5,
-	request_attach_bag = 6,
-	attach_bag_denied = 7,
-	attach_bag_granted = 8
-}
+ZipLine.NET_EVENTS = {}
+ZipLine.NET_EVENTS.request_access = 1
+ZipLine.NET_EVENTS.access_denied = 2
+ZipLine.NET_EVENTS.access_granted = 3
+ZipLine.NET_EVENTS.set_user = 4
+ZipLine.NET_EVENTS.remove_user = 5
+ZipLine.NET_EVENTS.request_attach_bag = 6
+ZipLine.NET_EVENTS.attach_bag_denied = 7
+ZipLine.NET_EVENTS.attach_bag_granted = 8
 ZipLine.DEBUG = false
 ZipLine.ziplines = ZipLine.ziplines or {}
 
@@ -47,18 +46,16 @@ function ZipLine:init(unit)
 
 	self:_update_total_time()
 
-	self._line_data = {
-		offset = Vector3(0, 0, 200),
-		pos = mvector3.copy(self._start_pos),
-		current_dir = Vector3()
-	}
-	self._sled_data = {
-		len = 200,
-		object = self._unit:get_object(Idstring("move")),
-		pos = Vector3(),
-		tip1 = Vector3(),
-		tip2 = Vector3()
-	}
+	self._line_data = {}
+	self._line_data.offset = Vector3(0, 0, 200)
+	self._line_data.pos = mvector3.copy(self._start_pos)
+	self._line_data.current_dir = Vector3()
+	self._sled_data = {}
+	self._sled_data.len = 200
+	self._sled_data.object = self._unit:get_object(Idstring("move"))
+	self._sled_data.pos = Vector3()
+	self._sled_data.tip1 = Vector3()
+	self._sled_data.tip2 = Vector3()
 	self._sound_source = SoundDevice:create_source("zipline")
 
 	self._sound_source:link(self._sled_data.object)
@@ -85,6 +82,7 @@ function ZipLine:_update_sled(t, dt)
 	if self._attached_bag then
 		if alive(self._attached_bag) then
 			self._current_time = math.min(1, self._current_time + dt / self._total_time)
+
 			local dir = math.lerp(self._line_data.dir_s, self._line_data.dir_e, self._current_time)
 			local rot = Rotation(dir, math.UP)
 
@@ -143,9 +141,8 @@ end
 
 function ZipLine:_update_sounds(t, dt)
 	if self._current_time ~= 0 and not self._running then
-		self._sound_data = {
-			last_pos = mvector3.copy(self._sled_data.pos)
-		}
+		self._sound_data = {}
+		self._sound_data.last_pos = mvector3.copy(self._sled_data.pos)
 
 		self._sound_source:post_event("zipline_hook")
 		self._sound_source:post_event("zipline_start")
@@ -319,6 +316,7 @@ end
 
 function ZipLine:set_user(unit)
 	local old_unit = self._user_unit
+
 	self._user_unit = unit
 
 	if self._user_unit then
@@ -335,7 +333,9 @@ end
 
 function ZipLine:sync_set_user(unit)
 	self._booked_by_peer_id = nil
+
 	local old_unit = self._user_unit
+
 	self._user_unit = unit
 	self._synced_user = alive(self._user_unit) and true or nil
 
@@ -485,6 +485,7 @@ function ZipLine:set_usage_type(usage_type)
 	end
 
 	self._usage_type = usage_type
+
 	local color_seq = "set_motor_color_" .. usage_type
 
 	if self._unit:damage() and self._unit:damage():has_sequence(color_seq) then
@@ -521,6 +522,7 @@ end
 function ZipLine:_update_and_get_pos_at_time(time, func)
 	self._current_time = time
 	self._dirty = true
+
 	local pos = func(self, time)
 
 	mvector3.set(self._sled_data.pos, pos)
@@ -575,6 +577,7 @@ end
 
 function ZipLine:speed_at_time(time, step)
 	step = step or 0.01
+
 	local pos1 = self:pos_at_time(time)
 	local pos2 = self:pos_at_time(math.clamp(time + step, 0, 1))
 	local dist = mvector3.distance(pos1, pos2)
@@ -652,6 +655,7 @@ end
 
 function ZipLine:attach_bag(bag)
 	self._booked_bag_peer_id = nil
+
 	local body = bag:body("hinge_body_1") or bag:body(0)
 
 	body:set_keyframed()
@@ -661,8 +665,10 @@ function ZipLine:attach_bag(bag)
 	self._unit:link(bag)
 
 	local carry_id = self._attached_bag:carry_data():carry_id()
+
 	self._attached_bag_offset = tweak_data.carry:get_zipline_offset(carry_id)
 	self._bag_disabled_collisions = {}
+
 	local nr_bodies = bag:num_bodies()
 
 	for i_body = 0, nr_bodies - 1 do
@@ -740,14 +746,14 @@ function ZipLine:debug_draw(t, dt)
 end
 
 function ZipLine:save(data)
-	local state = {
-		enabled = self._enabled,
-		current_time = self._current_time,
-		end_pos = self._end_pos,
-		speed = self._speed,
-		slack = self._slack,
-		usage_type = self._usage_type
-	}
+	local state = {}
+
+	state.enabled = self._enabled
+	state.current_time = self._current_time
+	state.end_pos = self._end_pos
+	state.speed = self._speed
+	state.slack = self._slack
+	state.usage_type = self._usage_type
 	data.ZipLine = state
 end
 

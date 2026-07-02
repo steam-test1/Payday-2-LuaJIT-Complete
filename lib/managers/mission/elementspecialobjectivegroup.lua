@@ -102,6 +102,7 @@ function ElementSpecialObjectiveGroup:choose_followup_SO(unit, skip_element_ids)
 	end
 
 	skip_element_ids[self._id] = true
+
 	local res_element = ElementSpecialObjective.choose_followup_SO(self, unit, skip_element_ids)
 
 	if not res_element then
@@ -117,6 +118,7 @@ function ElementSpecialObjectiveGroup:get_as_followup(unit, skip_element_ids)
 	end
 
 	skip_element_ids[self._id] = true
+
 	local res_element = ElementSpecialObjective.choose_followup_SO(self, unit, skip_element_ids)
 
 	if not res_element then
@@ -159,6 +161,7 @@ end
 function ElementSpecialObjectiveGroup:get_grp_objective()
 	if not self._area then
 		local nav_seg_id = managers.navigation:get_nav_seg_from_pos(self._values.position, nil)
+
 		self._area = managers.groupai:state():get_area_from_nav_seg_id(nav_seg_id)
 	end
 

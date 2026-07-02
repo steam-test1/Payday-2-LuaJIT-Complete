@@ -9,6 +9,7 @@ local mvector3_rotate_with = mvector3.rotate_with
 local mrotation_slerp = mrotation.slerp
 local mrotation_mul = mrotation.multiply
 local mrotation_set_zero = mrotation.set_zero
+
 CameraDataInterpreter = CameraDataInterpreter or CoreClass.class()
 
 function CameraDataInterpreter:init(cud)
@@ -121,6 +122,7 @@ end
 
 function CameraDataInterpreter:interpolate_to_target(cud_target, fraction)
 	local position = self._position
+
 	self._position = mvector3_copy(cud_target._position)
 
 	mvector3_sub(self._position, position)

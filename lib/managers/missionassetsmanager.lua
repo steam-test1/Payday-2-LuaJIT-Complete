@@ -9,10 +9,11 @@ function MissionAssetsManager:_setup()
 	self._requested_textures = {}
 	self._asset_textures_in_loading = {}
 	self._asset_textures_loaded = {}
+
 	local assets = {}
-	Global.asset_manager = {
-		assets = assets
-	}
+
+	Global.asset_manager = {}
+	Global.asset_manager.assets = assets
 	self._global = Global.asset_manager
 	self._tweak_data = tweak_data.assets
 	self._money_spent = 0
@@ -27,6 +28,7 @@ function MissionAssetsManager:_setup_mission_assets()
 
 	if managers.crime_spree and managers.crime_spree:is_active() then
 		local mission = managers.crime_spree:get_mission(managers.crime_spree:current_mission())
+
 		current_stage = mission and mission.level and mission.level.level_id
 	end
 
@@ -36,15 +38,16 @@ function MissionAssetsManager:_setup_mission_assets()
 
 	for id, asset in pairs(self._tweak_data) do
 		if asset.stages and (type(asset.stages) == "table" and table.contains(asset.stages, current_stage) or asset.stages == "all" and (not asset.exclude_stages or not table.contains(asset.exclude_stages, current_stage))) then
-			local requirements = {
-				saved_job_lock = nil,
-				job_lock = nil,
-				money_lock = nil,
-				upgrade_lock = nil,
-				achievment_lock = nil,
-				risk_lock = nil,
-				dlc_lock = nil
-			}
+			local requirements = {}
+
+			requirements.saved_job_lock = nil
+			requirements.job_lock = nil
+			requirements.money_lock = nil
+			requirements.upgrade_lock = nil
+			requirements.achievment_lock = nil
+			requirements.risk_lock = nil
+			requirements.dlc_lock = nil
+
 			local can_unlock = false
 			local require_to_unlock = asset.require_to_unlock or "all"
 
@@ -61,6 +64,7 @@ function MissionAssetsManager:_setup_mission_assets()
 					local operator = saved_job_lock[2] or "=="
 					local check_value = saved_job_lock[3] or 0
 					local function_string = "return " .. tostring(tonumber(saved_job_value) or 0) .. operator .. tostring(tonumber(check_value) or 0)
+
 					requirements.saved_job_lock = loadstring(function_string)() or false
 				else
 					requirements.saved_job_lock = managers.mission:get_saved_job_value(saved_job_lock) or false
@@ -77,6 +81,7 @@ function MissionAssetsManager:_setup_mission_assets()
 					local operator = job_lock[2] or "=="
 					local check_value = job_lock[3] or 0
 					local function_string = "return " .. tostring(tonumber(job_value) or 0) .. operator .. tostring(tonumber(check_value) or 0)
+
 					requirements.job_lock = loadstring(function_string)() or false
 				else
 					requirements.job_lock = managers.mission:get_job_value(job_lock) or false
@@ -148,7 +153,7 @@ function MissionAssetsManager:_setup_mission_assets()
 		end
 	end
 
-	table.sort(self._global.assets, function (x, y)
+	table.sort(self._global.assets, function(x, y)
 		if x.local_only ~= y.local_only then
 			return x.local_only
 		elseif x.show ~= y.show then
@@ -191,6 +196,7 @@ end
 
 function MissionAssetsManager:reset()
 	Global.asset_manager = nil
+
 	local old_triggers = self._triggers
 
 	self:_setup()
@@ -205,6 +211,7 @@ end
 
 function MissionAssetsManager:on_profile_switch()
 	local assets_to_update = {}
+
 	self._locally_unlocked_assets = self._locally_unlocked_assets or {}
 
 	for _, id in pairs(self._locally_unlocked_assets) do
@@ -413,6 +420,7 @@ function MissionAssetsManager:sync_relock_assets(string_table)
 	if #asset_ids ~= 0 then
 		for _, id in ipairs(asset_ids) do
 			local asset = self:_get_asset_by_id(id)
+
 			asset.unlocked = false
 			self._locally_unlocked_assets = self._locally_unlocked_assets or {}
 
@@ -456,7 +464,7 @@ function MissionAssetsManager:_is_asset_unlockable(id)
 		return false
 	end
 
-	local upgrade_lock, achievment_lock, dlc_lock = nil
+	local upgrade_lock, achievment_lock, dlc_lock
 	local can_unlock = true
 
 	if asset_tweak_data.upgrade_lock then
@@ -651,7 +659,7 @@ function MissionAssetsManager:create_asset_textures()
 
 	local all_visible_assets = self:get_all_asset_ids(true)
 	local texture_loaded_clbk = callback(self, self, "texture_loaded_clbk")
-	local texture = nil
+	local texture
 
 	for _, asset_id in ipairs(all_visible_assets) do
 		texture = self._tweak_data[asset_id].texture

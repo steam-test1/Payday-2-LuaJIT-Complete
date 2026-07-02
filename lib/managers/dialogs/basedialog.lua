@@ -25,6 +25,7 @@ function BaseDialog:is_generic()
 end
 
 function BaseDialog:fade_in()
+	return
 end
 
 function BaseDialog:fade_out_close()
@@ -36,6 +37,7 @@ function BaseDialog:fade_out()
 end
 
 function BaseDialog:force_close()
+	return
 end
 
 function BaseDialog:close()

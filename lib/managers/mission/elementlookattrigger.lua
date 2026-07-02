@@ -57,7 +57,7 @@ function ElementLookAtTrigger:update_lookat()
 		if self._values.distance and self._values.distance > 0 then
 			local distance = dir:length()
 
-			if self._values.distance < distance then
+			if distance > self._values.distance then
 				return
 			end
 		end
@@ -71,9 +71,10 @@ function ElementLookAtTrigger:update_lookat()
 		end
 
 		dir = dir:normalized()
+
 		local dot = player:camera():forward():dot(dir)
 
-		if self._values.sensitivity <= dot then
+		if dot >= self._values.sensitivity then
 			if Network:is_client() then
 				managers.network:session():send_to_host("to_server_mission_element_trigger", self._id, player)
 			else

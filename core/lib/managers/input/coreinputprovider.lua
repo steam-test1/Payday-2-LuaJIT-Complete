@@ -11,6 +11,7 @@ function Provider:init(input_layer_descriptions)
 end
 
 function Provider:destroy()
+	return
 end
 
 function Provider:context()
@@ -31,6 +32,7 @@ function Provider:create_layer(layer_description_name)
 	assert(layer_description, "Illegal layer description '" .. layer_description_name .. "'")
 
 	local layer = CoreInputLayer.Layer:new(self, layer_description)
+
 	self._layer_description_to_layer[layer_description] = layer
 
 	self._prioritizer:add_layer_description(layer_description)

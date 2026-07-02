@@ -11,6 +11,7 @@ end
 
 function VehicleSpotlightExt:_init_tweak_data()
 	local spotlight_data = tweak_data.spotlights[self._tweak_data]
+
 	self._wiggle = {
 		x = {
 			ang = math.random(spotlight_data.wiggle.ang[1] or 0, spotlight_data.wiggle.ang[2] or 0),
@@ -51,8 +52,13 @@ function VehicleSpotlightExt:update(unit, t, dt)
 		self._target = self:find_new_target()
 	end
 
-	local target_direction = nil
-	target_direction = (not alive(self._target) or self._target:position()) and (self._neutral_direction or Vector3(0, 0, 0))
+	local target_direction
+
+	if alive(self._target) then
+		target_direction = self._target:position()
+	else
+		target_direction = self._neutral_direction or Vector3(0, 0, 0)
+	end
 
 	for _, obj_pair in ipairs(self._objects) do
 		local obj = obj_pair[1]
@@ -70,8 +76,7 @@ function VehicleSpotlightExt:update(unit, t, dt)
 		local ax = math.sin(t * self._wiggle.x.speed) * self._wiggle.x.ang
 		local ay = math.cos(t * self._wiggle.y.speed) * self._wiggle.y.ang
 		local rot = Rotation(direction, VehicleSpotlightExt.SPOTLIGHT_NORMAL)
-		local offset_x = 0
-		local offset_y = 0
+		local offset_x, offset_y = 0, 0
 
 		if type_name(obj) == "Light" then
 			offset_y = 90
@@ -97,7 +102,7 @@ function VehicleSpotlightExt:find_new_target()
 			if weight <= self._max_target_distance then
 				weight = weight / self._max_target_distance * char_tweak.spotlight_important
 
-				if best_target[2] < weight then
+				if weight > best_target[2] then
 					best_target[1] = unit
 					best_target[2] = weight
 				end

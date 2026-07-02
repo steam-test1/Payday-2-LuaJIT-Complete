@@ -7,6 +7,7 @@ function ElementSpawnDeployable:init(...)
 end
 
 function ElementSpawnDeployable:client_on_executed(...)
+	return
 end
 
 function ElementSpawnDeployable:on_executed(instigator)

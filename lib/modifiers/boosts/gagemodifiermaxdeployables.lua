@@ -9,6 +9,7 @@ end
 function GageModifierMaxDeployables:modify_value(id, value)
 	if id == "PlayerManager:GetEquipmentMaxAmount" and value > 0 then
 		local new_val = math.floor(value * self:get_amount_multiplier())
+
 		new_val = math.max(new_val, value + 1)
 
 		return new_val

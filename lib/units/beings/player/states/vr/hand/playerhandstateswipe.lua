@@ -61,11 +61,12 @@ function PlayerHandStateSwipe:update(t, dt)
 	local inside = false
 	local vol = tweak_data.vr.tablet.interaction_volume
 
-	if mvector3.dot(hand_rotation:y(), up) < vol.angle_th and vol.min_depth < length and length < vol.max_depth and math.abs(x_len) <= width + vol.extra_width and math.abs(y_len) <= height + vol.extra_height then
+	if mvector3.dot(hand_rotation:y(), up) < vol.angle_th and length > vol.min_depth and length < vol.max_depth and math.abs(x_len) <= width + vol.extra_width and math.abs(y_len) <= height + vol.extra_height then
 		inside = true
 	end
 
 	self._swiped = self._swiped and inside
+
 	local controller = managers.vr:hand_state_machine():controller()
 	local ws_pos = tmp_vec
 
@@ -108,7 +109,7 @@ function PlayerHandStateSwipe:_check_flick(t, pos, x)
 	local length = math.abs(self._current_swipe - self._start_swipe)
 	local tablet = tweak_data.vr.tablet
 
-	if tablet.swipe_length < length then
+	if length > tablet.swipe_length then
 		local dir_string = self._current_swipe < self._start_swipe and "right" or "left"
 		local flick_time = tablet.flick_time
 

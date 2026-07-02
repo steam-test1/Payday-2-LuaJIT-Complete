@@ -35,6 +35,7 @@ function CrimeSpreeContractBoxGui:_check_create_peer_panel(peer_id)
 
 		if peer then
 			local char_data = LobbyCharacterData:new(self._panel, peer)
+
 			self._peer_panels[peer_id] = char_data
 		end
 	end
@@ -69,6 +70,7 @@ function CrimeSpreeContractBoxGui:update_character(peer_id)
 end
 
 function CrimeSpreeContractBoxGui:update_bg_state(peer_id, state)
+	return
 end
 
 function CrimeSpreeContractBoxGui:set_character_panel_alpha(peer_id, alpha)
@@ -85,6 +87,7 @@ function CrimeSpreeContractBoxGui:set_character_panel_alpha(peer_id, alpha)
 end
 
 function CrimeSpreeContractBoxGui:refresh()
+	return
 end
 
 function CrimeSpreeContractBoxGui:update(t, dt)
@@ -150,12 +153,15 @@ function CrimeSpreeContractBoxGui:check_minimize()
 end
 
 function CrimeSpreeContractBoxGui:moved_scroll_bar()
+	return
 end
 
 function CrimeSpreeContractBoxGui:mouse_wheel_down()
+	return
 end
 
 function CrimeSpreeContractBoxGui:mouse_wheel_up()
+	return
 end
 
 function CrimeSpreeContractBoxGui:check_grab_scroll_bar()

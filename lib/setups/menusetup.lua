@@ -28,6 +28,7 @@ core:import("SequenceManager")
 
 MenuSetup = MenuSetup or class(Setup)
 MenuSetup.IS_START_MENU = true
+
 local is_steam = SystemInfo:distribution() == Idstring("STEAM")
 local is_epic = SystemInfo:distribution() == Idstring("EPIC")
 local is_mm_eos = SystemInfo:matchmaking() == Idstring("MM_EPIC")
@@ -100,11 +101,7 @@ function MenuSetup:gather_packages_to_unload()
 	self._started_unloading_packages = true
 	self._packages_to_unload = self._packages_to_unload or {}
 
-	if not Global.load_start_menu then
-		if PackageManager:loaded("packages/start_menu") then
-			-- Nothing
-		end
-
+	if not Global.load_start_menu and (not PackageManager:loaded("packages/start_menu") or true) then
 		local prefix = "packages/dlcs/"
 		local sufix = "/start_menu"
 		local package = ""
@@ -135,7 +132,7 @@ function MenuSetup:init_game()
 	local gsm = Setup.init_game(self)
 
 	if not Application:editor() then
-		local event_id, checkpoint_index, level, level_class_name, mission, world_setting, difficulty, intro_skipped = nil
+		local event_id, checkpoint_index, level, level_class_name, mission, world_setting, difficulty, intro_skipped
 
 		if not Global.exe_arguments_parsed then
 			local arg_list = Application:argv()

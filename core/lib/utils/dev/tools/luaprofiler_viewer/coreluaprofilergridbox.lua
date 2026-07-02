@@ -6,14 +6,14 @@ core:import("CoreKeywordArguments")
 local parse_kwargs = CoreKeywordArguments.parse_kwargs
 local DEFAULT = Vector3(1, 1, 1)
 local HIGHLIGHTED = Vector3(0.8, 0.8, 1)
-local PERCENT = 0
-local SECONDS = 1
-local PLAIN = 2
+local PERCENT, SECONDS, PLAIN = 0, 1, 2
 local DEFAULT_FORMAT = PERCENT
+
 LuaProfilerGridBox = LuaProfilerGridBox or CoreClass.class()
 
 function LuaProfilerGridBox:init(...)
 	local args = CoreKeywordArguments.KeywordArguments:new(...)
+
 	self._ews_parent = args:mandatory_object("parent")
 
 	args:assert_all_consumed()
@@ -154,7 +154,7 @@ function LuaProfilerGridBox:_redraw()
 end
 
 function LuaProfilerGridBox:_sort_funcnodes()
-	local convert = nil
+	local convert
 
 	if self._sortcolumn == 1 then
 		function convert(fnid)
@@ -205,7 +205,7 @@ function LuaProfilerGridBox:_sort_funcnodes()
 
 	function sort(fn1, fn2)
 		if self._sortreverse then
-			return convert(fn2) < convert(fn1)
+			return convert(fn1) > convert(fn2)
 		else
 			return convert(fn1) < convert(fn2)
 		end

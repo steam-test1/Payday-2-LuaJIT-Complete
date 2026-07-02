@@ -1,4 +1,5 @@
 ArmorSkinExt = ArmorSkinExt or class()
+
 local material_defaults = {
 	bump_normal_texture = {
 		[2] = Idstring("units/payday2/characters/shared_textures/vest_small_nm"),
@@ -10,18 +11,18 @@ local material_defaults = {
 	diffuse_layer3_texture = Idstring("units/payday2_cash/safes/default/sticker/sticker_default_df")
 }
 local material_textures = {
+	base_gradient = "diffuse_layer1_texture",
+	normal_map = "bump_normal_texture",
 	pattern = "diffuse_layer0_texture",
 	pattern_gradient = "diffuse_layer2_texture",
-	normal_map = "bump_normal_texture",
-	sticker = "diffuse_layer3_texture",
-	base_gradient = "diffuse_layer1_texture"
+	sticker = "diffuse_layer3_texture"
 }
 local material_variables = {
 	cubemap_pattern_control = "cubemap_pattern_control",
 	pattern_pos = "pattern_pos",
-	uv_scale = "uv_scale",
-	uv_offset_rot = "uv_offset_rot",
 	pattern_tweak = "pattern_tweak",
+	uv_offset_rot = "uv_offset_rot",
+	uv_scale = "uv_scale",
 	wear_and_tear = (managers.blackmarket and managers.blackmarket:skin_editor() and managers.blackmarket:skin_editor():active() or Application:production_build()) and "wear_tear_value" or nil
 }
 
@@ -134,7 +135,7 @@ function ArmorSkinExt:_apply_cosmetics(clbks)
 
 	local texture_load_result_clbk = clbks.done and callback(self, self, "clbk_texture_loaded", clbks)
 	local textures = {}
-	local base_variable, base_texture, custom_variable, texture_key = nil
+	local base_variable, base_texture, custom_variable, texture_key
 	local wear_tear_value = self._cosmetics_quality and tweak_data.economy.qualities[self._cosmetics_quality] and tweak_data.economy.qualities[self._cosmetics_quality].wear_tear_value or 1
 
 	for _, material in pairs(self._materials) do
@@ -221,7 +222,8 @@ function ArmorSkinExt:clbk_texture_loaded(clbks, tex_name)
 		end
 	end
 
-	self:_chk_load_complete(clbks.done or function ()
+	self:_chk_load_complete(clbks.done or function()
+		return
 	end)
 end
 
@@ -259,7 +261,7 @@ function ArmorSkinExt:_set_material_textures()
 	end
 
 	local armor_level = self:armor_level()
-	local p_type, base_texture, new_texture = nil
+	local p_type, base_texture, new_texture
 
 	for _, material in pairs(self._materials) do
 		for key, material_texture in pairs(material_textures) do
@@ -328,6 +330,7 @@ function ArmorSkinExt:_update_materials()
 		end
 
 		self._materials = {}
+
 		local materials = self._unit:get_objects_by_type(Idstring("material"))
 
 		for _, m in ipairs(materials) do

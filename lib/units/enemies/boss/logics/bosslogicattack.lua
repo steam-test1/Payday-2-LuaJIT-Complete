@@ -34,6 +34,7 @@ local AI_REACT_AIM = AIAttentionObject.REACT_AIM
 local AI_REACT_SHOOT = AIAttentionObject.REACT_SHOOT
 local AI_REACT_COMBAT = AIAttentionObject.REACT_COMBAT
 local AI_REACT_SPECIAL_ATTACK = AIAttentionObject.REACT_SPECIAL_ATTACK
+
 BossLogicAttack = BossLogicAttack or class(CopLogicAttack)
 
 function BossLogicAttack.enter(data, new_logic_name, enter_params)
@@ -47,6 +48,7 @@ function BossLogicAttack.enter(data, new_logic_name, enter_params)
 	local char_tweak = data.char_tweak
 	local old_internal_data = data.internal_data
 	local new_internal_data = {}
+
 	data.internal_data = new_internal_data
 	new_internal_data.unit = unit
 	new_internal_data.detection = char_tweak.detection.combat
@@ -67,7 +69,7 @@ function BossLogicAttack.enter(data, new_logic_name, enter_params)
 	end
 
 	if not new_internal_data.shooting then
-		local new_stance = nil
+		local new_stance
 		local allowed_stances = char_tweak.allowed_stances
 
 		if not allowed_stances or allowed_stances.hos then
@@ -89,13 +91,17 @@ function BossLogicAttack.enter(data, new_logic_name, enter_params)
 
 	if equipped_weap then
 		local weap_usage = equipped_weap:base():weapon_tweak_data().usage
+
 		new_internal_data.weapon_range = weap_usage and char_tweak.weapon[weap_usage].range
 	end
 
 	local objective = data.objective
+
 	new_internal_data.attitude = objective and objective.attitude or "avoid"
+
 	local key_str = tostring(data.key)
 	local detection_task_key = "BossLogicAttack._upd_enemy_detection" .. key_str
+
 	new_internal_data.detection_task_key = detection_task_key
 
 	CopLogicBase.queue_task(new_internal_data, detection_task_key, BossLogicAttack._upd_enemy_detection, data, data.t, true)
@@ -103,7 +109,9 @@ function BossLogicAttack.enter(data, new_logic_name, enter_params)
 
 	if objective and (objective.action_duration or objective.action_timeout_t and data.t < objective.action_timeout_t) then
 		new_internal_data.action_timeout_clbk_id = "CopLogicIdle_action_timeout" .. key_str
+
 		local action_timeout_t = objective.action_timeout_t or data.t + objective.action_duration
+
 		objective.action_timeout_t = action_timeout_t
 
 		CopLogicBase.add_delayed_clbk(new_internal_data, new_internal_data.action_timeout_clbk_id, callback(CopLogicIdle, CopLogicIdle, "clbk_action_timeout", data), action_timeout_t)
@@ -211,6 +219,7 @@ function BossLogicAttack._upd_enemy_detection(data, is_synchronous)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local min_reaction = AI_REACT_AIM
 	local delay = CopLogicBase._upd_attention_obj_detection(data, min_reaction, nil)
@@ -254,7 +263,7 @@ function BossLogicAttack._upd_combat_movement(data, my_data)
 	local focus_enemy = data.attention_obj
 	local enemy_visible = focus_enemy.verified
 	local action_taken = data.logic.action_taken(data, my_data)
-	local chase = nil
+	local chase
 
 	if not action_taken then
 		if not my_data.chase_path_failed_t or t - my_data.chase_path_failed_t > 1 then
@@ -266,6 +275,7 @@ function BossLogicAttack._upd_combat_movement(data, my_data)
 				BossLogicAttack._chk_request_action_walk_to_chase_pos(data, my_data, speed)
 			elseif not my_data.chase_path_search_id and focus_enemy.nav_tracker then
 				my_data.chase_pos = nil
+
 				local chase_pos = focus_enemy.nav_tracker:field_position()
 				local pos_on_wall = CopLogicTravel._get_pos_on_wall(chase_pos, 300, nil, nil)
 
@@ -275,7 +285,7 @@ function BossLogicAttack._upd_combat_movement(data, my_data)
 
 				if my_data.chase_pos then
 					local my_pos = data.unit:movement():nav_tracker():field_position()
-					local unobstructed_line = nil
+					local unobstructed_line
 
 					if math_abs(my_pos.z - my_data.chase_pos.z) < 40 then
 						local ray_params = {
@@ -294,6 +304,7 @@ function BossLogicAttack._upd_combat_movement(data, my_data)
 							mvec3_cpy(my_pos),
 							my_data.chase_pos
 						}
+
 						local enemy_dis = enemy_visible and focus_enemy.dis or focus_enemy.verified_dis
 						local run_dist = enemy_visible and 800 or 400
 						local speed = enemy_dis < run_dist and "walk" or "run"
@@ -320,14 +331,10 @@ function BossLogicAttack._upd_combat_movement(data, my_data)
 		if current_haste then
 			local enemy_dis = enemy_visible and focus_enemy.dis or focus_enemy.verified_dis
 			local run_dist = enemy_visible and 700 or 300
-			local change_speed = nil
+			local change_speed
 
 			if current_haste == "run" then
-				if enemy_dis < run_dist then
-					change_speed = "walk"
-				else
-					change_speed = false
-				end
+				change_speed = enemy_dis < run_dist and "walk"
 			else
 				change_speed = run_dist <= enemy_dis and "run"
 			end
@@ -335,7 +342,7 @@ function BossLogicAttack._upd_combat_movement(data, my_data)
 			if change_speed then
 				local my_pos = data.unit:movement():nav_tracker():field_position()
 				local moving_to_pos = my_data.walking_to_chase_pos:get_walk_to_pos()
-				local unobstructed_line = nil
+				local unobstructed_line
 
 				if math_abs(my_pos.z - moving_to_pos.z) < 40 then
 					local ray_params = {
@@ -368,7 +375,8 @@ end
 
 function BossLogicAttack._get_priority_attention(data, attention_objects, reaction_func)
 	reaction_func = reaction_func or CopLogicIdle._chk_reaction_to_attention_object
-	local best_target, best_target_priority_slot, best_target_priority, best_target_reaction = nil
+
+	local best_target, best_target_priority_slot, best_target_priority, best_target_reaction
 	local forced_attention_data = managers.groupai:state():force_attention_data(data.unit)
 
 	if forced_attention_data then
@@ -400,7 +408,7 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 		end
 	end
 
-	local att_unit, reaction, distance, crim_record, reaction_too_mild = nil
+	local att_unit, reaction, distance, crim_record, reaction_too_mild
 	local near_threshold = data.internal_data.weapon_range.optimal
 	local too_close_threshold = data.internal_data.weapon_range.close
 	local analyse_giveaway_func = managers.groupai:state().analyse_giveaway
@@ -411,14 +419,14 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 		if not attention_data.identified then
 			-- Nothing
 		elseif attention_data.pause_expire_t then
-			if attention_data.pause_expire_t < data.t then
+			if data.t > attention_data.pause_expire_t then
 				if not attention_data.settings.attract_chance or math.random() < attention_data.settings.attract_chance then
 					attention_data.pause_expire_t = nil
 				else
 					attention_data.pause_expire_t = data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())
 				end
 			end
-		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
+		elseif attention_data.stare_expire_t and data.t > attention_data.stare_expire_t then
 			if attention_data.settings.pause then
 				attention_data.stare_expire_t = nil
 				attention_data.pause_expire_t = data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())
@@ -427,7 +435,7 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 			distance = attention_data.dis
 			reaction = reaction_func(data, attention_data, not CopLogicAttack._can_move(data))
 
-			if data.cool and AI_REACT_SCARED <= reaction then
+			if data.cool and reaction >= AI_REACT_SCARED then
 				data.unit:movement():set_cool(false, analyse_giveaway_func(data.unit:base()._tweak_table, att_unit))
 			end
 
@@ -439,10 +447,14 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 
 			if not reaction_too_mild then
 				local aimed_at = CopLogicIdle.chk_am_i_aimed_at(data, attention_data, attention_data.aimed_at and 0.95 or 0.985)
+
 				attention_data.aimed_at = aimed_at
+
 				local alert_dt = attention_data.alert_t and data.t - attention_data.alert_t or 10000
 				local dmg_dt = attention_data.dmg_t and data.t - attention_data.dmg_t or 10000
+
 				crim_record = attention_data.criminal_record
+
 				local status = crim_record and crim_record.status
 				local nr_enemies = crim_record and crim_record.engaged_force
 				local old_enemy = false
@@ -462,8 +474,9 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 						weight_mul = (weight_mul or 1) * 1000
 					end
 
-					if _G.IS_VR and tweak_data.vr.long_range_damage_reduction_distance[1] < distance then
+					if _G.IS_VR and distance > tweak_data.vr.long_range_damage_reduction_distance[1] then
 						local mul = math.clamp(distance / tweak_data.vr.long_range_damage_reduction_distance[2] / 2, 0, 1) + 1
+
 						weight_mul = (weight_mul or 1) * mul
 					end
 				elseif att_unit:base() and att_unit:base().upgrade_value then
@@ -475,8 +488,9 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 						weight_mul = (weight_mul or 1) * 1000
 					end
 
-					if att_unit:movement().is_vr and att_unit:movement():is_vr() and tweak_data.vr.long_range_damage_reduction_distance[1] < distance then
+					if att_unit:movement().is_vr and att_unit:movement():is_vr() and distance > tweak_data.vr.long_range_damage_reduction_distance[1] then
 						local mul = math.clamp(distance / tweak_data.vr.long_range_damage_reduction_distance[2] / 2, 0, 1) + 1
+
 						weight_mul = (weight_mul or 1) * mul
 					end
 				end
@@ -530,10 +544,6 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 
 					if target_priority_slot < 1 then
 						target_priority_slot = 1
-
-						if 1 then
-							-- Nothing
-						end
 					end
 				elseif not status then
 					target_priority_slot = 7
@@ -542,10 +552,7 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 				if reaction < AI_REACT_COMBAT then
 					local modifier = AI_REACT_COMBAT - reaction
 
-					if modifier < 0 then
-						modifier = 0
-					end
-
+					modifier = modifier < 0 and 0 or modifier
 					target_priority_slot = 10 + target_priority_slot + modifier
 				end
 
@@ -575,14 +582,14 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 end
 
 function BossLogicAttack._upd_aim(data, my_data)
-	local shoot, aim, expected_pos = nil
+	local shoot, aim, expected_pos
 	local focus = data.attention_obj
 	local reaction = focus and focus.reaction
 
 	if focus then
 		local focus_visible = focus.verified
 
-		if AI_REACT_AIM <= reaction then
+		if reaction >= AI_REACT_AIM then
 			if focus_visible or focus.nearly_visible then
 				local weapon_range = my_data.weapon_range
 				local walk_action = my_data.advancing
@@ -591,7 +598,7 @@ function BossLogicAttack._upd_aim(data, my_data)
 				if reaction < AI_REACT_SHOOT then
 					aim = true
 
-					if running and math.lerp(weapon_range.close, weapon_range.optimal, 0) < focus.dis then
+					if running and focus.dis > math.lerp(weapon_range.close, weapon_range.optimal, 0) then
 						local walk_to_pos = data.unit:movement():get_walk_to_pos()
 
 						if walk_to_pos then
@@ -630,7 +637,7 @@ function BossLogicAttack._upd_aim(data, my_data)
 					end
 
 					if not shoot and focus_visible then
-						if focus.verified_dis < firing_range then
+						if firing_range > focus.verified_dis then
 							shoot = true
 						elseif focus.criminal_record and focus.criminal_record.assault_t and data.t - focus.criminal_record.assault_t < 2 then
 							shoot = true
@@ -651,7 +658,7 @@ function BossLogicAttack._upd_aim(data, my_data)
 						end
 					end
 
-					aim = aim or shoot or focus.verified_dis < firing_range
+					aim = aim or shoot or firing_range > focus.verified_dis
 				end
 			else
 				local time_since_verification = focus.verified_t
@@ -663,12 +670,13 @@ function BossLogicAttack._upd_aim(data, my_data)
 
 					if running then
 						local dis_lerp = math_clamp((focus.verified_dis - 500) / 600, 0, 1)
+
 						aim = time_since_verification < math_lerp(5, 1, dis_lerp)
 					elseif time_since_verification < 5 then
 						aim = true
 					end
 
-					if aim and my_data.shooting and AI_REACT_SHOOT <= reaction then
+					if aim and my_data.shooting and reaction >= AI_REACT_SHOOT then
 						if running then
 							local look_pos = focus.last_verified_pos or focus.verified_pos
 							local same_height = math_abs(look_pos.z - data.m_pos.z) < 250
@@ -715,15 +723,20 @@ function BossLogicAttack._upd_aim(data, my_data)
 			end
 		end
 
-		if not aim and data.char_tweak.always_face_enemy and AI_REACT_COMBAT <= reaction and (expected_pos or focus.last_verified_pos) then
+		if not aim and data.char_tweak.always_face_enemy and reaction >= AI_REACT_COMBAT and (expected_pos or focus.last_verified_pos) then
 			aim = true
 		end
 
 		BossLogicAttack._chk_use_throwable(data, my_data, focus, expected_pos)
 
 		if data.logic.chk_should_turn(data, my_data) then
-			local focus_pos = nil
-			focus_pos = (focus_visible or focus.nearly_visible) and focus.m_pos or expected_pos or focus.last_verified_pos or focus.verified_pos
+			local focus_pos
+
+			if focus_visible or focus.nearly_visible then
+				focus_pos = focus.m_pos
+			else
+				focus_pos = expected_pos or focus.last_verified_pos or focus.verified_pos
+			end
 
 			CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, data.m_pos, focus_pos)
 		end
@@ -865,6 +878,7 @@ end
 
 function BossLogicAttack.queued_update(data)
 	local my_data = data.internal_data
+
 	data.t = TimerManager:game():time()
 
 	BossLogicAttack.update(data)
@@ -879,7 +893,9 @@ end
 function BossLogicAttack._process_pathing_results(data, my_data)
 	if data.pathing_results then
 		local pathing_results = data.pathing_results
+
 		data.pathing_results = nil
+
 		local path = pathing_results[my_data.chase_path_search_id]
 
 		if path then
@@ -991,6 +1007,7 @@ function BossLogicAttack._chk_request_action_walk_to_chase_pos(data, my_data, sp
 		nav_path = my_data.chase_path,
 		variant = speed or "run"
 	}
+
 	my_data.chase_path = nil
 	my_data.advancing = data.brain:action_request(new_action_data)
 
@@ -1025,11 +1042,12 @@ function BossLogicAttack._chk_start_action_move_out_of_the_way(data, my_data)
 				to_pos
 			}
 			local new_action_data = {
-				variant = "run",
 				body_part = 2,
 				type = "walk",
+				variant = "run",
 				nav_path = path
 			}
+
 			my_data.advancing = data.brain:action_request(new_action_data)
 
 			if my_data.advancing then

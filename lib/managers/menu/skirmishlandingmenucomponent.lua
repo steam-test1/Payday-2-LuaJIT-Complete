@@ -15,11 +15,12 @@ end
 function SkirmishMenuComponentBase:mouse_moved(_, x, y)
 	self:_select_button(nil)
 
-	local used, pointer = nil
+	local used, pointer
 
 	for _, button in ipairs(self._buttons) do
 		if button.mouse_moved then
 			local current_used, current_pointer = button:mouse_moved(x, y)
+
 			used = used or current_used
 			pointer = pointer or current_pointer
 		end
@@ -79,7 +80,7 @@ function SkirmishMenuComponentBase:_select_button(button)
 end
 
 function SkirmishMenuComponentBase:_move_in_direction(direction)
-	local button_in_direction = nil
+	local button_in_direction
 
 	if self._selected_button then
 		button_in_direction = self._selected_button:get_directional_link(direction)
@@ -107,6 +108,7 @@ function SkirmishLandingMenuComponent:init(ws, fullscreen_ws, node)
 		layer = 50,
 		name = "skirmish_landing_bg"
 	})
+
 	local bg_blur = BlurSheet:new(self._bg_panel)
 	local title = FineText:new(self._panel, {
 		name = "title",
@@ -119,7 +121,7 @@ function SkirmishLandingMenuComponent:init(ws, fullscreen_ws, node)
 	})
 
 	local function open_node_callback(node_name)
-		return function ()
+		return function()
 			managers.menu:open_node(node_name)
 			managers.menu_component:post_event("menu_enter")
 		end
@@ -201,6 +203,7 @@ function SkirmishLandingMenuComponent:open_node()
 end
 
 function SkirmishLandingMenuComponent:update(t, dt)
+	return
 end
 
 function SkirmishLandingMenuComponent:input_focus()
@@ -268,15 +271,16 @@ BackButton = BackButton or class(ClickButton)
 
 function BackButton:init(parent, config)
 	config = config or {}
+
 	local panel = parent:panel(config)
 
-	BackButton.super.init(self, panel, function ()
+	BackButton.super.init(self, panel, function()
 		managers.menu:back(true)
 	end)
 
 	self._label_text = FineText:new(panel, {
-		name = "label",
 		layer = 1,
+		name = "label",
 		text = managers.localization:to_upper_text("menu_back"),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -285,8 +289,8 @@ function BackButton:init(parent, config)
 
 	if managers.menu:is_pc_controller() then
 		local ghost_label = FineText:new(panel, {
-			name = "ghost_label",
 			alpha = 0.4,
+			name = "ghost_label",
 			rotation = 360,
 			text = managers.localization:to_upper_text("menu_back"),
 			font = tweak_data.menu.pd2_massive_font,
@@ -319,6 +323,7 @@ function SkirmishVariantButton:init(parent, config)
 	config = config or {}
 	config.w = config.w or 400
 	config.h = config.h or 400
+
 	local panel = parent:panel(config)
 
 	SkirmishVariantButton.super.init(self, panel, config.callback)
@@ -326,8 +331,8 @@ function SkirmishVariantButton:init(parent, config)
 	local text_margin = 2
 	local padding = SkirmishVariantButton.PADDING
 	local title = FineText:new(panel, {
-		name = "title",
 		layer = 1,
+		name = "title",
 		text = config.title,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -335,14 +340,15 @@ function SkirmishVariantButton:init(parent, config)
 		y = padding.y
 	})
 	local subtitle = FineText:new(panel, {
-		name = "subtitle",
 		layer = 1,
+		name = "subtitle",
 		text = config.subtitle,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		x = padding.x,
 		y = title:bottom() + text_margin
 	})
+
 	self._picture = panel:bitmap({
 		name = "picture",
 		texture = config.bitmap,
@@ -355,7 +361,7 @@ end
 
 function SkirmishVariantButton:set_button_state(state)
 	local panel = self._gui_obj
-	local target_color = nil
+	local target_color
 
 	if state == ClickButton.STATE_NORMAL then
 		target_color = Color("6b6b6b")
@@ -386,7 +392,7 @@ function SkirmishVariantButton:set_button_state(state)
 	local function fade_color(o)
 		local start_color = o:color()
 
-		over(0.2, function (p)
+		over(0.2, function(p)
 			p = -1 * p * (p - 2)
 
 			self._picture:set_color(target_color * p + start_color * (1 - p))
@@ -405,21 +411,21 @@ function WeeklySkirmishVariantButton:init(parent, config)
 	local panel = self._gui_obj
 	local padding = SkirmishVariantButton.PADDING
 	local countdown_text = panel:text({
-		name = "countdown",
 		align = "right",
 		layer = 1,
+		name = "countdown",
 		text = managers.localization:to_upper_text("skirmish_weekly_time_left", managers.skirmish:weekly_time_left_params()),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	})
 	local progress_panel = panel:panel({
-		name = "progress_panel",
 		h = 100,
-		layer = 1
+		layer = 1,
+		name = "progress_panel"
 	})
 	local progress_panel_bg = progress_panel:rect({
-		name = "progress_panel_bg",
 		alpha = 0.5,
+		name = "progress_panel_bg",
 		color = Color.black
 	})
 	local x, y, w, h = countdown_text:text_rect()
@@ -429,11 +435,11 @@ function WeeklySkirmishVariantButton:init(parent, config)
 	progress_panel:set_bottom(panel:height())
 
 	local progress_title = progress_panel:text({
-		name = "progress_title",
-		y = 10,
 		align = "left",
-		x = 10,
 		layer = 1,
+		name = "progress_title",
+		x = 10,
+		y = 10,
 		text = managers.localization:to_upper_text("menu_weekly_skirmish_progress"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size
@@ -447,8 +453,8 @@ function WeeklySkirmishVariantButton:init(parent, config)
 		9
 	}
 	local progress_bar = ProgressBar:new(progress_panel, {
-		name = "progress_bar",
 		h = 8,
+		name = "progress_bar",
 		progress_color = tweak_data.screen_colors.button_stage_2,
 		back_color = tweak_data.screen_colors.text:with_alpha(0.4),
 		w = progress_panel:w() * 0.6666666666666666,
@@ -461,8 +467,8 @@ function WeeklySkirmishVariantButton:init(parent, config)
 		local milestone_progress = milestone / max_weekly_wave
 		local milestone_panel = progress_panel:panel({
 			h = 25,
-			w = 10,
 			layer = 1,
+			w = 10,
 			name = "milestone_" .. tostring(milestone),
 			x = progress_bar:x() + progress_bar:w() * milestone_progress - 5
 		})
@@ -472,8 +478,8 @@ function WeeklySkirmishVariantButton:init(parent, config)
 		local unlocked = milestone_progress <= progress
 		local color = tweak_data.screen_colors.text:with_alpha(unlocked and 1 or 0.4)
 		local milestone_title = milestone_panel:text({
-			name = "title",
 			align = "center",
+			name = "title",
 			text = tostring(milestone),
 			font = tweak_data.menu.pd2_tiny_font,
 			font_size = tweak_data.menu.pd2_tiny_font_size,
@@ -481,11 +487,11 @@ function WeeklySkirmishVariantButton:init(parent, config)
 		})
 		local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 		local milestone_arrow = milestone_panel:bitmap({
-			name = "arrow",
 			h = 5,
-			y = 17,
-			w = 8,
+			name = "arrow",
 			rotation = 180,
+			w = 8,
+			y = 17,
 			texture = texture,
 			texture_rect = rect,
 			color = color
@@ -494,7 +500,7 @@ function WeeklySkirmishVariantButton:init(parent, config)
 		milestone_arrow:set_center_x(milestone_panel:w() / 2)
 	end
 
-	countdown_text:animate(function (o)
+	countdown_text:animate(function(o)
 		while true do
 			wait(1)
 
@@ -513,7 +519,7 @@ local function get_reward_data(reward_type, reward_id)
 		guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
 	end
 
-	local icon_data, text_id = nil
+	local icon_data, text_id
 
 	if reward_type == "textures" then
 		icon_data = {
@@ -551,19 +557,21 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 	self._fullscreen_panel = fullscreen_ws:panel():panel({
 		layer = 50
 	})
+
 	local bg_overlay = BlurSheet:new(self._fullscreen_panel, {
-		name = "bg_overlay",
 		layer = 50,
+		name = "bg_overlay",
 		color = Color(0.75, 0, 0, 0)
 	})
 	local width = 760
 	local height = 320
 	local reward_panel = self._panel:panel({
-		name = "reward_panel",
 		layer = 50,
+		name = "reward_panel",
 		w = width,
 		h = height
 	})
+
 	self._reward_panel = reward_panel
 
 	reward_panel:set_center(self._panel:width() * 0.5, self._panel:height() * 0.5)
@@ -581,24 +589,24 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 	})
 
 	local progress_title = FineText:new(reward_panel, {
+		layer = 1,
 		name = "progress_title",
 		rotation = 360,
-		layer = 1,
 		text = managers.localization:to_upper_text("menu_weekly_skirmish_rewards")
 	})
 
 	progress_title:set_bottom(0)
 
 	local countdown_text = FineText:new(reward_panel, {
-		name = "countdown",
-		y = 5,
-		x = 10,
 		layer = 1,
+		name = "countdown",
+		x = 10,
+		y = 5,
 		text = managers.localization:to_upper_text("skirmish_weekly_time_left", managers.skirmish:weekly_time_left_params()),
 		color = tweak_data.screen_colors.text:with_alpha(0.5)
 	})
 
-	countdown_text:animate(function (o)
+	countdown_text:animate(function(o)
 		while true do
 			wait(1)
 
@@ -610,8 +618,8 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 
 	local max_weekly_wave = 9
 	local progress_text = FineText:new(reward_panel, {
-		name = "progress_text",
 		layer = 1,
+		name = "progress_text",
 		y = 5,
 		text = managers.localization:to_upper_text("menu_weekly_skirmish_current_progress", {
 			current = managers.skirmish:weekly_progress(),
@@ -623,9 +631,9 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 
 	local progress = managers.skirmish:weekly_progress() / max_weekly_wave
 	local progress_bar = ProgressBar:new(reward_panel, {
-		name = "progress_bar",
-		h = 8,
 		edges = "up",
+		h = 8,
+		name = "progress_bar",
 		progress_color = tweak_data.screen_colors.button_stage_2,
 		back_color = tweak_data.screen_colors.text:with_alpha(0.4),
 		w = reward_panel:w() * 0.75,
@@ -640,14 +648,14 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 		5,
 		9
 	}
-	local last_button = nil
+	local last_button
 
 	for _, milestone in ipairs(milestones) do
 		local milestone_progress = milestone / max_weekly_wave
 		local milestone_panel = reward_panel:panel({
-			w = 50,
 			h = 150,
 			layer = 50,
+			w = 50,
 			name = "milestone_" .. tostring(milestone)
 		})
 
@@ -657,8 +665,8 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 		local unlocked = milestone_progress <= progress
 		local color = tweak_data.screen_colors.text:with_alpha(unlocked and 1 or 0.4)
 		local milestone_title = FineText:new(milestone_panel, {
-			name = "title",
 			align = "center",
+			name = "title",
 			text = tostring(milestone),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -666,10 +674,10 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 		})
 		local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 		local milestone_arrow = milestone_panel:bitmap({
-			name = "arrow",
 			h = 6,
-			w = 12,
+			name = "arrow",
 			rotation = 180,
+			w = 12,
 			texture = texture,
 			texture_rect = rect,
 			color = color
@@ -681,10 +689,11 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 
 		if milestone > 0 then
 			local milestone_reward = managers.skirmish:claimed_reward_by_id(milestone)
-			local icon_data, text_id = nil
+			local icon_data, text_id
 
 			if milestone_reward then
 				local reward_type, reward_id = unpack(milestone_reward)
+
 				icon_data, text_id = get_reward_data(reward_type, reward_id)
 			else
 				icon_data = tweak_data.hud_icons.downcard_overkill_deck
@@ -704,8 +713,8 @@ function SkirmishWeeklyRewardsMenuComponent:init(ws, fullscreen_ws, node)
 			reward_icon:set_bottom(milestone_title:y() - 5)
 
 			local reward_title = FineText:new(milestone_panel, {
-				name = "reward_title",
 				align = "center",
+				name = "reward_title",
 				rotation = 360,
 				text = text_id and managers.localization:to_upper_text(text_id) or "",
 				font = tweak_data.menu.pd2_small_font,
@@ -809,7 +818,9 @@ RewardButton = RewardButton or class(ClickButton)
 
 function RewardButton:init(parent, config)
 	config = config or {}
+
 	local panel = parent:panel(config)
+
 	self._reward_icon = config.reward_icon
 	self._reward_id = config.reward_id
 	self._reward_title = config.reward_title
@@ -830,7 +841,7 @@ function RewardButton:_animate_flip(o)
 	local cx = self._reward_icon:center_x()
 	local w, h = self._reward_icon:size()
 
-	over(0.25, function (p)
+	over(0.25, function(p)
 		self._reward_icon:set_w(w * (1 - p))
 		self._reward_icon:set_center_x(cx)
 	end)
@@ -861,7 +872,7 @@ function RewardButton:_animate_flip(o)
 
 	self._reward_icon:set_w(0)
 	self._reward_icon:set_visible(true)
-	over(0.25, function (p)
+	over(0.25, function(p)
 		self._reward_icon:set_w(w * p)
 		self._reward_icon:set_center_x(cx)
 	end)
@@ -887,15 +898,16 @@ ContinueButton = ContinueButton or class(ClickButton)
 
 function ContinueButton:init(parent, config)
 	config = config or {}
+
 	local panel = parent:panel(config)
 
-	ContinueButton.super.init(self, panel, function ()
+	ContinueButton.super.init(self, panel, function()
 		managers.menu:back(true)
 	end)
 
 	self._label_text = FineText:new(panel, {
-		name = "label",
 		layer = 1,
+		name = "label",
 		text = managers.localization:to_upper_text("dialog_continue"),
 		color = tweak_data.screen_colors.button_stage_3
 	})

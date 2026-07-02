@@ -18,8 +18,8 @@ function DOFManager:init()
 	self._env_dof_enabled = true
 	self._environment_parameters = {
 		clamp = 0,
-		far_min = 0,
 		far_max = 0,
+		far_min = 0,
 		near_max = 0,
 		near_min = 0
 	}
@@ -28,9 +28,9 @@ end
 
 function DOFManager:save(data)
 	if next(self._queued_effects) then
-		local state = {
-			queued_effects = clone(self._queued_effects)
-		}
+		local state = {}
+
+		state.queued_effects = clone(self._queued_effects)
 		data.DOFManager = state
 	end
 end
@@ -51,7 +51,8 @@ function DOFManager:update(t, dt)
 	self:remove_expired_effects(t, dt)
 
 	self._current_effect = self._sorted_effect_list[1]
-	local new_data, new_clamp = nil
+
+	local new_data, new_clamp
 
 	if self._current_effect then
 		self:update_effect(t, dt, self._current_effect)
@@ -91,13 +92,12 @@ function DOFManager:modifier_callback(interface)
 end
 
 function DOFManager:feed_dof(near_min, near_max, far_min, far_max, clamp)
-	self._modifier_input = {
-		near_focus_distance_min = near_min,
-		near_focus_distance_max = near_max,
-		far_focus_distance_min = far_min,
-		far_focus_distance_max = far_max,
-		clamp = clamp
-	}
+	self._modifier_input = {}
+	self._modifier_input.near_focus_distance_min = near_min
+	self._modifier_input.near_focus_distance_max = near_max
+	self._modifier_input.far_focus_distance_min = far_min
+	self._modifier_input.far_focus_distance_max = far_max
+	self._modifier_input.clamp = clamp
 end
 
 function DOFManager:get_dof_parameters()
@@ -130,7 +130,7 @@ function DOFManager:remove_expired_effects(t, dt)
 		if effect.prog_data.finish_t then
 			local eff_t = (effect.preset.timer or self._game_timer):time()
 
-			if effect.prog_data.finish_t <= eff_t then
+			if eff_t >= effect.prog_data.finish_t then
 				self:intern_remove_effect(id)
 			end
 		end
@@ -163,7 +163,7 @@ end
 function DOFManager:calculate_current_parameters_fade_in(t, dt, effect)
 	local next_eff_sort = effect.prog_data.sort_index + 1
 	local next_eff_id = self._sorted_effect_list[next_eff_sort]
-	local init = nil
+	local init
 
 	if next_eff_id then
 		self:update_effect(t, dt, next_eff_id)
@@ -172,6 +172,7 @@ function DOFManager:calculate_current_parameters_fade_in(t, dt, effect)
 	end
 
 	init = init or self._environment_parameters
+
 	local cur = effect.prog_data.cur_values
 	local tar = effect.prog_data.target_values
 	local eff_lerp = effect.prog_data.lerp
@@ -189,6 +190,7 @@ function DOFManager:calculate_current_parameters_sustain(t, dt, effect)
 		effect.prog_data.dirty = nil
 	else
 		effect.prog_data.peak_reached = true
+
 		local cur = effect.prog_data.cur_values
 		local tar = effect.prog_data.target_values
 
@@ -204,7 +206,7 @@ end
 function DOFManager:calculate_current_parameters_fade_out(t, dt, effect, id)
 	local next_eff_sort = effect.prog_data.sort_index + 1
 	local next_eff_id = self._sorted_effect_list[next_eff_sort]
-	local out = nil
+	local out
 
 	if next_eff_id then
 		self:update_effect(t, dt, next_eff_id)
@@ -213,6 +215,7 @@ function DOFManager:calculate_current_parameters_fade_out(t, dt, effect, id)
 	end
 
 	out = out or self._environment_parameters
+
 	local cur = effect.prog_data.cur_values
 	local tar = effect.prog_data.target_values
 	local eff_lerp = effect.prog_data.lerp
@@ -227,17 +230,19 @@ end
 
 function DOFManager:play(dof_data, amplitude_multiplier)
 	self._last_id = self._last_id + 1
+
 	local new_data = {}
 	local timer = dof_data.timer or self._game_timer
 	local t = timer:time()
-	local prog_data = {
-		clamp = amplitude_multiplier and dof_data.clamp * amplitude_multiplier or dof_data.clamp,
-		fade_in_end = dof_data.fade_in and t + dof_data.fade_in or t
-	}
+	local prog_data = {}
+
+	prog_data.clamp = amplitude_multiplier and dof_data.clamp * amplitude_multiplier or dof_data.clamp
+	prog_data.fade_in_end = dof_data.fade_in and t + dof_data.fade_in or t
 	prog_data.sustain_end = dof_data.sustain and prog_data.fade_in_end + dof_data.sustain
 	prog_data.finish_t = prog_data.sustain_end and prog_data.sustain_end + (dof_data.fade_out or 0)
 	prog_data.start_t = t
-	local cur_values = nil
+
+	local cur_values
 	local near_min, near_max, far_min, far_max, clamp = self:get_dof_values()
 
 	if clamp > 0 then
@@ -251,8 +256,8 @@ function DOFManager:play(dof_data, amplitude_multiplier)
 	else
 		cur_values = {
 			clamp = 0,
-			far_min = 0,
 			far_max = 0,
+			far_min = 0,
 			near_max = 0,
 			near_min = 0
 		}
@@ -276,10 +281,10 @@ function DOFManager:play(dof_data, amplitude_multiplier)
 end
 
 function DOFManager:add_to_sorted_list(new_id, prio)
-	local allocated = nil
+	local allocated
 
 	for index, eff_id in ipairs(self._sorted_effect_list) do
-		if self._queued_effects[eff_id].preset.prio <= prio then
+		if prio >= self._queued_effects[eff_id].preset.prio then
 			table.insert(self._sorted_effect_list, index, new_id)
 
 			allocated = true
@@ -323,6 +328,7 @@ function DOFManager:stop(id, instant)
 			end
 		else
 			local t = (effect.preset.timer or self._game_timer):time()
+
 			effect.prog_data.sustain_end = t
 			effect.prog_data.finish_t = t + (effect.preset.fade_out or 0)
 		end
@@ -364,6 +370,7 @@ end
 
 function DOFManager:from_env_mgr_set_env_dof(env_data)
 	local env_param = self._environment_parameters
+
 	env_param.near_min = env_data.near_focus_distance_min
 	env_param.near_max = env_data.near_focus_distance_max
 	env_param.far_min = env_data.far_focus_distance_min
@@ -373,6 +380,7 @@ end
 
 function DOFManager:clbk_environment_change()
 	local env_data = managers.environment:get_posteffect()
+
 	env_data = env_data and env_data._post_processors
 	env_data = env_data and env_data.hdr_post_processor
 	env_data = env_data and env_data._modifiers

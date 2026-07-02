@@ -3,6 +3,7 @@ require("core/lib/managers/cutscene/keys/CoreCutsceneKeyBase")
 CoreSetupCutsceneKeyBase = CoreSetupCutsceneKeyBase or class(CoreCutsceneKeyBase)
 
 function CoreSetupCutsceneKeyBase:populate_from_editor(cutscene_editor)
+	return
 end
 
 function CoreSetupCutsceneKeyBase:frame()
@@ -10,9 +11,11 @@ function CoreSetupCutsceneKeyBase:frame()
 end
 
 function CoreSetupCutsceneKeyBase:set_frame(frame)
+	return
 end
 
 function CoreSetupCutsceneKeyBase:on_gui_representation_changed(sender, sequencer_clip)
+	return
 end
 
 function CoreSetupCutsceneKeyBase:prime(player)
@@ -20,4 +23,5 @@ function CoreSetupCutsceneKeyBase:prime(player)
 end
 
 function CoreSetupCutsceneKeyBase:play(player, undo, fast_forward)
+	return
 end

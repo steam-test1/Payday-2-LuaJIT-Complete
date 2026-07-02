@@ -42,12 +42,15 @@ function Widget:set_rotation(rot)
 end
 
 function Widget:update()
+	return
 end
 
 function Widget:calculate()
+	return
 end
 
 function Widget:reset_values()
+	return
 end
 
 MoveWidget = MoveWidget or CoreClass.class(Widget)
@@ -130,6 +133,7 @@ end
 
 function MoveWidget:calculate(unit, widget_rot)
 	local result_pos = self:calc_move_widget_pos(unit, widget_rot)
+
 	result_pos = result_pos + self._move_widget_offset
 
 	return result_pos
@@ -148,6 +152,7 @@ function MoveWidget:calc_move_widget_pos(unit, widget_rot)
 
 		if (p2 - p1):dot(normal) ~= 0 then
 			local t = (d - p1:dot(normal)) / (p2 - p1):dot(normal)
+
 			result_pos = (p2 - p1) * t
 		end
 	else
@@ -161,11 +166,14 @@ function MoveWidget:calc_move_widget_pos(unit, widget_rot)
 		local dot2_v = w_e_pos - w_s_pos
 		local dot = dot2_v:normalized():dot(dot1_v)
 		local line_pos = w_s_pos + dot2_v:normalized() * dot
+
 		result_pos = line_pos - self._unit_start_pos
 	end
 
 	result_pos = result_pos:rotate_with(widget_rot:inverse())
+
 	local grid_size = self._layer:grid_size()
+
 	result_pos = result_pos:with_x(math.round(result_pos.x / grid_size) * grid_size)
 	result_pos = result_pos:with_y(math.round(result_pos.y / grid_size) * grid_size)
 	result_pos = result_pos:with_z(math.round(result_pos.z / grid_size) * grid_size)
@@ -271,15 +279,23 @@ function RotationWidget:calculate(unit, widget_rot, widget_pos, widget_screen_po
 	local world_click_pos = self._widget:position() + self._world_dir
 	local distance_vector = self._rotate_widget_start_screen_position - managers.editor:cursor_pos()
 	local real_click_screen_pos = managers.editor:world_to_screen(world_click_pos)
+
 	real_click_screen_pos = real_click_screen_pos:with_z(real_click_screen_pos.z / 1000)
+
 	local real_widget_screen_pos = managers.editor:world_to_screen(self._widget:position())
+
 	real_widget_screen_pos = real_widget_screen_pos:with_z(real_widget_screen_pos.z / 1000)
+
 	local real_screen_dir = (real_click_screen_pos - real_widget_screen_pos):normalized()
 	local real_widget_axis_pos = managers.editor:world_to_screen(self._widget:position() + widget_rot[self._rotate_widget_axis](widget_rot) * 100)
+
 	real_widget_axis_pos = real_widget_axis_pos:with_z(real_widget_axis_pos.z / 1000)
+
 	local real_widget_screen_dir = (real_widget_axis_pos - real_widget_screen_pos):normalized()
 	local real_cross_dir = real_screen_dir:cross(real_widget_screen_dir)
+
 	real_cross_dir = real_cross_dir:with_z(0):normalized()
+
 	local world_to_1 = managers.editor:screen_to_world(real_click_screen_pos + real_cross_dir * 3)
 	local world_to_2 = managers.editor:screen_to_world(real_click_screen_pos + real_cross_dir * -3)
 

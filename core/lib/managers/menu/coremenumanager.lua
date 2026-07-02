@@ -98,7 +98,7 @@ function Manager:open_menu(menu_name, position, ...)
 end
 
 function Manager:close_menu(menu_name)
-	local menu = nil
+	local menu
 
 	if menu_name then
 		for _, open_menu in ipairs(self._open_menus) do
@@ -138,6 +138,7 @@ function Manager:_menu_closed(menu_name)
 end
 
 function Manager:_node_selected(menu_name, node)
+	return
 end
 
 function Manager:input_enabled(enabled)

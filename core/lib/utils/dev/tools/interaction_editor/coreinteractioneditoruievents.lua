@@ -55,7 +55,9 @@ function InteractionEditorUIEvents:on_open()
 end
 
 function InteractionEditorUIEvents:on_undo()
+	return
 end
 
 function InteractionEditorUIEvents:on_redo()
+	return
 end

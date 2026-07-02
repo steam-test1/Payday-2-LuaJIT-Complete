@@ -9,31 +9,32 @@ function PlayerProfileGuiObject:init(ws)
 	local font = tweak_data.menu.pd2_small_font
 	local font_size = tweak_data.menu.pd2_small_font_size
 	local bg_ring = panel:bitmap({
-		texture = "guis/textures/pd2/endscreen/exp_ring",
-		y = 25,
 		alpha = 0.4,
+		texture = "guis/textures/pd2/endscreen/exp_ring",
 		x = 10,
+		y = 25,
 		w = (font_size + 1) * 4,
 		h = (font_size + 1) * 4,
 		color = Color.black
 	})
 	local exp_ring = panel:bitmap({
-		texture = "guis/textures/pd2/endscreen/exp_ring",
-		render_template = "VertexColorTexturedRadial",
 		blend_mode = "add",
-		y = 25,
-		x = 10,
 		layer = 1,
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/endscreen/exp_ring",
+		x = 10,
+		y = 25,
 		w = (font_size + 1) * 4,
 		h = (font_size + 1) * 4,
 		color = Color((next_level_data.current_points or 1) / (next_level_data.points or 1), 1, 1)
 	})
+
 	self._prestige_lp_circle = panel:bitmap({
-		texture = "guis/textures/pd2/exp_ring_purple",
-		name = "bg_infamy_progress_circle",
-		render_template = "VertexColorTexturedRadial",
 		blend_mode = "add",
 		layer = 15,
+		name = "bg_infamy_progress_circle",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/exp_ring_purple",
 		x = bg_ring:x() - 5,
 		y = bg_ring:y(),
 		h = bg_ring:h(),
@@ -41,6 +42,7 @@ function PlayerProfileGuiObject:init(ws)
 		color = Color(managers.experience:get_prestige_xp_percentage_progress(), 1, 1),
 		alpha = managers.experience:reached_level_cap() and 1 or 0.3
 	})
+
 	local player_text = panel:text({
 		y = 10,
 		font = font,
@@ -56,101 +58,105 @@ function PlayerProfileGuiObject:init(ws)
 	local player_rank = managers.experience:current_rank()
 	local is_infamous = player_rank > 0
 	local player_level_panel = panel:panel({})
-	local level_string = tostring(player_level)
 
-	if is_infamous then
-		local max_w = 0
-		local rank_string = managers.experience:rank_string(player_rank)
-		local use_linebreak = true
-		local rank_text, level_text = nil
+	do
+		local level_string = tostring(player_level)
 
-		if use_linebreak then
-			rank_text = player_level_panel:text({
-				vertical = "top",
+		if is_infamous then
+			local max_w = 0
+			local rank_string = managers.experience:rank_string(player_rank)
+			local use_linebreak = true
+			local rank_text, level_text
+
+			if use_linebreak then
+				rank_text = player_level_panel:text({
+					align = "center",
+					layer = 1,
+					rotation = 360,
+					vertical = "top",
+					font = tweak_data.menu.pd2_medium_font,
+					font_size = tweak_data.menu.pd2_medium_font_size - 5,
+					text = "[" .. rank_string .. "]",
+					color = tweak_data.screen_colors.infamy_color
+				})
+				level_text = player_level_panel:text({
+					align = "center",
+					layer = 1,
+					rotation = 360,
+					vertical = "top",
+					font = tweak_data.menu.pd2_medium_font,
+					font_size = tweak_data.menu.pd2_medium_font_size - 5,
+					text = level_string,
+					color = tweak_data.screen_colors.text
+				})
+
+				self:_make_fine_text(rank_text)
+				self:_make_fine_text(level_text)
+
+				max_w = math.max(max_w, rank_text:w(), level_text:w())
+			else
+				local text_string, name_color_ranges = managers.experience:gui_string(player_level, player_rank)
+
+				level_text = player_level_panel:text({
+					align = "center",
+					layer = 1,
+					rotation = 360,
+					vertical = "top",
+					font = tweak_data.menu.pd2_medium_font,
+					font_size = tweak_data.menu.pd2_medium_font_size - 5,
+					text = text_string,
+					color = tweak_data.screen_colors.text
+				})
+
+				for _, color_range in ipairs(name_color_ranges) do
+					level_text:set_range_color(color_range.start, color_range.stop, color_range.color)
+				end
+
+				self:_make_fine_text(level_text)
+
+				max_w = math.max(max_w, level_text:w())
+			end
+
+			local scale = math.min(font_size * 2 / max_w, 1)
+			local height_reduction = 4 * scale
+
+			level_text:set_w(max_w)
+			level_text:set_font_size(level_text:font_size() * scale)
+
+			local x, y, w, h = level_text:text_rect()
+
+			level_text:set_h(math.ceil(h - height_reduction))
+
+			if rank_text then
+				rank_text:set_w(max_w)
+				rank_text:set_font_size(rank_text:font_size() * scale)
+
+				local x, y, w, h = rank_text:text_rect()
+
+				rank_text:set_h(math.ceil(h - height_reduction))
+				rank_text:set_y(level_text:bottom())
+			end
+
+			player_level_panel:set_w(max_w)
+
+			local panel_h = (rank_text or level_text):bottom() + 2
+
+			player_level_panel:set_h(panel_h)
+			player_level_panel:set_center(exp_ring:center())
+		else
+			local level_text = player_level_panel:text({
 				align = "center",
-				rotation = 360,
-				layer = 1,
+				vertical = "center",
 				font = tweak_data.menu.pd2_medium_font,
-				font_size = tweak_data.menu.pd2_medium_font_size - 5,
-				text = "[" .. rank_string .. "]",
-				color = tweak_data.screen_colors.infamy_color
-			})
-			level_text = player_level_panel:text({
-				vertical = "top",
-				align = "center",
-				rotation = 360,
-				layer = 1,
-				font = tweak_data.menu.pd2_medium_font,
-				font_size = tweak_data.menu.pd2_medium_font_size - 5,
+				font_size = tweak_data.menu.pd2_medium_font_size,
 				text = level_string,
 				color = tweak_data.screen_colors.text
 			})
 
-			self:_make_fine_text(rank_text)
 			self:_make_fine_text(level_text)
-
-			max_w = math.max(max_w, rank_text:w(), level_text:w())
-		else
-			local text_string, name_color_ranges = managers.experience:gui_string(player_level, player_rank)
-			level_text = player_level_panel:text({
-				vertical = "top",
-				align = "center",
-				rotation = 360,
-				layer = 1,
-				font = tweak_data.menu.pd2_medium_font,
-				font_size = tweak_data.menu.pd2_medium_font_size - 5,
-				text = text_string,
-				color = tweak_data.screen_colors.text
-			})
-
-			for _, color_range in ipairs(name_color_ranges) do
-				level_text:set_range_color(color_range.start, color_range.stop, color_range.color)
-			end
-
-			self:_make_fine_text(level_text)
-
-			max_w = math.max(max_w, level_text:w())
+			level_text:set_font_size(level_text:font_size() * math.min(font_size * 2 / level_text:w(), 1))
+			player_level_panel:set_size(level_text:size())
 		end
-
-		local scale = math.min(font_size * 2 / max_w, 1)
-		local height_reduction = 4 * scale
-
-		level_text:set_w(max_w)
-		level_text:set_font_size(level_text:font_size() * scale)
-
-		local x, y, w, h = level_text:text_rect()
-
-		level_text:set_h(math.ceil(h - height_reduction))
-
-		if rank_text then
-			rank_text:set_w(max_w)
-			rank_text:set_font_size(rank_text:font_size() * scale)
-
-			local x, y, w, h = rank_text:text_rect()
-
-			rank_text:set_h(math.ceil(h - height_reduction))
-			rank_text:set_y(level_text:bottom())
-		end
-
-		player_level_panel:set_w(max_w)
-
-		local panel_h = (rank_text or level_text):bottom() + 2
-
-		player_level_panel:set_h(panel_h)
-		player_level_panel:set_center(exp_ring:center())
-	else
-		local level_text = player_level_panel:text({
-			vertical = "center",
-			align = "center",
-			font = tweak_data.menu.pd2_medium_font,
-			font_size = tweak_data.menu.pd2_medium_font_size,
-			text = level_string,
-			color = tweak_data.screen_colors.text
-		})
-
-		self:_make_fine_text(level_text)
-		level_text:set_font_size(level_text:font_size() * math.min(font_size * 2 / level_text:w(), 1))
-		player_level_panel:set_size(level_text:size())
 	end
 
 	local text_offset = 10
@@ -169,6 +175,7 @@ function PlayerProfileGuiObject:init(ws)
 	money_text:set_top(math.round(exp_ring:top()))
 
 	max_left_len = math.max(max_left_len, money_text:w())
+
 	local total_money_text = panel:text({
 		text = "##" .. self:get_text("hud_offshore_account") .. "##: " .. managers.experience:cash_string(managers.money:offshore()),
 		font_size = font_size,
@@ -182,9 +189,11 @@ function PlayerProfileGuiObject:init(ws)
 	total_money_text:set_top(math.round(money_text:bottom()))
 
 	max_left_len = math.max(max_left_len, total_money_text:w())
+
 	local skillpoint_top = math.round(total_money_text:bottom())
 	local unlocked = false
 	local coins = 0
+
 	unlocked = managers.custom_safehouse:unlocked()
 	coins = managers.custom_safehouse:coins()
 
@@ -206,7 +215,7 @@ function PlayerProfileGuiObject:init(ws)
 	end
 
 	local skillpoints = managers.skilltree:points()
-	local skill_text, skill_glow = nil
+	local skill_text, skill_glow
 
 	if skillpoints > 0 then
 		skill_text = panel:text({
@@ -225,20 +234,21 @@ function PlayerProfileGuiObject:init(ws)
 		skill_text:set_top(skillpoint_top)
 
 		max_left_len = math.max(max_left_len, skill_text:w())
+
 		local skill_icon = panel:bitmap({
-			w = 16,
-			texture = "guis/textures/pd2/shared_skillpoint_symbol",
 			h = 16,
-			layer = 1
+			layer = 1,
+			texture = "guis/textures/pd2/shared_skillpoint_symbol",
+			w = 16
 		})
 
 		skill_icon:set_right(skill_text:left())
 		skill_icon:set_center_y(skill_text:center_y() + 1)
 
 		skill_glow = panel:bitmap({
-			texture = "guis/textures/pd2/crimenet_marker_glow",
 			blend_mode = "add",
 			layer = 0,
+			texture = "guis/textures/pd2/crimenet_marker_glow",
 			w = panel:w(),
 			h = skill_text:h() * 2,
 			color = tweak_data.screen_colors.button_stage_3
@@ -248,6 +258,7 @@ function PlayerProfileGuiObject:init(ws)
 	end
 
 	local font_scale = 1
+
 	self._panel = panel
 
 	self._panel:set_size(exp_ring:w() + max_left_len + 15 + max_right_len + 10, math.max(skill_text and skill_text:bottom() or 0, bg_ring:bottom()) + 8)
@@ -259,7 +270,7 @@ function PlayerProfileGuiObject:init(ws)
 	if skill_glow then
 		local function animate_new_skillpoints(o)
 			while true do
-				over(1, function (p)
+				over(1, function(p)
 					o:set_alpha(math.lerp(0.4, 0.85, math.sin(p * 180)))
 				end)
 			end

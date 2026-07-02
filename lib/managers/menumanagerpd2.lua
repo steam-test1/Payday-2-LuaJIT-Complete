@@ -111,10 +111,13 @@ function MenuManager:http_test_result(success, body)
 end
 
 function MenuCallbackHandler:continue_to_lobby()
+	return
 end
 
 function MenuCallbackHandler:on_view_character_focus(node, in_focus, data)
-	if not in_focus or not data then
+	if in_focus and data then
+		-- Nothing
+	else
 		managers.menu_scene:set_main_character_outfit(managers.blackmarket:outfit_string())
 		managers.menu_component:close_view_character_profile_gui()
 	end
@@ -255,7 +258,7 @@ function MenuCallbackHandler:got_new_lootdrop()
 end
 
 function MenuCallbackHandler:is_new_player_story_glow()
-	return managers.experience:current_level() <= tweak_data.story.main_menu_glow_level_limit and managers.experience:current_rank() <= 0
+	return managers.experience:current_level() <= tweak_data.story.main_menu_glow_level_limit and not (managers.experience:current_rank() > 0)
 end
 
 function MenuCallbackHandler:not_completed_all_story_assignments()
@@ -410,6 +413,7 @@ function MenuCallbackHandler:owns_weapon_upgrade(item)
 end
 
 function MenuCallbackHandler:buy_weapon_upgrades(item)
+	return
 end
 
 function MenuCallbackHandler:_on_buy_weapon_upgrade_yes(params)
@@ -540,6 +544,7 @@ end
 
 function MenuCallbackHandler:equip_character(item)
 	local character_id = item:parameter("character_id")
+
 	Global.blackmarket_manager.characters[character_id].equipped = true
 
 	managers.menu_scene:set_character(character_id)
@@ -621,6 +626,7 @@ end
 
 function MenuCallbackHandler:equip_armor(item)
 	local armor_id = item:parameter("armor_id")
+
 	Global.blackmarket_manager.armors[armor_id].equipped = true
 
 	managers.menu_scene:set_character_armor(armor_id)
@@ -687,6 +693,7 @@ function MenuCallbackHandler:got_no_job()
 end
 
 function MenuCallbackHandler:start_safe_test_overkill()
+	return
 end
 
 function MenuCallbackHandler:start_safe_test_event_01()
@@ -738,6 +745,7 @@ MenuLoadoutInitiator = MenuLoadoutInitiator or class()
 
 function MenuLoadoutInitiator:modify_node(original_node, data)
 	local node = deep_clone(original_node)
+
 	node:parameters().menu_component_data = data
 	node:parameters().menu_component_next_node_name = "loadout"
 
@@ -755,7 +763,7 @@ function MenuCrimeNetInitiator:modify_node(node)
 end
 
 function MenuCrimeNetInitiator:refresh_node(node)
-	return node
+	do return node end
 
 	local dead_list = {}
 
@@ -780,8 +788,8 @@ function MenuCrimeNetInitiator:refresh_node(node)
 
 	if not node:item("online") then
 		local params = {
-			text_id = "menu_online",
 			name = "online",
+			text_id = "menu_online",
 			type = "MenuItemDivider"
 		}
 		local new_item = node:create_item({
@@ -813,8 +821,8 @@ function MenuCrimeNetInitiator:refresh_node(node)
 
 	if not node:item("offline") then
 		local params = {
-			text_id = "menu_offline",
 			name = "offline",
+			text_id = "menu_offline",
 			type = "MenuItemDivider"
 		}
 		local new_item = node:create_item({
@@ -848,20 +856,22 @@ function MenuCrimeNetInitiator:refresh_node(node)
 end
 
 function MenuManager:show_repair_weapon(params, weapon, cost)
-	local dialog_data = {
-		title = managers.localization:text("dialog_repair_weapon_title"),
-		text = managers.localization:text("dialog_repair_weapon_message", {
-			WEAPON = weapon,
-			COST = cost
-		})
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = params.yes_func
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no")
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_repair_weapon_title")
+	dialog_data.text = managers.localization:text("dialog_repair_weapon_message", {
+		WEAPON = weapon,
+		COST = cost
+	})
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = params.yes_func
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
 	dialog_data.button_list = {
 		yes_button,
 		no_button
@@ -871,20 +881,22 @@ function MenuManager:show_repair_weapon(params, weapon, cost)
 end
 
 function MenuManager:show_buy_weapon(params, weapon, cost)
-	local dialog_data = {
-		title = managers.localization:text("dialog_buy_weapon_title"),
-		text = managers.localization:text("dialog_buy_weapon_message", {
-			WEAPON = weapon,
-			COST = cost
-		})
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = params.yes_func
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no")
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_buy_weapon_title")
+	dialog_data.text = managers.localization:text("dialog_buy_weapon_message", {
+		WEAPON = weapon,
+		COST = cost
+	})
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = params.yes_func
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
 	dialog_data.button_list = {
 		yes_button,
 		no_button
@@ -926,7 +938,7 @@ function MenuCallbackHandler:on_add_user_socialhub(item)
 		action = "add",
 		user_id = item._parameters.user_id,
 		name = item:parameters().peer_name,
-		callback = function ()
+		callback = function()
 			if item then
 				managers.socialhub:add_user_friend(item._parameters.user_id)
 				MenuCallbackHandler:save_progress()
@@ -942,7 +954,7 @@ function MenuCallbackHandler:on_block_user_socialhub(item)
 		action = "block",
 		user_id = item._parameters.user_id,
 		name = item:parameters().peer_name,
-		callback = function ()
+		callback = function()
 			if item then
 				managers.socialhub:add_user_blocked(item._parameters.user_id)
 				MenuCallbackHandler:save_progress()
@@ -958,7 +970,7 @@ function MenuCallbackHandler:on_remove_user_socialhub(item)
 		action = "remove",
 		user_id = item._parameters.user_id,
 		name = item:parameters().peer_name,
-		callback = function ()
+		callback = function()
 			if item then
 				managers.socialhub:remove_user_friend(item._parameters.user_id)
 				MenuCallbackHandler:save_progress()
@@ -976,8 +988,8 @@ function FbiFilesInitiator:modify_node(node, up)
 
 	local params = {
 		callback = "on_visit_fbi_files",
-		name = "on_visit_fbi_files",
 		help_id = "menu_visit_fbi_files_help",
+		name = "on_visit_fbi_files",
 		text_id = "menu_visit_fbi_files"
 	}
 	local new_item = node:create_item(nil, params)
@@ -989,11 +1001,13 @@ function FbiFilesInitiator:modify_node(node, up)
 		local name = peer:name()
 		local color_range_offset = utf8.len(name) + 2
 		local experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
+
 		experience = " (" .. experience .. ")"
+
 		local params = {
+			callback = "on_visit_fbi_files_suspect",
 			localize = false,
 			localize_help = false,
-			callback = "on_visit_fbi_files_suspect",
 			to_upper = false,
 			name = peer:account_id(),
 			text_id = name .. experience,
@@ -1010,11 +1024,13 @@ function FbiFilesInitiator:modify_node(node, up)
 				local name = peer:name()
 				local color_range_offset = utf8.len(name) + 2
 				local experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
+
 				experience = " (" .. experience .. ")"
+
 				local params = {
+					callback = "on_visit_fbi_files_suspect",
 					localize = false,
 					localize_help = false,
-					callback = "on_visit_fbi_files_suspect",
 					to_upper = false,
 					name = peer:account_id(),
 					text_id = name .. experience,
@@ -1046,7 +1062,7 @@ function PlayerListInitiator:get_peer_name(peer)
 	end
 
 	local name = peer:name()
-	local level, rank = nil
+	local level, rank
 
 	if peer == managers.network:session():local_peer() then
 		level = managers.experience:current_level() or ""
@@ -1058,6 +1074,7 @@ function PlayerListInitiator:get_peer_name(peer)
 
 	local color_range_offset = utf8.len(name) + 2
 	local experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
+
 	name = name .. " (" .. experience .. ")"
 
 	return name, color_ranges
@@ -1068,10 +1085,10 @@ function PlayerListInitiator:add_peer_item(node, peer)
 	local texture, texture_rect = managers.experience:rank_icon_data(rank)
 	local text_id, color_ranges = self:get_peer_name(peer)
 	local params = {
+		callback = "on_player_list_inspect_peer",
 		icon_align = "left",
 		localize = false,
 		localize_help = false,
-		callback = "on_player_list_inspect_peer",
 		to_upper = false,
 		name = peer:account_id(),
 		text_id = text_id,
@@ -1090,11 +1107,11 @@ function PlayerListInitiator:modify_node(node, up)
 	node:clean_items()
 
 	local params = {
-		visible_callback = "is_steam",
-		name = "on_visit_fbi_files",
 		callback = "on_visit_fbi_files",
+		help_id = "menu_visit_fbi_files_help",
+		name = "on_visit_fbi_files",
 		text_id = "menu_visit_fbi_files",
-		help_id = "menu_visit_fbi_files_help"
+		visible_callback = "is_steam"
 	}
 	local new_item = node:create_item(nil, params)
 
@@ -1139,8 +1156,8 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 	local is_local_peer = inspect_peer == managers.network:session():local_peer()
 	local text_id, color_ranges = PlayerListInitiator.get_peer_name(self, inspect_peer)
 	local params = {
-		name = "peer_name",
 		localize = false,
+		name = "peer_name",
 		no_text = false,
 		text_id = text_id,
 		color_ranges = color_ranges,
@@ -1199,11 +1216,11 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 	if not is_local_peer then
 		local toggle_mute = self:create_toggle(node, {
+			callback = "mute_player",
+			enabled = true,
 			localize = true,
 			name = "toggle_mute",
-			enabled = true,
 			text_id = "menu_players_list_mute",
-			callback = "mute_player",
 			rpc = inspect_peer:rpc(),
 			peer = inspect_peer
 		})
@@ -1217,9 +1234,9 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 		if not managers.socialhub:is_user_friend(inspect_peer._user_id) then
 			local add_user = {
 				callback = "on_add_user_socialhub",
+				help_id = "menu_players_socialhub_add_user_help",
 				name = "shub_add_user",
 				text_id = "menu_players_socialhub_add_user",
-				help_id = "menu_players_socialhub_add_user_help",
 				peer_name = inspect_peer:name(),
 				user_id = inspect_peer._user_id
 			}
@@ -1229,9 +1246,9 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 			local block_user = {
 				callback = "on_block_user_socialhub",
+				help_id = "menu_players_socialhub_block_user_help",
 				name = "shub_block_user",
 				text_id = "menu_players_socialhub_block_user",
-				help_id = "menu_players_socialhub_block_user_help",
 				peer_name = inspect_peer:name(),
 				user_id = inspect_peer._user_id
 			}
@@ -1241,9 +1258,9 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 		else
 			local remove_user = {
 				callback = "on_remove_user_socialhub",
+				help_id = "menu_players_socialhub_remove_friend_help",
 				name = "shub_remove_user",
 				text_id = "menu_players_socialhub_remove_user",
-				help_id = "menu_players_socialhub_remove_friend_help",
 				peer_name = inspect_peer:name(),
 				user_id = inspect_peer._user_id
 			}
@@ -1259,10 +1276,10 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 	if user and user:rich_presence("is_modded") == "1" or inspect_peer:is_modded() then
 		local params = {
-			text_id = "menu_players_list_mods",
 			name = "peer_mods",
 			no_text = false,
 			size = 8,
+			text_id = "menu_players_list_mods",
 			color = tweak_data.screen_colors.text
 		}
 		local data_node = {
@@ -1307,20 +1324,22 @@ function MenuCallbackHandler:inspect_mod(item)
 end
 
 function MenuCallbackHandler:kick_ban_player(item)
-	local dialog_data = {
-		title = managers.localization:text("dialog_sure_to_ban_title"),
-		text = managers.localization:text("dialog_sure_to_kick_ban_body", {
-			USER = item:parameters().name
-		})
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = callback(self, self, "_kick_ban_player_confirm", item)
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no"),
-		cancel_button = true
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_sure_to_ban_title")
+	dialog_data.text = managers.localization:text("dialog_sure_to_kick_ban_body", {
+		USER = item:parameters().name
+	})
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = callback(self, self, "_kick_ban_player_confirm", item)
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
+	no_button.cancel_button = true
 	dialog_data.button_list = {
 		yes_button,
 		no_button
@@ -1336,6 +1355,7 @@ function MenuCallbackHandler:_kick_ban_player_confirm(item)
 		managers.ban_list:ban(item:parameters().identifier, item:parameters().name)
 
 		local message_id = 0
+
 		message_id = 6
 
 		managers.network:session():send_to_peers("kick_peer", peer:id(), message_id)
@@ -1360,8 +1380,8 @@ function MenuChooseWeaponCosmeticInitiator:modify_node(original_node, data)
 
 			for _, instance_id in ipairs(sort_items) do
 				self:create_item(node, {
-					localize = false,
 					enabled = true,
+					localize = false,
 					name = instance_id,
 					text_id = instance_id
 				})
@@ -1385,13 +1405,13 @@ function MenuChooseWeaponCosmeticInitiator:add_back_button(node)
 	node:delete_item("back")
 
 	local params = {
-		visible_callback = "is_pc_controller",
-		name = "back",
-		halign = "right",
-		text_id = "menu_back",
-		last_item = "true",
 		align = "right",
-		previous_node = "true"
+		halign = "right",
+		last_item = "true",
+		name = "back",
+		previous_node = "true",
+		text_id = "menu_back",
+		visible_callback = "is_pc_controller"
 	}
 	local data_node = {}
 	local new_item = node:create_item(data_node, params)
@@ -1405,6 +1425,7 @@ MenuOpenContainerInitiator = MenuOpenContainerInitiator or class(MenuInitiatorBa
 
 function MenuOpenContainerInitiator:modify_node(original_node, data)
 	local node = deep_clone(original_node)
+
 	node:parameters().container_data = data.container or {}
 
 	managers.menu_component:set_blackmarket_enabled(false)
@@ -1454,7 +1475,7 @@ function MenuCallbackHandler:can_buy_drill(item)
 		return
 	end
 
-	return tweak_data.economy.drills[drill].price and not not tweak_data.economy.drills[drill].def_id
+	return not not tweak_data.economy.drills[drill].price and not not tweak_data.economy.drills[drill].def_id
 end
 
 function MenuCallbackHandler:have_safe_and_drill_for_container(data)
@@ -1474,6 +1495,7 @@ end
 function MenuCallbackHandler:steam_buy_drill(item, data)
 	local node = managers.menu:active_menu() and managers.menu:active_menu().logic:selected_node()
 	local quantity_item = node:item("buy_quantity")
+
 	data = data or managers.menu:active_menu().logic:selected_node():parameters().container_data
 
 	if not data then
@@ -1498,6 +1520,7 @@ end
 function MenuCallbackHandler:steam_buy_safe_from_community(item, data)
 	local node = managers.menu:active_menu() and managers.menu:active_menu().logic:selected_node()
 	local quantity_item = node:item("buy_quantity")
+
 	data = data or managers.menu:active_menu().logic:selected_node():parameters().container_data
 
 	if not data then
@@ -1521,6 +1544,7 @@ end
 function MenuCallbackHandler:steam_find_item_from_community(item, data)
 	local node = managers.menu:active_menu() and managers.menu:active_menu().logic:selected_node()
 	local quantity_item = node:item("buy_quantity")
+
 	data = data or managers.menu:active_menu().logic:selected_node():parameters().container_data
 
 	if not data then
@@ -1599,6 +1623,7 @@ function MenuCallbackHandler:steam_open_container(item)
 
 	local safe_id = data.safe_id
 	local drill_id = data.drill_id
+
 	data.safe_id = nil
 	data.drill_id = nil
 
@@ -1645,10 +1670,10 @@ function MenuBanListInitiator:modify_node(node)
 		for _, user in pairs(managers.network:session():peers()) do
 			if not managers.ban_list:banned(get_identifier(user)) then
 				self:create_item(node, {
-					localize = false,
-					enabled = true,
 					align = "left",
 					callback = "ban_player",
+					enabled = true,
+					localize = false,
 					name = user:name(),
 					text_id = user:name(),
 					identifier = get_identifier(user)
@@ -1662,8 +1687,8 @@ function MenuBanListInitiator:modify_node(node)
 	if not added then
 		self:create_item(node, {
 			align = "left",
-			name = "no_ban_items",
 			enabled = false,
+			name = "no_ban_items",
 			text_id = "bm_menu_no_items"
 		})
 	end
@@ -1672,11 +1697,11 @@ function MenuBanListInitiator:modify_node(node)
 
 	for _, user in ipairs(managers.ban_list:ban_list()) do
 		self:create_item(node, {
-			localize = false,
-			enabled = true,
 			align = "left",
 			callback = "unban_player",
+			enabled = true,
 			left_column = true,
+			localize = false,
 			name = user.name,
 			text_id = user.name,
 			identifier = user.identifier
@@ -1687,11 +1712,11 @@ function MenuBanListInitiator:modify_node(node)
 
 	if not added then
 		self:create_item(node, {
-			name = "no_unban_items",
-			enabled = false,
-			text_id = "bm_menu_no_items",
 			align = "left",
-			left_column = true
+			enabled = false,
+			left_column = true,
+			name = "no_unban_items",
+			text_id = "bm_menu_no_items"
 		})
 	end
 
@@ -1707,20 +1732,22 @@ end
 function MenuCallbackHandler:ban_player(item, force)
 	if item:parameters().identifier and item:parameters().name then
 		if not force then
-			local dialog_data = {
-				title = managers.localization:text("dialog_sure_to_ban_title"),
-				text = managers.localization:text("dialog_sure_to_ban_body", {
-					USER = item:parameters().name
-				})
-			}
-			local yes_button = {
-				text = managers.localization:text("dialog_yes"),
-				callback_func = callback(self, self, "ban_player", item, force)
-			}
-			local no_button = {
-				text = managers.localization:text("dialog_no"),
-				cancel_button = true
-			}
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("dialog_sure_to_ban_title")
+			dialog_data.text = managers.localization:text("dialog_sure_to_ban_body", {
+				USER = item:parameters().name
+			})
+
+			local yes_button = {}
+
+			yes_button.text = managers.localization:text("dialog_yes")
+			yes_button.callback_func = callback(self, self, "ban_player", item, force)
+
+			local no_button = {}
+
+			no_button.text = managers.localization:text("dialog_no")
+			no_button.cancel_button = true
 			dialog_data.button_list = {
 				yes_button,
 				no_button
@@ -1742,20 +1769,22 @@ end
 function MenuCallbackHandler:unban_player(item, force)
 	if item:parameters().identifier and item:parameters().name then
 		if not force then
-			local dialog_data = {
-				title = managers.localization:text("dialog_sure_to_unban_title"),
-				text = managers.localization:text("dialog_sure_to_unban_body", {
-					USER = item:parameters().name
-				})
-			}
-			local yes_button = {
-				text = managers.localization:text("dialog_yes"),
-				callback_func = callback(self, self, "unban_player", item, force)
-			}
-			local no_button = {
-				text = managers.localization:text("dialog_no"),
-				cancel_button = true
-			}
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("dialog_sure_to_unban_title")
+			dialog_data.text = managers.localization:text("dialog_sure_to_unban_body", {
+				USER = item:parameters().name
+			})
+
+			local yes_button = {}
+
+			yes_button.text = managers.localization:text("dialog_yes")
+			yes_button.callback_func = callback(self, self, "unban_player", item, force)
+
+			local no_button = {}
+
+			no_button.text = managers.localization:text("dialog_no")
+			no_button.cancel_button = true
 			dialog_data.button_list = {
 				yes_button,
 				no_button
@@ -1805,9 +1834,9 @@ function MenuQuickplaySettingsInitiator:modify_node(node)
 	if not difficulty_item then
 		local options = {
 			{
-				value = "any",
+				_meta = "option",
 				text_id = "menu_any",
-				_meta = "option"
+				value = "any"
 			}
 		}
 
@@ -1823,8 +1852,8 @@ function MenuQuickplaySettingsInitiator:modify_node(node)
 
 		difficulty_item = self:create_multichoice(node, options, {
 			callback = "quickplay_difficulty",
-			name = "quickplay_settings_difficulty",
 			help_id = "menu_quickplay_settings_difficulty",
+			name = "quickplay_settings_difficulty",
 			text_id = "menu_quickplay_settings_difficulty"
 		}, 1)
 	end
@@ -1893,7 +1922,7 @@ end
 function MenuCallbackHandler:set_default_quickplay_options()
 	local params = {
 		text = managers.localization:text("dialog_default_quickplay_options_message"),
-		callback = function ()
+		callback = function()
 			managers.user:reset_quickplay_setting_map()
 
 			Global.crimenet.quickplay = {}
@@ -1917,8 +1946,8 @@ function MenuMutatorsInitiator:modify_node(node)
 	if #managers.mutators:mutators() < 1 then
 		self:create_item(node, {
 			align = "left",
-			name = "no_mutators",
 			enabled = false,
+			name = "no_mutators",
 			text_id = "bm_menu_no_items"
 		})
 	else
@@ -1932,11 +1961,11 @@ end
 
 function MenuMutatorsInitiator:populate_mutators_list(node)
 	self:create_item(node, {
-		name = "header_active",
-		enabled = false,
-		text_id = "menu_mutators_active",
 		align = "left",
-		both_column = true
+		both_column = true,
+		enabled = false,
+		name = "header_active",
+		text_id = "menu_mutators_active"
 	})
 
 	for i, mutator in ipairs(managers.mutators:active_mutators()) do
@@ -1944,10 +1973,10 @@ function MenuMutatorsInitiator:populate_mutators_list(node)
 	end
 
 	local params = {
-		size = 16,
-		name = "divider_mutators_list",
 		both_column = true,
-		no_text = true
+		name = "divider_mutators_list",
+		no_text = true,
+		size = 16
 	}
 	local data_node = {
 		type = "MenuItemDivider"
@@ -1956,11 +1985,11 @@ function MenuMutatorsInitiator:populate_mutators_list(node)
 
 	node:add_item(new_item)
 	self:create_item(node, {
-		name = "header_inactive",
-		enabled = false,
-		text_id = "menu_mutators_inactive",
 		align = "left",
-		both_column = true
+		both_column = true,
+		enabled = false,
+		name = "header_inactive",
+		text_id = "menu_mutators_inactive"
 	})
 
 	for i, mutator in ipairs(managers.mutators:inactive_mutators()) do
@@ -1970,10 +1999,10 @@ end
 
 function MenuMutatorsInitiator:_create_mutator_node(node, mutator)
 	self:create_item(node, {
-		localize = false,
-		enabled = true,
 		align = "left",
+		enabled = true,
 		left_column = true,
+		localize = false,
 		name = mutator:id(),
 		text_id = mutator:name(),
 		mutator = mutator
@@ -1981,11 +2010,11 @@ function MenuMutatorsInitiator:_create_mutator_node(node, mutator)
 
 	if mutator:show_options() then
 		self:create_item(node, {
+			align = "left",
 			callback = "_open_mutator_options",
 			enabled = true,
-			text_id = "menu_mutators_option",
 			options = true,
-			align = "left",
+			text_id = "menu_mutators_option",
 			name = mutator:id() .. "_options",
 			mutator = mutator
 		})
@@ -2017,6 +2046,7 @@ MenuSkinEditorInitiator = MenuSkinEditorInitiator or class(MenuInitiatorBase)
 
 function MenuSkinEditorInitiator:modify_node(node, data)
 	data = data or {}
+
 	local name = node:parameters().name
 	local skin_editor = managers.blackmarket:skin_editor()
 
@@ -2064,8 +2094,8 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 
 		if skin_editor:skin_count() < 1 then
 			self:create_item(node, {
-				name = "no_skins",
 				enabled = false,
+				name = "no_skins",
 				text_id = "debug_wskn_no_skin"
 			})
 		else
@@ -2076,9 +2106,9 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 				local name = skin:config().name or "untitled"
 
 				self:create_item(node, {
+					callback = "select_weapon_skin",
 					enabled = true,
 					localize = false,
-					callback = "select_weapon_skin",
 					name = name,
 					text_id = name,
 					skin_id = id
@@ -2091,12 +2121,12 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 	elseif name == "skin_editor_part" then
 		node:clean_items()
 
-		local default_item = nil
+		local default_item
 
 		for part_id, materials in pairs(skin_editor:weapon_unit():base()._materials or {}) do
 			self:create_item(node, {
-				localize = false,
 				enabled = true,
+				localize = false,
 				next_node = "skin_editor_materials",
 				name = part_id,
 				text_id = (tweak_data.weapon.factory.parts[part_id] and managers.localization:text("bm_menu_" .. tweak_data.weapon.factory.parts[part_id].type) .. " - ") .. part_id,
@@ -2116,7 +2146,7 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 		node:clean_items()
 
 		local types = managers.weapon_factory._parts_by_type or {}
-		local default_item = nil
+		local default_item
 		local sort_types = {}
 		local excluded_types = skin_editor:get_excluded_type_categories()
 
@@ -2130,8 +2160,8 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 
 		for _, mod_type in ipairs(sort_types) do
 			self:create_item(node, {
-				localize = false,
 				enabled = true,
+				localize = false,
 				next_node = "skin_editor_base",
 				name = mod_type,
 				text_id = managers.localization:text("bm_menu_" .. mod_type),
@@ -2150,15 +2180,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 	elseif name == "skin_editor_materials" then
 		node:clean_items()
 
-		local default_item = nil
+		local default_item
 		local items_map = {}
 		local index = 1
 
 		for _, material in pairs(skin_editor:weapon_unit():base()._materials[data.part_id] or {}) do
 			if not items_map[material:name():key()] then
 				self:create_item(node, {
-					localize = false,
 					enabled = true,
+					localize = false,
 					next_node = "skin_editor_base",
 					name = material:name():key(),
 					text_id = "Subpart " .. index,
@@ -2207,25 +2237,25 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			local base_gradient_textures = skin_editor:get_texture_list_by_type(skin, "base_gradient")
 			local multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(base_gradient_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local base_gradient_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_base_gradient",
-				name = "base_gradient",
 				callback = "weapon_skin_changed",
+				name = "base_gradient",
+				text_id = "debug_wskn_base_gradient",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -2235,27 +2265,28 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			base_gradient_item:set_value(cdata.base_gradient_name)
 
 			local pattern_gradient_textures = skin_editor:get_texture_list_by_type(skin, "pattern_gradient")
+
 			multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(pattern_gradient_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local pattern_gradient_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_pattern_gradient",
-				name = "pattern_gradient",
 				callback = "weapon_skin_changed",
+				name = "pattern_gradient",
+				text_id = "debug_wskn_pattern_gradient",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -2265,27 +2296,28 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			pattern_gradient_item:set_value(cdata.pattern_gradient_name)
 
 			local pattern_textures = skin_editor:get_texture_list_by_type(skin, "pattern")
+
 			multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(pattern_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local pattern_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_pattern",
-				name = "pattern",
 				callback = "weapon_skin_changed",
+				name = "pattern",
+				text_id = "debug_wskn_pattern",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -2296,13 +2328,13 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, "sliders")
 
 			local wear_and_tear_item = self:create_slider(node, {
-				text_id = "debug_wskn_wear_and_tear",
-				name = "wear_and_tear",
-				max = 1,
-				step = 0.2,
-				min = 0,
 				callback = "weapon_skin_changed",
+				max = 1,
+				min = 0,
+				name = "wear_and_tear",
 				show_value = true,
+				step = 0.2,
+				text_id = "debug_wskn_wear_and_tear",
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2311,15 +2343,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			wear_and_tear_item:set_value(cdata.wear_and_tear or 1)
 
 			local pattern_pos_x_item = self:create_slider(node, {
-				name = "pattern_pos1",
+				callback = "weapon_skin_changed",
 				key = "pattern_pos",
 				max = 2,
-				text_id = "debug_wskn_pattern_pos_x",
-				step = 0.001,
-				vector = 1,
 				min = -2,
-				callback = "weapon_skin_changed",
+				name = "pattern_pos1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_pos_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2328,15 +2360,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			pattern_pos_x_item:set_value(cdata.pattern_pos and mvector3.x(cdata.pattern_pos) or 0)
 
 			local pattern_pos_y_item = self:create_slider(node, {
-				name = "pattern_pos2",
+				callback = "weapon_skin_changed",
 				key = "pattern_pos",
 				max = 2,
-				text_id = "debug_wskn_pattern_pos_y",
-				step = 0.001,
-				vector = 2,
 				min = -2,
-				callback = "weapon_skin_changed",
+				name = "pattern_pos2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_pos_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2345,15 +2377,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			pattern_pos_y_item:set_value(cdata.pattern_pos and mvector3.y(cdata.pattern_pos) or 0)
 
 			local pattern_tweak_x_item = self:create_slider(node, {
-				name = "pattern_tweak1",
+				callback = "weapon_skin_changed",
 				key = "pattern_tweak",
 				max = 20,
-				text_id = "debug_wskn_pattern_tweak_x",
-				step = 0.001,
-				vector = 1,
 				min = 0,
-				callback = "weapon_skin_changed",
+				name = "pattern_tweak1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_tweak_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2363,14 +2395,14 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, 1)
 
 			local pattern_tweak_y_item = self:create_slider(node, {
-				name = "pattern_tweak2",
-				key = "pattern_tweak",
-				text_id = "debug_wskn_pattern_tweak_y",
-				step = 0.001,
-				vector = 2,
-				min = 0,
 				callback = "weapon_skin_changed",
+				key = "pattern_tweak",
+				min = 0,
+				name = "pattern_tweak2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_tweak_y",
+				vector = 2,
 				max = 2 * math.pi,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -2380,15 +2412,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			pattern_tweak_y_item:set_value(cdata.pattern_tweak and mvector3.y(cdata.pattern_tweak) or 0)
 
 			local pattern_tweak_z_item = self:create_slider(node, {
-				name = "pattern_tweak3",
+				callback = "weapon_skin_changed",
 				key = "pattern_tweak",
 				max = 1,
-				text_id = "debug_wskn_pattern_tweak_z",
-				step = 0.001,
-				vector = 3,
 				min = 0,
-				callback = "weapon_skin_changed",
+				name = "pattern_tweak3",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_tweak_z",
+				vector = 3,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2398,15 +2430,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, 2)
 
 			local cubemap_pattern_control_x_item = self:create_slider(node, {
-				name = "cubemap_pattern_control1",
+				callback = "weapon_skin_changed",
 				key = "cubemap_pattern_control",
 				max = 1,
-				text_id = "debug_wskn_cubemap_pattern_control_x",
-				step = 0.001,
-				vector = 1,
 				min = 0,
-				callback = "weapon_skin_changed",
+				name = "cubemap_pattern_control1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_cubemap_pattern_control_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2415,15 +2447,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			cubemap_pattern_control_x_item:set_value(cdata.cubemap_pattern_control and mvector3.x(cdata.cubemap_pattern_control) or 0)
 
 			local cubemap_pattern_control_y_item = self:create_slider(node, {
-				name = "cubemap_pattern_control2",
+				callback = "weapon_skin_changed",
 				key = "cubemap_pattern_control",
 				max = 1,
-				text_id = "debug_wskn_cubemap_pattern_control_y",
-				step = 0.001,
-				vector = 2,
 				min = 0,
-				callback = "weapon_skin_changed",
+				name = "cubemap_pattern_control2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_cubemap_pattern_control_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2434,27 +2466,28 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, "sticker2")
 
 			local sticker_textures = skin_editor:get_texture_list_by_type(skin, "sticker")
+
 			multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(sticker_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local sticker_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_sticker",
-				name = "sticker",
 				callback = "weapon_skin_changed",
+				name = "sticker",
+				text_id = "debug_wskn_sticker",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -2464,15 +2497,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			sticker_item:set_value(cdata.sticker_name)
 
 			local uv_offset_rot_x_item = self:create_slider(node, {
-				name = "uv_offset_rot1",
+				callback = "weapon_skin_changed",
 				key = "uv_offset_rot",
 				max = 2,
-				text_id = "debug_wskn_uv_offset_rot_x",
-				step = 0.001,
-				vector = 1,
 				min = -2,
-				callback = "weapon_skin_changed",
+				name = "uv_offset_rot1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_offset_rot_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2481,15 +2514,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			uv_offset_rot_x_item:set_value(cdata.uv_offset_rot and mvector3.x(cdata.uv_offset_rot) or 0)
 
 			local uv_offset_rot_y_item = self:create_slider(node, {
-				name = "uv_offset_rot2",
+				callback = "weapon_skin_changed",
 				key = "uv_offset_rot",
 				max = 2,
-				text_id = "debug_wskn_uv_offset_rot_y",
-				step = 0.001,
-				vector = 2,
 				min = -2,
-				callback = "weapon_skin_changed",
+				name = "uv_offset_rot2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_offset_rot_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2498,15 +2531,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			uv_offset_rot_y_item:set_value(cdata.uv_offset_rot and mvector3.y(cdata.uv_offset_rot) or 0)
 
 			local uv_scale_x_item = self:create_slider(node, {
-				name = "uv_scale1",
+				callback = "weapon_skin_changed",
 				key = "uv_scale",
 				max = 20,
-				text_id = "debug_wskn_uv_scale_x",
-				step = 0.001,
-				vector = 1,
 				min = 0.01,
-				callback = "weapon_skin_changed",
+				name = "uv_scale1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_scale_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2515,15 +2548,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			uv_scale_x_item:set_value(20.01 - (cdata.uv_scale and mvector3.x(cdata.uv_scale) or 1))
 
 			local uv_scale_y_item = self:create_slider(node, {
-				name = "uv_scale2",
+				callback = "weapon_skin_changed",
 				key = "uv_scale",
 				max = 20,
-				text_id = "debug_wskn_uv_scale_y",
-				step = 0.001,
-				vector = 2,
 				min = 0.01,
-				callback = "weapon_skin_changed",
+				name = "uv_scale2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_scale_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2532,9 +2565,9 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			uv_scale_y_item:set_value(20.01 - (cdata.uv_scale and mvector3.y(cdata.uv_scale) or 1))
 
 			local uv_scale_lock_item = self:create_toggle(node, {
+				enabled = true,
 				localize = true,
 				name = "uv_scale_lock",
-				enabled = true,
 				text_id = "debug_wskn_uv_scale_lock"
 			})
 
@@ -2542,14 +2575,14 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, 3)
 
 			local uv_offset_rot_z_item = self:create_slider(node, {
-				name = "uv_offset_rot3",
-				key = "uv_offset_rot",
-				text_id = "debug_wskn_uv_offset_rot_z",
-				step = 0.001,
-				vector = 3,
-				min = 0,
 				callback = "weapon_skin_changed",
+				key = "uv_offset_rot",
+				min = 0,
+				name = "uv_offset_rot3",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_offset_rot_z",
+				vector = 3,
 				max = 2 * math.pi,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -2559,15 +2592,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			uv_offset_rot_z_item:set_value(cdata.uv_offset_rot and mvector3.z(cdata.uv_offset_rot) or 0)
 
 			local uv_scale_z_item = self:create_slider(node, {
-				name = "uv_scale3",
+				callback = "weapon_skin_changed",
 				key = "uv_scale",
 				max = 1,
-				text_id = "debug_wskn_uv_scale_z",
-				step = 0.001,
-				vector = 3,
 				min = 0,
-				callback = "weapon_skin_changed",
+				name = "uv_scale3",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_scale_z",
+				vector = 3,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -2580,49 +2613,49 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 	elseif name == "skin_editor_screenshot" then
 		local multichoice_list = {
 			{
-				value = "none",
+				_meta = "option",
 				text_id = "debug_wskn_none",
-				_meta = "option"
+				value = "none"
 			},
 			{
-				value = "green",
+				_meta = "option",
 				text_id = "debug_wskn_green",
-				_meta = "option"
+				value = "green"
 			},
 			{
-				value = "black",
+				_meta = "option",
 				text_id = "debug_wskn_black",
-				_meta = "option"
+				value = "black"
 			},
 			{
-				value = "red",
+				_meta = "option",
 				text_id = "debug_wskn_red",
-				_meta = "option"
+				value = "red"
 			},
 			{
-				value = "blue",
+				_meta = "option",
 				text_id = "debug_wskn_blue",
-				_meta = "option"
+				value = "blue"
 			},
 			{
-				value = "pink",
+				_meta = "option",
 				text_id = "debug_wskn_pink",
-				_meta = "option"
+				value = "pink"
 			},
 			{
-				value = "cyan",
+				_meta = "option",
 				text_id = "debug_wskn_cyan",
-				_meta = "option"
+				value = "cyan"
 			},
 			{
-				value = "yellow",
+				_meta = "option",
 				text_id = "debug_wskn_yellow",
-				_meta = "option"
+				value = "yellow"
 			},
 			{
-				value = "white",
+				_meta = "option",
 				text_id = "debug_wskn_white",
-				_meta = "option"
+				value = "white"
 			}
 		}
 
@@ -2635,32 +2668,32 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 		end
 
 		local color_item = self:create_multichoice(node, multichoice_list, {
-			text_id = "debug_wskn_color",
-			text_offset = 50,
+			callback = "screenshot_color_changed",
 			name = "screenshot_color",
-			callback = "screenshot_color_changed"
+			text_id = "debug_wskn_color",
+			text_offset = 50
 		})
 
 		color_item:set_value("none")
 
 		local skin_data = skin_editor:get_current_skin():config().data
 		local wear_and_tear_item = self:create_slider(node, {
-			step = 0.2,
-			min = 0,
-			max = 1,
 			callback = "wear_and_tear_changed",
-			text_id = "debug_wskn_wear_and_tear",
+			max = 1,
+			min = 0,
 			name = "wear_and_tear",
-			show_value = true
+			show_value = true,
+			step = 0.2,
+			text_id = "debug_wskn_wear_and_tear"
 		})
 
 		wear_and_tear_item:set_value(skin_data.wear_and_tear or 1)
 		managers.menu:active_menu().renderer.ws:panel():rect({
-			name = "screenshot_visibility",
 			h = 85,
-			y = 35,
+			name = "screenshot_visibility",
 			w = 450,
 			x = 775,
+			y = 35,
 			color = Color(0, 0, 0)
 		})
 		skin_editor:enter_screenshot_mode()
@@ -2681,9 +2714,9 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 
 		local multichoice_list = {
 			{
-				text_id = "NONE",
+				_meta = "option",
 				localize = false,
-				_meta = "option"
+				text_id = "NONE"
 			}
 		}
 
@@ -2692,8 +2725,8 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 
 			for id, screenshot in ipairs(screenshots) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = screenshot,
 					value = screenshot
 				})
@@ -2702,10 +2735,10 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 
 		local item_index = table.index_of(node:items(), node:item("divider_publish"))
 		local screenshot_item = self:create_multichoice(node, multichoice_list, {
-			text_id = "debug_wskn_screenshot_skin",
-			text_offset = 50,
+			callback = "screenshot_chosen",
 			name = "screenshot",
-			callback = "screenshot_chosen"
+			text_id = "debug_wskn_screenshot_skin",
+			text_offset = 50
 		}, item_index)
 
 		screenshot_item:set_value(nil)
@@ -2747,6 +2780,7 @@ end
 
 function MenuCallbackHandler:screenshot_chosen(item)
 	local skin = managers.blackmarket:skin_editor():get_current_skin()
+
 	skin:config().screenshot = item:value()
 end
 
@@ -2754,6 +2788,7 @@ function MenuCallbackHandler:wear_and_tear_changed(item)
 	local skin_editor = managers.blackmarket:skin_editor()
 	local wear_and_tear = item:value()
 	local skin_data = skin_editor:get_current_skin():config().data
+
 	skin_data.wear_and_tear = wear_and_tear
 
 	skin_editor:apply_changes(skin_data)
@@ -2801,9 +2836,11 @@ function MenuCallbackHandler:on_exit_skin_editor(item)
 		skin_editor:set_ignore_unsaved(false)
 
 		skin_editor._unsaved = false
+
 		local cat, slot = skin_editor:category_slot()
 
-		managers.blackmarket:view_weapon(cat, slot, function ()
+		managers.blackmarket:view_weapon(cat, slot, function()
+			return
 		end, true, BlackMarketGui.get_crafting_custom_data())
 		skin_editor:set_active(false)
 
@@ -2820,22 +2857,25 @@ function MenuCallbackHandler:on_exit_skin_editor(item)
 		managers.menu:back(true)
 	end
 
-	local dialog_data = {
-		title = managers.localization:text("dialog_warning_title"),
-		text = managers.localization:text("debug_wskn_want_to_save")
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = on_yes
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no"),
-		callback_func = on_no
-	}
-	local cancel_button = {
-		text = managers.localization:text("dialog_cancel"),
-		cancel_button = true
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_warning_title")
+	dialog_data.text = managers.localization:text("debug_wskn_want_to_save")
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = on_yes
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
+	no_button.callback_func = on_no
+
+	local cancel_button = {}
+
+	cancel_button.text = managers.localization:text("dialog_cancel")
+	cancel_button.cancel_button = true
 	dialog_data.button_list = {
 		yes_button,
 		no_button,
@@ -2862,6 +2902,7 @@ function MenuCallbackHandler:save_weapon_skin(item)
 	local name_id = string.gsub(string.lower(name), " ", "_")
 	local item_id = crafted_item.weapon_id .. "_" .. name_id
 	local copy_data = deep_clone(managers.blackmarket:skin_editor():get_current_skin():config().data)
+
 	copy_data.name_id = "bm_wskn_" .. item_id
 	copy_data.wear_and_tear = nil
 	copy_data.reserve_quality = true
@@ -2886,14 +2927,15 @@ function MenuCallbackHandler:publish_weapon_skin(item)
 
 		SystemFS:copy_file(screenshot_path .. "/" .. skin:config().screenshot, Application:nice_path(skin:path(), true) .. "preview.png")
 	else
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("debug_wskn_submit_no_screenshot")
-		}
-		local ok_button = {
-			text = managers.localization:text("dialog_ok"),
-			callback_func = callback(self, self, "_dialog_ok")
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("debug_wskn_submit_no_screenshot")
+
+		local ok_button = {}
+
+		ok_button.text = managers.localization:text("dialog_ok")
+		ok_button.callback_func = callback(self, self, "_dialog_ok")
 		dialog_data.button_list = {
 			ok_button
 		}
@@ -2907,6 +2949,7 @@ function MenuCallbackHandler:publish_weapon_skin(item)
 end
 
 function MenuCallbackHandler:_dialog_ok()
+	return
 end
 
 function MenuCallbackHandler:take_screenshot_skin(item)
@@ -2944,9 +2987,9 @@ function MenuCallbackHandler:new_weapon_skin(item)
 		return
 	end
 
-	local data = {
-		weapon_id = managers.blackmarket:get_crafted_category_slot(managers.blackmarket:skin_editor():category_slot()).weapon_id
-	}
+	local data = {}
+
+	data.weapon_id = managers.blackmarket:get_crafted_category_slot(managers.blackmarket:skin_editor():category_slot()).weapon_id
 
 	skin_editor:select_skin(skin_editor:create_new_skin(data))
 end
@@ -2958,19 +3001,21 @@ function MenuCallbackHandler:delete_weapon_skin(item)
 		return
 	end
 
-	local dialog_data = {
-		title = managers.localization:text("dialog_warning_title"),
-		text = managers.localization:text("debug_wskn_sure_to_delete")
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = callback(self, self, "_dialog_delete_yes")
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no"),
-		callback_func = callback(self, self, "_dialog_delete_no"),
-		cancel_button = true
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_warning_title")
+	dialog_data.text = managers.localization:text("debug_wskn_sure_to_delete")
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = callback(self, self, "_dialog_delete_yes")
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
+	no_button.callback_func = callback(self, self, "_dialog_delete_no")
+	no_button.cancel_button = true
 	dialog_data.button_list = {
 		yes_button,
 		no_button
@@ -2980,6 +3025,7 @@ function MenuCallbackHandler:delete_weapon_skin(item)
 end
 
 function MenuCallbackHandler:_dialog_delete_no()
+	return
 end
 
 function MenuCallbackHandler:_dialog_delete_yes()
@@ -3127,6 +3173,7 @@ function MenuCallbackHandler:weapon_skin_changed(item)
 
 		if string.find(item:parameters().name, "uv_scale[1-2]") then
 			value = 20.01 - value
+
 			local lock_item = managers.menu:active_menu().logic:selected_node():item("uv_scale_lock")
 
 			if lock_item then
@@ -3170,6 +3217,7 @@ function MenuCallbackHandler:weapon_skin_changed(item)
 			end
 
 			value = v
+
 			local i1 = managers.menu:active_menu().logic:selected_node():item(key .. "1")
 			local i2 = managers.menu:active_menu().logic:selected_node():item(key .. "2")
 			local i3 = managers.menu:active_menu().logic:selected_node():item(key .. "3")
@@ -3187,6 +3235,7 @@ function MenuCallbackHandler:weapon_skin_changed(item)
 			end
 		elseif item:parameters().type ~= "CoreMenuItemSlider.ItemSlider" then
 			local orig_value = value
+
 			value = skin_editor:get_texture_string(skin, orig_value, key)
 			data[key .. "_name"] = orig_value
 
@@ -3199,15 +3248,15 @@ function MenuCallbackHandler:weapon_skin_changed(item)
 					return
 				end
 
-				local index = table.index_of(item:options(), table.find_value(item:options(), function (v)
+				local index = table.index_of(item:options(), table.find_value(item:options(), function(v)
 					return v:value() == orig_value
 				end))
 
 				item:clear_options()
 				item:add_option(CoreMenuItemOption.ItemOption:new({
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}))
 				skin_editor:load_textures(skin)
 
@@ -3215,8 +3264,8 @@ function MenuCallbackHandler:weapon_skin_changed(item)
 
 				for _, texture in ipairs(textures) do
 					item:add_option(CoreMenuItemOption.ItemOption:new({
-						localize = false,
 						_meta = "option",
+						localize = false,
 						text_id = texture,
 						value = texture
 					}))
@@ -3311,22 +3360,25 @@ function MenuCallbackHandler:on_exit_weapon_color_customize(node)
 	local weapon_color_data = get_weapon_color_data(node)
 
 	if weapon_color_data and weapon_color_data.any_changes then
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("dialog_abort_weapon_color_customize")
-		}
-		local yes_button = {
-			text = managers.localization:text("dialog_yes"),
-			callback_func = function ()
-				weapon_color_data.any_changes = false
+		local dialog_data = {}
 
-				managers.menu:back(true)
-			end
-		}
-		local cancel_button = {
-			text = managers.localization:text("dialog_cancel"),
-			cancel_button = true
-		}
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("dialog_abort_weapon_color_customize")
+
+		local yes_button = {}
+
+		yes_button.text = managers.localization:text("dialog_yes")
+
+		function yes_button.callback_func()
+			weapon_color_data.any_changes = false
+
+			managers.menu:back(true)
+		end
+
+		local cancel_button = {}
+
+		cancel_button.text = managers.localization:text("dialog_cancel")
+		cancel_button.cancel_button = true
 		dialog_data.button_list = {
 			yes_button,
 			cancel_button
@@ -3352,6 +3404,7 @@ function MenuCallbackHandler:can_apply_weapon_color(node)
 
 	if crafted then
 		local crafted_cosmetics = crafted.cosmetics
+
 		weapon_color_data.any_changes = crafted_cosmetics.id ~= cosmetic_data.id or crafted_cosmetics.quality ~= cosmetic_data.quality or crafted_cosmetics.color_index ~= cosmetic_data.color_index or (crafted_cosmetics.pattern_scale or tweak_data.blackmarket.weapon_color_pattern_scale_default) ~= cosmetic_data.pattern_scale
 	end
 
@@ -3373,6 +3426,7 @@ function MenuCallbackHandler:apply_weapon_color(item)
 	end
 
 	local cosmetic_data = weapon_color_data.cosmetic_data
+
 	weapon_color_data.any_changes = false
 
 	managers.blackmarket:on_equip_weapon_color(weapon_color_data.category, weapon_color_data.slot, cosmetic_data, false)
@@ -3534,6 +3588,7 @@ function MenuCallbackHandler:sort_weapon_colors(x_option, y_option)
 	if x_cat ~= y_cat then
 		local x_gv = tweak_data.lootdrop.global_value_category[x_cat] or tweak_data.lootdrop.global_values[x_cat]
 		local y_gv = tweak_data.lootdrop.global_value_category[y_cat] or tweak_data.lootdrop.global_values[y_cat]
+
 		x_sn = x_gv and x_gv.sort_number or 0
 		y_sn = y_gv and y_gv.sort_number or 0
 
@@ -3544,6 +3599,7 @@ function MenuCallbackHandler:sort_weapon_colors(x_option, y_option)
 
 	local x_gv = x_td.global_value or managers.dlc:dlc_to_global_value(x_td.dlc)
 	local y_gv = y_td.global_value or managers.dlc:dlc_to_global_value(y_td.dlc)
+
 	x_sn = (x_gv and tweak_data.lootdrop.global_values[x_gv].sort_number or 0) + (x_td.sort_number or 0)
 	y_sn = (y_gv and tweak_data.lootdrop.global_values[y_gv].sort_number or 0) + (y_td.sort_number or 0)
 
@@ -3569,11 +3625,12 @@ MenuArmorSkinEditorInitiator = MenuArmorSkinEditorInitiator or class(MenuInitiat
 
 function MenuArmorSkinEditorInitiator:modify_node(node, data)
 	data = data or {}
+
 	local name = node:parameters().name
 	local editor = managers.blackmarket:armor_skin_editor()
 
 	editor:set_active(true)
-	call_on_next_update(function ()
+	call_on_next_update(function()
 		local skin = editor:get_current_skin()
 
 		if skin then
@@ -3610,8 +3667,8 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 
 		if editor:skin_count() < 1 then
 			self:create_item(node, {
-				name = "no_skins",
 				enabled = false,
+				name = "no_skins",
 				text_id = "debug_wskn_no_skin"
 			})
 		else
@@ -3622,9 +3679,9 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 				local name = skin:config().name or "untitled"
 
 				self:create_item(node, {
+					callback = "select_armor_skin",
 					enabled = true,
 					localize = false,
-					callback = "select_armor_skin",
 					name = name,
 					text_id = name,
 					skin_id = id
@@ -3648,25 +3705,25 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			local base_gradient_textures = editor:get_texture_list_by_type(skin, "base_gradient")
 			local multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(base_gradient_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local base_gradient_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_base_gradient",
-				name = "base_gradient",
 				callback = "armor_skin_changed",
+				name = "base_gradient",
+				text_id = "debug_wskn_base_gradient",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -3676,27 +3733,28 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			base_gradient_item:set_value(tweak_data.economy:get_armor_based_value(cdata.base_gradient_name or cdata.base_gradient, armor_level))
 
 			local pattern_gradient_textures = editor:get_texture_list_by_type(skin, "pattern_gradient")
+
 			multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(pattern_gradient_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local pattern_gradient_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_pattern_gradient",
-				name = "pattern_gradient",
 				callback = "armor_skin_changed",
+				name = "pattern_gradient",
+				text_id = "debug_wskn_pattern_gradient",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -3706,27 +3764,28 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			pattern_gradient_item:set_value(tweak_data.economy:get_armor_based_value(cdata.pattern_gradient_name or cdata.pattern_gradient, armor_level))
 
 			local pattern_textures = editor:get_texture_list_by_type(skin, "pattern")
+
 			multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(pattern_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local pattern_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_pattern",
-				name = "pattern",
 				callback = "armor_skin_changed",
+				name = "pattern",
+				text_id = "debug_wskn_pattern",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -3740,15 +3799,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			local pattern_tweak = tweak_data.economy:get_armor_based_value(cdata.pattern_tweak, armor_level)
 			local cubemap_pattern_control = tweak_data.economy:get_armor_based_value(cdata.cubemap_pattern_control, armor_level)
 			local pattern_pos_x_item = self:create_slider(node, {
-				name = "pattern_pos1",
+				callback = "armor_skin_changed",
 				key = "pattern_pos",
 				max = 2,
-				text_id = "debug_wskn_pattern_pos_x",
-				step = 0.001,
-				vector = 1,
 				min = -2,
-				callback = "armor_skin_changed",
+				name = "pattern_pos1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_pos_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3757,15 +3816,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			pattern_pos_x_item:set_value(pattern_pos and mvector3.x(pattern_pos) or 0)
 
 			local pattern_pos_y_item = self:create_slider(node, {
-				name = "pattern_pos2",
+				callback = "armor_skin_changed",
 				key = "pattern_pos",
 				max = 2,
-				text_id = "debug_wskn_pattern_pos_y",
-				step = 0.001,
-				vector = 2,
 				min = -2,
-				callback = "armor_skin_changed",
+				name = "pattern_pos2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_pos_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3774,15 +3833,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			pattern_pos_y_item:set_value(pattern_pos and mvector3.y(pattern_pos) or 0)
 
 			local pattern_tweak_x_item = self:create_slider(node, {
-				name = "pattern_tweak1",
+				callback = "armor_skin_changed",
 				key = "pattern_tweak",
 				max = 20,
-				text_id = "debug_wskn_pattern_tweak_x",
-				step = 0.001,
-				vector = 1,
 				min = 0,
-				callback = "armor_skin_changed",
+				name = "pattern_tweak1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_tweak_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3792,14 +3851,14 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, 1)
 
 			local pattern_tweak_y_item = self:create_slider(node, {
-				name = "pattern_tweak2",
-				key = "pattern_tweak",
-				text_id = "debug_wskn_pattern_tweak_y",
-				step = 0.001,
-				vector = 2,
-				min = 0,
 				callback = "armor_skin_changed",
+				key = "pattern_tweak",
+				min = 0,
+				name = "pattern_tweak2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_tweak_y",
+				vector = 2,
 				max = 2 * math.pi,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -3809,15 +3868,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			pattern_tweak_y_item:set_value(pattern_tweak and mvector3.y(pattern_tweak) or 0)
 
 			local pattern_tweak_z_item = self:create_slider(node, {
-				name = "pattern_tweak3",
+				callback = "armor_skin_changed",
 				key = "pattern_tweak",
 				max = 1,
-				text_id = "debug_wskn_pattern_tweak_z",
-				step = 0.001,
-				vector = 3,
 				min = 0,
-				callback = "armor_skin_changed",
+				name = "pattern_tweak3",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_pattern_tweak_z",
+				vector = 3,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3827,15 +3886,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, 2)
 
 			local cubemap_pattern_control_x_item = self:create_slider(node, {
-				name = "cubemap_pattern_control1",
+				callback = "armor_skin_changed",
 				key = "cubemap_pattern_control",
 				max = 1,
-				text_id = "debug_wskn_cubemap_pattern_control_x",
-				step = 0.001,
-				vector = 1,
 				min = 0,
-				callback = "armor_skin_changed",
+				name = "cubemap_pattern_control1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_cubemap_pattern_control_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3844,15 +3903,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			cubemap_pattern_control_x_item:set_value(cubemap_pattern_control and mvector3.x(cubemap_pattern_control) or 0)
 
 			local cubemap_pattern_control_y_item = self:create_slider(node, {
-				name = "cubemap_pattern_control2",
+				callback = "armor_skin_changed",
 				key = "cubemap_pattern_control",
 				max = 1,
-				text_id = "debug_wskn_cubemap_pattern_control_y",
-				step = 0.001,
-				vector = 2,
 				min = 0,
-				callback = "armor_skin_changed",
+				name = "cubemap_pattern_control2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_cubemap_pattern_control_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3863,27 +3922,28 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, "sticker2")
 
 			local sticker_textures = editor:get_texture_list_by_type(skin, "sticker")
+
 			multichoice_list = {
 				{
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}
 			}
 
 			for id, texture in ipairs(sticker_textures) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = texture,
 					value = texture
 				})
 			end
 
 			local sticker_item = self:create_multichoice(node, multichoice_list, {
-				text_id = "debug_wskn_sticker",
-				name = "sticker",
 				callback = "armor_skin_changed",
+				name = "sticker",
+				text_id = "debug_wskn_sticker",
 				text_offset = 50,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -3895,15 +3955,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			local uv_offset_rot = tweak_data.economy:get_armor_based_value(cdata.uv_offset_rot, armor_level)
 			local uv_scale = tweak_data.economy:get_armor_based_value(cdata.uv_scale, armor_level)
 			local uv_offset_rot_x_item = self:create_slider(node, {
-				name = "uv_offset_rot1",
+				callback = "armor_skin_changed",
 				key = "uv_offset_rot",
 				max = 2,
-				text_id = "debug_wskn_uv_offset_rot_x",
-				step = 0.001,
-				vector = 1,
 				min = -2,
-				callback = "armor_skin_changed",
+				name = "uv_offset_rot1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_offset_rot_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3912,15 +3972,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			uv_offset_rot_x_item:set_value(uv_offset_rot and mvector3.x(uv_offset_rot) or 0)
 
 			local uv_offset_rot_y_item = self:create_slider(node, {
-				name = "uv_offset_rot2",
+				callback = "armor_skin_changed",
 				key = "uv_offset_rot",
 				max = 2,
-				text_id = "debug_wskn_uv_offset_rot_y",
-				step = 0.001,
-				vector = 2,
 				min = -2,
-				callback = "armor_skin_changed",
+				name = "uv_offset_rot2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_offset_rot_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3929,15 +3989,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			uv_offset_rot_y_item:set_value(uv_offset_rot and mvector3.y(uv_offset_rot) or 0)
 
 			local uv_scale_x_item = self:create_slider(node, {
-				name = "uv_scale1",
+				callback = "armor_skin_changed",
 				key = "uv_scale",
 				max = 20,
-				text_id = "debug_wskn_uv_scale_x",
-				step = 0.001,
-				vector = 1,
 				min = 0.01,
-				callback = "armor_skin_changed",
+				name = "uv_scale1",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_scale_x",
+				vector = 1,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3946,15 +4006,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			uv_scale_x_item:set_value(20.01 - (uv_scale and mvector3.x(uv_scale) or 1))
 
 			local uv_scale_y_item = self:create_slider(node, {
-				name = "uv_scale2",
+				callback = "armor_skin_changed",
 				key = "uv_scale",
 				max = 20,
-				text_id = "debug_wskn_uv_scale_y",
-				step = 0.001,
-				vector = 2,
 				min = 0.01,
-				callback = "armor_skin_changed",
+				name = "uv_scale2",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_scale_y",
+				vector = 2,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -3963,9 +4023,9 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			uv_scale_y_item:set_value(20.01 - (uv_scale and mvector3.y(uv_scale) or 1))
 
 			local uv_scale_lock_item = self:create_toggle(node, {
+				enabled = true,
 				localize = true,
 				name = "uv_scale_lock",
-				enabled = true,
 				text_id = "debug_wskn_uv_scale_lock"
 			})
 
@@ -3973,14 +4033,14 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			self:create_divider(node, 3)
 
 			local uv_offset_rot_z_item = self:create_slider(node, {
-				name = "uv_offset_rot3",
-				key = "uv_offset_rot",
-				text_id = "debug_wskn_uv_offset_rot_z",
-				step = 0.001,
-				vector = 3,
-				min = 0,
 				callback = "armor_skin_changed",
+				key = "uv_offset_rot",
+				min = 0,
+				name = "uv_offset_rot3",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_offset_rot_z",
+				vector = 3,
 				max = 2 * math.pi,
 				part_id = data.part_id,
 				material_name = data.material_name,
@@ -3990,15 +4050,15 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			uv_offset_rot_z_item:set_value(uv_offset_rot and mvector3.z(uv_offset_rot) or 0)
 
 			local uv_scale_z_item = self:create_slider(node, {
-				name = "uv_scale3",
+				callback = "armor_skin_changed",
 				key = "uv_scale",
 				max = 1,
-				text_id = "debug_wskn_uv_scale_z",
-				step = 0.001,
-				vector = 3,
 				min = 0,
-				callback = "armor_skin_changed",
+				name = "uv_scale3",
 				show_value = true,
+				step = 0.001,
+				text_id = "debug_wskn_uv_scale_z",
+				vector = 3,
 				part_id = data.part_id,
 				material_name = data.material_name,
 				mod_type = data.mod_type
@@ -4011,49 +4071,49 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 	elseif name == "armor_skin_editor_screenshot" then
 		local multichoice_list = {
 			{
-				value = "none",
+				_meta = "option",
 				text_id = "debug_wskn_none",
-				_meta = "option"
+				value = "none"
 			},
 			{
-				value = "green",
+				_meta = "option",
 				text_id = "debug_wskn_green",
-				_meta = "option"
+				value = "green"
 			},
 			{
-				value = "black",
+				_meta = "option",
 				text_id = "debug_wskn_black",
-				_meta = "option"
+				value = "black"
 			},
 			{
-				value = "red",
+				_meta = "option",
 				text_id = "debug_wskn_red",
-				_meta = "option"
+				value = "red"
 			},
 			{
-				value = "blue",
+				_meta = "option",
 				text_id = "debug_wskn_blue",
-				_meta = "option"
+				value = "blue"
 			},
 			{
-				value = "pink",
+				_meta = "option",
 				text_id = "debug_wskn_pink",
-				_meta = "option"
+				value = "pink"
 			},
 			{
-				value = "cyan",
+				_meta = "option",
 				text_id = "debug_wskn_cyan",
-				_meta = "option"
+				value = "cyan"
 			},
 			{
-				value = "yellow",
+				_meta = "option",
 				text_id = "debug_wskn_yellow",
-				_meta = "option"
+				value = "yellow"
 			},
 			{
-				value = "white",
+				_meta = "option",
 				text_id = "debug_wskn_white",
-				_meta = "option"
+				value = "white"
 			}
 		}
 
@@ -4062,10 +4122,10 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 		end
 
 		local color_item = self:create_multichoice(node, multichoice_list, {
-			text_id = "debug_wskn_color",
-			text_offset = 50,
+			callback = "armor_screenshot_color_changed",
 			name = "screenshot_color",
-			callback = "armor_screenshot_color_changed"
+			text_id = "debug_wskn_color",
+			text_offset = 50
 		})
 
 		color_item:set_value("none")
@@ -4075,11 +4135,11 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 		end
 
 		self:create_item(node, {
+			callback = "armor_screenshots_hide_weapons",
+			enabled = true,
 			localize = true,
 			name = "hide_weapons",
-			enabled = true,
-			text_id = "bm_menu_btn_hide_weapons",
-			callback = "armor_screenshots_hide_weapons"
+			text_id = "bm_menu_btn_hide_weapons"
 		})
 
 		if node:item("show_weapons") then
@@ -4087,11 +4147,11 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 		end
 
 		self:create_item(node, {
+			callback = "armor_screenshots_show_weapons",
+			enabled = true,
 			localize = true,
 			name = "show_weapons",
-			enabled = true,
-			text_id = "bm_menu_btn_show_weapons",
-			callback = "armor_screenshots_show_weapons"
+			text_id = "bm_menu_btn_show_weapons"
 		})
 		editor:enter_screenshot_mode()
 	elseif name == "armor_skin_editor_screenshot_level" or name == "armor_skin_editor_select_level" then
@@ -4103,7 +4163,7 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			end
 		end
 
-		table.sort(sort_types, function (a, b)
+		table.sort(sort_types, function(a, b)
 			return b < a
 		end)
 
@@ -4113,9 +4173,9 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			end
 
 			self:create_item(node, {
-				localize = true,
-				enabled = true,
 				callback = "select_armor_skin_level",
+				enabled = true,
+				localize = true,
 				name = armor_name,
 				text_id = "bm_armor_" .. armor_name
 			})
@@ -4139,9 +4199,9 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			end
 
 			self:create_item(node, {
-				localize = false,
-				enabled = true,
 				callback = "select_armor_skin_pose",
+				enabled = true,
+				localize = false,
 				name = pose,
 				text_id = pose
 			})
@@ -4163,9 +4223,9 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 
 		local multichoice_list = {
 			{
-				text_id = "NONE",
+				_meta = "option",
 				localize = false,
-				_meta = "option"
+				text_id = "NONE"
 			}
 		}
 
@@ -4174,8 +4234,8 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 
 			for id, screenshot in ipairs(screenshots) do
 				table.insert(multichoice_list, {
-					localize = false,
 					_meta = "option",
+					localize = false,
 					text_id = screenshot,
 					value = screenshot
 				})
@@ -4184,10 +4244,10 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 
 		local item_index = table.index_of(node:items(), node:item("divider_publish"))
 		local screenshot_item = self:create_multichoice(node, multichoice_list, {
-			text_id = "debug_wskn_screenshot_skin",
-			text_offset = 50,
+			callback = "armor_screenshot_chosen",
 			name = "screenshot",
-			callback = "armor_screenshot_chosen"
+			text_id = "debug_wskn_screenshot_skin",
+			text_offset = 50
 		}, item_index)
 
 		screenshot_item:set_value(nil)
@@ -4231,19 +4291,21 @@ function MenuCallbackHandler:delete_armor_skin()
 	local editor = managers.blackmarket:armor_skin_editor()
 
 	if editor then
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("debug_wskn_sure_to_delete")
-		}
-		local yes_button = {
-			text = managers.localization:text("dialog_yes"),
-			callback_func = callback(self, self, "_dialog_delete_armor_skin_yes")
-		}
-		local no_button = {
-			text = managers.localization:text("dialog_no"),
-			callback_func = callback(self, self, "_dialog_delete_armor_skin_no"),
-			cancel_button = true
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("debug_wskn_sure_to_delete")
+
+		local yes_button = {}
+
+		yes_button.text = managers.localization:text("dialog_yes")
+		yes_button.callback_func = callback(self, self, "_dialog_delete_armor_skin_yes")
+
+		local no_button = {}
+
+		no_button.text = managers.localization:text("dialog_no")
+		no_button.callback_func = callback(self, self, "_dialog_delete_armor_skin_no")
+		no_button.cancel_button = true
 		dialog_data.button_list = {
 			yes_button,
 			no_button
@@ -4262,6 +4324,7 @@ function MenuCallbackHandler:_dialog_delete_armor_skin_yes()
 end
 
 function MenuCallbackHandler:_dialog_delete_armor_skin_no()
+	return
 end
 
 function MenuCallbackHandler:browse_armor_skin()
@@ -4290,6 +4353,7 @@ function MenuCallbackHandler:save_armor_skin()
 
 		local name_id = string.gsub(string.lower(name), " ", "_")
 		local copy_data = deep_clone(editor:get_current_skin():config().data)
+
 		copy_data.name_id = "bm_askn_" .. name_id
 		copy_data.reserve_quality = true
 
@@ -4302,6 +4366,7 @@ function MenuCallbackHandler:need_convert_armor_skin(item)
 end
 
 function MenuCallbackHandler:convert_armor_skin()
+	return
 end
 
 function MenuCallbackHandler:on_exit_armor_skin_editor(item)
@@ -4335,22 +4400,25 @@ function MenuCallbackHandler:on_exit_armor_skin_editor(item)
 		managers.menu:back(true)
 	end
 
-	local dialog_data = {
-		title = managers.localization:text("dialog_warning_title"),
-		text = managers.localization:text("debug_wskn_want_to_save")
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = on_yes
-	}
-	local no_button = {
-		text = managers.localization:text("dialog_no"),
-		callback_func = on_no
-	}
-	local cancel_button = {
-		text = managers.localization:text("dialog_cancel"),
-		cancel_button = true
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_warning_title")
+	dialog_data.text = managers.localization:text("debug_wskn_want_to_save")
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = on_yes
+
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_no")
+	no_button.callback_func = on_no
+
+	local cancel_button = {}
+
+	cancel_button.text = managers.localization:text("dialog_cancel")
+	cancel_button.cancel_button = true
 	dialog_data.button_list = {
 		yes_button,
 		no_button,
@@ -4379,6 +4447,7 @@ function MenuCallbackHandler:armor_skin_changed(item)
 
 		if string.find(item:parameters().name, "uv_scale[1-2]") then
 			value = 20.01 - value
+
 			local lock_item = managers.menu:active_menu().logic:selected_node():item("uv_scale_lock")
 
 			if lock_item then
@@ -4423,6 +4492,7 @@ function MenuCallbackHandler:armor_skin_changed(item)
 			end
 
 			value = v
+
 			local i1 = managers.menu:active_menu().logic:selected_node():item(key .. "1")
 			local i2 = managers.menu:active_menu().logic:selected_node():item(key .. "2")
 			local i3 = managers.menu:active_menu().logic:selected_node():item(key .. "3")
@@ -4440,6 +4510,7 @@ function MenuCallbackHandler:armor_skin_changed(item)
 			end
 		elseif item:parameters().type ~= "CoreMenuItemSlider.ItemSlider" then
 			local orig_value = value
+
 			value = editor:get_texture_string(skin, orig_value, key)
 			data[key .. "_name"] = orig_value
 
@@ -4452,15 +4523,15 @@ function MenuCallbackHandler:armor_skin_changed(item)
 					return
 				end
 
-				local index = table.index_of(item:options(), table.find_value(item:options(), function (v)
+				local index = table.index_of(item:options(), table.find_value(item:options(), function(v)
 					return v:value() == orig_value
 				end))
 
 				item:clear_options()
 				item:add_option(CoreMenuItemOption.ItemOption:new({
-					text_id = "DEFAULT",
+					_meta = "option",
 					localize = false,
-					_meta = "option"
+					text_id = "DEFAULT"
 				}))
 				editor:load_textures(skin)
 
@@ -4468,8 +4539,8 @@ function MenuCallbackHandler:armor_skin_changed(item)
 
 				for _, texture in ipairs(textures) do
 					item:add_option(CoreMenuItemOption.ItemOption:new({
-						localize = false,
 						_meta = "option",
+						localize = false,
 						text_id = texture,
 						value = texture
 					}))
@@ -4505,7 +4576,7 @@ function MenuCallbackHandler:armor_skin_changed(item)
 end
 
 function MenuCallbackHandler:editor_get_armor_level()
-	local armor_id = nil
+	local armor_id
 
 	if managers.menu_scene._character_unit and managers.menu_scene._character_unit:base() then
 		armor_id = managers.menu_scene._character_unit:base():armor_id()
@@ -4536,14 +4607,15 @@ function MenuCallbackHandler:publish_armor_skin(item)
 
 		SystemFS:copy_file(screenshot_path .. "/" .. skin:config().screenshot, Application:nice_path(skin:path(), true) .. "preview.png")
 	else
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("debug_wskn_submit_no_screenshot")
-		}
-		local ok_button = {
-			text = managers.localization:text("dialog_ok"),
-			callback_func = callback(self, self, "_dialog_ok")
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("debug_wskn_submit_no_screenshot")
+
+		local ok_button = {}
+
+		ok_button.text = managers.localization:text("dialog_ok")
+		ok_button.callback_func = callback(self, self, "_dialog_ok")
 		dialog_data.button_list = {
 			ok_button
 		}
@@ -4562,6 +4634,7 @@ end
 
 function MenuCallbackHandler:armor_screenshot_chosen(item)
 	local skin = managers.blackmarket:armor_skin_editor():get_current_skin()
+
 	skin:config().screenshot = item:value()
 end
 

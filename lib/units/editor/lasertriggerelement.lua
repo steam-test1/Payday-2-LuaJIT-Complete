@@ -99,6 +99,7 @@ function LaserTriggerUnitElement:update_editing(...)
 
 	if self._moving_point and ray then
 		local moving_point = self._hed.points[self._moving_point]
+
 		moving_point.pos = ray.position
 		moving_point.rot = Rotation(ray.normal, math.UP)
 	end
@@ -189,6 +190,7 @@ function LaserTriggerUnitElement:_draw_point(pos, rot, r, g, b)
 	r = r or 1
 	g = g or 1
 	b = b or 1
+
 	local len = 25
 	local scale = 0.05
 
@@ -528,8 +530,8 @@ function LaserTriggerUnitElement:add_to_mission_package()
 
 	for _, file in ipairs(sequence_files) do
 		managers.editor:add_to_world_package({
-			init = true,
 			category = "script_data",
+			init = true,
 			name = file:s() .. ".sequence_manager",
 			continent = self._unit:unit_data().continent
 		})

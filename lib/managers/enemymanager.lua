@@ -7,6 +7,7 @@ local t_rem = table.remove
 local t_ins = table.insert
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
+
 EnemyManager = EnemyManager or class()
 EnemyManager._nr_i_lod = {
 	{
@@ -47,6 +48,7 @@ end
 
 function EnemyManager:corpse_limit()
 	local limit = self._MAX_NR_CORPSES
+
 	limit = managers.mutators:modify_value("EnemyManager:corpse_limit", limit)
 
 	return limit
@@ -67,7 +69,7 @@ function EnemyManager:corpse_limit_changed_clbk(setting_name, old_limit, new_lim
 
 			self:unqueue_task(corpse_disposal_id)
 		end
-	elseif self:corpse_limit() < self._enemy_data.nr_corpses then
+	elseif self._enemy_data.nr_corpses > self:corpse_limit() then
 		corpse_disposal_id = "EnemyManager._upd_corpse_disposal"
 		self._corpse_disposal_id = corpse_disposal_id
 
@@ -84,7 +86,7 @@ function EnemyManager:_update_gfx_lod()
 		local camera_rot = managers.viewport:get_current_camera_rotation()
 
 		if camera_rot then
-			local pl_tracker, cam_pos = nil
+			local pl_tracker, cam_pos
 			local pl_fwd = camera_rot:y()
 			local player = managers.player:player_unit()
 
@@ -154,7 +156,7 @@ function EnemyManager:_update_gfx_lod()
 						else
 							local my_wgt = mvec3_dir(tmp_vec1, cam_pos, com[i])
 							local dot = mvec3_dot(tmp_vec1, pl_fwd)
-							local previous_prio = nil
+							local previous_prio
 
 							for prio, i_entry in ipairs(imp_i_list) do
 								if i == i_entry then
@@ -165,10 +167,11 @@ function EnemyManager:_update_gfx_lod()
 							end
 
 							my_wgt = my_wgt * my_wgt * (1 - dot)
+
 							local i_wgt = #imp_wgt_list
 
 							while i_wgt > 0 do
-								if previous_prio ~= i_wgt and imp_wgt_list[i_wgt] <= my_wgt then
+								if previous_prio ~= i_wgt and my_wgt >= imp_wgt_list[i_wgt] then
 									break
 								end
 
@@ -186,17 +189,20 @@ function EnemyManager:_update_gfx_lod()
 
 									if previous_prio <= nr_lod_1 and nr_lod_1 < i_wgt and nr_lod_1 <= #imp_i_list then
 										local promote_i = imp_i_list[nr_lod_1]
+
 										states[promote_i] = 1
 
 										units[promote_i]:base():set_visibility_state(1)
 									elseif nr_lod_1 < previous_prio and i_wgt <= nr_lod_1 then
 										local denote_i = imp_i_list[nr_lod_1]
+
 										states[denote_i] = 2
 
 										units[denote_i]:base():set_visibility_state(2)
 									end
 								elseif i_wgt <= nr_lod_total and #imp_i_list == nr_lod_total then
 									local kick_i = imp_i_list[nr_lod_total]
+
 									states[kick_i] = 3
 
 									units[kick_i]:base():set_visibility_state(3)
@@ -204,7 +210,7 @@ function EnemyManager:_update_gfx_lod()
 									t_rem(imp_i_list)
 								end
 
-								local lod_stage = nil
+								local lod_stage
 
 								if i_wgt <= nr_lod_total then
 									t_ins(imp_wgt_list, i_wgt, my_wgt)
@@ -230,11 +236,7 @@ function EnemyManager:_update_gfx_lod()
 						end
 					end
 
-					if i == nr_entries then
-						i = 1
-					else
-						i = i + 1
-					end
+					i = i == nr_entries and 1 or i + 1
 				until i == start_i
 			end
 		end
@@ -243,6 +245,7 @@ end
 
 function EnemyManager:_remove_i_from_lod_prio(i, anim_lod)
 	anim_lod = anim_lod or managers.user:get_setting("video_animation_lod")
+
 	local nr_i_lod1 = self._nr_i_lod[anim_lod][1]
 
 	for prio, i_entry in ipairs(self._gfx_lod_data.prio_i) do
@@ -252,6 +255,7 @@ function EnemyManager:_remove_i_from_lod_prio(i, anim_lod)
 
 			if prio <= nr_i_lod1 and nr_i_lod1 < #self._gfx_lod_data.prio_i then
 				local promoted_i_entry = self._gfx_lod_data.prio_i[prio]
+
 				self._gfx_lod_data.entries.states[promoted_i_entry] = 1
 
 				self._gfx_lod_data.entries.units[promoted_i_entry]:base():set_visibility_state(1)
@@ -323,6 +327,7 @@ function EnemyManager:set_gfx_lod_enabled(state)
 		self._gfx_lod_data.enabled = state
 	elseif self._gfx_lod_data.enabled then
 		self._gfx_lod_data.enabled = state
+
 		local entries = self._gfx_lod_data.entries
 		local units = entries.units
 		local states = entries.states
@@ -378,6 +383,7 @@ end
 
 function EnemyManager:_init_enemy_data()
 	local enemy_data = {}
+
 	self._enemy_data = enemy_data
 	enemy_data.unit_data = {}
 	enemy_data.nr_units = 0
@@ -393,19 +399,25 @@ function EnemyManager:_init_enemy_data()
 	self._civilian_data = {
 		unit_data = {}
 	}
+
 	local tick_rate = tweak_data.group_ai.ai_tick_rate
+
 	self._tick_rate = tick_rate
 	self._queue_buffer = tick_rate
 	self._queued_tasks = {}
 	self._queued_task_executed = false
 	self._delayed_clbks = {}
+
 	local gfx_lod_data = {}
+
 	self._gfx_lod_data = gfx_lod_data
 	gfx_lod_data.enabled = true
 	gfx_lod_data.prio_i = {}
 	gfx_lod_data.prio_weights = {}
 	gfx_lod_data.next_chk_prio_i = 1
+
 	local lod_entries = {}
+
 	gfx_lod_data.entries = lod_entries
 	lod_entries.units = {}
 	lod_entries.states = {}
@@ -445,13 +457,13 @@ function EnemyManager:queue_task(id, task_clbk, data, execute_t, verification_cl
 
 	table.insert(self._queued_tasks, task_data)
 
-	if not execute_t and #self._queued_tasks <= 1 and not self._queued_task_executed then
+	if not execute_t and not (#self._queued_tasks > 1) and not self._queued_task_executed then
 		self:_execute_queued_task(1)
 	end
 end
 
 function EnemyManager:update_queue_task(id, task_clbk, data, execute_t, verification_clbk, asap)
-	local task_data, _ = table.find_value(self._queued_tasks, function (td)
+	local task_data, _ = table.find_value(self._queued_tasks, function(td)
 		return td.id == id
 	end)
 
@@ -488,7 +500,7 @@ function EnemyManager:unqueue_task_debug(id)
 
 	local tasks = self._queued_tasks
 	local i = #tasks
-	local removed = nil
+	local removed
 
 	while i > 0 do
 		if tasks[i].id == id then
@@ -527,6 +539,7 @@ end
 
 function EnemyManager:_execute_queued_task(i)
 	local task = table.remove(self._queued_tasks, i)
+
 	self._queued_task_executed = true
 
 	if task.v_cb then
@@ -537,13 +550,15 @@ function EnemyManager:_execute_queued_task(i)
 end
 
 function EnemyManager:_update_queued_tasks(t, dt)
-	local i_asap_task, asp_task_t = nil
+	local i_asap_task, asp_task_t
+
 	self._queue_buffer = self._queue_buffer + dt
+
 	local tick_rate = self._tick_rate
 
 	if tick_rate <= self._queue_buffer then
 		for i_task, task_data in ipairs(self._queued_tasks) do
-			if not task_data.t or task_data.t < t then
+			if not task_data.t or t > task_data.t then
 				self:_execute_queued_task(i_task)
 
 				self._queue_buffer = self._queue_buffer - tick_rate
@@ -551,7 +566,7 @@ function EnemyManager:_update_queued_tasks(t, dt)
 				if self._queue_buffer <= 0 then
 					break
 				end
-			elseif task_data.asap and (not asp_task_t or task_data.t < asp_task_t) then
+			elseif task_data.asap and (not asp_task_t or asp_task_t > task_data.t) then
 				i_asap_task = i_task
 				asp_task_t = task_data.t
 			end
@@ -570,7 +585,7 @@ function EnemyManager:_update_queued_tasks(t, dt)
 
 	local all_clbks = self._delayed_clbks
 
-	if all_clbks[1] and all_clbks[1][2] < t then
+	if all_clbks[1] and t > all_clbks[1][2] then
 		local clbk = table.remove(all_clbks, 1)[3]
 
 		clbk()
@@ -639,7 +654,7 @@ end
 
 function EnemyManager:reschedule_delayed_clbk(id, execute_t)
 	local all_clbks = self._delayed_clbks
-	local clbk_data = nil
+	local clbk_data
 
 	for i, clbk_d in ipairs(all_clbks) do
 		if clbk_d[1] == id then
@@ -651,6 +666,7 @@ function EnemyManager:reschedule_delayed_clbk(id, execute_t)
 
 	if clbk_data then
 		clbk_data[2] = execute_t
+
 		local i = #all_clbks
 
 		while i > 0 and execute_t < all_clbks[i][2] do
@@ -696,7 +712,7 @@ function EnemyManager:queued_tasks_by_callback()
 			}
 		end
 
-		if not task_data.t or task_data.t < t then
+		if not task_data.t or t > task_data.t then
 			congestion = congestion + 1
 		end
 	end
@@ -722,6 +738,7 @@ function EnemyManager:register_enemy(enemy)
 		char_tweak = char_tweak,
 		so_access = managers.navigation:convert_access_flag(char_tweak.access)
 	}
+
 	self._enemy_data.unit_data[enemy:key()] = u_data
 
 	enemy:base():add_destroy_listener(self._unit_clbk_key, callback(self, self, "on_enemy_destroyed"))
@@ -748,6 +765,7 @@ function EnemyManager:on_enemy_died(dead_unit, damage_info)
 	self:on_enemy_unregistered(dead_unit)
 
 	enemy_u_data[u_key] = nil
+
 	local should_be_disposed_of = true
 
 	if should_be_disposed_of then
@@ -757,6 +775,7 @@ function EnemyManager:on_enemy_died(dead_unit, damage_info)
 	end
 
 	local t = self._timer:time()
+
 	u_data.death_t = t
 	u_data.u_id = dead_unit:id()
 	enemy_data.corpses[u_key] = u_data
@@ -819,6 +838,7 @@ function EnemyManager:on_enemy_destroyed(enemy)
 
 		if corpse_data then
 			corpses[u_key] = nil
+
 			local corpses_to_detach = self._corpses_to_detach
 
 			if corpses_to_detach[u_key] then
@@ -827,7 +847,9 @@ function EnemyManager:on_enemy_destroyed(enemy)
 
 			if not corpse_data.no_dispose then
 				local nr_corpses = enemy_data.nr_corpses - 1
+
 				enemy_data.nr_corpses = nr_corpses
+
 				local corpse_disposal_id = self._corpse_disposal_id
 
 				if corpse_disposal_id and nr_corpses <= self:corpse_limit() then
@@ -868,26 +890,30 @@ function EnemyManager:register_shield(shield_unit)
 
 	local t = self._timer:time()
 	local enemy_data = self._enemy_data
+
 	enemy_data.shields[shield_unit:key()] = {
 		unit = shield_unit,
 		death_t = t
 	}
+
 	local nr_shields = enemy_data.nr_shields + 1
+
 	enemy_data.nr_shields = nr_shields
+
 	local shield_disposal_id = self._shield_disposal_id
 
 	if not shield_disposal_id then
 		shield_disposal_id = "EnemyManager._upd_shield_disposal"
 		self._shield_disposal_id = shield_disposal_id
 
-		if self:shield_limit() < nr_shields then
+		if nr_shields > self:shield_limit() then
 			self._fast_shield_disposal = true
 
 			self:queue_task(shield_disposal_id, EnemyManager._upd_shield_disposal_fast, self, t)
 		else
 			self:queue_task(shield_disposal_id, EnemyManager._upd_shield_disposal, self, t + self._shield_disposal_lifetime)
 		end
-	elseif not self._fast_shield_disposal and self:shield_limit() < nr_shields then
+	elseif not self._fast_shield_disposal and nr_shields > self:shield_limit() then
 		self._fast_shield_disposal = true
 
 		self:update_queue_task(shield_disposal_id, EnemyManager._upd_shield_disposal_fast, nil, t, nil, nil)
@@ -904,8 +930,11 @@ function EnemyManager:unregister_shield(shield_unit)
 	end
 
 	shields[u_key] = nil
+
 	local nr_shields = enemy_data.nr_shields - 1
+
 	enemy_data.nr_shields = nr_shields
+
 	local shield_disposal_id = self._shield_disposal_id
 
 	if not shield_disposal_id then
@@ -919,7 +948,8 @@ function EnemyManager:unregister_shield(shield_unit)
 		self:unqueue_task(shield_disposal_id)
 	elseif self._fast_shield_disposal and nr_shields <= self:shield_limit() then
 		self._fast_shield_disposal = false
-		local delay = nil
+
+		local delay
 
 		for u_key, u_data in pairs(shields) do
 			local death_t = u_data.death_t
@@ -945,6 +975,7 @@ function EnemyManager:register_civilian(unit)
 	self:_create_unit_gfx_lod_data(unit, true)
 
 	local char_tweak = tweak_data.character[unit:base()._tweak_table]
+
 	self._civilian_data.unit_data[unit:key()] = {
 		is_civilian = true,
 		unit = unit,
@@ -978,6 +1009,7 @@ function EnemyManager:on_civilian_died(dead_unit, damage_info)
 	end
 
 	local t = self._timer:time()
+
 	u_data.death_t = t
 	u_data.u_id = dead_unit:id()
 	enemy_data.corpses[u_key] = u_data
@@ -1014,6 +1046,7 @@ function EnemyManager:on_civilian_destroyed(civilian)
 
 		if corpse_data then
 			corpses[u_key] = nil
+
 			local corpses_to_detach = self._corpses_to_detach
 
 			if corpses_to_detach[u_key] then
@@ -1022,7 +1055,9 @@ function EnemyManager:on_civilian_destroyed(civilian)
 
 			if not corpse_data.no_dispose then
 				local nr_corpses = enemy_data.nr_corpses - 1
+
 				enemy_data.nr_corpses = nr_corpses
+
 				local corpse_disposal_id = self._corpse_disposal_id
 
 				if corpse_disposal_id and nr_corpses <= self:corpse_limit() then
@@ -1091,9 +1126,10 @@ end
 
 function EnemyManager:_upd_corpse_disposal()
 	self._corpse_disposal_id = nil
+
 	local enemy_data = self._enemy_data
 	local player = managers.player:player_unit()
-	local cam_pos, cam_fwd = nil
+	local cam_pos, cam_fwd
 
 	if player then
 		cam_pos = player:movement():m_head_pos()
@@ -1106,12 +1142,10 @@ function EnemyManager:_upd_corpse_disposal()
 	local corpses = enemy_data.corpses
 	local nr_corpses = enemy_data.nr_corpses
 	local disposals_needed = nr_corpses - self:corpse_limit()
-	local to_dispose = {}
-	local nr_found = 0
+	local to_dispose, nr_found = {}, 0
 
 	if cam_pos then
-		local min_dis = 90000
-		local dot_chk = 0
+		local min_dis, dot_chk = 90000, 0
 		local dir_vec = tmp_vec1
 
 		for u_key, u_data in pairs(corpses) do
@@ -1121,7 +1155,7 @@ function EnemyManager:_upd_corpse_disposal()
 				if min_dis < mvec3_dis_sq(cam_pos, u_pos) then
 					mvec3_dir(dir_vec, cam_pos, u_pos)
 
-					if mvec3_dot(cam_fwd, dir_vec) < dot_chk then
+					if dot_chk > mvec3_dot(cam_fwd, dir_vec) then
 						to_dispose[u_key] = true
 						nr_found = nr_found + 1
 
@@ -1175,6 +1209,7 @@ function EnemyManager:_upd_corpse_disposal()
 
 	for u_key, _ in pairs(to_dispose) do
 		local unit = corpses[u_key].unit
+
 		corpses[u_key] = nil
 
 		if is_server or unit:id() == -1 then
@@ -1200,7 +1235,7 @@ function EnemyManager:_upd_shield_disposal()
 	local disposals_needed = nr_shields - self:shield_limit()
 	local shields = enemy_data.shields
 	local player = managers.player:player_unit()
-	local cam_pos, cam_fwd = nil
+	local cam_pos, cam_fwd
 
 	if player then
 		cam_pos = player:movement():m_head_pos()
@@ -1210,8 +1245,7 @@ function EnemyManager:_upd_shield_disposal()
 		cam_fwd = managers.viewport:get_current_camera_rotation():y()
 	end
 
-	local to_dispose = {}
-	local nr_found = 0
+	local to_dispose, nr_found = {}, 0
 	local disposal_life_t = self._shield_disposal_lifetime
 
 	for u_key, u_data in pairs(shields) do
@@ -1223,8 +1257,7 @@ function EnemyManager:_upd_shield_disposal()
 
 	if nr_found < disposals_needed then
 		if cam_pos then
-			local min_dis = 90000
-			local dot_chk = 0
+			local min_dis, dot_chk = 90000, 0
 			local dir_vec = tmp_vec1
 			local u_pos = tmp_vec2
 
@@ -1237,7 +1270,7 @@ function EnemyManager:_upd_shield_disposal()
 					if min_dis < mvec3_dis_sq(cam_pos, u_pos) then
 						mvec3_dir(dir_vec, cam_pos, u_pos)
 
-						if mvec3_dot(cam_fwd, dir_vec) < dot_chk then
+						if dot_chk > mvec3_dot(cam_fwd, dir_vec) then
 							to_dispose[u_key] = true
 							nr_found = nr_found + 1
 
@@ -1292,6 +1325,7 @@ function EnemyManager:_upd_shield_disposal()
 
 	for u_key, _ in pairs(to_dispose) do
 		local unit = shields[u_key].unit
+
 		shields[u_key] = nil
 
 		if is_server or unit:id() == -1 then
@@ -1305,7 +1339,7 @@ function EnemyManager:_upd_shield_disposal()
 	enemy_data.nr_shields = nr_shields
 
 	if nr_shields > 0 then
-		local delay = nil
+		local delay
 
 		for u_key, u_data in pairs(shields) do
 			local death_t = u_data.death_t
@@ -1326,7 +1360,9 @@ end
 function EnemyManager:set_corpse_disposal_enabled(state)
 	local was_enabled = self:is_corpse_disposal_enabled()
 	local state_modifier = state and 1 or -1
+
 	self._corpse_disposal_enabled = self._corpse_disposal_enabled + state_modifier
+
 	local is_now_enabled = self:is_corpse_disposal_enabled()
 
 	if was_enabled and not is_now_enabled then
@@ -1354,7 +1390,7 @@ function EnemyManager:chk_queue_disposal(t)
 		return
 	end
 
-	if self:corpse_limit() < self._enemy_data.nr_corpses then
+	if self._enemy_data.nr_corpses > self:corpse_limit() then
 		corpse_disposal_id = "EnemyManager._upd_corpse_disposal"
 		self._corpse_disposal_id = corpse_disposal_id
 
@@ -1363,6 +1399,7 @@ function EnemyManager:chk_queue_disposal(t)
 end
 
 function EnemyManager:on_simulation_ended()
+	return
 end
 
 function EnemyManager:on_simulation_started()
@@ -1389,6 +1426,7 @@ end
 
 function EnemyManager:dispose_all_corpses()
 	self._destroyed = true
+
 	local detach_f = detach_unit_from_network
 
 	for key, corpse_data in pairs(self._enemy_data.corpses) do
@@ -1407,7 +1445,7 @@ function EnemyManager:dispose_all_corpses()
 end
 
 function EnemyManager:save(data)
-	local my_data = nil
+	local my_data
 
 	if not managers.groupai:state():enemy_weapons_hot() then
 		my_data = my_data or {}
@@ -1415,6 +1453,7 @@ function EnemyManager:save(data)
 		for u_key, u_data in pairs(self._enemy_data.corpses) do
 			if u_data.unit:id() < 0 then
 				my_data.corpses = my_data.corpses or {}
+
 				local corpse_data = {
 					u_data.u_id,
 					u_data.unit:movement():m_pos(),
@@ -1454,9 +1493,7 @@ function EnemyManager:load(data)
 			local contour_flashing = corpse_data[6]
 			local grnd_ray = World:raycast("ray", spawn_pos + Vector3(0, 0, 50), spawn_pos - Vector3(0, 0, 100), "slot_mask", managers.slot:get_mask("AI_graph_obstacle_check"), "ray_type", "walk")
 
-			if grnd_ray then
-				spawn_pos = grnd_ray.position or spawn_pos
-			end
+			spawn_pos = grnd_ray and grnd_ray.position or spawn_pos
 
 			local corpse = World:spawn_unit(is_civilian and civ_corpse_u_name or ene_corpse_u_name, spawn_pos, Rotation(math.random() * 360, 0, 0))
 
@@ -1525,15 +1562,18 @@ end
 
 function EnemyManager:get_nearby_medic(requesting_unit)
 	local valid_medics = {}
-	local request_u_key = requesting_unit:key()
 
-	for u_key, medic in pairs(self._medic_units) do
-		if u_key ~= request_u_key and medic:character_damage():is_available_for_healing(requesting_unit) then
-			valid_medics[u_key] = medic
+	do
+		local request_u_key = requesting_unit:key()
+
+		for u_key, medic in pairs(self._medic_units) do
+			if u_key ~= request_u_key and medic:character_damage():is_available_for_healing(requesting_unit) then
+				valid_medics[u_key] = medic
+			end
 		end
 	end
 
-	local closest_medic = nil
+	local closest_medic
 
 	if next(valid_medics) then
 		local request_pos = tmp_vec1
@@ -1541,7 +1581,7 @@ function EnemyManager:get_nearby_medic(requesting_unit)
 
 		requesting_unit:m_position(request_pos)
 
-		local dis_sq, closest_dis_sq = nil
+		local dis_sq, closest_dis_sq
 
 		for u_key, medic in pairs(valid_medics) do
 			medic:m_position(medic_pos)
@@ -1561,11 +1601,14 @@ end
 function EnemyManager:find_nearby_affiliated_medics(requesting_unit)
 	local valid_medics = {}
 	local medics_in_range = {}
-	local request_u_key = requesting_unit:key()
 
-	for u_key, medic in pairs(self._medic_units) do
-		if u_key ~= request_u_key and medic:character_damage():verify_heal_requesting_unit(requesting_unit) then
-			valid_medics[u_key] = medic
+	do
+		local request_u_key = requesting_unit:key()
+
+		for u_key, medic in pairs(self._medic_units) do
+			if u_key ~= request_u_key and medic:character_damage():verify_heal_requesting_unit(requesting_unit) then
+				valid_medics[u_key] = medic
+			end
 		end
 	end
 
@@ -1616,10 +1659,12 @@ function EnemyManager:add_magazine(mag_unit, col_unit)
 
 	local all_mags = self._magazines
 	local new_nr_mags = #all_mags + 1
+
 	all_mags[new_nr_mags] = {
 		mag_unit,
 		col_unit
 	}
+
 	local disposals_needed = new_nr_mags - self._MAX_MAGAZINES
 
 	if disposals_needed > 0 then
@@ -1630,6 +1675,7 @@ end
 function EnemyManager:cleanup_magazines(remove_to_i)
 	local all_mags = self._magazines
 	local nr_mags = #all_mags
+
 	remove_to_i = remove_to_i or nr_mags
 
 	for i = 1, remove_to_i do

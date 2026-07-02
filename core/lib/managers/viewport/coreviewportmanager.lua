@@ -262,6 +262,7 @@ function ViewportManager:get_current_camera()
 	end
 
 	local vps = self:_all_really_active()
+
 	self._current_camera = #vps > 0 and vps[1]:camera()
 
 	return self._current_camera
@@ -320,12 +321,12 @@ end
 function ViewportManager:get_safe_rect_pixels()
 	local res = RenderSettings.resolution
 	local safe_rect_scale = self:get_safe_rect()
-	local safe_rect_pixels = {
-		x = math.round(safe_rect_scale.x * res.x),
-		y = math.round(safe_rect_scale.y * res.y),
-		width = math.round(safe_rect_scale.width * res.x),
-		height = math.round(safe_rect_scale.height * res.y)
-	}
+	local safe_rect_pixels = {}
+
+	safe_rect_pixels.x = math.round(safe_rect_scale.x * res.x)
+	safe_rect_pixels.y = math.round(safe_rect_scale.y * res.y)
+	safe_rect_pixels.width = math.round(safe_rect_scale.width * res.x)
+	safe_rect_pixels.height = math.round(safe_rect_scale.height * res.y)
 
 	return safe_rect_pixels
 end

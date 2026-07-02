@@ -8,13 +8,14 @@ function UnoPianoBase:init(unit)
 end
 
 function UnoPianoBase:note_played(note)
-	if self.SEQUENCE_LENGTH <= #self._notes_played then
+	if #self._notes_played >= self.SEQUENCE_LENGTH then
 		for i = 1, #self._notes_played - 1 do
 			self._notes_played[i] = self._notes_played[i + 1]
 		end
 	end
 
 	local new_index = math.min(#self._notes_played + 1, self.SEQUENCE_LENGTH)
+
 	self._notes_played[new_index] = note
 
 	if self:validate_sequence(self._notes_played) then

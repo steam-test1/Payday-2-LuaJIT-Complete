@@ -4,12 +4,11 @@ function CoreXMLTextCtrl:init(parent, value, id, syntax_colors, style)
 	if syntax_colors then
 		self._syntax_colors = syntax_colors
 	else
-		self._syntax_colors = {
-			NODE = Vector3(50, 50, 255),
-			KEY = Vector3(250, 50, 50),
-			VALUE = Vector3(0, 0, 0),
-			NORMAL = Vector3(0, 0, 0)
-		}
+		self._syntax_colors = {}
+		self._syntax_colors.NODE = Vector3(50, 50, 255)
+		self._syntax_colors.KEY = Vector3(250, 50, 50)
+		self._syntax_colors.VALUE = Vector3(0, 0, 0)
+		self._syntax_colors.NORMAL = Vector3(0, 0, 0)
 	end
 
 	self._text_ctrl = EWS:TextCtrl(parent, value or "", id or "", style or "TE_MULTILINE,TE_RICH2,TE_DONTWRAP")
@@ -25,6 +24,7 @@ function CoreXMLTextCtrl:update(t)
 		if self._last_syntax_check then
 			if t - self._last_syntax_check > 3 then
 				local text = self._text_ctrl:get_value()
+
 				self._last_syntax_check = nil
 				self._check_syntax = nil
 				self._skip_event = true

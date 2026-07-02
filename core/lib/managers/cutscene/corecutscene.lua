@@ -29,6 +29,7 @@ function CoreCutscene:init(cutscene_node, cutscene_manager)
 		if collection_node:name() == "controlled_units" then
 			for child_node in collection_node:children() do
 				local unit_name = child_node:parameter("name")
+
 				self._unit_types[unit_name] = cutscene_manager:cutscene_actor_unit_type(self:_cutscene_specific_unit_type(child_node:parameter("type")))
 				self._unit_animations[unit_name] = child_node:parameter("animation")
 				self._unit_blend_sets[unit_name] = child_node:parameter("blend_set")
@@ -48,7 +49,7 @@ function CoreCutscene:init(cutscene_node, cutscene_manager)
 	end
 
 	table.sort(self._camera_names)
-	table.sort(self._keys, function (a, b)
+	table.sort(self._keys, function(a, b)
 		return a:frame() < b:frame()
 	end)
 	freeze(self._keys, self._unit_types, self._unit_animations, self._unit_blend_sets, self._camera_names)
@@ -205,11 +206,13 @@ function CoreCutscene:_debug_persistent_keys()
 
 	for sequence_key in self:keys(CoreSequenceCutsceneKey.ELEMENT_NAME) do
 		local unit_type = unit_types[sequence_key:unit_name()]
+
 		persistent_keys[string.format("Sequence %s.%s", unit_type or "\"" .. sequence_key:unit_name() .. "\"", sequence_key:name())] = true
 	end
 
 	for callback_key in self:keys(CoreUnitCallbackCutsceneKey.ELEMENT_NAME) do
 		local unit_type = unit_types[callback_key:unit_name()]
+
 		persistent_keys[string.format("Callback %s:%s():%s()", unit_type or "\"" .. callback_key:unit_name() .. "\"", callback_key:extension(), callback_key:method())] = true
 	end
 

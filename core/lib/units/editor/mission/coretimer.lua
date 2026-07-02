@@ -3,8 +3,8 @@ CoreTimerUnitElement.SAVE_UNIT_POSITION = false
 CoreTimerUnitElement.SAVE_UNIT_ROTATION = false
 CoreTimerUnitElement.INSTANCE_VAR_NAMES = {
 	{
-		value = "timer",
-		type = "number"
+		type = "number",
+		value = "timer"
 	}
 }
 CoreTimerUnitElement.RANDOMS = {
@@ -72,8 +72,8 @@ function CoreTimerUnitElement:update_selected()
 			self._digital_gui_units[id] = nil
 		else
 			local params = {
-				g = 1,
 				b = 0,
+				g = 1,
 				r = 0,
 				from_unit = self._unit,
 				to_unit = unit
@@ -108,8 +108,8 @@ function CoreTimerUnitElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._digital_gui_units) do
 		local params = {
-			g = 0.5,
 			b = 0,
+			g = 0.5,
 			r = 0,
 			from_unit = self._unit,
 			to_unit = unit
@@ -238,8 +238,8 @@ function CoreTimerOperatorUnitElement:draw_links(t, dt, selected_unit, all_units
 
 		if draw then
 			self:_draw_link({
-				g = 0.75,
 				b = 0.25,
+				g = 0.75,
 				r = 0.75,
 				from_unit = self._unit,
 				to_unit = unit
@@ -249,12 +249,13 @@ function CoreTimerOperatorUnitElement:draw_links(t, dt, selected_unit, all_units
 end
 
 function CoreTimerOperatorUnitElement:update_editing()
+	return
 end
 
 function CoreTimerOperatorUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("core/units/mission_elements/logic_timer/logic_timer") then
@@ -277,6 +278,7 @@ function CoreTimerOperatorUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_timer/logic_timer"
 	}
@@ -330,8 +332,8 @@ function CoreTimerTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = unit,
 				to_unit = self._unit
@@ -341,12 +343,13 @@ function CoreTimerTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 end
 
 function CoreTimerTriggerUnitElement:update_editing()
+	return
 end
 
 function CoreTimerTriggerUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("core/units/mission_elements/logic_timer/logic_timer") then
@@ -369,6 +372,7 @@ function CoreTimerTriggerUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_timer/logic_timer"
 	}

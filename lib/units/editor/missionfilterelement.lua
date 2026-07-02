@@ -23,6 +23,7 @@ function MissionFilterUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local var_1 = EWS:CheckBox(panel, "Mission filter 1", "")
 
 	var_1:set_value(self._hed[1])

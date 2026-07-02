@@ -31,6 +31,7 @@ function HuskPlayerBase:post_init()
 	self:set_anim_lod(1)
 
 	self._lod_stage = 1
+
 	local spawn_state = self._spawn_state or "std/stand/still/idle/look"
 
 	self._unit:movement():play_state(spawn_state)
@@ -73,7 +74,9 @@ function HuskPlayerBase:save(data)
 	for category, upgrades in pairs(self._temporary_upgrades_map) do
 		for upgrade, index in pairs(upgrades) do
 			data.temporary_upgrades[category] = data.temporary_upgrades[category] or {}
+
 			local level = self._temporary_upgrades[index] and self._temporary_upgrades[index].level or 1
+
 			data.temporary_upgrades[category][upgrade] = {
 				index = index,
 				level = level
@@ -87,7 +90,9 @@ end
 function HuskPlayerBase:set_upgrade_value(category, upgrade, level)
 	self._upgrades[category] = self._upgrades[category] or {}
 	self._upgrade_levels[category] = self._upgrade_levels[category] or {}
+
 	local value = managers.player:upgrade_value_by_level(category, upgrade, level)
+
 	self._upgrades[category][upgrade] = value
 	self._upgrade_levels[category][upgrade] = level
 
@@ -152,7 +157,7 @@ function HuskPlayerBase:has_activate_temporary_upgrade(category, upgrade)
 	local index = self._temporary_upgrades_map[category] and self._temporary_upgrades_map[category][upgrade]
 
 	if index then
-		return self._temporary_upgrades[index] and self._temporary_upgrades[index].activation_time and TimerManager:game():time() < self._temporary_upgrades[index].activation_time + self._temporary_upgrades[index].time
+		return self._temporary_upgrades[index] and self._temporary_upgrades[index].activation_time and self._temporary_upgrades[index].activation_time + self._temporary_upgrades[index].time > TimerManager:game():time()
 	end
 end
 
@@ -201,4 +206,5 @@ function HuskPlayerBase:nick_name()
 end
 
 function HuskPlayerBase:on_death_exit()
+	return
 end

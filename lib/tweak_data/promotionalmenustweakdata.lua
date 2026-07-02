@@ -9,16 +9,16 @@ end
 
 function PromotionalMenusTweakData:_init_raid(tweak_data)
 	self.menus.raid = {
-		size = 0.8,
 		padding = 5,
+		size = 0.8,
 		layout = {
 			x = 4,
 			y = 6
 		},
 		buttons = {
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "launch_raid",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					1,
 					1
@@ -28,9 +28,9 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					2
 				},
 				title = {
-					name_id = "menu_raid_beta_play",
 					font = "large",
 					font_size = "large",
+					name_id = "menu_raid_beta_play",
 					color = Color(1, 0, 0, 0)
 				},
 				background = {
@@ -38,8 +38,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_raid_preorder_menu",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					4,
 					1
@@ -49,14 +49,14 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					2
 				},
 				title = {
-					name_id = "menu_raid_preorder",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_preorder"
 				},
 				subtitle = {
-					name_id = "menu_raid_preorder_desc",
 					font = "small",
 					font_size = "small",
+					name_id = "menu_raid_preorder_desc",
 					color = Color(1, 0, 0, 0)
 				},
 				background = {
@@ -64,8 +64,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_raid_weapons_menu",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					1,
 					3
@@ -75,22 +75,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					2
 				},
 				title = {
-					name_id = "menu_raid_beta_weapons",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_beta_weapons"
 				},
 				subtitle = {
-					name_id = "menu_raid_beta_weapons_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_beta_weapons_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/pd2_weaponpack_df"
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_raid_trailer",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					3,
 					3
@@ -100,22 +100,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					2
 				},
 				title = {
-					name_id = "menu_raid_cinematic_trailer",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_cinematic_trailer"
 				},
 				subtitle = {
-					name_id = "menu_raid_cinematic_trailer_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_cinematic_trailer_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/cinematic_trailer_df"
 				},
 				overlay = {
-					w = 102.4,
-					image = "guis/dlcs/aru/textures/pd2/play_button",
 					h = 102.4,
+					image = "guis/dlcs/aru/textures/pd2/play_button",
+					w = 102.4,
 					center = {
 						0.5,
 						0.35
@@ -123,8 +123,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_dev_diary_trailer",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					4,
 					3
@@ -134,22 +134,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					2
 				},
 				title = {
-					name_id = "menu_raid_dev_diary",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_dev_diary"
 				},
 				subtitle = {
-					name_id = "menu_raid_dev_diary_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_dev_diary_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/dev_diary"
 				},
 				overlay = {
-					w = 102.4,
-					image = "guis/dlcs/aru/textures/pd2/play_button",
 					h = 102.4,
+					image = "guis/dlcs/aru/textures/pd2/play_button",
+					w = 102.4,
 					center = {
 						0.5,
 						0.35
@@ -157,8 +157,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_raid_gang",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					1,
 					5
@@ -168,22 +168,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				title = {
-					name_id = "menu_raid_meet_gang",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_meet_gang"
 				},
 				subtitle = {
-					name_id = "menu_raid_meet_gang_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_meet_gang_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/meet_the_gang"
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_raid_feedback",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					1,
 					6
@@ -193,22 +193,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				title = {
-					name_id = "menu_raid_feedback",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_feedback"
 				},
 				subtitle = {
-					name_id = "menu_raid_feedback_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_feedback_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/feedback"
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_gameplay_trailer",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					3,
 					5
@@ -218,22 +218,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					2
 				},
 				title = {
-					name_id = "menu_raid_gameplay_trailer",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_gameplay_trailer"
 				},
 				subtitle = {
-					name_id = "menu_raid_gameplay_trailer_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_gameplay_trailer_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/gameplay_trailer"
 				},
 				overlay = {
-					w = 102.4,
-					image = "guis/dlcs/aru/textures/pd2/play_button",
 					h = 102.4,
+					image = "guis/dlcs/aru/textures/pd2/play_button",
+					w = 102.4,
 					center = {
 						0.5,
 						0.35
@@ -241,8 +241,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_raid_special_edition_menu",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					4,
 					5
@@ -252,22 +252,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				title = {
-					name_id = "menu_raid_special_edition",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_special_edition"
 				},
 				subtitle = {
-					name_id = "menu_raid_special_edition_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_special_edition_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/special_edition"
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "open_raid_twitch",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					4,
 					6
@@ -277,22 +277,22 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				title = {
-					name_id = "menu_raid_twitch",
 					font = "medium",
-					font_size = "medium"
+					font_size = "medium",
+					name_id = "menu_raid_twitch"
 				},
 				subtitle = {
-					name_id = "menu_raid_twitch_desc",
 					font = "small",
-					font_size = "small"
+					font_size = "small",
+					name_id = "menu_raid_twitch_desc"
 				},
 				background = {
 					image = "guis/dlcs/aru/textures/pd2/twitch"
 				},
 				overlay = {
-					w = 64,
-					image = "guis/dlcs/aru/textures/pd2/twitch_overlay",
 					h = 64,
+					image = "guis/dlcs/aru/textures/pd2/twitch_overlay",
+					w = 64,
 					align = {
 						"right",
 						"top"
@@ -319,20 +319,20 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				title = {
-					name_id = "bm_menu_primaries",
+					align = "left",
 					font = "medium",
-					vertical = "bottom",
 					font_size = "medium",
-					align = "left"
+					name_id = "bm_menu_primaries",
+					vertical = "bottom"
 				},
 				background = {
-					color = true,
-					blend_mode = "normal"
+					blend_mode = "normal",
+					color = true
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "preview_ching",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					1,
 					2
@@ -342,11 +342,11 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					3
 				},
 				title = {
-					name_id = "bm_w_ching",
-					font = "large",
-					vertical = "bottom",
-					font_size = "large",
 					align = "left",
+					font = "large",
+					font_size = "large",
+					name_id = "bm_w_ching",
+					vertical = "bottom",
 					color = Color(1, 1, 1, 1)
 				},
 				background = {
@@ -364,20 +364,20 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				title = {
-					name_id = "bm_menu_secondaries",
+					align = "left",
 					font = "medium",
-					vertical = "bottom",
 					font_size = "medium",
-					align = "left"
+					name_id = "bm_menu_secondaries",
+					vertical = "bottom"
 				},
 				background = {
-					color = true,
-					blend_mode = "normal"
+					blend_mode = "normal",
+					color = true
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "preview_erma",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					1,
 					6
@@ -387,11 +387,11 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					3
 				},
 				title = {
-					name_id = "bm_w_erma",
-					font = "medium",
-					vertical = "bottom",
-					font_size = "medium",
 					align = "left",
+					font = "medium",
+					font_size = "medium",
+					name_id = "bm_w_erma",
+					vertical = "bottom",
 					color = Color(1, 1, 1, 1)
 				},
 				background = {
@@ -399,8 +399,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "preview_breech",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					1,
 					9
@@ -410,11 +410,11 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					3
 				},
 				title = {
-					name_id = "bm_w_breech",
-					font = "medium",
-					vertical = "bottom",
-					font_size = "medium",
 					align = "left",
+					font = "medium",
+					font_size = "medium",
+					name_id = "bm_w_breech",
+					vertical = "bottom",
 					color = Color(1, 1, 1, 1)
 				},
 				background = {
@@ -432,20 +432,20 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				title = {
-					name_id = "bm_menu_melee_weapons",
+					align = "left",
 					font = "medium",
-					vertical = "bottom",
 					font_size = "medium",
-					align = "left"
+					name_id = "bm_menu_melee_weapons",
+					vertical = "bottom"
 				},
 				background = {
-					color = true,
-					blend_mode = "normal"
+					blend_mode = "normal",
+					color = true
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "preview_push",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					9,
 					6
@@ -455,11 +455,11 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					3
 				},
 				title = {
-					name_id = "bm_melee_push",
-					font = "medium",
-					vertical = "bottom",
-					font_size = "medium",
 					align = "left",
+					font = "medium",
+					font_size = "medium",
+					name_id = "bm_melee_push",
+					vertical = "bottom",
 					color = Color(1, 1, 1, 1)
 				},
 				background = {
@@ -467,8 +467,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuButton",
 				callback = "preview_grip",
+				type = "RaidPromotionalMenuButton",
 				position = {
 					9,
 					9
@@ -478,11 +478,11 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					3
 				},
 				title = {
-					name_id = "menu_community_item",
-					font = "medium",
-					vertical = "bottom",
-					font_size = "medium",
 					align = "left",
+					font = "medium",
+					font_size = "medium",
+					name_id = "menu_community_item",
+					vertical = "bottom",
 					color = Color(255, 222, 74, 62) / 255
 				},
 				subtitle = {
@@ -507,8 +507,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 		},
 		buttons = {
 			{
-				type = "RaidPromotionalMenuFloatingButton",
 				callback = "open_raid_special_edition",
+				type = "RaidPromotionalMenuFloatingButton",
 				position = {
 					1,
 					1
@@ -530,9 +530,9 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
+				can_be_selected = false,
 				type = "PromotionalMenuUnselectableButton",
 				zoom_factor = 1,
-				can_be_selected = false,
 				position = {
 					1,
 					1
@@ -555,9 +555,9 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 		},
 		buttons = {
 			{
+				can_be_selected = false,
 				type = "PromotionalMenuUnselectableButton",
 				zoom_factor = 1,
-				can_be_selected = false,
 				position = {
 					1,
 					1
@@ -571,8 +571,8 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 				}
 			},
 			{
-				type = "RaidPromotionalMenuFloatingButton",
 				callback = "open_raid_preorder",
+				type = "RaidPromotionalMenuFloatingButton",
 				position = {
 					1,
 					1
@@ -616,33 +616,33 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 	self.themes.raid = {
 		backgrounds = {
 			{
-				video = "movies/raid_anim_bg",
 				blend_mode = "normal",
 				type = "video",
+				video = "movies/raid_anim_bg",
 				color = Color(1, 1, 1, 1)
 			},
 			{
 				blend_mode = "add",
 				h = 727.04,
+				image = "guis/dlcs/aru/textures/pd2/main_bg_img",
 				type = "image",
-				w = 1454.08,
-				image = "guis/dlcs/aru/textures/pd2/main_bg_img"
+				w = 1454.08
 			},
 			{
-				y = 300,
 				h = 204.8,
+				image = "guis/dlcs/aru/textures/pd2/raid_logo",
 				type = "image",
 				w = 409.6,
-				image = "guis/dlcs/aru/textures/pd2/raid_logo",
-				x = 140
+				x = 140,
+				y = 300
 			},
 			{
-				y = 480,
 				h = 102.4,
+				image = "guis/dlcs/aru/textures/pd2/beta_logo",
 				type = "image",
 				w = 409.6,
-				image = "guis/dlcs/aru/textures/pd2/beta_logo",
-				x = 140
+				x = 140,
+				y = 480
 			}
 		},
 		selection_corners = Color(255, 222, 74, 62) / 255,

@@ -66,7 +66,7 @@ function CheckDLCUnitElement:_build_panel(panel, panel_sizer)
 		table.insert(dlcs_alphabetical, dlc_name)
 	end
 
-	table.sort(dlcs_alphabetical, function (a, b)
+	table.sort(dlcs_alphabetical, function(a, b)
 		return a < b
 	end)
 

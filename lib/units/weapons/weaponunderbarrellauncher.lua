@@ -18,21 +18,21 @@ local mvec_spread_direction = Vector3()
 function WeaponUnderbarrelLauncher:_fire_raycast(weapon_base, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data)
 	local projectile_type = self._launcher_projectile
 
-	if weapon_base:weapon_tweak_data() and weapon_base:weapon_tweak_data().projectile_types then
-		projectile_type = weapon_base:weapon_tweak_data().projectile_types[projectile_type] or projectile_type
-	end
+	projectile_type = weapon_base:weapon_tweak_data() and weapon_base:weapon_tweak_data().projectile_types and weapon_base:weapon_tweak_data().projectile_types[projectile_type] or projectile_type
 
 	local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
+
 	self._ammo_data = {
 		launcher_grenade = projectile_type
 	}
-	local unit = nil
+
+	local unit
 	local spread_x, spread_y = weapon_base:_get_spread(user_unit)
 	local right = direction:cross(Vector3(0, 0, 1)):normalized()
 	local up = direction:cross(right):normalized()
 	local theta = math.random() * 360
-	local ax = math.sin(theta) * math.random() * spread_x * (spread_mul or 1)
-	local ay = math.cos(theta) * math.random() * spread_y * (spread_mul or 1)
+	local ax = math.sin(theta) * (math.random() * spread_x) * (spread_mul or 1)
+	local ay = math.cos(theta) * (math.random() * spread_y) * (spread_mul or 1)
 
 	mvector3.set(mvec_spread_direction, direction)
 	mvector3.add(mvec_spread_direction, right * math.rad(ax))
@@ -40,7 +40,9 @@ function WeaponUnderbarrelLauncher:_fire_raycast(weapon_base, user_unit, from_po
 	self:_adjust_throw_z(mvec_spread_direction)
 
 	mvec_spread_direction = mvec_spread_direction * 1
+
 	local spawn_offset = self:_get_spawn_offset()
+
 	self._dmg_mul = dmg_mul or 1
 
 	if not self._client_authoritative then
@@ -64,6 +66,7 @@ function WeaponUnderbarrelLauncher:_fire_raycast(weapon_base, user_unit, from_po
 end
 
 function WeaponUnderbarrelLauncher:_adjust_throw_z(m_vec)
+	return
 end
 
 function WeaponUnderbarrelLauncher:_get_spawn_offset()

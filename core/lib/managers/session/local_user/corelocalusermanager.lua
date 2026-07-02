@@ -19,7 +19,7 @@ end
 
 function Manager:debug_bind_primary_input_provider_id(player_slot)
 	local count = Input:num_real_controllers()
-	local best_controller = nil
+	local best_controller
 
 	for i = 0, count do
 		local controller = Input:controller(i)
@@ -45,7 +45,7 @@ function Manager:bind_local_user(slot, input_provider_id)
 	local local_user = self._controller_to_user[input_provider_id:key()]
 
 	if not local_user then
-		local user_index = nil
+		local user_index
 
 		if input_provider_id.user_index then
 			user_index = input_provider_id:user_index()
@@ -63,6 +63,7 @@ end
 function Manager:_create_local_user(input_provider, user_index)
 	local local_user_handler = self._factory:create_local_user_handler()
 	local created_user = CoreLocalUser.User:new(local_user_handler, input_provider, user_index, self._profile_settings_handler, self._profile_progress_handler, self._profile_data_loaded_callback)
+
 	local_user_handler._core_local_user = created_user
 
 	return created_user

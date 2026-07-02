@@ -2,6 +2,7 @@ CoreCameraDistancePicker = CoreCameraDistancePicker or class()
 
 function CoreCameraDistancePicker:init(parent_window, value, button_label)
 	local sizer = EWS:BoxSizer("HORIZONTAL")
+
 	self.__panel = EWS:Panel(parent_window)
 
 	self.__panel:set_sizer(sizer)

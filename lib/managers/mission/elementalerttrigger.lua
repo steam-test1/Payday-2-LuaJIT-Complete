@@ -16,6 +16,7 @@ function ElementAlertTrigger:init(...)
 end
 
 function ElementAlertTrigger:client_on_executed(...)
+	return
 end
 
 function ElementAlertTrigger:on_executed(instigator)

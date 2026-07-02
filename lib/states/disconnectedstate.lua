@@ -25,6 +25,7 @@ function DisconnectedState:_create_disconnected_dialog()
 end
 
 function DisconnectedState:on_server_left_ok_pressed()
+	return
 end
 
 function DisconnectedState:on_disconnected()

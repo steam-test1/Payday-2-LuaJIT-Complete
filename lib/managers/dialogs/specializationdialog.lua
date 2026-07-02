@@ -15,6 +15,7 @@ function SpecializationDialog:init(manager, data, is_title_outside)
 	end
 
 	self._ws = self._data.ws or manager:_get_ws()
+
 	local text_config = {
 		no_close_legend = true,
 		no_scroll_legend = true,
@@ -31,6 +32,7 @@ function SpecializationDialog:init(manager, data, is_title_outside)
 		text_formating_color_table = data.text_formating_color_table,
 		text_blend_mode = data.text_blend_mode
 	}
+
 	self._panel_script = _G.SpecializationBoxGui:new(self._ws, self._data.title or "", self._data.text or "", self._data, text_config)
 
 	self._panel_script:add_background()
@@ -62,7 +64,7 @@ end
 function SpecializationDialog:update(t, dt)
 	SpecializationDialog.super.update(self, t, dt)
 
-	if self._start_sound_t and self._start_sound_t < t then
+	if self._start_sound_t and t > self._start_sound_t then
 		managers.menu_component:post_event(self._sound_event)
 
 		self._start_sound_t = nil

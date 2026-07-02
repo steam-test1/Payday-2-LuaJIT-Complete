@@ -46,6 +46,7 @@ end
 
 function CreateWorldSettingFile:_add_continent_cbs(params)
 	self._cbs = {}
+
 	local sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Exclude continents")
 
 	for name, _ in pairs(params or managers.editor:continents()) do
@@ -77,9 +78,9 @@ end
 
 function CreateWorldSettingFile:_compile(path)
 	local t = {
-		target_db_name = "all",
-		send_idstrings = false,
 		preprocessor_definitions = "preprocessor_definitions",
+		send_idstrings = false,
+		target_db_name = "all",
 		verbose = false,
 		platform = string.lower(SystemInfo:platform():s()),
 		source_root = managers.database:root_path() .. "/assets",

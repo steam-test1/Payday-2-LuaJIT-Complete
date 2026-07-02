@@ -4,6 +4,7 @@ core:import("CoreMath")
 
 function simple_value_string(name, value, t)
 	t = t or ""
+
 	local string = t
 	local type = CoreClass.type_name(value)
 	local v = tostring(value)
@@ -27,6 +28,7 @@ end
 
 function save_value_string(c, name, t, unit)
 	t = t or ""
+
 	local string = t
 
 	if name == "unit:position" then
@@ -89,6 +91,7 @@ function parse_values_node(node)
 
 	for node_value in node:children() do
 		local name, value = parse_value_node(node_value)
+
 		t[name] = value
 	end
 
@@ -104,8 +107,11 @@ function parse_value_node(node)
 
 		for table_node in node:children() do
 			local name = table_node:parameter("name")
+
 			name = tonumber(name) or name
+
 			local _, value = parse_value_node(table_node)
+
 			t[name] = value
 		end
 

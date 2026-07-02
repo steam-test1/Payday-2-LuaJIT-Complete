@@ -3,15 +3,19 @@ require("lib/units/enemies/cop/logics/CopLogicBase")
 TeamAILogicBase = TeamAILogicBase or class(CopLogicBase)
 
 function TeamAILogicBase.on_long_dis_interacted(data, other_unit, secondary)
+	return
 end
 
 function TeamAILogicBase.on_cop_neutralized(data, cop_key)
+	return
 end
 
 function TeamAILogicBase.on_recovered(data, reviving_unit)
+	return
 end
 
 function TeamAILogicBase.clbk_heat(data)
+	return
 end
 
 function TeamAILogicBase.on_objective_unit_destroyed(data, unit)
@@ -60,6 +64,7 @@ end
 
 function TeamAILogicBase._set_attention_obj(data, new_att_obj, new_reaction)
 	local old_att_obj = data.attention_obj
+
 	data.attention_obj = new_att_obj
 
 	if new_att_obj then
@@ -67,14 +72,14 @@ function TeamAILogicBase._set_attention_obj(data, new_att_obj, new_reaction)
 	end
 
 	if old_att_obj and new_att_obj and old_att_obj.u_key == new_att_obj.u_key then
-		if new_att_obj.stare_expire_t and new_att_obj.stare_expire_t < data.t then
+		if new_att_obj.stare_expire_t and data.t > new_att_obj.stare_expire_t then
 			if new_att_obj.settings.pause then
 				new_att_obj.stare_expire_t = nil
 				new_att_obj.pause_expire_t = data.t + math.lerp(new_att_obj.settings.pause[1], new_att_obj.settings.pause[2], math.random())
 
 				print("[TeamAILogicBase._chk_focus_on_attention_object] pausing for", current_attention.pause_expire_t - data.t, "sec")
 			end
-		elseif new_att_obj.pause_expire_t and new_att_obj.pause_expire_t < data.t then
+		elseif new_att_obj.pause_expire_t and data.t > new_att_obj.pause_expire_t then
 			new_att_obj.pause_expire_t = nil
 			new_att_obj.stare_expire_t = data.t + math.lerp(new_att_obj.settings.duration[1], new_att_obj.settings.duration[2], math.random())
 		end

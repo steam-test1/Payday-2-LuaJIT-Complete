@@ -10,6 +10,7 @@ function ElementInstigator:init(...)
 end
 
 function ElementInstigator:client_on_executed(...)
+	return
 end
 
 function ElementInstigator:on_executed(instigator)
@@ -141,6 +142,7 @@ function ElementInstigator:instigator_operation_use_all(keep_on_use)
 	end
 
 	local instigators = clone(self._instigators)
+
 	self._instigators = {}
 
 	return instigators
@@ -170,6 +172,7 @@ function ElementInstigatorOperator:init(...)
 end
 
 function ElementInstigatorOperator:client_on_executed(...)
+	return
 end
 
 function ElementInstigatorOperator:on_executed(instigator)
@@ -235,6 +238,7 @@ function ElementInstigatorTrigger:on_script_activated()
 end
 
 function ElementInstigatorTrigger:client_on_executed(...)
+	return
 end
 
 function ElementInstigatorTrigger:on_executed(instigator)

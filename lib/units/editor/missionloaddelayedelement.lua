@@ -50,8 +50,8 @@ function MissionLoadDelayedElement:update_selected()
 			self._units[id] = nil
 		else
 			local params = {
-				g = 0,
 				b = 1,
+				g = 0,
 				r = 1,
 				from_unit = self._unit,
 				to_unit = unit
@@ -86,8 +86,8 @@ function MissionLoadDelayedElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._units) do
 		local params = {
-			g = 0,
 			b = 0.5,
+			g = 0,
 			r = 0.5,
 			from_unit = self._unit,
 			to_unit = unit

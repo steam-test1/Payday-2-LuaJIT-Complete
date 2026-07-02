@@ -16,6 +16,7 @@ function ElementInvulnerable:on_executed(instigator)
 end
 
 function ElementInvulnerable:client_on_executed(instigator)
+	return
 end
 
 function ElementInvulnerable:perform_invulnerable(instigator)

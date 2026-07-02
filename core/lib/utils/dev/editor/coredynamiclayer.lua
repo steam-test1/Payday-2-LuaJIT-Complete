@@ -90,7 +90,9 @@ function DynamicLayer:update(t, dt)
 	DynamicLayer.super.update(self, t, dt)
 
 	local vc = self._editor_data.virtual_controller
+
 	self._current_pos = self._owner:get_cursor_look_point(0)
+
 	local ray = self._owner:select_unit_by_raycast(self._slot_mask)
 
 	if ray then
@@ -139,7 +141,7 @@ function DynamicLayer:update(t, dt)
 			end
 
 			local u_rot = self._selected_unit:rotation()
-			local rot_axis = nil
+			local rot_axis
 
 			if vc:down(Idstring("roll_left")) then
 				rot_axis = self:local_rot() and u_rot:z() or Vector3(0, 0, 1)
@@ -157,6 +159,7 @@ function DynamicLayer:update(t, dt)
 
 			if rot_axis then
 				local rot = Rotation(rot_axis, rot_speed) * u_rot
+
 				self._up = rot:z()
 				self._forward = rot:y()
 			end
@@ -174,7 +177,9 @@ function DynamicLayer:build_panel(notebook)
 	self._ews_panel:set_sizer(self._main_sizer)
 
 	self._sizer = EWS:BoxSizer("VERTICAL")
+
 	local distance_sizer = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL", "Distance (up/down)")
+
 	self._ews_distance = EWS:Slider(self._ews_panel, self._distance, 100, 4000, "_distance", "")
 
 	self._ews_distance:connect("EVT_SCROLL_THUMBTRACK", callback(self, self, "update_ews_distance"), self._ews_distance)
@@ -203,6 +208,7 @@ end
 function DynamicLayer:get_help(text)
 	local t = "\t"
 	local n = "\n"
+
 	text = text .. "Select unit:     Click left mouse button" .. n
 	text = text .. "                 (A physic selected unit will be released)" .. n
 	text = text .. "Pick up unit:    Click left mouse button on an already selected unit" .. n

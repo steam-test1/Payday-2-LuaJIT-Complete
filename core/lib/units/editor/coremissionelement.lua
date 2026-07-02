@@ -90,7 +90,9 @@ function CoreMissionElement:_createicon()
 
 	self._iconcolor_c = Color(self._iconcolor)
 	self._icon_gui = World:newgui()
+
 	local pos = self._unit:position() - Vector3(iconsize / 2, iconsize / 2, 0)
+
 	self._icon_ws = self._icon_gui:create_linked_workspace(64, 64, root, pos, Vector3(iconsize, 0, 0), Vector3(0, iconsize, 0))
 
 	self._icon_ws:set_billboard(self._icon_ws.BILLBOARD_BOTH)
@@ -167,18 +169,18 @@ function CoreMissionElement:build_default_gui(panel, sizer)
 	sizer:add(base_delay_sizer, 0, 0, "EXPAND,LEFT")
 
 	local base_delay_ctrlr = self:_build_value_number(panel, base_delay_sizer, "base_delay", {
-		sizer_proportions = 2,
-		min = 0,
+		ctrlr_proportions = 1,
 		floats = 2,
+		min = 0,
 		name_proportions = 1,
-		ctrlr_proportions = 1
+		sizer_proportions = 2
 	}, "Specifies a base delay that is added to each on executed delay")
 	local base_delay_rand_ctrlr = self:_build_value_number(panel, base_delay_sizer, "base_delay_rand", {
-		sizer_proportions = 1,
-		min = 0,
+		ctrlr_proportions = 1,
 		floats = 2,
+		min = 0,
 		name_proportions = 0,
-		ctrlr_proportions = 1
+		sizer_proportions = 1
 	}, "Specifies an additional random time to be added to base delay (delay + rand)", "  random")
 	local on_executed_sizer = EWS:StaticBoxSizer(panel, "VERTICAL", "On Executed")
 	local element_sizer = EWS:BoxSizer("HORIZONTAL")
@@ -210,11 +212,11 @@ function CoreMissionElement:build_default_gui(panel, sizer)
 
 	if self.ON_EXECUTED_ALTERNATIVES then
 		local on_executed_alternatives_params = {
+			ctrlr_proportions = 2,
 			name = "Alternative:",
 			name_proportions = 1,
-			tooltip = "Select an alternative on executed from the combobox",
 			sorted = false,
-			ctrlr_proportions = 2,
+			tooltip = "Select an alternative on executed from the combobox",
 			panel = panel,
 			sizer = on_executed_sizer,
 			options = self.ON_EXECUTED_ALTERNATIVES,
@@ -232,34 +234,36 @@ function CoreMissionElement:build_default_gui(panel, sizer)
 	on_executed_sizer:add(delay_sizer, 0, 0, "EXPAND,LEFT")
 
 	self._element_delay_params = {
-		value = 0,
-		name = "Delay:",
 		ctrlr_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Sets the delay time for the selected on executed element",
-		min = 0,
 		floats = 2,
+		min = 0,
+		name = "Delay:",
+		name_proportions = 1,
 		sizer_proportions = 2,
+		tooltip = "Sets the delay time for the selected on executed element",
+		value = 0,
 		panel = panel,
 		sizer = delay_sizer
 	}
+
 	local element_delay = CoreEws.number_controller(self._element_delay_params)
 
 	element_delay:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_executed_element_delay"), nil)
 	element_delay:connect("EVT_KILL_FOCUS", callback(self, self, "on_executed_element_delay"), nil)
 
 	self._element_delay_rand_params = {
-		value = 0,
-		name = "  Random:",
 		ctrlr_proportions = 1,
-		name_proportions = 0,
-		tooltip = "Specifies an additional random time to be added to delay (delay + rand)",
-		min = 0,
 		floats = 2,
+		min = 0,
+		name = "  Random:",
+		name_proportions = 0,
 		sizer_proportions = 1,
+		tooltip = "Specifies an additional random time to be added to delay (delay + rand)",
+		value = 0,
 		panel = panel,
 		sizer = delay_sizer
 	}
+
 	local element_delay_rand = CoreEws.number_controller(self._element_delay_rand_params)
 
 	element_delay_rand:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_executed_element_delay_rand"), nil)
@@ -390,12 +394,12 @@ function CoreMissionElement:_build_instance_var_names(panel)
 
 	for _, data in ipairs(self.INSTANCE_VAR_NAMES) do
 		local params = {
-			default = "not_used",
 			ctrlr_proportions = 2,
+			default = "not_used",
 			name_proportions = 1,
 			sizer_proportions = 1,
-			tooltip = "Select a value",
 			sorted = true,
+			tooltip = "Select a value",
 			name = string.pretty(data.value, true) .. ":",
 			panel = panel,
 			sizer = sizer,
@@ -415,6 +419,7 @@ end
 
 function CoreMissionElement:_set_instance_var_name(params)
 	local value = params.ctrlr:get_value()
+
 	value = value ~= "not_used" and value or nil
 	self._hed.instance_var_names = self._hed.instance_var_names or {}
 	self._hed.instance_var_names[params.data.value] = value
@@ -517,12 +522,13 @@ end
 function CoreMissionElement:_on_toolbar_up_element()
 	local current_index = self:_current_element_index()
 
-	if current_index <= 1 then
+	if not (current_index > 1) then
 		return
 	end
 
 	local data = table.remove(self._hed.on_executed, current_index)
 	local unit = table.remove(self._on_executed_units, current_index)
+
 	current_index = current_index - 1
 
 	table.insert(self._hed.on_executed, current_index, data)
@@ -534,12 +540,13 @@ end
 function CoreMissionElement:_on_toolbar_down_element()
 	local current_index = self:_current_element_index()
 
-	if current_index <= 0 or current_index >= #self._hed.on_executed then
+	if not (current_index > 0) or not (current_index < #self._hed.on_executed) then
 		return
 	end
 
 	local data = table.remove(self._hed.on_executed, current_index)
 	local unit = table.remove(self._on_executed_units, current_index)
+
 	current_index = current_index + 1
 
 	table.insert(self._hed.on_executed, current_index, data)
@@ -611,9 +618,11 @@ function CoreMissionElement:selected()
 end
 
 function CoreMissionElement:update_selected()
+	return
 end
 
 function CoreMissionElement:update_unselected()
+	return
 end
 
 function CoreMissionElement:can_edit()
@@ -621,9 +630,11 @@ function CoreMissionElement:can_edit()
 end
 
 function CoreMissionElement:begin_editing()
+	return
 end
 
 function CoreMissionElement:end_editing()
+	return
 end
 
 function CoreMissionElement:clone_data(all_units)
@@ -694,6 +705,7 @@ function CoreMissionElement:name()
 end
 
 function CoreMissionElement:add_to_mission_package()
+	return
 end
 
 function CoreMissionElement:get_color(type)
@@ -709,9 +721,7 @@ function CoreMissionElement:get_color(type)
 end
 
 function CoreMissionElement:get_element_color()
-	local r = 1
-	local g = 1
-	local b = 1
+	local r, g, b = 1, 1, 1
 
 	if self._iconcolor and managers.editor:layer("Mission"):use_colored_links() then
 		r = self._iconcolor_c.r
@@ -726,9 +736,7 @@ function CoreMissionElement:draw_links_selected(t, dt, selected_unit)
 	local unit = self:_current_element_unit()
 
 	if alive(unit) then
-		local r = 1
-		local g = 1
-		local b = 1
+		local r, g, b = 1, 1, 1
 
 		if self._iconcolor and managers.editor:layer("Mission"):use_colored_links() then
 			r = self._iconcolor_c.r
@@ -754,9 +762,11 @@ function CoreMissionElement:_draw_link(params)
 end
 
 function CoreMissionElement:draw_links_unselected()
+	return
 end
 
 function CoreMissionElement:clear()
+	return
 end
 
 function CoreMissionElement:action_types()
@@ -768,6 +778,7 @@ function CoreMissionElement:timeline_color()
 end
 
 function CoreMissionElement:add_triggers(vc)
+	return
 end
 
 function CoreMissionElement:base_add_triggers(vc)
@@ -782,8 +793,8 @@ end
 
 function CoreMissionElement:_on_use_point_orientation()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and string.find(ray.unit:name():s(), "point_orientation", 1, true) then
@@ -811,8 +822,8 @@ end
 
 function CoreMissionElement:_on_use_instigator_rule()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and string.find(ray.unit:name():s(), "data_instigator_rule", 1, true) then
@@ -839,9 +850,11 @@ function CoreMissionElement:_remove_instigator_rule_unit_id(id)
 end
 
 function CoreMissionElement:__update_editing(_, t, dt, current_pos)
+	return
 end
 
 function CoreMissionElement:clear_triggers()
+	return
 end
 
 function CoreMissionElement:widget_affect_object()
@@ -966,9 +979,7 @@ function CoreMissionElement:_should_draw_link(selected_unit, unit)
 end
 
 function CoreMissionElement:get_link_color(unit)
-	local r = 1
-	local g = 1
-	local b = 1
+	local r, g, b = 1, 1, 1
 
 	if self._iconcolor and managers.editor:layer("Mission"):use_colored_links() then
 		r = self._iconcolor_c.r
@@ -1035,6 +1046,7 @@ function CoreMissionElement:_get_delay_string(element)
 
 	if self._hed.base_delay_rand or element.delay_rand then
 		local delay_max = delay + (element.delay_rand or 0)
+
 		delay_max = delay_max + (self._hed.base_delay_rand and self._hed.base_delay_rand or 0)
 		text = text .. "-" .. string.format("%.2f", delay_max) .. ""
 	end
@@ -1077,6 +1089,7 @@ function CoreMissionElement:add_link_element(element_name, unit_id, prevent_undo
 end
 
 function CoreMissionElement:on_added_link_element(element_name, unit_id)
+	return
 end
 
 function CoreMissionElement:remove_link_element(element_name, unit_id, prevent_undo)
@@ -1089,6 +1102,7 @@ function CoreMissionElement:remove_link_element(element_name, unit_id, prevent_u
 end
 
 function CoreMissionElement:on_removed_link_element(element_name, unit_id)
+	return
 end
 
 function CoreMissionElement:remove_links(unit)
@@ -1097,7 +1111,7 @@ function CoreMissionElement:remove_links(unit)
 	end
 
 	local unit_id = unit:unit_data().unit_id
-	local element_data = nil
+	local element_data
 
 	for _, data in ipairs(self.LINK_VALUES) do
 		if data.value then
@@ -1165,7 +1179,7 @@ function CoreMissionElement:delete_unit(units)
 end
 
 function CoreMissionElement:set_on_executed_element(index)
-	if not index or index <= 0 or index > #self._hed.on_executed then
+	if not index or not (index > 0) or not (index <= #self._hed.on_executed) then
 		self:_set_on_execute_ctrlrs_enabled(false)
 		self:_set_first_executed_element()
 
@@ -1359,10 +1373,10 @@ function CoreMissionElement:_build_value_combobox(panel, sizer, value_name, opti
 	sizer:add(horizontal_sizer, params and params.horizontal_sizer_proportions or 0, 1, "EXPAND,LEFT")
 
 	local combobox_params = {
-		sizer_proportions = 1,
-		name_proportions = 1,
-		sorted = false,
 		ctrlr_proportions = 2,
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = false,
 		name = string.pretty(custom_name or value_name, true) .. ":",
 		panel = panel,
 		sizer = horizontal_sizer,
@@ -1537,6 +1551,7 @@ function CoreMissionElement:_set_random_number_element_data(data)
 	print("_set_random_number_element_data", inspect(data))
 
 	local value = data.ctrlr:get_value()
+
 	value = tonumber(value)
 
 	print("data.ctrlr:get_value()", value, type(value))
@@ -1706,9 +1721,7 @@ function CoreMissionElement:_get_links_from_value(value, params, to_unit, links,
 	local links2 = params.output and links.executers or links.on_executed
 	local layer = params.layer and managers.editor:layer(params.layer)
 
-	if layer then
-		all_units = layer:created_units_pairs() or all_units
-	end
+	all_units = layer and layer:created_units_pairs() or all_units
 
 	if params.table_value then
 		for i, element in ipairs(value) do

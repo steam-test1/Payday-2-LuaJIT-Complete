@@ -1,4 +1,5 @@
 CopActionIdle = CopActionIdle or class()
+
 local mvec3_set = mvector3.set
 local mvec3_sub = mvector3.subtract
 local tmp_vec = Vector3()
@@ -16,7 +17,8 @@ function CopActionIdle:init(action_desc, common_data)
 	self._ext_brain = common_data.ext_brain
 	self._body_part = action_desc.body_part
 	self._machine = common_data.machine
-	local res = nil
+
+	local res
 
 	if self._body_part == 3 then
 		if self._ext_anim.upper_body_active and not self._ext_anim.upper_body_empty then
@@ -24,6 +26,7 @@ function CopActionIdle:init(action_desc, common_data)
 		end
 	elseif action_desc.anim then
 		local state_name = self._machine:index_to_state_name(action_desc.anim)
+
 		res = self._ext_movement:play_state_idstr(state_name, action_desc.start_anim_time)
 
 		if not res then
@@ -98,11 +101,12 @@ end
 
 function CopActionIdle:update(t)
 	local vis_state = self._ext_base:lod_stage()
+
 	vis_state = vis_state or 4
 
 	if vis_state == 1 then
 		-- Nothing
-	elseif self._skipped_frames < vis_state then
+	elseif vis_state > self._skipped_frames then
 		self._skipped_frames = self._skipped_frames + 1
 
 		return
@@ -114,7 +118,7 @@ function CopActionIdle:update(t)
 		self._ik_update(t)
 	end
 
-	local rot_target_spin = nil
+	local rot_target_spin
 
 	if self._m_attention_head_pos and self._turn_allowed or self._start_fwd then
 		local active_actions = self._common_data.active_actions
@@ -123,6 +127,7 @@ function CopActionIdle:update(t)
 		if not active_actions[1] and (not active_actions[2] or active_actions[2]:type() == "idle") and (not queued_actions or not queued_actions[1] and not queued_actions[2]) and not self._ext_movement:chk_action_forbidden("walk") then
 			if self._m_attention_head_pos and self._turn_allowed then
 				self._m_head_pos = self._m_head_pos or self._ext_movement:m_head_pos()
+
 				local look_from_pos = self._m_head_pos
 				local target_vec = tmp_vec
 
@@ -174,11 +179,11 @@ function CopActionIdle:on_attention(attention)
 		return
 	end
 
-	local turn_allowed = nil
+	local turn_allowed
 
 	if attention then
 		if attention.handler then
-			turn_allowed = AIAttentionObject.REACT_IDLE < attention.reaction
+			turn_allowed = attention.reaction > AIAttentionObject.REACT_IDLE
 		elseif attention.unit or attention.pos then
 			turn_allowed = true
 		end
@@ -196,8 +201,10 @@ function CopActionIdle:save(save_data)
 		save_data.is_save = true
 		save_data.type = "idle"
 		save_data.body_part = 1
+
 		local state_name = self._machine:segment_state(Idstring("base"))
 		local state_index = self._machine:state_name_to_index(state_name)
+
 		save_data.anim = state_index
 		save_data.start_anim_time = self._machine:segment_real_time(Idstring("base"))
 	end

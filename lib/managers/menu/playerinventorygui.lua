@@ -12,14 +12,14 @@ local function _animate(objects, scale, anim_time)
 
 	for _, object in pairs(objects) do
 		if object then
-			local data = {
-				sw = object.gui:width(),
-				sh = object.gui:height(),
-				ew = object.shape[3] * scale,
-				eh = object.shape[4] * scale,
-				sf = object.gui.font_scale and object.gui:font_scale() or scale,
-				ef = scale
-			}
+			local data = {}
+
+			data.sw = object.gui:width()
+			data.sh = object.gui:height()
+			data.ew = object.shape[3] * scale
+			data.eh = object.shape[4] * scale
+			data.sf = object.gui.font_scale and object.gui:font_scale() or scale
+			data.ef = scale
 
 			if object.font_scale then
 				data.sf = data.sf
@@ -50,9 +50,11 @@ local function _animate(objects, scale, anim_time)
 
 	local time = 0
 
-	while anim_time > time do
+	while time < anim_time do
 		local dt = coroutine.yield()
+
 		time = time + dt
+
 		local p = time / anim_time
 
 		for _, anim in ipairs(anims) do
@@ -140,8 +142,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	local y = TOP_ADJUSTMENT
 	local title_string = "menu_player_inventory"
 	local title_text = self._panel:text({
-		name = "title",
 		layer = 1,
+		name = "title",
 		text = managers.localization:to_upper_text(title_string),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -151,10 +153,10 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	make_fine_text(title_text)
 
 	local back_button = self._panel:text({
-		vertical = "bottom",
-		name = "back_button",
 		align = "right",
 		layer = 1,
+		name = "back_button",
+		vertical = "bottom",
 		text = managers.localization:to_upper_text("menu_back"),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -170,10 +172,10 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		local massive_font = tweak_data.menu.pd2_massive_font
 		local massive_font_size = tweak_data.menu.pd2_massive_font_size
 		local bg_text = self._fullscreen_panel:text({
-			vertical = "top",
-			h = 90,
 			align = "left",
 			alpha = 0.4,
+			h = 90,
+			vertical = "top",
 			text = title_text:text(),
 			font = massive_font,
 			font_size = massive_font_size,
@@ -188,12 +190,12 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 
 		if managers.menu:is_pc_controller() then
 			local bg_back = self._fullscreen_panel:text({
+				align = "right",
+				alpha = 0.4,
+				h = 90,
+				layer = 0,
 				name = "back_button",
 				vertical = "bottom",
-				h = 90,
-				alpha = 0.4,
-				align = "right",
-				layer = 0,
 				text = back_button:text(),
 				font = massive_font,
 				font_size = massive_font_size,
@@ -220,8 +222,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	local box_height = combined_height / 4
 	local player_loadout_data = managers.blackmarket:player_loadout_data()
 	local primary_box_data = {
-		name = "primary",
 		bg_blend_mode = "normal",
+		name = "primary",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("bm_menu_primaries"),
@@ -242,8 +244,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		}
 	}
 	local secondary_box_data = {
-		name = "secondary",
 		bg_blend_mode = "normal",
+		name = "secondary",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("bm_menu_secondaries"),
@@ -263,31 +265,36 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			down = callback(self, self, "next_secondary")
 		}
 	}
-	local melee_box_data = {
-		name = "melee",
+	local var_1_0 = {
 		bg_blend_mode = "normal",
+		name = "melee",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("bm_menu_melee_weapons"),
 		text = player_loadout_data.melee_weapon.info_text,
-		image = player_loadout_data.melee_weapon.item_texture,
-		dual_image = not player_loadout_data.melee_weapon.item_texture and {
-			player_loadout_data.melee_weapon.dual_texture_1,
-			player_loadout_data.melee_weapon.dual_texture_2
-		},
-		select_anim = select_anim,
-		unselect_anim = unselect_anim,
-		bg_color = Color.black:with_alpha(0.05),
-		clbks = {
-			left = callback(self, self, "open_melee_menu"),
-			right = callback(self, self, "preview_melee"),
-			up = callback(self, self, "previous_melee"),
-			down = callback(self, self, "next_melee")
-		}
+		image = player_loadout_data.melee_weapon.item_texture
 	}
+	local var_1_1
+
+	var_1_1 = not player_loadout_data.melee_weapon.item_texture and {
+		player_loadout_data.melee_weapon.dual_texture_1,
+		player_loadout_data.melee_weapon.dual_texture_2
+	}
+	var_1_0.dual_image = var_1_1
+	var_1_0.select_anim = select_anim
+	var_1_0.unselect_anim = unselect_anim
+	var_1_0.bg_color = Color.black:with_alpha(0.05)
+	var_1_0.clbks = {
+		left = callback(self, self, "open_melee_menu"),
+		right = callback(self, self, "preview_melee"),
+		up = callback(self, self, "previous_melee"),
+		down = callback(self, self, "next_melee")
+	}
+
+	local melee_box_data = var_1_0
 	local throwable_box_data = {
-		name = "throwable",
 		bg_blend_mode = "normal",
+		name = "throwable",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("bm_menu_grenades"),
@@ -304,10 +311,10 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		}
 	}
 	local armor_box_data = {
+		bg_blend_mode = "normal",
+		can_select = false,
 		name = "armor",
 		redirect_box = "outfit_armor",
-		can_select = false,
-		bg_blend_mode = "normal",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("bm_menu_armors"),
@@ -320,10 +327,10 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		}
 	}
 	local deployable_box_data = {
+		bg_blend_mode = "normal",
+		can_select = false,
 		name = "deployable",
 		redirect_box = "deployable_primary",
-		can_select = false,
-		bg_blend_mode = "normal",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("bm_menu_deployables"),
@@ -336,8 +343,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		}
 	}
 	local mask_box_data = {
-		name = "mask",
 		bg_blend_mode = "normal",
+		name = "mask",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("bm_menu_masks"),
@@ -355,8 +362,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	}
 	local character_box_data = {
 		alpha = 1,
-		name = "character",
 		bg_blend_mode = "normal",
+		name = "character",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("menu_preferred_character"),
@@ -373,9 +380,9 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		}
 	}
 	local infamy_box_data = {
-		name = "infamy",
 		alpha = 1,
 		bg_blend_mode = "normal",
+		name = "infamy",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("menu_infamytree"),
@@ -385,15 +392,15 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		bg_color = Color.black:with_alpha(0.05),
 		clbks = {
 			down = false,
-			up = false,
 			right = false,
+			up = false,
 			left = callback(self, self, "open_infamy_menu")
 		}
 	}
 	local crew_box_data = {
+		bg_blend_mode = "normal",
 		image = "guis/dlcs/mom/textures/pd2/crewmanagement_icon",
 		name = "crew",
-		bg_blend_mode = "normal",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("menu_crew_management"),
@@ -403,15 +410,15 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		bg_color = Color.black:with_alpha(0.05),
 		clbks = {
 			down = false,
-			up = false,
 			right = false,
+			up = false,
 			left = callback(self, self, "open_crew_menu")
 		}
 	}
 	local skill_box_data = {
+		bg_blend_mode = "normal",
 		image = false,
 		name = "skilltree",
-		bg_blend_mode = "normal",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("menu_st_skilltree"),
@@ -454,9 +461,9 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 
 	local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/icons_atlas"
 	local specialization_box_data = {
-		name = "specialization",
 		bg_blend_mode = "normal",
 		image_size_mul = 0.8,
+		name = "specialization",
 		w = box_width,
 		h = box_height,
 		unselected_text = managers.localization:to_upper_text("menu_specialization"),
@@ -626,25 +633,26 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			2
 		}
 	})
+
 	local character_text = self._panel:text({
-		name = "character_text",
 		blend_mode = "add",
+		name = "character_text",
 		text = managers.localization:to_upper_text("menu_player_column_one_title"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
 	})
 	local weapons_text = self._panel:text({
-		name = "weapons_text",
 		blend_mode = "add",
+		name = "weapons_text",
 		text = managers.localization:to_upper_text("menu_player_column_two_title"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
 	})
 	local eqpt_skills_text = self._panel:text({
-		name = "eqpt_skills_text",
 		blend_mode = "add",
+		name = "eqpt_skills_text",
 		text = managers.localization:to_upper_text("menu_player_column_three_title"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -659,8 +667,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	eqpt_skills_text:set_rightbottom(eqpt_skills_panel:right(), eqpt_skills_panel:top())
 
 	local alias_text = self._panel:text({
-		name = "alias_text",
 		blend_mode = "add",
+		name = "alias_text",
 		x = 2,
 		y = TOP_ADJUSTMENT,
 		text = tostring(managers.network.account:username() or managers.blackmarket:get_preferred_character_real_name()),
@@ -672,12 +680,13 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	make_fine_text(alias_text)
 
 	local player_panel = self._panel:panel({
-		name = "player_panel",
 		h = 290,
+		name = "player_panel",
 		w = 320,
 		x = 0,
 		y = TOP_ADJUSTMENT + tweak_data.menu.pd2_small_font_size
 	})
+
 	self._player_panel = player_panel
 
 	self._player_panel:rect({
@@ -700,6 +709,7 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			1
 		}
 	})
+
 	local next_level_data = managers.experience:next_level_data() or {}
 	local player_level = managers.experience:current_level()
 	local player_rank = managers.experience:current_rank()
@@ -707,70 +717,70 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	local size = 96
 	local player_level_panel = player_panel:panel({
 		name = "player_level_panel",
-		y = 10,
 		x = 10,
+		y = 10,
 		w = size,
 		h = size
 	})
 
 	player_level_panel:bitmap({
-		texture = "guis/textures/pd2/endscreen/exp_ring",
 		alpha = 0.4,
+		texture = "guis/textures/pd2/endscreen/exp_ring",
 		w = size,
 		h = size,
 		color = Color.white
 	})
 	player_level_panel:bitmap({
-		texture = "guis/textures/pd2/endscreen/exp_ring",
 		blend_mode = "add",
-		render_template = "VertexColorTexturedRadial",
 		layer = 1,
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/endscreen/exp_ring",
 		color = Color((next_level_data.current_points or 1) / (next_level_data.points or 1), 1, 1),
 		w = size,
 		h = size
 	})
 	player_level_panel:text({
-		vertical = "center",
 		align = "center",
+		vertical = "center",
 		text = tostring(player_level),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	})
 	player_level_panel:bitmap({
-		texture = "guis/textures/pd2/exp_ring_purple",
-		name = "bg_infamy_progress_circle",
 		alpha = 1,
 		blend_mode = "add",
-		render_template = "VertexColorTexturedRadial",
 		layer = 15,
+		name = "bg_infamy_progress_circle",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/exp_ring_purple",
 		h = size,
 		w = size,
 		color = Color(managers.experience:get_prestige_xp_percentage_progress(), 1, 1)
 	})
 
 	local detection_panel = player_panel:panel({
+		layer = 0,
 		name = "detection_panel",
 		x = 0,
-		layer = 0,
 		y = player_level_panel:top(),
 		w = size - tweak_data.menu.pd2_small_font_size * 2,
 		h = size - tweak_data.menu.pd2_small_font_size * 2
 	})
 	local detection_ring_left_bg = detection_panel:bitmap({
-		blend_mode = "add",
-		name = "detection_left_bg",
 		alpha = 0.2,
-		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
+		blend_mode = "add",
 		layer = 0,
+		name = "detection_left_bg",
+		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
 		w = detection_panel:w(),
 		h = detection_panel:h()
 	})
 	local detection_ring_right_bg = detection_panel:bitmap({
-		blend_mode = "add",
-		name = "detection_right_bg",
 		alpha = 0.2,
-		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
+		blend_mode = "add",
 		layer = 0,
+		name = "detection_right_bg",
+		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
 		w = detection_panel:w(),
 		h = detection_panel:h()
 	})
@@ -778,22 +788,22 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	detection_ring_right_bg:set_texture_rect(64, 0, -64, 64)
 
 	local detection_ring_left = detection_panel:bitmap({
-		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
-		name = "detection_left",
 		alpha = 0.5,
 		blend_mode = "add",
-		render_template = "VertexColorTexturedRadial",
 		layer = 1,
+		name = "detection_left",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
 		w = detection_panel:w(),
 		h = detection_panel:h()
 	})
 	local detection_ring_right = detection_panel:bitmap({
-		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
-		name = "detection_right",
 		alpha = 0.5,
 		blend_mode = "add",
-		render_template = "VertexColorTexturedRadial",
 		layer = 1,
+		name = "detection_right",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
 		w = detection_panel:w(),
 		h = detection_panel:h()
 	})
@@ -801,22 +811,22 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	detection_ring_right:set_texture_rect(64, 0, -64, 64)
 
 	local detection_ring_left2 = detection_panel:bitmap({
-		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
-		name = "detection_left2",
 		alpha = 0.5,
 		blend_mode = "add",
-		render_template = "VertexColorTexturedRadial",
 		layer = 1,
+		name = "detection_left2",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
 		w = detection_panel:w(),
 		h = detection_panel:h()
 	})
 	local detection_ring_right2 = detection_panel:bitmap({
-		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
-		name = "detection_right2",
 		alpha = 0.5,
 		blend_mode = "add",
-		render_template = "VertexColorTexturedRadial",
 		layer = 1,
+		name = "detection_right2",
+		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/blackmarket/inv_detection_meter",
 		w = detection_panel:w(),
 		h = detection_panel:h()
 	})
@@ -825,20 +835,20 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 
 	local detection_value = detection_panel:text({
 		alpha = 1,
-		name = "detection_value",
-		h = 64,
-		text = "",
-		w = 64,
 		blend_mode = "add",
+		h = 64,
+		name = "detection_value",
+		text = "",
 		visible = true,
+		w = 64,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	})
 	local detection_text = player_panel:text({
-		name = "detection_text",
 		alpha = 1,
-		visible = true,
 		blend_mode = "add",
+		name = "detection_text",
+		visible = true,
 		y = player_level_panel:top(),
 		text = managers.localization:to_upper_text("bm_menu_stats_detection"),
 		font = tweak_data.menu.pd2_small_font,
@@ -852,9 +862,9 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	detection_panel:set_top(detection_text:bottom() + 5)
 
 	self._player_stats_panel = player_panel:panel({
+		h = 180,
 		name = "player_stats_panel",
 		x = 10,
-		h = 180,
 		w = player_panel:w() - 20
 	})
 
@@ -891,10 +901,10 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	info_content_panel:move(10, 10)
 
 	self._info_text = info_content_panel:text({
-		text = "",
-		wrap = true,
-		word_wrap = true,
 		blend_mode = "add",
+		text = "",
+		word_wrap = true,
+		wrap = true,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
@@ -917,14 +927,14 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 
 		if not managers.menu:is_steam_controller() then
 			local panel = self._legends_panel:panel({
-				visible = false,
-				name = "select"
+				name = "select",
+				visible = false
 			})
 			local icon = panel:bitmap({
-				texture = "guis/textures/pd2/mouse_buttons",
-				name = "icon",
-				h = 23,
 				blend_mode = "add",
+				h = 23,
+				name = "icon",
+				texture = "guis/textures/pd2/mouse_buttons",
 				w = 17,
 				texture_rect = {
 					1,
@@ -947,15 +957,16 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			panel:set_w(text:right())
 
 			self._legends.select = panel
+
 			local panel = self._legends_panel:panel({
-				visible = false,
-				name = "preview"
+				name = "preview",
+				visible = false
 			})
 			local icon = panel:bitmap({
-				texture = "guis/textures/pd2/mouse_buttons",
-				name = "icon",
-				h = 23,
 				blend_mode = "add",
+				h = 23,
+				name = "icon",
+				texture = "guis/textures/pd2/mouse_buttons",
 				w = 17,
 				texture_rect = {
 					18,
@@ -978,15 +989,16 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			panel:set_w(text:right())
 
 			self._legends.preview = panel
+
 			local panel = self._legends_panel:panel({
-				visible = false,
-				name = "switch"
+				name = "switch",
+				visible = false
 			})
 			local icon = panel:bitmap({
-				texture = "guis/textures/pd2/mouse_buttons",
-				name = "icon",
-				h = 23,
 				blend_mode = "add",
+				h = 23,
+				name = "icon",
+				texture = "guis/textures/pd2/mouse_buttons",
 				w = 17,
 				texture_rect = {
 					35,
@@ -1011,8 +1023,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			self._legends.switch = panel
 		else
 			local panel = self._legends_panel:panel({
-				visible = false,
-				name = "select"
+				name = "select",
+				visible = false
 			})
 			local text = panel:text({
 				blend_mode = "add",
@@ -1027,9 +1039,10 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			panel:set_w(text:right())
 
 			self._legends.select = panel
+
 			local panel = self._legends_panel:panel({
-				visible = false,
-				name = "preview"
+				name = "preview",
+				visible = false
 			})
 			local text = panel:text({
 				blend_mode = "add",
@@ -1044,9 +1057,10 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 			panel:set_w(text:right())
 
 			self._legends.preview = panel
+
 			local panel = self._legends_panel:panel({
-				visible = false,
-				name = "switch"
+				name = "switch",
+				visible = false
 			})
 			local text = panel:text({
 				blend_mode = "add",
@@ -1064,8 +1078,8 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		end
 
 		local panel = self._legends_panel:panel({
-			visible = false,
-			name = "hide_all"
+			name = "hide_all",
+			visible = false
 		})
 		local text = panel:text({
 			blend_mode = "add",
@@ -1085,13 +1099,13 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	else
 		self._legends_panel:set_righttop(self._panel:w(), 0)
 		self._legends_panel:text({
-			text = "",
-			name = "text",
-			vertical = "bottom",
 			align = "right",
 			blend_mode = "add",
 			halign = "right",
+			name = "text",
+			text = "",
 			valign = "bottom",
+			vertical = "bottom",
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			color = tweak_data.screen_colors.text
@@ -1099,444 +1113,449 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	end
 
 	self._text_buttons = {}
-	local alias_show_button, alias_hide_button, column_one_show_button, column_one_hide_button, column_two_show_button, column_two_hide_button, column_three_show_button, column_three_hide_button = nil
 
-	local function alias_hide_func()
-		if alive(alias_show_button) then
-			alias_show_button:hide()
-		end
+	do
+		local alias_show_button, alias_hide_button, column_one_show_button, column_one_hide_button, column_two_show_button, column_two_hide_button, column_three_show_button, column_three_hide_button
 
-		if alive(alias_hide_button) then
-			alias_hide_button:show()
-		end
-
-		if alive(self._player_panel) then
-			self._player_panel:hide()
-		end
-
-		if alive(self._player_box_panel) then
-			self._player_box:create_sides(self._player_box_panel, {
-				sides = {
-					0,
-					0,
-					2,
-					0
-				}
-			})
-		end
-
-		if alive(info_panel) then
-			info_panel:hide()
-		end
-	end
-
-	local function alias_show_func()
-		if alive(alias_show_button) then
-			alias_show_button:show()
-		end
-
-		if alive(alias_hide_button) then
-			alias_hide_button:hide()
-		end
-
-		if alive(self._player_panel) then
-			self._player_panel:show()
-		end
-
-		if alive(self._player_box_panel) then
-			self._player_box:create_sides(self._player_box_panel, {
-				sides = {
-					1,
-					1,
-					2,
-					1
-				}
-			})
-		end
-
-		if alive(info_panel) then
-			info_panel:show()
-		end
-	end
-
-	local function column_one_hide_func()
-		if alive(column_one_show_button) then
-			column_one_show_button:hide()
-		end
-
-		if alive(column_one_hide_button) then
-			column_one_hide_button:show()
-		end
-
-		if alive(character_panel) then
-			character_panel:hide()
-		end
-
-		if alive(column_one_box_panel) then
-			self._column_one_box:create_sides(column_one_box_panel, {
-				sides = {
-					0,
-					0,
-					2,
-					0
-				}
-			})
-		end
-
-		local box = nil
-
-		for _, boxes in ipairs(box_matrix) do
-			box = boxes[1] and self._boxes_by_name[boxes[1]]
-
-			if box then
-				box.panel:hide()
+		local function alias_hide_func()
+			if alive(alias_show_button) then
+				alias_show_button:hide()
 			end
-		end
-	end
 
-	local function column_one_show_func()
-		if alive(column_one_show_button) then
-			column_one_show_button:show()
-		end
-
-		if alive(column_one_hide_button) then
-			column_one_hide_button:hide()
-		end
-
-		if alive(character_panel) then
-			character_panel:show()
-		end
-
-		if alive(column_one_box_panel) then
-			self._column_one_box:create_sides(column_one_box_panel, {
-				sides = {
-					1,
-					1,
-					2,
-					1
-				}
-			})
-		end
-
-		local box = nil
-
-		for _, boxes in ipairs(box_matrix) do
-			box = boxes[1] and self._boxes_by_name[boxes[1]]
-
-			if box then
-				box.panel:show()
+			if alive(alias_hide_button) then
+				alias_hide_button:show()
 			end
-		end
-	end
 
-	local function column_two_hide_func()
-		if alive(column_two_show_button) then
-			column_two_show_button:hide()
-		end
+			if alive(self._player_panel) then
+				self._player_panel:hide()
+			end
 
-		if alive(column_two_hide_button) then
-			column_two_hide_button:show()
-		end
+			if alive(self._player_box_panel) then
+				self._player_box:create_sides(self._player_box_panel, {
+					sides = {
+						0,
+						0,
+						2,
+						0
+					}
+				})
+			end
 
-		if alive(weapons_panel) then
-			weapons_panel:hide()
-		end
-
-		if alive(column_two_box_panel) then
-			self._column_two_box:create_sides(column_two_box_panel, {
-				sides = {
-					0,
-					0,
-					2,
-					0
-				}
-			})
-		end
-
-		local box = nil
-
-		for _, boxes in ipairs(box_matrix) do
-			box = boxes[2] and self._boxes_by_name[boxes[2]]
-
-			if box then
-				box.panel:hide()
+			if alive(info_panel) then
+				info_panel:hide()
 			end
 		end
 
-		for _, box in ipairs(self._boxes_by_layer[2]) do
-			box.panel:hide()
-		end
-	end
+		local function alias_show_func()
+			if alive(alias_show_button) then
+				alias_show_button:show()
+			end
 
-	local function column_two_show_func()
-		if alive(column_two_show_button) then
-			column_two_show_button:show()
-		end
+			if alive(alias_hide_button) then
+				alias_hide_button:hide()
+			end
 
-		if alive(column_two_hide_button) then
-			column_two_hide_button:hide()
-		end
+			if alive(self._player_panel) then
+				self._player_panel:show()
+			end
 
-		if alive(weapons_panel) then
-			weapons_panel:show()
-		end
+			if alive(self._player_box_panel) then
+				self._player_box:create_sides(self._player_box_panel, {
+					sides = {
+						1,
+						1,
+						2,
+						1
+					}
+				})
+			end
 
-		if alive(column_two_box_panel) then
-			self._column_two_box:create_sides(column_two_box_panel, {
-				sides = {
-					1,
-					1,
-					2,
-					1
-				}
-			})
-		end
-
-		local box = nil
-
-		for _, boxes in ipairs(box_matrix) do
-			box = boxes[2] and self._boxes_by_name[boxes[2]]
-
-			if box then
-				box.panel:show()
+			if alive(info_panel) then
+				info_panel:show()
 			end
 		end
 
-		for _, box in ipairs(self._boxes_by_layer[2]) do
-			box.panel:show()
+		local function column_one_hide_func()
+			if alive(column_one_show_button) then
+				column_one_show_button:hide()
+			end
+
+			if alive(column_one_hide_button) then
+				column_one_hide_button:show()
+			end
+
+			if alive(character_panel) then
+				character_panel:hide()
+			end
+
+			if alive(column_one_box_panel) then
+				self._column_one_box:create_sides(column_one_box_panel, {
+					sides = {
+						0,
+						0,
+						2,
+						0
+					}
+				})
+			end
+
+			local box
+
+			for _, boxes in ipairs(box_matrix) do
+				box = boxes[1] and self._boxes_by_name[boxes[1]]
+
+				if box then
+					box.panel:hide()
+				end
+			end
 		end
-	end
 
-	local function column_three_hide_func()
-		if alive(column_three_show_button) then
-			column_three_show_button:hide()
+		local function column_one_show_func()
+			if alive(column_one_show_button) then
+				column_one_show_button:show()
+			end
+
+			if alive(column_one_hide_button) then
+				column_one_hide_button:hide()
+			end
+
+			if alive(character_panel) then
+				character_panel:show()
+			end
+
+			if alive(column_one_box_panel) then
+				self._column_one_box:create_sides(column_one_box_panel, {
+					sides = {
+						1,
+						1,
+						2,
+						1
+					}
+				})
+			end
+
+			local box
+
+			for _, boxes in ipairs(box_matrix) do
+				box = boxes[1] and self._boxes_by_name[boxes[1]]
+
+				if box then
+					box.panel:show()
+				end
+			end
 		end
 
-		if alive(column_three_hide_button) then
-			column_three_hide_button:show()
-		end
+		local function column_two_hide_func()
+			if alive(column_two_show_button) then
+				column_two_show_button:hide()
+			end
 
-		if alive(eqpt_skills_panel) then
-			eqpt_skills_panel:hide()
-		end
+			if alive(column_two_hide_button) then
+				column_two_hide_button:show()
+			end
 
-		if alive(column_three_box_panel) then
-			self._column_three_box:create_sides(column_three_box_panel, {
-				sides = {
-					0,
-					0,
-					2,
-					0
-				}
-			})
-		end
+			if alive(weapons_panel) then
+				weapons_panel:hide()
+			end
 
-		local box = nil
+			if alive(column_two_box_panel) then
+				self._column_two_box:create_sides(column_two_box_panel, {
+					sides = {
+						0,
+						0,
+						2,
+						0
+					}
+				})
+			end
 
-		for _, boxes in ipairs(box_matrix) do
-			box = boxes[3] and self._boxes_by_name[boxes[3]]
+			local box
 
-			if box then
+			for _, boxes in ipairs(box_matrix) do
+				box = boxes[2] and self._boxes_by_name[boxes[2]]
+
+				if box then
+					box.panel:hide()
+				end
+			end
+
+			for _, box in ipairs(self._boxes_by_layer[2]) do
 				box.panel:hide()
 			end
 		end
 
-		for _, box in ipairs(self._boxes_by_layer[3]) do
-			if alive(box.panel) then
-				box.panel:hide()
+		local function column_two_show_func()
+			if alive(column_two_show_button) then
+				column_two_show_button:show()
 			end
-		end
-	end
 
-	local function column_three_show_func()
-		if alive(column_three_show_button) then
-			column_three_show_button:show()
-		end
+			if alive(column_two_hide_button) then
+				column_two_hide_button:hide()
+			end
 
-		if alive(column_three_hide_button) then
-			column_three_hide_button:hide()
-		end
+			if alive(weapons_panel) then
+				weapons_panel:show()
+			end
 
-		if alive(eqpt_skills_panel) then
-			eqpt_skills_panel:show()
-		end
+			if alive(column_two_box_panel) then
+				self._column_two_box:create_sides(column_two_box_panel, {
+					sides = {
+						1,
+						1,
+						2,
+						1
+					}
+				})
+			end
 
-		if alive(column_three_box_panel) then
-			self._column_three_box:create_sides(column_three_box_panel, {
-				sides = {
-					1,
-					1,
-					2,
-					1
-				}
-			})
-		end
+			local box
 
-		local box = nil
+			for _, boxes in ipairs(box_matrix) do
+				box = boxes[2] and self._boxes_by_name[boxes[2]]
 
-		for _, boxes in ipairs(box_matrix) do
-			box = boxes[3] and self._boxes_by_name[boxes[3]]
+				if box then
+					box.panel:show()
+				end
+			end
 
-			if box then
+			for _, box in ipairs(self._boxes_by_layer[2]) do
 				box.panel:show()
 			end
 		end
 
-		for _, box in ipairs(self._boxes_by_layer[3]) do
-			if alive(box.panel) then
-				box.panel:show()
+		local function column_three_hide_func()
+			if alive(column_three_show_button) then
+				column_three_show_button:hide()
+			end
+
+			if alive(column_three_hide_button) then
+				column_three_hide_button:show()
+			end
+
+			if alive(eqpt_skills_panel) then
+				eqpt_skills_panel:hide()
+			end
+
+			if alive(column_three_box_panel) then
+				self._column_three_box:create_sides(column_three_box_panel, {
+					sides = {
+						0,
+						0,
+						2,
+						0
+					}
+				})
+			end
+
+			local box
+
+			for _, boxes in ipairs(box_matrix) do
+				box = boxes[3] and self._boxes_by_name[boxes[3]]
+
+				if box then
+					box.panel:hide()
+				end
+			end
+
+			for _, box in ipairs(self._boxes_by_layer[3]) do
+				if alive(box.panel) then
+					box.panel:hide()
+				end
 			end
 		end
-	end
 
-	self._show_hide_data = {
-		panels = {
+		local function column_three_show_func()
+			if alive(column_three_show_button) then
+				column_three_show_button:show()
+			end
+
+			if alive(column_three_hide_button) then
+				column_three_hide_button:hide()
+			end
+
+			if alive(eqpt_skills_panel) then
+				eqpt_skills_panel:show()
+			end
+
+			if alive(column_three_box_panel) then
+				self._column_three_box:create_sides(column_three_box_panel, {
+					sides = {
+						1,
+						1,
+						2,
+						1
+					}
+				})
+			end
+
+			local box
+
+			for _, boxes in ipairs(box_matrix) do
+				box = boxes[3] and self._boxes_by_name[boxes[3]]
+
+				if box then
+					box.panel:show()
+				end
+			end
+
+			for _, box in ipairs(self._boxes_by_layer[3]) do
+				if alive(box.panel) then
+					box.panel:show()
+				end
+			end
+		end
+
+		self._show_hide_data = {}
+		self._show_hide_data.panels = {
 			self._player_panel,
 			character_panel,
 			weapons_panel,
 			eqpt_skills_panel
-		},
-		show_funcs = {
+		}
+		self._show_hide_data.show_funcs = {
 			alias_show_func,
 			column_one_show_func,
 			column_two_show_func,
 			column_three_show_func
-		},
-		hide_funcs = {
+		}
+		self._show_hide_data.hide_funcs = {
 			alias_hide_func,
 			column_one_hide_func,
 			column_two_hide_func,
 			column_three_hide_func
 		}
-	}
 
-	if managers.menu:is_pc_controller() then
-		local show_string = managers.localization:to_upper_text("menu_button_hide")
-		local hide_string = managers.localization:to_upper_text("menu_button_show")
-		alias_show_button = self:create_text_button({
-			alpha = 0.1,
-			left = alias_text:right() + 2,
-			top = alias_text:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = show_string,
-			clbk = alias_hide_func
-		})
-		alias_hide_button = self:create_text_button({
-			disabled = true,
-			left = alias_show_button:left(),
-			top = alias_show_button:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = hide_string,
-			clbk = alias_show_func
-		})
-		column_one_show_button = self:create_text_button({
-			alpha = 0.1,
-			right = character_text:left() - 2,
-			top = character_text:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = show_string,
-			clbk = column_one_hide_func
-		})
-		column_one_hide_button = self:create_text_button({
-			disabled = true,
-			right = column_one_show_button:right(),
-			top = column_one_show_button:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = hide_string,
-			clbk = column_one_show_func
-		})
-		column_two_show_button = self:create_text_button({
-			alpha = 0.1,
-			right = weapons_text:left() - 2,
-			top = weapons_text:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = show_string,
-			clbk = column_two_hide_func
-		})
-		column_two_hide_button = self:create_text_button({
-			disabled = true,
-			right = column_two_show_button:right(),
-			top = column_two_show_button:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = hide_string,
-			clbk = column_two_show_func
-		})
-		column_three_show_button = self:create_text_button({
-			alpha = 0.1,
-			right = eqpt_skills_text:left() - 2,
-			top = eqpt_skills_text:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = show_string,
-			clbk = column_three_hide_func
-		})
-		column_three_hide_button = self:create_text_button({
-			disabled = true,
-			right = column_three_show_button:right(),
-			top = column_three_show_button:top(),
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			text = hide_string,
-			clbk = column_three_show_func
-		})
-		local alias_big_panel = self._panel:panel({
-			name = "alias_big_panel"
-		})
+		if managers.menu:is_pc_controller() then
+			local show_string = managers.localization:to_upper_text("menu_button_hide")
+			local hide_string = managers.localization:to_upper_text("menu_button_show")
 
-		alias_big_panel:set_w(self._player_panel:w())
-		alias_big_panel:set_x(self._player_panel:x())
+			alias_show_button = self:create_text_button({
+				alpha = 0.1,
+				left = alias_text:right() + 2,
+				top = alias_text:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = show_string,
+				clbk = alias_hide_func
+			})
+			alias_hide_button = self:create_text_button({
+				disabled = true,
+				left = alias_show_button:left(),
+				top = alias_show_button:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = hide_string,
+				clbk = alias_show_func
+			})
+			column_one_show_button = self:create_text_button({
+				alpha = 0.1,
+				right = character_text:left() - 2,
+				top = character_text:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = show_string,
+				clbk = column_one_hide_func
+			})
+			column_one_hide_button = self:create_text_button({
+				disabled = true,
+				right = column_one_show_button:right(),
+				top = column_one_show_button:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = hide_string,
+				clbk = column_one_show_func
+			})
+			column_two_show_button = self:create_text_button({
+				alpha = 0.1,
+				right = weapons_text:left() - 2,
+				top = weapons_text:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = show_string,
+				clbk = column_two_hide_func
+			})
+			column_two_hide_button = self:create_text_button({
+				disabled = true,
+				right = column_two_show_button:right(),
+				top = column_two_show_button:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = hide_string,
+				clbk = column_two_show_func
+			})
+			column_three_show_button = self:create_text_button({
+				alpha = 0.1,
+				right = eqpt_skills_text:left() - 2,
+				top = eqpt_skills_text:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = show_string,
+				clbk = column_three_hide_func
+			})
+			column_three_hide_button = self:create_text_button({
+				disabled = true,
+				right = column_three_show_button:right(),
+				top = column_three_show_button:top(),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = hide_string,
+				clbk = column_three_show_func
+			})
 
-		local column_one_big_panel = self._panel:panel({
-			name = "column_one_big_panel"
-		})
+			local alias_big_panel = self._panel:panel({
+				name = "alias_big_panel"
+			})
 
-		column_one_big_panel:set_w(character_panel:w())
-		column_one_big_panel:set_x(character_panel:x())
+			alias_big_panel:set_w(self._player_panel:w())
+			alias_big_panel:set_x(self._player_panel:x())
 
-		local column_two_big_panel = self._panel:panel({
-			name = "column_two_big_panel"
-		})
+			local column_one_big_panel = self._panel:panel({
+				name = "column_one_big_panel"
+			})
 
-		column_two_big_panel:set_w(weapons_panel:w())
-		column_two_big_panel:set_x(weapons_panel:x())
+			column_one_big_panel:set_w(character_panel:w())
+			column_one_big_panel:set_x(character_panel:x())
 
-		local column_three_big_panel = self._panel:panel({
-			name = "column_three_big_panel"
-		})
+			local column_two_big_panel = self._panel:panel({
+				name = "column_two_big_panel"
+			})
 
-		column_three_big_panel:set_w(eqpt_skills_panel:w())
-		column_three_big_panel:set_x(eqpt_skills_panel:x())
+			column_two_big_panel:set_w(weapons_panel:w())
+			column_two_big_panel:set_x(weapons_panel:x())
 
-		self._change_alpha_table = {
-			{
-				panel = alias_big_panel,
-				button = alias_show_button
-			},
-			{
-				panel = column_one_big_panel,
-				button = column_one_show_button
-			},
-			{
-				panel = column_two_big_panel,
-				button = column_two_show_button
-			},
-			{
-				panel = column_three_big_panel,
-				button = column_three_show_button
+			local column_three_big_panel = self._panel:panel({
+				name = "column_three_big_panel"
+			})
+
+			column_three_big_panel:set_w(eqpt_skills_panel:w())
+			column_three_big_panel:set_x(eqpt_skills_panel:x())
+
+			self._change_alpha_table = {
+				{
+					panel = alias_big_panel,
+					button = alias_show_button
+				},
+				{
+					panel = column_one_big_panel,
+					button = column_one_show_button
+				},
+				{
+					panel = column_two_big_panel,
+					button = column_two_show_button
+				},
+				{
+					panel = column_three_big_panel,
+					button = column_three_show_button
+				}
 			}
-		}
+		end
 	end
 
 	self._multi_profile_item = MultiProfileItemGui:new(self._ws, self._panel)
 
 	if #managers.infamy:get_unlocked_join_stingers() > 0 then
 		local selected_join_stinger = managers.infamy:selected_join_stinger()
+
 		self._select_join_stinger_button = self:create_text_button({
 			right = column_one_box_panel:left() - 5,
 			bottom = column_one_box_panel:bottom() - 0,
@@ -1571,10 +1590,11 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 end
 
 function PlayerInventoryGui:select_join_stinger()
-	local dialog_data = {
-		title = managers.localization:to_upper_text("menu_join_stinger_choice"),
-		text = managers.localization:text("menu_join_stinger_choice_help")
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:to_upper_text("menu_join_stinger_choice")
+	dialog_data.text = managers.localization:text("menu_join_stinger_choice_help")
+
 	local selected_join_stinger = managers.infamy:selected_join_stinger()
 	local unlocked_join_stingers = managers.infamy:get_unlocked_join_stingers()
 
@@ -1583,6 +1603,7 @@ function PlayerInventoryGui:select_join_stinger()
 	end
 
 	dialog_data.button_list = {}
+
 	local focus_button = 1
 
 	for focus_index, stinger_name in ipairs(managers.infamy:get_unlocked_join_stingers()) do
@@ -1596,10 +1617,10 @@ function PlayerInventoryGui:select_join_stinger()
 
 		table.insert(dialog_data.button_list, {
 			text = text_string,
-			callback_func = function ()
+			callback_func = function()
 				managers.infamy:select_join_stinger(stinger_name)
 			end,
-			focus_callback_func = function ()
+			focus_callback_func = function()
 				if self._join_stinger_post_event then
 					self._join_stinger_post_event:stop()
 
@@ -1611,19 +1632,22 @@ function PlayerInventoryGui:select_join_stinger()
 		})
 	end
 
-	local divider = {
-		no_text = true,
-		no_selection = true
-	}
+	local divider = {}
+
+	divider.no_text = true
+	divider.no_selection = true
 
 	table.insert(dialog_data.button_list, divider)
 
-	local no_button = {
-		text = managers.localization:text("dialog_cancel"),
-		focus_callback_func = function ()
-		end,
-		cancel_button = true
-	}
+	local no_button = {}
+
+	no_button.text = managers.localization:text("dialog_cancel")
+
+	function no_button.focus_callback_func()
+		return
+	end
+
+	no_button.cancel_button = true
 
 	table.insert(dialog_data.button_list, no_button)
 
@@ -1642,7 +1666,7 @@ function PlayerInventoryGui:select_join_stinger()
 	dialog_data.clamp_to_screen = true
 
 	managers.system_menu:show_buttons(dialog_data)
-	managers.system_menu:add_dialog_closed_callback(function ()
+	managers.system_menu:add_dialog_closed_callback(function()
 		if self._join_stinger_post_event then
 			self._join_stinger_post_event:stop()
 
@@ -1658,6 +1682,7 @@ function PlayerInventoryGui:select_join_stinger()
 					join_stinger = selected_text
 				})
 			}
+
 			self._select_join_stinger_button = self:refresh_text_button(self._select_join_stinger_button, params)
 		end
 	end)
@@ -1680,27 +1705,21 @@ function PlayerInventoryGui:_update_legends(name)
 				self._legends.hide_all:set_visible(show_hide_all)
 				self._legends.hide_all:set_right(x)
 
-				if show_hide_all then
-					x = self._legends.hide_all:left() - padding or x
-				end
+				x = show_hide_all and self._legends.hide_all:left() - padding or x
 			end
 
 			if alive(self._legends.switch) then
 				self._legends.switch:set_visible(show_switch)
 				self._legends.switch:set_right(x)
 
-				if show_switch then
-					x = self._legends.switch:left() - padding or x
-				end
+				x = show_switch and self._legends.switch:left() - padding or x
 			end
 
 			if alive(self._legends.preview) then
 				self._legends.preview:set_visible(show_preview)
 				self._legends.preview:set_right(x)
 
-				if show_preview then
-					x = self._legends.preview:left() - padding or x
-				end
+				x = show_preview and self._legends.preview:left() - padding or x
 			end
 
 			if alive(self._legends.select) then
@@ -1712,10 +1731,10 @@ function PlayerInventoryGui:_update_legends(name)
 				end
 			end
 		else
-			local legends = {
-				[#legends + 1] = {
-					string_id = "menu_legend_zoom_rotate"
-				}
+			local legends = {}
+
+			legends[#legends + 1] = {
+				string_id = "menu_legend_zoom_rotate"
 			}
 
 			if show_preview then
@@ -1750,10 +1769,12 @@ function PlayerInventoryGui:_update_legends(name)
 			legends[#legends + 1] = {
 				string_id = "menu_legend_back"
 			}
+
 			local legend_text = ""
 
 			for i, legend in ipairs(legends) do
 				local spacing = i > 1 and "  |  " or ""
+
 				legend_text = legend_text .. spacing .. managers.localization:to_upper_text(legend.string_id, {
 					BTN_UPDATE = managers.localization:btn_macro("menu_update"),
 					BTN_BACK = managers.localization:btn_macro("back")
@@ -1839,10 +1860,10 @@ function PlayerInventoryGui:set_info_text(text, color_ranges, recursive)
 
 	local min_font_size = math.max(math.min(6, default_font_size), math.ceil(default_font_size * 0.7))
 
-	if self._info_panel:parent():h() < self._info_text:bottom() then
+	if self._info_text:bottom() > self._info_panel:parent():h() then
 		local font_size = self._info_text:font_size()
 
-		while self._info_panel:parent():h() < self._info_text:bottom() and min_font_size < font_size do
+		while self._info_text:bottom() > self._info_panel:parent():h() and min_font_size < font_size do
 			self._info_text:set_font_size(font_size)
 
 			local _, _, _, h = self._info_text:text_rect()
@@ -1852,14 +1873,16 @@ function PlayerInventoryGui:set_info_text(text, color_ranges, recursive)
 			font_size = font_size - 1
 		end
 
-		if not recursive and self._info_panel:parent():h() < self._info_text:bottom() then
+		if not recursive and self._info_text:bottom() > self._info_panel:parent():h() then
 			print("[PlayerInventoryGui] Info text dynamic font sizer failed")
 
 			local x = self._info_text:world_left() + 1
 			local y = self._info_panel:parent():world_bottom() - self._info_text:line_height()
 			local index = self._info_text:point_to_index(x, y)
 			local text = self._info_text:text()
+
 			text = utf8.sub(text, 1, index)
+
 			local last = utf8.sub(text, -1)
 
 			while last == " " or last == "\n" do
@@ -1893,8 +1916,8 @@ function PlayerInventoryGui:setup_player_stats(panel)
 			name = "concealment"
 		},
 		{
-			procent = true,
-			name = "movement"
+			name = "movement",
+			procent = true
 		},
 		{
 			name = "dodge",
@@ -1924,78 +1947,81 @@ function PlayerInventoryGui:setup_player_stats(panel)
 	stats_panel = panel:panel({
 		name = "stats_panel"
 	})
+
 	local panel = stats_panel:panel({
 		h = 20,
 		layer = 1,
 		w = stats_panel:w()
 	})
+
 	self._player_stats_shown = data
-	self._player_stats_titles = {
-		total = stats_panel:text({
-			x = 135,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
-		}),
-		base = stats_panel:text({
-			alpha = 0.75,
-			x = 200,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_base"))
-		}),
-		skill = stats_panel:text({
-			alpha = 0.75,
-			x = 259,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.resource,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_skill"))
-		})
-	}
+	self._player_stats_titles = {}
+	self._player_stats_titles.total = stats_panel:text({
+		layer = 2,
+		x = 135,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
+	})
+	self._player_stats_titles.base = stats_panel:text({
+		alpha = 0.75,
+		layer = 2,
+		x = 200,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_base"))
+	})
+	self._player_stats_titles.skill = stats_panel:text({
+		alpha = 0.75,
+		layer = 2,
+		x = 259,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.resource,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_skill"))
+	})
+
 	local x = 0
 	local y = 20
-	local text_panel = nil
+	local text_panel
 	local text_columns = {
 		{
-			size = 100,
-			name = "name"
-		},
-		{
-			size = 60,
-			name = "total",
-			align = "right"
+			name = "name",
+			size = 100
 		},
 		{
 			align = "right",
-			name = "base",
-			blend = "add",
-			alpha = 0.75,
+			name = "total",
 			size = 60
 		},
 		{
 			align = "right",
-			name = "skill",
-			blend = "add",
 			alpha = 0.75,
+			blend = "add",
+			name = "base",
+			size = 60
+		},
+		{
+			align = "right",
+			alpha = 0.75,
+			blend = "add",
+			name = "skill",
 			size = 60,
 			color = tweak_data.screen_colors.resource
 		}
 	}
+
 	self._player_stats_texts = {}
 	self._player_stats_panel = stats_panel:panel()
 
 	for i, stat in ipairs(data) do
 		panel = self._player_stats_panel:panel({
-			name = "weapon_stats",
 			h = 20,
-			x = 0,
 			layer = 1,
+			name = "weapon_stats",
+			x = 0,
 			y = y,
 			w = self._player_stats_panel:w()
 		})
@@ -2019,8 +2045,8 @@ function PlayerInventoryGui:setup_player_stats(panel)
 				h = panel:h()
 			})
 			self._player_stats_texts[stat.name][column.name] = text_panel:text({
-				text = "0",
 				layer = 1,
+				text = "0",
 				font_size = tweak_data.menu.pd2_small_font_size,
 				font = tweak_data.menu.pd2_small_font,
 				align = column.align,
@@ -2049,95 +2075,98 @@ function PlayerInventoryGui:set_weapon_stats(panel, data)
 	stats_panel = panel:panel({
 		name = "stats_panel"
 	})
+
 	local panel = stats_panel:panel({
 		h = 20,
 		layer = 1,
 		w = stats_panel:w()
 	})
+
 	self._stats_shown = data
-	self._stats_titles = {
-		total = stats_panel:text({
-			x = 120,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
-		}),
-		base = stats_panel:text({
-			alpha = 0.75,
-			x = 170,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_base"))
-		}),
-		mod = stats_panel:text({
-			alpha = 0.75,
-			x = 219,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.stats_mods,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_mod"))
-		}),
-		skill = stats_panel:text({
-			alpha = 0.75,
-			x = 259,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.resource,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_skill"))
-		})
-	}
+	self._stats_titles = {}
+	self._stats_titles.total = stats_panel:text({
+		layer = 2,
+		x = 120,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
+	})
+	self._stats_titles.base = stats_panel:text({
+		alpha = 0.75,
+		layer = 2,
+		x = 170,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_base"))
+	})
+	self._stats_titles.mod = stats_panel:text({
+		alpha = 0.75,
+		layer = 2,
+		x = 219,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.stats_mods,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_mod"))
+	})
+	self._stats_titles.skill = stats_panel:text({
+		alpha = 0.75,
+		layer = 2,
+		x = 259,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.resource,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_skill"))
+	})
+
 	local x = 0
 	local y = 20
-	local text_panel = nil
+	local text_panel
 	local text_columns = {
 		{
-			size = 100,
-			name = "name"
-		},
-		{
-			size = 45,
-			name = "total",
-			align = "right"
+			name = "name",
+			size = 100
 		},
 		{
 			align = "right",
-			name = "base",
-			blend = "add",
-			alpha = 0.75,
+			name = "total",
 			size = 45
 		},
 		{
 			align = "right",
-			name = "mods",
-			blend = "add",
 			alpha = 0.75,
+			blend = "add",
+			name = "base",
+			size = 45
+		},
+		{
+			align = "right",
+			alpha = 0.75,
+			blend = "add",
+			name = "mods",
 			size = 45,
 			color = tweak_data.screen_colors.stats_mods
 		},
 		{
 			align = "right",
-			name = "skill",
-			blend = "add",
 			alpha = 0.75,
+			blend = "add",
+			name = "skill",
 			size = 45,
 			color = tweak_data.screen_colors.resource
 		}
 	}
+
 	self._stats_texts = {}
 	self._stats_panel = stats_panel:panel()
 
 	for i, stat in ipairs(data) do
 		panel = self._stats_panel:panel({
-			name = "weapon_stats",
 			h = 20,
-			x = 0,
 			layer = 1,
+			name = "weapon_stats",
+			x = 0,
 			y = y,
 			w = self._stats_panel:w()
 		})
@@ -2161,8 +2190,8 @@ function PlayerInventoryGui:set_weapon_stats(panel, data)
 				h = panel:h()
 			})
 			self._stats_texts[stat.name][column.name] = text_panel:text({
-				text = "0",
 				layer = 1,
+				text = "0",
 				font_size = tweak_data.menu.pd2_small_font_size,
 				font = tweak_data.menu.pd2_small_font,
 				align = column.align,
@@ -2191,60 +2220,63 @@ function PlayerInventoryGui:set_weapon_mods_stats(panel, data)
 	stats_panel = panel:panel({
 		name = "stats_panel"
 	})
+
 	local panel = stats_panel:panel({
 		h = 20,
 		layer = 1,
 		w = stats_panel:w()
 	})
+
 	self._stats_shown = data
-	self._stats_titles = {
-		total = stats_panel:text({
-			alpha = 1,
-			x = 120,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
-		}),
-		equip = stats_panel:text({
-			alpha = 1,
-			x = 200,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_equipped"))
-		})
-	}
+	self._stats_titles = {}
+	self._stats_titles.total = stats_panel:text({
+		alpha = 1,
+		layer = 2,
+		x = 120,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
+	})
+	self._stats_titles.equip = stats_panel:text({
+		alpha = 1,
+		layer = 2,
+		x = 200,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_equipped"))
+	})
+
 	local x = 0
 	local y = 20
-	local text_panel = nil
+	local text_panel
 	local text_columns = {
 		{
-			size = 100,
-			name = "name"
+			name = "name",
+			size = 100
 		},
 		{
-			size = 45,
+			align = "right",
 			name = "total",
-			align = "right"
+			size = 45
 		},
 		{
-			size = 90,
+			align = "right",
 			name = "equip",
-			align = "right"
+			size = 90
 		}
 	}
+
 	self._stats_texts = {}
 	self._stats_panel = stats_panel:panel()
 
 	for i, stat in ipairs(data) do
 		panel = self._stats_panel:panel({
-			name = "weapon_stats",
 			h = 20,
-			x = 0,
 			layer = 1,
+			name = "weapon_stats",
+			x = 0,
 			y = y,
 			w = self._stats_panel:w()
 		})
@@ -2268,8 +2300,8 @@ function PlayerInventoryGui:set_weapon_mods_stats(panel, data)
 				h = panel:h()
 			})
 			self._stats_texts[stat.name][column.name] = text_panel:text({
-				text = "0",
 				layer = 1,
+				text = "0",
 				font_size = tweak_data.menu.pd2_small_font_size,
 				font = tweak_data.menu.pd2_small_font,
 				align = column.align,
@@ -2298,78 +2330,81 @@ function PlayerInventoryGui:set_melee_stats(panel, data)
 	stats_panel = panel:panel({
 		name = "stats_panel"
 	})
+
 	local panel = stats_panel:panel({
 		h = 20,
 		layer = 1,
 		w = stats_panel:w()
 	})
+
 	self._stats_shown = data
-	self._stats_titles = {
-		total = stats_panel:text({
-			x = 135,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
-		}),
-		base = stats_panel:text({
-			alpha = 0.75,
-			x = 200,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_base"))
-		}),
-		skill = stats_panel:text({
-			alpha = 0.75,
-			x = 259,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.resource,
-			text = utf8.to_upper(managers.localization:text("bm_menu_stats_skill"))
-		})
-	}
+	self._stats_titles = {}
+	self._stats_titles.total = stats_panel:text({
+		layer = 2,
+		x = 135,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_total"))
+	})
+	self._stats_titles.base = stats_panel:text({
+		alpha = 0.75,
+		layer = 2,
+		x = 200,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_base"))
+	})
+	self._stats_titles.skill = stats_panel:text({
+		alpha = 0.75,
+		layer = 2,
+		x = 259,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.resource,
+		text = utf8.to_upper(managers.localization:text("bm_menu_stats_skill"))
+	})
+
 	local x = 0
 	local y = 20
-	local text_panel = nil
+	local text_panel
 	local text_columns = {
 		{
-			size = 100,
-			name = "name"
-		},
-		{
-			size = 70,
-			name = "total",
-			align = "right"
+			name = "name",
+			size = 100
 		},
 		{
 			align = "right",
-			name = "base",
-			blend = "add",
+			name = "total",
+			size = 70
+		},
+		{
+			align = "right",
 			alpha = 0.75,
+			blend = "add",
+			name = "base",
 			size = 60
 		},
 		{
 			align = "right",
-			name = "skill",
-			blend = "add",
 			alpha = 0.75,
+			blend = "add",
+			name = "skill",
 			size = 60,
 			color = tweak_data.screen_colors.resource
 		}
 	}
+
 	self._stats_texts = {}
 	self._stats_panel = stats_panel:panel()
 
 	for i, stat in ipairs(data) do
 		panel = self._stats_panel:panel({
-			name = "weapon_stats",
 			h = 20,
-			x = 0,
 			layer = 1,
+			name = "weapon_stats",
+			x = 0,
 			y = y,
 			w = self._stats_panel:w()
 		})
@@ -2393,8 +2428,8 @@ function PlayerInventoryGui:set_melee_stats(panel, data)
 				h = panel:h()
 			})
 			self._stats_texts[stat.name][column.name] = text_panel:text({
-				text = "0",
 				layer = 1,
+				text = "0",
 				font_size = tweak_data.menu.pd2_small_font_size,
 				font = tweak_data.menu.pd2_small_font,
 				align = column.align,
@@ -2423,80 +2458,83 @@ function PlayerInventoryGui:set_skilltree_stats(panel, data)
 	stats_panel = panel:panel({
 		name = "stats_panel"
 	})
+
 	local panel = stats_panel:panel({
 		h = 20,
 		layer = 1,
 		w = stats_panel:w()
 	})
+
 	self._stats_shown = data
-	self._stats_titles = {
-		points = stats_panel:text({
-			x = 130,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("st_menu_point_plural", {
-				points = ""
-			}))
-		}),
-		owned = stats_panel:text({
-			alpha = 0.95,
-			x = 195,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text,
-			text = utf8.to_upper(managers.localization:text("st_menu_skill_owned"))
-		}),
-		aced = stats_panel:text({
-			alpha = 0.85,
-			x = 259,
-			layer = 2,
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.resource,
-			text = utf8.to_upper(managers.localization:text("st_menu_skill_maxed"))
-		})
-	}
+	self._stats_titles = {}
+	self._stats_titles.points = stats_panel:text({
+		layer = 2,
+		x = 130,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("st_menu_point_plural", {
+			points = ""
+		}))
+	})
+	self._stats_titles.owned = stats_panel:text({
+		alpha = 0.95,
+		layer = 2,
+		x = 195,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.text,
+		text = utf8.to_upper(managers.localization:text("st_menu_skill_owned"))
+	})
+	self._stats_titles.aced = stats_panel:text({
+		alpha = 0.85,
+		layer = 2,
+		x = 259,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		font = tweak_data.menu.pd2_small_font,
+		color = tweak_data.screen_colors.resource,
+		text = utf8.to_upper(managers.localization:text("st_menu_skill_maxed"))
+	})
+
 	local x = 0
 	local y = 20
-	local text_panel = nil
+	local text_panel
 	local text_columns = {
 		{
-			size = 100,
-			name = "name"
-		},
-		{
-			size = 60,
-			name = "points",
-			align = "right"
+			name = "name",
+			size = 100
 		},
 		{
 			align = "right",
-			name = "owned",
-			blend = "add",
-			alpha = 0.95,
+			name = "points",
 			size = 60
 		},
 		{
 			align = "right",
-			name = "aced",
+			alpha = 0.95,
 			blend = "add",
+			name = "owned",
+			size = 60
+		},
+		{
+			align = "right",
 			alpha = 0.85,
+			blend = "add",
+			name = "aced",
 			size = 55,
 			color = tweak_data.screen_colors.resource
 		}
 	}
+
 	self._stats_texts = {}
 	self._stats_panel = stats_panel:panel()
 
 	for i, stat in ipairs(data) do
 		panel = self._stats_panel:panel({
-			name = "weapon_stats",
 			h = 20,
-			x = 0,
 			layer = 1,
+			name = "weapon_stats",
+			x = 0,
 			y = y,
 			w = self._stats_panel:w()
 		})
@@ -2520,8 +2558,8 @@ function PlayerInventoryGui:set_skilltree_stats(panel, data)
 				h = panel:h()
 			})
 			self._stats_texts[stat.name][column.name] = text_panel:text({
-				text = "0",
 				layer = 1,
+				text = "0",
 				font_size = tweak_data.menu.pd2_small_font_size,
 				font = tweak_data.menu.pd2_small_font,
 				align = column.align,
@@ -2548,8 +2586,11 @@ function PlayerInventoryGui:_update_player_stats()
 	local equipped_item = managers.blackmarket:equipped_item(category)
 	local equipped_slot = managers.blackmarket:equipped_armor_slot()
 	local temp_stats_shown = self._stats_shown
+
 	self._stats_shown = self._player_stats_shown
+
 	local base_stats, mods_stats, skill_stats = self:_get_armor_stats(equipped_item)
+
 	self._stats_shown = temp_stats_shown
 
 	for _, stat in ipairs(self._player_stats_shown) do
@@ -2584,32 +2625,32 @@ function PlayerInventoryGui:_update_stats(name)
 	if name == "primary" or name == "secondary" then
 		local stats = {
 			{
-				round_value = true,
 				name = "magazine",
+				round_value = true,
 				stat_name = "extra_ammo"
 			},
 			{
-				round_value = true,
 				name = "totalammo",
+				round_value = true,
 				stat_name = "total_ammo_mod"
 			},
 			{
-				round_value = true,
-				name = "fire_rate"
+				name = "fire_rate",
+				round_value = true
 			},
 			{
 				name = "damage"
 			},
 			{
-				percent = true,
 				name = "spread",
 				offset = true,
+				percent = true,
 				revert = true
 			},
 			{
-				percent = true,
 				name = "recoil",
 				offset = true,
+				percent = true,
 				revert = true
 			},
 			{
@@ -2617,9 +2658,9 @@ function PlayerInventoryGui:_update_stats(name)
 				name = "concealment"
 			},
 			{
-				percent = false,
 				name = "suppression",
-				offset = true
+				offset = true,
+				percent = false
 			}
 		}
 
@@ -2636,13 +2677,13 @@ function PlayerInventoryGui:_update_stats(name)
 	elseif name == "melee" then
 		self:set_melee_stats(self._info_panel, {
 			{
-				range = true,
-				name = "damage"
+				name = "damage",
+				range = true
 			},
 			{
-				range = true,
+				multiple_of = "damage",
 				name = "damage_effect",
-				multiple_of = "damage"
+				range = true
 			},
 			{
 				inverse = true,
@@ -2651,8 +2692,8 @@ function PlayerInventoryGui:_update_stats(name)
 				suffix = managers.localization:text("menu_seconds_suffix_short")
 			},
 			{
-				range = true,
-				name = "range"
+				name = "range",
+				range = true
 			},
 			{
 				index = true,
@@ -2692,32 +2733,32 @@ function PlayerInventoryGui:_update_stats(name)
 		local box = self._boxes_by_name[name]
 		local stats = {
 			{
-				round_value = true,
 				name = "magazine",
+				round_value = true,
 				stat_name = "extra_ammo"
 			},
 			{
-				round_value = true,
 				name = "totalammo",
+				round_value = true,
 				stat_name = "total_ammo_mod"
 			},
 			{
-				round_value = true,
-				name = "fire_rate"
+				name = "fire_rate",
+				round_value = true
 			},
 			{
 				name = "damage"
 			},
 			{
-				percent = true,
 				name = "spread",
 				offset = true,
+				percent = true,
 				revert = true
 			},
 			{
-				percent = true,
 				name = "recoil",
 				offset = true,
+				percent = true,
 				revert = true
 			},
 			{
@@ -2725,9 +2766,9 @@ function PlayerInventoryGui:_update_stats(name)
 				name = "concealment"
 			},
 			{
-				percent = false,
 				name = "suppression",
-				offset = true
+				offset = true,
+				percent = false
 			}
 		}
 
@@ -2761,13 +2802,14 @@ end
 
 function PlayerInventoryGui:_update_info_skilltree(name, skilltrees)
 	local text_string = ""
+
 	text_string = text_string .. managers.localization:text("menu_st_skill_switch_set", {
 		skill_switch = managers.skilltree:get_skill_switch_name(managers.skilltree:get_selected_skill_switch(), true)
 	}) .. "\n "
 
 	self:set_info_text(text_string)
 
-	local page_data = nil
+	local page_data
 
 	for _, stat in ipairs(self._stats_shown) do
 		page_data = managers.skilltree:analyze_page(stat.name)
@@ -2795,11 +2837,13 @@ function PlayerInventoryGui:_update_info_specialization(name)
 	if specialization_data then
 		local current_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "current_tier")
 		local max_tier = managers.skilltree:get_specialization_value(current_specialization, "tiers", "max_tier")
+
 		text_string = managers.localization:text(specialization_data.name_id) .. " (" .. tostring(current_tier) .. "/" .. tostring(max_tier) .. ")\n"
 
 		if current_tier < max_tier then
 			local current_points = managers.skilltree:get_specialization_value(current_specialization, "tiers", "next_tier_data", "current_points")
 			local points = managers.skilltree:get_specialization_value(current_specialization, "tiers", "next_tier_data", "points")
+
 			text_string = text_string .. managers.localization:text("menu_st_progress", {
 				progress = string.format("%i/%i", current_points, points)
 			}) .. "\n"
@@ -2818,6 +2862,7 @@ function PlayerInventoryGui:_update_info_character(name)
 	local character_name = CriminalsManager.convert_old_to_new_character_workname(character)
 	local color_ranges = {}
 	local text_string = ""
+
 	text_string = text_string .. managers.localization:text("menu_" .. character) .. "\n"
 
 	if managers.network:session() then
@@ -2825,6 +2870,7 @@ function PlayerInventoryGui:_update_info_character(name)
 			start = utf8.len(text_string),
 			color = tweak_data.screen_colors.important_1
 		}
+
 		text_string = text_string .. managers.localization:to_upper_text("menu_preferred_character_lobby_error") .. "\n"
 		color_range.stop = utf8.len(text_string)
 
@@ -2915,6 +2961,7 @@ function PlayerInventoryGui:_update_info_infamy(name)
 			start = utf8.len(text_string),
 			color = tweak_data.screen_colors.important_1
 		}
+
 		text_string = text_string .. managers.localization:to_upper_text("menu_preferred_character_lobby_error") .. "\n"
 		color_range.stop = utf8.len(text_string)
 
@@ -2937,6 +2984,7 @@ function PlayerInventoryGui:_update_info_crew(name)
 			start = utf8.len(text_string),
 			color = tweak_data.screen_colors.important_1
 		}
+
 		text_string = text_string .. managers.localization:to_upper_text("menu_preferred_character_lobby_error") .. "\n"
 		color_range.stop = utf8.len(text_string)
 
@@ -3035,10 +3083,11 @@ function PlayerInventoryGui:_update_info_weapon_mod(box)
 
 			if stat.offset then
 				local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+
 				max_stat = max_stat - offset
 			end
 
-			if without_skill >= max_stat then
+			if max_stat <= without_skill then
 				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
 			end
 		end
@@ -3093,10 +3142,11 @@ function PlayerInventoryGui:_update_info_weapon(name)
 
 			if stat.offset then
 				local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+
 				max_stat = max_stat - offset
 			end
 
-			if without_skill >= max_stat then
+			if max_stat <= without_skill then
 				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
 			end
 		end
@@ -3118,6 +3168,7 @@ function PlayerInventoryGui:_update_info_weapon_cosmetics(name, cosmetics)
 		if bonus and not skin_data.default_blueprint then
 			local bonus_tweak = tweak_data.economy.bonuses[bonus]
 			local bonus_value = bonus_tweak.exp_multiplier and bonus_tweak.exp_multiplier * 100 - 100 .. "%" or bonus_tweak.money_multiplier and bonus_tweak.money_multiplier * 100 - 100 .. "%"
+
 			info_text = info_text .. "\n" .. managers.localization:text("dialog_new_tradable_item_bonus", {
 				bonus = managers.localization:text(bonus_tweak.name_id, {
 					team_bonus = bonus_value
@@ -3172,10 +3223,11 @@ function PlayerInventoryGui:_update_info_weapon_cosmetics(name, cosmetics)
 
 				if stat.offset then
 					local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+
 					max_stat = max_stat - offset
 				end
 
-				if without_skill >= max_stat then
+				if max_stat <= without_skill then
 					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
 				end
 			end
@@ -3224,7 +3276,7 @@ function PlayerInventoryGui:_update_info_melee(name)
 
 	self:set_info_text(text_string)
 
-	local value, value_min, value_max = nil
+	local value, value_min, value_max
 
 	for _, stat in ipairs(self._stats_shown) do
 		if stat.range then
@@ -3233,7 +3285,8 @@ function PlayerInventoryGui:_update_info_melee(name)
 		end
 
 		value = math.max(base_stats[stat.name].value + mods_stats[stat.name].value + skill_stats[stat.name].value, 0)
-		local base, base_min, base_max, skill, skill_min, skill_max = nil
+
+		local base, base_min, base_max, skill, skill_min, skill_max
 
 		if stat.range then
 			base_min = base_stats[stat.name].min_value
@@ -3244,6 +3297,7 @@ function PlayerInventoryGui:_update_info_melee(name)
 
 		base = base_stats[stat.name].value
 		skill = skill_stats[stat.name].value
+
 		local format_string = "%0." .. tostring(stat.num_decimals or 0) .. "f"
 		local equip_text = value and format_round(value, stat.round_value)
 		local base_text = base and format_round(base, stat.round_value)
@@ -3291,6 +3345,7 @@ function PlayerInventoryGui:_update_info_melee(name)
 
 		if stat.inverse then
 			local temp = positive
+
 			positive = negative
 			negative = temp
 		end
@@ -3322,7 +3377,7 @@ function PlayerInventoryGui:sort_boxes_by_matrix(box_matrix)
 	local combined_height = height - padding_y * 3
 	local box_width = combined_width / 3
 	local box_height = combined_height / 4
-	local num_boxes, box, x, y, up, down, left, right = nil
+	local num_boxes, box, x, y, up, down, left, right
 
 	for row, box_list in pairs(box_matrix) do
 		if box_list then
@@ -3370,9 +3425,9 @@ function PlayerInventoryGui:create_deployable_box(box)
 	local primary_text = deployable_data.info_text
 	local primary_image = deployable_data.item_texture
 	local primary_params = {
+		bg_blend_mode = "normal",
 		name = "deployable_primary",
 		unselected_text = " ",
-		bg_blend_mode = "normal",
 		use_borders = false,
 		w = w,
 		h = h,
@@ -3393,9 +3448,11 @@ function PlayerInventoryGui:create_deployable_box(box)
 	if deployable_data.secondary then
 		primary_params.w = primary_params.w / 2 + 5
 		primary_params.x = 0
+
 		local secondary_text = deployable_data.secondary.info_text
 		local secondary_image = deployable_data.secondary.item_texture
 		local secondary_params = clone(primary_params)
+
 		secondary_params.x = primary_params.w - 10
 		secondary_params.name = "deployable_secondary"
 		secondary_params.parent_box = box
@@ -3406,12 +3463,17 @@ function PlayerInventoryGui:create_deployable_box(box)
 			up = callback(self, self, "previous_deployable_secondary"),
 			down = callback(self, self, "next_deployable_secondary")
 		}
+
 		local primary_panel, primary_box = self:create_box(primary_params)
+
 		primary_box.links = box.links
+
 		local secondary_panel, secondary_box = self:create_box(secondary_params)
+
 		secondary_box.links = box.links
 	else
 		local primary_panel, primary_box = self:create_box(primary_params)
+
 		primary_box.links = box.links
 	end
 end
@@ -3425,9 +3487,9 @@ function PlayerInventoryGui:create_outfit_box(box)
 	local armor_text = armor_data.info_text
 	local armor_image = armor_data.item_texture
 	local armor_params = {
+		bg_blend_mode = "normal",
 		name = "outfit_armor",
 		unselected_text = " ",
-		bg_blend_mode = "normal",
 		use_borders = false,
 		w = w,
 		h = h,
@@ -3448,9 +3510,11 @@ function PlayerInventoryGui:create_outfit_box(box)
 	if player_style_data then
 		armor_params.w = armor_params.w / 2 + 5
 		armor_params.x = 0
+
 		local player_style_text = player_style_data.info_text
 		local player_style_image = player_style_data.item_texture
 		local player_style_params = clone(armor_params)
+
 		player_style_params.x = armor_params.w - 10
 		player_style_params.name = "outfit_player_style"
 		player_style_params.parent_box = box
@@ -3461,12 +3525,17 @@ function PlayerInventoryGui:create_outfit_box(box)
 			up = callback(self, self, "previous_player_style"),
 			down = callback(self, self, "next_player_style")
 		}
+
 		local armor_panel, armor_box = self:create_box(armor_params)
+
 		armor_box.links = box.links
+
 		local player_style_panel, player_style_box = self:create_box(player_style_params)
+
 		player_style_box.links = box.links
 	else
 		local armor_panel, armor_box = self:create_box(armor_params)
+
 		armor_box.links = box.links
 	end
 end
@@ -3484,164 +3553,171 @@ function PlayerInventoryGui:_update_mod_boxes()
 	local clbks = {
 		left = callback(self, self, "open_weapon_mod_menu")
 	}
-	local primary_box = self._boxes_by_name.primary.panel
-	local icon_box = nil
-	local when_to_split = 8
-	local x = primary_box:right() - 2
-	local y = primary_box:bottom() - 2
-	local w = (primary_box:w() - 4) / when_to_split
-	local h = w
-	local mod_links = {
-		down = "primary",
-		up = "primary",
-		left = "primary",
-		right = "primary"
-	}
-	local box_name = nil
 
-	for _, icon in ipairs(player_loadout_data.primary.info_icons or {}) do
-		box_name = "icon_primary_" .. icon.type
-		icon_box = self:create_box({
-			text = false,
-			layer = 2,
-			padding = 0,
-			bg_blend_mode = "normal",
-			use_borders = false,
-			name = box_name,
-			mod_data = {
-				category = "primaries",
-				selected_tab = icon.type,
-				name = managers.blackmarket:equipped_primary().weapon_id,
-				name_localized = player_loadout_data.primary.info_text,
-				text_selected_color = player_loadout_data.primary.info_text_color,
-				slot = managers.blackmarket:equipped_weapon_slot("primaries")
-			},
-			w = w,
-			h = h,
-			image = icon.texture,
-			alpha = icon.equipped and 1 or 0.25,
-			select_anim = select_anim,
-			unselect_anim = unselect_anim,
-			clbks = not icon.weapon_skin_bonus and clbks,
-			links = mod_links,
-			can_select = not icon.weapon_skin_bonus
-		})
+	do
+		local primary_box = self._boxes_by_name.primary.panel
+		local icon_box
+		local when_to_split = 8
+		local x = primary_box:right() - 2
+		local y = primary_box:bottom() - 2
+		local w = (primary_box:w() - 4) / when_to_split
+		local h = w
+		local mod_links = {
+			down = "primary",
+			left = "primary",
+			right = "primary",
+			up = "primary"
+		}
+		local box_name
 
-		icon_box:set_rightbottom(x, y)
-		icon_box:set_visible(primary_box:visible())
+		for _, icon in ipairs(player_loadout_data.primary.info_icons or {}) do
+			box_name = "icon_primary_" .. icon.type
+			icon_box = self:create_box({
+				bg_blend_mode = "normal",
+				layer = 2,
+				padding = 0,
+				text = false,
+				use_borders = false,
+				name = box_name,
+				mod_data = {
+					category = "primaries",
+					selected_tab = icon.type,
+					name = managers.blackmarket:equipped_primary().weapon_id,
+					name_localized = player_loadout_data.primary.info_text,
+					text_selected_color = player_loadout_data.primary.info_text_color,
+					slot = managers.blackmarket:equipped_weapon_slot("primaries")
+				},
+				w = w,
+				h = h,
+				image = icon.texture,
+				alpha = icon.equipped and 1 or 0.25,
+				select_anim = select_anim,
+				unselect_anim = unselect_anim,
+				clbks = not icon.weapon_skin_bonus and clbks,
+				links = mod_links,
+				can_select = not icon.weapon_skin_bonus
+			})
 
-		x = icon_box:left()
+			icon_box:set_rightbottom(x, y)
+			icon_box:set_visible(primary_box:visible())
 
-		if _ % when_to_split == 0 then
-			x = primary_box:right() - 2
-			y = y - 18
+			x = icon_box:left()
+
+			if _ % when_to_split == 0 then
+				x = primary_box:right() - 2
+				y = y - 18
+			end
 		end
 	end
 
-	local secondary_box = self._boxes_by_name.secondary.panel
-	local icon_box = nil
-	local when_to_split = 8
-	local x = secondary_box:right() - 2
-	local y = secondary_box:bottom() - 2
-	local w = (secondary_box:w() - 4) / when_to_split
-	local h = w
-	local mod_links = {
-		down = "secondary",
-		up = "secondary",
-		left = "secondary",
-		right = "secondary"
-	}
-	local box_name = nil
+	do
+		local secondary_box = self._boxes_by_name.secondary.panel
+		local icon_box
+		local when_to_split = 8
+		local x = secondary_box:right() - 2
+		local y = secondary_box:bottom() - 2
+		local w = (secondary_box:w() - 4) / when_to_split
+		local h = w
+		local mod_links = {
+			down = "secondary",
+			left = "secondary",
+			right = "secondary",
+			up = "secondary"
+		}
+		local box_name
 
-	for _, icon in ipairs(player_loadout_data.secondary.info_icons or {}) do
-		box_name = "icon_secondary_" .. icon.type
-		icon_box = self:create_box({
-			text = false,
-			layer = 2,
-			padding = 0,
-			bg_blend_mode = "normal",
-			use_borders = false,
-			name = box_name,
-			mod_data = {
-				category = "secondaries",
-				selected_tab = icon.type,
-				name = managers.blackmarket:equipped_secondary().weapon_id,
-				name_localized = player_loadout_data.secondary.info_text,
-				text_selected_color = player_loadout_data.secondary.info_text_color,
-				slot = managers.blackmarket:equipped_weapon_slot("secondaries")
-			},
-			w = w,
-			h = h,
-			image = icon.texture,
-			alpha = icon.equipped and 1 or 0.25,
-			select_anim = select_anim,
-			unselect_anim = unselect_anim,
-			clbks = not icon.weapon_skin_bonus and clbks,
-			links = mod_links,
-			can_select = not icon.weapon_skin_bonus
-		})
+		for _, icon in ipairs(player_loadout_data.secondary.info_icons or {}) do
+			box_name = "icon_secondary_" .. icon.type
+			icon_box = self:create_box({
+				bg_blend_mode = "normal",
+				layer = 2,
+				padding = 0,
+				text = false,
+				use_borders = false,
+				name = box_name,
+				mod_data = {
+					category = "secondaries",
+					selected_tab = icon.type,
+					name = managers.blackmarket:equipped_secondary().weapon_id,
+					name_localized = player_loadout_data.secondary.info_text,
+					text_selected_color = player_loadout_data.secondary.info_text_color,
+					slot = managers.blackmarket:equipped_weapon_slot("secondaries")
+				},
+				w = w,
+				h = h,
+				image = icon.texture,
+				alpha = icon.equipped and 1 or 0.25,
+				select_anim = select_anim,
+				unselect_anim = unselect_anim,
+				clbks = not icon.weapon_skin_bonus and clbks,
+				links = mod_links,
+				can_select = not icon.weapon_skin_bonus
+			})
 
-		icon_box:set_rightbottom(x, y)
-		icon_box:set_visible(secondary_box:visible())
+			icon_box:set_rightbottom(x, y)
+			icon_box:set_visible(secondary_box:visible())
 
-		x = icon_box:left()
+			x = icon_box:left()
 
-		if _ % when_to_split == 0 then
-			x = secondary_box:right() - 2
-			y = y - 18
+			if _ % when_to_split == 0 then
+				x = secondary_box:right() - 2
+				y = y - 18
+			end
 		end
 	end
 
-	local skilltree_box = self._boxes_by_name.skilltree.panel
-	local icon_box = nil
-	local w = (skilltree_box:w() - 2 * (#tweak_data.skilltree.skill_pages_order - 1) - 8) / #tweak_data.skilltree.skill_pages_order
-	local h = w
-	local x = skilltree_box:left() + 4
-	local y = skilltree_box:center_y() - 2 - h / 2
-	local mod_links = {
-		down = "skilltree",
-		up = "skilltree",
-		left = "skilltree",
-		right = "skilltree"
-	}
-	local box_name, points, progress, num_skills = nil
+	do
+		local skilltree_box = self._boxes_by_name.skilltree.panel
+		local icon_box
+		local w = (skilltree_box:w() - 2 * (#tweak_data.skilltree.skill_pages_order - 1) - 8) / #tweak_data.skilltree.skill_pages_order
+		local h = w
+		local x = skilltree_box:left() + 4
+		local y = skilltree_box:center_y() - 2 - h / 2
+		local mod_links = {
+			down = "skilltree",
+			left = "skilltree",
+			right = "skilltree",
+			up = "skilltree"
+		}
+		local box_name, points, progress, num_skills
 
-	for tree, page in ipairs(tweak_data.skilltree.skill_pages_order) do
-		box_name = "icon_skilltree_" .. tostring(tree)
-		points, num_skills = managers.skilltree:get_page_progress_new(page)
-		icon_box = self:create_box({
-			alpha = 1,
-			text_vertical = "bottom",
-			use_borders = false,
-			layer = 3,
-			clbks = false,
-			padding = 0,
-			image = "guis/textures/pd2/inv_skillcards_icons",
-			text_align = "center",
-			can_select = false,
-			bg_blend_mode = "normal",
-			name = box_name,
-			w = w,
-			h = h + 20,
-			text = tostring(points),
-			text_color = points == 0 and Color(0.5, 0.5, 0.5) or tweak_data.screen_colors.text,
-			texture_rect = {
-				(tree - 1) * 24,
-				0,
-				22,
-				31
-			},
-			select_anim = select_anim,
-			unselect_anim = unselect_anim,
-			links = mod_links
-		})
+		for tree, page in ipairs(tweak_data.skilltree.skill_pages_order) do
+			box_name = "icon_skilltree_" .. tostring(tree)
+			points, num_skills = managers.skilltree:get_page_progress_new(page)
+			icon_box = self:create_box({
+				alpha = 1,
+				bg_blend_mode = "normal",
+				can_select = false,
+				clbks = false,
+				image = "guis/textures/pd2/inv_skillcards_icons",
+				layer = 3,
+				padding = 0,
+				text_align = "center",
+				text_vertical = "bottom",
+				use_borders = false,
+				name = box_name,
+				w = w,
+				h = h + 20,
+				text = tostring(points),
+				text_color = points == 0 and Color(0.5, 0.5, 0.5) or tweak_data.screen_colors.text,
+				texture_rect = {
+					(tree - 1) * 24,
+					0,
+					22,
+					31
+				},
+				select_anim = select_anim,
+				unselect_anim = unselect_anim,
+				links = mod_links
+			})
 
-		icon_box:set_lefttop(math.round(x), math.round(y))
+			icon_box:set_lefttop(math.round(x), math.round(y))
 
-		x = x + w + 2
+			x = x + w + 2
 
-		icon_box:set_visible(skilltree_box:visible())
-		self:add_child_box(self._boxes_by_name.skilltree, self._boxes_by_name[box_name])
+			icon_box:set_visible(skilltree_box:visible())
+			self:add_child_box(self._boxes_by_name.skilltree, self._boxes_by_name[box_name])
+		end
 	end
 
 	local infamy_box = self._boxes_by_name.infamy
@@ -3651,14 +3727,14 @@ function PlayerInventoryGui:_update_mod_boxes()
 	local card_texture_h = 43
 	local card_size_mul = 1.5
 	local _, infamy_card_box = self:create_box({
-		keep_texture_size = true,
-		name = "infamy_card",
 		alpha = 1,
-		image = "guis/textures/pd2/inv_infamycard_bg",
-		can_select = false,
-		layer = 2,
-		clbks = false,
 		bg_blend_mode = "normal",
+		can_select = false,
+		clbks = false,
+		image = "guis/textures/pd2/inv_infamycard_bg",
+		keep_texture_size = true,
+		layer = 2,
+		name = "infamy_card",
 		use_borders = false,
 		w = w,
 		h = h,
@@ -3679,17 +3755,17 @@ function PlayerInventoryGui:_update_mod_boxes()
 	local number_x = card_gui:world_center_x() - number_w / 2
 	local number_y = card_gui:world_center_y() - number_h / 2
 	local ap, infamy_rank_box = self:create_box({
-		text_vertical = "center",
-		name = "infamy_card_number",
 		alpha = 1,
-		can_select = false,
-		layer = 3,
-		border_padding = 0,
-		clbks = false,
 		animate_text = true,
-		use_borders = false,
+		border_padding = 0,
+		can_select = false,
+		clbks = false,
+		layer = 3,
+		name = "infamy_card_number",
 		text_align = "center",
 		text_blend_mode = "normal",
+		text_vertical = "center",
+		use_borders = false,
 		x = number_x,
 		y = number_y,
 		w = number_w,
@@ -3742,8 +3818,10 @@ function PlayerInventoryGui:create_box(params)
 	local select_anim = params.select_anim or false
 	local unselect_anim = params.unselect_anim or false
 	local animate_text = params.animate_text or false
+
 	w = math.max(w, border_padding * 2 + 1)
 	h = math.max(h, border_padding * 2 + 1)
+
 	local panel = (parent_box and parent_box.panel or self._panel):panel({
 		name = name,
 		x = x,
@@ -3753,7 +3831,7 @@ function PlayerInventoryGui:create_box(params)
 		alpha = alpha,
 		layer = layer * 10
 	})
-	local text_object, image_object, borders_object, bg_object = nil
+	local text_object, image_object, borders_object, bg_object
 
 	if text and not parent_box then
 		local align = params.text_align or "left"
@@ -3764,8 +3842,8 @@ function PlayerInventoryGui:create_box(params)
 		local font = params.font or tweak_data.menu.pd2_small_font
 		local font_size = params.font_size or tweak_data.menu.pd2_small_font_size
 		local gui_object = panel:text({
-			name = "text",
 			layer = 2,
+			name = "text",
 			text = unselected_text,
 			font = font,
 			font_size = font_size,
@@ -3781,7 +3859,7 @@ function PlayerInventoryGui:create_box(params)
 
 		if w < needed_width then
 			if shrink_text then
-				local scaled_font_size = math.floor(font_size * w / needed_width)
+				local scaled_font_size = math.floor(font_size * (w / needed_width))
 
 				gui_object:set_font_size(scaled_font_size)
 				make_fine_text(gui_object)
@@ -3841,8 +3919,8 @@ function PlayerInventoryGui:create_box(params)
 		local panel_height = panel:h() - border_padding * 2 - (above_text_object and above_text_vertical ~= "center" and above_text_object.gui:h() + padding or 0)
 		local akimbo_gui_data = params.akimbo_gui_data
 		local gui_object = panel:panel({
-			name = "texture_panel",
 			layer = 1,
+			name = "texture_panel",
 			w = panel_width,
 			h = panel_height
 		})
@@ -3886,38 +3964,41 @@ function PlayerInventoryGui:create_box(params)
 		elseif dual_image then
 			local texture_rect_dual_1 = params.texture_rect_dual_1 or params.image_rect_dual_1 or nil
 			local texture_rect_dual_2 = params.texture_rect_dual_2 or params.image_rect_dual_2 or nil
-			local panel1 = gui_object:panel({
-				valign = "scale",
-				name = "dual_panel1",
-				halign = "scale"
-			})
 
-			panel1:set_size(gui_object:w() / 2, gui_object:h() / 2)
-			panel1:set_center(gui_object:w() * 0.5, gui_object:h() * 0.35)
+			do
+				local panel1 = gui_object:panel({
+					halign = "scale",
+					name = "dual_panel1",
+					valign = "scale"
+				})
 
-			local params = {
-				panel = panel1,
-				selected_color = selected_color,
-				unselected_color = unselected_color,
-				render_template = render_template,
-				blend_mode = blend_mode,
-				texture_rect = texture_rect_dual_1,
-				keep_texture_size = params.keep_texture_size
-			}
+				panel1:set_size(gui_object:w() / 2, gui_object:h() / 2)
+				panel1:set_center(gui_object:w() * 0.5, gui_object:h() * 0.35)
 
-			if not async_loading then
-				self:texture_loaded_clbk(Idstring(dual_image[1]), params)
-			else
-				local texture_loaded_clbk = callback(self, self, "texture_loaded_clbk", params)
+				local params = {
+					panel = panel1,
+					selected_color = selected_color,
+					unselected_color = unselected_color,
+					render_template = render_template,
+					blend_mode = blend_mode,
+					texture_rect = texture_rect_dual_1,
+					keep_texture_size = params.keep_texture_size
+				}
 
-				table.insert(requested_textures, dual_image[1])
-				table.insert(requested_indices, managers.menu_component:request_texture(dual_image[1], texture_loaded_clbk))
+				if not async_loading then
+					self:texture_loaded_clbk(Idstring(dual_image[1]), params)
+				else
+					local texture_loaded_clbk = callback(self, self, "texture_loaded_clbk", params)
+
+					table.insert(requested_textures, dual_image[1])
+					table.insert(requested_indices, managers.menu_component:request_texture(dual_image[1], texture_loaded_clbk))
+				end
 			end
 
 			local panel2 = gui_object:panel({
-				valign = "scale",
+				halign = "scale",
 				name = "dual_panel2",
-				halign = "scale"
+				valign = "scale"
 			})
 
 			panel2:set_size(gui_object:w() / 2, gui_object:h() / 2)
@@ -3990,7 +4071,7 @@ function PlayerInventoryGui:create_box(params)
 		local unselected_color = params.bg_unselected_color or params.bg_color or Color.white
 		local selectable = params.bg_selectable or false
 		local blend_mode = params.bg_blend_mode or params.blend_mode or "add"
-		local gui_object = nil
+		local gui_object
 
 		if background_image then
 			gui_object = panel:bitmap({
@@ -4019,7 +4100,7 @@ function PlayerInventoryGui:create_box(params)
 					th = 1
 				end
 
-				local sw = math.min(pw, ph * tw / th)
+				local sw = math.min(pw, ph * (tw / th))
 				local sh = math.min(ph, pw / (tw / th))
 
 				gui_object:set_size(math.round(sw), math.round(sh))
@@ -4137,6 +4218,7 @@ function PlayerInventoryGui:update_box(box, params, skip_update_other)
 	end
 
 	local box_params = box.params
+
 	box_params.links = box.links
 
 	if params then
@@ -4242,36 +4324,45 @@ end
 function PlayerInventoryGui:_update_loadout_boxes()
 	local player_loadout_data = managers.blackmarket:player_loadout_data()
 	local loadout_boxes = {
-		secondary = "secondary",
 		armor = "armor",
-		throwable = "grenade",
+		character = "character",
 		mask = "mask",
 		melee = "melee_weapon",
 		primary = "primary",
-		character = "character",
-		armor = nil
+		secondary = "secondary",
+		throwable = "grenade"
 	}
+
+	loadout_boxes.armor = nil
 
 	self:update_box(self._boxes_by_name.armor, {
 		data = player_loadout_data.outfit
 	})
 
-	local box = nil
+	local box
 
 	for box_name, entry in pairs(loadout_boxes) do
 		box = self._boxes_by_name[box_name]
 
 		if box and player_loadout_data[entry] then
-			self:update_box(box, {
+			local var_1_0 = self
+			local var_1_1 = self.update_box
+			local var_1_2 = box
+			local var_1_3 = {
 				text = player_loadout_data[entry].info_text,
-				image = player_loadout_data[entry].item_texture,
-				dual_image = not player_loadout_data[entry].item_texture and {
-					player_loadout_data[entry].dual_texture_1,
-					player_loadout_data[entry].dual_texture_2
-				},
-				bg_image = player_loadout_data[entry].item_bg_texture or false,
-				use_background = player_loadout_data[entry].item_bg_texture or false
-			}, true)
+				image = player_loadout_data[entry].item_texture
+			}
+			local var_1_4
+
+			var_1_4 = not player_loadout_data[entry].item_texture and {
+				player_loadout_data[entry].dual_texture_1,
+				player_loadout_data[entry].dual_texture_2
+			}
+			var_1_3.dual_image = var_1_4
+			var_1_3.bg_image = player_loadout_data[entry].item_bg_texture or false
+			var_1_3.use_background = player_loadout_data[entry].item_bg_texture or false
+
+			var_1_1(var_1_0, var_1_2, var_1_3, true)
 		end
 	end
 
@@ -4331,8 +4422,8 @@ function PlayerInventoryGui:texture_loaded_clbk(params, texture_idstring)
 	local image_size_mul = params.image_size_mul or 1
 	local akimbo_gui_data = params.akimbo_gui_data
 	local gui_object = panel:bitmap({
-		name = "image",
 		halign = "scale",
+		name = "image",
 		valign = "scale",
 		texture = texture,
 		color = unselected_color,
@@ -4366,8 +4457,8 @@ function PlayerInventoryGui:texture_loaded_clbk(params, texture_idstring)
 
 		if akimbo_gui_data then
 			local gui_object2 = panel:bitmap({
-				name = "image2",
 				halign = "scale",
+				name = "image2",
 				valign = "scale",
 				texture = texture,
 				color = unselected_color,
@@ -4405,11 +4496,12 @@ function PlayerInventoryGui:open_weapon_category_menu(category)
 	local columns = tweak_data.gui.WEAPON_COLUMNS_PER_PAGE or 3
 	local max_pages = tweak_data.gui.MAX_WEAPON_PAGES or 8
 	local items_per_page = rows * columns
-	local item_data, selected_tab = nil
+	local item_data, selected_tab
 
 	for page = 1, max_pages do
 		local index = 1
 		local start_i = 1 + items_per_page * (page - 1)
+
 		item_data = {}
 
 		for i = start_i, items_per_page * page do
@@ -4426,9 +4518,9 @@ function PlayerInventoryGui:open_weapon_category_menu(category)
 		})
 
 		table.insert(new_node_data, {
-			prev_node_data = false,
 			allow_preview = true,
 			on_create_func_name = "populate_weapon_category_new",
+			prev_node_data = false,
 			name = category,
 			category = category,
 			start_i = start_i,
@@ -4561,15 +4653,18 @@ end
 
 function PlayerInventoryGui:open_melee_menu()
 	local sorted_categories, item_categories, override_slots = managers.blackmarket:get_sorted_melee_weapons()
+
 	override_slots = override_slots or {
 		4,
 		4
 	}
+
 	local new_node_data = {}
-	local item_data, selected_tab = nil
+	local item_data, selected_tab
 
 	for page, category in ipairs(sorted_categories) do
 		local items = item_categories[category]
+
 		item_data = {}
 
 		for _, item in ipairs(items) do
@@ -4585,10 +4680,10 @@ function PlayerInventoryGui:open_melee_menu()
 		})
 
 		table.insert(new_node_data, {
-			prev_node_data = false,
 			allow_preview = true,
-			on_create_func_name = "populate_melee_weapons_new",
 			category = "melee_weapons",
+			on_create_func_name = "populate_melee_weapons_new",
+			prev_node_data = false,
 			name = category,
 			name_localized = name_id,
 			on_create_data = item_data,
@@ -4625,15 +4720,22 @@ function PlayerInventoryGui:previous_melee()
 
 	if box and managers.blackmarket:equip_previous_melee_weapon() then
 		local player_loadout_data = managers.blackmarket:player_loadout_data()
-
-		self:update_box(box, {
+		local var_1_0 = self
+		local var_1_1 = self.update_box
+		local var_1_2 = box
+		local var_1_3 = {
 			text = player_loadout_data.melee_weapon.info_text,
-			image = player_loadout_data.melee_weapon.item_texture,
-			dual_image = not player_loadout_data.melee_weapon.item_texture and {
-				player_loadout_data.melee_weapon.dual_texture_1,
-				player_loadout_data.melee_weapon.dual_texture_2
-			}
-		})
+			image = player_loadout_data.melee_weapon.item_texture
+		}
+		local var_1_4
+
+		var_1_4 = not player_loadout_data.melee_weapon.item_texture and {
+			player_loadout_data.melee_weapon.dual_texture_1,
+			player_loadout_data.melee_weapon.dual_texture_2
+		}
+		var_1_3.dual_image = var_1_4
+
+		var_1_1(var_1_0, var_1_2, var_1_3)
 		self:_update_info_melee("melee")
 	end
 end
@@ -4643,15 +4745,22 @@ function PlayerInventoryGui:next_melee()
 
 	if box and managers.blackmarket:equip_next_melee_weapon() then
 		local player_loadout_data = managers.blackmarket:player_loadout_data()
-
-		self:update_box(box, {
+		local var_1_0 = self
+		local var_1_1 = self.update_box
+		local var_1_2 = box
+		local var_1_3 = {
 			text = player_loadout_data.melee_weapon.info_text,
-			image = player_loadout_data.melee_weapon.item_texture,
-			dual_image = not player_loadout_data.melee_weapon.item_texture and {
-				player_loadout_data.melee_weapon.dual_texture_1,
-				player_loadout_data.melee_weapon.dual_texture_2
-			}
-		})
+			image = player_loadout_data.melee_weapon.item_texture
+		}
+		local var_1_4
+
+		var_1_4 = not player_loadout_data.melee_weapon.item_texture and {
+			player_loadout_data.melee_weapon.dual_texture_1,
+			player_loadout_data.melee_weapon.dual_texture_2
+		}
+		var_1_3.dual_image = var_1_4
+
+		var_1_1(var_1_0, var_1_2, var_1_3)
 		self:_update_info_melee("melee")
 	end
 end
@@ -4661,9 +4770,9 @@ function PlayerInventoryGui:open_throwable_menu()
 
 	table.insert(new_node_data, {
 		allow_preview = true,
+		category = "grenades",
 		name = "bm_menu_grenades",
 		on_create_func_name = "populate_grenades",
-		category = "grenades",
 		override_slots = {
 			5,
 			5
@@ -4725,23 +4834,23 @@ function PlayerInventoryGui:open_armor_menu(selected_tab)
 	}
 
 	table.insert(new_node_data, {
+		category = "armors",
 		name = "bm_menu_armors",
 		on_create_func_name = "populate_armors",
-		category = "armors",
 		override_slots = override_slots,
 		identifier = BlackMarketGui.identifiers.armor
 	})
 	table.insert(new_node_data, {
+		category = "player_styles",
 		name = "bm_menu_player_styles",
 		on_create_func_name = "populate_player_styles",
-		category = "player_styles",
 		override_slots = override_slots,
 		identifier = BlackMarketGui.identifiers.player_style
 	})
 	table.insert(new_node_data, {
+		category = "gloves",
 		name = "bm_menu_gloves",
 		on_create_func_name = "populate_gloves",
-		category = "gloves",
 		override_slots = override_slots,
 		identifier = BlackMarketGui.identifiers.glove
 	})
@@ -4763,6 +4872,7 @@ function PlayerInventoryGui:open_armor_menu(selected_tab)
 end
 
 function PlayerInventoryGui:preview_armor()
+	return
 end
 
 function PlayerInventoryGui:previous_armor()
@@ -4825,9 +4935,9 @@ function PlayerInventoryGui:open_deployable_menu()
 	local new_node_data = {}
 
 	table.insert(new_node_data, {
+		category = "deployables",
 		name = "bm_menu_deployables",
 		on_create_func_name = "populate_deployables",
-		category = "deployables",
 		override_slots = override_slots,
 		identifier = BlackMarketGui.identifiers.deployable
 	})
@@ -4911,11 +5021,12 @@ function PlayerInventoryGui:open_mask_menu()
 	local columns = tweak_data.gui.MASK_COLUMNS_PER_PAGE or 3
 	local max_pages = tweak_data.gui.MAX_MASK_PAGES or 8
 	local items_per_page = rows * columns
-	local item_data, selected_tab = nil
+	local item_data, selected_tab
 
 	for page = 1, max_pages do
 		local index = 1
 		local start_i = 1 + items_per_page * (page - 1)
+
 		item_data = {}
 
 		for i = start_i, items_per_page * page do
@@ -4932,11 +5043,11 @@ function PlayerInventoryGui:open_mask_menu()
 		})
 
 		table.insert(new_node_data, {
-			name = "masks",
-			prev_node_data = false,
 			allow_preview = true,
-			on_create_func_name = "populate_masks_new",
 			category = "masks",
+			name = "masks",
+			on_create_func_name = "populate_masks_new",
+			prev_node_data = false,
 			start_i = start_i,
 			name_localized = name_id,
 			on_create_data = item_data,
@@ -5003,9 +5114,9 @@ function PlayerInventoryGui:open_character_menu()
 	local new_node_data = {}
 
 	table.insert(new_node_data, {
+		category = "characters",
 		name = "bm_menu_characters",
 		on_create_func_name = "populate_characters",
-		category = "characters",
 		override_slots = override_slots,
 		identifier = BlackMarketGui.identifiers.character
 	})
@@ -5022,6 +5133,7 @@ function PlayerInventoryGui:open_character_menu()
 end
 
 function PlayerInventoryGui:preview_character()
+	return
 end
 
 function PlayerInventoryGui:previous_character()
@@ -5091,6 +5203,7 @@ function PlayerInventoryGui:open_skilltree_menu()
 end
 
 function PlayerInventoryGui:preview_skilltree()
+	return
 end
 
 function PlayerInventoryGui:previous_skilltree()
@@ -5146,6 +5259,7 @@ function PlayerInventoryGui:open_specialization_menu()
 end
 
 function PlayerInventoryGui:preview_specialization()
+	return
 end
 
 function PlayerInventoryGui:_update_specialization_box()
@@ -5301,7 +5415,7 @@ function PlayerInventoryGui:_update_box_status(box, selected, override_text_stri
 
 		if w < needed_width then
 			if shrink_text then
-				gui_object:set_font_size(font_size * w / needed_width)
+				gui_object:set_font_size(font_size * (w / needed_width))
 				make_fine_text(gui_object)
 			elseif box.params and adept_width then
 				panel:set_w(needed_width)
@@ -5495,7 +5609,7 @@ function PlayerInventoryGui:special_btn_pressed(button)
 
 	for _, text_button in ipairs(self._text_buttons) do
 		if alive(text_button.panel) and text_button.panel:visible() and text_button.binding == button then
-			text_button:clbk()
+			text_button.clbk(text_button)
 			managers.menu_component:post_event("menu_enter")
 		end
 	end
@@ -5555,7 +5669,7 @@ function PlayerInventoryGui:mouse_moved(o, x, y)
 		self._panel:child("back_button"):set_color(tweak_data.screen_colors.button_stage_3)
 	end
 
-	local mouse_over_box = nil
+	local mouse_over_box
 
 	for i, box in ipairs(self._boxes) do
 		if alive(box.panel) and box.panel:tree_visible() and box.can_select and box.panel:inside(x, y) and (not mouse_over_box or mouse_over_box.layer < box.layer) then
@@ -5585,8 +5699,7 @@ function PlayerInventoryGui:mouse_moved(o, x, y)
 					end
 				end
 
-				pointer = "link"
-				used = true
+				used, pointer = true, "link"
 			elseif button.highlighted then
 				button.highlighted = false
 
@@ -5604,6 +5717,7 @@ function PlayerInventoryGui:mouse_moved(o, x, y)
 	end
 
 	local u, p = self._multi_profile_item:mouse_moved(x, y)
+
 	used = u or used
 	pointer = p or pointer
 	self._input_focus = pointer == "arrow" and 2 or 1
@@ -5639,7 +5753,7 @@ function PlayerInventoryGui:mouse_pressed(button, x, y)
 		for _, button in ipairs(self._text_buttons) do
 			if alive(button.panel) and button.panel:visible() and button.panel:inside(x, y) then
 				if button.clbk then
-					button:clbk()
+					button.clbk(button)
 				end
 
 				managers.menu_component:post_event("menu_enter")
@@ -5667,7 +5781,7 @@ function PlayerInventoryGui:mouse_pressed(button, x, y)
 end
 
 function PlayerInventoryGui:unretrieve_box_textures(box)
-	local object = nil
+	local object
 
 	for _, object_name in ipairs({
 		"text_object",
@@ -5756,16 +5870,16 @@ function PlayerInventoryGui:create_text_button(params)
 		alpha = alpha
 	})
 	local gui_blur = button_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = -1,
 		name = "button_blur",
 		render_template = "VertexColorTexturedBlur3D",
-		layer = -1,
+		texture = "guis/textures/test_blur_df",
 		visible = not hide_blur
 	})
 	local gui_text = button_panel:text({
-		name = "button_text",
 		blend_mode = "add",
 		layer = 0,
+		name = "button_text",
 		text = text,
 		font = font,
 		font_size = font_size,
@@ -5784,14 +5898,14 @@ function PlayerInventoryGui:create_text_button(params)
 		button_panel:set_bottom(bottom)
 	end
 
-	local left, right, top, bottom = nil
+	local left, right, top, bottom
 
 	for _, button in ipairs(self._text_buttons) do
 		if alive(button.text) then
 			left = button_panel:left() < button.panel:right()
-			right = button.panel:left() < button_panel:right()
+			right = button_panel:right() > button.panel:left()
 			top = button_panel:top() < button.panel:bottom()
-			bottom = button.panel:top() < button_panel:bottom()
+			bottom = button_panel:bottom() > button.panel:top()
 
 			if left and right and top and bottom then
 				if button.panel:visible() and button_panel:visible() then
@@ -5817,7 +5931,7 @@ function PlayerInventoryGui:create_text_button(params)
 end
 
 function PlayerInventoryGui:refresh_text_button(button_panel, params)
-	local refresh_button, refresh_index = nil
+	local refresh_button, refresh_index
 
 	for index, button in ipairs(self._text_buttons) do
 		if button.panel == button_panel then
@@ -5849,10 +5963,9 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 	local modifier_stats = tweak_data.weapon[name].stats_modifiers
 
 	for _, stat in pairs(self._stats_shown) do
-		mods_stats[stat.name] = {
-			index = 0,
-			value = 0
-		}
+		mods_stats[stat.name] = {}
+		mods_stats[stat.name].index = 0
+		mods_stats[stat.name].value = 0
 	end
 
 	if equipped_mods then
@@ -5865,10 +5978,12 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 			for _, stat in pairs(self._stats_shown) do
 				if stat.name == "magazine" then
 					local ammo = mods_stats[stat.name].index
+
 					ammo = ammo and ammo + (tweak_data.weapon[name].stats.extra_ammo or 0)
 					mods_stats[stat.name].value = mods_stats[stat.name].value + (ammo and tweak_data.weapon.stats.extra_ammo[ammo] or 0)
 				elseif stat.name == "totalammo" then
 					local ammo = bonus_stats.total_ammo_mod
+
 					mods_stats[stat.name].index = mods_stats[stat.name].index + (ammo or 0)
 				else
 					mods_stats[stat.name].index = mods_stats[stat.name].index + (bonus_stats[stat.name] or 0)
@@ -5876,7 +5991,7 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 			end
 		end
 
-		local part_data = nil
+		local part_data
 
 		for _, mod in ipairs(equipped_mods) do
 			part_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(mod, factory_id, default_blueprint)
@@ -5886,10 +6001,12 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 					if part_data.stats then
 						if stat.name == "magazine" then
 							local ammo = part_data.stats.extra_ammo
+
 							ammo = ammo and ammo + (tweak_data.weapon[name].stats.extra_ammo or 0)
 							mods_stats[stat.name].value = mods_stats[stat.name].value + (ammo and tweak_data.weapon.stats.extra_ammo[ammo] or 0)
 						elseif stat.name == "totalammo" then
 							local ammo = part_data.stats.total_ammo_mod
+
 							mods_stats[stat.name].index = mods_stats[stat.name].index + (ammo or 0)
 						else
 							mods_stats[stat.name].index = mods_stats[stat.name].index + (part_data.stats[stat.name] or 0)
@@ -5899,7 +6016,7 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 			end
 		end
 
-		local index, stat_name = nil
+		local index, stat_name
 
 		for _, stat in pairs(self._stats_shown) do
 			stat_name = stat.name
@@ -5912,6 +6029,7 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 				end
 
 				mods_stats[stat.name].value = stat.index and index or tweak_stats[stat_name][index] * tweak_data.gui.stats_present_multiplier
+
 				local offset = math.min(tweak_stats[stat_name][1], tweak_stats[stat_name][#tweak_stats[stat_name]]) * tweak_data.gui.stats_present_multiplier
 
 				if stat.offset then
@@ -5948,7 +6066,7 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 
 						local new_value = (max_stat - modded_value) * tweak_data.gui.stats_present_multiplier
 
-						if mod ~= 0 and (tweak_stats[stat_name][1] < modded_value or modded_value < tweak_stats[stat_name][#tweak_stats[stat_name]]) then
+						if mod ~= 0 and (modded_value > tweak_stats[stat_name][1] or modded_value < tweak_stats[stat_name][#tweak_stats[stat_name]]) then
 							new_value = (new_value + mods_stats[stat.name].value / mod) / 2
 						end
 
@@ -5966,6 +6084,7 @@ function PlayerInventoryGui:_get_mods_stats(name, base_stats, equipped_mods, bon
 					end
 
 					local ratio = mods_stats[stat.name].value / max_stat
+
 					mods_stats[stat.name].value = ratio * 100
 				end
 
@@ -5990,20 +6109,21 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 
 	for i, stat in ipairs(self._stats_shown) do
 		local skip_rounding = stat.num_decimals
+
 		base_stats[stat.name] = {
-			value = 0,
 			max_value = 0,
-			min_value = 0
+			min_value = 0,
+			value = 0
 		}
 		mods_stats[stat.name] = {
-			value = 0,
 			max_value = 0,
-			min_value = 0
+			min_value = 0,
+			value = 0
 		}
 		skill_stats[stat.name] = {
-			value = 0,
 			max_value = 0,
-			min_value = 0
+			min_value = 0,
+			value = 0
 		}
 
 		if stat.name == "damage" then
@@ -6013,6 +6133,7 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 			local skill_mul = dmg_mul * ((has_non_special and has_special and math.max(non_special, special) or 0) + 1) - 1
 			local skill_min = skill_mul
 			local skill_max = skill_mul
+
 			base_stats[stat.name] = {
 				min_value = base_min,
 				max_value = base_max,
@@ -6021,32 +6142,36 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 			skill_stats[stat.name] = {
 				min_value = skill_min,
 				max_value = skill_max,
-				value = (skill_min + skill_max) / 2,
-				skill_in_effect = skill_min > 0 or skill_max > 0
+				value = (skill_min + skill_max) / 2
 			}
+			skill_stats[stat.name].skill_in_effect = skill_min > 0 or skill_max > 0
 		elseif stat.name == "damage_effect" then
 			local base_min = stats_data.min_damage_effect
 			local base_max = stats_data.max_damage_effect
+
 			base_stats[stat.name] = {
 				min_value = base_min,
 				max_value = base_max,
 				value = (base_min + base_max) / 2
 			}
+
 			local dmg_mul = managers.player:upgrade_value("player", "melee_" .. tostring(tweak_data.blackmarket.melee_weapons[name].stats.weapon_type) .. "_damage_multiplier", 1) - 1
 			local gst_skill = managers.player:upgrade_value("player", "melee_knockdown_mul", 1) - 1
 			local skill_mul = (1 + dmg_mul) * (1 + gst_skill) - 1
 			local skill_min = skill_mul
 			local skill_max = skill_mul
+
 			skill_stats[stat.name] = {
 				skill_min = skill_min,
 				skill_max = skill_max,
 				min_value = skill_min,
 				max_value = skill_max,
-				value = (skill_min + skill_max) / 2,
-				skill_in_effect = skill_min > 0 or skill_max > 0
+				value = (skill_min + skill_max) / 2
 			}
+			skill_stats[stat.name].skill_in_effect = skill_min > 0 or skill_max > 0
 		elseif stat.name == "charge_time" then
 			local base = stats_data.charge_time
+
 			base_stats[stat.name] = {
 				value = base,
 				min_value = base,
@@ -6055,6 +6180,7 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 		elseif stat.name == "range" then
 			local base_min = stats_data.range
 			local base_max = stats_data.range
+
 			base_stats[stat.name] = {
 				min_value = base_min,
 				max_value = base_max,
@@ -6063,6 +6189,7 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 		elseif stat.name == "concealment" then
 			local base = managers.blackmarket:_calculate_melee_weapon_concealment(name)
 			local skill = managers.blackmarket:concealment_modifier("melee_weapons")
+
 			base_stats[stat.name] = {
 				min_value = base,
 				max_value = base,
@@ -6071,9 +6198,9 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 			skill_stats[stat.name] = {
 				min_value = skill,
 				max_value = skill,
-				value = skill,
-				skill_in_effect = skill > 0
+				value = skill
 			}
+			skill_stats[stat.name].skill_in_effect = skill > 0
 		end
 
 		if stat.multiple_of then
@@ -6097,6 +6224,7 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 	for i, data in ipairs(multiple_of) do
 		local multiplier = data[1]
 		local stat = data[2]
+
 		base_stats[multiplier].min_value = base_stats[stat].real_min_value * base_stats[multiplier].real_min_value
 		base_stats[multiplier].max_value = base_stats[stat].real_max_value * base_stats[multiplier].real_max_value
 		base_stats[multiplier].value = (base_stats[multiplier].min_value + base_stats[multiplier].max_value) / 2
@@ -6131,7 +6259,9 @@ function PlayerInventoryGui:_get_armor_stats(name)
 	local detection_risk = managers.blackmarket:get_suspicion_offset_from_custom_data({
 		armors = name
 	}, tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+
 	detection_risk = math.round(detection_risk * 100)
+
 	local bm_armor_tweak = tweak_data.blackmarket.armors[name]
 	local upgrade_level = bm_armor_tweak.upgrade_level
 
@@ -6149,6 +6279,7 @@ function PlayerInventoryGui:_get_armor_stats(name)
 		if stat.name == "armor" then
 			local base = tweak_data.player.damage.ARMOR_INIT
 			local mod = managers.player:body_armor_value("armor", upgrade_level)
+
 			base_stats[stat.name] = {
 				value = (base + mod) * tweak_data.gui.stats_present_multiplier
 			}
@@ -6158,6 +6289,7 @@ function PlayerInventoryGui:_get_armor_stats(name)
 		elseif stat.name == "health" then
 			local base = tweak_data.player.damage.HEALTH_INIT
 			local mod = managers.player:health_skill_addend()
+
 			base_stats[stat.name] = {
 				value = (base + mod) * tweak_data.gui.stats_present_multiplier
 			}
@@ -6175,21 +6307,27 @@ function PlayerInventoryGui:_get_armor_stats(name)
 			local base = tweak_data.player.movement_state.standard.movement.speed.STANDARD_MAX / 100 * tweak_data.gui.stats_present_multiplier
 			local movement_penalty = managers.player:body_armor_value("movement", upgrade_level)
 			local base_value = movement_penalty * base
+
 			base_stats[stat.name] = {
 				value = base_value
 			}
+
 			local skill_mod = managers.player:movement_speed_multiplier(false, false, upgrade_level, 1)
 			local val = base * skill_mod
+
 			val = Utl.round(val, 2)
 			base_value = Utl.round(base_value, 2)
+
 			local skill_value = val - base_value
+
 			skill_stats[stat.name] = {
-				value = skill_value,
-				skill_in_effect = skill_value > 0
+				value = skill_value
 			}
+			skill_stats[stat.name].skill_in_effect = skill_value > 0
 		elseif stat.name == "dodge" then
 			local base = 0
 			local mod = managers.player:body_armor_value("dodge", upgrade_level)
+
 			base_stats[stat.name] = {
 				value = (base + mod) * 100
 			}
@@ -6199,6 +6337,7 @@ function PlayerInventoryGui:_get_armor_stats(name)
 		elseif stat.name == "crit" then
 			local base = 0
 			local mod = managers.player:body_armor_value("crit", upgrade_level)
+
 			base_stats[stat.name] = {
 				value = (base + mod) * 100
 			}
@@ -6212,6 +6351,7 @@ function PlayerInventoryGui:_get_armor_stats(name)
 			local base_value = base
 			local mod_value = base / mod - base_value
 			local skill_value = base / mod / skill - base_value - mod_value + managers.player:upgrade_value("player", "damage_shake_addend", 0)
+
 			base_stats[stat.name] = {
 				value = (base_value + mod_value) * tweak_data.gui.stats_present_multiplier
 			}
@@ -6226,6 +6366,7 @@ function PlayerInventoryGui:_get_armor_stats(name)
 			local base_value = base
 			local mod_value = base * mod - base_value
 			local skill_value = base * mod * skill - base_value - mod_value
+
 			base_stats[stat.name] = {
 				value = base_value + mod_value
 			}
@@ -6241,6 +6382,7 @@ function PlayerInventoryGui:_get_armor_stats(name)
 		local conversion_ratio = managers.player:upgrade_value("player", "armor_to_health_conversion") * 0.01
 		local converted_armor = (base_stats.armor.value + skill_stats.armor.value) * conversion_ratio
 		local skill_in_effect = converted_armor ~= 0
+
 		skill_stats.armor.value = skill_stats.armor.value - converted_armor
 		skill_stats.health.value = skill_stats.health.value + converted_armor
 		skill_stats.armor.skill_in_effect = skill_in_effect

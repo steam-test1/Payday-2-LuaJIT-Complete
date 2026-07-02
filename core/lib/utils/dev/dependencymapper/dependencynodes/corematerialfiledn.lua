@@ -4,7 +4,9 @@ core:import("CoreDependencyNode")
 
 MATERIALS_FILE = CoreDependencyNode.MATERIALS_FILE
 TEXTURE = CoreDependencyNode.TEXTURE
+
 local _FILE = "./data/settings/materials.xml"
+
 MaterialsfileDependencyNode = MaterialsfileDependencyNode or CoreClass.class(CoreDependencyNode.DependencyNodeBase)
 
 function MaterialsfileDependencyNode:init(name, get_dn_cb, database)

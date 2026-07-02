@@ -1,6 +1,7 @@
 local tmp_vec = Vector3()
 local tmp_rot = Rotation()
 local mrot_set_ypr = mrotation.set_yaw_pitch_roll
+
 CopActionTurn = CopActionTurn or class()
 CopActionTurn.turn_dt_mul = 0.75
 ShieldActionTurn = ShieldActionTurn or class(CopActionTurn)
@@ -45,7 +46,9 @@ function CopActionTurn:init(action_desc, common_data)
 
 	self._end_angle = action_desc.angle
 	self._turn_left = action_desc.angle > 0
+
 	local fwd_polar = common_data.fwd:to_polar()
+
 	self._end_dir = fwd_polar:with_spin(fwd_polar.spin + action_desc.angle):to_vector()
 	self._end_rot = Rotation()
 
@@ -83,20 +86,24 @@ function CopActionTurn:on_exit()
 end
 
 function CopActionTurn:update(t)
-	local vis_state = self._ext_base:lod_stage() or 4
+	do
+		local vis_state = self._ext_base:lod_stage() or 4
 
-	if vis_state == 1 then
-		-- Nothing
-	elseif self._skipped_frames < vis_state then
-		self._skipped_frames = self._skipped_frames + 1
+		if vis_state == 1 then
+			-- Nothing
+		elseif vis_state > self._skipped_frames then
+			self._skipped_frames = self._skipped_frames + 1
 
-		return
-	else
-		self._skipped_frames = 1
+			return
+		else
+			self._skipped_frames = 1
+		end
 	end
 
 	local dt = t - self._last_upd_t
+
 	self._last_upd_t = self._timer:time()
+
 	local new_rot = tmp_rot
 
 	self._unit:m_rotation(new_rot)

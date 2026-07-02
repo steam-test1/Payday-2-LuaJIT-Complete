@@ -17,6 +17,7 @@ function FadeToBlackElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local state = EWS:CheckBox(panel, "Fade in/out", "")
 
 	state:set_value(self._hed.state)
@@ -26,18 +27,18 @@ function FadeToBlackElement:_build_panel(panel, panel_sizer)
 	})
 	panel_sizer:add(state, 0, 0, "EXPAND")
 
-	local overlay_effects = table.map_keys(tweak_data.overlay_effects, function (x, y)
+	local overlay_effects = table.map_keys(tweak_data.overlay_effects, function(x, y)
 		return x < y
 	end)
 
 	self:_build_value_combobox(panel, panel_sizer, "fade_in", overlay_effects, "Fade in overlay effect.")
 	self:_build_value_combobox(panel, panel_sizer, "fade_out", overlay_effects, "Fade out overlay effect.")
 
-	local help = {
-		text = "Fade in or out, takes 3 seconds. Hardcore.\nCustom fade in/out can be added in TweakData.lua -> self.overlay_effects",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Fade in or out, takes 3 seconds. Hardcore.\nCustom fade in/out can be added in TweakData.lua -> self.overlay_effects"
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

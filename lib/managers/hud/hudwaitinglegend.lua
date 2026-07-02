@@ -1,11 +1,12 @@
 HUDWaitingLegend = HUDWaitingLegend or class()
+
 local PADDING = 8
 
 function HUDWaitingLegend:init(hud)
 	self._hud_panel = hud.panel
 	self._panel = self._hud_panel:panel({
-		valign = "bottom",
 		halign = "grow",
+		valign = "bottom",
 		h = tweak_data.hud_players.name_size + 16
 	})
 	self._all_buttons = {
@@ -14,17 +15,17 @@ function HUDWaitingLegend:init(hud)
 		self:create_button("hud_waiting_kick", "drop_in_kick", "kick")
 	}
 	self._icon = self._panel:bitmap({
-		texture = "guis/textures/pd2/hud_icon_objectivebox",
-		name = "icon_objectivebox",
-		h = 24,
-		layer = 0,
-		w = 24,
-		y = 0,
-		visible = true,
 		blend_mode = "normal",
+		h = 24,
 		halign = "left",
+		layer = 0,
+		name = "icon_objectivebox",
+		texture = "guis/textures/pd2/hud_icon_objectivebox",
+		valign = "top",
+		visible = true,
+		w = 24,
 		x = 0,
-		valign = "top"
+		y = 0
 	})
 	self._btn_panel = self._panel:panel()
 
@@ -87,7 +88,7 @@ function HUDWaitingLegend:update_buttons()
 end
 
 function HUDWaitingLegend:on_input(button)
-	if not self._current_peer or self._block_input_until and Application:time() < self._block_input_until then
+	if not self._current_peer or self._block_input_until and self._block_input_until > Application:time() then
 		return
 	end
 
@@ -119,11 +120,11 @@ end
 function HUDWaitingLegend:animate_open()
 	self._btn_text:set_visible(false)
 	self._box:stop()
-	self._box:animate(callback(nil, _G, "HUDBGBox_animate_open_right"), nil, self._box:w(), function ()
+	self._box:animate(callback(nil, _G, "HUDBGBox_animate_open_right"), nil, self._box:w(), function()
 		self._btn_text:set_visible(true)
 	end)
 	self._icon:stop()
-	self._icon:animate(function ()
+	self._icon:animate(function()
 		local TOTAL_T = 3
 		local t = TOTAL_T
 
@@ -131,9 +132,10 @@ function HUDWaitingLegend:animate_open()
 
 		while t > 0 do
 			local dt = coroutine.yield()
+
 			t = t - dt
 
-			self._icon:set_y(math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * 6 * t / TOTAL_T))
+			self._icon:set_y(math.round((1 + math.sin((TOTAL_T - t) * 450 * 2)) * (6 * (t / TOTAL_T))))
 		end
 
 		self._icon:set_y(0)

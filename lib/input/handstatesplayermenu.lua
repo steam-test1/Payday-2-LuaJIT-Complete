@@ -1,8 +1,10 @@
 require("lib/input/HandState")
 
 HandStatesPlayerMenu = HandStatesPlayerMenu or {}
+
 local M = HandStatesPlayerMenu
 local common = require("lib/input/HandStatesCommon")
+
 M.DefaultHandState = M.DefaultHandState or class(HandState)
 
 function M.DefaultHandState:init()

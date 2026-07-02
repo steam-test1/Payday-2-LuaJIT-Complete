@@ -11,6 +11,7 @@ function ElementRandom:init(...)
 end
 
 function ElementRandom:client_on_executed(...)
+	return
 end
 
 function ElementRandom:on_executed(instigator)
@@ -27,10 +28,12 @@ function ElementRandom:on_executed(instigator)
 	end
 
 	self._values.on_executed = {}
+
 	local amount = self:_calc_amount()
 
 	if self._values.counter_id then
 		local element = self:get_mission_element(self._values.counter_id)
+
 		amount = element:counter_value()
 	end
 

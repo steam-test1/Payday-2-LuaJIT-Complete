@@ -19,8 +19,10 @@ function SessionManager:init(session_factory, input_manager)
 	assert(session_factory ~= nil, "SessionManager must have a valid session_factory to work")
 
 	self._factory = session_factory
+
 	local settings_handler = self._factory:create_profile_settings_handler()
 	local progress_handler = self._factory:create_profile_progress_handler()
+
 	self._local_user_manager = CoreLocalUserManager.Manager:new(self._factory, settings_handler, progress_handler, input_manager)
 	self._player_slots = CorePlayerSlots.PlayerSlots:new(self._local_user_manager, self._factory)
 
@@ -31,6 +33,7 @@ function SessionManager:init(session_factory, input_manager)
 	local menu_state = CoreMenuState.MenuState:new(game_state, menu_handler, self._player_slots)
 	local dialog_state = CoreDialogState.DialogState:new()
 	local freeze_state = CoreFreezeState.FreezeState:new()
+
 	self._session_state = CoreSessionState.SessionState:new(self._factory, self._player_slots, game_state)
 	self._factory.session_establisher = self._session_state
 	self._state_machines = {
@@ -53,6 +56,7 @@ function SessionManager:init(session_factory, input_manager)
 end
 
 function SessionManager:destroy()
+	return
 end
 
 function SessionManager:_main_systems_are_stable_for_loading()

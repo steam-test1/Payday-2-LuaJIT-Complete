@@ -172,7 +172,7 @@ function MenuNodeCrimenetFiltersGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_x(self.item_panel:x())
 	self.box_panel:set_w(self.item_panel:w())
 
-	if self._align_data.panel:h() < self.item_panel:h() then
+	if self.item_panel:h() > self._align_data.panel:h() then
 		self.box_panel:set_y(0)
 		self.box_panel:set_h(self.item_panel:parent():h())
 	else
@@ -264,9 +264,9 @@ function MenuNodeCrimenetSpecialGui:_setup_item_panel(safe_rect, res)
 	end
 
 	local title_text = self.item_panel:parent():text({
-		name = "special_title_text",
 		blend_mode = "add",
 		layer = 51,
+		name = "special_title_text",
 		text = managers.localization:to_upper_text(self.title_id or "menu_cn_contract_broker_title"),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -358,7 +358,7 @@ function MenuNodeCrimenetCasinoGui:_set_cards(amount, card)
 	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card or tweak_data.lootdrop.type_to_card_fallback)
 	local offset = 20
 	local count = amount == 0 and 3 or amount
-	local height = nil
+	local height
 	local width = math.round(0.7111111111111111 * self._betting_cards_panel:h())
 	local x_offset = 0
 	local y_offset = 0
@@ -372,7 +372,7 @@ function MenuNodeCrimenetCasinoGui:_set_cards(amount, card)
 	end
 
 	local x = self._betting_cards_panel:w() / 2 - count * (width + offset) / 2
-	local flip_cards = nil
+	local flip_cards
 
 	if amount > 0 or self._current_amount ~= amount then
 		self._current_amount = amount
@@ -409,7 +409,7 @@ function MenuNodeCrimenetCasinoGui:flipcard(bitmap)
 	local start_w = bitmap:w()
 	local cx, cy = bitmap:center()
 
-	over(0.25, function (p)
+	over(0.25, function(p)
 		bitmap:set_w(start_w * math.sin(p * 90))
 		bitmap:set_center(cx, cy)
 	end)
@@ -423,9 +423,11 @@ end
 
 function MenuNodeCrimenetCasinoGui:_setup_layout()
 	local parent_layer = managers.menu:active_menu().renderer:selected_node():layer()
+
 	self._panel = self.ws:panel():panel({
 		layer = parent_layer + 1
 	})
+
 	local width, height, space_x, space_y, start_x = self:_get_sizes(self._panel:w(), self._panel:h())
 	local large_font = tweak_data.menu.pd2_large_font
 	local medium_font = tweak_data.menu.pd2_medium_font
@@ -443,12 +445,14 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 		color = tweak_data.screen_colors.text
 	})
 	local _, _, w, h = text_title:text_rect()
+
 	self._main_panel = self._panel:panel({
 		x = 0,
 		y = h,
 		w = self._panel:w(),
 		h = self._panel:h() - h
 	})
+
 	local text_betting = self._main_panel:text({
 		blend_mode = "add",
 		text = managers.localization:to_upper_text("menu_casino_title_betting"),
@@ -509,7 +513,9 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 			skip = true
 		}
 	}
+
 	self._betting_titles = {}
+
 	local i = 1
 	local y = 0
 
@@ -534,14 +540,14 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	end
 
 	self._betting_carddeck = {
-		textures = "upcard_pattern",
-		colors = "upcard_color",
-		materials = "upcard_material",
-		weapon_mods = "upcard_weapon",
 		cash = "upcard_cash",
+		colors = "upcard_color",
 		masks = "upcard_mask",
-		xp = "upcard_xp",
-		none = "downcard_overkill_deck"
+		materials = "upcard_material",
+		none = "downcard_overkill_deck",
+		textures = "upcard_pattern",
+		weapon_mods = "upcard_weapon",
+		xp = "upcard_xp"
 	}
 	self._betting_cards_panel = self._betting_panel:panel({
 		layer = 1,
@@ -553,15 +559,16 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	self._betting_cards_panel:set_h((self.item_panel:y() - content_offset * 2) * 0.6)
 
 	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(self._betting_carddeck.none)
+
 	self._betting_cards = {}
 
 	for i = 1, 3 do
 		self._betting_cards[i] = self._betting_cards_panel:bitmap({
-			name = "upcard",
-			halign = "scale",
 			blend_mode = "add",
-			valign = "scale",
+			halign = "scale",
 			layer = 1,
+			name = "upcard",
+			valign = "scale",
 			texture = texture,
 			w = math.round(0.7111111111111111 * self._betting_cards_panel:h()),
 			h = self._betting_cards_panel:h()
@@ -611,6 +618,7 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 		"textures",
 		"colors"
 	}
+
 	local stat_columns = {
 		{
 			name = "base",
@@ -631,10 +639,12 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 			color_inf = Color(1, 0.1, 1)
 		}
 	}
+
 	self._stat_values = {}
+
 	local title_width = 150
 	local column_width = 70
-	local text_panel = nil
+	local text_panel
 	local x = title_width + column_width * 0.55
 	local y = content_offset
 
@@ -667,9 +677,9 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 				h = small_font_size
 			})
 			self._stat_values[stat][column.name] = text_panel:text({
-				blend_mode = "add",
-				alpha = 1,
 				align = "right",
+				alpha = 1,
+				blend_mode = "add",
 				font_size = small_font_size,
 				font = small_font,
 				color = column.color or tweak_data.screen_colors.text
@@ -684,16 +694,16 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 
 	for _, stat in pairs(self._stats_cards) do
 		text_panel = self._stats_panel:panel({
-			x = 0,
 			layer = 1,
+			x = 0,
 			y = y,
 			w = title_width,
 			h = small_font_size
 		})
 		self._stat_values[stat].title = text_panel:text({
-			blend_mode = "add",
 			align = "right",
 			alpha = 1,
+			blend_mode = "add",
 			text = managers.localization:to_upper_text("menu_casino_stat_" .. stat),
 			font_size = small_font_size,
 			font = small_font,
@@ -705,16 +715,16 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	self._infamous_values = {}
 	y = y + small_font_size
 	text_panel = self._stats_panel:panel({
-		x = 0,
 		layer = 1,
+		x = 0,
 		y = y,
 		w = title_width,
 		h = small_font_size
 	})
 
 	text_panel:text({
-		blend_mode = "add",
 		align = "right",
+		blend_mode = "add",
 		text = managers.localization:to_upper_text("bm_global_value_infamous"),
 		font_size = small_font_size,
 		font = small_font,
@@ -732,8 +742,8 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 			h = small_font_size
 		})
 		self._infamous_values[column.name] = text_panel:text({
-			blend_mode = "add",
 			align = "right",
+			blend_mode = "add",
 			font_size = small_font_size,
 			font = small_font,
 			color = column.color_inf or column.color or tweak_data.screen_colors.text,
@@ -745,8 +755,8 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	local stars = managers.experience:level_to_stars()
 	local item_pc = tweak_data.lootdrop.STARS[stars].pcs[1]
 	local skip_types = {
-		xp = true,
-		cash = true
+		cash = true,
+		xp = true
 	}
 	local droppable_items = managers.lootdrop:droppable_items(item_pc, true, skip_types)
 	local pc = stars * 10
@@ -790,13 +800,15 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	local _, infamous_base_chance, infamous_mod = managers.lootdrop:infamous_chance({
 		disable_difficulty = true
 	})
-	local infamous_chance = items_total > 0 and infamous_base_chance * items_infamous / items_total or 0
-	self._infamous_chance = {
-		base = infamous_chance,
-		skill = infamous_mod
-	}
+	local infamous_chance = items_total > 0 and infamous_base_chance * (items_infamous / items_total) or 0
+
+	self._infamous_chance = {}
+	self._infamous_chance.base = infamous_chance
+	self._infamous_chance.skill = infamous_mod
+
 	local value = self:_round_value(infamous_chance * 100)
 	local skill = self:_round_value((infamous_chance * infamous_mod - infamous_chance) * 100)
+
 	self._infamous_chance.value_base = value
 	self._infamous_chance.value_skill = skill
 
@@ -871,14 +883,16 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	local text_string = managers.localization:to_upper_text("menu_casino_total_bet", {
 		casino_bet = managers.experience:cash_string(managers.money:get_cost_of_casino_fee(secured_cards, increase_infamous, preferred_card))
 	})
+
 	self._total_bet = self._panel:text({
-		blend_mode = "add",
 		align = "right",
+		blend_mode = "add",
 		text = text_string,
 		font_size = large_font_size,
 		font = large_font,
 		color = tweak_data.screen_colors.text
 	})
+
 	local _, _, _, h = self._total_bet:text_rect()
 
 	self._total_bet:set_h(h)
@@ -952,6 +966,7 @@ function MenuNodeCrimenetCasinoGui:set_update_values(preferred_card, secured_car
 			end
 
 			local value = (non_secured_value + (card == preferred_card and secured_value or 0)) / 3 - self._base_chances[card]
+
 			value = self:_round_value(value)
 
 			self._stat_values[card].bets:set_text(value == 0 and "" or (value > 0 and "+" .. string.format(MenuNodeCrimenetCasinoGui.PRECISION, value) or string.format(MenuNodeCrimenetCasinoGui.PRECISION, value)) .. "%")
@@ -1027,6 +1042,7 @@ function MenuNodeCrimenetContactInfoGui:init(node, layer, parameters)
 	self._codex_text = managers.localization:to_upper_text(self.CODEX_TEXT_ID)
 	self._current_file = 0
 	self._sound_source = SoundDevice:create_source(self.SOUND_SOURCE_NAME)
+
 	local active_menu = managers.menu:active_menu()
 
 	if active_menu then
@@ -1047,6 +1063,7 @@ end
 function MenuNodeCrimenetContactInfoGui:_setup_item_panel_parent(safe_rect, shape)
 	local x = safe_rect.x + safe_rect.width / 2 - self.WIDTH / 2 + self.PADDING
 	local y = safe_rect.y + safe_rect.height / 2 - self.HEIGHT / 2 + self.PADDING
+
 	shape = shape or {}
 	shape.x = shape.x or x
 	shape.y = shape.y or y
@@ -1058,6 +1075,7 @@ end
 
 function MenuNodeCrimenetContactInfoGui:set_contact_info(id, name, files, override_file, sub_text)
 	self._files = files
+
 	local files_menu = self._files_menu
 	local num_files = #files
 
@@ -1075,8 +1093,8 @@ function MenuNodeCrimenetContactInfoGui:set_contact_info(id, name, files, overri
 
 			files_menu:bitmap({
 				h = 23,
-				y = 0,
 				w = 17,
+				y = 0,
 				texture = self._files[i] and self._files[i].icon or self.FILE_ICONS_TEXTURE,
 				texture_rect = texture_rect,
 				x = (i - 1) * 20
@@ -1166,8 +1184,8 @@ function MenuNodeCrimenetContactInfoGui:_set_file()
 	if video then
 		video_panel:video({
 			blend_mode = "add",
-			name = "video",
 			loop = true,
+			name = "video",
 			video = "movies/codex/" .. video,
 			width = video_panel:w(),
 			height = video_panel:h(),
@@ -1177,8 +1195,8 @@ function MenuNodeCrimenetContactInfoGui:_set_file()
 
 	if image then
 		local image_gui = video_panel:bitmap({
-			name = "image",
 			blend_mode = "add",
+			name = "image",
 			texture = image,
 			width = video_panel:w(),
 			height = video_panel:h()
@@ -1191,7 +1209,7 @@ function MenuNodeCrimenetContactInfoGui:_set_file()
 		local th = texture_height
 		local pw = panel_width
 		local ph = panel_height
-		local sw = math.min(pw, ph * tw / th)
+		local sw = math.min(pw, ph * (tw / th))
 		local sh = math.min(ph, pw / (tw / th))
 
 		image_gui:set_size(math.round(sw), math.round(sh))
@@ -1241,7 +1259,7 @@ function MenuNodeCrimenetContactInfoGui:change_file(diff)
 	local num_files = #self._files
 	local current_file = self._current_file or 0
 	local new_file = math.clamp(current_file + diff, 1, num_files)
-	local newer_file = nil
+	local newer_file
 
 	while self:is_file_locked(self._files[new_file].lock) do
 		newer_file = math.clamp(new_file + diff, 1, num_files)
@@ -1268,7 +1286,7 @@ end
 function MenuNodeCrimenetContactInfoGui:mouse_moved(o, x, y)
 	local files_menu = self._files_menu
 	local is_inside = false
-	local highlighted_file = nil
+	local highlighted_file
 
 	if alive(files_menu) then
 		for i, file in ipairs(files_menu:children()) do
@@ -1470,12 +1488,14 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 	local panel = ws:panel():panel({
 		name = "main_panel"
 	})
+
 	self._fullscreen_panel = mc_full_ws:panel():panel({
 		layer = 50
 	})
+
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
 	})
@@ -1483,7 +1503,7 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -1492,6 +1512,7 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 
 	local width = self.WIDTH
 	local height = self.HEIGHT
+
 	self._panel = panel:panel({
 		layer = 51,
 		h = height,
@@ -1513,8 +1534,8 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 	})
 
 	local title_text = panel:text({
-		name = "title_text",
 		layer = 51,
+		name = "title_text",
 		text = self._codex_text,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -1526,8 +1547,8 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 	title_text:set_bottom(self._panel:top() - 2)
 
 	local contact_title_text = self._panel:text({
-		name = "contact_title_text",
 		layer = 52,
+		name = "contact_title_text",
 		text = self._codex_text .. ": ",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -1539,8 +1560,8 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 	contact_title_text:set_top(self.PADDING)
 
 	local video_panel = self._panel:panel({
-		name = "video_panel",
 		layer = 2,
+		name = "video_panel",
 		w = self.WIDTH - self.MENU_WIDTH - self.PADDING * 5
 	})
 
@@ -1561,8 +1582,8 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 	box:set_blend_mode("add")
 
 	local contact_desc_title_text = self._panel:text({
-		name = "contact_desc_title_text",
 		layer = 52,
+		name = "contact_desc_title_text",
 		text = self._codex_text .. ": ",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -1575,19 +1596,21 @@ function MenuNodeCrimenetContactInfoGui:_setup_layout()
 	contact_desc_title_text:hide()
 
 	local files_menu = self._panel:panel({
-		name = "files_menu",
 		h = 26,
+		name = "files_menu",
 		x = contact_desc_title_text:x(),
 		y = contact_desc_title_text:y(),
 		w = video_panel:w()
 	})
+
 	self._files_menu = files_menu
+
 	local contact_desc_text = self._panel:text({
-		text = "",
-		name = "contact_desc_text",
-		wrap = true,
-		word_wrap = true,
 		layer = 52,
+		name = "contact_desc_text",
+		text = "",
+		word_wrap = true,
+		wrap = true,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
@@ -1606,27 +1629,30 @@ end
 
 function MenuNodeCrimenetContactInfoGui:gui_node_custom(row_item)
 	row_item.gui_panel = self._item_panel_parent:panel({
-		w = 3,
 		h = 3,
+		w = 3,
 		layer = self.layers.items
 	})
 	row_item.gui_pd2_panel = self.ws:panel():panel({
 		layer = self.layers.items
 	})
+
 	local row_item_panel = row_item.gui_pd2_panel
+
 	row_item.gui_text = row_item_panel:text({
-		blend_mode = "add",
-		vertical = "bottom",
 		align = "left",
-		y = 0,
-		x = 0,
+		blend_mode = "add",
 		layer = 0,
+		vertical = "bottom",
+		x = 0,
+		y = 0,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		font = tweak_data.menu.pd2_small_font,
 		color = tweak_data.screen_colors.button_stage_3,
 		text = utf8.to_upper(row_item.text),
 		render_template = Idstring("VertexColorTextured")
 	})
+
 	local _, _, w, h = row_item.gui_text:text_rect()
 
 	row_item.gui_text:set_size(math.round(w), math.round(h))
@@ -1657,6 +1683,7 @@ function MenuNodeCrimenetContactInfoGui:close()
 	self._fullscreen_panel:parent():remove(self._fullscreen_panel)
 
 	self._fullscreen_panel = nil
+
 	local active_menu = managers.menu:active_menu()
 
 	if active_menu then
@@ -1688,6 +1715,7 @@ function MenuNodeCrimenetContactShortGui:init(node, layer, parameters)
 	parameters.row_item_hightlight_color = tweak_data.screen_colors.button_stage_2
 	parameters.marker_alpha = 1
 	parameters.to_upper = true
+
 	local active_menu = managers.menu:active_menu()
 
 	if active_menu then
@@ -1706,6 +1734,7 @@ end
 function MenuNodeCrimenetContactShortGui:_setup_item_panel_parent(safe_rect, shape)
 	local x = safe_rect.x + safe_rect.width / 2 - self.WIDTH / 2 + self.PADDING
 	local y = safe_rect.y + safe_rect.height / 2 - self.HEIGHT / 2 + self.PADDING
+
 	shape = shape or {}
 	shape.x = shape.x or x
 	shape.y = shape.y or y
@@ -1717,6 +1746,7 @@ end
 
 function MenuNodeCrimenetContactShortGui:set_contact_info(id, name, files, override_file, sub_text)
 	self._files = files
+
 	local files_menu = self._files_menu
 	local num_files = #files
 
@@ -1734,8 +1764,8 @@ function MenuNodeCrimenetContactShortGui:set_contact_info(id, name, files, overr
 
 			files_menu:bitmap({
 				h = 23,
-				y = 0,
 				w = 17,
+				y = 0,
 				texture = self._files[i] and self._files[i].icon or self.FILE_ICONS_TEXTURE,
 				texture_rect = texture_rect,
 				x = (i - 1) * 20
@@ -1764,7 +1794,7 @@ end
 function MenuNodeCrimenetContactShortGui:mouse_moved(o, x, y)
 	local files_menu = self._files_menu
 	local is_inside = false
-	local highlighted_file = nil
+	local highlighted_file
 
 	if alive(files_menu) then
 		for i, file in ipairs(files_menu:children()) do
@@ -1835,9 +1865,11 @@ function MenuNodeCrimenetContactShortGui:mouse_released(button, x, y)
 end
 
 function MenuNodeCrimenetContactShortGui:previous_page()
+	return
 end
 
 function MenuNodeCrimenetContactShortGui:next_page()
+	return
 end
 
 function MenuNodeCrimenetContactShortGui:input_focus()
@@ -1960,12 +1992,14 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	local panel = ws:panel():panel({
 		name = "main_panel"
 	})
+
 	self._fullscreen_panel = mc_full_ws:panel():panel({
 		layer = 50
 	})
+
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
 	})
@@ -1973,7 +2007,7 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -1982,6 +2016,7 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 
 	local width = self.WIDTH
 	local height = self.HEIGHT
+
 	self._panel = panel:panel({
 		layer = 51,
 		h = height,
@@ -2011,8 +2046,8 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	header_panel:move(self.PADDING * 0.5, self.PADDING * 0.5)
 
 	local header_text = header_panel:text({
-		name = "header_text",
 		layer = 51,
+		name = "header_text",
 		text = managers.localization:to_upper_text("short_basics_header"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2030,9 +2065,9 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	desc_panel:move(self.PADDING * 2, 90)
 
 	local desc_text = desc_panel:text({
+		layer = 51,
 		name = "desc_text",
 		wrap = true,
-		layer = 51,
 		text = managers.localization:text("short_basics_desc"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2053,8 +2088,8 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	reward_panel:set_top(reward_panel_h_offs)
 
 	local reward_text = reward_panel:text({
-		name = "rewards_text",
 		layer = 51,
+		name = "rewards_text",
 		text = managers.localization:to_upper_text("short_basics_rewards"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2073,8 +2108,8 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	local loot_y = 192
 	local gfx_y_offs = 10
 	local cash_drop_text = reward_panel:text({
-		name = "cash_drop_text",
 		layer = 51,
+		name = "cash_drop_text",
 		text = managers.localization:to_upper_text("short_basics_cash"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2086,8 +2121,8 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	cash_drop_text:set_left(x_text_offs)
 
 	local exp_text = reward_panel:text({
-		name = "exp_text",
 		layer = 51,
+		name = "exp_text",
 		text = managers.localization:to_upper_text("short_basics_experience"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2099,8 +2134,8 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	exp_text:set_left(x_text_offs)
 
 	local loot_drop_text = reward_panel:text({
-		name = "loot_drop_text",
 		layer = 51,
+		name = "loot_drop_text",
 		text = managers.localization:to_upper_text("short_basics_loot"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2119,9 +2154,9 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 		180
 	}
 	local cash_bitmap = reward_panel:bitmap({
-		name = "cash_bitmap",
 		blend_mode = "normal",
 		layer = 51,
+		name = "cash_bitmap",
 		texture = texture_atlas,
 		texture_rect = texture_rect,
 		w = gfx_w,
@@ -2138,9 +2173,9 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 		180
 	}
 	local exp_bitmap = reward_panel:bitmap({
-		name = "cash_bitmap",
 		blend_mode = "normal",
 		layer = 51,
+		name = "cash_bitmap",
 		texture = texture_atlas,
 		texture_rect = texture_rect,
 		w = gfx_w,
@@ -2157,9 +2192,9 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 		180
 	}
 	local loot_bitmap = reward_panel:bitmap({
-		name = "cash_bitmap",
 		blend_mode = "normal",
 		layer = 51,
+		name = "cash_bitmap",
 		texture = texture_atlas,
 		texture_rect = texture_rect,
 		w = gfx_w,
@@ -2170,8 +2205,8 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 	loot_bitmap:set_left(gfx_offs)
 
 	local title_text = panel:text({
-		name = "title_text",
 		layer = 51,
+		name = "title_text",
 		text = managers.localization:to_upper_text("menu_contact_info_short"),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -2190,27 +2225,30 @@ end
 
 function MenuNodeCrimenetContactShortGui:gui_node_custom(row_item)
 	row_item.gui_panel = self._item_panel_parent:panel({
-		w = 3,
 		h = 3,
+		w = 3,
 		layer = self.layers.items
 	})
 	row_item.gui_pd2_panel = self.ws:panel():panel({
 		layer = self.layers.items
 	})
+
 	local row_item_panel = row_item.gui_pd2_panel
+
 	row_item.gui_text = row_item_panel:text({
-		blend_mode = "add",
-		vertical = "bottom",
 		align = "left",
-		y = 0,
-		x = 0,
+		blend_mode = "add",
 		layer = 0,
+		vertical = "bottom",
+		x = 0,
+		y = 0,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		font = tweak_data.menu.pd2_small_font,
 		color = tweak_data.screen_colors.button_stage_3,
 		text = utf8.to_upper(row_item.text),
 		render_template = Idstring("VertexColorTextured")
 	})
+
 	local _, _, w, h = row_item.gui_text:text_rect()
 
 	row_item.gui_text:set_size(math.round(w), math.round(h))
@@ -2241,6 +2279,7 @@ function MenuNodeCrimenetContactShortGui:close()
 	self._fullscreen_panel:parent():remove(self._fullscreen_panel)
 
 	self._fullscreen_panel = nil
+
 	local active_menu = managers.menu:active_menu()
 
 	if active_menu then
@@ -2270,6 +2309,7 @@ function MenuNodeCrimenetContactChillGui:init(node, layer, parameters)
 	parameters.row_item_hightlight_color = tweak_data.screen_colors.button_stage_2
 	parameters.marker_alpha = 1
 	parameters.to_upper = true
+
 	local active_menu = managers.menu:active_menu()
 
 	if active_menu then
@@ -2288,6 +2328,7 @@ end
 function MenuNodeCrimenetContactChillGui:_setup_item_panel_parent(safe_rect, shape)
 	local x = safe_rect.x + safe_rect.width / 2 - self.WIDTH / 2 + self.PADDING
 	local y = safe_rect.y + safe_rect.height / 2 - self.HEIGHT / 2 + self.PADDING
+
 	shape = shape or {}
 	shape.x = shape.x or x
 	shape.y = shape.y or y
@@ -2299,6 +2340,7 @@ end
 
 function MenuNodeCrimenetContactChillGui:set_contact_info(id, name, files, override_file, sub_text)
 	self._files = files
+
 	local files_menu = self._files_menu
 	local num_files = #files
 
@@ -2316,8 +2358,8 @@ function MenuNodeCrimenetContactChillGui:set_contact_info(id, name, files, overr
 
 			files_menu:bitmap({
 				h = 23,
-				y = 0,
 				w = 17,
+				y = 0,
 				texture = self._files[i] and self._files[i].icon or self.FILE_ICONS_TEXTURE,
 				texture_rect = texture_rect,
 				x = (i - 1) * 20
@@ -2346,7 +2388,7 @@ end
 function MenuNodeCrimenetContactChillGui:mouse_moved(o, x, y)
 	local files_menu = self._files_menu
 	local is_inside = false
-	local highlighted_file = nil
+	local highlighted_file
 
 	if alive(files_menu) then
 		for i, file in ipairs(files_menu:children()) do
@@ -2515,12 +2557,14 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	local panel = ws:panel():panel({
 		name = "main_panel"
 	})
+
 	self._fullscreen_panel = mc_full_ws:panel():panel({
 		layer = 50
 	})
+
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
 	})
@@ -2528,7 +2572,7 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -2537,6 +2581,7 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 
 	local width = self.WIDTH
 	local height = self.HEIGHT
+
 	self._panel = panel:panel({
 		layer = 51,
 		h = height,
@@ -2568,8 +2613,8 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	header_panel:move(self.PADDING * 0.5, self.PADDING * 0.5)
 
 	local header_text = header_panel:text({
-		name = "header_text",
 		layer = 51,
+		name = "header_text",
 		text = managers.localization:to_upper_text("chill_combat_header"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2587,9 +2632,9 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	desc_panel:move(self.WIDTH * 0.5, 10)
 
 	local desc_text = desc_panel:text({
+		layer = 51,
 		name = "desc_text",
 		wrap = true,
-		layer = 51,
 		text = managers.localization:text("chill_combat_desc"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2608,8 +2653,8 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	reward_panel:set_top(reward_panel_h_offs)
 
 	local reward_text = reward_panel:text({
-		name = "rewards_text",
 		layer = 51,
+		name = "rewards_text",
 		text = managers.localization:to_upper_text("chill_combat_rewards"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2628,8 +2673,8 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	local loot_y = 192
 	local gfx_y_offs = 10
 	local cash_drop_text = reward_panel:text({
-		name = "cash_drop_text",
 		layer = 51,
+		name = "cash_drop_text",
 		text = managers.localization:to_upper_text("short_basics_cash"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2641,8 +2686,8 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	cash_drop_text:set_left(x_text_offs)
 
 	local exp_text = reward_panel:text({
-		name = "exp_text",
 		layer = 51,
+		name = "exp_text",
 		text = managers.localization:to_upper_text("short_basics_experience"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2654,8 +2699,8 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	exp_text:set_left(x_text_offs)
 
 	local loot_drop_text = reward_panel:text({
-		name = "loot_drop_text",
 		layer = 51,
+		name = "loot_drop_text",
 		text = managers.localization:to_upper_text("short_basics_loot"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -2674,9 +2719,9 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 		180
 	}
 	local cash_bitmap = reward_panel:bitmap({
-		name = "cash_bitmap",
 		blend_mode = "normal",
 		layer = 51,
+		name = "cash_bitmap",
 		texture = texture_atlas,
 		texture_rect = texture_rect,
 		w = gfx_w,
@@ -2693,9 +2738,9 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 		180
 	}
 	local exp_bitmap = reward_panel:bitmap({
-		name = "cash_bitmap",
 		blend_mode = "normal",
 		layer = 51,
+		name = "cash_bitmap",
 		texture = texture_atlas,
 		texture_rect = texture_rect,
 		w = gfx_w,
@@ -2712,9 +2757,9 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 		180
 	}
 	local loot_bitmap = reward_panel:bitmap({
-		name = "cash_bitmap",
 		blend_mode = "normal",
 		layer = 51,
+		name = "cash_bitmap",
 		texture = texture_atlas,
 		texture_rect = texture_rect,
 		w = gfx_w,
@@ -2725,8 +2770,8 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 	loot_bitmap:set_left(gfx_offs)
 
 	local title_text = panel:text({
-		name = "title_text",
 		layer = 51,
+		name = "title_text",
 		text = managers.localization:to_upper_text("menu_contact_info_chill_combat"),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -2825,11 +2870,11 @@ function MenuNodeCrimenetGageAssignmentGui:set_contact_info(id, name, files, ove
 			item_panel:set_center_y(panel:h() * 0.25)
 
 			local item_text = panel:text({
-				text = "",
-				name = "item_text",
-				wrap = true,
 				align = "center",
+				name = "item_text",
+				text = "",
 				word_wrap = true,
+				wrap = true,
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
 				color = tweak_data.screen_colors.text
@@ -2842,17 +2887,19 @@ function MenuNodeCrimenetGageAssignmentGui:set_contact_info(id, name, files, ove
 
 			if data[2] == "weapon_mods" then
 				local weapon_uses_part = managers.weapon_factory:get_weapons_uses_part(data[3]) or {}
+
 				text_sting = text_sting .. "\n("
 
 				if managers.localization:exists(part_name_id .. "_fits") then
 					text_sting = text_sting .. managers.localization:text(part_name_id .. "_fits")
 				elseif #weapon_uses_part == 1 then
 					local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon_uses_part[1])
+
 					text_sting = text_sting .. managers.weapon_factory:get_weapon_name_by_weapon_id(weapon_id)
 				else
 					local all_families = deep_clone(all_weapon_families)
 					local all_categories = deep_clone(all_weapon_categories)
-					local family, weapon_id, category = nil
+					local family, weapon_id, category
 
 					for i, factory_id in ipairs(weapon_uses_part) do
 						family = tweak_data.weapon.factory[factory_id].family
@@ -2955,8 +3002,8 @@ function MenuNodeCrimenetGageAssignmentGui:set_contact_info(id, name, files, ove
 	elseif ids == Idstring("_introduction") then
 		local introduction_text = self._info_panel:text({
 			name = "introduction_text",
-			wrap = true,
 			word_wrap = true,
+			wrap = true,
 			text = managers.localization:text("menu_gage_assignment_introduction_desc"),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -2988,8 +3035,8 @@ function MenuNodeCrimenetGageAssignmentGui:set_contact_info(id, name, files, ove
 
 		local summary_text = self._info_panel:text({
 			name = "summary_text",
-			wrap = true,
 			word_wrap = true,
+			wrap = true,
 			text = managers.localization:text("menu_gage_assignment_summary_desc"),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -3010,18 +3057,18 @@ function MenuNodeCrimenetGageAssignmentGui:set_contact_info(id, name, files, ove
 
 		video_panel:rect({
 			alpha = 0.85,
-			valign = "scale",
 			halign = "scale",
+			valign = "scale",
 			color = Color.black
 		})
 
 		local video = video_panel:video({
-			loop = true,
-			video = "movies/tutorials/gage_assignment",
 			blend_mode = "add",
 			halign = "scale",
 			layer = 1,
-			valign = "scale"
+			loop = true,
+			valign = "scale",
+			video = "movies/tutorials/gage_assignment"
 		})
 		local video_width = video:video_width()
 		local video_height = video:video_height()
@@ -3065,11 +3112,11 @@ function MenuNodeCrimenetGageAssignmentGui:create_insigna(panel, assignment)
 	local dlc = tweak_data.gage_assignment:get_value(assignment, "dlc")
 	local has_dlc = not dlc or managers.dlc:is_dlc_unlocked(dlc)
 	local progress_text = panel:text({
-		text = "",
-		name = "progress_text",
-		wrap = true,
 		align = "center",
+		name = "progress_text",
+		text = "",
 		word_wrap = true,
+		wrap = true,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = tweak_data.screen_colors.text
@@ -3087,11 +3134,14 @@ function MenuNodeCrimenetGageAssignmentGui:create_insigna(panel, assignment)
 	local w = (panel:w() - x * 2 - step * (max_aquire - 1)) / max_aquire
 	local rounded_width = math.max(math.round(w), 1)
 	local diff = panel:w() - (w * max_aquire + step * (max_aquire - 1) + x * 2)
+
 	x = math.clamp(math.round(x + diff / 2), 0, panel:w())
+
 	local padding = x
 	local w = math.max((panel:w() - x * 2 - step * (to_aquire - 1)) / to_aquire, 1)
 	local rounded_width = math.round(w)
 	local estimated_width = x * 2 + step * (to_aquire - 1) + rounded_width * to_aquire
+
 	diff = panel:w() - (w * to_aquire + x * 2)
 
 	if to_aquire > 1 then
@@ -3101,7 +3151,7 @@ function MenuNodeCrimenetGageAssignmentGui:create_insigna(panel, assignment)
 	local w = math.max((panel:w() - x * 2 - step * (to_aquire - 1)) / to_aquire, 1)
 	local rounded_width = math.round(w)
 	local pin_bottom = progress_text:top() - self.PADDING / 2
-	local pin, is_progressed = nil
+	local pin, is_progressed
 	local mvec1 = Vector3()
 	local mvec2 = Vector3()
 
@@ -3151,20 +3201,20 @@ function MenuNodeCrimenetGageAssignmentGui:populate_item_panel(item_panel, item_
 	if category == "colors" then
 		local colors = tweak_data.blackmarket.colors[item_id].colors
 		local bg = item_panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_bg",
 			layer = 1,
+			texture = "guis/textures/pd2/blackmarket/icons/colors/color_bg",
 			w = item_panel:h(),
 			h = item_panel:h()
 		})
 		local c1 = item_panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_01",
 			layer = 0,
+			texture = "guis/textures/pd2/blackmarket/icons/colors/color_01",
 			w = item_panel:h(),
 			h = item_panel:h()
 		})
 		local c2 = item_panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_02",
 			layer = 0,
+			texture = "guis/textures/pd2/blackmarket/icons/colors/color_02",
 			w = item_panel:h(),
 			h = item_panel:h()
 		})
@@ -3175,7 +3225,7 @@ function MenuNodeCrimenetGageAssignmentGui:populate_item_panel(item_panel, item_
 		c1:set_center(bg:center())
 		c2:set_center(bg:center())
 	else
-		local texture_path = nil
+		local texture_path
 
 		if category == "textures" then
 			texture_path = tweak_data.blackmarket.textures[item_id] and tweak_data.blackmarket.textures[item_id].texture
@@ -3267,7 +3317,7 @@ function MenuNodeCrimenetGageAssignmentGui:texture_done_clbk(params, texture_ids
 		th = 1
 	end
 
-	local sw = math.min(pw, ph * tw / th)
+	local sw = math.min(pw, ph * (tw / th))
 	local sh = math.min(ph, pw / (tw / th))
 
 	image:set_size(math.round(sw), math.round(sh))
@@ -3290,11 +3340,14 @@ function MenuNodeCrimenetGageAssignmentGui:_setup_layout()
 	local panel = ws:panel():panel({
 		name = "main_panel"
 	})
+
 	self._fullscreen_panel = mc_full_ws:panel():panel({
 		layer = 50
 	})
+
 	local width = self.WIDTH
 	local height = self.HEIGHT
+
 	self._panel = panel:panel({
 		layer = 51,
 		h = height,
@@ -3316,8 +3369,8 @@ function MenuNodeCrimenetGageAssignmentGui:_setup_layout()
 	})
 
 	local title_text = panel:text({
-		name = "title_text",
 		layer = 51,
+		name = "title_text",
 		text = self._codex_text,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -3329,9 +3382,9 @@ function MenuNodeCrimenetGageAssignmentGui:_setup_layout()
 	title_text:set_bottom(self._panel:top() - 2)
 
 	local contact_title_text = self._panel:text({
-		text = " ",
-		name = "contact_title_text",
 		layer = 52,
+		name = "contact_title_text",
+		text = " ",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		color = tweak_data.screen_colors.text
@@ -3359,8 +3412,8 @@ end
 
 function MenuNodeCrimenetGageAssignmentGui:_setup_blur()
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
 	})
@@ -3368,7 +3421,7 @@ function MenuNodeCrimenetGageAssignmentGui:_setup_blur()
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -3381,6 +3434,7 @@ function MenuNodeCrimenetGageAssignmentGui:_set_panel_position(panel)
 end
 
 function MenuNodeCrimenetGageAssignmentGui:set_file(index)
+	return
 end
 
 function MenuNodeCrimenetGageAssignmentGui:close()
@@ -3401,17 +3455,17 @@ function MenuNodeCrimenetChallengeGui:init(node, layer, parameters)
 
 	self._file_icons = nil
 	self._file_alphas_all = {
-		mouse_over = 1,
 		locked = 0.4,
-		unavailable = 1,
+		mouse_over = 1,
 		selected = 1,
+		unavailable = 1,
 		unselected = 0.8
 	}
 	self._file_alphas_single = {
-		mouse_over = 1,
 		locked = 0.4,
-		unavailable = 1,
+		mouse_over = 1,
 		selected = 1,
+		unavailable = 1,
 		unselected = 0.4
 	}
 	self._file_alphas = self._file_alphas_all
@@ -3463,6 +3517,7 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 	local contact_title = name
 	local ids = Idstring(id)
 	local challenge = managers.challenge:get_active_challenge(id, ids:key())
+
 	self._set_file_on_mouse_over = false
 	self._file_alphas = self._file_alphas_all
 	self._confirm_reward = false
@@ -3474,11 +3529,12 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 		contact_title = managers.localization:text("menu_challenge_title_" .. (challenge.category or "daily"), {
 			name = name
 		})
+
 		local desc_text = self._info_panel:text({
-			name = "desc_text",
-			wrap = true,
-			word_wrap = true,
 			blend_mode = "add",
+			name = "desc_text",
+			word_wrap = true,
+			wrap = true,
 			text = challenge.desc_s or managers.localization:text(challenge.desc_id),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -3493,8 +3549,8 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 
 		local y = desc_text:bottom()
 		local objective_title_text = self._info_panel:text({
-			name = "objective_title_text",
 			blend_mode = "add",
+			name = "objective_title_text",
 			text = managers.localization:to_upper_text("menu_challenge_objective_title"),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -3508,10 +3564,10 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 
 		if challenge.objective_s or challenge.objective_id then
 			local objective_text = self._info_panel:text({
-				name = "objectives_text",
-				wrap = true,
-				word_wrap = true,
 				blend_mode = "add",
+				name = "objectives_text",
+				word_wrap = true,
+				wrap = true,
 				text = challenge.objective_s or managers.localization:text(challenge.objective_id),
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -3562,13 +3618,14 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 			end
 		end
 
-		local rewards_panel = nil
+		local rewards_panel
 
 		if challenge.rewards and #challenge.rewards > 0 then
 			local x = self.PADDING
 			local min_height = 64
 			local height = math.clamp(self._info_panel:h() - y - self.PADDING * 2 - tweak_data.menu.pd2_small_font_size - 0, min_height, 128)
 			local width = math.min((self._info_panel:w() - self.PADDING * (#challenge.rewards - 1)) / #challenge.rewards, height)
+
 			rewards_panel = self._info_panel:panel({
 				layer = 10,
 				name = "rewards_panel"
@@ -3582,9 +3639,9 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 			local files_menu = rewards_panel:panel({
 				name = "files_menu"
 			})
-			local locked = nil
+			local locked
 			local unavailable = not challenge.completed
-			local next_x = nil
+			local next_x
 
 			if challenge.reward_type == "single" then
 				-- Nothing
@@ -3625,10 +3682,10 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 
 		if challenge.reward_s or challenge.reward_id then
 			local reward_title_text = self._info_panel:text({
-				name = "reward_title_text",
-				wrap = true,
-				word_wrap = true,
 				blend_mode = "add",
+				name = "reward_title_text",
+				word_wrap = true,
+				wrap = true,
 				text = challenge.rewarded and managers.localization:to_upper_text("menu_cn_rewarded") or managers.localization:to_upper_text("menu_challenge_reward_title"),
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -3638,10 +3695,10 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 			make_fine_text(reward_title_text)
 
 			local reward_text = self._info_panel:text({
-				name = "rewards_text",
-				wrap = true,
-				word_wrap = true,
 				blend_mode = "add",
+				name = "rewards_text",
+				word_wrap = true,
+				wrap = true,
 				text = challenge.reward_s or managers.localization:text(challenge.reward_id),
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -3674,9 +3731,9 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 			local expire_time = expire_timestamp - current_timestamp
 			local expire_string = self:_create_timestamp_string_extended(expire_time)
 			local expire_text = self._info_panel:text({
-				name = "expire_text",
 				alpha = 1,
 				blend_mode = "add",
+				name = "expire_text",
 				text = utf8.to_upper(expire_string),
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -3689,8 +3746,8 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 			expire_text:set_align("center")
 
 			local expire_bg = self._info_panel:rect({
-				name = "expire_bg",
 				blend_mode = "add",
+				name = "expire_bg",
 				color = tweak_data.screen_colors.important_2,
 				alpha = expire_time == 0 and 0.6 or expire_time <= 4 and 0.5 or 0.3
 			})
@@ -3701,10 +3758,10 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 		end
 	elseif ids == Idstring("_introduction") then
 		local introduction_text = self._info_panel:text({
-			name = "introduction_text",
-			wrap = true,
-			word_wrap = true,
 			blend_mode = "add",
+			name = "introduction_text",
+			word_wrap = true,
+			wrap = true,
 			text = managers.localization:text("menu_challenge_introduction_desc"),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -3712,10 +3769,10 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 		})
 	elseif ids == Idstring("_summary") then
 		local summary_text = self._info_panel:text({
-			name = "summary_text",
-			wrap = true,
-			word_wrap = true,
 			blend_mode = "add",
+			name = "summary_text",
+			word_wrap = true,
+			wrap = true,
 			text = managers.localization:text("menu_challenge_summary_desc"),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -3753,7 +3810,7 @@ function MenuNodeCrimenetChallengeGui:update(t, dt)
 end
 
 function MenuNodeCrimenetChallengeGui:create_reward(panel, reward, challenge)
-	local texture, texture_path, texture_rect = nil
+	local texture, texture_path, texture_rect
 	local is_pattern = false
 	local reward_string = ""
 
@@ -3811,11 +3868,11 @@ function MenuNodeCrimenetChallengeGui:create_reward(panel, reward, challenge)
 
 	if challenge.completed and not reward.rewarded then
 		local glow = panel:bitmap({
-			texture = "guis/textures/pd2/hot_cold_glow",
-			blend_mode = "add",
 			alpha = 0,
-			rotation = 360,
+			blend_mode = "add",
 			layer = -1,
+			rotation = 360,
+			texture = "guis/textures/pd2/hot_cold_glow",
 			w = math.min(panel:w(), panel:h()) * 1.5,
 			h = math.min(panel:w(), panel:h()) * 1.5,
 			color = tweak_data.screen_colors.challenge_completed_color
@@ -3824,10 +3881,10 @@ function MenuNodeCrimenetChallengeGui:create_reward(panel, reward, challenge)
 		glow:set_center(reward_panel:center())
 
 		local function glow_anim(o)
-			local dt = nil
+			local dt
 
 			while true do
-				over(5, function (p)
+				over(5, function(p)
 					o:set_alpha(math.abs(math.sin(p * 360)) * 0.4)
 				end)
 			end
@@ -3837,8 +3894,8 @@ function MenuNodeCrimenetChallengeGui:create_reward(panel, reward, challenge)
 	end
 
 	local reward_text = panel:text({
-		name = "reward_text",
 		blend_mode = "add",
+		name = "reward_text",
 		rotation = 360,
 		text = reward_string,
 		font = tweak_data.menu.pd2_small_font,
@@ -3902,6 +3959,7 @@ function MenuNodeCrimenetChallengeGui:_set_file()
 end
 
 function MenuNodeCrimenetChallengeGui:set_empty()
+	return
 end
 
 function MenuNodeCrimenetChallengeGui:close()
@@ -3916,14 +3974,15 @@ function MenuNodeCrimenetChallengeGui:mouse_moved(o, x, y)
 
 	local files_menu = self._files_menu
 	local is_inside = false
-	local highlighted_file = nil
+	local highlighted_file
 
 	if alive(files_menu) then
-		local inside, inside_text = nil
+		local inside, inside_text
 		local visible_texts = {}
 
 		for i, file in ipairs(files_menu:children()) do
 			inside = file:inside(x, y)
+
 			local is_locked = self:is_file_locked(self._files[i] and self._files[i].lock)
 			local is_unavailable = self:is_file_locked(self._files[i] and self._files[i].unavailable)
 			local texture_alpha = is_locked and self._file_alphas.locked or is_unavailable and self._file_alphas.unavailable or self._file_alphas and (i == self._current_file and self._file_alphas.selected or inside and self._file_alphas.mouse_over or self._file_alphas.unselected)
@@ -3949,7 +4008,7 @@ function MenuNodeCrimenetChallengeGui:mouse_moved(o, x, y)
 
 		if #visible_texts > 1 then
 			for i = 1, #visible_texts - 1 do
-				if visible_texts[i]:world_left() < visible_texts[i + 1]:world_right() and visible_texts[i + 1]:world_left() < visible_texts[i]:world_right() then
+				if visible_texts[i]:world_left() < visible_texts[i + 1]:world_right() and visible_texts[i]:world_right() > visible_texts[i + 1]:world_left() then
 					texts_colliding = true
 
 					break
@@ -4021,13 +4080,14 @@ function MenuNodeCrimenetChallengeGui:mouse_released(button, x, y)
 
 					if reward and reward:child("reward_text") then
 						local file_pressed = self._file_pressed
-						local params = {
-							reward = reward:child("reward_text"):text(),
-							image = reward:has_script() and reward:script().texture_path,
-							yes_func = function ()
-								self:claim_reward(file_pressed)
-							end
-						}
+						local params = {}
+
+						params.reward = reward:child("reward_text"):text()
+						params.image = reward:has_script() and reward:script().texture_path
+
+						function params.yes_func()
+							self:claim_reward(file_pressed)
+						end
 
 						managers.menu:show_challenge_warn_choose_reward(params)
 					end
@@ -4186,6 +4246,7 @@ end
 function MenuNodeCrimenetChallengeGui:_setup_item_panel_parent(safe_rect, shape)
 	local x = safe_rect.x + safe_rect.width / 2 - self.WIDTH / 2 + self.PADDING
 	local y = safe_rect.y + safe_rect.height / 2 - self.HEIGHT / 2 + self.PADDING
+
 	shape = shape or {}
 	shape.x = shape.x or x
 	shape.y = shape.y or y
@@ -4275,9 +4336,9 @@ function MenuNodeChooseWeaponRewardGui:init(node, layer, parameters)
 	end
 
 	local title_text = self.item_panel:parent():text({
-		name = "special_title_text",
 		blend_mode = "add",
 		layer = 51,
+		name = "special_title_text",
 		text = managers.localization:to_upper_text("menu_challenge_claim_reward_title"),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -4335,7 +4396,7 @@ function MenuNodeChooseWeaponRewardGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_x(self.item_panel:x())
 	self.box_panel:set_w(self.item_panel:w())
 
-	if self._align_data.panel:h() < self.item_panel:h() then
+	if self.item_panel:h() > self._align_data.panel:h() then
 		self.box_panel:set_y(0)
 		self.box_panel:set_h(self.item_panel:parent():h())
 	else
@@ -4377,10 +4438,10 @@ function MenuNodeChooseWeaponRewardGui:_setup_item_panel(safe_rect, res)
 
 	local icon = self.box_panel:bitmap({
 		blend_mode = "add",
-		texture = "guis/textures/pd2/icon_modbox_df",
 		h = 96,
-		w = 96,
-		layer = 1
+		layer = 1,
+		texture = "guis/textures/pd2/icon_modbox_df",
+		w = 96
 	})
 
 	icon:set_position(10, 10)
@@ -4482,7 +4543,7 @@ function MenuNodeChooseWeaponCosmeticGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_x(self.item_panel:x())
 	self.box_panel:set_w(self.item_panel:w())
 
-	if self._align_data.panel:h() < self.item_panel:h() then
+	if self.item_panel:h() > self._align_data.panel:h() then
 		self.box_panel:set_y(0)
 		self.box_panel:set_h(self.item_panel:parent():h())
 	else
@@ -4517,9 +4578,10 @@ function MenuNodeChooseWeaponCosmeticGui:_setup_item_panel(safe_rect, res)
 	end
 
 	self.blur_panel = self.item_panel:parent():panel()
+
 	local blur = self.blur_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self.box_panel:w(),
 		h = self.blur_panel:h() - 70 - self.box_panel:top()
 	})
@@ -4530,7 +4592,7 @@ function MenuNodeChooseWeaponCosmeticGui:_setup_item_panel(safe_rect, res)
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -4538,8 +4600,8 @@ function MenuNodeChooseWeaponCosmeticGui:_setup_item_panel(safe_rect, res)
 	blur:animate(func)
 
 	local blur2 = self.blur_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self.blur_panel:w() - blur:width(),
 		h = self.blur_panel:h() / 4
 	})
@@ -4583,6 +4645,7 @@ function MenuNodeQuickplayGui:init(node, layer, parameters)
 	managers.menu_component:disable_crimenet()
 
 	local mc_full_ws = managers.menu_component:fullscreen_ws()
+
 	self._fullscreen_panel = mc_full_ws:panel():panel({
 		layer = 50
 	})
@@ -4594,8 +4657,8 @@ function MenuNodeQuickplayGui:init(node, layer, parameters)
 	})
 
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
 	})
@@ -4603,7 +4666,7 @@ function MenuNodeQuickplayGui:init(node, layer, parameters)
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -4680,6 +4743,7 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 
 	self._drill_amount = drill_amount
 	self._safe_amount = safe_amount
+
 	local content_td = tweak_data.economy.contents[container_data.content]
 
 	if alive(self.safe_rect_panel:child("open_safe_panel")) then
@@ -4699,31 +4763,36 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 		layer = 151,
 		name = "open_safe_panel"
 	})
+
 	local safe_w = self._panel:w() - 20 - 40
 	local safe_h = self._panel:h() - 20 - 40
 	local wanted_width = (3 * safe_h - padding) / 2.5
 	local wanted_height = (2.5 * safe_w + padding) / 3
 	local w = safe_w
 	local h = safe_h
+
 	w = wanted_width
 	h = (2.5 * wanted_width + padding) / 3
+
 	local mc_full_ws = managers.menu_component:fullscreen_ws()
+
 	self._fullscreen_panel = mc_full_ws:panel():panel({
 		layer = 150,
 		name = "open_contatiner"
 	})
+
 	local bg = self._fullscreen_panel:rect({
 		alpha = 0,
 		color = Color.black
 	})
 
-	bg:animate(function (o)
-		over(0.25, function (p)
+	bg:animate(function(o)
+		over(0.25, function(p)
 			o:set_alpha(math.sin(p * 90) * 0.5 * (half_fade and 0.5 or 1) + (half_fade and 0.25 or 0))
 		end)
 	end)
-	self._panel:animate(function (o)
-		over(0.15, function (p)
+	self._panel:animate(function(o)
+		over(0.15, function(p)
 			o:set_alpha(math.sin(p * 90) * (half_fade and 0.5 or 1) + (half_fade and 0.5 or 0))
 		end)
 	end)
@@ -4731,8 +4800,8 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 	self._panel:set_center(self.safe_rect_panel:w() / 2, self.safe_rect_panel:h() / 2)
 
 	local info_panel = self.safe_rect_panel:panel({
-		name = "info_panel",
 		layer = 151,
+		name = "info_panel",
 		w = (safe_w - w) * 0.75,
 		h = self._panel:h()
 	})
@@ -4757,15 +4826,17 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 
 	local data = self.node:parameters().container_data
 	local panel = self._panel:panel({
-		y = 10,
-		x = 10,
 		layer = 1,
+		x = 10,
+		y = 10,
 		w = self._panel:w() - 20,
 		h = self._panel:h() - 20
 	})
+
 	self._legend_panel = panel:panel({
 		h = tweak_data.menu.pd2_medium_font_size
 	})
+
 	local title_text = container_data.show_only and managers.localization:to_upper_text("menu_steam_market_content_" .. container_data.content) or managers.localization:to_upper_text("menu_ti_steam_open_safe_title", {
 		name = managers.localization:text(tweak_data.economy.safes[data.safe].name_id),
 		type = managers.localization:text("bm_menu_safe")
@@ -4835,85 +4906,88 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 	safe_panel:set_center_x(panel:w() / 2)
 
 	self._safe_panel = safe_panel
-	local td = tweak_data.economy.safes[container_data.safe]
-	local guis_catalog = "guis/"
-	local bundle_folder = td.texture_bundle_folder
 
-	if bundle_folder then
-		guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-	end
+	do
+		local td = tweak_data.economy.safes[container_data.safe]
+		local guis_catalog = "guis/"
+		local bundle_folder = td.texture_bundle_folder
 
-	local path = "safes/"
-	local bitmap_texture = guis_catalog .. path .. container_data.safe
-	local safe_bitmap_panel = safe_panel:panel()
+		if bundle_folder then
+			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+		end
 
-	safe_bitmap_panel:set_size(safe_panel:width() * 0.8, safe_panel:height() * 0.8)
-	safe_bitmap_panel:set_center(safe_panel:width() / 2, safe_panel:width() / 2)
-	self:request_texture(bitmap_texture, safe_bitmap_panel, true, "add")
+		local path = "safes/"
+		local bitmap_texture = guis_catalog .. path .. container_data.safe
+		local safe_bitmap_panel = safe_panel:panel()
 
-	local amount_text = safe_panel:text({
-		text = "x" .. tostring(safe_amount),
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size
-	})
+		safe_bitmap_panel:set_size(safe_panel:width() * 0.8, safe_panel:height() * 0.8)
+		safe_bitmap_panel:set_center(safe_panel:width() / 2, safe_panel:width() / 2)
+		self:request_texture(bitmap_texture, safe_bitmap_panel, true, "add")
 
-	make_fine_text(amount_text)
-	amount_text:set_center_x(safe_panel:w() / 2)
-	amount_text:set_bottom(safe_panel:h() - 10)
-
-	if container_data.active_market_bundle then
-		local is_pc_controller = managers.menu:is_pc_controller()
-		local is_steam_controller = managers.menu:is_steam_controller()
-		local prev_button = is_steam_controller and managers.localization:steam_btn("bumper_l") or is_pc_controller and "<" or managers.localization:get_default_macro("BTN_BOTTOM_L")
-		local next_button = is_steam_controller and managers.localization:steam_btn("bumper_r") or is_pc_controller and ">" or managers.localization:get_default_macro("BTN_BOTTOM_R")
-		local prev_panel = safe_panel:panel({
-			name = "prev_panel"
+		local amount_text = safe_panel:text({
+			text = "x" .. tostring(safe_amount),
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size
 		})
-		local next_panel = safe_panel:panel({
-			name = "next_panel"
-		})
-		local prev_text = prev_panel:text({
-			name = "prev_text",
-			text = prev_button,
-			font = tweak_data.menu.pd2_medium_font,
-			font_size = tweak_data.menu.pd2_medium_font_size
-		})
-		local next_text = next_panel:text({
-			name = "next_text",
-			text = next_button,
-			font = tweak_data.menu.pd2_medium_font,
-			font_size = tweak_data.menu.pd2_medium_font_size
-		})
-		local color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
 
-		prev_text:set_color(color)
-		next_text:set_color(color)
-		make_fine_text(prev_text)
-		make_fine_text(next_text)
-		prev_panel:set_size(prev_text:size())
-		next_panel:set_size(next_text:size())
-		prev_panel:set_lefttop(0, safe_bitmap_panel:y() + 10)
-		next_panel:set_righttop(safe_panel:w(), safe_bitmap_panel:y() + 10)
+		make_fine_text(amount_text)
+		amount_text:set_center_x(safe_panel:w() / 2)
+		amount_text:set_bottom(safe_panel:h() - 10)
 
-		if is_pc_controller then
-			table.insert(self._text_buttons, {
-				highlighted = false,
-				panel = prev_panel,
-				text = prev_text,
-				clbk = callback(self, self, "prev_container"),
-				highlighted_color = tweak_data.screen_colors.button_stage_2,
-				default_color = tweak_data.screen_colors.button_stage_3,
-				params = {}
+		if container_data.active_market_bundle then
+			local is_pc_controller = managers.menu:is_pc_controller()
+			local is_steam_controller = managers.menu:is_steam_controller()
+			local prev_button = is_steam_controller and managers.localization:steam_btn("bumper_l") or is_pc_controller and "<" or managers.localization:get_default_macro("BTN_BOTTOM_L")
+			local next_button = is_steam_controller and managers.localization:steam_btn("bumper_r") or is_pc_controller and ">" or managers.localization:get_default_macro("BTN_BOTTOM_R")
+			local prev_panel = safe_panel:panel({
+				name = "prev_panel"
 			})
-			table.insert(self._text_buttons, {
-				highlighted = false,
-				panel = next_panel,
-				text = next_text,
-				clbk = callback(self, self, "next_container"),
-				highlighted_color = tweak_data.screen_colors.button_stage_2,
-				default_color = tweak_data.screen_colors.button_stage_3,
-				params = {}
+			local next_panel = safe_panel:panel({
+				name = "next_panel"
 			})
+			local prev_text = prev_panel:text({
+				name = "prev_text",
+				text = prev_button,
+				font = tweak_data.menu.pd2_medium_font,
+				font_size = tweak_data.menu.pd2_medium_font_size
+			})
+			local next_text = next_panel:text({
+				name = "next_text",
+				text = next_button,
+				font = tweak_data.menu.pd2_medium_font,
+				font_size = tweak_data.menu.pd2_medium_font_size
+			})
+			local color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
+
+			prev_text:set_color(color)
+			next_text:set_color(color)
+			make_fine_text(prev_text)
+			make_fine_text(next_text)
+			prev_panel:set_size(prev_text:size())
+			next_panel:set_size(next_text:size())
+			prev_panel:set_lefttop(0, safe_bitmap_panel:y() + 10)
+			next_panel:set_righttop(safe_panel:w(), safe_bitmap_panel:y() + 10)
+
+			if is_pc_controller then
+				table.insert(self._text_buttons, {
+					highlighted = false,
+					panel = prev_panel,
+					text = prev_text,
+					clbk = callback(self, self, "prev_container"),
+					highlighted_color = tweak_data.screen_colors.button_stage_2,
+					default_color = tweak_data.screen_colors.button_stage_3,
+					params = {}
+				})
+				table.insert(self._text_buttons, {
+					highlighted = false,
+					panel = next_panel,
+					text = next_text,
+					clbk = callback(self, self, "next_container"),
+					highlighted_color = tweak_data.screen_colors.button_stage_2,
+					default_color = tweak_data.screen_colors.button_stage_3,
+					params = {}
+				})
+			end
 		end
 	end
 
@@ -4940,7 +5014,7 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 
 	insert_skins(contents, content_td.contains)
 
-	local x_td, y_td, x_rtd, y_rtd = nil
+	local x_td, y_td, x_rtd, y_rtd
 
 	local function sort_func(x, y)
 		x_td = (x.category == "weapon_skins" and tweak_data.blackmarket.weapon_skins or tweak_data.economy[x.category])[x.entry]
@@ -4969,12 +5043,13 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 	local size = (content_panel:w() - (num_per_row + 1) * content_padding) / num_per_row
 	local x = content_padding
 	local y = content_padding
-	local new_content, c_td = nil
+	local new_content, c_td
 
 	for i, content in ipairs(contents) do
 		local is_weapon_skin = content.category == "weapon_skins"
 		local is_armor_skin = content.category == "armor_skins"
 		local show_skins = is_weapon_skin or is_armor_skin
+
 		c_td = (content.category == "weapon_skins" and tweak_data.blackmarket.weapon_skins or tweak_data.economy[content.category])[content.entry]
 		new_content = content_panel:panel({
 			layer = 1,
@@ -4986,7 +5061,7 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 		})
 
 		if is_weapon_skin or is_armor_skin then
-			local texture_path, rarity_path = nil
+			local texture_path, rarity_path
 
 			if is_weapon_skin then
 				texture_path, rarity_path = managers.blackmarket:get_weapon_icon_path(managers.blackmarket:get_weapon_id_by_cosmetic_id(content.entry), {
@@ -5004,6 +5079,7 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 
 				texture_path = guis_catalog .. "armor_skins/" .. content.entry
 				rarity_path = managers.blackmarket:get_cosmetic_rarity_bg(c_td.rarity or "common")
+
 				local scale = 0.7
 				local armor_panel = new_content:panel({
 					w = new_content:w() * scale,
@@ -5038,7 +5114,7 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 				th = 1
 			end
 
-			local sw = math.min(pw, ph * tw / th)
+			local sw = math.min(pw, ph * (tw / th))
 			local sh = math.min(ph, pw / (tw / th))
 
 			rarity_bitmap:set_size(math.round(sw), math.round(sh))
@@ -5089,7 +5165,7 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 		end
 
 		x = i % num_per_row * size + content_padding * (i % num_per_row + 1)
-		y = math.floor(i / num_per_row) * size / 2 + content_padding / 2 * (math.floor(i / num_per_row) + 1)
+		y = math.floor(i / num_per_row) * (size / 2) + content_padding / 2 * (math.floor(i / num_per_row) + 1)
 	end
 
 	local divider_panel = panel:panel({
@@ -5124,9 +5200,9 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 	})
 
 	self._info_panel = info_panel:panel({
-		y = 10,
-		x = 10,
 		layer = 1,
+		x = 10,
+		y = 10,
 		w = info_panel:w() - 20,
 		h = info_panel:h() - 2
 	})
@@ -5144,8 +5220,8 @@ function MenuNodeOpenContainerGui:update_info(button)
 	if button then
 		if button.params.weapon_id then
 			local title_text = self._info_panel:text({
-				wrap = true,
 				blend_mode = "add",
+				wrap = true,
 				wrap_word = true,
 				text = utf8.to_upper(managers.weapon_factory:get_weapon_name_by_weapon_id(button.params.weapon_id)) .. " | " .. managers.localization:to_upper_text(tweak_data.blackmarket.weapon_skins[button.params.cosmetic_id].name_id),
 				font = tweak_data.menu.pd2_small_font,
@@ -5156,17 +5232,17 @@ function MenuNodeOpenContainerGui:update_info(button)
 			make_fine_text(title_text)
 
 			local desc, colors = InventoryDescription.create_description_item({
-				instance_id = 0,
 				category = "weapon_skins",
+				instance_id = 0,
 				entry = button.params.cosmetic_id
 			}, tweak_data.blackmarket.weapon_skins[button.params.cosmetic_id], {
 				default = tweak_data.screen_colors.text,
 				mods = tweak_data.screen_colors.text
 			}, true)
 			local desc_text = self._info_panel:text({
-				wrap = true,
-				word_wrap = true,
 				blend_mode = "add",
+				word_wrap = true,
+				wrap = true,
 				text = desc,
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -5179,8 +5255,8 @@ function MenuNodeOpenContainerGui:update_info(button)
 		elseif button.params.armor then
 			local c_td = tweak_data.economy.armor_skins[button.params.cosmetic_id]
 			local title_text = self._info_panel:text({
-				wrap = true,
 				blend_mode = "add",
+				wrap = true,
 				wrap_word = true,
 				text = utf8.to_upper(managers.localization:to_upper_text(c_td.name_id)),
 				font = tweak_data.menu.pd2_small_font,
@@ -5191,17 +5267,17 @@ function MenuNodeOpenContainerGui:update_info(button)
 			make_fine_text(title_text)
 
 			local desc, colors = InventoryDescription.create_description_item({
-				instance_id = 0,
 				category = "armor_skins",
+				instance_id = 0,
 				entry = button.params.cosmetic_id
 			}, c_td, {
 				default = tweak_data.screen_colors.text,
 				mods = tweak_data.screen_colors.text
 			}, true)
 			local desc_text = self._info_panel:text({
-				wrap = true,
-				word_wrap = true,
 				blend_mode = "add",
+				word_wrap = true,
+				wrap = true,
 				text = desc,
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -5221,7 +5297,7 @@ function MenuNodeOpenContainerGui:update_legends(button)
 	self._legend_panel:clear()
 
 	if button then
-		local show_preview, show_search = nil
+		local show_preview, show_search
 
 		if button.params.weapon_id then
 			show_preview = true
@@ -5231,7 +5307,7 @@ function MenuNodeOpenContainerGui:update_legends(button)
 			show_search = true
 		end
 
-		local preview_text, preview_icon, search_text, search_icon = nil
+		local preview_text, preview_icon, search_text, search_icon
 
 		if show_preview then
 			preview_text = self._legend_panel:text({
@@ -5244,10 +5320,10 @@ function MenuNodeOpenContainerGui:update_legends(button)
 			make_fine_text(preview_text)
 
 			preview_icon = self._legend_panel:bitmap({
-				texture = "guis/textures/pd2/mouse_buttons",
-				name = "icon",
-				h = 23,
 				blend_mode = "add",
+				h = 23,
+				name = "icon",
+				texture = "guis/textures/pd2/mouse_buttons",
 				w = 17,
 				texture_rect = {
 					18,
@@ -5272,10 +5348,10 @@ function MenuNodeOpenContainerGui:update_legends(button)
 			make_fine_text(search_text)
 
 			search_icon = self._legend_panel:bitmap({
-				texture = "guis/textures/pd2/mouse_buttons",
-				name = "icon",
-				h = 23,
 				blend_mode = "add",
+				h = 23,
+				name = "icon",
+				texture = "guis/textures/pd2/mouse_buttons",
 				w = 17,
 				texture_rect = {
 					1,
@@ -5296,7 +5372,7 @@ function MenuNodeOpenContainerGui:weapon_cosmetics_callback(button, data)
 		managers.blackmarket:view_weapon_platform_with_cosmetics(data.weapon_id, {
 			id = data.cosmetic_id,
 			quality = data.cosmetic_quality
-		}, function ()
+		}, function()
 			managers.menu:open_node("inventory_tradable_container_preview_node", {
 				{
 					id = data.cosmetic_id,
@@ -5339,6 +5415,7 @@ end
 function MenuNodeOpenContainerGui:open_container(market_bundle)
 	local data = self.node:parameters().container_data
 	local active_bundle = data.market_bundles[market_bundle]
+
 	data.content = active_bundle.content
 	data.drill = active_bundle.drill
 	data.safe = active_bundle.safe

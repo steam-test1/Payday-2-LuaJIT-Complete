@@ -9,6 +9,7 @@ function ModifierEnemyHealthAndDamage:init(data)
 
 	local excluded_enemies = tweak_data.crime_spree.excluded_enemies
 	local health_exclude_list = excluded_enemies and excluded_enemies.health
+
 	self._damage_exclude_list = excluded_enemies and excluded_enemies.damage
 
 	MutatorEnemyHealth:modify_character_tweak_data(tweak_data.character, self:get_health_multiplier(), health_exclude_list)

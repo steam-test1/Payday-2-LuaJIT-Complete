@@ -20,7 +20,7 @@ function CoreCutsceneAnimationPatchesPanel:unit_types()
 end
 
 function CoreCutsceneAnimationPatchesPanel:set_unit_types(unit_types)
-	assert(type(unit_types) == "table" and table.true_for_all(table.map_values(unit_types), function (v)
+	assert(type(unit_types) == "table" and table.true_for_all(table.map_values(unit_types), function(v)
 		return DB:has("unit", tostring(v):id())
 	end), "Expected unit_types to be a table mapping actor names to Unit type names.")
 
@@ -39,6 +39,7 @@ function CoreCutsceneAnimationPatchesPanel:patches()
 		local unit_name = list_ctrl:get_item(row, 0)
 		local blend_set = list_ctrl:get_item(row, 1)
 		local animation = list_ctrl:get_item(row, 2)
+
 		patches[unit_name] = patches[unit_name] or {}
 		patches[unit_name][blend_set] = animation
 	end
@@ -90,7 +91,7 @@ function CoreCutsceneAnimationPatchesPanel:_create_unit_name_dropdown(parent)
 
 	control:freeze()
 
-	local first_value = nil
+	local first_value
 
 	for unit_name, _ in pairs(self:unit_types()) do
 		first_value = first_value or unit_name
@@ -130,12 +131,15 @@ end
 
 function CoreCutsceneAnimationPatchesPanel:_on_browse_for_animation(text_ctrl)
 	local dir, path = self:_absolute_dir_and_path(text_ctrl:get_value())
+
 	dir = dir or self.__default_dir or managers.database:base_path() .. "data"
 	path = path or ""
+
 	local dialog = EWS:FileDialog(self:_top_level_window(), "Select an Animation File", dir, path, "Diesel Animation (*.diesel)|*.diesel", "OPEN,FILE_MUST_EXIST")
 
 	if dialog:show_modal() then
 		self.__default_dir = dialog:get_directory()
+
 		local relative_path = string.match(dialog:get_path(), "^" .. managers.database:base_path() .. "(.*)")
 
 		text_ctrl:set_value(relative_path)

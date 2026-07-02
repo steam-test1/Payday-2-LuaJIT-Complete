@@ -38,6 +38,7 @@ end
 
 function HuskTeamAIBase:load(data)
 	self._tweak_table = data.base.tweak_table or self._tweak_table
+
 	local character_name = self._tweak_table
 
 	if character_name then

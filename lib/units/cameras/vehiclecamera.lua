@@ -43,8 +43,8 @@ function VehicleCamera:_setup_sound_listener()
 
 	self._listener_activation_id = managers.listener:activate_set("main", "access_camera")
 	self._sound_check_object = managers.sound_environment:add_check_object({
-		primary = true,
 		active = true,
+		primary = true,
 		object = self._unit:orientation_object()
 	})
 end

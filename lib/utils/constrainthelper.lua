@@ -1,4 +1,5 @@
 ConstraintHelper = ConstraintHelper or {}
+
 local tmpvec1 = Vector3()
 local tmpvec2 = Vector3()
 local tmpvec3 = Vector3()
@@ -46,6 +47,7 @@ local function get_root(r, z0, z1, g)
 
 		local ratio0 = n / (s + r)
 		local ratio1 = z1 / (s + 1)
+
 		g = ratio0 * ratio0 + ratio1 * ratio1 - 1
 
 		if g > 0 then
@@ -61,17 +63,21 @@ local function get_root(r, z0, z1, g)
 end
 
 local function clamp_ellipsoid(px, py, ex, ey)
-	local flip = nil
+	local flip
 	local xs = math.sign(px)
 	local ys = math.sign(py)
+
 	px = math.abs(px)
 	py = math.abs(py)
 
 	if ex < ey then
 		local t = ex
+
 		ex = ey
 		ey = t
+
 		local t = px
+
 		px = py
 		py = t
 		flip = true
@@ -83,8 +89,11 @@ local function clamp_ellipsoid(px, py, ex, ey)
 			local zy = py / ey
 			local g = zx * zx + zy * zy - 1
 			local r = ex / ey
+
 			r = r * r
+
 			local sbar = get_root(r, zx, zy, g)
+
 			px = r * px / (sbar + r)
 			py = py / (sbar + 1)
 		else
@@ -97,6 +106,7 @@ local function clamp_ellipsoid(px, py, ex, ey)
 
 		if n < d then
 			local s = n / d
+
 			px = ex * s
 			py = ey * math.sqrt(1 - s * s)
 		else
@@ -107,6 +117,7 @@ local function clamp_ellipsoid(px, py, ex, ey)
 
 	if flip then
 		local t = px
+
 		px = py
 		py = t
 	end
@@ -140,7 +151,7 @@ end
 
 function ConstraintHelper.clamp_ellipsoid_quadrant(x, y, height, angle)
 	local q = x > 0 and (y > 0 and 1 or 4) or y > 0 and 2 or 3
-	local xs, ys = nil
+	local xs, ys
 
 	if q == 1 then
 		xs = angle[1]
@@ -218,8 +229,10 @@ function ConstraintHelper.constrain_rotation(src, dst, angle)
 	local y = mvector3.dot(target, up)
 	local px = x
 	local py = y
+
 	x, y = ConstraintHelper.clamp_ellipsoid_quadrant(x, y, height, angle)
-	local target_rotation = nil
+
+	local target_rotation
 
 	if x * x + y * y < px * px + py * py then
 		local v = forward
@@ -308,7 +321,7 @@ function ConstraintHelper.constrain_bend(src, dst, angles, align_src)
 		return rot
 	end
 
-	if angles[2] < angle then
+	if angle > angles[2] then
 		local v = math.cos(angles[2]) * src_x + math.sin(angles[2]) * src_z
 
 		mvector3.normalize(v)

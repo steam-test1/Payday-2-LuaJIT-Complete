@@ -9,11 +9,10 @@ function ExperienceManager:_setup()
 	self._total_levels = #tweak_data.experience_manager.levels
 
 	if not Global.experience_manager then
-		Global.experience_manager = {
-			total = Application:digest_value(0, true),
-			level = Application:digest_value(0, true),
-			prestige_xp_gained = self._global and self._global.prestige_xp_gained or Application:digest_value(0, true)
-		}
+		Global.experience_manager = {}
+		Global.experience_manager.total = Application:digest_value(0, true)
+		Global.experience_manager.level = Application:digest_value(0, true)
+		Global.experience_manager.prestige_xp_gained = self._global and self._global.prestige_xp_gained or Application:digest_value(0, true)
 	end
 
 	self._global = Global.experience_manager
@@ -29,7 +28,7 @@ function ExperienceManager:_setup()
 end
 
 function ExperienceManager:_set_next_level_data(level)
-	if self._total_levels < level then
+	if level > self._total_levels then
 		print("Reached the level cap")
 
 		if self._experience_progress_data then
@@ -44,6 +43,7 @@ function ExperienceManager:_set_next_level_data(level)
 	end
 
 	local level_data = tweak_data.experience_manager.levels[level]
+
 	self._global.next_level_data = {}
 
 	self:_set_next_level_data_points(level_data.points)
@@ -82,6 +82,7 @@ function ExperienceManager:next_level_data()
 end
 
 function ExperienceManager:perform_action_interact(name)
+	return
 end
 
 function ExperienceManager:perform_action(action)
@@ -116,10 +117,9 @@ function ExperienceManager:debug_add_points(points, present_xp)
 end
 
 function ExperienceManager:give_experience(xp, force_or_debug)
-	self._experience_progress_data = {
-		gained = xp,
-		start_t = {}
-	}
+	self._experience_progress_data = {}
+	self._experience_progress_data.gained = xp
+	self._experience_progress_data.start_t = {}
 	self._experience_progress_data.start_t.level = self:current_level()
 	self._experience_progress_data.start_t.current = self._global.next_level_data and self:next_level_data_current_points() or 0
 	self._experience_progress_data.start_t.total = self._global.next_level_data and self:next_level_data_points() or 1
@@ -138,16 +138,16 @@ function ExperienceManager:give_experience(xp, force_or_debug)
 		self._experience_progress_data.gained = self._experience_progress_data.gained - level_cap_xp_leftover
 	end
 
-	self._experience_progress_data.end_t = {
-		level = self:current_level(),
-		current = self._global.next_level_data and self:next_level_data_current_points() or 0,
-		total = self._global.next_level_data and self:next_level_data_points() or 1,
-		xp = self:xp_gained()
-	}
+	self._experience_progress_data.end_t = {}
+	self._experience_progress_data.end_t.level = self:current_level()
+	self._experience_progress_data.end_t.current = self._global.next_level_data and self:next_level_data_current_points() or 0
+	self._experience_progress_data.end_t.total = self._global.next_level_data and self:next_level_data_points() or 1
+	self._experience_progress_data.end_t.xp = self:xp_gained()
 
 	table.remove(self._experience_progress_data, #self._experience_progress_data)
 
 	local return_data = deep_clone(self._experience_progress_data)
+
 	self._experience_progress_data = nil
 
 	managers.skilltree:give_specialization_points(xp)
@@ -177,6 +177,7 @@ end
 function ExperienceManager:mission_xp_award(amount)
 	if amount > 0 then
 		local current_xp = self._global.mission_xp_current and Application:digest_value(self._global.mission_xp_current, false) or 0
+
 		self._global.mission_xp_current = Application:digest_value(current_xp + amount, true)
 	end
 end
@@ -214,7 +215,7 @@ function ExperienceManager:add_points(points, present_xp, debug)
 		return points
 	end
 
-	if self:level_cap() <= self:current_level() then
+	if self:current_level() >= self:level_cap() then
 		self:_set_total(self:total() + points)
 		managers.statistics:aquired_money(points)
 
@@ -276,7 +277,7 @@ function ExperienceManager:_check_achievements()
 	local level = self:current_level()
 
 	for _, d in pairs(tweak_data.achievement.level_achievements) do
-		if d.level and d.level <= level then
+		if d.level and level >= d.level then
 			managers.achievment:award_data(d)
 		end
 	end
@@ -291,6 +292,7 @@ function ExperienceManager:_check_achievements()
 end
 
 function ExperienceManager:present()
+	return
 end
 
 function ExperienceManager:_present_xp(amount)
@@ -375,6 +377,7 @@ function ExperienceManager:rank_string(rank, use_roman_numerals)
 
 	while rank > 0 do
 		local div = rank / numbers[index]
+
 		rank = rank % numbers[index]
 
 		for i = 1, div do
@@ -405,6 +408,7 @@ end
 
 function ExperienceManager:gui_string(level, rank, offset)
 	offset = offset or 0
+
 	local rank_string = rank > 0 and "[" .. self:rank_string(rank) .. "]" or ""
 	local gui_string = tostring(level) .. rank_string
 	local rank_color_range = {
@@ -543,9 +547,11 @@ function ExperienceManager:get_levels_gained_from_xp(xp)
 	local next_level_data = self:next_level_data()
 	local xp_needed_to_level = math.max(1, next_level_data.points - next_level_data.current_points)
 	local level_gained = math.min(xp / xp_needed_to_level, 1)
+
 	xp = math.max(xp - xp_needed_to_level, 0)
+
 	local plvl = managers.experience:current_level() + 1
-	local level_data = nil
+	local level_data
 
 	while xp > 0 and plvl < self._total_levels do
 		plvl = plvl + 1
@@ -582,20 +588,21 @@ function ExperienceManager:get_contract_xp_by_stars(job_id, job_stars, risk_star
 	local difficulty_stars = risk_stars
 	local player_stars = debug_player_level and math.max(math.ceil(debug_player_level / 10), 1) or managers.experience:level_to_stars()
 	local job_tweak_chains = tweak_data.narrative:job_chain(job_id)
-	local params = {
-		job_id = job_id,
-		job_stars = job_stars,
-		difficulty_stars = difficulty_stars,
-		current_stage = job_days,
-		professional = professional,
-		success = true,
-		num_winners = 1,
-		on_last_stage = true,
-		player_stars = player_stars,
-		personal_win = true,
-		ignore_heat = ignore_heat,
-		mission_xp = mission_xp
-	}
+	local params = {}
+
+	params.job_id = job_id
+	params.job_stars = job_stars
+	params.difficulty_stars = difficulty_stars
+	params.current_stage = job_days
+	params.professional = professional
+	params.success = true
+	params.num_winners = 1
+	params.on_last_stage = true
+	params.player_stars = player_stars
+	params.personal_win = true
+	params.ignore_heat = ignore_heat
+	params.mission_xp = mission_xp
+
 	local total_base_xp = 0
 	local total_risk_xp = 0
 	local total_heat_base_xp = 0
@@ -614,12 +621,13 @@ function ExperienceManager:get_contract_xp_by_stars(job_id, job_stars, risk_star
 		return math.round(v)
 	end
 
-	local risk_ratio, base_exp, risk_exp, skill_base, skill_risk, heat_base, heat_risk, ghost_base, ghost_risk, infamy_base, infamy_risk, extra_base, extra_risk = nil
+	local risk_ratio, base_exp, risk_exp, skill_base, skill_risk, heat_base, heat_risk, ghost_base, ghost_risk, infamy_base, infamy_risk, extra_base, extra_risk
 
 	for i = 1, job_days do
 		params.current_stage = i
 		params.on_last_stage = i == job_days
 		params.level_id = job_tweak_chains and job_tweak_chains[i] and job_tweak_chains[i].level_id
+
 		local total_xp, dissection_table = self:get_xp_by_params(params)
 
 		if debug_print then
@@ -724,6 +732,7 @@ function ExperienceManager:get_xp_by_params(params)
 	end
 
 	local static_stage_experience = level_id and tweak_data.levels[level_id].static_experience
+
 	static_stage_experience = static_stage_experience and static_stage_experience[difficulty_stars + 1]
 	stage_xp_dissect = static_stage_experience or managers.experience:get_stage_xp_by_stars(total_stars)
 	level_limit_dissect = level_limit_dissect + (static_stage_experience or managers.experience:get_stage_xp_by_stars(job_stars))
@@ -736,12 +745,14 @@ function ExperienceManager:get_xp_by_params(params)
 	pro_job_xp_dissect = math.round(base_xp * pro_job_multiplier - base_xp)
 	base_xp = base_xp + pro_job_xp_dissect
 	days_dissect = math.round(base_xp * days_multiplier - base_xp)
+
 	local is_level_limited = player_stars < job_stars
 
 	if is_level_limited then
 		local diff_in_stars = job_stars - player_stars
 		local tweak_multiplier = tweak_data:get_value("experience_manager", "level_limit", "pc_difference_multipliers", diff_in_stars) or 0
 		local old_base_xp = base_xp
+
 		base_xp = math.round(base_xp * tweak_multiplier)
 		level_limit_dissect = base_xp - old_base_xp
 	end
@@ -752,16 +763,20 @@ function ExperienceManager:get_xp_by_params(params)
 
 	if not success then
 		local multiplier = tweak_data:get_value("experience_manager", "stage_failed_multiplier") or 1
+
 		failed_level_dissect = math.round(contract_xp * multiplier - contract_xp)
 		contract_xp = contract_xp + failed_level_dissect
 	elseif not personal_win then
 		local multiplier = tweak_data:get_value("experience_manager", "in_custody_multiplier") or 1
+
 		personal_win_dissect = math.round(contract_xp * multiplier - contract_xp)
 		contract_xp = contract_xp + personal_win_dissect
 	end
 
 	total_xp = contract_xp
+
 	local total_contract_xp = total_xp
+
 	bonus_xp = managers.player:get_skill_exp_multiplier(managers.groupai and managers.groupai:state():whisper_mode())
 	skill_dissect = math.round(total_contract_xp * bonus_xp - total_contract_xp)
 	total_xp = total_xp + skill_dissect
@@ -771,6 +786,7 @@ function ExperienceManager:get_xp_by_params(params)
 
 	if success then
 		local num_players_bonus = num_winners and tweak_data:get_value("experience_manager", "alive_humans_multiplier", num_winners) or 1
+
 		alive_crew_dissect = math.round(total_contract_xp * num_players_bonus - total_contract_xp)
 		total_xp = total_xp + alive_crew_dissect
 	end
@@ -780,14 +796,19 @@ function ExperienceManager:get_xp_by_params(params)
 	total_xp = total_xp + gage_assignment_dissect
 	ghost_dissect = math.round(total_xp * ghost_multiplier - total_xp)
 	total_xp = total_xp + ghost_dissect
+
 	local heat_xp_mul = ignore_heat and 1 or math.max(managers.job:get_job_heat_multipliers(job_id), 0)
+
 	job_heat_dissect = math.round(total_xp * heat_xp_mul - total_xp)
 	total_xp = total_xp + job_heat_dissect
 	bonus_xp = managers.player:get_limited_exp_multiplier(job_id, level_id)
 	extra_bonus_dissect = math.round(total_xp * bonus_xp - total_xp)
 	total_xp = total_xp + extra_bonus_dissect
+
 	local bonus_mutators_dissect = total_xp * managers.mutators:get_experience_reduction() * -1
+
 	total_xp = total_xp + bonus_mutators_dissect
+
 	local dissection_table = {
 		bonus_risk = math.round(risk_dissect),
 		bonus_num_players = math.round(alive_crew_dissect),
@@ -813,6 +834,7 @@ function ExperienceManager:get_xp_by_params(params)
 
 	if Application:production_build() then
 		local rounding_error = dissection_table.total - (dissection_table.stage_xp + dissection_table.job_xp + dissection_table.bonus_risk + dissection_table.bonus_num_players + dissection_table.bonus_failed + dissection_table.bonus_skill + dissection_table.bonus_days + dissection_table.heat_xp + dissection_table.bonus_infamy + dissection_table.bonus_ghost + dissection_table.bonus_gage_assignment + dissection_table.bonus_mission_xp + dissection_table.bonus_low_level)
+
 		dissection_table.rounding_error = rounding_error
 	else
 		dissection_table.rounding_error = 0
@@ -868,7 +890,7 @@ function ExperienceManager:level_cap()
 end
 
 function ExperienceManager:reached_level_cap()
-	return self:level_cap() <= self:current_level()
+	return self:current_level() >= self:level_cap()
 end
 
 function ExperienceManager:save(data)
@@ -880,6 +902,7 @@ function ExperienceManager:save(data)
 		rank = self._global.rank,
 		prestige_xp_gained = self._global.prestige_xp_gained
 	}
+
 	data.ExperienceManager = state
 end
 
@@ -932,7 +955,7 @@ function ExperienceManager:update_progress()
 end
 
 function ExperienceManager:chk_ask_use_backup(savegame_data, backup_savegame_data)
-	local savegame_exp_total, backup_savegame_exp_total, savegame_rank, backup_savegame_rank = nil
+	local savegame_exp_total, backup_savegame_exp_total, savegame_rank, backup_savegame_rank
 	local state = savegame_data.ExperienceManager
 
 	if state then

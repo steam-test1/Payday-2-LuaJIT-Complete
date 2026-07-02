@@ -79,7 +79,7 @@ function UnitDamage:body_collision_callback(tag, unit, body, other_unit, other_b
 	if self._collision_sfx_quite_time ~= nil and other_body and body then
 		local t = TimerManager:game():time()
 
-		if not self._play_collision_sfx_time or self._play_collision_sfx_time <= t then
+		if not self._play_collision_sfx_time or t >= self._play_collision_sfx_time then
 			self:play_collision_sfx(other_unit, position, normal, collision_velocity)
 
 			self._play_collision_sfx_time = t + self._collision_sfx_quite_time

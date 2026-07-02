@@ -1,5 +1,6 @@
 ArrowBase = ArrowBase or class(ProjectileBase)
 ArrowBase._arrow_units = {}
+
 local mvec1 = Vector3()
 local mrot1 = Rotation()
 local ids_pickup = Idstring("pickup")
@@ -7,6 +8,7 @@ local ids_pickup = Idstring("pickup")
 function ArrowBase:_setup_from_tweak_data(arrow_entry)
 	local arrow_entry = self._tweak_projectile_entry or "west_arrow"
 	local tweak_entry = tweak_data.projectiles[arrow_entry]
+
 	self._damage_class_string = tweak_data.projectiles[self._tweak_projectile_entry].bullet_class or "InstantBulletBase"
 	self._damage_class = CoreSerialize.string_to_classtable(self._damage_class_string)
 	self._mass_look_up_modifier = tweak_entry.mass_look_up_modifier
@@ -196,7 +198,7 @@ function ArrowBase:_calculate_autohit_direction()
 	local enemies = managers.enemy:all_enemies()
 	local pos = self._unit:position()
 	local dir = self._unit:rotation():y()
-	local closest_dis, closest_pos = nil
+	local closest_dis, closest_pos
 
 	for u_key, enemy_data in pairs(enemies) do
 		local enemy = enemy_data.unit
@@ -280,6 +282,7 @@ end
 
 function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 	local instant_dynamic_pickup = dynamic_pickup_wanted and (is_remote or Network:is_server())
+
 	self._attached_to_unit = true
 
 	self:reload_contour()
@@ -293,9 +296,9 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 	local hit_unit = self._col_ray.unit
 	local switch_to_pickup = true
 	local switch_to_dynamic_pickup = instant_dynamic_pickup or not alive(hit_unit)
-	local local_pos = nil
+	local local_pos
 	local global_pos = self._col_ray.position
-	local parent_obj, child_obj, parent_body = nil
+	local parent_obj, child_obj, parent_body
 
 	if switch_to_dynamic_pickup then
 		self._unit:set_position(global_pos)
@@ -328,7 +331,9 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 					mvector3.subtract(collision_to_parent, parent_pos)
 
 					local projected_dist = mvector3.dot(collision_to_parent, segment_dir)
+
 					projected_dist = math.clamp(projected_dist, 0, segment_dist)
+
 					local projected_pos = parent_pos + projected_dist * segment_dir
 					local max_dist_from_segment = 10
 					local dir_from_segment = Vector3()
@@ -362,7 +367,7 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 			}, callback(self, self, "clbk_hit_unit_death"))
 		end
 
-		local has_destroy_listener = nil
+		local has_destroy_listener
 		local hit_base = hit_unit:base()
 		local listener_class = hit_base
 
@@ -418,11 +423,10 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 	end
 
 	if alive(hit_unit) and parent_body then
-		self._attached_body_disabled_cbk_data = {
-			cbk = callback(self, self, "_cbk_attached_body_disabled"),
-			unit = hit_unit,
-			body = parent_body
-		}
+		self._attached_body_disabled_cbk_data = {}
+		self._attached_body_disabled_cbk_data.cbk = callback(self, self, "_cbk_attached_body_disabled")
+		self._attached_body_disabled_cbk_data.unit = hit_unit
+		self._attached_body_disabled_cbk_data.body = parent_body
 
 		hit_unit:add_body_enabled_callback(self._attached_body_disabled_cbk_data.cbk)
 	end
@@ -448,26 +452,24 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 			local id = hit_unit:editor_id()
 
 			if id ~= -1 then
-				self._sync_attach_data = {
-					parent_unit = hit_unit,
-					parent_unit_id = id,
-					parent_body = parent_body,
-					local_pos = local_pos or self._unit:position(),
-					dir = dir
-				}
+				self._sync_attach_data = {}
+				self._sync_attach_data.parent_unit = hit_unit
+				self._sync_attach_data.parent_unit_id = id
+				self._sync_attach_data.parent_body = parent_body
+				self._sync_attach_data.local_pos = local_pos or self._unit:position()
+				self._sync_attach_data.dir = dir
 			end
 		else
 			local id = hit_unit:id()
 
 			if id ~= -1 then
-				self._sync_attach_data = {
-					character = true,
-					parent_unit = hit_unit:id() ~= -1 and hit_unit or nil,
-					parent_obj = hit_unit:id() ~= -1 and parent_obj or nil,
-					parent_body = hit_unit:id() ~= -1 and parent_body or nil,
-					local_pos = hit_unit:id() ~= -1 and local_pos or self._unit:position(),
-					dir = dir
-				}
+				self._sync_attach_data = {}
+				self._sync_attach_data.character = true
+				self._sync_attach_data.parent_unit = hit_unit:id() ~= -1 and hit_unit or nil
+				self._sync_attach_data.parent_obj = hit_unit:id() ~= -1 and parent_obj or nil
+				self._sync_attach_data.parent_body = hit_unit:id() ~= -1 and parent_body or nil
+				self._sync_attach_data.local_pos = hit_unit:id() ~= -1 and local_pos or self._unit:position()
+				self._sync_attach_data.dir = dir
 			end
 		end
 	end
@@ -478,7 +480,7 @@ function ArrowBase:sync_attach_to_unit(instant_dynamic_pickup, parent_unit, pare
 		parent_obj = parent_body:root_object()
 	end
 
-	local world_position = nil
+	local world_position
 
 	if drop_in then
 		world_position = self._unit:position()
@@ -569,15 +571,17 @@ function ArrowBase:clbk_hit_unit_destroyed()
 end
 
 ArrowBase.DEFUALT_SOUNDS = {
-	impact = "arrow_impact_gen",
+	flyby = "arrow_flyby",
 	flyby_stop = "arrow_flyby_stop",
-	flyby = "arrow_flyby"
+	impact = "arrow_impact_gen"
 }
 
 function ArrowBase:_tweak_data_play_sound(entry)
 	local tweak_entry = tweak_data.projectiles[self._tweak_projectile_entry]
 	local event = tweak_entry.sounds and tweak_entry.sounds[entry]
+
 	event = event or ArrowBase.DEFUALT_SOUNDS[entry]
+
 	local snd_src = self._unit:sound_source(Idstring("snd"))
 
 	if snd_src then
@@ -588,10 +592,10 @@ end
 function ArrowBase:save(data)
 	ArrowBase.super.save(self, data)
 
-	local state = {
-		is_pickup = self._is_pickup,
-		is_pickup_dynamic = self._is_pickup_dynamic
-	}
+	local state = {}
+
+	state.is_pickup = self._is_pickup
+	state.is_pickup_dynamic = self._is_pickup_dynamic
 
 	if not self._sync_attach_data then
 		state.is_pickup = true
@@ -604,9 +608,8 @@ function ArrowBase:save(data)
 
 			managers.enemy:add_delayed_clbk("delay_sync_attach" .. tostring(self._unit:key()), callback(self, self, "_delay_sync_attach", peer), TimerManager:game():time() + 0.1)
 		else
-			state.sync_attach_data = {
-				parent_unit_id = self._sync_attach_data.parent_unit_id
-			}
+			state.sync_attach_data = {}
+			state.sync_attach_data.parent_unit_id = self._sync_attach_data.parent_unit_id
 
 			if self._sync_attach_data.parent_body then
 				state.sync_attach_data.parent_body_index = self._sync_attach_data.parent_unit:get_body_index(self._sync_attach_data.parent_body:name())
@@ -638,6 +641,7 @@ function ArrowBase:load(data)
 			local function _dropin_attach(parent_unit)
 				local parent_body = parent_unit:body(state.sync_attach_data.parent_body_index)
 				local parent_obj = parent_body:root_object()
+
 				self._drop_in_sync_data = {
 					f = 2,
 					parent_unit = parent_unit,
@@ -725,7 +729,7 @@ function ArrowBase:destroy(unit)
 end
 
 function ArrowBase.find_nearest_arrow(peer_id, position)
-	local closest_unit, closest_dist_sq = nil
+	local closest_unit, closest_dist_sq
 
 	if not ArrowBase._arrow_units or not ArrowBase._arrow_units[peer_id] then
 		print("ArrowBase.find_nearest_arrow - arrow not found!")
@@ -775,8 +779,10 @@ function ReviveDartArrowBase:init(unit)
 
 	self._slot_mask = managers.slot:get_mask("arrow_impact_targets") - 17
 	self._criminals_slotmask = managers.slot:get_mask("harmless_criminals") + 3
+
 	local projectile_entry = self._tweak_projectile_entry or "frag"
 	local tweak_entry = tweak_data.projectiles[projectile_entry]
+
 	self._criminal_sphere_cast_radius = tweak_entry.sweep_radius or 80
 end
 
@@ -835,6 +841,7 @@ end
 function ReviveDartArrowBase:clbk_impact(tag, unit, body, other_unit, other_body, position, ...)
 	if self._sweep_data and not self._collided then
 		self._sweep_data.current_pos = position
+
 		local col_ray = self:_check_revive_targets()
 
 		if col_ray then

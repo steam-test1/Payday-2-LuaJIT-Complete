@@ -4,93 +4,100 @@ function KillzoneManager:init()
 	self._units = {}
 end
 
-KillzoneManager.type_upd_funcs = {
-	sniper = function (obj, t, dt, data)
-		data.timer = data.timer + dt
+KillzoneManager.type_upd_funcs = {}
 
-		if data.next_shot < data.timer then
-			data.next_shot = data.timer + math.rand(data.warning_time < data.timer and 0.5 or 1)
-			local warning_shot = math.max(data.warning_time - data.timer, 1)
-			warning_shot = math.rand(warning_shot) > 0.75
+function KillzoneManager.type_upd_funcs.sniper(obj, t, dt, data)
+	data.timer = data.timer + dt
 
-			if warning_shot then
-				obj:_warning_shot(data.unit)
-			else
-				obj:_deal_damage(data.unit)
-			end
-		end
-	end,
-	gas = function (obj, t, dt, data)
-		data.timer = data.timer + dt
+	if data.timer > data.next_shot then
+		data.next_shot = data.timer + math.rand(data.timer > data.warning_time and 0.5 or 1)
 
-		if data.next_gas < data.timer then
-			data.timer = data.timer - data.next_gas
+		local warning_shot = math.max(data.warning_time - data.timer, 1)
 
-			if not data.first_passed then
-				data.first_passed = true
-				data.next_gas = data.next_after_first
-			end
+		warning_shot = math.rand(warning_shot) > 0.75
 
-			obj:_deal_gas_damage(data.unit)
-		end
-	end,
-	fire = function (obj, t, dt, data)
-		data.timer = data.timer + dt
-
-		if data.next_fire < data.timer then
-			data.timer = data.timer - data.next_fire
-
-			if not data.first_passed then
-				data.first_passed = true
-				data.next_fire = data.next_after_first
-			end
-
-			obj:_deal_fire_damage(data.unit)
-		end
-	end,
-	laser = function (obj, t, dt, data)
-		if not data.killed then
-			data.timer = data.timer + dt
-
-			if data.kill_at < data.timer then
-				data.killed = true
-
-				obj:_kill_unit(data.unit)
-			end
-		end
-	end,
-	electricity = function (obj, t, dt, data)
-		if data.unit:movement():tased() then
-			data.timer = 0
+		if warning_shot then
+			obj:_warning_shot(data.unit)
 		else
-			data.timer = data.timer + dt
-
-			if data.next_tase < data.timer then
-				data.timer = data.timer - data.next_tase
-
-				if not data.first_passed then
-					data.first_passed = true
-					data.next_tase = data.next_after_first
-				end
-
-				local electrocution_time_mul = math.random(2, 4) * 0.1
-
-				obj:_electrocute_unit(data.unit, electrocution_time_mul)
-			end
-		end
-	end,
-	electricity_lethal = function (obj, t, dt, data)
-		if not data.killed then
-			data.timer = data.timer + dt
-
-			if data.kill_at < data.timer then
-				data.killed = true
-
-				obj:_kill_unit(data.unit)
-			end
+			obj:_deal_damage(data.unit)
 		end
 	end
-}
+end
+
+function KillzoneManager.type_upd_funcs.gas(obj, t, dt, data)
+	data.timer = data.timer + dt
+
+	if data.timer > data.next_gas then
+		data.timer = data.timer - data.next_gas
+
+		if not data.first_passed then
+			data.first_passed = true
+			data.next_gas = data.next_after_first
+		end
+
+		obj:_deal_gas_damage(data.unit)
+	end
+end
+
+function KillzoneManager.type_upd_funcs.fire(obj, t, dt, data)
+	data.timer = data.timer + dt
+
+	if data.timer > data.next_fire then
+		data.timer = data.timer - data.next_fire
+
+		if not data.first_passed then
+			data.first_passed = true
+			data.next_fire = data.next_after_first
+		end
+
+		obj:_deal_fire_damage(data.unit)
+	end
+end
+
+function KillzoneManager.type_upd_funcs.laser(obj, t, dt, data)
+	if not data.killed then
+		data.timer = data.timer + dt
+
+		if data.timer > data.kill_at then
+			data.killed = true
+
+			obj:_kill_unit(data.unit)
+		end
+	end
+end
+
+function KillzoneManager.type_upd_funcs.electricity(obj, t, dt, data)
+	if data.unit:movement():tased() then
+		data.timer = 0
+	else
+		data.timer = data.timer + dt
+
+		if data.timer > data.next_tase then
+			data.timer = data.timer - data.next_tase
+
+			if not data.first_passed then
+				data.first_passed = true
+				data.next_tase = data.next_after_first
+			end
+
+			local electrocution_time_mul = math.random(2, 4) * 0.1
+
+			obj:_electrocute_unit(data.unit, electrocution_time_mul)
+		end
+	end
+end
+
+function KillzoneManager.type_upd_funcs.electricity_lethal(obj, t, dt, data)
+	if not data.killed then
+		data.timer = data.timer + dt
+
+		if data.timer > data.kill_at then
+			data.killed = true
+
+			obj:_kill_unit(data.unit)
+		end
+	end
+end
 
 function KillzoneManager:update(t, dt)
 	local upd_funcs = KillzoneManager.type_upd_funcs
@@ -155,10 +162,14 @@ end
 
 function KillzoneManager:_warning_shot(unit)
 	local rot = unit:camera() and unit:camera():rotation() or unit:rotation()
+
 	rot = Rotation(rot:yaw(), 0, 0)
+
 	local pos = unit:position() + rot:y() * (100 + math.random(200))
 	local dir = Rotation(math.rand(360), 0, 0):y()
+
 	dir = dir:with_z(-0.4):normalized()
+
 	local from_pos = pos + dir * -100
 	local to_pos = pos + dir * 100
 	local col_ray = World:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("world_geometry", "vehicles"), "ignore_unit", unit)
@@ -177,8 +188,10 @@ function KillzoneManager:_deal_damage(unit)
 
 	local col_ray = {}
 	local ray = Rotation(math.rand(360), 0, 0):y()
+
 	ray = ray:with_z(-0.4):normalized()
 	col_ray.ray = ray
+
 	local attack_data = {
 		damage = 1,
 		col_ray = col_ray
@@ -210,7 +223,7 @@ function KillzoneManager:_deal_fire_damage(unit)
 end
 
 function KillzoneManager:_add_unit(unit, zone_type, element_id)
-	local data = nil
+	local data
 	local u_key = unit:key()
 
 	if zone_type == "sniper" then
@@ -219,6 +232,7 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 		end
 
 		local warning_time = 4
+
 		data = {
 			timer = 0,
 			type = zone_type,
@@ -232,9 +246,9 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 		end
 
 		data = {
+			first_passed = false,
 			next_after_first = 0.25,
 			timer = 0,
-			first_passed = false,
 			type = zone_type,
 			next_gas = math.rand(1),
 			unit = unit
@@ -245,9 +259,9 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 		end
 
 		data = {
+			first_passed = false,
 			next_after_first = 0.25,
 			timer = 0,
-			first_passed = false,
 			type = zone_type,
 			next_fire = math.rand(1),
 			unit = unit
@@ -270,16 +284,18 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 			end
 
 			data = {
-				next_after_first = 3,
-				timer = 0,
-				next_tase = -1,
 				first_passed = false,
+				next_after_first = 3,
+				next_tase = -1,
+				timer = 0,
 				type = zone_type,
 				unit = unit
 			}
 		else
 			zone_type = "electricity_lethal"
+
 			local kill_at = 1.8 + math.rand(1)
+
 			data = {
 				timer = 0,
 				type = zone_type,
@@ -288,12 +304,12 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 			}
 
 			if unit:character_damage().damage_tase then
-				local action_data = {
-					variant = "heavy",
-					damage = 0,
-					col_ray = {},
-					forced = true
-				}
+				local action_data = {}
+
+				action_data.variant = "heavy"
+				action_data.damage = 0
+				action_data.col_ray = {}
+				action_data.forced = true
 
 				unit:character_damage():damage_tase(action_data)
 			end

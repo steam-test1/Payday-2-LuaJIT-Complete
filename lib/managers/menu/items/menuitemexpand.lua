@@ -177,22 +177,22 @@ end
 
 function MenuItemExpand:on_item_position(row_item, node)
 	row_item.expanded_indicator:set_position(row_item.gui_panel:position())
-	row_item.expanded_indicator:set_left(row_item.expanded_indicator:left() - node:align_line_padding())
+	row_item.expanded_indicator:set_left(row_item.expanded_indicator:left() - node.align_line_padding(node))
 	row_item.expanded_indicator:set_center_y(row_item.gui_panel:center_y())
 	row_item.expand_line:set_lefttop(row_item.gui_panel:leftbottom())
-	row_item.expand_line:set_left(row_item.expand_line:left() - node:align_line_padding())
+	row_item.expand_line:set_left(row_item.expand_line:left() - node.align_line_padding(node))
 end
 
 function MenuItemExpand:_create_indicator(row_item, node)
 	row_item.expanded_indicator = row_item.gui_panel:parent():bitmap({
 		texture = "guis/textures/menu_selected",
-		y = 0,
 		visible = false,
 		x = 0,
+		y = 0,
 		layer = node.layers.items - 1
 	})
 
-	row_item.expanded_indicator:set_w(row_item.gui_panel:w() + node:align_line_padding())
+	row_item.expanded_indicator:set_w(row_item.gui_panel:w() + node.align_line_padding(node))
 	row_item.expanded_indicator:set_height(64 * row_item.gui_panel:height() / 32)
 end
 
@@ -212,7 +212,7 @@ function MenuItemExpand:reload(row_item, node)
 		},
 		layer = node.layers.items + 1,
 		color = Color.white,
-		w = row_item.gui_panel:w() + node:align_line_padding()
+		w = row_item.gui_panel:w() + node.align_line_padding(node)
 	})
 
 	row_item.expanded_indicator:set_visible(self:expanded())
@@ -347,10 +347,11 @@ end
 
 function MenuItemExpandAction:setup_gui(node, row_item)
 	local scaled_size = managers.gui_data:scaled_size()
+
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
-	row_item.action_name = node:_text_item_part(row_item, row_item.gui_panel, node:align_line_padding())
+	row_item.action_name = node._text_item_part(node, row_item, row_item.gui_panel, node.align_line_padding(node))
 
 	row_item.action_name:set_font_size(22)
 
@@ -359,15 +360,16 @@ function MenuItemExpandAction:setup_gui(node, row_item)
 	row_item.action_name:set_h(h)
 
 	if row_item.align == "right" then
-		row_item.gui_panel:set_right(node:_mid_align() + self._parameters.expand_value)
+		row_item.gui_panel:set_right(node._mid_align(node) + self._parameters.expand_value)
 	else
-		row_item.gui_panel:set_left(node:_mid_align() + self._parameters.expand_value)
+		row_item.gui_panel:set_left(node._mid_align(node) + self._parameters.expand_value)
 	end
 
 	row_item.gui_panel:set_w(scaled_size.width - row_item.gui_panel:left())
 	row_item.gui_panel:set_h(h)
 
 	local texture, rect = tweak_data.hud_icons:get_icon_data(self._parameters.action_type == "equip" and "icon_equipped" or self._parameters.action_type == "repair" and "icon_repair" or self._parameters.action_type == "buy_upgrades" and "icon_addon" or self._parameters.action_type == "buy" and "icon_buy" or self._parameters.action_type == "attach_upgrade" and "icon_equipped" or self._parameters.action_type == "buy_upgrade" and "icon_buy")
+
 	row_item.action_icon = row_item.gui_panel:bitmap({
 		texture = texture,
 		texture_rect = rect,
@@ -384,6 +386,7 @@ function MenuItemExpandAction:setup_gui(node, row_item)
 
 	if self._parameters.action_type == "repair" then
 		local texture, rect = tweak_data.hud_icons:get_icon_data("icon_circlebg")
+
 		row_item.circlefill = row_item.gui_panel:bitmap({
 			visible = true,
 			texture = texture,
@@ -395,6 +398,7 @@ function MenuItemExpandAction:setup_gui(node, row_item)
 		row_item.circlefill:set_right(row_item.circlefill:parent():w() - 4)
 
 		local texture, rect = tweak_data.hud_icons:get_icon_data("icon_circlefill" .. self._parameters.parent_item:condition())
+
 		row_item.repair_circle = row_item.gui_panel:bitmap({
 			visible = self._parameters.unlocked,
 			texture = texture,

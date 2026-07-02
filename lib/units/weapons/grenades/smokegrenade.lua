@@ -24,10 +24,10 @@ function SmokeGrenade:_detonate()
 	local units = World:find_units("sphere", self._unit:position(), 400, self._slotmask)
 
 	for _, unit in ipairs(units) do
-		local col_ray = {
-			ray = (unit:position() - self._unit:position()):normalized(),
-			position = self._unit:position()
-		}
+		local col_ray = {}
+
+		col_ray.ray = (unit:position() - self._unit:position()):normalized()
+		col_ray.position = self._unit:position()
 
 		self:_give_smoke_damage(col_ray, unit, 10)
 	end
@@ -42,6 +42,7 @@ function SmokeGrenade:_play_sound_and_effects()
 	self._unit:sound_source():post_event("trip_mine_explode")
 
 	local parent = self._unit:orientation_object()
+
 	self._smoke_effect = World:effect_manager():spawn({
 		effect = Idstring("effects/particles/explosions/smoke_grenade_smoke"),
 		parent = parent
@@ -50,6 +51,7 @@ function SmokeGrenade:_play_sound_and_effects()
 end
 
 function SmokeGrenade:_give_smoke_damage(col_ray, unit, damage)
+	return
 end
 
 function SmokeGrenade:destroy()

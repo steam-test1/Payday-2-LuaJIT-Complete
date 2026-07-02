@@ -5,7 +5,9 @@ function GameDirectionUnitElement:init(unit)
 end
 
 function GameDirectionUnitElement:update_selected(t, dt)
+	return
 end
 
 function GameDirectionUnitElement:_build_panel(panel, panel_sizer)
+	return
 end

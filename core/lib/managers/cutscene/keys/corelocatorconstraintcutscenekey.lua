@@ -82,7 +82,7 @@ function CoreLocatorConstraintCutsceneKey:refresh_control_for_locator_name(contr
 	control:freeze()
 	control:clear()
 
-	local locator_names = table.find_all_values(self:_unit_names(), function (unit_name)
+	local locator_names = table.find_all_values(self:_unit_names(), function(unit_name)
 		return self:is_valid_locator_name(unit_name)
 	end)
 

@@ -15,6 +15,7 @@ end
 function ColorPickerFields:update(time, delta_time)
 	if self._is_picking_color_from_screen then
 		local current_mouse_event = EWS:MouseEvent("EVT_MOTION")
+
 		self._previous_mouse_event = self._previous_mouse_event or current_mouse_event
 
 		if current_mouse_event:get_position() ~= self._previous_mouse_event:get_position() then
@@ -69,14 +70,8 @@ function ColorPickerFields:_change_field_value(field_name, value)
 end
 
 function ColorPickerFields:_create_panel(parent_frame, enable_alpha, enable_value)
-	if enable_alpha == nil then
-		enable_alpha = true
-	end
-
-	if enable_value == nil then
-		enable_value = true
-	end
-
+	enable_alpha = enable_alpha == nil and true or enable_alpha
+	enable_value = enable_value == nil and true or enable_value
 	self._panel = EWS:Panel(parent_frame)
 
 	self._panel:set_min_size(Vector3(180, 134, 0))
@@ -105,6 +100,7 @@ function ColorPickerFields:_create_panel(parent_frame, enable_alpha, enable_valu
 	panel_sizer:add(notebook, 1, 3, "ALL,EXPAND")
 
 	self._color_well_column_panel = EWS:Panel(self._panel)
+
 	local color_well_column_panel_sizer = EWS:BoxSizer("VERTICAL")
 
 	self._color_well_column_panel:set_sizer(color_well_column_panel_sizer)
@@ -159,8 +155,8 @@ function ColorPickerFields:_create_hsv_fields(parent_frame)
 	local fields = {
 		"Hue",
 		{
-			wrap = true,
-			max = 359
+			max = 359,
+			wrap = true
 		},
 		"Sat",
 		{
@@ -220,9 +216,9 @@ function ColorPickerFields:_on_field_edited(edited_field, event)
 		"Blue"
 	}, edited_field_label) then
 		local rgb_values = self:_parse_values({
+			Alpha = 255,
 			Blue = 255,
 			Green = 255,
-			Alpha = 255,
 			Red = 255
 		})
 
@@ -235,10 +231,10 @@ function ColorPickerFields:_on_field_edited(edited_field, event)
 		"Value"
 	}, edited_field_label) then
 		local hsv_values = self:_parse_values({
-			Value = 100,
-			Sat = 100,
 			Alpha = 255,
-			Hue = 1
+			Hue = 1,
+			Sat = 100,
+			Value = 100
 		})
 
 		if hsv_values then
@@ -281,6 +277,7 @@ end
 
 function ColorPickerFields:_set_field_values_except(skipped_field_name, color)
 	hue, saturation, value = CoreMath.rgb_to_hsv(color.red, color.green, color.blue)
+
 	local field_values = {
 		Red = color.red * 255,
 		Green = color.green * 255,
@@ -310,7 +307,7 @@ end
 
 function ColorPickerFields:_mirroring_fields(field)
 	local field_groups = table.map_values(self._field_groups)
-	local my_group = table.find_value(field_groups, function (group)
+	local my_group = table.find_value(field_groups, function(group)
 		return table.contains(group, field)
 	end)
 

@@ -6,7 +6,9 @@ GameStateMachine = GameStateMachine or class()
 function GameStateMachine:init(start_state)
 	self._states = {}
 	self._transitions = {}
+
 	local init = CoreInitState._InitState:new(self)
+
 	self._states[init:name()] = init
 	self._transitions[init:name()] = self._transitions[init:name()] or {}
 	self._transitions[init:name()][start_state:name()] = init.default_transition
@@ -57,7 +59,9 @@ function GameStateMachine:change_state(state, params)
 
 	cat_print("game_state_machine", "[GameStateMachine] Requested state change " .. transition_debug_string)
 
-	if self:can_change_state(state) then
+	if not self:can_change_state(state) then
+		-- Nothing
+	else
 		self._queued_transitions = self._queued_transitions or {}
 
 		table.insert(self._queued_transitions, {

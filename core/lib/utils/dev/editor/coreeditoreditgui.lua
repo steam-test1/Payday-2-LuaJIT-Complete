@@ -11,15 +11,16 @@ function EditGui:init(parent, toolbar, btn, name)
 
 	self._toolbar = toolbar
 	self._btn = btn
-	self._ctrls = {
-		unit = nil
-	}
+	self._ctrls = {}
+	self._ctrls.unit = nil
 
 	self:set_visible(false)
 end
 
 function EditGui:has(unit)
-	if not alive(unit) then
+	if alive(unit) then
+		-- Nothing
+	else
 		self:disable()
 
 		return false

@@ -9,11 +9,11 @@ function ChristmasPresentBase:init(unit)
 end
 
 function ChristmasPresentBase:take_money(unit)
-	local params = {
-		effect = Idstring("effects/particles/environment/player_snowflakes"),
-		position = Vector3(),
-		rotation = Rotation()
-	}
+	local params = {}
+
+	params.effect = Idstring("effects/particles/environment/player_snowflakes")
+	params.position = Vector3()
+	params.rotation = Rotation()
 
 	World:effect_manager():spawn(params)
 	managers.hud._sound_source:post_event("jingle_bells")

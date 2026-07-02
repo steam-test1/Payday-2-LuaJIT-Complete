@@ -65,7 +65,7 @@ function PlayerBleedOut:_enter(enter_data)
 		managers.groupai:state():on_player_weapons_hot()
 	end
 
-	local preset = nil
+	local preset
 
 	if managers.groupai:state():whisper_mode() then
 		preset = {
@@ -92,6 +92,7 @@ function PlayerBleedOut:exit(state_data, new_state_name)
 	self._unit:camera():camera_unit():base():set_target_tilt(0)
 
 	self._tilt_wait_t = nil
+
 	local exit_data = {
 		equip_weapon = self._old_selection
 	}
@@ -132,7 +133,7 @@ function PlayerBleedOut:update(t, dt)
 
 		self._unit:camera():camera_unit():base():set_target_tilt(tilt)
 
-		if self._tilt_wait_t < t then
+		if t > self._tilt_wait_t then
 			self._tilt_wait_t = nil
 
 			self._unit:camera():camera_unit():base():set_target_tilt(35)
@@ -156,8 +157,9 @@ function PlayerBleedOut:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
+	local new_action
 	local cur_state = self._ext_movement:current_state_name()
+
 	new_action = new_action or self:_check_action_weapon_gadget(t, input)
 	new_action = new_action or self:_check_action_weapon_firemode(t, input)
 	new_action = new_action or self:_check_action_reload(t, input)
@@ -190,7 +192,7 @@ function PlayerBleedOut:_update_check_actions(t, dt)
 end
 
 function PlayerBleedOut:_check_use_item(t, input)
-	local new_action = nil
+	local new_action
 	local action_wanted = input.btn_use_item_release and self._throw_time and t and t < self._throw_time
 
 	if input.btn_use_item_press then
@@ -221,7 +223,7 @@ function PlayerBleedOut:_check_action_interact(t, input)
 			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
 
-		if not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t then
+		if not self._intimidate_t or t - self._intimidate_t > tweak_data.player.movement_state.interaction_delay then
 			self._intimidate_t = t
 
 			if not PlayerArrested.call_teammate(self, "f11", t) then
@@ -280,23 +282,23 @@ function PlayerBleedOut._register_revive_SO(revive_SO_data, variant)
 		scan = true,
 		type = "act",
 		action = {
-			variant = "crouch",
 			body_part = 1,
 			type = "act",
+			variant = "crouch",
 			blocks = {
-				heavy_hurt = -1,
-				hurt = -1,
 				action = -1,
 				aim = -1,
+				heavy_hurt = -1,
+				hurt = -1,
 				walk = -1
 			}
 		}
 	}
 	local objective = {
-		type = "revive",
 		called = true,
-		scan = true,
 		destroy_clbk_key = false,
+		scan = true,
+		type = "revive",
 		follow_unit = revive_SO_data.unit,
 		nav_seg = revive_SO_data.unit:movement():nav_tracker():nav_segment(),
 		fail_clbk = callback(PlayerBleedOut, PlayerBleedOut, "on_rescue_SO_failed", revive_SO_data),
@@ -304,15 +306,15 @@ function PlayerBleedOut._register_revive_SO(revive_SO_data, variant)
 		action_start_clbk = callback(PlayerBleedOut, PlayerBleedOut, "on_rescue_SO_started", revive_SO_data),
 		action = {
 			align_sync = true,
-			type = "act",
 			body_part = 1,
+			type = "act",
 			variant = variant,
 			blocks = {
-				light_hurt = -1,
-				hurt = -1,
 				action = -1,
-				heavy_hurt = -1,
 				aim = -1,
+				heavy_hurt = -1,
+				hurt = -1,
+				light_hurt = -1,
 				walk = -1
 			}
 		},
@@ -320,18 +322,21 @@ function PlayerBleedOut._register_revive_SO(revive_SO_data, variant)
 		followup_objective = followup_objective
 	}
 	local so_descriptor = {
-		interval = 0,
 		AI_group = "friendlies",
 		base_chance = 1,
 		chance_inc = 0,
+		interval = 0,
 		usage_amount = 1,
 		objective = objective,
 		search_pos = revive_SO_data.unit:position(),
 		admin_clbk = callback(PlayerBleedOut, PlayerBleedOut, "on_rescue_SO_administered", revive_SO_data),
 		verification_clbk = callback(PlayerBleedOut, PlayerBleedOut, "rescue_SO_verification", revive_SO_data.unit)
 	}
+
 	revive_SO_data.variant = variant
+
 	local so_id = "Playerrevive"
+
 	revive_SO_data.SO_id = so_id
 
 	managers.groupai:state():add_special_objective(so_id, so_descriptor)
@@ -367,19 +372,19 @@ function PlayerBleedOut:call_civilian(line, t, no_gesture, skip_alert, revive_SO
 				type = "revive"
 			}) then
 				local followup_objective = {
-					interrupt_health = 1,
 					interrupt_dis = -1,
+					interrupt_health = 1,
 					type = "free",
 					action = {
-						sync = true,
 						body_part = 1,
+						sync = true,
 						type = "idle"
 					}
 				}
 				local objective = {
-					type = "act",
-					haste = "run",
 					destroy_clbk_key = false,
+					haste = "run",
+					type = "act",
 					nav_seg = self._unit:movement():nav_tracker():nav_segment(),
 					pos = self._unit:movement():nav_tracker():field_position(),
 					fail_clbk = callback(PlayerBleedOut, PlayerBleedOut, "on_civ_revive_failed", revive_SO_data),
@@ -387,21 +392,22 @@ function PlayerBleedOut:call_civilian(line, t, no_gesture, skip_alert, revive_SO
 					action_start_clbk = callback(PlayerBleedOut, PlayerBleedOut, "on_civ_revive_started", revive_SO_data),
 					action = {
 						align_sync = true,
-						type = "act",
 						body_part = 1,
+						type = "act",
 						variant = "revive",
 						blocks = {
-							light_hurt = -1,
-							hurt = -1,
 							action = -1,
-							heavy_hurt = -1,
 							aim = -1,
+							heavy_hurt = -1,
+							hurt = -1,
+							light_hurt = -1,
 							walk = -1
 						}
 					},
 					action_duration = tweak_data.interaction.revive.timer,
 					followup_objective = followup_objective
 				}
+
 				revive_SO_data.sympathy_civ = prime_target.unit
 
 				prime_target.unit:brain():set_objective(objective)
@@ -427,6 +433,7 @@ function PlayerBleedOut:_unregister_revive_SO()
 		self._revive_SO_data.SO_id = nil
 	elseif self._revive_SO_data.rescuer then
 		local rescuer = self._revive_SO_data.rescuer
+
 		self._revive_SO_data.rescuer = nil
 
 		if alive(rescuer) then
@@ -436,6 +443,7 @@ function PlayerBleedOut:_unregister_revive_SO()
 
 	if self._revive_SO_data.sympathy_civ then
 		local sympathy_civ = self._revive_SO_data.sympathy_civ
+
 		self._revive_SO_data.sympathy_civ = nil
 
 		sympathy_civ:brain():set_objective(nil)
@@ -443,6 +451,7 @@ function PlayerBleedOut:_unregister_revive_SO()
 end
 
 function PlayerBleedOut._register_deathguard_SO(my_unit)
+	return
 end
 
 function PlayerBleedOut._unregister_deathguard_SO(so_id)
@@ -501,12 +510,12 @@ end
 function PlayerBleedOut:on_rescue_SO_completed(revive_SO_data, rescuer)
 	if revive_SO_data.sympathy_civ then
 		local objective = {
-			interrupt_health = 1,
 			interrupt_dis = -1,
+			interrupt_health = 1,
 			type = "free",
 			action = {
-				sync = true,
 				body_part = 1,
+				sync = true,
 				type = "idle"
 			}
 		}
@@ -568,6 +577,7 @@ function PlayerBleedOut:on_civ_revive_started(revive_SO_data, sympathy_civ)
 		revive_SO_data.SO_id = nil
 	elseif revive_SO_data.rescuer then
 		local rescuer = revive_SO_data.rescuer
+
 		revive_SO_data.rescuer = nil
 
 		if alive(rescuer) then

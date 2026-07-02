@@ -15,6 +15,7 @@ function MenuNodeLobbyCountdownGui:init(node, layer, parameters)
 end
 
 function MenuNodeLobbyCountdownGui:setup(node)
+	return
 end
 
 function MenuNodeLobbyCountdownGui:make_fine_text(text)
@@ -50,7 +51,7 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_x(self.item_panel:x())
 	self.box_panel:set_w(self.item_panel:w())
 
-	if self._align_data.panel:h() < self.item_panel:h() then
+	if self.item_panel:h() > self._align_data.panel:h() then
 		self.box_panel:set_y(0)
 		self.box_panel:set_h(self.item_panel:parent():h())
 	else
@@ -65,9 +66,9 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_layer(151)
 
 	self._texture_panel = self.box_panel:panel({
-		w = 128,
 		h = 128,
-		layer = 10
+		layer = 10,
+		w = 128
 	})
 
 	self._texture_panel:set_center(self.box_panel:w() * 0.5, self.box_panel:h() * 0.5)
@@ -87,12 +88,13 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 	self._text_panel = self.box_panel:panel({
 		halign = "grow",
 		layer = 1100,
-		y = 10,
-		x = 10,
 		valign = "grow",
+		x = 10,
+		y = 10,
 		w = self.box_panel:w() - 20,
 		h = self.box_panel:h() * 0.3
 	})
+
 	local title = self._text_panel:text({
 		halign = "grow",
 		name = "title_text",
@@ -102,10 +104,10 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 		h = tweak_data.menu.pd2_medium_font_size
 	})
 	local desc = self._text_panel:text({
-		name = "desc_text",
-		wrap = true,
-		word_wrap = true,
 		halign = "grow",
+		name = "desc_text",
+		word_wrap = true,
+		wrap = true,
 		text = managers.localization:text("menu_mutators_lobby_wait_desc"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -114,23 +116,24 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 		w = self._text_panel:w(),
 		h = self._text_panel:h() - title:bottom()
 	})
+
 	self._countdown_panel = self.box_panel:panel({
-		w = 128,
-		h = 128
+		h = 128,
+		w = 128
 	})
 
 	self._countdown_panel:set_center_x(self.box_panel:w() * 0.25)
 	self._countdown_panel:set_top(self._text_panel:bottom())
 
 	self._countdown_radial = self._countdown_panel:bitmap({
-		texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
-		name = "countdown_radial",
-		h = 128,
-		w = 128,
 		alpha = 1,
-		layer = 2,
 		blend_mode = "add",
+		h = 128,
+		layer = 2,
+		name = "countdown_radial",
 		render_template = "VertexColorTexturedRadial",
+		texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
+		w = 128,
 		texture_rect = {
 			64,
 			0,
@@ -143,14 +146,14 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 	self._countdown_radial:set_center(self._countdown_panel:w() * 0.5, self._countdown_panel:h() * 0.5)
 
 	self._countdown_text = self._countdown_panel:text({
-		name = "countdown_text",
-		vertical = "center",
-		alpha = 1,
 		align = "center",
-		layer = 3,
-		text = "88",
+		alpha = 1,
 		halign = "center",
+		layer = 3,
+		name = "countdown_text",
+		text = "88",
 		valign = "center",
+		vertical = "center",
 		font = tweak_data.menu.pd2_massive_font,
 		font_size = tweak_data.menu.pd2_massive_font_size,
 		h = tweak_data.menu.pd2_massive_font_size
@@ -160,6 +163,7 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 	self._countdown_text:set_center(self._countdown_panel:w() * 0.5, self._countdown_panel:h() * 0.5 + 5)
 
 	local peer_panel_h = tweak_data.menu.pd2_small_font_size + 10
+
 	self._peers_panel = self.box_panel:panel({
 		w = self.box_panel:w() - self._countdown_panel:right(),
 		h = peer_panel_h * 4
@@ -180,14 +184,14 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 			y = peer_panel_h * (i - 1)
 		})
 		local checkbox = peer_panel:bitmap({
-			texture = "guis/textures/menu_tickbox",
-			name = "check",
-			h = 24,
-			w = 24,
 			alpha = 1,
-			layer = 2,
 			blend_mode = "add",
+			h = 24,
 			halign = "right",
+			layer = 2,
+			name = "check",
+			texture = "guis/textures/menu_tickbox",
+			w = 24,
 			texture_rect = {
 				peer_ready and 24 or 0,
 				0,
@@ -200,8 +204,8 @@ function MenuNodeLobbyCountdownGui:_setup_item_panel(safe_rect, res)
 		checkbox:set_center_y(peer_panel:h() * 0.5)
 
 		local name = peer_panel:text({
-			halign = "right",
 			align = "right",
+			halign = "right",
 			name = "name",
 			text = peer:name(),
 			font = tweak_data.menu.pd2_small_font,
@@ -349,8 +353,9 @@ function MenuNodeLobbyCountdownGui.animate_flash_text(text)
 	local dur = 0.5
 	local t = 0
 
-	while dur > t do
+	while t < dur do
 		local dt = coroutine.yield()
+
 		t = t + dt
 
 		text:set_color(math.lerp(tweak_data.screen_colors.button_stage_2, tweak_data.screen_colors.text, t / dur))

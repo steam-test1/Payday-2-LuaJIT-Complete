@@ -59,7 +59,7 @@ function MenuNodeReticleSwitchGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_x(self.item_panel:x())
 	self.box_panel:set_w(self.item_panel:w())
 
-	if self._align_data.panel:h() < self.item_panel:h() then
+	if self.item_panel:h() > self._align_data.panel:h() then
 		self.box_panel:set_y(0)
 		self.box_panel:set_h(self.item_panel:parent():h())
 	else
@@ -72,9 +72,9 @@ function MenuNodeReticleSwitchGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_layer(151)
 
 	self._texture_panel = self.box_panel:panel({
-		w = 128,
 		h = 128,
-		layer = 10
+		layer = 10,
+		w = 128
 	})
 
 	self._texture_panel:set_center(self.box_panel:w() / 2, self.box_panel:h() / 2)
@@ -125,13 +125,18 @@ function MenuNodeReticleSwitchGui:update_item_dlc_locks()
 	local pass_type = not type_dlc or managers.dlc:is_dlc_unlocked(type_dlc)
 	local pass_color = not color_dlc or managers.dlc:is_dlc_unlocked(color_dlc)
 	local type_row_item = self:row_item_by_name("reticle_type")
+
 	type_row_item.hightlight_color = not pass_type and tweak_data.screen_colors.important_1
 	type_row_item.row_item_color = not pass_type and tweak_data.screen_colors.important_1
+
 	local color_row_item = self:row_item_by_name("reticle_color")
+
 	color_row_item.hightlight_color = not pass_color and tweak_data.screen_colors.important_1
 	color_row_item.row_item_color = not pass_color and tweak_data.screen_colors.important_1
+
 	local confirm = node:item("confirm")
 	local require_dlc = "dialog_require_dlc_"
+
 	confirm:parameters().text_id = not pass_type and require_dlc .. type_dlc or not pass_color and require_dlc .. color_dlc or "dialog_apply"
 
 	self:reload_item(node:item("reticle_type"))

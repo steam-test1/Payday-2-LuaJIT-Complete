@@ -2,6 +2,7 @@ IngameContractGuiSkirmish = IngameContractGuiSkirmish or class()
 
 function IngameContractGuiSkirmish:init(ws, node)
 	local padding = SystemInfo:platform() == Idstring("WIN32") and 10 or 5
+
 	self._panel = ws:panel():panel({
 		w = math.round(ws:panel():w() * 0.6),
 		h = math.round(ws:panel():h() * 1)
@@ -11,6 +12,7 @@ function IngameContractGuiSkirmish:init(ws, node)
 	self._panel:grow(0, -(self._panel:y() + tweak_data.menu.pd2_medium_font_size))
 
 	self._node = node
+
 	local job_data = managers.job:current_job_data()
 	local job_chain = managers.job:current_job_chain_data()
 
@@ -20,9 +22,9 @@ function IngameContractGuiSkirmish:init(ws, node)
 
 	local skirmish_type_text_id = managers.skirmish:is_weekly_skirmish() and "menu_weekly_skirmish" or "menu_skirmish"
 	local skirmish_title = self._panel:text({
-		vertical = "bottom",
-		rotation = 360,
 		layer = 1,
+		rotation = 360,
+		vertical = "bottom",
 		text = managers.localization:to_upper_text("cn_menu_contract_header") .. " " .. managers.localization:to_upper_text(skirmish_type_text_id),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -38,7 +40,7 @@ function IngameContractGuiSkirmish:init(ws, node)
 		w = self._panel:w() - padding * 2,
 		h = self._panel:h() - padding * 2
 	})
-	local heist_title = nil
+	local heist_title
 
 	if managers.skirmish:is_weekly_skirmish() then
 		heist_title = FineText:new(text_panel, {
@@ -57,7 +59,7 @@ function IngameContractGuiSkirmish:init(ws, node)
 		y = heist_title and heist_title:bottom()
 	})
 	local font_size = tweak_data.menu.pd2_small_font_size
-	local text = nil
+	local text
 
 	if managers.skirmish:is_weekly_skirmish() then
 		text = job_data and managers.localization:text(job_data.briefing_id) or ""
@@ -66,12 +68,12 @@ function IngameContractGuiSkirmish:init(ws, node)
 	end
 
 	local briefing_description = text_panel:text({
+		align = "left",
+		h = 128,
 		name = "briefing_description",
 		vertical = "top",
-		h = 128,
-		wrap = true,
-		align = "left",
 		word_wrap = true,
+		wrap = true,
 		text = text,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = font_size,
@@ -104,6 +106,7 @@ function IngameContractGuiSkirmish:init(ws, node)
 			color = tweak_data.screen_colors.text,
 			y = briefing_description:bottom() + padding
 		})
+
 		self._modifier_list = SkirmishModifierList:new(text_panel, {
 			modifiers = managers.skirmish:weekly_modifiers(),
 			y = modifiers_title:bottom(),

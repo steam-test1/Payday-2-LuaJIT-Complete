@@ -8,59 +8,60 @@ function HUDDriving:init(hud, full_hud)
 	self._full_hud_panel:clear()
 
 	self._markers = {}
+
 	local y_pos = -90
 	local legend_rect_bg = self._hud_panel:rect({
-		name = "legend_rect_bg",
 		h = 32,
+		layer = 0,
+		name = "legend_rect_bg",
 		valign = "bottom",
 		x = 150,
-		layer = 0,
 		color = Color.black,
 		w = self._hud_panel:w() - 300,
 		y = hud.panel:h() - 120
 	})
 
 	self._hud_panel:text({
-		vertical = "bottom",
-		name = "value_speed",
-		layer = 1,
-		wrap = false,
-		font_size = 28,
 		align = "center",
-		word_wrap = false,
+		font_size = 28,
+		layer = 1,
+		name = "value_speed",
 		text = "100 kmph",
-		x = 0,
 		valign = "bottom",
+		vertical = "bottom",
+		word_wrap = false,
+		wrap = false,
+		x = 0,
 		y = y_pos,
 		font = tweak_data.hud.medium_font,
 		color = Color.white
 	})
 	self._hud_panel:text({
-		vertical = "bottom",
-		name = "value_RPM",
-		layer = 1,
-		wrap = false,
-		font_size = 28,
 		align = "left",
-		word_wrap = false,
+		font_size = 28,
+		layer = 1,
+		name = "value_RPM",
 		text = "7200",
 		valign = "bottom",
+		vertical = "bottom",
+		word_wrap = false,
+		wrap = false,
 		x = legend_rect_bg:x() + 10,
 		y = y_pos,
 		font = tweak_data.hud.medium_font,
 		color = Color.white
 	})
 	self._hud_panel:text({
-		vertical = "bottom",
-		name = "value_gear",
-		layer = 1,
-		wrap = false,
-		font_size = 28,
 		align = "right",
-		word_wrap = false,
+		font_size = 28,
+		layer = 1,
+		name = "value_gear",
 		text = "N",
-		x = -170,
 		valign = "bottom",
+		vertical = "bottom",
+		word_wrap = false,
+		wrap = false,
+		x = -170,
 		y = y_pos,
 		font = tweak_data.hud.medium_font,
 		color = Color.white

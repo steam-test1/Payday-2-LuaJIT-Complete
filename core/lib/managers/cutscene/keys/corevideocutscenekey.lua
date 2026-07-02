@@ -20,6 +20,7 @@ end
 function CoreVideoCutsceneKey:play(player, undo, fast_forward)
 	local video_ws = managers.cutscene:video_workspace()
 	local was_paused = self._paused
+
 	self._paused = false
 
 	if undo then
@@ -30,7 +31,7 @@ function CoreVideoCutsceneKey:play(player, undo, fast_forward)
 				self:_play_video(video_ws)
 			end
 
-			if self:loop() < self._video_object:loop_count() then
+			if self._video_object:loop_count() > self:loop() then
 				self:_stop()
 				managers.cutscene:_cleanup(true)
 				managers.overlay_effect:play_effect(tweak_data.player.overlay.cutscene_fade_out)
@@ -108,6 +109,7 @@ function CoreVideoCutsceneKey:_play_video(video_ws)
 		self._video_played = self:video()
 		self._loop_played = self:loop()
 		self._speed_played = self:speed()
+
 		local width, height = get_fit_size(self._video_object:video_width(), self._video_object:video_height(), video_ws:width(), video_ws:height())
 
 		self._video_object:set_size(width, height)

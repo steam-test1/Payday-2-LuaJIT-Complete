@@ -214,11 +214,11 @@ function ClipDragTrackBehaviour:_time_displacement(track, event)
 		local unsnapped_time = self._drag_start.x + time_displacement
 		local snap_radius = track:pixels_to_units(ClipDragTrackBehaviour.SNAP_RADIUS)
 
-		if math.abs(self._drag_start.x + snapped_to_playhead - unsnapped_time) < snap_radius then
+		if snap_radius > math.abs(self._drag_start.x + snapped_to_playhead - unsnapped_time) then
 			return snapped_to_playhead
-		elseif math.abs(self._drag_start.x + snapped_to_clips - unsnapped_time) < snap_radius then
+		elseif snap_radius > math.abs(self._drag_start.x + snapped_to_clips - unsnapped_time) then
 			return snapped_to_clips
-		elseif math.abs(self._drag_start.x + snapped_to_grid - unsnapped_time) < snap_radius then
+		elseif snap_radius > math.abs(self._drag_start.x + snapped_to_grid - unsnapped_time) then
 			return snapped_to_grid
 		else
 			return time_displacement
@@ -253,7 +253,7 @@ function ClipDragTrackBehaviour:_snap_to_clips(track, time_displacement)
 		return nil
 	end
 
-	local closest_snapped_displacement = nil
+	local closest_snapped_displacement
 
 	local function update_closest_snapped_displacement(initial_time, displacement, clip_edge)
 		local unsnapped_time = initial_time + displacement

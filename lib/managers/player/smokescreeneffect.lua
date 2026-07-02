@@ -67,6 +67,7 @@ function SmokeScreenEffect:update(t, dt)
 	end
 
 	self._unit_list = {}
+
 	local nearby_units = World:find_units_quick("sphere", self._position, self._radius, managers.slot:get_mask("persons"))
 
 	for _, unit in ipairs(nearby_units) do

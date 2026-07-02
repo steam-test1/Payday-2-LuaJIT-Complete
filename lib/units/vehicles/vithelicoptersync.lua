@@ -40,6 +40,7 @@ function VitHelicopterSync:on_exit_vehicle(player)
 end
 
 function VitHelicopterSync:save(data)
+	return
 end
 
 function VitHelicopterSync:load(data)

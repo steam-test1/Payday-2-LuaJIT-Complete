@@ -61,7 +61,7 @@ function CoreCommandRegistry.Wrapper:__index(key)
 		metatable = getmetatable(metatable)
 	end
 
-	return function (wrapper, ...)
+	return function(wrapper, ...)
 		local instance = wrapper:wrapped_object()
 
 		return instance[key](instance, ...)

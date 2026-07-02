@@ -1,4 +1,5 @@
 PlayerFreefallVR = PlayerFreefall or Application:error("PlayerFreefallVR needs PlayerFreefall!")
+
 local __init = PlayerFreefall.init
 
 function PlayerFreefallVR:init(...)

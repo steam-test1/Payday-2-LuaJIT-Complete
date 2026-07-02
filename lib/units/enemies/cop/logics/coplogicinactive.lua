@@ -4,7 +4,9 @@ function CopLogicInactive.enter(data, new_logic_name, enter_params)
 	CopLogicBase.enter(data, new_logic_name, enter_params)
 
 	local old_internal_data = data.internal_data
+
 	data.internal_data = {}
+
 	local my_data = data.internal_data
 
 	if data.has_outline then

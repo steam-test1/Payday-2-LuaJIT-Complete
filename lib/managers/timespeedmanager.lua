@@ -14,7 +14,7 @@ function TimeSpeedManager:update()
 end
 
 function TimeSpeedManager:_update_playing_effects()
-	local slowest_speed = nil
+	local slowest_speed
 	local playing_effects = self._playing_effects
 
 	if playing_effects then
@@ -26,7 +26,7 @@ function TimeSpeedManager:_update_playing_effects()
 
 		for effect_id, effect in pairs(playing_effects) do
 			local time = effect.timer:time()
-			local effect_speed = nil
+			local effect_speed
 
 			if time < effect.fade_in_delay_end_t then
 				-- Nothing
@@ -43,6 +43,7 @@ function TimeSpeedManager:_update_playing_effects()
 			if effect_speed then
 				for timer_key, affect_timer in pairs(effect.affect_timers) do
 					local timer_info = self._affected_timers[timer_key]
+
 					timer_info.mul = math.min(timer_info.mul, effect_speed)
 				end
 
@@ -86,9 +87,10 @@ end
 
 function TimeSpeedManager:play_effect(id, effect_desc)
 	local effect = {
-		desc = effect_desc,
-		timer = effect_desc.timer == "pausable" and self._pausable_timer or self._game_timer
+		desc = effect_desc
 	}
+
+	effect.timer = effect_desc.timer == "pausable" and self._pausable_timer or self._game_timer
 	effect.start_t = effect.timer:time()
 	effect.fade_in_delay_end_t = effect.start_t + (effect_desc.fade_in_delay or 0)
 	effect.fade_in_end_t = effect.fade_in_delay_end_t + effect_desc.fade_in
@@ -101,10 +103,12 @@ function TimeSpeedManager:play_effect(id, effect_desc)
 
 			for _, timer_name in ipairs(effect_desc.affect_timer) do
 				local timer = TimerManager:timer(Idstring(timer_name))
+
 				effect.affect_timers[timer:key()] = timer
 			end
 		else
 			local timer = TimerManager:timer(Idstring(effect_desc.affect_timer))
+
 			effect.affect_timers = {
 				[timer:key()] = timer
 			}
@@ -124,8 +128,8 @@ function TimeSpeedManager:play_effect(id, effect_desc)
 				self._affected_timers[timer_key].ref_count = self._affected_timers[timer_key].ref_count + 1
 			else
 				self._affected_timers[timer_key] = {
-					ref_count = 1,
 					mul = 1,
+					ref_count = 1,
 					timer = affect_timer
 				}
 			end
@@ -161,7 +165,7 @@ function TimeSpeedManager:stop_effect(id, fade_out_duration)
 		local effect_instance = self._playing_effects[id]
 
 		if effect_instance and effect_instance.desc.sync then
-			local sync_fade_out_duration = nil
+			local sync_fade_out_duration
 
 			if fade_out_duration and fade_out_duration ~= 0 then
 				sync_fade_out_duration = fade_out_duration
@@ -181,6 +185,7 @@ function TimeSpeedManager:stop_effect(id, fade_out_duration)
 		end
 
 		local t = effect_instance.timer:time()
+
 		effect_instance.sustain_end_t = t
 		effect_instance.effect_end_t = t + fade_out_duration
 	else

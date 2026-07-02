@@ -158,7 +158,7 @@ function ElementAreaTrigger:_chk_setup_local_client_on_execute_elements()
 	for _, params in ipairs(self._values.on_executed) do
 		local element = self:get_mission_element(params.id)
 
-		if element and element.client_local_on_executed and self:_calc_element_delay(params) <= 0 then
+		if element and element.client_local_on_executed and not (self:_calc_element_delay(params) > 0) then
 			self._local_client_execute_elements = self._local_client_execute_elements or {}
 
 			table.insert(self._local_client_execute_elements, element)
@@ -339,6 +339,7 @@ end
 function ElementAreaTrigger:_check_amount(unit)
 	if self._values.trigger_on == "on_enter" then
 		local amount = self._values.amount == "all" and self:project_amount_all()
+
 		amount = amount or tonumber(self._values.amount)
 
 		self:_clean_destroyed_units()
@@ -356,12 +357,12 @@ end
 function ElementAreaTrigger:_should_trigger(unit)
 	if alive(unit) then
 		local rule_ok = self:_check_instigator_rules(unit)
-		local inside = nil
+		local inside
 
 		if unit:movement() then
 			inside = self:_is_inside(unit:movement().m_newest_pos and unit:movement():m_newest_pos() or unit:movement():m_pos())
 		else
-			local object = nil
+			local object
 
 			if self._values.substitute_object and self._values.substitute_object ~= "" then
 				object = unit:get_object(Idstring(self._values.substitute_object))
@@ -436,7 +437,7 @@ end
 
 function ElementAreaTrigger:_client_check_state(unit)
 	local rule_ok = self:_check_instigator_rules(unit)
-	local inside = nil
+	local inside
 
 	if unit:movement() then
 		inside = self:_is_inside(unit:movement():m_pos())
@@ -577,7 +578,7 @@ function ElementAreaReportTrigger:_chk_setup_local_client_on_execute_elements()
 	for _, params in ipairs(self._values.on_executed) do
 		local element = self:get_mission_element(params.id)
 
-		if element and element.client_local_on_executed and self:_calc_element_delay(params) <= 0 then
+		if element and element.client_local_on_executed and not (self:_calc_element_delay(params) > 0) then
 			self._local_client_execute_elements = self._local_client_execute_elements or {}
 
 			table.insert(self._local_client_execute_elements, {
@@ -628,7 +629,7 @@ function ElementAreaReportTrigger:_check_state(unit)
 
 	if alive(unit) then
 		local rule_ok = self:_check_instigator_rules(unit)
-		local inside = nil
+		local inside
 
 		if unit:movement() then
 			inside = self:_is_inside(unit:movement().m_newest_pos and unit:movement():m_newest_pos() or unit:movement():m_pos())
@@ -680,6 +681,7 @@ end
 
 function ElementAreaReportTrigger:_check_on_executed_reached_amount(unit)
 	local amount = self._values.amount == "all" and self:project_amount_all()
+
 	amount = amount or tonumber(self._values.amount)
 
 	if amount == #self._inside and self:_has_on_executed_alternative("reached_amount") then
@@ -741,7 +743,7 @@ end
 
 function ElementAreaReportTrigger:_client_check_state(unit)
 	local rule_ok = self:_check_instigator_rules(unit)
-	local inside = nil
+	local inside
 
 	if unit:movement() then
 		inside = self:_is_inside(unit:movement():m_pos())

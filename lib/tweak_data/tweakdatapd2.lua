@@ -1,54 +1,46 @@
 function TweakData:_init_pd2()
 	print("TweakData:_init_pd2()")
 
-	self.hud_players = {
-		name_font = "fonts/font_small_mf",
-		name_size = 19,
-		ammo_font = "fonts/font_large_mf",
-		ammo_size = 24,
-		timer_font = "fonts/font_medium_shadow_mf",
-		timer_size = 30,
-		timer_flash_size = 50
-	}
-	self.hud_present = {
-		title_font = "fonts/font_medium_mf",
-		title_size = 28,
-		text_font = "fonts/font_medium_mf",
-		text_size = 28
-	}
-	self.hud_mask_off = {
-		text_size = 28,
-		text_font = "fonts/font_medium_mf"
-	}
-	self.hud_stats = {
-		objectives_font = "fonts/font_medium_mf",
-		objective_desc_font = "fonts/font_medium_mf",
-		objectives_title_size = 28,
-		objectives_size = 24,
-		loot_size = 24,
-		loot_title_size = 28,
-		day_description_size = 22,
-		potential_xp_color = Color(0, 0.6666666666666666, 1)
-	}
-	self.hud_corner = {
-		assault_font = "fonts/font_medium_mf",
-		assault_size = 24,
-		noreturn_size = 24,
-		numhostages_size = 24
-	}
-	self.hud_downed = {
-		timer_message_size = 24
-	}
-	self.hud_custody = {
-		custody_font = "fonts/font_medium_mf",
-		custody_font_large = "fonts/font_large_mf",
-		font_size = 28,
-		small_font_size = 24
-	}
-	self.hud_color_blind_assist = {
-		health = Color("FF7F00"),
-		armor = Color("00AAFF")
-	}
+	self.hud_players = {}
+	self.hud_players.name_font = "fonts/font_small_mf"
+	self.hud_players.name_size = 19
+	self.hud_players.ammo_font = "fonts/font_large_mf"
+	self.hud_players.ammo_size = 24
+	self.hud_players.timer_font = "fonts/font_medium_shadow_mf"
+	self.hud_players.timer_size = 30
+	self.hud_players.timer_flash_size = 50
+	self.hud_present = {}
+	self.hud_present.title_font = "fonts/font_medium_mf"
+	self.hud_present.title_size = 28
+	self.hud_present.text_font = "fonts/font_medium_mf"
+	self.hud_present.text_size = 28
+	self.hud_mask_off = {}
+	self.hud_mask_off.text_size = 28
+	self.hud_mask_off.text_font = "fonts/font_medium_mf"
+	self.hud_stats = {}
+	self.hud_stats.objectives_font = "fonts/font_medium_mf"
+	self.hud_stats.objective_desc_font = "fonts/font_medium_mf"
+	self.hud_stats.objectives_title_size = 28
+	self.hud_stats.objectives_size = 24
+	self.hud_stats.loot_size = 24
+	self.hud_stats.loot_title_size = 28
+	self.hud_stats.day_description_size = 22
+	self.hud_stats.potential_xp_color = Color(0, 0.6666666666666666, 1)
+	self.hud_corner = {}
+	self.hud_corner.assault_font = "fonts/font_medium_mf"
+	self.hud_corner.assault_size = 24
+	self.hud_corner.noreturn_size = 24
+	self.hud_corner.numhostages_size = 24
+	self.hud_downed = {}
+	self.hud_downed.timer_message_size = 24
+	self.hud_custody = {}
+	self.hud_custody.custody_font = "fonts/font_medium_mf"
+	self.hud_custody.custody_font_large = "fonts/font_large_mf"
+	self.hud_custody.font_size = 28
+	self.hud_custody.small_font_size = 24
+	self.hud_color_blind_assist = {}
+	self.hud_color_blind_assist.health = Color("FF7F00")
+	self.hud_color_blind_assist.armor = Color("00AAFF")
 	self.hud_icons.bag_icon = {
 		texture = "guis/textures/pd2/hud_tabs",
 		texture_rect = {
@@ -776,9 +768,8 @@ function TweakData:_init_pd2()
 end
 
 function TweakData:_setup_point_of_no_returns()
-	self.point_of_no_returns = {
-		noreturn = {}
-	}
+	self.point_of_no_returns = {}
+	self.point_of_no_returns.noreturn = {}
 	self.point_of_no_returns.noreturn.texture = "guis/textures/pd2/hud_icon_noreturnbox"
 	self.point_of_no_returns.noreturn.texture_rect = {
 		0,
@@ -795,19 +786,18 @@ function TweakData:_setup_point_of_no_returns()
 		self.point_of_no_returns.noreturn.text_id = "hud_assault_point_no_return_in"
 	end
 
-	self.point_of_no_returns.rescue_vlad = {
-		texture = "guis/textures/pd2/hud_icon_noreturnbox",
-		texture_rect = {
-			0,
-			0,
-			32,
-			32
-		},
-		color = Color(1, 1, 0, 0),
-		timer_flash_color = Color(1, 1, 0.8, 0.2),
-		attention_color = Color(1, 1, 1, 1),
-		scale_box = true
+	self.point_of_no_returns.rescue_vlad = {}
+	self.point_of_no_returns.rescue_vlad.texture = "guis/textures/pd2/hud_icon_noreturnbox"
+	self.point_of_no_returns.rescue_vlad.texture_rect = {
+		0,
+		0,
+		32,
+		32
 	}
+	self.point_of_no_returns.rescue_vlad.color = Color(1, 1, 0, 0)
+	self.point_of_no_returns.rescue_vlad.timer_flash_color = Color(1, 1, 0.8, 0.2)
+	self.point_of_no_returns.rescue_vlad.attention_color = Color(1, 1, 1, 1)
+	self.point_of_no_returns.rescue_vlad.scale_box = true
 
 	if _G.IS_VR then
 		self.point_of_no_returns.rescue_vlad.text_id = "hud_assault_point_no_vlad"
@@ -815,20 +805,19 @@ function TweakData:_setup_point_of_no_returns()
 		self.point_of_no_returns.rescue_vlad.text_id = "hud_assault_point_no_vlad_in"
 	end
 
-	self.point_of_no_returns.go_loud = {
-		text_id = "hud_assault_pnr_goloud",
-		texture = "guis/textures/pd2/hud_icon_noreturnbox",
-		texture_rect = {
-			0,
-			0,
-			32,
-			32
-		},
-		color = Color(1, 1, 0, 0),
-		timer_flash_color = Color(1, 1, 0.8, 0.2),
-		attention_color = Color(1, 1, 1, 1),
-		scale_box = true
+	self.point_of_no_returns.go_loud = {}
+	self.point_of_no_returns.go_loud.text_id = "hud_assault_pnr_goloud"
+	self.point_of_no_returns.go_loud.texture = "guis/textures/pd2/hud_icon_noreturnbox"
+	self.point_of_no_returns.go_loud.texture_rect = {
+		0,
+		0,
+		32,
+		32
 	}
+	self.point_of_no_returns.go_loud.color = Color(1, 1, 0, 0)
+	self.point_of_no_returns.go_loud.timer_flash_color = Color(1, 1, 0.8, 0.2)
+	self.point_of_no_returns.go_loud.attention_color = Color(1, 1, 1, 1)
+	self.point_of_no_returns.go_loud.scale_box = true
 
 	if _G.IS_VR then
 		self.point_of_no_returns.go_loud.text_id = "hud_assault_pnr_goloud"
@@ -836,20 +825,19 @@ function TweakData:_setup_point_of_no_returns()
 		self.point_of_no_returns.go_loud.text_id = "hud_assault_pnr_goloud_in"
 	end
 
-	self.point_of_no_returns.destroy_pipeline = {
-		text_id = "hud_assault_pnr_destroy_pipeline",
-		texture = "guis/textures/pd2/hud_icon_noreturnbox",
-		texture_rect = {
-			0,
-			0,
-			32,
-			32
-		},
-		color = Color(1, 1, 0, 0),
-		timer_flash_color = Color(1, 1, 0.8, 0.2),
-		attention_color = Color(1, 1, 1, 1),
-		scale_box = true
+	self.point_of_no_returns.destroy_pipeline = {}
+	self.point_of_no_returns.destroy_pipeline.text_id = "hud_assault_pnr_destroy_pipeline"
+	self.point_of_no_returns.destroy_pipeline.texture = "guis/textures/pd2/hud_icon_noreturnbox"
+	self.point_of_no_returns.destroy_pipeline.texture_rect = {
+		0,
+		0,
+		32,
+		32
 	}
+	self.point_of_no_returns.destroy_pipeline.color = Color(1, 1, 0, 0)
+	self.point_of_no_returns.destroy_pipeline.timer_flash_color = Color(1, 1, 0.8, 0.2)
+	self.point_of_no_returns.destroy_pipeline.attention_color = Color(1, 1, 1, 1)
+	self.point_of_no_returns.destroy_pipeline.scale_box = true
 
 	if _G.IS_VR then
 		self.point_of_no_returns.destroy_pipeline.text_id = "hud_assault_pnr_destroy_pipeline"
@@ -857,20 +845,19 @@ function TweakData:_setup_point_of_no_returns()
 		self.point_of_no_returns.destroy_pipeline.text_id = "hud_assault_pnr_destroy_pipeline_in"
 	end
 
-	self.point_of_no_returns.reposition_locomotive = {
-		text_id = "hud_assault_pnr_reposition_locomotive",
-		texture = "guis/textures/pd2/hud_icon_noreturnbox",
-		texture_rect = {
-			0,
-			0,
-			32,
-			32
-		},
-		color = Color(1, 1, 0, 0),
-		timer_flash_color = Color(1, 1, 0.8, 0.2),
-		attention_color = Color(1, 1, 1, 1),
-		scale_box = true
+	self.point_of_no_returns.reposition_locomotive = {}
+	self.point_of_no_returns.reposition_locomotive.text_id = "hud_assault_pnr_reposition_locomotive"
+	self.point_of_no_returns.reposition_locomotive.texture = "guis/textures/pd2/hud_icon_noreturnbox"
+	self.point_of_no_returns.reposition_locomotive.texture_rect = {
+		0,
+		0,
+		32,
+		32
 	}
+	self.point_of_no_returns.reposition_locomotive.color = Color(1, 1, 0, 0)
+	self.point_of_no_returns.reposition_locomotive.timer_flash_color = Color(1, 1, 0.8, 0.2)
+	self.point_of_no_returns.reposition_locomotive.attention_color = Color(1, 1, 1, 1)
+	self.point_of_no_returns.reposition_locomotive.scale_box = true
 
 	if _G.IS_VR then
 		self.point_of_no_returns.reposition_locomotive.text_id = "hud_assault_pnr_reposition_locomotive"
@@ -878,20 +865,19 @@ function TweakData:_setup_point_of_no_returns()
 		self.point_of_no_returns.reposition_locomotive.text_id = "hud_assault_pnr_reposition_locomotive_in"
 	end
 
-	self.point_of_no_returns.oil_rig_will_explode = {
-		text_id = "hud_assault_pnr_oil_rig_will_explode",
-		texture = "guis/textures/pd2/hud_icon_noreturnbox",
-		texture_rect = {
-			0,
-			0,
-			32,
-			32
-		},
-		color = Color(1, 1, 0, 0),
-		timer_flash_color = Color(1, 1, 0.8, 0.2),
-		attention_color = Color(1, 1, 1, 1),
-		scale_box = true
+	self.point_of_no_returns.oil_rig_will_explode = {}
+	self.point_of_no_returns.oil_rig_will_explode.text_id = "hud_assault_pnr_oil_rig_will_explode"
+	self.point_of_no_returns.oil_rig_will_explode.texture = "guis/textures/pd2/hud_icon_noreturnbox"
+	self.point_of_no_returns.oil_rig_will_explode.texture_rect = {
+		0,
+		0,
+		32,
+		32
 	}
+	self.point_of_no_returns.oil_rig_will_explode.color = Color(1, 1, 0, 0)
+	self.point_of_no_returns.oil_rig_will_explode.timer_flash_color = Color(1, 1, 0.8, 0.2)
+	self.point_of_no_returns.oil_rig_will_explode.attention_color = Color(1, 1, 1, 1)
+	self.point_of_no_returns.oil_rig_will_explode.scale_box = true
 
 	if _G.IS_VR then
 		self.point_of_no_returns.oil_rig_will_explode.text_id = "hud_assault_pnr_oil_rig_will_explode"
@@ -913,7 +899,7 @@ function TweakData:get_scene_pose_items(scene_pose)
 end
 
 function TweakData:get_scene_pose(scene, pose_category, ...)
-	local poses = nil
+	local poses
 	local scene_poses = self.scene_poses[scene]
 
 	if scene_poses then
@@ -935,6 +921,7 @@ function TweakData:get_scene_pose(scene, pose_category, ...)
 	end
 
 	poses = poses or scene_poses.generic or self.scene_poses.generic
+
 	local pose = poses[math.random(#poses)]
 	local required_poses = poses.required_pose and table.list_copy(poses)
 
@@ -942,365 +929,358 @@ function TweakData:get_scene_pose(scene, pose_category, ...)
 end
 
 function TweakData:_setup_scene_pose_items()
-	self.scene_pose_items = {
-		husk1 = {},
-		husk2 = {},
-		husk3 = {},
-		husk4 = {},
-		lobby_generic_idle4 = {},
-		husk_minigun = {
-			"primary"
-		},
-		lobby_generic_idle1 = {
-			"primary"
-		},
-		lobby_generic_idle2 = {
-			"primary"
-		},
-		lobby_generic_idle3 = {
-			"primary"
-		},
-		husk_bow1 = {
-			"primary"
-		},
-		husk_bow2 = {
-			"primary"
-		},
-		husk_card1 = {
-			nil,
-			"infamy"
-		},
-		husk_card2 = {
-			nil,
-			"infamy"
-		},
-		husk_card3 = {
-			nil,
-			"infamy"
-		},
-		husk_card4 = {
-			nil,
-			"infamy"
-		},
-		husk_ray = {
-			nil,
-			"secondary"
-		},
-		husk_rifle4 = {
-			"primary",
-			"secondary"
-		},
-		husk_minigun_2 = {
-			"primary"
-		},
-		husk_bessy = {
-			"primary"
-		},
-		cvc_var1 = {},
-		cvc_var2 = {},
-		cvc_var3 = {},
-		husk_akimbo1 = {
-			"primary",
-			"secondary"
-		},
-		husk_akimbo2 = {
-			"primary",
-			"secondary"
-		},
-		husk_akimbo_x54 = {
-			"primary",
-			"secondary"
-		}
+	self.scene_pose_items = {}
+	self.scene_pose_items.husk1 = {}
+	self.scene_pose_items.husk2 = {}
+	self.scene_pose_items.husk3 = {}
+	self.scene_pose_items.husk4 = {}
+	self.scene_pose_items.lobby_generic_idle4 = {}
+	self.scene_pose_items.husk_minigun = {
+		"primary"
+	}
+	self.scene_pose_items.lobby_generic_idle1 = {
+		"primary"
+	}
+	self.scene_pose_items.lobby_generic_idle2 = {
+		"primary"
+	}
+	self.scene_pose_items.lobby_generic_idle3 = {
+		"primary"
+	}
+	self.scene_pose_items.husk_bow1 = {
+		"primary"
+	}
+	self.scene_pose_items.husk_bow2 = {
+		"primary"
+	}
+	self.scene_pose_items.husk_card1 = {
+		nil,
+		"infamy"
+	}
+	self.scene_pose_items.husk_card2 = {
+		nil,
+		"infamy"
+	}
+	self.scene_pose_items.husk_card3 = {
+		nil,
+		"infamy"
+	}
+	self.scene_pose_items.husk_card4 = {
+		nil,
+		"infamy"
+	}
+	self.scene_pose_items.husk_ray = {
+		nil,
+		"secondary"
+	}
+	self.scene_pose_items.husk_rifle4 = {
+		"primary",
+		"secondary"
+	}
+	self.scene_pose_items.husk_minigun_2 = {
+		"primary"
+	}
+	self.scene_pose_items.husk_bessy = {
+		"primary"
+	}
+	self.scene_pose_items.cvc_var1 = {}
+	self.scene_pose_items.cvc_var2 = {}
+	self.scene_pose_items.cvc_var3 = {}
+	self.scene_pose_items.husk_akimbo1 = {
+		"primary",
+		"secondary"
+	}
+	self.scene_pose_items.husk_akimbo2 = {
+		"primary",
+		"secondary"
+	}
+	self.scene_pose_items.husk_akimbo_x54 = {
+		"primary",
+		"secondary"
 	}
 end
 
 function TweakData:_setup_scene_poses()
-	self.scene_poses = {
-		generic = {
-			"husk_generic1",
-			"husk_generic2",
-			"husk_generic3",
-			"husk_generic4"
-		},
-		template = {}
+	self.scene_poses = {}
+	self.scene_poses.generic = {
+		"husk_generic1",
+		"husk_generic2",
+		"husk_generic3",
+		"husk_generic4"
 	}
+	self.scene_poses.template = {}
 	self.scene_poses.template.generic = {
 		"husk_generic1",
 		"husk_generic2",
 		"husk_generic3",
 		"husk_generic4"
 	}
-	self.scene_poses.weapon = {
-		assault_rifle = {
-			"husk_rifle1",
-			"husk_rifle2"
-		},
-		pistol = {
-			"husk_pistol1"
-		},
-		saw = {
-			"husk_saw1"
-		},
-		shotgun = {
-			primary = {
-				"husk_shotgun1"
-			}
-		},
-		snp = {
-			"husk_bullpup"
-		},
-		lmg = {
-			"husk_lmg"
-		},
-		bow = {
-			"husk_bow1",
-			"husk_bow2",
-			required_pose = true
-		},
-		akimbo = {
-			"husk_akimbo1",
-			"husk_akimbo2"
-		},
-		infamous = {
-			"husk_infamous1",
-			"husk_infamous3",
-			"husk_infamous4"
-		},
-		x_type54 = {
-			"husk_akimbo_x54",
-			required_pose = true
-		},
-		m95 = {
-			"husk_m95"
-		},
-		r93 = {
-			"husk_r93"
-		},
-		huntsman = {
-			"husk_mosconi",
-			"husk_bullpup"
-		},
-		gre_m79 = {
-			"husk_mosconi"
-		},
-		ksg = {
-			"husk_mosconi",
-			"husk_bullpup",
-			required_pose = true
-		},
-		m249 = {
-			"husk_m249"
-		},
-		m134 = {
-			"husk_minigun",
-			required_pose = true
-		},
-		famas = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		aug = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		wa2000 = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		l85a2 = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		vhs = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		flamethrower_mk2 = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		desertfox = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		corgi = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		komodo = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		x_basset = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		arbiter = {
-			"husk_bullpup",
-			required_pose = true
-		},
-		ray = {
-			"husk_ray",
-			required_pose = true
-		},
-		ultima = {
-			"husk_generic1",
-			required_pose = true
-		},
-		scout = {
-			"husk_rifle4",
-			required_pose = true
-		},
-		hk51b = {
-			"husk_rifle3",
-			required_pose = true
-		},
-		hailstorm = {
-			"husk_rifle5",
-			required_pose = true
-		},
-		sko12 = {
-			"husk_rifle1",
-			required_pose = true
-		},
-		hcar = {
-			"husk_rifle1",
-			required_pose = true
-		},
-		kacchainsaw = {
-			"husk_minigun_2",
-			required_pose = true
-		},
-		bessy = {
-			"husk_bessy",
-			required_pose = true
+	self.scene_poses.weapon = {}
+	self.scene_poses.weapon.assault_rifle = {
+		"husk_rifle1",
+		"husk_rifle2"
+	}
+	self.scene_poses.weapon.pistol = {
+		"husk_pistol1"
+	}
+	self.scene_poses.weapon.saw = {
+		"husk_saw1"
+	}
+	self.scene_poses.weapon.shotgun = {
+		primary = {
+			"husk_shotgun1"
 		}
 	}
-	self.scene_poses.infamy = {
-		generic = {
-			{
-				"husk_card1"
-			},
-			{
-				"husk_card2"
-			},
-			{
-				"husk_card3"
-			},
-			{
-				"husk_card4"
-			},
-			required_pose = true
-		}
+	self.scene_poses.weapon.snp = {
+		"husk_bullpup"
 	}
-	self.scene_poses.armor = {
-		generic = {
-			"cvc_var1",
-			"cvc_var2"
-		},
-		level_1 = {
-			"suit",
-			"suit"
-		},
-		level_2 = {
-			"lbv",
-			"lbv"
-		},
-		level_3 = {
-			"bv",
-			"bv"
-		},
-		level_4 = {
-			"hbv",
-			"hbv"
-		},
-		level_5 = {
-			"fj",
-			"fj"
-		},
-		level_6 = {
-			"ctv",
-			"ctv"
-		},
-		level_7 = {
-			"ictv",
-			"ictv"
-		}
+	self.scene_poses.weapon.lmg = {
+		"husk_lmg"
 	}
-	self.scene_poses.player_style = {
-		generic = {
-			"suit_generic1",
-			"suit_generic2",
-			"suit_generic3",
-			"suit_generic4",
-			"suit_generic5",
-			"suit_generic6",
-			"suit_generic7"
-		},
-		sneak_suit = {
-			"sneak",
-			"sneak"
-		},
-		scrub = {
-			"doctor",
-			"doctor"
-		},
-		raincoat = {
-			"rain",
-			"rain"
-		},
-		murky_suit = {
-			"military",
-			"military"
-		},
-		tux = {
-			"tuxedo",
-			"tuxedo"
-		},
-		winter_suit = {
-			"winter",
-			"winter"
-		},
-		jumpsuit = {
-			"jump",
-			"jump"
-		},
-		clown = {
-			"clown",
-			"clown"
-		},
-		peacoat = {
-			"peacoat",
-			"peacoat"
-		},
-		miami = {
-			"italian",
-			"italian"
-		},
-		jail = {
-			"standard_suit",
-			"standard_suit"
-		},
-		poolrepair = {
-			"pool",
-			"pool"
-		}
+	self.scene_poses.weapon.bow = {
+		"husk_bow1",
+		"husk_bow2",
+		required_pose = true
 	}
-	self.scene_environments = {
-		standard = {
-			angle = 0,
-			environment = "environments/env_menu/env_menu",
-			color_grading = "color_matrix"
+	self.scene_poses.weapon.akimbo = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self.scene_poses.weapon.infamous = {
+		"husk_infamous1",
+		"husk_infamous3",
+		"husk_infamous4"
+	}
+	self.scene_poses.weapon.x_type54 = {
+		"husk_akimbo_x54",
+		required_pose = true
+	}
+	self.scene_poses.weapon.m95 = {
+		"husk_m95"
+	}
+	self.scene_poses.weapon.r93 = {
+		"husk_r93"
+	}
+	self.scene_poses.weapon.huntsman = {
+		"husk_mosconi",
+		"husk_bullpup"
+	}
+	self.scene_poses.weapon.gre_m79 = {
+		"husk_mosconi"
+	}
+	self.scene_poses.weapon.ksg = {
+		"husk_mosconi",
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.m249 = {
+		"husk_m249"
+	}
+	self.scene_poses.weapon.m134 = {
+		"husk_minigun",
+		required_pose = true
+	}
+	self.scene_poses.weapon.famas = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.aug = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.wa2000 = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.l85a2 = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.vhs = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.flamethrower_mk2 = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.desertfox = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.corgi = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.komodo = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.x_basset = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.arbiter = {
+		"husk_bullpup",
+		required_pose = true
+	}
+	self.scene_poses.weapon.ray = {
+		"husk_ray",
+		required_pose = true
+	}
+	self.scene_poses.weapon.ultima = {
+		"husk_generic1",
+		required_pose = true
+	}
+	self.scene_poses.weapon.scout = {
+		"husk_rifle4",
+		required_pose = true
+	}
+	self.scene_poses.weapon.hk51b = {
+		"husk_rifle3",
+		required_pose = true
+	}
+	self.scene_poses.weapon.hailstorm = {
+		"husk_rifle5",
+		required_pose = true
+	}
+	self.scene_poses.weapon.sko12 = {
+		"husk_rifle1",
+		required_pose = true
+	}
+	self.scene_poses.weapon.hcar = {
+		"husk_rifle1",
+		required_pose = true
+	}
+	self.scene_poses.weapon.kacchainsaw = {
+		"husk_minigun_2",
+		required_pose = true
+	}
+	self.scene_poses.weapon.bessy = {
+		"husk_bessy",
+		required_pose = true
+	}
+	self.scene_poses.infamy = {}
+	self.scene_poses.infamy.generic = {
+		{
+			"husk_card1"
 		},
-		safe = {
-			angle = -135,
-			environment = "environments/pd2_cash/env_cash_01",
-			color_grading = "color_off"
+		{
+			"husk_card2"
 		},
-		crafting = {
-			angle = -135,
-			environment = "environments/pd2_cash/env_cash_02",
-			color_grading = "color_off"
-		}
+		{
+			"husk_card3"
+		},
+		{
+			"husk_card4"
+		},
+		required_pose = true
+	}
+	self.scene_poses.armor = {}
+	self.scene_poses.armor.generic = {
+		"cvc_var1",
+		"cvc_var2"
+	}
+	self.scene_poses.armor.level_1 = {
+		"suit",
+		"suit"
+	}
+	self.scene_poses.armor.level_2 = {
+		"lbv",
+		"lbv"
+	}
+	self.scene_poses.armor.level_3 = {
+		"bv",
+		"bv"
+	}
+	self.scene_poses.armor.level_4 = {
+		"hbv",
+		"hbv"
+	}
+	self.scene_poses.armor.level_5 = {
+		"fj",
+		"fj"
+	}
+	self.scene_poses.armor.level_6 = {
+		"ctv",
+		"ctv"
+	}
+	self.scene_poses.armor.level_7 = {
+		"ictv",
+		"ictv"
+	}
+	self.scene_poses.player_style = {}
+	self.scene_poses.player_style.generic = {
+		"suit_generic1",
+		"suit_generic2",
+		"suit_generic3",
+		"suit_generic4",
+		"suit_generic5",
+		"suit_generic6",
+		"suit_generic7"
+	}
+	self.scene_poses.player_style.sneak_suit = {
+		"sneak",
+		"sneak"
+	}
+	self.scene_poses.player_style.scrub = {
+		"doctor",
+		"doctor"
+	}
+	self.scene_poses.player_style.raincoat = {
+		"rain",
+		"rain"
+	}
+	self.scene_poses.player_style.murky_suit = {
+		"military",
+		"military"
+	}
+	self.scene_poses.player_style.tux = {
+		"tuxedo",
+		"tuxedo"
+	}
+	self.scene_poses.player_style.winter_suit = {
+		"winter",
+		"winter"
+	}
+	self.scene_poses.player_style.jumpsuit = {
+		"jump",
+		"jump"
+	}
+	self.scene_poses.player_style.clown = {
+		"clown",
+		"clown"
+	}
+	self.scene_poses.player_style.peacoat = {
+		"peacoat",
+		"peacoat"
+	}
+	self.scene_poses.player_style.miami = {
+		"italian",
+		"italian"
+	}
+	self.scene_poses.player_style.jail = {
+		"standard_suit",
+		"standard_suit"
+	}
+	self.scene_poses.player_style.poolrepair = {
+		"pool",
+		"pool"
+	}
+	self.scene_environments = {}
+	self.scene_environments.standard = {
+		angle = 0,
+		color_grading = "color_matrix",
+		environment = "environments/env_menu/env_menu"
+	}
+	self.scene_environments.safe = {
+		angle = -135,
+		color_grading = "color_off",
+		environment = "environments/pd2_cash/env_cash_01"
+	}
+	self.scene_environments.crafting = {
+		angle = -135,
+		color_grading = "color_off",
+		environment = "environments/pd2_cash/env_cash_02"
 	}
 end

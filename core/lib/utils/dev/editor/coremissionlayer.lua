@@ -36,6 +36,7 @@ end
 
 function MissionLayer:load(world_holder, offset)
 	local data = world_holder:create_world("world", "mission_scripts", offset)
+
 	self._scripts = data.scripts or self._scripts
 
 	for name, values in pairs(self._scripts) do
@@ -68,6 +69,7 @@ function MissionLayer:save()
 				script_data = unit:mission_element():new_save_values()
 			}
 		}
+
 		t.data.script_data.position = nil
 		t.data.script_data.rotation = nil
 
@@ -107,6 +109,7 @@ function MissionLayer:save_mission(params)
 			scripts[script] = {
 				activate_on_parsed = self._scripts[script].activate_on_parsed
 			}
+
 			local elements = {}
 
 			for _, unit in ipairs(script_units) do
@@ -226,8 +229,8 @@ function MissionLayer:delete_selected_unit(btn, pressed)
 	if self._selected_unit and not self:condition() then
 		local to_delete = CoreTable.clone(self._selected_units)
 
-		table.sort(to_delete, function (a, b)
-			return b:unit_data().unit_id < a:unit_data().unit_id
+		table.sort(to_delete, function(a, b)
+			return a:unit_data().unit_id > b:unit_data().unit_id
 		end)
 
 		for _, unit in ipairs(to_delete) do
@@ -304,9 +307,7 @@ end
 function MissionLayer:widget_affect_object()
 	local object = MissionLayer.super.widget_affect_object(self)
 
-	if self._editing_mission_element and alive(self._selected_unit) then
-		object = self._selected_unit:mission_element():widget_affect_object() or object
-	end
+	object = self._editing_mission_element and alive(self._selected_unit) and self._selected_unit:mission_element():widget_affect_object() or object
 
 	return object
 end
@@ -353,12 +354,14 @@ function MissionLayer:update(time, rel_time)
 	local cam_up = managers.editor:camera_rotation():z()
 	local cam_right = managers.editor:camera_rotation():x()
 	local lod_draw_distance = math.max(4000, 100000 - #self._created_units * 140)
+
 	lod_draw_distance = lod_draw_distance * lod_draw_distance
 
 	for _, unit in ipairs(self._created_units) do
 		if unit:mission_element_data().script == current_script and not current_continent_locked or self._show_all_scripts then
 			local distance = mvector3.distance_sq(unit:position(), cam_pos)
 			local element = unit:mission_element()
+
 			element._distance_to_camera = distance
 
 			if not self._only_draw_selected_connections or self._selected_unit then
@@ -411,7 +414,7 @@ function MissionLayer:update(time, rel_time)
 
 				self._name_brush:set_color(color)
 
-				local offset = nil
+				local offset
 
 				if unit:mission_element()._icon_ws then
 					offset = cam_up * unit:bounding_sphere_radius()
@@ -501,6 +504,7 @@ function MissionLayer:toggle_update_selected_on()
 end
 
 function MissionLayer:_on_gui_mission_element_help()
+	return
 end
 
 function MissionLayer:toolbar_toggle(data, event)
@@ -556,20 +560,21 @@ function MissionLayer:build_panel(notebook)
 	self:_build_scripts()
 
 	local btn_sizer = EWS:BoxSizer("HORIZONTAL")
+
 	self._element_toolbar = EWS:ToolBar(self._ews_panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	self._element_toolbar:add_check_tool("EDIT_ELEMENT", "Edit Element [insert]", CoreEws.image_path("world_editor\\he_edit_element_16x16.png"), "Edit Element [insert]")
 	self._element_toolbar:set_tool_state("EDIT_ELEMENT", self._editing_mission_element)
 	self._element_toolbar:connect("EDIT_ELEMENT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "toolbar_toggle"), {
-		value = "_editing_mission_element",
 		toolbar = "_element_toolbar",
+		value = "_editing_mission_element",
 		class = self
 	})
 
 	self._ews_triggers.insert = callback(self, self, "toolbar_toggle_trg", {
-		value = "_editing_mission_element",
-		toolbar = "_element_toolbar",
 		id = "EDIT_ELEMENT",
+		toolbar = "_element_toolbar",
+		value = "_editing_mission_element",
 		class = self
 	})
 
@@ -599,6 +604,7 @@ end
 
 function MissionLayer:_build_scripts()
 	local sizer = EWS:StaticBoxSizer(self._ews_panel, "HORIZONTAL", "Scripts")
+
 	self._scripts_toolbar = EWS:ToolBar(self._ews_panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	self._scripts_toolbar:add_tool("CREATE_SCRIPT", "Create a new script", CoreEws.image_path("toolbar\\new_16x16.png"), "Create a new script")
@@ -624,8 +630,8 @@ function MissionLayer:_build_scripts()
 	self._scripts_right_toolbar:add_check_tool("SIMULATE_WITH_CURRENT_SCRIPT", "If used, run simulation will start the current script", CoreEws.image_path("world_editor\\script_simulate_with_current_16x16.png"), "If used, run simulation will start the current script")
 	self._scripts_right_toolbar:set_tool_state("SIMULATE_WITH_CURRENT_SCRIPT", self._simulate_with_current_script)
 	self._scripts_right_toolbar:connect("SIMULATE_WITH_CURRENT_SCRIPT", "EVT_COMMAND_MENU_SELECTED", callback(nil, CoreEditorUtils, "toolbar_toggle"), {
-		value = "_simulate_with_current_script",
 		toolbar = "_scripts_right_toolbar",
+		value = "_simulate_with_current_script",
 		class = self
 	})
 	self._scripts_right_toolbar:realize()
@@ -639,15 +645,15 @@ function MissionLayer:add_btns_to_toolbar(...)
 	self._btn_toolbar:add_check_tool("DRAW_SELECTED_CONNECTIONS_ONLY", "Only draw selected connections", CoreEws.image_path("world_editor\\layer_hubs_only_draw_selected.png"), "Only draw selected connections")
 	self._btn_toolbar:set_tool_state("DRAW_SELECTED_CONNECTIONS_ONLY", self._only_draw_selected_connections)
 	self._btn_toolbar:connect("DRAW_SELECTED_CONNECTIONS_ONLY", "EVT_COMMAND_MENU_SELECTED", callback(nil, CoreEditorUtils, "toolbar_toggle"), {
-		value = "_only_draw_selected_connections",
 		toolbar = "_btn_toolbar",
+		value = "_only_draw_selected_connections",
 		class = self
 	})
 	self._btn_toolbar:add_check_tool("UPDATE_SELECTED_ALL", "Draws all element as if they where selected", CoreEws.image_path("world_editor\\layer_hubs_update_selected_all.png"), "Draws all element as if they where selected")
 	self._btn_toolbar:set_tool_state("UPDATE_SELECTED_ALL", self._update_all)
 	self._btn_toolbar:connect("UPDATE_SELECTED_ALL", "EVT_COMMAND_MENU_SELECTED", callback(nil, CoreEditorUtils, "toolbar_toggle"), {
-		value = "_update_all",
 		toolbar = "_btn_toolbar",
+		value = "_update_all",
 		class = self
 	})
 	self._btn_toolbar:add_check_tool("PERSISTENT_DEBUG", "Turns on screen debug information on/off", CoreEws.image_path("world_editor\\mission_persistent_debug_16x16.png"), "Turns on screen debug information on/off")
@@ -658,15 +664,15 @@ function MissionLayer:add_btns_to_toolbar(...)
 	self._btn_toolbar:add_check_tool("VISUALIZE_FLOW", "Visualize flow", CoreEws.image_path("toolbar\\find_16x16.png"), "Visualize flow")
 	self._btn_toolbar:set_tool_state("VISUALIZE_FLOW", self._visualize_flow)
 	self._btn_toolbar:connect("VISUALIZE_FLOW", "EVT_COMMAND_MENU_SELECTED", callback(nil, CoreEditorUtils, "toolbar_toggle"), {
-		value = "_visualize_flow",
 		toolbar = "_btn_toolbar",
+		value = "_visualize_flow",
 		class = self
 	})
 	self._btn_toolbar:add_check_tool("USE_COLORED_LINKS", "Use colored links", CoreEws.image_path("toolbar\\color_16x16.png"), "Use colored links")
 	self._btn_toolbar:set_tool_state("USE_COLORED_LINKS", self._use_colored_links)
 	self._btn_toolbar:connect("USE_COLORED_LINKS", "EVT_COMMAND_MENU_SELECTED", callback(nil, CoreEditorUtils, "toolbar_toggle"), {
-		value = "_use_colored_links",
 		toolbar = "_btn_toolbar",
+		value = "_use_colored_links",
 		class = self
 	})
 	self._btn_toolbar:add_separator()
@@ -860,6 +866,7 @@ function MissionLayer:_rename_script(name, new_name)
 	end
 
 	local values = self._scripts[name]
+
 	self._scripts[name] = nil
 	self._scripts[new_name] = values
 
@@ -1006,8 +1013,8 @@ function MissionLayer:break_links()
 	if self._selected_unit and not self:condition() then
 		local to_delete = CoreTable.clone(self._selected_units)
 
-		table.sort(to_delete, function (a, b)
-			return b:unit_data().unit_id < a:unit_data().unit_id
+		table.sort(to_delete, function(a, b)
+			return a:unit_data().unit_id > b:unit_data().unit_id
 		end)
 
 		for _, unit in ipairs(to_delete) do

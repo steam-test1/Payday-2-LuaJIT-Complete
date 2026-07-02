@@ -45,9 +45,9 @@ function NewsFeedGui:update(t, dt)
 		end
 
 		if self._present_t then
-			self._title_panel:set_left(0 - (managers.gui_data:safe_scaled_size().x + self._title_panel:w()) * (self._present_t - t) / self.PRESENT_TIME)
+			self._title_panel:set_left(0 - (managers.gui_data:safe_scaled_size().x + self._title_panel:w()) * ((self._present_t - t) / self.PRESENT_TIME))
 
-			if self._present_t < t then
+			if t > self._present_t then
 				self._title_panel:set_left(0)
 
 				self._present_t = nil
@@ -55,7 +55,7 @@ function NewsFeedGui:update(t, dt)
 			end
 		end
 
-		if self._sustain_t and self._sustain_t < t then
+		if self._sustain_t and t > self._sustain_t then
 			self._sustain_t = nil
 			self._remove_t = t + self.REMOVE_TIME
 		end
@@ -63,7 +63,7 @@ function NewsFeedGui:update(t, dt)
 		if self._remove_t then
 			self._title_panel:set_left(0 - (managers.gui_data:safe_scaled_size().x + self._title_panel:w()) * (1 - (self._remove_t - t) / self.REMOVE_TIME))
 
-			if self._remove_t < t then
+			if t > self._remove_t then
 				self._title_panel:set_left(0 - (managers.gui_data:safe_scaled_size().x + self._title_panel:w()))
 
 				self._remove_t = nil
@@ -77,9 +77,9 @@ function NewsFeedGui:make_news_request()
 	if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
 		Application:debug("[NewsFeedGui] make_news_request()")
 
-		local headers = {
-			["Content-Type"] = "text/xml"
-		}
+		local headers = {}
+
+		headers["Content-Type"] = "text/xml"
 
 		HttpRequest:get("https://www.paydaythegame.com/feed/", callback(self, self, "news_result"), headers)
 	end
@@ -99,6 +99,7 @@ function NewsFeedGui:news_result(success, body)
 			i = 0
 		}
 		self._next = true
+
 		local show_announcements = #self._titles > 0
 
 		self._panel:child("title_announcement"):set_visible(show_announcements)
@@ -107,29 +108,30 @@ end
 
 function NewsFeedGui:_create_gui()
 	local size = managers.gui_data:scaled_size()
+
 	self._panel = self._ws:panel():panel({
-		name = "main",
 		h = 44,
+		name = "main",
 		w = size.width / 2
 	})
 
 	self._panel:set_bottom(self._panel:parent():h() - NewsFeedGui.BOTTOM_OFFSET)
 	self._panel:bitmap({
-		texture = "guis/textures/textboxbg",
-		name = "bg_bitmap",
-		visible = false,
 		layer = 0,
+		name = "bg_bitmap",
+		texture = "guis/textures/textboxbg",
+		visible = false,
 		color = Color.black,
 		w = self._panel:w(),
 		h = self._panel:h()
 	})
 	self._panel:text({
-		visible = false,
-		vertical = "top",
-		name = "title_announcement",
-		hvertical = "top",
 		align = "left",
 		halign = "left",
+		hvertical = "top",
+		name = "title_announcement",
+		vertical = "top",
+		visible = false,
 		text = managers.localization:to_upper_text("menu_announcements"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -142,12 +144,12 @@ function NewsFeedGui:_create_gui()
 	})
 
 	self._title_panel:text({
-		name = "title",
-		vertical = "bottom",
 		align = "left",
-		text = "",
-		hvertical = "bottom",
 		halign = "left",
+		hvertical = "bottom",
+		name = "title",
+		text = "",
+		vertical = "bottom",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		color = Color(0.75, 0.75, 0.75)
@@ -172,8 +174,9 @@ function NewsFeedGui:_get_text_block(s, sp, ep, max_results)
 		local override = {
 			["8211"] = "-"
 		}
+
 		text_string = string.gsub(text_string, "–", "-")
-		text_string = string.gsub(text_string, "%b&;", function (word)
+		text_string = string.gsub(text_string, "%b&;", function(word)
 			local char = string.sub(word, 3, -2)
 			local replacement = override[char] or utf8.char(char)
 
@@ -203,6 +206,7 @@ end
 
 function NewsFeedGui:mouse_moved(x, y)
 	local inside = self._panel:inside(x, y)
+
 	self._mouse_over = inside
 
 	return inside, inside and "link"

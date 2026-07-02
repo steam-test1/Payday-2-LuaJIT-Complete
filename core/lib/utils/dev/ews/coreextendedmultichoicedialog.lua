@@ -4,7 +4,7 @@ if Application:ews_enabled() then
 	local ews = getmetatable(rawget(_G, "EWS"))
 
 	assert(ews)
-	rawset(ews, "ExtendedMultiChoiceDialog", function (ews, ...)
+	rawset(ews, "ExtendedMultiChoiceDialog", function(ews, ...)
 		return core_or_local("CoreExtendedMultiChoiceDialog", ...)
 	end)
 end
@@ -12,6 +12,7 @@ end
 function CoreExtendedMultiChoiceDialog:init(parent, caption, message, pos, size, style, objects)
 	self._objects = objects or {}
 	self._dialog = EWS:Dialog(parent, caption or "", "", pos or Vector3(-1, -1, 0), size or Vector3(450, 500, 0), style or "CAPTION,SYSTEM_MENU,STAY_ON_TOP")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local lb_box = EWS:BoxSizer("HORIZONTAL")
 
@@ -41,6 +42,7 @@ function CoreExtendedMultiChoiceDialog:init(parent, caption, message, pos, size,
 	box:add(line, 0, 10, "EXPAND,TOP")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._ok_btn = EWS:Button(self._dialog, "OK", "", "")
 
 	self._ok_btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_ok_button"), "")

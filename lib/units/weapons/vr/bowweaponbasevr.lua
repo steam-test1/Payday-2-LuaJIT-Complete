@@ -84,4 +84,5 @@ function BowWeaponBaseVR:_update_fire_object()
 end
 
 function BowWeaponBaseVR:_adjust_throw_z(vec)
+	return
 end

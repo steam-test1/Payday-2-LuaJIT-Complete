@@ -18,10 +18,12 @@ function GuiDataManager:init(scene_gui, res, safe_rect_pixels, safe_rect, static
 end
 
 function GuiDataManager:destroy()
+	return
 end
 
 function GuiDataManager:create_saferect_workspace(workspace_object, scene)
 	local ws = (scene or self._scene_gui or Overlay:gui()):create_scaled_screen_workspace(10, 10, 10, 10, 10)
+
 	self._workspace_configuration[ws:key()] = {
 		workspace_object = workspace_object
 	}
@@ -33,6 +35,7 @@ end
 
 function GuiDataManager:create_fullscreen_workspace(workspace_object, scene)
 	local ws = (scene or self._scene_gui or Overlay:gui()):create_scaled_screen_workspace(10, 10, 10, 10, 10)
+
 	self._workspace_configuration[ws:key()] = {
 		workspace_object = workspace_object
 	}
@@ -44,6 +47,7 @@ end
 
 function GuiDataManager:create_fullscreen_16_9_workspace(workspace_object, scene)
 	local ws = (scene or self._scene_gui or Overlay:gui()):create_scaled_screen_workspace(10, 10, 10, 10, 10)
+
 	self._workspace_configuration[ws:key()] = {
 		workspace_object = workspace_object
 	}
@@ -55,6 +59,7 @@ end
 
 function GuiDataManager:create_corner_saferect_workspace(workspace_object, scene)
 	local ws = (scene or self._scene_gui or Overlay:gui()):create_scaled_screen_workspace(10, 10, 10, 10, 10)
+
 	self._workspace_configuration[ws:key()] = {
 		workspace_object = workspace_object
 	}
@@ -66,6 +71,7 @@ end
 
 function GuiDataManager:create_1280_workspace(workspace_object, scene)
 	local ws = (scene or self._scene_gui or Overlay:gui()):create_scaled_screen_workspace(10, 10, 10, 10, 10)
+
 	self._workspace_configuration[ws:key()] = {
 		workspace_object = workspace_object
 	}
@@ -77,6 +83,7 @@ end
 
 function GuiDataManager:create_corner_saferect_1280_workspace(workspace_object, scene)
 	local ws = (scene or self._scene_gui or Overlay:gui()):create_scaled_screen_workspace(10, 10, 10, 10, 10)
+
 	self._workspace_configuration[ws:key()] = {
 		workspace_object = workspace_object
 	}
@@ -144,15 +151,17 @@ function GuiDataManager:_setup_workspace_data()
 	self._fullrect_16_9_data = {}
 	self._fullrect_1280_data = {}
 	self._corner_saferect_1280_data = {}
+
 	local safe_rect = self:_get_safe_rect_pixels()
 	local scaled_size = self:scaled_size()
 	local res = self._static_resolution or RenderSettings.resolution
 	local w = scaled_size.width
 	local h = scaled_size.height
 	local sh = math.min(safe_rect.height, safe_rect.width / (w / h))
-	local sw = math.min(safe_rect.width, safe_rect.height * w / h)
-	local x = res.x / 2 - sh * w / h / 2
+	local sw = math.min(safe_rect.width, safe_rect.height * (w / h))
+	local x = res.x / 2 - sh * (w / h) / 2
 	local y = res.y / 2 - sw / (w / h) / 2
+
 	self._safe_x = x
 	self._safe_y = y
 	self._saferect_data.w = w
@@ -162,9 +171,13 @@ function GuiDataManager:_setup_workspace_data()
 	self._saferect_data.x = x
 	self._saferect_data.y = y
 	self._saferect_data.on_screen_width = sw
+
 	local h_c = w / (safe_rect.width / safe_rect.height)
+
 	h = math.max(h, h_c)
+
 	local w_c = h_c / h
+
 	w = math.max(w, w / w_c)
 	self._corner_saferect_data.w = w
 	self._corner_saferect_data.h = h
@@ -191,8 +204,8 @@ function GuiDataManager:_setup_workspace_data()
 	w = base_res.x
 	h = base_res.y
 	sh = math.min(res.y, res.x / (w / h))
-	sw = math.min(res.x, res.y * w / h)
-	x = res.x / 2 - sh * w / h / 2
+	sw = math.min(res.x, res.y * (w / h))
+	x = res.x / 2 - sh * (w / h) / 2
 	y = res.y / 2 - sw / (w / h) / 2
 	self._fullrect_16_9_data.w = w
 	self._fullrect_16_9_data.h = h
@@ -203,7 +216,9 @@ function GuiDataManager:_setup_workspace_data()
 	self._fullrect_16_9_data.on_screen_width = sw
 	self._fullrect_16_9_data.convert_x = math.floor((self._fullrect_16_9_data.w - self._saferect_data.w) / 2)
 	self._fullrect_16_9_data.convert_y = (self._fullrect_16_9_data.h - self._saferect_data.h) / 2
+
 	local aspect = math.clamp(res.x / res.y, 1, 1.7777777777777777)
+
 	w = base_res.x
 	h = base_res.x / aspect
 	sw = math.min(res.x, res.y * aspect)
@@ -356,8 +371,7 @@ function GuiDataManager:convert_pos_float(from_ws, to_ws, in_x, in_y)
 	end
 
 	local scale = from.on_screen_width / from.w
-	local x = in_x * scale + from.x
-	local y = in_y * scale + from.y
+	local x, y = in_x * scale + from.x, in_y * scale + from.y
 	local scale = to.on_screen_width / to.w
 
 	return (x - to.x) / scale, (y - to.y) / scale

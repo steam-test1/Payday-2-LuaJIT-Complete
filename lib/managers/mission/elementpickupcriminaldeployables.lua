@@ -3,6 +3,7 @@ core:import("CoreMissionScriptElement")
 ElementPickupCriminalDeployables = ElementPickupCriminalDeployables or class(CoreMissionScriptElement.MissionScriptElement)
 
 function ElementPickupCriminalDeployables:client_on_executed(...)
+	return
 end
 
 function ElementPickupCriminalDeployables:on_executed(instigator)

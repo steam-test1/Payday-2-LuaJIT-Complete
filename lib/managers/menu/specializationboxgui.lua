@@ -3,6 +3,7 @@ SpecializationBoxGui.TEXT = ""
 
 function SpecializationBoxGui:init(...)
 	local ws, title, text, content_data, config = ...
+
 	config.forced_h = 210
 	config.w = 600
 	config.is_title_outside = true
@@ -29,16 +30,16 @@ function SpecializationBoxGui:_create_text_box(ws, title, text, content_data, co
 	local points_present = math.min(content_data.points_present, available_points)
 	local conversion_rate_number = math.round(xp_present / points_present)
 	local small_text = {
-		text = "",
 		blend_mode = "add",
 		layer = 1,
+		text = "",
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size
 	}
 	local medium_text = {
-		text = "",
 		blend_mode = "add",
 		layer = 1,
+		text = "",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	}
@@ -169,12 +170,12 @@ function SpecializationBoxGui:_create_text_box(ws, title, text, content_data, co
 	self._scroll_panel:set_y(math.round(self._scroll_panel:y()))
 
 	self._anim_data = {
+		end_xp_present = 0,
+		goto_end = false,
+		points_present = 0,
 		progress_width = 0,
 		start_points_present = 0,
-		points_present = 0,
-		goto_end = false,
 		start_progress_width = 0,
-		end_xp_present = 0,
 		progress_bar = progress_bar,
 		end_progress_width = progress_end:right() - progress_bar:left(),
 		exp_count_text = exp_count_text,
@@ -188,6 +189,7 @@ function SpecializationBoxGui:_create_text_box(ws, title, text, content_data, co
 		available_points_present = available_points - points_present,
 		conversion_rate = conversion_rate_number
 	}
+
 	local xp_present = content_data.xp_present
 	local points_present = content_data.points_present
 	local conversion_rate_number = math.round(xp_present / points_present)
@@ -214,7 +216,7 @@ function SpecializationBoxGui._update(o, self)
 
 	wait(1)
 
-	local dt = nil
+	local dt
 	local speed = math.max(5, self._anim_data.end_points_present / 20)
 
 	managers.menu_component:post_event("count_1")

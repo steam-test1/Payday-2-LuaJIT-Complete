@@ -2,8 +2,8 @@ CoreSpawnUnitUnitElement = CoreSpawnUnitUnitElement or class(MissionElement)
 CoreSpawnUnitUnitElement.USES_POINT_ORIENTATION = true
 CoreSpawnUnitUnitElement.LINK_VALUES = {
 	{
-		value = "counter_id",
-		type = "counter"
+		type = "counter",
+		value = "counter_id"
 	}
 }
 SpawnUnitUnitElement = SpawnUnitUnitElement or class(CoreSpawnUnitUnitElement)
@@ -91,6 +91,7 @@ function CoreSpawnUnitUnitElement:_get_unit_sequences(unit_name)
 end
 
 function CoreSpawnUnitUnitElement:update_editing()
+	return
 end
 
 function CoreSpawnUnitUnitElement:draw_links(t, dt, selected_unit, all_units)
@@ -102,8 +103,8 @@ function CoreSpawnUnitUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = unit,
 				to_unit = self._unit
@@ -114,8 +115,8 @@ end
 
 function CoreSpawnUnitUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("core/units/mission_elements/logic_counter/logic_counter") then
@@ -218,6 +219,7 @@ function CoreSpawnUnitUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local unit_options = {
 		"none"
 	}
@@ -236,6 +238,7 @@ function CoreSpawnUnitUnitElement:_build_panel(panel, panel_sizer)
 	self:_build_value_combobox(panel, panel_sizer, "unit_name", unit_options, "Select a unit from the combobox")
 
 	local _, params = self:_build_value_combobox(panel, panel_sizer, "unit_spawn_sequence", self._unit_sequences, "Select a sequence from the combobox")
+
 	self._unit_spawn_sequence_combobox_params = params
 
 	self:_build_value_checkbox(panel, panel_sizer, "unit_spawn_settled", "Will attempt to settle to the ground directly below it.")
@@ -251,14 +254,7 @@ function CoreSpawnUnitUnitElement:_build_panel(panel, panel_sizer)
 		floats = 0,
 		min = 0
 	}, "Use this to add a mass to a physic push on the spawned unit(will need velocity as well)", "Mass")
-	self:_add_help_text([[
-Select a unit to be spawned in the unit combobox.
-
-Add velocity and mass if you want to give the spawned unit a push as if it was hit by an object of mass mass, traveling at a velocity of velocity relative to the unit (both values are required to give the push)
-
-Body slam (80 kg, 10 m/s)
-Fist punch (8 kg, 10 m/s)
-Bullet hit (10 g, 900 m/s)]])
+	self:_add_help_text("Select a unit to be spawned in the unit combobox.\n\nAdd velocity and mass if you want to give the spawned unit a push as if it was hit by an object of mass mass, traveling at a velocity of velocity relative to the unit (both values are required to give the push)\n\nBody slam (80 kg, 10 m/s)\nFist punch (8 kg, 10 m/s)\nBullet hit (10 g, 900 m/s)")
 end
 
 function CoreSpawnUnitUnitElement:add_to_mission_package()

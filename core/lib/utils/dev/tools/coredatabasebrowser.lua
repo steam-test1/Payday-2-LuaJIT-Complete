@@ -1,11 +1,10 @@
 CoreDBDialog = CoreDBDialog or class()
 
 function CoreDBDialog:init(type_to_pick, cb_self, cb, db)
-	self._browser_data = {
-		type_to_pick = type_to_pick,
-		cb = cb,
-		cb_self = cb_self
-	}
+	self._browser_data = {}
+	self._browser_data.type_to_pick = type_to_pick
+	self._browser_data.cb = cb
+	self._browser_data.cb_self = cb_self
 	self._window = CoreDatabaseBrowser:new(self._browser_data, db)
 end
 
@@ -133,16 +132,18 @@ function CoreDatabaseBrowser:create_main_frame()
 	self._main_frame:connect("", "EVT_CLOSE_WINDOW", callback(self, self, "on_close"), "")
 
 	local main_box = EWS:BoxSizer("VERTICAL")
+
 	self._main_notebook = EWS:Notebook(self._main_frame, "", "")
 
 	self._main_notebook:connect("", "EVT_COMMAND_NOTEBOOK_PAGE_CHANGING", callback(self, self, "on_notebook_changing"), "")
 	main_box:add(self._main_notebook, 2, 0, "EXPAND")
 
-	self._search_box = {
-		panel = EWS:Panel(self._main_notebook, "", ""),
-		panel_box = EWS:BoxSizer("VERTICAL")
-	}
+	self._search_box = {}
+	self._search_box.panel = EWS:Panel(self._main_notebook, "", "")
+	self._search_box.panel_box = EWS:BoxSizer("VERTICAL")
+
 	local top_search_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._search_box.type_combobox = EWS:ComboBox(self._search_box.panel, "", "", "CB_READONLY,CB_SORT")
 
 	self._search_box.type_combobox:connect("", "EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "on_read_database"), "")
@@ -168,11 +169,12 @@ function CoreDatabaseBrowser:create_main_frame()
 	self._search_box.panel:set_sizer(self._search_box.panel_box)
 	self._main_notebook:add_page(self._search_box.panel, "Search View", true)
 
-	self._tree_box = {
-		panel = EWS:Panel(self._main_notebook, "", ""),
-		panel_box = EWS:BoxSizer("VERTICAL")
-	}
+	self._tree_box = {}
+	self._tree_box.panel = EWS:Panel(self._main_notebook, "", "")
+	self._tree_box.panel_box = EWS:BoxSizer("VERTICAL")
+
 	local top_search_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._tree_box.type_combobox = EWS:ComboBox(self._tree_box.panel, "", "", "CB_READONLY,CB_SORT")
 
 	self._tree_box.type_combobox:connect("", "EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "on_read_database"), "")
@@ -198,11 +200,12 @@ function CoreDatabaseBrowser:create_main_frame()
 	self._tree_box.panel:set_sizer(self._tree_box.panel_box)
 	self._main_notebook:add_page(self._tree_box.panel, "Tree View", false)
 
-	self._local_box = {
-		panel = EWS:Panel(self._main_notebook, "", ""),
-		panel_box = EWS:BoxSizer("VERTICAL")
-	}
+	self._local_box = {}
+	self._local_box.panel = EWS:Panel(self._main_notebook, "", "")
+	self._local_box.panel_box = EWS:BoxSizer("VERTICAL")
+
 	local top_local_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._local_box.type_combobox = EWS:ComboBox(self._local_box.panel, "", "", "CB_READONLY,CB_SORT")
 
 	self._local_box.type_combobox:connect("", "EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "on_read_database"), "")
@@ -224,6 +227,7 @@ function CoreDatabaseBrowser:create_main_frame()
 	self._local_box.panel_box:add(self._local_box.list_box, 2, 0, "EXPAND")
 
 	local bottom_local_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._local_box.commit_btn = EWS:Button(self._local_box.panel, "Commit", "", "")
 
 	self._local_box.commit_btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_commit_btn"), "")
@@ -243,6 +247,7 @@ function CoreDatabaseBrowser:create_main_frame()
 	end
 
 	self._preview_panel = EWS:Panel(self._main_frame, "", "")
+
 	local text_box = EWS:BoxSizer("VERTICAL")
 	local msg = EWS:StaticText(self._preview_panel, "No preview!", "", "ALIGN_CENTER_VERTICAL")
 
@@ -262,6 +267,7 @@ function CoreDatabaseBrowser:create_main_frame()
 
 	if self._browser_data then
 		local button_box = EWS:BoxSizer("HORIZONTAL")
+
 		self._ok_btn = EWS:Button(self._main_frame, "OK", "", "")
 
 		self._ok_btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_close"), "OK")
@@ -309,7 +315,7 @@ function CoreDatabaseBrowser:on_check_news()
 end
 
 function CoreDatabaseBrowser:check_news(new_only)
-	local news = nil
+	local news
 
 	if new_only then
 		news = managers.news:get_news("database_browser", self._main_frame)
@@ -318,7 +324,7 @@ function CoreDatabaseBrowser:check_news(new_only)
 	end
 
 	if news then
-		local str = nil
+		local str
 
 		for _, n in ipairs(news) do
 			if not str then
@@ -353,6 +359,7 @@ end
 function CoreDatabaseBrowser:append_local_changes()
 	local db_changes = self._active_database:local_changes()
 	local change_table = {}
+
 	self._local_changes = {}
 
 	self._local_box.list_box:clear()
@@ -385,6 +392,7 @@ function CoreDatabaseBrowser:append_local_changes()
 
 	for describe, struct in pairs(change_table) do
 		local str = describe .. " - " .. struct.str
+
 		self._local_changes[str] = struct
 
 		self._local_box.list_box:append(str)
@@ -496,7 +504,8 @@ function CoreDatabaseBrowser:on_commit_btn()
 		end
 
 		self._dirty_flag = false
-		local commit_ret = nil
+
+		local commit_ret
 
 		while not commit_ret do
 			commit_ret = self._active_database:commit_changes("[CoreDatabaseBrowser] " .. comment, new_entrys)
@@ -526,7 +535,7 @@ end
 
 function CoreDatabaseBrowser:on_revert_btn()
 	if #self._local_box.list_box:selected_indices() > 0 and self._revert_dialog:show_modal() == "ID_YES" then
-		local flag = nil
+		local flag
 		local revert_table = {}
 		local progress = EWS:ProgressDialog(self._main_frame, "Revert", "Reverting data...", 100, "PD_AUTO_HIDE,PD_SMOOTH")
 
@@ -580,7 +589,7 @@ function CoreDatabaseBrowser:on_import_xml()
 			return
 		end
 
-		local node = nil
+		local node
 
 		if xml_root and self._import_dialog:show_modal() then
 			node = Node(xml_root:name())
@@ -633,7 +642,7 @@ function CoreDatabaseBrowser:on_read_database()
 		return entries, t
 	end
 
-	local data_table, database_type = nil
+	local data_table, database_type
 	local current_page = self._main_notebook:get_current_page()
 
 	if current_page == self._main_notebook:get_page(0) then
@@ -669,6 +678,7 @@ function CoreDatabaseBrowser:get_meta_data(selected_type, selected)
 		for i = 1, entry:num_metadatas() do
 			local meta_key = entry:metadata_key(i - 1)
 			local meta_value = entry:metadata_value(i - 1)
+
 			str = str .. meta_key .. "->" .. meta_value .. "\n"
 		end
 	end
@@ -677,7 +687,7 @@ function CoreDatabaseBrowser:get_meta_data(selected_type, selected)
 end
 
 function CoreDatabaseBrowser:on_view_metadata()
-	local str = nil
+	local str
 
 	if self._main_notebook:get_current_page() == self._main_notebook:get_page(0) then
 		if #self._search_box.list_box:selected_indices() > 0 then
@@ -908,7 +918,7 @@ function CoreDatabaseBrowser:update_preview(entry)
 		local node = self._active_database:load_node(entry)
 
 		if entry:type() == "unit" then
-			local flag = nil
+			local flag
 
 			if valid_node(node) then
 				local model_node = self:get_node(node, "model")
@@ -918,6 +928,7 @@ function CoreDatabaseBrowser:update_preview(entry)
 
 					if model_xml_entry:valid() then
 						local model_xml_node = self._active_database:load_node(model_xml_entry)
+
 						flag = preview_model_xml(self, model_xml_node, valid_node)
 					end
 				end
@@ -1046,10 +1057,10 @@ function CoreDatabaseBrowser:build_tree(path)
 
 	for folder_name in string.gmatch(path, "[%w_]+") do
 		if not parent.children[folder_name] then
-			local new_folder_table = {
-				id = self._tree_box.tree_ctrl:append(parent.id, folder_name),
-				children = {}
-			}
+			local new_folder_table = {}
+
+			new_folder_table.id = self._tree_box.tree_ctrl:append(parent.id, folder_name)
+			new_folder_table.children = {}
 
 			self._tree_box.tree_ctrl:set_item_bold(new_folder_table.id, true)
 
@@ -1102,10 +1113,9 @@ function CoreDatabaseBrowser:on_search()
 		self._tree_box.tree_ctrl:clear()
 		self:reset_preview()
 
-		self._folder_table = {
-			id = self._tree_box.tree_ctrl:append_root("root"),
-			children = {}
-		}
+		self._folder_table = {}
+		self._folder_table.id = self._tree_box.tree_ctrl:append_root("root")
+		self._folder_table.children = {}
 
 		self._tree_box.tree_ctrl:set_item_bold(self._folder_table.id, true)
 
@@ -1238,6 +1248,7 @@ function CoreDatabaseBrowser:on_rename()
 						if not self._active_database:has(self._entrys[selected]:type(), self._rename_dialog:get_value(), self._entrys[selected]:properties()) then
 							local old_name = self._entrys[selected]:name()
 							local new_ref = self:_rename_and_transfer_metadata(self._entrys[selected], self._rename_dialog:get_value())
+
 							self._entrys[selected] = nil
 							self._entrys[new_ref:type() .. " - " .. new_ref:name()] = new_ref
 							self._dirty_flag = false
@@ -1264,6 +1275,7 @@ function CoreDatabaseBrowser:on_rename()
 					local selected = self._tree_box.tree_ctrl:get_item_text(id)
 					local old_name = self._entrys[selected]:name()
 					local new_ref = self:_rename_and_transfer_metadata(self._entrys[selected], self._rename_dialog:get_value())
+
 					self._entrys[selected] = nil
 					self._entrys[new_ref:type() .. " - " .. self._rename_dialog:get_value()] = new_ref
 					self._dirty_flag = false
@@ -1296,7 +1308,9 @@ end
 function CoreDatabaseBrowser:convert_to_x360(entry)
 	if self._op_menu:is_checked("OP_AUTO_CONVERT_TEXTURES") then
 		local prop = entry:properties()
+
 		prop.platform = "x360raw"
+
 		local raw_texture = self._active_database:lookup("texture", entry:name(), prop)
 
 		if not raw_texture:valid() or raw_texture:property("platform") ~= "x360raw" then
@@ -1311,6 +1325,7 @@ function CoreDatabaseBrowser:convert_to_x360(entry)
 		end
 
 		prop.platform = "x360"
+
 		local str = "imageexportertool -d \"" .. Application:base_path() .. "db\" -sn " .. raw_texture:name() .. self:unpack_prop(raw_texture:properties(), "sp") .. "-qpf A8L8"
 
 		if Application:system(str, true, true) == 0 then
@@ -1330,7 +1345,9 @@ end
 function CoreDatabaseBrowser:convert_to_ps3(entry)
 	if self._op_menu:is_checked("OP_AUTO_CONVERT_TEXTURES") then
 		local prop = entry:properties()
+
 		prop.platform = "ps3raw"
+
 		local raw_texture = self._active_database:lookup("texture", entry:name(), prop)
 
 		if not raw_texture:valid() or raw_texture:property("platform") ~= "ps3raw" then
@@ -1345,6 +1362,7 @@ function CoreDatabaseBrowser:convert_to_ps3(entry)
 		end
 
 		prop.platform = "ps3"
+
 		local str = "imageexportertool -d \"" .. Application:base_path() .. "db\" -sn " .. raw_texture:name() .. self:unpack_prop(raw_texture:properties(), "sp") .. "-qpf A8L8"
 
 		if Application:system(str, true, true) == 0 then
@@ -1365,13 +1383,16 @@ CoreDatabaseBrowserMoveDialog = CoreDatabaseBrowserMoveDialog or class()
 
 function CoreDatabaseBrowserMoveDialog:init(editor, p)
 	self._dialog = EWS:Dialog(p, "Move", "", Vector3(-1, -1, 0), Vector3(300, 75, 0), "CAPTION,SYSTEM_MENU,STAY_ON_TOP")
+
 	local box = EWS:BoxSizer("VERTICAL")
+
 	self._text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._text_ctrl:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_move_button"), "")
 	box:add(self._text_ctrl, 0, 0, "EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._move = EWS:Button(self._dialog, "Move", "", "")
 
 	self._move:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_move_button"), "")
@@ -1396,6 +1417,7 @@ function CoreDatabaseBrowserMoveDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val
@@ -1423,8 +1445,10 @@ CoreDatabaseBrowserImportDialog = CoreDatabaseBrowserImportDialog or class()
 
 function CoreDatabaseBrowserImportDialog:init(editor, p)
 	self._dialog = EWS:Dialog(p, "New Entry", "", Vector3(-1, -1, 0), Vector3(300, 86, 0), "CAPTION,SYSTEM_MENU,STAY_ON_TOP")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._type_combobox = EWS:ComboBox(self._dialog, "", "", "")
 
 	self._type_combobox:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_import_button"), "")
@@ -1438,6 +1462,7 @@ function CoreDatabaseBrowserImportDialog:init(editor, p)
 	box:add(text_box, 0, 4, "ALL,EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._move = EWS:Button(self._dialog, "Import", "", "")
 
 	self._move:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_import_button"), "")
@@ -1463,6 +1488,7 @@ function CoreDatabaseBrowserImportDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val
@@ -1491,8 +1517,10 @@ CoreDatabaseBrowserMetadataDialog = CoreDatabaseBrowserMetadataDialog or class()
 
 function CoreDatabaseBrowserMetadataDialog:init(p)
 	self._dialog = EWS:Dialog(p, "Set Metadata", "", Vector3(-1, -1, 0), Vector3(300, 86, 0), "CAPTION,SYSTEM_MENU,STAY_ON_TOP")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._key_text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._key_text_ctrl:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_set_button"), "")
@@ -1505,6 +1533,7 @@ function CoreDatabaseBrowserMetadataDialog:init(p)
 	box:add(text_box, 0, 4, "ALL,EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._move = EWS:Button(self._dialog, "Set", "", "")
 
 	self._move:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_set_button"), "")
@@ -1531,6 +1560,7 @@ function CoreDatabaseBrowserMetadataDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val
@@ -1559,8 +1589,10 @@ CoreDatabaseBrowserInputDialog = CoreDatabaseBrowserInputDialog or class()
 
 function CoreDatabaseBrowserInputDialog:init(p)
 	self._dialog = EWS:Dialog(p, "Comment", "", Vector3(-1, -1, 0), Vector3(300, 86, 0), "CAPTION,SYSTEM_MENU,STAY_ON_TOP")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._key_text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._key_text_ctrl:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_ok_button"), "")
@@ -1568,6 +1600,7 @@ function CoreDatabaseBrowserInputDialog:init(p)
 	box:add(text_box, 0, 4, "ALL,EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._ok = EWS:Button(self._dialog, "OK", "", "")
 
 	self._ok:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_ok_button"), "")
@@ -1592,6 +1625,7 @@ function CoreDatabaseBrowserInputDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val
@@ -1619,8 +1653,10 @@ CoreDatabaseBrowserRenameDialog = CoreDatabaseBrowserRenameDialog or class()
 
 function CoreDatabaseBrowserRenameDialog:init(p)
 	self._dialog = EWS:Dialog(p, "Rename", "", Vector3(-1, -1, 0), Vector3(300, 86, 0), "CAPTION,SYSTEM_MENU,STAY_ON_TOP")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._key_text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._key_text_ctrl:connect("", "EVT_COMMAND_TEXT_ENTER", callback(self, self, "on_ok_button"), "")
@@ -1628,6 +1664,7 @@ function CoreDatabaseBrowserRenameDialog:init(p)
 	box:add(text_box, 0, 4, "ALL,EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._ok = EWS:Button(self._dialog, "Rename", "", "")
 
 	self._ok:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_ok_button"), "")
@@ -1650,6 +1687,7 @@ function CoreDatabaseBrowserRenameDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val

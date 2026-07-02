@@ -4,6 +4,7 @@ core:import("CoreLocalUserStorage")
 Storage = Storage or class(CoreLocalUserStorage.Storage)
 
 function Storage:save()
+	return
 end
 
 function Storage:_start_load_task()

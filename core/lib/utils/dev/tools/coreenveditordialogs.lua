@@ -39,7 +39,7 @@ function TemplateMixerDummy:set_value(v)
 end
 
 function TemplateMixerDummy:update_mix(env1, env2, blend)
-	local p1, p2 = nil
+	local p1, p2
 
 	if self._type == "posteffect" then
 		p1 = self._editor:retrive_posteffect_param(self._editor._template_effects[env1], self._pro, self._mod, self._param)
@@ -108,7 +108,7 @@ function FormulaMixerDummy:update(t, dt)
 	local value = self._formula(self._master:get_value(), unpack(self._params))
 	local t = type(value)
 
-	if t == "string" and value ~= self._value or t == "number" and self._tol < math.abs(value - self._value) or t == "userdata" and self._tol < (value - self._value):length() then
+	if t == "string" and value ~= self._value or t == "number" and math.abs(value - self._value) > self._tol or t == "userdata" and (value - self._value):length() > self._tol then
 		self._value = value
 	end
 end
@@ -281,7 +281,7 @@ function DBDropdown:init(editor, p, name, db_key)
 end
 
 function DBDropdown:append_values()
-	local value = nil
+	local value
 
 	for _, v in ipairs(LightIntensityDB:list()) do
 		self._combobox:append(v:s())
@@ -685,7 +685,9 @@ PathBox = PathBox or class()
 function PathBox:init(editor, p, name)
 	self._editor = editor
 	self._box = EWS:StaticBoxSizer(p, "VERTICAL", name)
+
 	local h_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._btn = EWS:Button(p, "Browse", "", "")
 
 	self._btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_path_button"), "")
@@ -725,7 +727,9 @@ function DBPickDialog:init(editor, p, name, pick_type)
 	self._editor = editor
 	self._parent = p
 	self._box = EWS:StaticBoxSizer(p, "VERTICAL", name)
+
 	local h_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._clear_btn = EWS:Button(p, "Clear", "", "")
 
 	self._clear_btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "set_value"), "")
@@ -796,8 +800,10 @@ ConnectDialog = ConnectDialog or class()
 
 function ConnectDialog:init(p)
 	self._dialog = EWS:Dialog(p, "Connect Client", "", Vector3(0, 0, 0), Vector3(300, 75, 0), "CAPTION,SYSTEM_MENU")
+
 	local box = EWS:BoxSizer("VERTICAL")
 	local text_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._text_ctrl = EWS:TextCtrl(self._dialog, "", "", "TE_PROCESS_ENTER")
 
 	self._text_ctrl:set_value("192.168.0.1")
@@ -812,6 +818,7 @@ function ConnectDialog:init(p)
 	box:add(text_box, 0, 0, "EXPAND")
 
 	local button_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._connect = EWS:Button(self._dialog, "Connect", "", "")
 
 	self._connect:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_connect_button"), "")
@@ -832,6 +839,7 @@ function ConnectDialog:show_modal()
 	self._dialog:show_modal()
 
 	while not self._done do
+		-- Nothing
 	end
 
 	return self._return_val

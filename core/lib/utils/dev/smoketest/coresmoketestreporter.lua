@@ -4,6 +4,7 @@ core:import("CoreClass")
 Reporter = Reporter or CoreClass.class()
 
 function Reporter:init()
+	return
 end
 
 function Reporter:begin_substep(name)

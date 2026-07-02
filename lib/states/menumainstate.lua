@@ -24,10 +24,10 @@ function MenuMainState:at_enter(old_state)
 		if Global.load_start_menu_lobby then
 			if managers.network:session() and (Network:is_server() or managers.network:session():server_peer()) then
 				managers.overlay_effect:play_effect({
-					sustain = 0.5,
-					fade_in = 0,
 					blend_mode = "normal",
+					fade_in = 0,
 					fade_out = 0.5,
+					sustain = 0.5,
 					color = Color.black
 				})
 				managers.menu:external_enter_online_menus()
@@ -37,10 +37,10 @@ function MenuMainState:at_enter(old_state)
 			end
 		elseif Global.load_crime_net then
 			managers.overlay_effect:play_effect({
-				sustain = 0.5,
-				fade_in = 0,
 				blend_mode = "normal",
+				fade_in = 0,
 				fade_out = 0.5,
+				sustain = 0.5,
 				color = Color.black
 			})
 
@@ -57,10 +57,10 @@ function MenuMainState:at_enter(old_state)
 			Global.load_crime_net = false
 		elseif Global.load_start_menu then
 			managers.overlay_effect:play_effect({
-				sustain = 0.25,
-				fade_in = 0,
 				blend_mode = "normal",
+				fade_in = 0,
 				fade_out = 0.25,
+				sustain = 0.25,
 				color = Color.black
 			})
 		end
@@ -144,7 +144,7 @@ function MenuMainState:at_enter(old_state)
 			Global.boot_invite.used = false
 			Global.boot_invite.pending = true
 
-			managers.menu:open_sign_in_menu(function (success)
+			managers.menu:open_sign_in_menu(function(success)
 				if success then
 					Global.boot_invite = is_boot and PSN:get_boot_invitation() or Global.boot_invite
 					Global.boot_invite.used = false
@@ -159,7 +159,9 @@ function MenuMainState:at_enter(old_state)
 	elseif SystemInfo:platform() == Idstring("WIN32") then
 		if Global.boot_invite then
 			has_invite = true
+
 			local lobby = Global.boot_invite
+
 			Global.boot_invite = nil
 
 			managers.network.matchmake:join_server_with_check(lobby)
@@ -189,7 +191,7 @@ function MenuMainState:at_enter(old_state)
 
 		if not managers.custom_safehouse:unlocked() then
 			-- Nothing
-		elseif (tweak_data.safehouse.level_limit <= managers.experience:current_level() or managers.experience:current_rank() > 0) and not managers.custom_safehouse:has_entered_safehouse() and Global.mission_manager.safehouse_ask_amount < 2 and not Global.skip_menu_dialogs then
+		elseif (managers.experience:current_level() >= tweak_data.safehouse.level_limit or managers.experience:current_rank() > 0) and not managers.custom_safehouse:has_entered_safehouse() and Global.mission_manager.safehouse_ask_amount < 2 and not Global.skip_menu_dialogs then
 			Global.mission_manager.safehouse_ask_amount = Global.mission_manager.safehouse_ask_amount + 1
 
 			local function yes_func()
@@ -278,16 +280,17 @@ function MenuMainState:on_server_left()
 end
 
 function MenuMainState:_create_server_left_dialog()
-	local dialog_data = {
-		title = managers.localization:text("dialog_warning_title"),
-		text = Global.on_server_left_message and managers.localization:text(Global.on_server_left_message) or managers.localization:text("dialog_the_host_has_left_the_game")
-	}
+	local dialog_data = {}
+
+	dialog_data.title = managers.localization:text("dialog_warning_title")
+	dialog_data.text = Global.on_server_left_message and managers.localization:text(Global.on_server_left_message) or managers.localization:text("dialog_the_host_has_left_the_game")
 	Global.on_server_left_message = nil
 	dialog_data.id = "server_left_dialog"
-	local ok_button = {
-		text = managers.localization:text("dialog_ok"),
-		callback_func = callback(self, self, "on_server_left_ok_pressed")
-	}
+
+	local ok_button = {}
+
+	ok_button.text = managers.localization:text("dialog_ok")
+	ok_button.callback_func = callback(self, self, "on_server_left_ok_pressed")
 	dialog_data.button_list = {
 		ok_button
 	}
@@ -308,6 +311,7 @@ function MenuMainState:_create_disconnected_dialog()
 end
 
 function MenuMainState:on_disconnected()
+	return
 end
 
 function MenuMainState:on_disconnected_from_service()

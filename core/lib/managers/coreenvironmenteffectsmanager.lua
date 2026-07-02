@@ -209,15 +209,19 @@ function EnvironmentEffect:init(default)
 end
 
 function EnvironmentEffect:load_effects()
+	return
 end
 
 function EnvironmentEffect:update(t, dt)
+	return
 end
 
 function EnvironmentEffect:start()
+	return
 end
 
 function EnvironmentEffect:stop()
+	return
 end
 
 function EnvironmentEffect:default()

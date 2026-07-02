@@ -10,9 +10,10 @@ function CrimeNetFiltersGui:init(ws, fullscreen_ws, node)
 		layer = 50
 	})
 	self._node = node
+
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
@@ -20,7 +21,7 @@ function CrimeNetFiltersGui:init(ws, fullscreen_ws, node)
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end

@@ -1,6 +1,7 @@
 require("lib/managers/hud/vr/HUDBelt")
 
 HUDManagerVR = HUDManager or Application:error("HUDManagerVR requires HUDManager!")
+
 local __init = HUDManager.init
 local __destroy = HUDManager.destroy
 local __update = HUDManager.update
@@ -29,6 +30,7 @@ end
 
 function HUDManagerVR:_init_tablet_gui()
 	self._tablet_ws = self._gui:create_world_workspace(402, 226, Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(0, 1, 0))
+
 	local tablet_panel = self._tablet_ws:panel()
 	local main = tablet_panel:panel({
 		name = "main_page"
@@ -41,22 +43,23 @@ function HUDManagerVR:_init_tablet_gui()
 		name = "left_page",
 		x = -tablet_panel:w()
 	})
+
 	self._tablet_highlight = tablet_panel:panel({
 		layer = 10,
 		name = "highlight"
 	})
 
 	self._tablet_highlight:bitmap({
-		texture = "guis/dlcs/vr/textures/pd2/pad_state_rollover",
 		name = "highlight",
+		texture = "guis/dlcs/vr/textures/pd2/pad_state_rollover",
 		w = tablet_panel:w(),
 		h = tablet_panel:h()
 	})
 
 	self._tablet_touch = self._tablet_highlight:bitmap({
-		texture = "guis/dlcs/vr/textures/pd2/pad_state_touch",
-		name = "highlight",
 		h = 100,
+		name = "highlight",
+		texture = "guis/dlcs/vr/textures/pd2/pad_state_touch",
 		w = 100
 	})
 
@@ -68,8 +71,8 @@ function HUDManagerVR:_init_tablet_gui()
 		pad_bg_r = left
 	}) do
 		page:bitmap({
-			name = "bg",
 			layer = -2,
+			name = "bg",
 			texture = "guis/dlcs/vr/textures/pd2/" .. texture_name,
 			w = tablet_panel:w(),
 			h = tablet_panel:h()
@@ -127,23 +130,23 @@ function HUDManagerVR:_init_ammo_gui()
 	})
 
 	ammo_flash:gradient({
-		valign = "scale",
+		halign = "scale",
 		orientation = "horizontal",
-		halign = "scale"
+		valign = "scale"
 	})
 	ammo_flash:gradient({
-		valign = "scale",
+		halign = "scale",
 		orientation = "vertical",
-		halign = "scale"
+		valign = "scale"
 	})
 	ammo_flash:hide()
 
 	self._controller_assist_panel = self._ammo_ws:panel():panel({
-		name = "controller_assist",
 		h = 50,
-		y = 150,
+		name = "controller_assist",
 		w = 200,
-		x = 100
+		x = 100,
+		y = 150
 	})
 
 	self._controller_assist_panel:set_visible(false)
@@ -241,11 +244,12 @@ function HUDManagerVR:show_controller_assist(text_id, macros)
 	end
 
 	local text = panel:child("text")
+
 	text = text or panel:text({
-		name = "text",
-		vertical = "center",
 		align = "center",
+		name = "text",
 		rotation = 360,
+		vertical = "center",
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.medium_default_font_size
 	})
@@ -383,10 +387,11 @@ function HUDManagerVR:on_flick(dir, time)
 
 		x = x * o:w()
 		y = y * o:h()
+
 		local start_x = o:x()
 		local start_y = o:y()
 
-		over(time, function (p)
+		over(time, function(p)
 			if not alive(o) then
 				return
 			end
@@ -424,7 +429,7 @@ function HUDManagerVR:on_flick(dir, time)
 end
 
 function HUDManagerVR:set_tablet_page(page)
-	local dir = nil
+	local dir
 
 	for d, p in pairs(self._pages[self._current_page]) do
 		if p == page then
@@ -473,6 +478,7 @@ end
 
 function HUDManagerVR:link_watch_prompt_as_hand(hand_unit, side, offset)
 	offset = offset or Vector3()
+
 	local hand_obj = hand_unit:get_object(Idstring("g_glove"))
 	local hand_rot = hand_unit:rotation()
 
@@ -525,6 +531,7 @@ function HUDManagerVR:link_floating_hud(float_unit)
 	self._floating_ws:show()
 
 	local sub_h = size / 1280 * 720
+
 	y_vec = Vector3(0, 0, -1):rotate_with(rot) * sub_h
 
 	self._subtitle_ws:set_linked(1280, 720, float_unit:orientation_object(), float_unit:position() + Vector3(-size / 2, size / 2, -10):rotate_with(rot), x_vec, y_vec)
@@ -533,8 +540,7 @@ function HUDManagerVR:link_floating_hud(float_unit)
 end
 
 function HUDManagerVR.link_belt(ws, belt_unit, custom_size)
-	local width = 1380
-	local height = 880
+	local width, height = 1380, 880
 	local aspect_ratio = height / width
 	local size = custom_size or managers.vr:get_setting("belt_size")
 	local sx = size
@@ -557,11 +563,11 @@ function HUDManagerVR:start_reload_timer(time, clip_start, clip_full)
 	local reload_panel = self:reload_panel()
 	local size = reload_panel:w()
 	local timer_circle = CircleBitmapGuiObject:new(reload_panel, {
-		total = 1,
+		blend_mode = "normal",
 		current = 1,
 		image = "units/pd2_dlc_vr/player/hud_interaction_circle",
-		blend_mode = "normal",
 		layer = 2,
+		total = 1,
 		radius = size / 2,
 		sides = size / 2,
 		color = Color.white
@@ -570,14 +576,14 @@ function HUDManagerVR:start_reload_timer(time, clip_start, clip_full)
 
 	reload_text:set_text(tostring(clip_start) .. "/" .. tostring(clip_full))
 	reload_text:set_visible(true)
-	reload_panel:animate(function (o)
+	reload_panel:animate(function(o)
 		if not alive(o) or not alive(timer_circle._circle) then
 			return
 		end
 
 		local inc = clip_full - clip_start
 
-		over(time, function (p)
+		over(time, function(p)
 			timer_circle:set_current(p, 1)
 			reload_text:set_text(tostring(math.floor(clip_start + inc * p)) .. "/" .. tostring(clip_full))
 		end)
@@ -645,10 +651,13 @@ function HUDManagerVR:create_vehicle_interaction_ws(id, vehicle_unit, position, 
 	end
 
 	local vehicle_rot = vehicle_unit:rotation()
+
 	w = w or 128
 	h = h or 128
+
 	local ws_rot = Rotation(direction, up or math.UP)
 	local size = Vector3(10, 0, -10 * h / w)
+
 	self._vehicle_interactions[id] = self._gui:create_linked_workspace(w, h, vehicle_unit:orientation_object(), vehicle_unit:orientation_object():position() + position:rotate_with(vehicle_rot) - size:rotate_with(ws_rot) / 2 - direction * 5, ws_rot:x() * size.x, ws_rot:z() * size.z)
 
 	return self._vehicle_interactions[id]
@@ -671,17 +680,20 @@ function HUDManagerVR:_add_name_label(data)
 	local id = last_id + 1
 	local character_name = data.name
 	local rank = 0
-	local peer_id = nil
+	local peer_id
 	local is_husk_player = data.unit:base().is_husk_player
 
 	if is_husk_player then
 		peer_id = data.unit:network():peer():id()
+
 		local level = data.unit:network():peer():level()
+
 		rank = data.unit:network():peer():rank()
 
 		if level then
 			local color_range_offset = utf8.len(data.name) + 2
 			local experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
+
 			data.name_color_ranges = color_ranges
 			data.name = data.name .. " (" .. experience .. ")"
 		end
@@ -698,9 +710,9 @@ function HUDManagerVR:_add_name_label(data)
 	local interact = CircleBitmapGuiObject:new(panel, {
 		blend_mode = "add",
 		depth_mode = "disabled",
-		use_bg = true,
-		render_template = "OverlayVertexColorTexturedRadial",
 		layer = 0,
+		render_template = "OverlayVertexColorTexturedRadial",
+		use_bg = true,
 		radius = radius,
 		color = Color.white
 	})
@@ -717,57 +729,57 @@ function HUDManagerVR:_add_name_label(data)
 	local color_id = managers.criminals:character_color_id_by_unit(data.unit)
 	local crim_color = tweak_data.chat_colors[color_id]
 	local text = panel:text({
-		name = "text",
-		vertical = "top",
-		h = 18,
-		w = 256,
 		align = "left",
 		depth_mode = "disabled",
-		render_template = "OverlayText",
+		h = 18,
 		layer = -1,
+		name = "text",
+		render_template = "OverlayText",
+		vertical = "top",
+		w = 256,
 		text = data.name,
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.name_label_font_size,
 		color = crim_color
 	})
 	local bag = panel:bitmap({
-		name = "bag",
-		layer = 0,
-		visible = false,
-		render_template = "OverlayText",
 		depth_mode = "disabled",
-		y = 1,
+		layer = 0,
+		name = "bag",
+		render_template = "OverlayText",
+		visible = false,
 		x = 1,
+		y = 1,
 		texture = tabs_texture,
 		texture_rect = bag_rect,
 		color = (crim_color * 1.1):with_alpha(1)
 	})
 
 	panel:text({
-		w = 256,
-		name = "cheater",
-		h = 18,
 		align = "center",
 		depth_mode = "disabled",
-		visible = false,
-		render_template = "OverlayText",
+		h = 18,
 		layer = -1,
+		name = "cheater",
+		render_template = "OverlayText",
+		visible = false,
+		w = 256,
 		text = utf8.to_upper(managers.localization:text("menu_hud_cheater")),
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.name_label_font_size,
 		color = tweak_data.screen_colors.pro_color
 	})
 	panel:text({
-		vertical = "bottom",
-		name = "action",
-		h = 18,
-		w = 256,
 		align = "left",
-		render_template = "OverlayText",
 		depth_mode = "disabled",
-		visible = false,
-		rotation = 360,
+		h = 18,
 		layer = -1,
+		name = "action",
+		render_template = "OverlayText",
+		rotation = 360,
+		vertical = "bottom",
+		visible = false,
+		w = 256,
 		text = utf8.to_upper("Fixing"),
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.name_label_font_size,
@@ -778,14 +790,14 @@ function HUDManagerVR:_add_name_label(data)
 		local texture, texture_rect = managers.experience:rank_icon_data(rank)
 
 		panel:bitmap({
-			name = "infamy",
+			depth_mode = "disabled",
 			h = 16,
+			layer = 0,
+			name = "infamy",
+			render_template = "OverlayText",
 			visible = false,
 			w = 16,
-			layer = 0,
-			depth_mode = "disabled",
 			y = 4,
-			render_template = "OverlayText",
 			texture = texture,
 			texture_rect = texture_rect,
 			color = crim_color
@@ -827,8 +839,8 @@ function HUDManager:add_vehicle_name_label(data)
 	local radius = 24
 	local interact = CircleBitmapGuiObject:new(panel, {
 		blend_mode = "add",
-		use_bg = true,
 		layer = 0,
+		use_bg = true,
 		radius = radius,
 		color = Color.white
 	})
@@ -844,41 +856,41 @@ function HUDManager:add_vehicle_name_label(data)
 	}
 	local crim_color = tweak_data.chat_colors[1]
 	local text = panel:text({
-		name = "text",
-		vertical = "top",
-		h = 18,
-		w = 256,
 		align = "left",
 		depth_mode = "disabled",
-		render_template = "OverlayText",
+		h = 18,
 		layer = -1,
+		name = "text",
+		render_template = "OverlayText",
+		vertical = "top",
+		w = 256,
 		text = utf8.to_upper(data.name),
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.name_label_font_size,
 		color = crim_color
 	})
 	local bag = panel:bitmap({
-		name = "bag",
-		layer = 0,
-		visible = false,
-		render_template = "OverlayText",
 		depth_mode = "disabled",
-		y = 1,
+		layer = 0,
+		name = "bag",
+		render_template = "OverlayText",
+		visible = false,
 		x = 1,
+		y = 1,
 		texture = tabs_texture,
 		texture_rect = bag_rect,
 		color = (crim_color * 1.1):with_alpha(1)
 	})
 	local bag_number = panel:text({
-		name = "bag_number",
-		vertical = "top",
-		h = 18,
-		w = 32,
 		align = "left",
 		depth_mode = "disabled",
-		visible = false,
-		render_template = "OverlayText",
+		h = 18,
 		layer = -1,
+		name = "bag_number",
+		render_template = "OverlayText",
+		vertical = "top",
+		visible = false,
+		w = 32,
 		text = utf8.to_upper(""),
 		font = tweak_data.hud.small_font,
 		font_size = tweak_data.hud.small_name_label_font_size,
@@ -886,30 +898,30 @@ function HUDManager:add_vehicle_name_label(data)
 	})
 
 	panel:text({
-		w = 256,
-		name = "cheater",
-		h = 18,
 		align = "center",
 		depth_mode = "disabled",
-		visible = false,
-		render_template = "OverlayText",
+		h = 18,
 		layer = -1,
+		name = "cheater",
+		render_template = "OverlayText",
+		visible = false,
+		w = 256,
 		text = utf8.to_upper(managers.localization:text("menu_hud_cheater")),
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.name_label_font_size,
 		color = tweak_data.screen_colors.pro_color
 	})
 	panel:text({
-		vertical = "bottom",
-		name = "action",
-		h = 18,
-		w = 256,
 		align = "left",
-		render_template = "OverlayText",
 		depth_mode = "disabled",
-		visible = false,
-		rotation = 360,
+		h = 18,
 		layer = -1,
+		name = "action",
+		render_template = "OverlayText",
+		rotation = 360,
+		vertical = "bottom",
+		visible = false,
+		w = 256,
 		text = utf8.to_upper("Fixing"),
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.name_label_font_size,
@@ -937,7 +949,7 @@ function HUDManagerVR:_update_name_labels(t, dt)
 	end
 
 	local my_pos = managers.player:player_unit():movement():m_pos()
-	local label_pos, label_obj, label_h = nil
+	local label_pos, label_obj, label_h
 
 	for _, data in ipairs(self._hud.name_labels) do
 		local unit = data.movement and data.movement._unit or data.vehicle
@@ -1024,8 +1036,8 @@ function HUDManager:add_waypoint(id, data)
 	})
 	local bitmap = waypoint_panel:bitmap({
 		layer = 0,
-		visible = false,
 		rotation = 360,
+		visible = false,
 		name = "bitmap" .. id,
 		texture = icon,
 		texture_rect = texture_rect,
@@ -1036,8 +1048,8 @@ function HUDManager:add_waypoint(id, data)
 	local arrow_icon, arrow_texture_rect = tweak_data.hud_icons:get_icon_data("wp_arrow")
 	local arrow = waypoint_panel:bitmap({
 		layer = 0,
-		visible = false,
 		rotation = 360,
+		visible = false,
 		name = "arrow" .. id,
 		texture = arrow_icon,
 		texture_rect = arrow_texture_rect,
@@ -1047,9 +1059,9 @@ function HUDManager:add_waypoint(id, data)
 		blend_mode = data.blend_mode
 	})
 	local bitmap_world = ws:panel():bitmap({
+		depth_mode = "disabled",
 		layer = 0,
 		render_template = "OverlayText",
-		depth_mode = "disabled",
 		rotation = 360,
 		name = "bitmap" .. id,
 		texture = icon,
@@ -1061,19 +1073,19 @@ function HUDManager:add_waypoint(id, data)
 
 	bitmap_world:set_center_x(ws:panel():w() / 2)
 
-	local distance = nil
+	local distance
 
 	if data.distance then
 		distance = ws:panel():text({
-			vertical = "center",
-			h = 24,
-			w = 128,
 			align = "center",
-			render_template = "OverlayText",
-			text = "16.5",
 			depth_mode = "disabled",
-			rotation = 360,
+			h = 24,
 			layer = 0,
+			render_template = "OverlayText",
+			rotation = 360,
+			text = "16.5",
+			vertical = "center",
+			w = 128,
 			name = "distance" .. id,
 			color = data.color or Color.white,
 			font = tweak_data.hud.medium_font_noshadow,
@@ -1087,15 +1099,15 @@ function HUDManager:add_waypoint(id, data)
 	end
 
 	local timer = data.timer and ws:panel():text({
+		align = "center",
+		depth_mode = "disabled",
 		font_size = 32,
 		h = 32,
+		layer = 0,
+		render_template = "OverlayText",
+		rotation = 360,
 		vertical = "center",
 		w = 32,
-		align = "center",
-		render_template = "OverlayText",
-		depth_mode = "disabled",
-		rotation = 360,
-		layer = 0,
 		name = "timer" .. id,
 		text = (math.round(data.timer) < 10 and "0" or "") .. math.round(data.timer),
 		font = tweak_data.hud.medium_font_noshadow
@@ -1107,17 +1119,18 @@ function HUDManager:add_waypoint(id, data)
 	end
 
 	text = ws:panel():text({
+		align = "center",
 		h = 24,
+		layer = 0,
+		rotation = 360,
 		vertical = "center",
 		w = 512,
-		align = "center",
-		rotation = 360,
-		layer = 0,
 		name = "text" .. id,
 		text = utf8.to_upper(" " .. text),
 		font = tweak_data.hud.small_font,
 		font_size = tweak_data.hud.small_font_size
 	})
+
 	local _, _, w, _ = text:text_rect()
 
 	text:set_w(w)
@@ -1125,6 +1138,7 @@ function HUDManager:add_waypoint(id, data)
 	text:set_center_x(ws:panel():w() / 2)
 
 	local w, h = bitmap:size()
+
 	self._hud.waypoints[id] = {
 		move_speed = 1,
 		init_data = data,
@@ -1146,6 +1160,7 @@ function HUDManager:add_waypoint(id, data)
 		bitmap_world = bitmap_world
 	}
 	self._hud.waypoints[id].init_data.position = data.position or data.unit:position()
+
 	local slot = 1
 	local t = {}
 
@@ -1466,6 +1481,7 @@ function HUDManager:_update_waypoints(t, dt)
 
 		if data.timer_gui and data.pause_timer == 0 then
 			data.timer = data.timer - dt
+
 			local text = data.timer < 0 and "00" or (math.round(data.timer) < 10 and "0" or "") .. math.round(data.timer)
 
 			data.timer_gui:set_text(text)

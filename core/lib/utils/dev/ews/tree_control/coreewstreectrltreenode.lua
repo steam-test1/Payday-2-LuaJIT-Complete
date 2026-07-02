@@ -89,7 +89,7 @@ function CoreEWSTreeCtrlTreeNode:parent()
 end
 
 function CoreEWSTreeCtrlTreeNode:children()
-	return table.collect(self._tree_ctrl:get_children(self._item_id), function (child_id)
+	return table.collect(self._tree_ctrl:get_children(self._item_id), function(child_id)
 		return CoreEWSTreeCtrlTreeNode:new(self._tree_ctrl, child_id, self._checkbox_style)
 	end)
 end

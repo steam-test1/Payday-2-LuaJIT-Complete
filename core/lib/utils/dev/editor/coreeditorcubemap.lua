@@ -54,6 +54,7 @@ function CoreEditor:create_projection_light(type)
 		local light = unit:get_object(Idstring(data.light_name))
 		local enabled = light:enable()
 		local resolution = unit:unit_data().projection_lights and unit:unit_data().projection_lights[light:name():s()] and unit:unit_data().projection_lights[light:name():s()].x
+
 		resolution = resolution or EditUnitLight.DEFAULT_SHADOW_RESOLUTION
 
 		table.insert(lights, {
@@ -97,7 +98,9 @@ function CoreEditor:_create_cube_light(params)
 	end
 
 	params.lights = true
+
 	local folder_name = "cube_lights"
+
 	params.source_path = self:create_temp_saves(folder_name) .. "\\"
 
 	self:_make_dir(self._lastdir .. "\\" .. folder_name)
@@ -121,14 +124,13 @@ function CoreEditor:create_cube_map(params)
 		})
 	end
 
-	self._saved_camera = {
-		aspect_ratio = self:camera():aspect_ratio(),
-		pos = self:camera():position(),
-		rot = self:camera():rotation(),
-		fov = self:camera_fov(),
-		near_range = self:camera():near_range(),
-		far_range = self:camera():far_range()
-	}
+	self._saved_camera = {}
+	self._saved_camera.aspect_ratio = self:camera():aspect_ratio()
+	self._saved_camera.pos = self:camera():position()
+	self._saved_camera.rot = self:camera():rotation()
+	self._saved_camera.fov = self:camera_fov()
+	self._saved_camera.near_range = self:camera():near_range()
+	self._saved_camera.far_range = self:camera():far_range()
 
 	self:camera():set_aspect_ratio(1)
 	self:camera():set_width_multiplier(1)

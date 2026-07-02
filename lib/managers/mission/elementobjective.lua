@@ -21,6 +21,7 @@ function ElementObjective:on_executed(instigator)
 
 	local objective = self:value("objective")
 	local amount = self:value("amount")
+
 	amount = amount and amount > 0 and amount or nil
 
 	if objective ~= "none" then

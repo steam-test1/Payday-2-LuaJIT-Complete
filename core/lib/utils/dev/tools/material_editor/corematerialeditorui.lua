@@ -72,7 +72,7 @@ function CoreMaterialEditor:_create_main_frame()
 	self._main_frame:connect("REMOTE_COMPILER", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_change_remote_server"), "")
 	self._main_frame:connect("FEEDBACK", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_feedback"), "")
 	self._main_frame:connect("LOCK", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_toggle_lock"), "")
-	self._main_frame:connect("PROBLEM_SOLVER", "EVT_COMMAND_MENU_SELECTED", function ()
+	self._main_frame:connect("PROBLEM_SOLVER", "EVT_COMMAND_MENU_SELECTED", function()
 		EWS:launch_url("http://mondomonkey.com/MondoMonkeyWhiteB.jpg")
 	end, "")
 	self._main_frame:connect("", "EVT_CLOSE_WINDOW", callback(self, self, "_on_close"), "")
@@ -85,6 +85,7 @@ function CoreMaterialEditor:_create_main_frame()
 	local main_scroll_window_box = EWS:BoxSizer("VERTICAL")
 	local main_panel = EWS:Panel(self._main_scroll_window, "", "")
 	local panel_box = EWS:BoxSizer("VERTICAL")
+
 	self._material_collapse_box = CoreEWS:CollapseBox(main_panel, "VERTICAL", "Material", nil, true, "NO_BORDER")
 
 	self._material_collapse_box:connect("", "EVT_COMMAND_BUTTON_CLICKED", self._layout_all, self)
@@ -135,6 +136,7 @@ function CoreMaterialEditor:_create_main_frame()
 	self._shader_option_tree:add_to_sizer(self._shader_option_box, 1, 4, "EXPAND,ALL")
 
 	local cmpbox = EWS:BoxSizer("VERTICAL")
+
 	box = EWS:BoxSizer("HORIZONTAL")
 	self._remote_compile_checkbox = EWS:CheckBox(self._shader_collapse_box:lower_panel(), "Remote Compile", "", "")
 
@@ -229,6 +231,7 @@ function CoreMaterialEditor:_build_shader_options()
 
 		self._shader_defines = {}
 		self._shader_option_tree_name = shader_name
+
 		local shader = self._compilable_shaders[shader_name]._node
 		local root = self._shader_option_tree:root_node()
 		local editor_node = self:_get_node(shader, "editor")
@@ -257,6 +260,7 @@ function CoreMaterialEditor:_build_section(shader_name, shader, node, tree)
 				_define_node = child,
 				_check_box = check_box
 			}
+
 			self._shader_defines[name] = define_struct
 
 			self._shader_option_tree:connect("EVT_COMMAND_TREE_CHECKBOX_UPDATED", callback(self, self, "_on_shader_option_chaged"), define_struct)
@@ -273,7 +277,7 @@ function CoreMaterialEditor:_build_section(shader_name, shader, node, tree)
 end
 
 function CoreMaterialEditor:_create_parameter_panel()
-	local progress_dialog = nil
+	local progress_dialog
 
 	if self._material_config_node:num_children() > 1 and self._output_collapse_box:expanded() then
 		-- Nothing
@@ -291,10 +295,11 @@ function CoreMaterialEditor:_create_parameter_panel()
 	self._parent_combo_box:set_value(self._current_material_node and self._current_material_node:parameter("src") or "[NONE]")
 
 	self._material_parameter_widgets = {}
+
 	local len = #self._current_render_template:variables()
 
 	for i, param in ipairs(self._current_render_template:variables()) do
-		local node = nil
+		local node
 
 		if param.type == "texture" then
 			node = self:_get_node(self._current_material_node, param.name:s())
@@ -326,6 +331,7 @@ function CoreMaterialEditor:_create_parameter_panel()
 	end
 
 	local widget = self._parameter_widgets.separator:new(self._parameter_collapse_box:lower_panel())
+
 	self._material_parameter_widgets.separator = widget
 
 	self._parameter_collapse_box:box():add(widget:panel(), 0, 4, "ALL,EXPAND")

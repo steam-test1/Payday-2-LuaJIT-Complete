@@ -15,6 +15,7 @@ function FlashlightUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local state = EWS:CheckBox(panel, "Flashlight state", "")
 
 	state:set_value(self._hed.state)
@@ -33,11 +34,11 @@ function FlashlightUnitElement:_build_panel(panel, panel_sizer)
 	})
 	panel_sizer:add(on_player, 0, 0, "EXPAND")
 
-	local help = {
-		text = "Sets if flashlights should be turned on or off.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Sets if flashlights should be turned on or off."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

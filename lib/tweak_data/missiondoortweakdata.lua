@@ -1,14 +1,13 @@
 MissionDoorTweakData = MissionDoorTweakData or class()
 
 function MissionDoorTweakData:init()
-	self.default = {
-		devices = {}
-	}
+	self.default = {}
+	self.default.devices = {}
 	self.default.devices.drill = {
 		{
 			align = "a_drill_1",
-			timer = 20,
 			can_jam = true,
+			timer = 20,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		},
 		{
@@ -31,49 +30,44 @@ function MissionDoorTweakData:init()
 		}
 	}
 	self.test = deep_clone(self.default)
-	self.bank_door_test = {
-		devices = {}
-	}
+	self.bank_door_test = {}
+	self.bank_door_test.devices = {}
 	self.bank_door_test.devices.drill = {
 		{
 			align = "a_drill_a",
-			timer = 20,
 			can_jam = true,
+			timer = 20,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.crossing_armored_vehicle = {
-		devices = {}
-	}
+	self.crossing_armored_vehicle = {}
+	self.crossing_armored_vehicle.devices = {}
 	self.crossing_armored_vehicle.devices.drill = {
 		{
 			align = "a_drill_1",
-			timer = 180,
 			can_jam = true,
+			timer = 180,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.reinforced_door = {
-		devices = {}
-	}
+	self.reinforced_door = {}
+	self.reinforced_door.devices = {}
 	self.reinforced_door.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.reinforced_door_single = {
-		devices = {}
-	}
+	self.reinforced_door_single = {}
+	self.reinforced_door_single.devices = {}
 	self.reinforced_door_single.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge_single")
 		}
 	}
-	self.reinforced_door_mcm = {
-		devices = {}
-	}
+	self.reinforced_door_mcm = {}
+	self.reinforced_door_mcm.devices = {}
 	self.reinforced_door_mcm.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
@@ -84,18 +78,16 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.reinforced_door_mcm_single = {
-		devices = {}
-	}
+	self.reinforced_door_mcm_single = {}
+	self.reinforced_door_mcm_single.devices = {}
 	self.reinforced_door_mcm_single.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.keycard_door = {
-		devices = {}
-	}
+	self.keycard_door = {}
+	self.keycard_door.devices = {}
 	self.keycard_door.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
@@ -113,8 +105,8 @@ function MissionDoorTweakData:init()
 	self.keycard_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 180,
 			can_jam = true,
+			timer = 180,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -148,14 +140,13 @@ function MissionDoorTweakData:init()
 	self.reinforced_drill_shape_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small_jam_once")
 		}
 	}
-	self.drill_door = {
-		devices = {}
-	}
+	self.drill_door = {}
+	self.drill_door.devices = {}
 	self.drill_door.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
@@ -173,14 +164,13 @@ function MissionDoorTweakData:init()
 	self.drill_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 120,
 			can_jam = true,
+			timer = 120,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.keycard_door_single = {
-		devices = {}
-	}
+	self.keycard_door_single = {}
+	self.keycard_door_single.devices = {}
 	self.keycard_door_single.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
@@ -194,8 +184,8 @@ function MissionDoorTweakData:init()
 	self.keycard_door_single.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small_jam_once")
 		}
 	}
@@ -211,9 +201,8 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_interactable_door_keycard/gen_interactable_door_keycard_jammer")
 		}
 	}
-	self.keycard_ecm = {
-		devices = {}
-	}
+	self.keycard_ecm = {}
+	self.keycard_ecm.devices = {}
 	self.keycard_ecm.devices.key = {
 		{
 			align = "a_keycard",
@@ -226,23 +215,21 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_interactable_door_keycard/item_door_keycard_jammer_double")
 		}
 	}
-	self.atm = {
-		devices = {}
-	}
+	self.atm = {}
+	self.atm.devices = {}
 	self.atm.devices.ecm = {
 		{
 			align = "a_ecm_hack",
 			unit = Idstring("units/payday2/props/gen_prop_bank_atm_standing/gen_prop_bank_atm_jammer")
 		}
 	}
-	self.safe_small = {
-		devices = {}
-	}
+	self.safe_small = {}
+	self.safe_small.devices = {}
 	self.safe_small.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 180,
 			can_jam = true,
+			timer = 180,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -252,25 +239,23 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_small_titan = {
-		devices = {}
-	}
+	self.safe_small_titan = {}
+	self.safe_small_titan.devices = {}
 	self.safe_small_titan.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 240,
 			can_jam = true,
+			timer = 240,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.safe_medium = {
-		devices = {}
-	}
+	self.safe_medium = {}
+	self.safe_medium.devices = {}
 	self.safe_medium.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 240,
 			can_jam = true,
+			timer = 240,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -280,25 +265,23 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_medium_titan = {
-		devices = {}
-	}
+	self.safe_medium_titan = {}
+	self.safe_medium_titan.devices = {}
 	self.safe_medium_titan.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 300,
 			can_jam = true,
+			timer = 300,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.safe_large = {
-		devices = {}
-	}
+	self.safe_large = {}
+	self.safe_large.devices = {}
 	self.safe_large.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 300,
 			can_jam = true,
+			timer = 300,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -308,14 +291,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_giga = {
-		devices = {}
-	}
+	self.safe_giga = {}
+	self.safe_giga.devices = {}
 	self.safe_giga.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 300,
 			can_jam = true,
+			timer = 300,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -337,14 +319,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_giga_90sec = {
-		devices = {}
-	}
+	self.safe_giga_90sec = {}
+	self.safe_giga_90sec.devices = {}
 	self.safe_giga_90sec.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 90,
 			can_jam = true,
+			timer = 90,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -366,14 +347,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_giga_60sec = {
-		devices = {}
-	}
+	self.safe_giga_60sec = {}
+	self.safe_giga_60sec.devices = {}
 	self.safe_giga_60sec.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -395,9 +375,8 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.only_shape_charge_4 = {
-		devices = {}
-	}
+	self.only_shape_charge_4 = {}
+	self.only_shape_charge_4.devices = {}
 	self.only_shape_charge_4.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
@@ -416,25 +395,23 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_giga_titan = {
-		devices = {}
-	}
+	self.safe_giga_titan = {}
+	self.safe_giga_titan.devices = {}
 	self.safe_giga_titan.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 360,
 			can_jam = true,
+			timer = 360,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.safe = {
-		devices = {}
-	}
+	self.safe = {}
+	self.safe.devices = {}
 	self.safe.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 300,
 			can_jam = true,
+			timer = 300,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -456,78 +433,71 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_titan = {
-		devices = {}
-	}
+	self.safe_titan = {}
+	self.safe_titan.devices = {}
 	self.safe_titan.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 360,
 			can_jam = true,
+			timer = 360,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.safe_deposit_titan = {
-		devices = {}
-	}
+	self.safe_deposit_titan = {}
+	self.safe_deposit_titan.devices = {}
 	self.safe_deposit_titan.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 666,
 			can_jam = true,
+			timer = 666,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.safe_deposit_titan2 = {
-		devices = {}
-	}
+	self.safe_deposit_titan2 = {}
+	self.safe_deposit_titan2.devices = {}
 	self.safe_deposit_titan2.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 300,
 			can_jam = true,
+			timer = 300,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.security_panel = {
-		devices = {}
-	}
+	self.security_panel = {}
+	self.security_panel.devices = {}
 	self.security_panel.devices.ecm = {
 		{
 			align = "a_ecm_hack",
 			unit = Idstring("units/payday2/equipment/gen_interactable_door_keycard/gen_interactable_door_keycard_jammer")
 		}
 	}
-	self.vault_door = {
-		devices = {}
-	}
+	self.vault_door = {}
+	self.vault_door.devices = {}
 	self.vault_door.devices.drill = {
 		{
 			align = "a_lance_1",
-			timer = 360,
 			can_jam = true,
+			timer = 360,
 			unit = Idstring("units/payday2/equipment/gen_interactable_drill_large_thermic/gen_interactable_drill_large_thermic")
 		}
 	}
-	self.train_door = {
-		devices = {}
-	}
+	self.train_door = {}
+	self.train_door.devices = {}
 	self.train_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.shape_and_drill = {
-		devices = {}
-	}
+	self.shape_and_drill = {}
+	self.shape_and_drill.devices = {}
 	self.shape_and_drill.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 180,
 			can_jam = true,
+			timer = 180,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -537,14 +507,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.shape_and_drill_30 = {
-		devices = {}
-	}
+	self.shape_and_drill_30 = {}
+	self.shape_and_drill_30.devices = {}
 	self.shape_and_drill_30.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 30,
 			can_jam = false,
+			timer = 30,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -558,36 +527,33 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.drill = {
-		devices = {}
-	}
+	self.drill = {}
+	self.drill.devices = {}
 	self.drill.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.drill_120 = {
-		devices = {}
-	}
+	self.drill_120 = {}
+	self.drill_120.devices = {}
 	self.drill_120.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 120,
 			can_jam = true,
+			timer = 120,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.truck = {
-		devices = {}
-	}
+	self.truck = {}
+	self.truck.devices = {}
 	self.truck.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 120,
 			can_jam = true,
+			timer = 120,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -597,14 +563,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.arm_trans = {
-		devices = {}
-	}
+	self.arm_trans = {}
+	self.arm_trans.devices = {}
 	self.arm_trans.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 200,
 			can_jam = true,
+			timer = 200,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -626,14 +591,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.train_cargo_door = {
-		devices = {}
-	}
+	self.train_cargo_door = {}
+	self.train_cargo_door.devices = {}
 	self.train_cargo_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = false,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -649,25 +613,23 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_interactable_door_keycard/gen_interactable_door_keycard_jammer")
 		}
 	}
-	self.cage_door = {
-		devices = {}
-	}
+	self.cage_door = {}
+	self.cage_door.devices = {}
 	self.cage_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.cage_door_deluxe = {
-		devices = {}
-	}
+	self.cage_door_deluxe = {}
+	self.cage_door_deluxe.devices = {}
 	self.cage_door_deluxe.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -677,14 +639,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge_single")
 		}
 	}
-	self.cage_door_deluxe_non_jamming = {
-		devices = {}
-	}
+	self.cage_door_deluxe_non_jamming = {}
+	self.cage_door_deluxe_non_jamming.devices = {}
 	self.cage_door_deluxe_non_jamming.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = false,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -694,18 +655,16 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge_single")
 		}
 	}
-	self.c4_door = {
-		devices = {}
-	}
+	self.c4_door = {}
+	self.c4_door.devices = {}
 	self.c4_door.devices.c4 = {
 		{
 			align = "a_c4_placement",
 			unit = Idstring("units/equipment/c4_charge/c4_mission_door")
 		}
 	}
-	self.c4_3_door = {
-		devices = {}
-	}
+	self.c4_3_door = {}
+	self.c4_3_door.devices = {}
 	self.c4_3_door.devices.c4 = {
 		{
 			align = "a_c4_placement_1",
@@ -720,9 +679,8 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/equipment/c4_charge/c4_mission_door")
 		}
 	}
-	self.gov_d_int_door_shape = {
-		devices = {}
-	}
+	self.gov_d_int_door_shape = {}
+	self.gov_d_int_door_shape.devices = {}
 	self.gov_d_int_door_shape.devices.c4 = {
 		{
 			align = "a_c4_placement_1",
@@ -733,32 +691,29 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.cuttable_tree = {
-		devices = {}
-	}
+	self.cuttable_tree = {}
+	self.cuttable_tree.devices = {}
 	self.cuttable_tree.devices.c4 = {
 		{
 			align = "c4_icon_locator",
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.single_shape_charge = {
-		devices = {}
-	}
+	self.single_shape_charge = {}
+	self.single_shape_charge.devices = {}
 	self.single_shape_charge.devices.c4 = {
 		{
 			align = "a_shp_charge",
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.cas_safe_giga = {
-		devices = {}
-	}
+	self.cas_safe_giga = {}
+	self.cas_safe_giga.devices = {}
 	self.cas_safe_giga.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = false,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -780,9 +735,8 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.cas_security_door = {
-		devices = {}
-	}
+	self.cas_security_door = {}
+	self.cas_security_door.devices = {}
 	self.cas_security_door.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
@@ -796,30 +750,28 @@ function MissionDoorTweakData:init()
 	self.cas_security_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = false,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.cas_moneycounter_door = {
-		devices = {}
-	}
+	self.cas_moneycounter_door = {}
+	self.cas_moneycounter_door.devices = {}
 	self.cas_moneycounter_door.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = false,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.drill_and_ecm = {
-		devices = {}
-	}
+	self.drill_and_ecm = {}
+	self.drill_and_ecm.devices = {}
 	self.drill_and_ecm.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = true,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -829,14 +781,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_interactable_door_keycard/gen_interactable_door_keycard_jammer")
 		}
 	}
-	self.truck_jam_once = {
-		devices = {}
-	}
+	self.truck_jam_once = {}
+	self.truck_jam_once.devices = {}
 	self.truck_jam_once.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 120,
 			can_jam = true,
+			timer = 120,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small_jam_once")
 		}
 	}
@@ -846,9 +797,8 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.drill_door_no_jam = {
-		devices = {}
-	}
+	self.drill_door_no_jam = {}
+	self.drill_door_no_jam.devices = {}
 	self.drill_door_no_jam.devices.c4 = {
 		{
 			align = "a_shp_charge_1",
@@ -866,30 +816,28 @@ function MissionDoorTweakData:init()
 	self.drill_door_no_jam.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 120,
 			can_jam = false,
+			timer = 120,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.safe_fex = {
-		devices = {}
-	}
+	self.safe_fex = {}
+	self.safe_fex.devices = {}
 	self.safe_fex.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 120,
 			can_jam = false,
+			timer = 120,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
-	self.loot_safe_fex = {
-		devices = {}
-	}
+	self.loot_safe_fex = {}
+	self.loot_safe_fex.devices = {}
 	self.loot_safe_fex.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 120,
 			can_jam = false,
+			timer = 120,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -899,14 +847,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.safe_chas = {
-		devices = {}
-	}
+	self.safe_chas = {}
+	self.safe_chas.devices = {}
 	self.safe_chas.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 90,
 			can_jam = false,
+			timer = 90,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -916,14 +863,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge")
 		}
 	}
-	self.cage_door_ranc = {
-		devices = {}
-	}
+	self.cage_door_ranc = {}
+	self.cage_door_ranc.devices = {}
 	self.cage_door_ranc.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 45,
 			can_jam = false,
+			timer = 45,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}
@@ -933,14 +879,13 @@ function MissionDoorTweakData:init()
 			unit = Idstring("units/payday2/equipment/gen_equipment_shape_charge/gen_equipment_shape_charge_single")
 		}
 	}
-	self.cage_door_deluxe_deep = {
-		devices = {}
-	}
+	self.cage_door_deluxe_deep = {}
+	self.cage_door_deluxe_deep.devices = {}
 	self.cage_door_deluxe_deep.devices.drill = {
 		{
 			align = "a_drill",
-			timer = 60,
 			can_jam = false,
+			timer = 60,
 			unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 		}
 	}

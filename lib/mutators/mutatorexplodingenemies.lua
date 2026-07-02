@@ -4,8 +4,8 @@ MutatorExplodingEnemies.name_id = "mutator_creeps"
 MutatorExplodingEnemies.desc_id = "mutator_creeps_desc"
 MutatorExplodingEnemies.has_options = true
 MutatorExplodingEnemies.reductions = {
-	money = 0.5,
-	exp = 0.5
+	exp = 0.5,
+	money = 0.5
 }
 MutatorExplodingEnemies.categories = {
 	"enemies",
@@ -43,6 +43,7 @@ function MutatorExplodingEnemies:name()
 		local macros = {
 			delay = string.format("%.2f", self:value("explosion_delay"))
 		}
+
 		name = string.format("%s - %s", name, managers.localization:text("menu_mutator_creeps_name_delay", macros))
 	end
 
@@ -75,16 +76,16 @@ end
 
 function MutatorExplodingEnemies:setup_options_gui(node)
 	local params = {
-		name = "explosion_slider",
 		callback = "_update_mutator_value",
+		name = "explosion_slider",
 		text_id = "menu_mutator_creeps_scale",
 		update_callback = callback(self, self, "_update_explosion_size")
 	}
 	local data_node = {
+		decimal_count = 1,
 		show_value = true,
 		step = 0.5,
 		type = "CoreMenuItemSlider.ItemSlider",
-		decimal_count = 1,
 		min = self:_min_explosion_size(),
 		max = self:_max_explosion_size()
 	}
@@ -94,18 +95,18 @@ function MutatorExplodingEnemies:setup_options_gui(node)
 	node:add_item(new_item)
 
 	local params = {
-		name = "delay_slider",
 		callback = "_update_mutator_value",
+		name = "delay_slider",
 		text_id = "menu_mutator_creeps_delay",
 		update_callback = callback(self, self, "_update_explosion_delay")
 	}
 	local data_node = {
-		show_value = true,
-		min = 0,
-		step = 0.25,
-		type = "CoreMenuItemSlider.ItemSlider",
 		decimal_count = 2,
-		max = 3
+		max = 3,
+		min = 0,
+		show_value = true,
+		step = 0.25,
+		type = "CoreMenuItemSlider.ItemSlider"
 	}
 	local new_item = node:create_item(data_node, params)
 
@@ -113,39 +114,39 @@ function MutatorExplodingEnemies:setup_options_gui(node)
 	node:add_item(new_item)
 
 	local params = {
-		name = "nuclear_dozers_toggle",
 		callback = "_update_mutator_value",
+		name = "nuclear_dozers_toggle",
 		text_id = "menu_mutator_creeps_nuclear",
 		update_callback = callback(self, self, "_toggle_nuclear_bulldozers")
 	}
 	local data_node = {
 		{
-			w = 24,
-			y = 0,
+			_meta = "option",
 			h = 24,
+			icon = "guis/textures/menu_tickbox",
+			s_h = 24,
+			s_icon = "guis/textures/menu_tickbox",
+			s_w = 24,
+			s_x = 24,
 			s_y = 24,
 			value = "on",
-			s_w = 24,
-			s_h = 24,
-			s_x = 24,
-			_meta = "option",
-			icon = "guis/textures/menu_tickbox",
+			w = 24,
 			x = 24,
-			s_icon = "guis/textures/menu_tickbox"
+			y = 0
 		},
 		{
-			w = 24,
-			y = 0,
+			_meta = "option",
 			h = 24,
+			icon = "guis/textures/menu_tickbox",
+			s_h = 24,
+			s_icon = "guis/textures/menu_tickbox",
+			s_w = 24,
+			s_x = 0,
 			s_y = 24,
 			value = "off",
-			s_w = 24,
-			s_h = 24,
-			s_x = 0,
-			_meta = "option",
-			icon = "guis/textures/menu_tickbox",
+			w = 24,
 			x = 0,
-			s_icon = "guis/textures/menu_tickbox"
+			y = 0
 		},
 		type = "CoreMenuItemToggle.ItemToggle"
 	}
@@ -202,6 +203,7 @@ end
 function MutatorExplodingEnemies:update(t, dt)
 	for i = #self._explosions, 1, -1 do
 		local entry = self._explosions[i]
+
 		entry.t = entry.t - dt
 
 		if entry.t < 0 then
@@ -261,8 +263,14 @@ function MutatorExplodingEnemies:_get_attacker_unit_and_sync(attacker)
 	end
 
 	attacker = alive(attacker) and attacker or nil
-	local can_deal_and_sync_damage = nil
-	can_deal_and_sync_damage = (not Network:is_server() or base_ext and base_ext.is_husk_player and false and false) and (is_local_player or false)
+
+	local can_deal_and_sync_damage
+
+	if Network:is_server() then
+		can_deal_and_sync_damage = not base_ext or not base_ext.is_husk_player or false
+	else
+		can_deal_and_sync_damage = is_local_player or false
+	end
 
 	return attacker, can_deal_and_sync_damage
 end
@@ -270,16 +278,20 @@ end
 function MutatorExplodingEnemies:_detonate(data)
 	local pos = mvector3.copy(data.m_com)
 	local range = data.is_nuclear and 2000 or self:get_explosion_size() * 100
+
 	range = math.clamp(range, 0, 4000)
+
 	local damage = data.damage * (data.is_nuclear and 2.5 or 1)
+
 	damage = math.clamp(damage, 0, 100)
+
 	local ply_damage = damage * 0.5
 	local normal = math.UP
 	local curve_pow = data.is_nuclear and 6 or 4
 	local effect = data.is_nuclear and "effects/payday2/particles/explosions/bag_explosion" or "effects/payday2/particles/explosions/grenade_explosion"
 	local effect_params = {
-		sound_event = "grenade_explode",
 		camera_shake_max_mul = 4,
+		sound_event = "grenade_explode",
 		sound_muffle_effect = true,
 		effect = effect,
 		feedback_range = range * 2

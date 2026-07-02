@@ -19,6 +19,7 @@ require("lib/units/enemies/taser/logics/TaserLogicAttack")
 require("lib/units/enemies/boss/logics/BossLogicAttack")
 
 CopBrain = CopBrain or class()
+
 local logic_variants = {
 	security = {
 		idle = CopLogicIdle,
@@ -35,6 +36,7 @@ local logic_variants = {
 	}
 }
 local security_variant = logic_variants.security
+
 logic_variants.gensec = security_variant
 logic_variants.cop = security_variant
 logic_variants.cop_female = security_variant
@@ -122,7 +124,8 @@ logic_variants.marshal_shield_break = logic_variants.swat
 security_variant = nil
 CopBrain._logic_variants = logic_variants
 logic_variants = nil
-local reload = nil
+
+local reload
 
 if CopBrain._reload_clbks then
 	reload = true
@@ -200,6 +203,7 @@ function CopBrain:update(unit, t, dt)
 
 	if logic.update then
 		local l_data = self._logic_data
+
 		l_data.t = t
 		l_data.dt = dt
 
@@ -236,6 +240,7 @@ end
 
 function CopBrain:set_tactic(new_tactic_info)
 	local old_tactic = self._logic_data.tactic
+
 	self._logic_data.tactic = new_tactic_info
 
 	if self._current_logic.on_new_tactic then
@@ -245,6 +250,7 @@ end
 
 function CopBrain:set_objective(new_objective, params)
 	local old_objective = self._logic_data.objective
+
 	self._logic_data.objective = new_objective
 
 	if new_objective and new_objective.followup_objective and new_objective.followup_objective.interaction_voice then
@@ -258,6 +264,7 @@ end
 
 function CopBrain:set_followup_objective(followup_objective)
 	local old_followup = self._logic_data.objective.followup_objective
+
 	self._logic_data.objective.followup_objective = followup_objective
 
 	if followup_objective and followup_objective.interaction_voice then
@@ -279,8 +286,8 @@ function CopBrain:set_distract_objective(params)
 	local old_objective = self._logic_data.objective
 	local return_objective = {
 		action_duration = 1,
-		type = "act",
 		stance = "ntl",
+		type = "act",
 		followup_objective = old_objective,
 		action = {
 			body_part = 1,
@@ -295,12 +302,12 @@ function CopBrain:set_distract_objective(params)
 	end
 
 	local distract_objective = {
-		type = "act",
-		stance = "ntl",
-		haste = "walk",
-		interrupt_dis = -1,
 		attitude = "avoid",
 		distraction = true,
+		haste = "walk",
+		interrupt_dis = -1,
+		stance = "ntl",
+		type = "act",
 		followup_objective = return_objective,
 		detection = params.detection,
 		action_duration = duration,
@@ -308,16 +315,16 @@ function CopBrain:set_distract_objective(params)
 		complete_clbk = callback(self, self, "clbk_distract_objective_complete"),
 		action = {
 			align_sync = true,
+			body_part = 1,
 			needs_full_blend = true,
 			type = "act",
-			body_part = 1,
 			variant = params.act,
 			blocks = {
-				light_hurt = -1,
-				hurt = -1,
 				action = -1,
-				heavy_hurt = -1,
 				aim = -1,
+				heavy_hurt = -1,
+				hurt = -1,
+				light_hurt = -1,
 				walk = -1
 			}
 		}
@@ -434,6 +441,7 @@ end
 function CopBrain:set_init_logic(name, enter_params)
 	local logic = self._logics[name]
 	local l_data = self._logic_data
+
 	l_data.t = self._timer:time()
 	l_data.dt = self._timer:delta_time()
 	l_data.name = name
@@ -447,6 +455,7 @@ end
 function CopBrain:set_logic(name, enter_params)
 	local logic = self._logics[name]
 	local l_data = self._logic_data
+
 	l_data.t = self._timer:time()
 	l_data.dt = self._timer:delta_time()
 
@@ -479,6 +488,7 @@ function CopBrain:search_for_path_to_unit(search_id, other_unit, access_neg)
 		access_pos = self._SO_access,
 		access_neg = access_neg
 	}
+
 	self._logic_data.active_searches[search_id] = true
 
 	managers.navigation:search_pos_to_pos(params)
@@ -497,6 +507,7 @@ function CopBrain:search_for_path(search_id, to_pos, prio, access_neg, nav_segs)
 		access_neg = access_neg,
 		nav_segs = nav_segs
 	}
+
 	self._logic_data.active_searches[search_id] = true
 
 	managers.navigation:search_pos_to_pos(params)
@@ -515,6 +526,7 @@ function CopBrain:search_for_path_from_pos(search_id, from_pos, to_pos, prio, ac
 		access_neg = access_neg,
 		nav_segs = nav_segs
 	}
+
 	self._logic_data.active_searches[search_id] = true
 
 	managers.navigation:search_pos_to_pos(params)
@@ -531,6 +543,7 @@ function CopBrain:search_for_path_to_cover(search_id, cover, offset_pos, access_
 		access_pos = self._SO_access,
 		access_neg = access_neg
 	}
+
 	self._logic_data.active_searches[search_id] = true
 
 	managers.navigation:search_pos_to_pos(params)
@@ -551,6 +564,7 @@ function CopBrain:search_for_coarse_path(search_id, to_seg, verify_clbk, access_
 		access_pos = self._logic_data.char_tweak.access,
 		access_neg = access_neg
 	}
+
 	self._logic_data.active_searches[search_id] = 2
 
 	managers.navigation:search_coarse(params)
@@ -600,7 +614,7 @@ function CopBrain:clbk_pathing_results(search_id, path)
 	self:_add_pathing_result(search_id, path)
 
 	if path then
-		local t = nil
+		local t
 
 		for i, nav_point in ipairs(path) do
 			if not nav_point.x and nav_point:script_data().element:nav_link_delay() > 0 then
@@ -875,8 +889,9 @@ function CopBrain:_chk_use_cover_grenade(unit)
 	local check_f = self._logic_data.char_tweak.dodge_with_grenade.check
 	local t = TimerManager:game():time()
 
-	if check_f and (not self._flashbang_cover_expire_t or self._next_cover_grenade_chk_t < t) then
+	if check_f and (not self._flashbang_cover_expire_t or t > self._next_cover_grenade_chk_t) then
 		local result, next_t = check_f(t, self._nr_flashbang_covers_used or 0)
+
 		self._next_cover_grenade_chk_t = next_t
 
 		if not result then
@@ -884,7 +899,7 @@ function CopBrain:_chk_use_cover_grenade(unit)
 		end
 	end
 
-	local grenade_was_used = nil
+	local grenade_was_used
 
 	if not self._logic_data.char_tweak.dodge_with_grenade.flash or self._logic_data.attention_obj.dis > 1000 then
 		if self._logic_data.char_tweak.dodge_with_grenade.smoke and not managers.groupai:state():is_smoke_grenade_active() then
@@ -909,7 +924,7 @@ end
 
 function CopBrain:on_nav_link_unregistered(element_id)
 	if self._logic_data.pathing_results then
-		local failed_search_ids = nil
+		local failed_search_ids
 
 		for path_name, path in pairs(self._logic_data.pathing_results) do
 			if type(path) == "table" and path[1] and type(path[1]) ~= "table" then
@@ -980,7 +995,7 @@ function CopBrain:attention_handler()
 end
 
 function CopBrain:set_attention_settings(params)
-	local att_settings = nil
+	local att_settings
 
 	if params then
 		if params.peaceful then
@@ -1018,6 +1033,7 @@ function CopBrain:_create_attention_setting_from_descriptor(setting_desc, settin
 end
 
 function CopBrain:clbk_attention_notice_corpse(observer_unit, status)
+	return
 end
 
 function CopBrain:on_cool_state_changed(state)
@@ -1031,27 +1047,27 @@ function CopBrain:on_cool_state_changed(state)
 		self._alert_listen_key = "CopBrain" .. tostring(self._unit:key())
 	end
 
-	local alert_listen_filter, alert_types = nil
+	local alert_listen_filter, alert_types
 
 	if state then
 		alert_listen_filter = managers.groupai:state():get_unit_type_filter("criminals_enemies_civilians")
 		alert_types = {
-			vo_distress = true,
-			fire = true,
-			bullet = true,
-			vo_intimidate = true,
-			explosion = true,
-			footstep = true,
 			aggression = true,
-			vo_cbt = true
+			bullet = true,
+			explosion = true,
+			fire = true,
+			footstep = true,
+			vo_cbt = true,
+			vo_distress = true,
+			vo_intimidate = true
 		}
 	else
 		alert_listen_filter = managers.groupai:state():get_unit_type_filter("criminal")
 		alert_types = {
-			explosion = true,
-			fire = true,
 			aggression = true,
-			bullet = true
+			bullet = true,
+			explosion = true,
+			fire = true
 		}
 
 		if self._logic_data then
@@ -1128,6 +1144,7 @@ end
 function CopBrain:convert_to_criminal(mastermind_criminal)
 	self._logic_data.is_converted = true
 	self._logic_data.group = nil
+
 	local mover_col_body = self._unit:body("mover_blocker")
 
 	mover_col_body:set_enabled(false)
@@ -1162,6 +1179,7 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 	self._logic_data.SO_access_str = tweak_data.character.russian.access
 	self._slotmask_enemies = managers.slot:get_mask("enemies")
 	self._logic_data.enemy_slotmask = self._slotmask_enemies
+
 	local equipped_w_selection = self._unit:inventory():equipped_selection()
 
 	if equipped_w_selection then
@@ -1186,14 +1204,14 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 	self._unit:movement():set_stance("hos")
 
 	local action_data = {
+		body_part = 1,
 		clamp_to_graph = true,
 		type = "act",
-		body_part = 1,
 		variant = "attached_collar_enter",
 		blocks = {
+			action = -1,
 			heavy_hurt = -1,
 			hurt = -1,
-			action = -1,
 			light_hurt = -1,
 			walk = -1
 		}
@@ -1222,6 +1240,7 @@ function CopBrain:on_surrender_chance()
 
 	local window_duration = 5 + 4 * math.random()
 	local timeout_duration = 5 + 5 * math.random()
+
 	self._logic_data.surrender_window = {
 		chance_mul = 0.05,
 		expire_clbk_id = "CopBrain_sur_op" .. tostring(self._unit:key()),
@@ -1325,11 +1344,12 @@ function CopBrain:begin_alarm_pager(reset)
 	end
 
 	self._alarm_pager_has_run = true
-	self._alarm_pager_data = {
-		total_nr_calls = math.random(tweak_data.player.alarm_pager.nr_of_calls[1], tweak_data.player.alarm_pager.nr_of_calls[2]),
-		nr_calls_made = 0
-	}
+	self._alarm_pager_data = {}
+	self._alarm_pager_data.total_nr_calls = math.random(tweak_data.player.alarm_pager.nr_of_calls[1], tweak_data.player.alarm_pager.nr_of_calls[2])
+	self._alarm_pager_data.nr_calls_made = 0
+
 	local call_delay = math.lerp(tweak_data.player.alarm_pager.first_call_delay[1], tweak_data.player.alarm_pager.first_call_delay[2], math.random())
+
 	self._alarm_pager_data.pager_clbk_id = "pager" .. tostring(self._unit:key())
 
 	managers.enemy:add_delayed_clbk(self._alarm_pager_data.pager_clbk_id, callback(self, self, "clbk_alarm_pager"), TimerManager:game():time() + call_delay)
@@ -1374,7 +1394,7 @@ function CopBrain:on_alarm_pager_interaction(status, player)
 		end
 	elseif status == "complete" then
 		local nr_previous_bluffs = managers.groupai:state():get_nr_successful_alarm_pager_bluffs()
-		local has_upgrade = nil
+		local has_upgrade
 
 		if player:base().is_local_player then
 			has_upgrade = managers.player:has_category_upgrade("player", "corpse_alarm_pager_bluff")
@@ -1439,6 +1459,7 @@ end
 function CopBrain:clbk_alarm_pager(ignore_this, data)
 	local pager_data = self._alarm_pager_data
 	local clbk_id = pager_data.pager_clbk_id
+
 	pager_data.pager_clbk_id = nil
 
 	if not managers.groupai:state():whisper_mode() then
@@ -1499,6 +1520,7 @@ function CopBrain:clbk_alarm_pager(ignore_this, data)
 	if pager_data.nr_calls_made <= pager_data.total_nr_calls then
 		local duration_settings = tweak_data.player.alarm_pager.call_duration[math.min(#tweak_data.player.alarm_pager.call_duration, pager_data.nr_calls_made)]
 		local call_delay = math.lerp(duration_settings[1], duration_settings[2], math.random())
+
 		self._alarm_pager_data.pager_clbk_id = clbk_id
 
 		managers.enemy:add_delayed_clbk(self._alarm_pager_data.pager_clbk_id, callback(self, self, "clbk_alarm_pager"), TimerManager:game():time() + call_delay)

@@ -1,5 +1,6 @@
 local padding = 10
 local large_padding = 32
+
 CrimeSpreeMissionEndOptions = CrimeSpreeMissionEndOptions or class(MenuGuiComponentGeneric)
 
 function CrimeSpreeMissionEndOptions:init(ws, fullscreen_ws, node)
@@ -42,6 +43,7 @@ function CrimeSpreeMissionEndOptions:_setup()
 		layer = self._init_layer
 	})
 	self._button_panel = self._panel:panel({})
+
 	local buttons = {
 		{
 			callback = "perform_select",
@@ -65,9 +67,9 @@ function CrimeSpreeMissionEndOptions:_setup()
 		},
 		{
 			callback = "perform_reroll",
+			corner_idx = 2,
 			pd2_corner = true,
 			text_id = "menu_cs_reroll",
-			corner_idx = 2,
 			visible_callback = {
 				"is_server",
 				"crime_spree_not_failed",
@@ -85,7 +87,7 @@ function CrimeSpreeMissionEndOptions:_setup()
 		}
 	}
 	local list_idx = 0
-	local corner_idx, default_idx = nil
+	local corner_idx, default_idx
 
 	for idx, btn in ipairs(buttons) do
 		local visible = true
@@ -193,7 +195,8 @@ function CrimeSpreeMissionEndOptions:mouse_moved(o, x, y)
 		return
 	end
 
-	local used, pointer = nil
+	local used, pointer
+
 	self._selected_item = nil
 
 	for idx, btn in ipairs(self._buttons) do
@@ -202,8 +205,7 @@ function CrimeSpreeMissionEndOptions:mouse_moved(o, x, y)
 		if btn:is_selected() then
 			self._selected_item = btn
 			self._selected_idx = idx
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		end
 	end
 

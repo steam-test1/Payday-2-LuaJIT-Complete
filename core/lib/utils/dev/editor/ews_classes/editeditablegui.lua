@@ -8,6 +8,7 @@ function EditUnitEditableGui:init(editor)
 		name = "Gui Text",
 		class = self
 	})
+
 	self._panel = panel
 	self._ctrls = {}
 	self._element_guis = {}
@@ -48,6 +49,7 @@ function EditUnitEditableGui:init(editor)
 		"TextDistanceField",
 		"diffuse_vc_decal_distance_field"
 	}
+
 	local ctrlrs_sizer = EWS:BoxSizer("VERTICAL")
 
 	self:_create_color_button(panel, ctrlrs_sizer)
@@ -95,16 +97,17 @@ end
 
 function EditUnitEditableGui:_create_font_size_slider(panel, sizer)
 	local horizontal_sizer = sizer
+
 	self._font_size_params = {
-		name_proportions = 1,
-		name = "Font size:",
 		ctrlr_proportions = 3,
-		slider_ctrlr_proportions = 4,
-		value = 1,
-		tooltip = "Set the font size using the slider",
-		min = 0.1,
 		floats = 2,
 		max = 10,
+		min = 0.1,
+		name = "Font size:",
+		name_proportions = 1,
+		slider_ctrlr_proportions = 4,
+		tooltip = "Set the font size using the slider",
+		value = 1,
 		panel = panel,
 		sizer = horizontal_sizer
 	}
@@ -122,17 +125,18 @@ function EditUnitEditableGui:_create_font_combobox(panel, sizer)
 	sizer:add(horizontal_sizer, 0, 1, "EXPAND")
 
 	self._font_params = {
-		name = "Font:",
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select a font from the combobox",
-		sorted = false,
 		ctrlr_proportions = 1,
+		name = "Font:",
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = false,
+		tooltip = "Select a font from the combobox",
 		panel = panel,
 		sizer = horizontal_sizer,
 		options = self._fonts,
 		value = self._fonts[1]
 	}
+
 	local ctrlr = CoreEws.combobox(self._font_params)
 
 	ctrlr:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "update_font"), nil)
@@ -146,34 +150,36 @@ function EditUnitEditableGui:_create_text_aligns_combobox(panel, sizer)
 	sizer:add(horizontal_sizer, 0, 1, "EXPAND")
 
 	self._aligns_horizontal_params = {
-		name = "Horizontal:",
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select an align from the combobox",
-		sorted = false,
 		ctrlr_proportions = 2,
+		name = "Horizontal:",
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = false,
+		tooltip = "Select an align from the combobox",
 		panel = panel,
 		sizer = horizontal_sizer,
 		options = self._aligns.horizontal,
 		value = self._aligns.horizontal[1]
 	}
+
 	local ctrlr = CoreEws.combobox(self._aligns_horizontal_params)
 
 	ctrlr:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "update_align"), nil)
 
 	self._ctrls.align_horizontal = ctrlr
 	self._aligns_vertical_params = {
-		name = " Vertical:",
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select an align from the combobox",
-		sorted = false,
 		ctrlr_proportions = 2,
+		name = " Vertical:",
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = false,
+		tooltip = "Select an align from the combobox",
 		panel = panel,
 		sizer = horizontal_sizer,
 		options = self._aligns.vertical,
 		value = self._aligns.vertical[1]
 	}
+
 	local ctrlr = CoreEws.combobox(self._aligns_vertical_params)
 
 	ctrlr:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "update_vertical"), nil)
@@ -194,6 +200,7 @@ function EditUnitEditableGui:_create_text_wrap_checkbox(panel, sizer)
 	horizontal_sizer:add(checkbox, 0, 1, "EXPAND,LEFT")
 
 	self._ctrls.text_wrap = checkbox
+
 	local checkbox = EWS:CheckBox(panel, "Text Word Wrap", "")
 
 	checkbox:set_value(false)
@@ -222,35 +229,37 @@ function EditUnitEditableGui:_create_render_template_blend_mode_combobox(panel, 
 	sizer:add(horizontal_sizer, 0, 1, "EXPAND")
 
 	self._render_template_params = {
-		name = "Render Template:",
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select a Render Template from the combobox",
-		sorted = false,
 		ctrlr_proportions = 2,
+		name = "Render Template:",
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = false,
+		tooltip = "Select a Render Template from the combobox",
 		panel = panel,
 		sizer = horizontal_sizer,
 		options = self._render_templates,
 		value = self._render_templates[1]
 	}
+
 	local ctrlr = CoreEws.combobox(self._render_template_params)
 
 	ctrlr:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "update_render_template"), nil)
 
 	self._ctrls.render_list = ctrlr
 	self._blend_mode_params = {
-		name = " Blend Mode:",
-		enabled = false,
-		sizer_proportions = 1,
-		name_proportions = 1,
-		tooltip = "Select a Blend Mode from the combobox",
-		sorted = false,
 		ctrlr_proportions = 2,
+		enabled = false,
+		name = " Blend Mode:",
+		name_proportions = 1,
+		sizer_proportions = 1,
+		sorted = false,
+		tooltip = "Select a Blend Mode from the combobox",
 		panel = panel,
 		sizer = horizontal_sizer,
 		options = self._blend_modes,
 		value = self._blend_modes[1]
 	}
+
 	local ctrlr = CoreEws.combobox(self._blend_mode_params)
 
 	ctrlr:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "update_blend_mode"), nil)
@@ -260,16 +269,17 @@ end
 
 function EditUnitEditableGui:_create_alpha_slider(panel, sizer)
 	local horizontal_sizer = sizer
+
 	self._alpha_params = {
-		name_proportions = 1,
-		name = "Alpha:",
 		ctrlr_proportions = 3,
-		slider_ctrlr_proportions = 4,
-		value = 1,
-		tooltip = "Set the alpha using the slider",
-		min = 0,
 		floats = 2,
 		max = 1,
+		min = 0,
+		name = "Alpha:",
+		name_proportions = 1,
+		slider_ctrlr_proportions = 4,
+		tooltip = "Set the alpha using the slider",
+		value = 1,
 		panel = panel,
 		sizer = horizontal_sizer
 	}
@@ -295,14 +305,14 @@ function EditUnitEditableGui:_create_shape_sliders(panel, sizer)
 		"h"
 	}) do
 		self._shape_params[i] = {
-			name_proportions = 1,
 			ctrlr_proportions = 3,
-			slider_ctrlr_proportions = 4,
-			value = 1,
-			tooltip = "Set shape using the slider",
-			min = 0,
 			floats = 2,
 			max = 1,
+			min = 0,
+			name_proportions = 1,
+			slider_ctrlr_proportions = 4,
+			tooltip = "Set shape using the slider",
+			value = 1,
 			name = "Shape " .. shape .. ":",
 			panel = panel,
 			sizer = horizontal_sizer
@@ -505,6 +515,7 @@ function EditUnitEditableGui:is_editable(unit, units)
 	if alive(unit) and unit:editable_gui() then
 		self._ctrls.unit = unit
 		self._ctrls.units = units
+
 		local font_options = clone(self._fonts)
 		local default_font = self._ctrls.unit:editable_gui():default_font()
 

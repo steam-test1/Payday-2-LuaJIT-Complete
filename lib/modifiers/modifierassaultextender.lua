@@ -18,6 +18,7 @@ end
 function ModifierAssaultExtender:_update_hostage_time()
 	local now = TimerManager:game():time()
 	local diff = now - self._hostage_last_update
+
 	self._hostage_time = self._hostage_time + diff * self._hostage_count
 	self._hostage_average_count = self._hostage_time / (now - self._sustain_start_time)
 	self._hostage_last_update = now
@@ -26,6 +27,7 @@ end
 function ModifierAssaultExtender:_update_hostage_count()
 	local num_hostages = managers.groupai:state():hostage_count()
 	local num_minions = managers.groupai:state():get_amount_enemies_converted_to_criminals()
+
 	self._hostage_count = math.min(num_hostages + num_minions, self:value("max_hostages"))
 end
 
@@ -46,6 +48,7 @@ end
 
 function ModifierAssaultExtender:OnEnterSustainPhase(duration)
 	local now = TimerManager:game():time()
+
 	self._sustain_start_time = now
 	self._base_duration = duration
 	self._hostage_time = 0

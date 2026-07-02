@@ -9,20 +9,23 @@ function CopActionStand:init(action_desc, common_data)
 		return
 	end
 
-	local enter_t = nil
+	local enter_t
 	local ext_anim = common_data.ext_anim
+
 	self._ext_anim = ext_anim
 
 	if ext_anim.move then
 		local ids_base = Idstring("base")
 		local seg_rel_t = common_data.machine:segment_relative_time(ids_base)
-		local walk_anim_length = nil
+		local walk_anim_length
 
 		if ext_anim.run_start_turn then
 			local move_side = ext_anim.move_side
+
 			walk_anim_length = common_data.ext_movement._actions.walk._walk_anim_lengths.stand[common_data.stance.name].run_start_turn[move_side]
 		elseif ext_anim.run_start then
 			local move_side = ext_anim.move_side
+
 			walk_anim_length = common_data.ext_movement._actions.walk._walk_anim_lengths.stand[common_data.stance.name].run_start[move_side]
 		elseif ext_anim.run_stop then
 			local move_side = ext_anim.move_side
@@ -41,6 +44,7 @@ function CopActionStand:init(action_desc, common_data)
 			local walk_anim_lengths = common_data.ext_movement._actions.walk._walk_anim_lengths
 			local walk_pose_tbl = walk_anim_lengths and walk_anim_lengths[pose][common_data.stance.name]
 			local walk_speed_tbl = walk_pose_tbl and walk_pose_tbl[speed]
+
 			walk_anim_length = walk_speed_tbl and walk_speed_tbl[side] or 29
 		end
 

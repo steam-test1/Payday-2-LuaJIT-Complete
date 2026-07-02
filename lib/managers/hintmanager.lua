@@ -34,6 +34,7 @@ function HintManager:_parse_hint(data)
 	local sync = data.sync
 	local event = data.event
 	local level = data.level
+
 	Global.hint_manager.hints[id] = {
 		trigger_count = 0,
 		text_id = text_id,
@@ -87,7 +88,7 @@ function HintManager:_show_hint(id, time, params)
 		return
 	end
 
-	if hint.level and hint.level <= managers.experience:current_level() then
+	if hint.level and managers.experience:current_level() >= hint.level then
 		return
 	end
 
@@ -95,7 +96,7 @@ function HintManager:_show_hint(id, time, params)
 		return
 	end
 
-	if self._cooldown[id] and Application:time() < self._cooldown[id] then
+	if self._cooldown[id] and self._cooldown[id] > Application:time() then
 		return
 	end
 
@@ -146,10 +147,12 @@ function HintManager:save(data)
 	local state = {
 		hints = deep_clone(Global.hint_manager.hints)
 	}
+
 	data.HintManager = state
 end
 
 function HintManager:load(data)
 	local state = data.HintManager
+
 	Global.hint_manager.hints = deep_clone(state.hints)
 end

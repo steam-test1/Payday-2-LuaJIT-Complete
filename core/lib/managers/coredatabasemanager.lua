@@ -45,7 +45,7 @@ end
 function DatabaseManager:list_entries_in_index(index, pattern)
 	local entries = self:_entries_in_index(index)
 
-	return pattern and table.find_all_values(entries, function (e)
+	return pattern and table.find_all_values(entries, function(e)
 		return string.find(e, pattern:s()) ~= nil
 	end) or entries
 end
@@ -60,8 +60,8 @@ function DatabaseManager:recompile(...)
 	end
 
 	Application:data_compile({
-		target_db_name = "all",
 		preprocessor_definitions = "preprocessor_definitions",
+		target_db_name = "all",
 		verbose = false,
 		platform = string.lower(SystemInfo:platform():s()),
 		source_root = self:base_path(),
@@ -91,8 +91,10 @@ end
 
 function DatabaseManager:root_path()
 	local path = Application:base_path() .. (CoreApp.arg_value("-assetslocation") or "..\\..\\")
+
 	path = Application:nice_path(path, true)
-	local f = nil
+
+	local f
 
 	function f(s)
 		local str, i = string.gsub(s, "\\[%w_%.%s]+\\%.%.", "")
@@ -178,8 +180,7 @@ end
 function DatabaseManager:save_file_dialog(parent, new, file_pattern, start_path, save_outside_project)
 	local pattern = file_pattern or "*.*"
 	local path = start_path or self:base_path()
-	local name = ""
-	local new_file = ""
+	local name, new_file = "", ""
 
 	if start_path then
 		name = self:entry_name(start_path)

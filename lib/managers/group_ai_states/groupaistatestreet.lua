@@ -28,25 +28,25 @@ function GroupAIStateStreet:_begin_new_tasks()
 	local all_nav_segs = nav_manager._nav_segments
 	local task_data = self._task_data
 	local t = self._t
-	local reenforce_candidates = nil
+	local reenforce_candidates
 	local dynamic_spawns = {}
 	local reenforce_data = task_data.reenforce
 
-	if reenforce_data.next_dispatch_t and reenforce_data.next_dispatch_t < t then
+	if reenforce_data.next_dispatch_t and t > reenforce_data.next_dispatch_t then
 		reenforce_candidates = {}
 	end
 
-	local recon_candidates, are_recon_candidates_safe = nil
+	local recon_candidates, are_recon_candidates_safe
 	local recon_data = task_data.recon
 
-	if recon_data.next_dispatch_t and recon_data.next_dispatch_t < t and not task_data.assault.active and not task_data.regroup.active then
+	if recon_data.next_dispatch_t and t > recon_data.next_dispatch_t and not task_data.assault.active and not task_data.regroup.active then
 		recon_candidates = {}
 	end
 
-	local assault_candidates = nil
+	local assault_candidates
 	local assault_data = task_data.assault
 
-	if self._difficulty_value > 0 and assault_data.next_dispatch_t and assault_data.next_dispatch_t < t and not task_data.regroup.active then
+	if self._difficulty_value > 0 and assault_data.next_dispatch_t and t > assault_data.next_dispatch_t and not task_data.regroup.active then
 		assault_candidates = true
 	end
 
@@ -60,7 +60,7 @@ function GroupAIStateStreet:_begin_new_tasks()
 	for area_id, area in pairs(all_areas) do
 		if area.spawn_points then
 			for _, sp_data in pairs(area.spawn_points) do
-				if sp_data.delay_t <= t and not all_nav_segs[sp_data.nav_seg].disabled then
+				if t >= sp_data.delay_t and not all_nav_segs[sp_data.nav_seg].disabled then
 					table.insert(to_search_areas, area)
 
 					found_areas[area_id] = true
@@ -72,7 +72,7 @@ function GroupAIStateStreet:_begin_new_tasks()
 
 		if not found_areas[area_id] and area.spawn_groups then
 			for _, sp_data in pairs(area.spawn_groups) do
-				if sp_data.delay_t <= t and not all_nav_segs[sp_data.nav_seg].disabled then
+				if t >= sp_data.delay_t and not all_nav_segs[sp_data.nav_seg].disabled then
 					table.insert(to_search_areas, area)
 
 					found_areas[area_id] = true
@@ -126,7 +126,7 @@ function GroupAIStateStreet:_begin_new_tasks()
 		end
 
 		if recon_candidates and (area.loot or area.hostages) then
-			local occupied = nil
+			local occupied
 
 			for group_id, group in pairs(self._groups) do
 				if group.objective.target_area == area or group.objective.area == area then
@@ -193,12 +193,15 @@ end
 
 function GroupAIStateStreet:_begin_assault()
 	local assault_data = self._task_data.assault
+
 	assault_data.active = true
 	assault_data.next_dispatch_t = nil
 	assault_data.tasks = {}
 	assault_data.phase = "anticipation"
 	assault_data.start_t = self._t
+
 	local anticipation_duration = self:_get_anticipation_duration(tweak_data.group_ai.street.assault.anticipation_duration, assault_data.is_first)
+
 	assault_data.is_first = nil
 	assault_data.phase_end_t = self._t + anticipation_duration
 	assault_data.force = math.ceil(self:_get_difficulty_dependent_value(tweak_data.group_ai.street.assault.force) * self:_get_balancing_multiplier(tweak_data.group_ai.street.assault.force_balance_mul))
@@ -252,8 +255,8 @@ function GroupAIStateStreet:_upd_assault_task(task_data)
 		if spawn_group then
 			local grp_objective = {
 				attitude = "engage",
-				stance = "hos",
 				pose = "stand",
+				stance = "hos",
 				type = "assault_area",
 				area = task_data.target_area,
 				coarse_path = {
@@ -269,7 +272,7 @@ function GroupAIStateStreet:_upd_assault_task(task_data)
 	end
 
 	if assault_data.phase ~= "anticipation" then
-		if assault_data.use_smoke_timer < t then
+		if t > assault_data.use_smoke_timer then
 			assault_data.use_smoke = true
 		end
 
@@ -313,8 +316,8 @@ function GroupAIStateStreet:_upd_reenforce_tasks()
 
 			local undershot = force_required - force_occupied
 
-			if undershot > 0 and not self._task_data.regroup.active and self._task_data.assault.phase ~= "fade" and self._task_data.reenforce.next_dispatch_t < t and self:is_area_safe(task_data.target_area) then
-				local used_event = nil
+			if undershot > 0 and not self._task_data.regroup.active and self._task_data.assault.phase ~= "fade" and t > self._task_data.reenforce.next_dispatch_t and self:is_area_safe(task_data.target_area) then
+				local used_event
 
 				if task_data.use_spawn_event then
 					task_data.use_spawn_event = false
@@ -324,7 +327,7 @@ function GroupAIStateStreet:_upd_reenforce_tasks()
 					end
 				end
 
-				local used_group, spawning_groups = nil
+				local used_group, spawning_groups
 
 				if not used_event then
 					if next(self._spawning_groups) then
@@ -335,10 +338,10 @@ function GroupAIStateStreet:_upd_reenforce_tasks()
 						if spawn_group then
 							local grp_objective = {
 								attitude = "avoid",
-								scan = true,
 								pose = "stand",
-								type = "reenforce_area",
+								scan = true,
 								stance = "hos",
+								type = "reenforce_area",
 								area = spawn_group.area,
 								target_area = task_data.target_area
 							}
@@ -365,10 +368,10 @@ function GroupAIStateStreet:_upd_reenforce_tasks()
 				local overshot = force_defending - force_required
 
 				if overshot > 0 then
-					local closest_group, closest_group_size = nil
+					local closest_group, closest_group_size
 
 					for group_id, group in pairs(self._groups) do
-						if group.has_spawned and (group.objective.target_area or group.objective.area) == task_data.target_area and group.objective.type == "reenforce_area" and (not closest_group_size or closest_group_size < group.size) and group.size <= overshot then
+						if group.has_spawned and (group.objective.target_area or group.objective.area) == task_data.target_area and group.objective.type == "reenforce_area" and (not closest_group_size or closest_group_size < group.size) and overshot >= group.size then
 							closest_group = group
 							closest_group_size = group.size
 						end
@@ -417,7 +420,7 @@ function GroupAIStateStreet:_upd_assault_tasks()
 		if task_spawn_allowance <= 0 then
 			assault_data.phase = "fade"
 			assault_data.phase_end_t = t + tweak_data.group_ai.street.assault.fade_duration
-		elseif assault_data.phase_end_t < t or self._drama_data.zone == "high" then
+		elseif t > assault_data.phase_end_t or self._drama_data.zone == "high" then
 			managers.mission:call_global_event("start_assault")
 			managers.hud:start_assault()
 			self:_set_rescue_state(false)
@@ -432,9 +435,9 @@ function GroupAIStateStreet:_upd_assault_tasks()
 			managers.hud:check_anticipation_voice(assault_data.phase_end_t - t)
 			managers.hud:check_start_anticipation_music(assault_data.phase_end_t - t)
 
-			if assault_data.is_hesitating and assault_data.voice_delay < self._t then
+			if assault_data.is_hesitating and self._t > assault_data.voice_delay then
 				if self._hostage_headcount > 0 then
-					local best_group = nil
+					local best_group
 
 					for _, group in pairs(self._groups) do
 						if not best_group or group.objective.type == "reenforce_area" then
@@ -456,7 +459,7 @@ function GroupAIStateStreet:_upd_assault_tasks()
 		if task_spawn_allowance <= 0 then
 			assault_data.phase = "fade"
 			assault_data.phase_end_t = t + tweak_data.group_ai.street.assault.fade_duration
-		elseif assault_data.phase_end_t < t or self._drama_data.zone == "high" then
+		elseif t > assault_data.phase_end_t or self._drama_data.zone == "high" then
 			assault_data.phase = "sustain"
 			assault_data.phase_end_t = t + math.lerp(self:_get_difficulty_dependent_value(tweak_data.group_ai.street.assault.sustain_duration_min), self:_get_difficulty_dependent_value(tweak_data.group_ai.street.assault.sustain_duration_max), math.random()) * self:_get_balancing_multiplier(tweak_data.group_ai.street.assault.sustain_duration_balance_mul)
 		end
@@ -464,7 +467,7 @@ function GroupAIStateStreet:_upd_assault_tasks()
 		if task_spawn_allowance <= 0 then
 			assault_data.phase = "fade"
 			assault_data.phase_end_t = t + tweak_data.group_ai.street.assault.fade_duration
-		elseif assault_data.phase_end_t < t and not self._hunt_mode then
+		elseif t > assault_data.phase_end_t and not self._hunt_mode then
 			assault_data.phase = "fade"
 			assault_data.phase_end_t = t + tweak_data.group_ai.street.assault.fade_duration
 		end
@@ -478,7 +481,7 @@ function GroupAIStateStreet:_upd_assault_tasks()
 
 					self:_police_announce_retreat()
 				end
-			elseif assault_data.phase_end_t < t and self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(4) <= 3 then
+			elseif t > assault_data.phase_end_t and self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(4) <= 3 then
 				assault_data.active = nil
 				assault_data.phase = nil
 				assault_data.said_retreat = nil
@@ -512,7 +515,7 @@ function GroupAIStateStreet:_upd_assault_tasks()
 	local closest_blockade_tasks = {}
 
 	for u_key, u_data in pairs(self:all_player_criminals()) do
-		local closest_dis_sq, closest_task_i = nil
+		local closest_dis_sq, closest_task_i
 
 		for i_task, task_data in ipairs(reenforce_tasks) do
 			local force_settings = task_data.target_area.factors.force
@@ -559,10 +562,10 @@ function GroupAIStateStreet:_upd_assault_tasks()
 		end
 	end
 
-	local tasks_to_delete = nil
+	local tasks_to_delete
 
 	for area_id, assault_task in pairs(assault_tasks) do
-		local criminals_to_delete = nil
+		local criminals_to_delete
 
 		for criminal_u_key, u_data in pairs(assault_task.target_criminals) do
 			local delete_criminal = true

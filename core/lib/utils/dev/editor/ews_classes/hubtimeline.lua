@@ -205,6 +205,7 @@ end
 
 function HubTimeline:_on_mouse_left_down(sender, event)
 	self._dragging = true
+
 	local key = self._sequence_track:clip_at_event(event)
 
 	if key then
@@ -242,6 +243,7 @@ function HubTimeline:_on_mouse_motion(sender, event)
 		key:set_range(coor, coor)
 
 		local delay = coor / self._multiplier
+
 		key:metadata().data.action_delay = delay
 
 		self._hub_unit:hub_element():ews_select_action()

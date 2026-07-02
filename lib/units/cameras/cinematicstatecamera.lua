@@ -110,12 +110,11 @@ function CinematicStateCamera:set_fov(fov, transition_t)
 		return
 	end
 
-	self._fov_transition_data = {
-		start_fov = self._camera:fov(),
-		target_fov = fov,
-		transition_t = transition_t,
-		current_t = 0
-	}
+	self._fov_transition_data = {}
+	self._fov_transition_data.start_fov = self._camera:fov()
+	self._fov_transition_data.target_fov = fov
+	self._fov_transition_data.transition_t = transition_t
+	self._fov_transition_data.current_t = 0
 end
 
 function CinematicStateCamera:start()
@@ -199,8 +198,11 @@ function CinematicStateCamera:create_ews()
 	self:close_ews()
 
 	self._main_frame = EWS:Frame("Cinematic", Vector3(250, 0, 0), Vector3(600, 200, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE,FULL_REPAINT_ON_RESIZE", Global.frame)
+
 	local main_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._main_panel = EWS:Panel(self._main_frame, "", "FULL_REPAINT_ON_RESIZE")
+
 	local main_panel_sizer = EWS:BoxSizer("VERTICAL")
 
 	self._main_panel:set_sizer(main_panel_sizer)
@@ -232,11 +234,11 @@ function CinematicStateCamera:create_ews()
 	slider_sizer:add(EWS:StaticText(self._main_panel, "Time:", "", "ALIGN_LEFT"), 0, 0, "EXPAND")
 
 	local slider_params = {
-		min = 0,
 		floats = 2,
+		min = 0,
+		number_ctrlr_proportions = 1,
 		slider_ctrlr_proportions = 9,
 		value = 0,
-		number_ctrlr_proportions = 1,
 		panel = self._main_panel,
 		sizer = slider_sizer,
 		max = self._length or 10
@@ -257,18 +259,19 @@ function CinematicStateCamera:create_ews()
 	})
 
 	self._time_slider = slider_params
+
 	local slider_sizer = EWS:StaticBoxSizer(self._main_panel, "VERTICAL", "")
 
 	main_panel_sizer:add(slider_sizer, 0, 0, "EXPAND")
 	slider_sizer:add(EWS:StaticText(self._main_panel, "Speed:", "", "ALIGN_LEFT"), 0, 0, "EXPAND")
 
 	local slider_params = {
-		min = 0,
 		floats = 2,
+		max = 10,
+		min = 0,
+		number_ctrlr_proportions = 1,
 		slider_ctrlr_proportions = 9,
 		value = 1,
-		number_ctrlr_proportions = 1,
-		max = 10,
 		panel = self._main_panel,
 		sizer = slider_sizer
 	}
@@ -349,6 +352,7 @@ end
 
 function CinematicStateCamera:set_depth_mode(depth_mode)
 	self._locked_far_range = depth_mode and 5000 or nil
+
 	local viz = depth_mode and "depth_visualization" or "deferred_lighting"
 
 	for _, vp in ipairs(managers.viewport:viewports()) do

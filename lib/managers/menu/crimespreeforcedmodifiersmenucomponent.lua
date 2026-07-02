@@ -1,4 +1,5 @@
 CrimeSpreeForcedModifiersMenuComponent = CrimeSpreeForcedModifiersMenuComponent or class(MenuGuiComponentGeneric)
+
 local padding = 10
 
 function CrimeSpreeForcedModifiersMenuComponent:init(ws, fullscreen_ws, node)
@@ -37,8 +38,8 @@ function CrimeSpreeForcedModifiersMenuComponent:_setup()
 	})
 
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
@@ -46,7 +47,7 @@ function CrimeSpreeForcedModifiersMenuComponent:_setup()
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -59,8 +60,8 @@ function CrimeSpreeForcedModifiersMenuComponent:_setup()
 	local modifiers_height = CrimeSpreeModifierButton.size.h + padding * 3
 	local info_text_id = #modifiers == 1 and "menu_cs_modifiers_forced_single" or "menu_cs_modifiers_forced_multiple"
 	local info_text = FineText:new(self._panel, {
-		wrap = true,
 		word_wrap = true,
+		wrap = true,
 		text = managers.localization:text(info_text_id, {
 			count = #modifiers
 		}),
@@ -68,6 +69,7 @@ function CrimeSpreeForcedModifiersMenuComponent:_setup()
 		y = padding,
 		w = modifiers_width - padding * 2
 	})
+
 	self._modifiers_scroll = ScrollablePanel:new(self._panel, "modifiers_scroll", {
 		w = modifiers_width,
 		h = modifiers_height,
@@ -109,15 +111,15 @@ function CrimeSpreeForcedModifiersMenuComponent:_setup()
 
 	if not managers.menu:is_pc_controller() then
 		self._legend_text = self._button_panel:text({
-			halign = "right",
-			vertical = "bottom",
-			layer = 1,
-			blend_mode = "add",
 			align = "right",
+			blend_mode = "add",
+			halign = "right",
+			layer = 1,
 			text = "",
-			y = 0,
-			x = 0,
 			valign = "bottom",
+			vertical = "bottom",
+			x = 0,
+			y = 0,
 			color = tweak_data.screen_colors.text,
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size
@@ -142,14 +144,15 @@ function CrimeSpreeForcedModifiersMenuComponent:_setup()
 	})
 
 	self._text_header = self._ws:panel():text({
-		vertical = "top",
 		align = "left",
 		layer = 51,
+		vertical = "top",
 		text = managers.localization:to_upper_text("menu_cs_modifiers_forced"),
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
 	})
+
 	local x, y, w, h = self._text_header:text_rect()
 
 	self._text_header:set_size(self._panel:w(), h)
@@ -214,8 +217,8 @@ function CrimeSpreeForcedModifiersMenuComponent:mouse_moved(o, x, y)
 		return
 	end
 
-	local used = false
-	local pointer = nil
+	local used, pointer = false
+
 	self._selected_item = nil
 	used, pointer = self._modifiers_scroll:mouse_moved(nil, x, y)
 
@@ -223,8 +226,7 @@ function CrimeSpreeForcedModifiersMenuComponent:mouse_moved(o, x, y)
 
 	if self._back_btn:is_selected() then
 		self._selected_item = self._back_btn
-		pointer = "link"
-		used = true
+		used, pointer = true, "link"
 	end
 
 	return used, pointer

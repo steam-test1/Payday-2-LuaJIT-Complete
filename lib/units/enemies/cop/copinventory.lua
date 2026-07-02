@@ -9,15 +9,14 @@ function CopInventory:init(unit)
 	self._latest_addition = nil
 	self._selected_primary = nil
 	self._use_data_alias = "npc"
-	self._align_places = {
-		right_hand = {
-			on_body = true,
-			obj3d_name = Idstring("a_weapon_right_front")
-		},
-		back = {
-			on_body = true,
-			obj3d_name = Idstring("Hips")
-		}
+	self._align_places = {}
+	self._align_places.right_hand = {
+		on_body = true,
+		obj3d_name = Idstring("a_weapon_right_front")
+	}
+	self._align_places.back = {
+		on_body = true,
+		obj3d_name = Idstring("Hips")
 	}
 	self._listener_id = "CopInventory" .. tostring(unit:key())
 end
@@ -39,16 +38,16 @@ function CopInventory:add_unit_by_name(new_unit_name, equip)
 		end
 	end
 
-	local setup_data = {
-		user_unit = self._unit,
-		ignore_units = ignore_units,
-		expend_ammo = false,
-		hit_slotmask = managers.slot:get_mask("bullet_impact_targets"),
-		hit_player = true,
-		user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice,
-		alert_AI = true,
-		alert_filter = self._unit:brain():SO_access()
-	}
+	local setup_data = {}
+
+	setup_data.user_unit = self._unit
+	setup_data.ignore_units = ignore_units
+	setup_data.expend_ammo = false
+	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets")
+	setup_data.hit_player = true
+	setup_data.user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice
+	setup_data.alert_AI = true
+	setup_data.alert_filter = self._unit:brain():SO_access()
 
 	new_unit:base():setup(setup_data)
 
@@ -62,6 +61,7 @@ end
 function CopInventory:_chk_spawn_shield(weapon_unit)
 	if self._shield_unit_name and not alive(self._shield_unit) then
 		self._shield_was_synced = nil
+
 		local align_name = self._shield_align_name or Idstring("a_weapon_left_front")
 		local align_obj = self._unit:get_object(align_name)
 
@@ -155,8 +155,14 @@ function CopInventory:on_shield_break(attacker_unit)
 
 	if switch_data.hurt_data and self._unit:character_damage() and self._unit:character_damage().force_hurt then
 		attacker_unit = alive(attacker_unit) and attacker_unit or nil
+
 		local has_authority = false
-		has_authority = (not Network:is_server() or attacker_unit and attacker_unit:base() and not attacker_unit:base().is_husk_player and false) and attacker_unit and attacker_unit:base() and attacker_unit:base().is_local_player
+
+		if Network:is_server() then
+			has_authority = not attacker_unit or not attacker_unit:base() or not attacker_unit:base().is_husk_player
+		else
+			has_authority = attacker_unit and attacker_unit:base() and attacker_unit:base().is_local_player
+		end
 
 		if has_authority then
 			local attack_data = {

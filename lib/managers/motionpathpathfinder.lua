@@ -24,13 +24,14 @@ function MotionPathPathFinder:recreate_graph()
 end
 
 function MotionPathPathFinder:_make_link(current_pos, target_marker_index, path)
-	local link = nil
+	local link
 	local target_marker = path.markers[target_marker_index]
 
 	if target_marker then
 		local target_unit = self:_get_mop_marker_data(target_marker)
 		local pos = target_unit.position
 		local distance = mvector3.distance(current_pos, pos)
+
 		link = {
 			target_marker = target_marker,
 			distance = distance
@@ -42,7 +43,7 @@ end
 
 function MotionPathPathFinder:_add_path(path)
 	local point_index = 1
-	local last_marker, current_unit, current_pos = nil
+	local last_marker, current_unit, current_pos
 
 	for i_marker = 1, #path.markers do
 		local current_marker = path.markers[i_marker]
@@ -77,6 +78,7 @@ function MotionPathPathFinder:_add_path(path)
 			links = links,
 			pos = current_pos
 		}
+
 		self._nodes[current_marker] = node
 	end
 end
@@ -109,6 +111,7 @@ end
 
 function MotionPathPathFinder:find_path(start_pos, end_pos)
 	self._graph_units = {}
+
 	local end_node, start_node = self:_astar_search(start_pos, end_pos)
 
 	if not end_node or not start_node then
@@ -149,6 +152,7 @@ function MotionPathPathFinder:_astar_search(start_pos, end_pos)
 	start_node.heuristic = mvector3.distance(start_node.pos, end_pos)
 	start_node.came_from = nil
 	self._open_nodes[start_node.marker] = start_node
+
 	local g_score = 0
 	local iteration = 1
 
@@ -199,9 +203,9 @@ function MotionPathPathFinder:_find_nodes(start_pos, end_pos)
 		return nil, nil
 	end
 
-	local start_node = nil
+	local start_node
 	local start_node_distance = 100000000
-	local end_node = nil
+	local end_node
 	local end_node_distance = 100000000
 
 	for marker, node in pairs(self._nodes) do
@@ -224,11 +228,11 @@ function MotionPathPathFinder:_find_nodes(start_pos, end_pos)
 end
 
 function MotionPathPathFinder:_get_best_node(open_nodes)
-	local best_node = nil
+	local best_node
 	local heuristic = 100000000
 
 	for marker, node in pairs(open_nodes) do
-		if node.heuristic < heuristic then
+		if heuristic > node.heuristic then
 			heuristic = node.heuristic
 			best_node = node
 		end

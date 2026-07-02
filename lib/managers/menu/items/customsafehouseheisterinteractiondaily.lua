@@ -6,6 +6,7 @@ local massive_font_size = tweak_data.menu.pd2_massive_font_size
 local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
+
 InGameHeisterInteractionInitiator = InGameHeisterInteractionInitiator or class()
 
 function InGameHeisterInteractionInitiator:modify_node(original_node, data)
@@ -14,12 +15,12 @@ function InGameHeisterInteractionInitiator:modify_node(original_node, data)
 	node:clean_items()
 
 	local params = {
-		visible_callback = "is_pc_controller",
-		name = "accept",
-		callback = "heister_interaction_resume_game",
-		text_id = "civilian_heister_daily_info_ok",
 		align = "center",
-		help_id = "menu_diff_help"
+		callback = "heister_interaction_resume_game",
+		help_id = "menu_diff_help",
+		name = "accept",
+		text_id = "civilian_heister_daily_info_ok",
+		visible_callback = "is_pc_controller"
 	}
 	local data_node = {}
 	local new_item = node:create_item(data_node, params)
@@ -76,6 +77,7 @@ end
 function InGameHeisterInteractionGui:_setup_item_panel_parent(safe_rect, shape)
 	local x = safe_rect.x + safe_rect.width / 2 - self.WIDTH / 2 + self.PADDING
 	local y = safe_rect.y + safe_rect.height / 2 - self.HEIGHT / 2 + self.PADDING
+
 	shape = {
 		x = x,
 		y = y,
@@ -87,6 +89,7 @@ function InGameHeisterInteractionGui:_setup_item_panel_parent(safe_rect, shape)
 end
 
 function InGameHeisterInteractionGui:set_contact_info(id, name, files, override_file, sub_text)
+	return
 end
 
 function InGameHeisterInteractionGui:mouse_moved(button, x, y)
@@ -218,12 +221,15 @@ function InGameHeisterInteractionGui:_setup_default()
 	local main_panel = ws:panel():panel({
 		name = "main_panel"
 	})
+
 	self._main_panel = main_panel
 	self._fullscreen_panel = mc_full_ws:panel():panel({
 		layer = 0
 	})
+
 	local width = self.WIDTH
 	local height = self.HEIGHT
+
 	self._panel = main_panel:panel({
 		layer = 1,
 		h = height,
@@ -255,8 +261,8 @@ function InGameHeisterInteractionGui:_setup_default()
 	header_panel:move(self.PADDING * 0.5, self.PADDING * 0.5)
 
 	local header_text = header_panel:text({
-		name = "header_text",
 		layer = 1,
+		name = "header_text",
 		text = txt,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -266,8 +272,8 @@ function InGameHeisterInteractionGui:_setup_default()
 	make_fine_text(header_text)
 
 	local header_text_desc = header_panel:text({
-		name = "header_text_desc",
 		layer = 51,
+		name = "header_text_desc",
 		x = header_text:width(),
 		h = header_text_desc_height,
 		text = managers.localization:to_upper_text(daily_info.id),
@@ -281,13 +287,15 @@ end
 
 function InGameHeisterInteractionGui:_setup_layout()
 	self._reward_buttons = {}
+
 	local daily_challenge = managers.custom_safehouse:get_daily_challenge()
 	local daily_info = tweak_data.safehouse:get_daily_data(daily_challenge.id)
 	local reward_panel_w_offs = -50
 	local reward_panel_h_offs = 20
-	local reward_panel_pos = nil
+	local reward_panel_pos
 	local width = self.WIDTH
 	local height = self.HEIGHT
+
 	self._scroll_panel = self._panel:panel({
 		h = height - small_font_size * 3 - self.PADDING * 2,
 		w = width - self.PADDING * 2
@@ -309,9 +317,9 @@ function InGameHeisterInteractionGui:_setup_layout()
 		w = self._scroll_panel:w()
 	})
 	local desc_text = desc_panel:text({
+		layer = 1,
 		name = "desc_text",
 		wrap = true,
-		layer = 1,
 		text = managers.localization:text(daily_info.desc_id),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -326,8 +334,8 @@ function InGameHeisterInteractionGui:_setup_layout()
 	obj_panel:move(self.PADDING * 0.5, header_text_desc_height)
 
 	local obj_text = obj_panel:text({
-		name = "objective_text",
 		layer = 1,
+		name = "objective_text",
 		text = managers.localization:to_upper_text("hud_objective"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -357,9 +365,9 @@ function InGameHeisterInteractionGui:_setup_layout()
 	end
 
 	local obj_desc_text = obj_desc_panel:text({
+		layer = 1,
 		name = "objective_desc_text",
 		wrap = true,
-		layer = 1,
 		text = managers.localization:text(daily_info.objective_id, macros),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -381,20 +389,22 @@ function InGameHeisterInteractionGui:_setup_layout()
 	})
 
 	local expire_text = expire_panel:text({
-		blend_mode = "add",
-		name = "ExpiryTime",
-		vertical = "top",
-		valign = "top",
 		align = "center",
-		text = "",
+		blend_mode = "add",
 		halign = "center",
 		layer = 1,
+		name = "ExpiryTime",
+		text = "",
+		valign = "top",
+		vertical = "top",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.important_2:with_alpha(0.3)
 	})
+
 	self._expire_time_text = expire_text
 	self._expire_panel = expire_panel
+
 	local reward_panel_pos = expire_panel_pos + expire_panel:h()
 	local reward_panel = self._scroll_panel:panel({
 		h = 128,
@@ -405,8 +415,8 @@ function InGameHeisterInteractionGui:_setup_layout()
 	reward_panel:move(self.PADDING * 0.5, reward_panel_pos)
 
 	local reward_header = reward_panel:text({
-		name = "reward_text",
 		layer = 51,
+		name = "reward_text",
 		text = managers.localization:to_upper_text("menu_reward"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -433,9 +443,9 @@ function InGameHeisterInteractionGui:_setup_layout()
 	if daily_challenge.reward_id then
 		local reward_text = reward_panel:text({
 			blend_mode = "add",
+			layer = 1,
 			name = "RewardBody",
 			wrap = true,
-			layer = 1,
 			font_size = small_font_size,
 			font = small_font,
 			text = managers.localization:text(daily_challenge.reward_id)
@@ -457,9 +467,11 @@ end
 
 function InGameHeisterInteractionGui:_setup_daily_complete()
 	self._reward_buttons = {}
+
 	local width = self.WIDTH
 	local height = self.HEIGHT
 	local y_offs = 80
+
 	self._daily_complete_panel = self._panel:panel({
 		h = height - self.PADDING * 2,
 		w = width - self.PADDING * 2
@@ -468,19 +480,20 @@ function InGameHeisterInteractionGui:_setup_daily_complete()
 	self._daily_complete_panel:move(self.PADDING, self.PADDING + small_font_size)
 
 	local header = self._daily_complete_panel:text({
-		name = "DailyCompleteTitle",
-		blend_mode = "add",
-		vertical = "top",
 		align = "center",
-		valign = "top",
+		blend_mode = "add",
 		halign = "center",
 		layer = 1,
+		name = "DailyCompleteTitle",
+		valign = "top",
+		vertical = "top",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.challenge_title,
 		text = utf8.to_upper(managers.localization:text("menu_es_daily_complete")),
 		w = self._daily_complete_panel:w()
 	})
+
 	self._complete_header_text = header
 
 	make_fine_text(header)
@@ -500,28 +513,31 @@ function InGameHeisterInteractionGui:_setup_daily_complete()
 	})
 
 	self._complete_timer_panel = timer_panel
+
 	local timer_text = timer_panel:text({
-		blend_mode = "add",
-		name = "TimerText",
-		vertical = "top",
-		valign = "top",
 		align = "center",
-		text = "",
+		blend_mode = "add",
 		halign = "center",
 		layer = 1,
+		name = "TimerText",
+		text = "",
+		valign = "top",
+		vertical = "top",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.challenge_title:with_alpha(1)
 	})
+
 	self._renew_timer = timer_text
+
 	local text = self._daily_complete_panel:text({
-		name = "DailyCompleteInfo",
-		blend_mode = "add",
-		vertical = "top",
 		align = "center",
-		valign = "top",
+		blend_mode = "add",
 		halign = "center",
 		layer = 1,
+		name = "DailyCompleteInfo",
+		valign = "top",
+		vertical = "top",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.text,
@@ -560,6 +576,7 @@ function InGameHeisterInteractionGui:_update_daily(t, dt)
 		local expire_timestamp = managers.custom_safehouse:daily_challenge_interval() + timestamp
 		local current_timestamp = managers.custom_safehouse:get_timestamp()
 		local expire_time = expire_timestamp - current_timestamp
+
 		expire_string = MenuNodeCrimenetChallengeGui._create_timestamp_string_extended(self, expire_time)
 
 		self._expire_time_text:set_text(expire_string)
@@ -572,6 +589,7 @@ function InGameHeisterInteractionGui:_update_hide_daily(t, dt)
 
 	if self._complete_t > 1 then
 		local h = self._scroll_panel:h()
+
 		h = h - h * 4 * dt
 
 		self._scroll_panel:set_h(h)
@@ -601,6 +619,7 @@ end
 
 function InGameHeisterInteractionGui:_update_show_complete(t, dt)
 	self._complete_t = (self._complete_t or 0) + dt
+
 	local base_time = 0.8
 	local step_time = 0.5
 
@@ -648,7 +667,7 @@ function InGameHeisterInteractionGui:move_reward_button(dir)
 		return
 	end
 
-	local current_button = nil
+	local current_button
 
 	for i, button in ipairs(self._reward_buttons) do
 		if button:is_selected() then
@@ -697,4 +716,5 @@ function InGameHeisterInteractionGui:move_right()
 end
 
 function InGameHeisterInteractionGui:_update_buttons()
+	return
 end

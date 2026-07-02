@@ -26,6 +26,7 @@ function CorePhysicsPushUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local range_sizer = EWS:StaticBoxSizer(panel, "VERTICAL", "Range")
 	local range = EWS:Slider(panel, self._hed.physicspush_range, 1, 10000, "", "SL_LABELS")
 
@@ -71,8 +72,8 @@ end
 
 function CorePhysicsPushUnitElement:add_to_mission_package()
 	managers.editor:add_to_world_package({
-		name = "core/physic_effects/hubelement_push",
 		category = "physic_effects",
+		name = "core/physic_effects/hubelement_push",
 		continent = self._unit:unit_data().continent
 	})
 end

@@ -37,7 +37,7 @@ function UnoAchievementChallenge:generate_challenge(trigger_save)
 		end
 	end
 
-	while self.CHALLENGE_COUNT < #gen_achievements_pool do
+	while #gen_achievements_pool > self.CHALLENGE_COUNT do
 		table.remove(gen_achievements_pool)
 	end
 

@@ -91,7 +91,7 @@ function AIAttentionObject:unit()
 end
 
 function AIAttentionObject:add_attention(settings)
-	local needs_register = nil
+	local needs_register
 
 	if not self._attention_data then
 		self._attention_data = {}
@@ -160,7 +160,9 @@ end
 function AIAttentionObject:override_attention(original_preset_name, override_preset)
 	if override_preset then
 		self._overrides = self._overrides or {}
+
 		local call_listeners = self._attention_data and self._attention_data[original_preset_name] or self._overrides[original_preset_name]
+
 		self._overrides[original_preset_name] = override_preset
 
 		self:_chk_update_registered_state()
@@ -187,27 +189,24 @@ function AIAttentionObject:get_attention(filter, min, max, team)
 
 	min = min or AIAttentionObject.REACT_MIN
 	max = max or AIAttentionObject.REACT_MAX
+
 	local nav_manager = managers.navigation
 	local access_f = nav_manager.check_access
-	local settings_match, relation = nil
+	local settings_match, relation
 
 	if team and self._team then
-		if team.foes[self._team.id] then
-			relation = "foe"
-		else
-			relation = "friend"
-		end
+		relation = team.foes[self._team.id] and "foe" or "friend"
 	end
 
 	for id, settings in pairs(self._attention_data) do
-		if (not self._overrides or not self._overrides[id]) and min <= settings.reaction and settings.reaction <= max and (not settings_match or settings_match.reaction < settings.reaction) and (not relation or not settings.relation or relation == settings.relation) and access_f(nav_manager, settings.filter, filter, 0) then
+		if (not self._overrides or not self._overrides[id]) and min <= settings.reaction and max >= settings.reaction and (not settings_match or settings.reaction > settings_match.reaction) and (not relation or not settings.relation or relation == settings.relation) and access_f(nav_manager, settings.filter, filter, 0) then
 			settings_match = settings
 		end
 	end
 
 	if self._overrides then
 		for id, settings in pairs(self._overrides) do
-			if min <= settings.reaction and settings.reaction <= max and (not settings_match or settings_match.reaction < settings.reaction) and (not relation or not settings.relation or relation == settings.relation) and access_f(nav_manager, settings.filter, filter, 0) then
+			if min <= settings.reaction and max >= settings.reaction and (not settings_match or settings.reaction > settings_match.reaction) and (not relation or not settings.relation or relation == settings.relation) and access_f(nav_manager, settings.filter, filter, 0) then
 				settings_match = settings
 			end
 		end
@@ -373,6 +372,7 @@ function AIAttentionObject:link(parent_unit, obj_name, local_pos)
 		self:set_update_enabled(true)
 	else
 		local had_parent = self._parent_unit
+
 		self._parent_unit = nil
 		self._parent_obj_name = nil
 		self._local_pos = nil
@@ -394,6 +394,7 @@ end
 
 function AIAttentionObject:set_team(team)
 	local call_listeners = self._team ~= team or team and team.id ~= self._team.id
+
 	self._team = team
 
 	if self._attention_data then
@@ -424,7 +425,7 @@ function AIAttentionObject:load(data)
 		return
 	end
 
-	local parent_unit = nil
+	local parent_unit
 
 	if Application:editor() then
 		parent_unit = managers.editor:unit_with_id(data.parent_u_id)

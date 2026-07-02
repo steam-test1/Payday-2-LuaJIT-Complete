@@ -44,6 +44,7 @@ function CoreWorldCameraTriggerUnitElement:_populate_after_clip()
 	self._after_clip:append("done")
 
 	local old_clip = self._hed.worldcamera_trigger_after_clip
+
 	self._hed.worldcamera_trigger_after_clip = "done"
 
 	if self._hed.worldcamera_trigger_sequence ~= "none" then
@@ -66,6 +67,7 @@ function CoreWorldCameraTriggerUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local sequence_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	sequence_sizer:add(EWS:StaticText(self._panel, "Sequence:", 0, ""), 1, 0, "ALIGN_CENTER_VERTICAL")

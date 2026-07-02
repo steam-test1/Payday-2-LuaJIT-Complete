@@ -5,7 +5,9 @@ function FriendsBoxGui:init(ws, title, text, content_data, config, type)
 	config = config or {}
 	config.h = 300
 	config.w = 300
+
 	local x, y = ws:size()
+
 	config.x = x - config.w
 	config.y = y - config.h - CoreMenuRenderer.Renderer.border_height + 10
 	config.no_close_legend = true
@@ -38,70 +40,72 @@ function FriendsBoxGui:_create_friend_action_gui_by_user(user_data)
 	local user_lobby_id = user:lobby() and user:lobby():id()
 
 	if not my_lobby_id and user_lobby_id and not user_data.payday1 and not Global.game_settings.single_player then
-		local join_game = {
-			text = "Join Game",
-			id_name = "join_game"
-		}
+		local join_game = {}
+
+		join_game.text = "Join Game"
+		join_game.id_name = "join_game"
 
 		table.insert(data.button_list, join_game)
 	end
 
 	if not offline and managers.network.matchmake.lobby_handler and not user_lobby_id then
-		local invite = {
-			text = "Invite",
-			id_name = "invite"
-		}
+		local invite = {}
+
+		invite.text = "Invite"
+		invite.id_name = "invite"
 
 		table.insert(data.button_list, invite)
 	end
 
-	local chat_button = {
-		text = "Message",
-		id_name = "message"
-	}
+	local chat_button = {}
+
+	chat_button.text = "Message"
+	chat_button.id_name = "message"
 
 	table.insert(data.button_list, chat_button)
 
-	local profile_button = {
-		text = "View profile",
-		id_name = "view_profile"
-	}
+	local profile_button = {}
+
+	profile_button.text = "View profile"
+	profile_button.id_name = "view_profile"
 
 	table.insert(data.button_list, profile_button)
 
-	local achievements_button = {
-		text = "View achievements",
-		id_name = "view_achievements"
-	}
+	local achievements_button = {}
+
+	achievements_button.text = "View achievements"
+	achievements_button.id_name = "view_achievements"
 
 	table.insert(data.button_list, achievements_button)
 
-	local stats_button = {
-		text = "View stats",
-		id_name = "view_stats"
-	}
+	local stats_button = {}
+
+	stats_button.text = "View stats"
+	stats_button.id_name = "view_stats"
 
 	table.insert(data.button_list, stats_button)
 
 	local outfit = user:rich_presence("outfit")
 
 	if outfit ~= "" and managers.menu_scene then
-		local view_character_button = {
-			text = "View character",
-			id_name = "view_character"
-		}
+		local view_character_button = {}
+
+		view_character_button.text = "View character"
+		view_character_button.id_name = "view_character"
 
 		table.insert(data.button_list, view_character_button)
 	end
 
 	data.focus_button = 1
+
 	local h = 78 + #data.button_list * 24
+
 	self._friend_action_gui = TextBoxGui:new(self._ws, nil, nil, data, {
-		only_buttons = true,
 		no_close_legend = true,
-		y = 0,
+		only_buttons = true,
 		w = 200,
 		x = 0,
+		y = 0,
 		h = h
 	})
 
@@ -125,7 +129,7 @@ function FriendsBoxGui:update_friends()
 	local friends = self._type == "recent" and Steam:coplay_friends() or Steam:friends() or {}
 
 	for _, user in ipairs(friends) do
-		local main_state, sub_state = nil
+		local main_state, sub_state
 		local state = user:state()
 		local rich_presence_status = user:rich_presence("status")
 		local rich_presence_level = user:rich_presence("level")
@@ -148,6 +152,7 @@ function FriendsBoxGui:update_friends()
 
 			if #numbers > 0 then
 				local level_id = tweak_data.levels:get_level_name_from_index(numbers[1])
+
 				sub_state = managers.localization:text(tweak_data.levels[level_id] and tweak_data.levels[level_id].name_id or "SECRET LEVEL")
 				sub_state = sub_state .. (payday1 and " - PAYDAY 1" or "")
 			end
@@ -239,6 +244,7 @@ function FriendsBoxGui:update_friends()
 			print("CHANGED LEVEL", user.level, user.current_level)
 
 			user.level = user.current_level
+
 			local panel = self:_get_user_panel(user.user:id())
 			local user_level = panel:child("user_level")
 
@@ -258,7 +264,7 @@ end
 
 function FriendsBoxGui:_update_sub_state(user_data)
 	local friends_panel = self._scroll_panel:child("friends_panel")
-	local panel = nil
+	local panel
 
 	if user_data.main_state == "ingame" then
 		panel = friends_panel:child("ingame_panel")
@@ -337,35 +343,35 @@ function FriendsBoxGui:_create_text_box(ws, title, text, content_data, config)
 
 	local friends_panel = self._scroll_panel:panel({
 		h = 600,
+		layer = 1,
 		name = "friends_panel",
-		x = 0,
-		layer = 1
+		x = 0
 	})
 	local ingame_panel = friends_panel:panel({
 		h = 100,
+		layer = 0,
 		name = "ingame_panel",
-		x = 0,
-		layer = 0
+		x = 0
 	})
 	local online_panel = friends_panel:panel({
 		h = 100,
+		layer = 0,
 		name = "online_panel",
-		x = 0,
-		layer = 0
+		x = 0
 	})
 	local offline_panel = friends_panel:panel({
 		h = 100,
+		layer = 0,
 		name = "offline_panel",
-		x = 0,
-		layer = 0
+		x = 0
 	})
 	local h = 0
 	local ingame_text = friends_panel:text({
-		vertical = "center",
-		name = "ingame_text",
-		hvertical = "center",
 		align = "left",
 		halign = "left",
+		hvertical = "center",
+		name = "ingame_text",
+		vertical = "center",
 		text = managers.localization:text("menu_ingame"),
 		font = tweak_data.menu.default_font,
 		font_size = self._topic_state_font_size,
@@ -377,12 +383,13 @@ function FriendsBoxGui:_create_text_box(ws, title, text, content_data, config)
 	ingame_text:set_size(tw, th)
 
 	h = h + th
+
 	local online_text = friends_panel:text({
-		vertical = "center",
-		name = "online_text",
-		hvertical = "center",
 		align = "left",
 		halign = "left",
+		hvertical = "center",
+		name = "online_text",
+		vertical = "center",
 		text = managers.localization:text("menu_online"),
 		font = tweak_data.menu.default_font,
 		font_size = self._topic_state_font_size,
@@ -394,12 +401,13 @@ function FriendsBoxGui:_create_text_box(ws, title, text, content_data, config)
 	online_text:set_size(tw, th)
 
 	h = h + th
+
 	local offline_text = friends_panel:text({
-		vertical = "center",
-		name = "offline_text",
-		hvertical = "center",
 		align = "left",
 		halign = "left",
+		hvertical = "center",
+		name = "offline_text",
+		vertical = "center",
 		text = managers.localization:text("menu_offline"),
 		font = tweak_data.menu.default_font,
 		font_size = self._topic_state_font_size,
@@ -430,22 +438,22 @@ function FriendsBoxGui:_create_user(friends_panel, h, user, state, sub_state, le
 		"mask_alien"
 	}) .. math.random(4))
 	local avatar = panel:bitmap({
-		name = "avatar",
 		layer = 0,
+		name = "avatar",
 		visible = true,
-		y = 0,
 		x = 0,
+		y = 0,
 		texture = texture,
 		texture_rect = rect
 	})
 	local user_name = panel:text({
-		y = 0,
-		name = "user_name",
-		vertical = "center",
-		hvertical = "center",
 		align = "left",
 		halign = "left",
+		hvertical = "center",
 		layer = 0,
+		name = "user_name",
+		vertical = "center",
+		y = 0,
 		text = user:name(),
 		font = tweak_data.menu.default_font,
 		font_size = self._default_font_size,
@@ -457,14 +465,14 @@ function FriendsBoxGui:_create_user(friends_panel, h, user, state, sub_state, le
 	user_name:set_size(tw, th)
 
 	local user_level = panel:text({
-		name = "user_level",
-		vertical = "center",
-		hvertical = "center",
 		align = "right",
 		blend_mode = "normal",
 		halign = "right",
-		x = 16,
+		hvertical = "center",
 		layer = 0,
+		name = "user_level",
+		vertical = "center",
+		x = 16,
 		text = level,
 		font = tweak_data.menu.small_font_noshadow,
 		font_size = tweak_data.menu.small_font_size,
@@ -479,13 +487,13 @@ function FriendsBoxGui:_create_user(friends_panel, h, user, state, sub_state, le
 	user_level:set_center_y(math.round(user_name:center_y()))
 
 	local user_state = panel:text({
-		name = "user_state",
-		vertical = "center",
-		hvertical = "center",
 		align = "left",
 		blend_mode = "normal",
 		halign = "left",
+		hvertical = "center",
 		layer = 0,
+		name = "user_state",
+		vertical = "center",
 		text = string.upper(sub_state),
 		font = tweak_data.menu.small_font_noshadow,
 		font_size = tweak_data.menu.small_font_size,
@@ -499,16 +507,16 @@ function FriendsBoxGui:_create_user(friends_panel, h, user, state, sub_state, le
 	user_state:set_size(sw, sh)
 	panel:set_h(th + sh + 4)
 	panel:rect({
+		layer = -1,
 		name = "marker_rect",
 		visible = false,
-		layer = -1,
 		color = Color(0.5, 0.5, 0.5, 0.5)
 	})
 
 	local texture, rect = tweak_data.hud_icons:get_icon_data("icon_equipped")
 	local arrow = panel:bitmap({
-		name = "arrow",
 		layer = 0,
+		name = "arrow",
 		visible = false,
 		texture = texture,
 		texture_rect = rect,
@@ -519,8 +527,8 @@ function FriendsBoxGui:_create_user(friends_panel, h, user, state, sub_state, le
 
 	local texture, rect = tweak_data.hud_icons:get_icon_data("icon_addon")
 	local lobby = panel:bitmap({
-		name = "lobby",
 		layer = 0,
+		name = "lobby",
 		visible = false,
 		texture = texture,
 		texture_rect = rect

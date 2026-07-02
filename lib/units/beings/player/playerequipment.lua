@@ -1,4 +1,5 @@
 PlayerEquipment = PlayerEquipment or class()
+
 local IDS_BODY = Idstring("body")
 
 function PlayerEquipment:init(unit)
@@ -46,6 +47,7 @@ function PlayerEquipment:valid_look_at_placement(equipment_data)
 
 				if block_ray then
 					local distance = mvector3.distance(ray.position, block_ray.position)
+
 					ray = distance <= (deploy_check_settings.block_ray_tolerance or 20) and ray
 				end
 			end
@@ -102,6 +104,7 @@ function PlayerEquipment:valid_placement(equipment_data)
 	local valid = not self._unit:movement():current_state():in_air()
 	local pos = self._unit:movement():m_pos()
 	local rot = self._unit:movement():m_head_rot()
+
 	rot = Rotation(rot:yaw(), 0, 0)
 
 	if equipment_data and equipment_data.dummy_unit then
@@ -140,6 +143,7 @@ function PlayerEquipment:use_ammo_bag()
 	if ray then
 		local pos = ray.position
 		local rot = self:_m_deploy_rot()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s01x_plu")
@@ -166,6 +170,7 @@ function PlayerEquipment:use_doctor_bag()
 	if ray then
 		local pos = ray.position
 		local rot = self:_m_deploy_rot()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s02x_plu")
@@ -179,8 +184,10 @@ function PlayerEquipment:use_doctor_bag()
 
 		local upgrade_lvl = managers.player:upgrade_level("first_aid_kit", "damage_reduction_upgrade")
 		local amount_upgrade_lvl = managers.player:upgrade_level("doctor_bag", "amount_increase")
+
 		upgrade_lvl = math.clamp(upgrade_lvl, 0, 2)
 		amount_upgrade_lvl = math.clamp(amount_upgrade_lvl, 0, 2)
+
 		local bits = Bitwise:lshift(upgrade_lvl, DoctorBagBase.damage_reduce_lvl_shift) + Bitwise:lshift(amount_upgrade_lvl, DoctorBagBase.amount_upgrade_lvl_shift)
 
 		if Network:is_client() then
@@ -201,6 +208,7 @@ function PlayerEquipment:use_first_aid_kit()
 	if ray then
 		local pos = ray.position
 		local rot = self:_m_deploy_rot()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s12")
@@ -250,6 +258,7 @@ function PlayerEquipment:use_bodybags_bag()
 	if ray then
 		local pos = ray.position
 		local rot = self:_m_deploy_rot()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s13")
@@ -276,6 +285,7 @@ function PlayerEquipment:use_grenade_crate()
 	if ray then
 		local pos = ray.position
 		local rot = self:_m_deploy_rot()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		managers.statistics:use_grenade_crate()
@@ -337,7 +347,7 @@ function PlayerEquipment:use_ecm_jammer()
 
 	if ray then
 		local attach_unit = ray.unit
-		local attach_sync_unit, attach_sync_unit_id = nil
+		local attach_sync_unit, attach_sync_unit_id
 
 		if attach_unit:id() ~= -1 then
 			attach_sync_unit = attach_unit
@@ -354,6 +364,7 @@ function PlayerEquipment:use_ecm_jammer()
 			end
 
 			local attach_unit_id = attach_unit:unit_data().unit_id
+
 			attach_sync_unit_id = attach_unit_id ~= 0 and verify_id_for_sync(attach_unit_id) or verify_id_for_sync(attach_unit:editor_id()) or nil
 
 			if type(attach_sync_unit_id) == "number" then
@@ -382,6 +393,7 @@ function PlayerEquipment:use_ecm_jammer()
 			mrotation.multiply(relative_rot, world_rot)
 
 			relative_rot = Rotation(relative_rot:yaw(), relative_rot:pitch(), relative_rot:roll())
+
 			local sync_body_index = attach_unit:get_body_index(attach_body:name())
 			local duration_multiplier = managers.player:upgrade_level("ecm_jammer", "duration_multiplier", 0) + managers.player:upgrade_level("ecm_jammer", "duration_multiplier_2", 0) + 1
 
@@ -433,6 +445,7 @@ function PlayerEquipment:valid_shape_placement(equipment_id, equipment_data)
 	if ray then
 		local pos = ray.position
 		local rot = self._unit:movement():m_head_rot()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		if not alive(self._dummy_unit) then
@@ -445,7 +458,8 @@ function PlayerEquipment:valid_shape_placement(equipment_id, equipment_data)
 		self._dummy_unit:set_rotation(rot)
 
 		valid = valid and math.dot(ray.normal, math.UP) > 0.25
-		local find_start_pos, find_end_pos, find_radius = nil
+
+		local find_start_pos, find_end_pos, find_radius
 
 		if equipment_id == "ammo_bag" then
 			find_start_pos = pos + math.UP * 20
@@ -491,7 +505,7 @@ function PlayerEquipment:_can_place(eq_id)
 		local inventory = self._unit:inventory()
 
 		for _, weapon in pairs(inventory:available_selections()) do
-			if weapon.unit:base():get_ammo_ratio() < min_ammo_cost then
+			if min_ammo_cost > weapon.unit:base():get_ammo_ratio() then
 				managers.hint:show_hint("sentry_not_enough_ammo_to_place")
 
 				return false
@@ -518,6 +532,7 @@ function PlayerEquipment:_sentry_gun_ammo_cost(sentry_uid)
 	local deployement_cost = SentryGunBase.DEPLOYEMENT_COST[managers.player:upgrade_value("sentry_gun", "cost_reduction", 1)]
 	local inventory = self._unit:inventory()
 	local hud = managers.hud
+
 	self._sentry_ammo_cost = self._sentry_ammo_cost or {}
 	self._sentry_ammo_cost[sentry_uid] = self._sentry_ammo_cost[sentry_uid] or {
 		{},
@@ -526,6 +541,7 @@ function PlayerEquipment:_sentry_gun_ammo_cost(sentry_uid)
 
 	for index, weapon in pairs(inventory:available_selections()) do
 		local ammo_taken = weapon.unit:base():remove_ammo(deployement_cost)
+
 		self._sentry_ammo_cost[sentry_uid][index] = ammo_taken
 
 		hud:set_ammo_amount(index, weapon.unit:base():ammo_info())
@@ -556,12 +572,13 @@ function PlayerEquipment:use_sentry_gun(selected_index, unit_idstring_index)
 	if ray and self:_can_place("sentry_gun") then
 		local pos = ray.position
 		local rot = self:_m_deploy_rot()
+
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		managers.statistics:use_sentry_gun()
 
 		local ammo_level = managers.player:upgrade_value("sentry_gun", "extra_ammo_multiplier", 1)
-		local armor_multiplier = 1 + managers.player:upgrade_value("sentry_gun", "armor_multiplier", 1) - 1 + managers.player:upgrade_value("sentry_gun", "armor_multiplier2", 1) - 1
+		local armor_multiplier = 1 + (managers.player:upgrade_value("sentry_gun", "armor_multiplier", 1) - 1) + (managers.player:upgrade_value("sentry_gun", "armor_multiplier2", 1) - 1)
 		local can_switch_fire_mode = managers.player:has_category_upgrade("sentry_gun", "ap_bullets")
 		local equipment_name = managers.player:equipment_in_slot(selected_index)
 		local fire_mode_index = can_switch_fire_mode and managers.player:get_equipment_setting(equipment_name, "fire_mode") or 1
@@ -736,7 +753,9 @@ function PlayerEquipment:use_throwable_watch(watch_unit)
 
 		if hit_body:extension() and hit_body:extension().damage then
 			local lock_damage = projectile_data.damage
+
 			lock_damage = math.clamp(lock_damage, 0, 200)
+
 			local damaged = hit_body:extension().damage:damage_lock(self._unit, col_ray.normal, col_ray.position, col_ray.direction, lock_damage)
 
 			if damaged then

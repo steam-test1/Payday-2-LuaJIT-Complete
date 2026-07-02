@@ -7,6 +7,7 @@ function ModifierShieldPhalanx:init(data)
 	ModifierShieldPhalanx.super.init(data)
 
 	local copied_tweak = deep_clone(tweak_data.group_ai.unit_categories.Phalanx_minion)
+
 	copied_tweak.is_captain = nil
 	tweak_data.group_ai.unit_categories.CS_shield = copied_tweak
 	tweak_data.group_ai.unit_categories.FBI_shield = copied_tweak

@@ -37,9 +37,11 @@ function ElementHeatTrigger:init(...)
 end
 
 function ElementHeatTrigger:add_callback()
+	return
 end
 
 function ElementHeatTrigger:remove_callback()
+	return
 end
 
 function ElementHeatTrigger:heat_changed()

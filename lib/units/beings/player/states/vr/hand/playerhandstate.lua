@@ -8,6 +8,7 @@ function PlayerHandState:init(name, hand_state_machine, hand_unit, sequence)
 end
 
 function PlayerHandState:destroy()
+	return
 end
 
 function PlayerHandState:name()
@@ -25,6 +26,7 @@ function PlayerHandState:at_enter(previous_state, params)
 end
 
 function PlayerHandState:at_exit(next_state)
+	return
 end
 
 function PlayerHandState:default_transition(next_state, params)
@@ -33,4 +35,5 @@ function PlayerHandState:default_transition(next_state, params)
 end
 
 function PlayerHandState:set_controller_enabled(enabled)
+	return
 end

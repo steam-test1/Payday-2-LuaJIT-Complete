@@ -5,6 +5,7 @@ function ImageBoxGui:init(...)
 end
 
 function ImageBoxGui:update(t, dt)
+	return
 end
 
 function ImageBoxGui:_create_text_box(ws, title, text, content_data, text_config, image_config)
@@ -14,6 +15,7 @@ end
 
 function ImageBoxGui:_create_image_box(image_config)
 	image_config = image_config or {}
+
 	local image_shapes = image_config.shapes or {}
 	local image_textures = image_config.textures or image_config.texture and {
 		image_config.texture
@@ -37,8 +39,7 @@ function ImageBoxGui:_create_image_box(image_config)
 	local scroll_panel = info_area:child("scroll_panel")
 	local halign_not_center = image_halign ~= Idstring("center")
 	local valign_not_center = image_valign ~= Idstring("center")
-	local grow_w = 0
-	local grow_h = 0
+	local grow_w, grow_h = 0, 0
 
 	if halign_not_center then
 		grow_w = image_width + image_padding * 2
@@ -51,8 +52,7 @@ function ImageBoxGui:_create_image_box(image_config)
 	main:grow(grow_w, grow_h)
 	info_area:set_size(main:size())
 
-	local move_x = 0
-	local move_y = 0
+	local move_x, move_y = 0, 0
 
 	if image_halign == Idstring("left") then
 		move_x = grow_w
@@ -68,6 +68,7 @@ function ImageBoxGui:_create_image_box(image_config)
 
 	self._panel_w = main:w()
 	self._panel_h = main:h()
+
 	local top_line = self._panel:child("top_line")
 	local bottom_line = self._panel:child("bottom_line")
 	local scroll_up_indicator_shade = self._panel:child("scroll_up_indicator_shade")
@@ -131,8 +132,7 @@ function ImageBoxGui:_create_image_box(image_config)
 		end
 
 		if keep_texure_ratio then
-			local texture_width = image:video_width()
-			local texture_height = image:video_height()
+			local texture_width, texture_height = image:video_width(), image:video_height()
 			local image_aspect = math.max(image_width, 1) / math.max(image_height, 1)
 			local texture_aspect = math.max(texture_width, 1) / math.max(texture_height, 1)
 			local aspect = texture_aspect / image_aspect
@@ -149,7 +149,7 @@ function ImageBoxGui:_create_image_box(image_config)
 	if image_shapes then
 		for _, shape in pairs(image_shapes) do
 			local type = shape.type or rect
-			local new_shape = nil
+			local new_shape
 
 			if type == "rect" then
 				new_shape = image_panel:rect({
@@ -228,6 +228,7 @@ end
 
 function ImageBoxGui:texture_done_clbk(params, texture_ids)
 	params = params or {}
+
 	local panel = params.panel or params[1]
 	local keep_aspect_ratio = params.keep_aspect_ratio
 	local blend_mode = params.blend_mode
@@ -266,7 +267,7 @@ function ImageBoxGui:texture_done_clbk(params, texture_ids)
 			th = 1
 		end
 
-		local sw = math.min(pw, ph * tw / th)
+		local sw = math.min(pw, ph * (tw / th))
 		local sh = math.min(ph, pw / (tw / th))
 
 		image:set_size(math.round(sw), math.round(sh))

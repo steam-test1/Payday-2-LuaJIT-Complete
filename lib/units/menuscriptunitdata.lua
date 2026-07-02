@@ -15,6 +15,7 @@ function UnitBase:init(unit, update_enabled)
 end
 
 function UnitBase:destroy(unit)
+	return
 end
 
 function UnitBase:pre_destroy(unit)

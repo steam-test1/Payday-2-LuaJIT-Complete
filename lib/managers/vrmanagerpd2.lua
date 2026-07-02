@@ -49,6 +49,7 @@ function VRViewport:active()
 end
 
 function VRViewport:destroy()
+	return
 end
 
 function VRViewport:render()
@@ -85,26 +86,26 @@ function VRManagerPD2:init()
 	self._super_sample_scale = VRManager:super_sample_scale()
 	self._viewports = {}
 	self._default = {
+		arm_animation = false,
+		auto_reload = true,
+		autowarp_length = "long",
+		belt_distance = 10,
 		belt_height_ratio = 0.6,
+		belt_size = 96,
+		belt_snap = 72,
+		collision_instant_teleport = false,
+		default_tablet_hand = "left",
+		default_weapon_hand = "right",
+		enable_dead_zone_warp = true,
+		fadeout_type = "fadeout_smooth",
+		grip_toggle = true,
 		height = 140,
 		keep_items_in_hand = false,
-		autowarp_length = "long",
-		weapon_precision_mode = true,
-		belt_snap = 72,
-		auto_reload = true,
-		warp_zone_size = 0,
-		belt_size = 96,
-		fadeout_type = "fadeout_smooth",
-		default_tablet_hand = "left",
-		enable_dead_zone_warp = true,
-		zipline_screen = true,
-		rotate_player_angle = 45,
-		collision_instant_teleport = false,
-		default_weapon_hand = "right",
-		arm_animation = false,
 		movement_type = "warp",
-		belt_distance = 10,
-		grip_toggle = true,
+		rotate_player_angle = 45,
+		warp_zone_size = 0,
+		weapon_precision_mode = true,
+		zipline_screen = true,
 		dead_zone_size = self._is_default_hmd and 50 or 35,
 		belt_layout = {
 			bag = {
@@ -272,6 +273,7 @@ function VRManagerPD2:apply_arcade_settings()
 	managers.user:set_setting("adaptive_quality", true)
 
 	local dirty = false
+
 	dirty = dirty or RenderSettings.texture_quality_default ~= "high"
 	dirty = dirty or RenderSettings.shadow_quality_default ~= "low"
 	dirty = dirty or RenderSettings.max_anisotropy ~= 2
@@ -321,6 +323,7 @@ function VRManagerPD2:paused_update(t, dt)
 end
 
 function VRManagerPD2:end_update(t, dt)
+	return
 end
 
 function VRManagerPD2:new_vp(x, y, width, height, name, prio)
@@ -357,6 +360,7 @@ end
 
 function VRManagerPD2:_on_adaptive_quality_setting_changed(setting, old, new)
 	local setting = new and true or false
+
 	self._use_adaptive_quality = setting
 
 	if RenderSettings.adaptive_quality ~= setting then
@@ -372,7 +376,7 @@ function VRManagerPD2:set_force_disable_low_adaptive_quality(disable)
 end
 
 function VRManagerPD2:_update_adaptive_quality_level(t)
-	if self._update_super_sample_scale_t and self._update_super_sample_scale_t < t then
+	if self._update_super_sample_scale_t and t > self._update_super_sample_scale_t then
 		self._update_super_sample_scale_t = nil
 	end
 
@@ -397,15 +401,18 @@ function VRManagerPD2:_update_adaptive_quality_level(t)
 	if self._use_adaptive_quality and quality_level < 7 then
 		local tres = VRManager:target_resolution()
 		local scaling = self._adaptive_scale[quality_level]
+
 		x_scale = scaling / self._adaptive_scale_max
+
 		local res_x = math.floor(tres.x * x_scale)
 
 		if res_x % 4 > 0.01 then
-			res_x = res_x + 4 - res_x % 4
+			res_x = res_x + (4 - res_x % 4)
 		end
 
 		x_scale = res_x / tres.x + 0.05 / tres.x
 		y_scale = scaling / self._adaptive_scale_max
+
 		local res_y = math.floor(tres.y * y_scale)
 
 		if res_y % 2 > 0.01 then
@@ -507,6 +514,7 @@ function VRManagerPD2:set_setting(setting, value)
 	end
 
 	local old_value = self._global[setting]
+
 	self._global[setting] = value
 
 	managers.savefile:setting_changed()
@@ -592,7 +600,7 @@ function VRManagerPD2.overlay_helper(panel)
 			end
 		else
 			local rt = object:render_template()
-			local swap = nil
+			local swap
 
 			for _, s in ipairs(rt_swap) do
 				if s[1] == rt then

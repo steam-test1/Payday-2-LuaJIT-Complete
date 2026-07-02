@@ -15,6 +15,7 @@ end
 
 function ParseAllDramas:parse_all_dramas()
 	self._dramas = {}
+
 	local file_name = "gamedata/dramas/index"
 	local data = PackageManager:script_data(Idstring("drama_index"), file_name:id())
 
@@ -28,7 +29,7 @@ end
 function ParseAllDramas:_load_drama(name)
 	local file_name = "gamedata/dramas/" .. name
 	local data = PackageManager:script_data(Idstring("drama"), file_name:id())
-	local id = nil
+	local id
 
 	for _, c in ipairs(data) do
 		if c.id then
@@ -63,10 +64,10 @@ function ParseAllDramas:start_parsing()
 	})
 
 	self._text = self._panel:text({
-		text = "",
-		name = "text",
 		align = "center",
 		layer = 1,
+		name = "text",
+		text = "",
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	})
@@ -87,6 +88,7 @@ function ParseAllDramas:start_parsing()
 		local TIME = 0.8
 		local TIME_PER_SOURCE = TIME / max_sound_events
 		local t = TIME_PER_SOURCE
+
 		self._failed_events = {}
 		self._non_string_events = {}
 

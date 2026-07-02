@@ -14,6 +14,7 @@ function CoreDeprecatedHubElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local deprecated_sizer = EWS:BoxSizer("VERTICAL")
 
 	deprecated_sizer:add(EWS:StaticText(panel, "This hub element is deprecated", 0, ""), 1, 0, "ALIGN_CENTER")

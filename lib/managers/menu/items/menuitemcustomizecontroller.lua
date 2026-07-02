@@ -13,11 +13,11 @@ function MenuItemCustomizeController:setup_gui(node, row_item)
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
-	row_item.controller_name = node:_text_item_part(row_item, row_item.gui_panel, node:_left_align())
+	row_item.controller_name = node._text_item_part(node, row_item, row_item.gui_panel, node._left_align(node))
 
 	row_item.controller_name:set_align("right")
 
-	row_item.controller_binding = node:_text_item_part(row_item, row_item.gui_panel, node:_left_align(), "left")
+	row_item.controller_binding = node._text_item_part(node, row_item, row_item.gui_panel, node._left_align(node), "left")
 
 	row_item.controller_binding:set_align("left")
 	row_item.controller_binding:set_text(string.upper(row_item.item:parameters().binding or ""))
@@ -63,9 +63,9 @@ function MenuItemCustomizeController:_layout(node, row_item)
 	local x, y, w, h = row_item.controller_name:text_rect()
 
 	row_item.controller_name:set_height(h)
-	row_item.controller_name:set_right(row_item.gui_panel:w() - node:align_line_padding())
+	row_item.controller_name:set_right(row_item.gui_panel:w() - node.align_line_padding(node))
 	row_item.gui_panel:set_height(h)
 	row_item.controller_binding:set_font_size(tweak_data.menu.customize_controller_size)
 	row_item.controller_binding:set_height(h)
-	row_item.controller_binding:set_left(node:_right_align())
+	row_item.controller_binding:set_left(node._right_align(node))
 end

@@ -1,8 +1,8 @@
 local medium_font = tweak_data.menu.pd2_medium_font
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local textparams = {
-	text = "",
 	layer = 1,
+	text = "",
 	x = 10 + medium_font_size * 2 + 25,
 	font = medium_font,
 	font_size = medium_font_size
@@ -17,18 +17,19 @@ local notification_actions = {
 		text_id = "menu_socialhub_notification_lobby"
 	}
 }
+
 SocialHubNotification = SocialHubNotification or class()
 
 function SocialHubNotification:init(ws, fullscreen_ws, node)
 	self._ws = ws
 	self._fullscreen_ws = fullscreen_ws
 	self._panel = self._ws:panel():panel({
-		w = 500,
-		layer = 500
+		layer = 500,
+		w = 500
 	})
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel({
-		w = 500,
-		layer = 500
+		layer = 500,
+		w = 500
 	})
 	self._notifications = {}
 end
@@ -48,7 +49,7 @@ function SocialHubNotification:push_notification(type, user, small_size)
 
 	managers.menu_component:post_event("shub_notification")
 
-	local free_notification = nil
+	local free_notification
 
 	for index, item in table.reverse_ipairs(self._notifications) do
 		if not item.notification:visible() then
@@ -69,9 +70,9 @@ function SocialHubNotification:push_notification(type, user, small_size)
 			color = tweak_data.screen_colors.button_stage_3
 		})
 		notification_panel:bitmap({
-			texture = "guis/textures/test_blur_df",
+			layer = -1,
 			render_template = "VertexColorTexturedBlur3D",
-			layer = -1
+			texture = "guis/textures/test_blur_df"
 		})
 		BoxGuiObject:new(notification_panel, {
 			sides = {
@@ -83,10 +84,10 @@ function SocialHubNotification:push_notification(type, user, small_size)
 		})
 
 		local action_icon = notification_panel:bitmap({
-			texture = "guis/dlcs/shub/textures/epic_player_icon",
-			y = 10,
-			x = 10,
 			layer = -1,
+			texture = "guis/dlcs/shub/textures/epic_player_icon",
+			x = 10,
+			y = 10,
 			w = notification_panel:h() - 20,
 			h = notification_panel:h() - 20
 		})
@@ -126,7 +127,7 @@ function SocialHubNotification:push_notification(type, user, small_size)
 
 	free_notification.notification:set_x(-free_notification.notification:w())
 	free_notification.notification:set_visible(true)
-	free_notification.notification:animate(function (o)
+	free_notification.notification:animate(function(o)
 		local t = 0
 		local dt = 0
 		local speed = 2
@@ -167,4 +168,5 @@ function SocialHubNotification:push_notification(type, user, small_size)
 end
 
 function SocialHubNotification:close()
+	return
 end

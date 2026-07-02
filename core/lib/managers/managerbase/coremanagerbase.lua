@@ -64,33 +64,34 @@ function ManagerBase:_all_active_requested()
 end
 
 function ManagerBase:_ao_by_name(name)
-	return table.find_value(self.__aos, function (ao)
+	return table.find_value(self.__aos, function(ao)
 		return ao:name() == name
 	end)
 end
 
 function ManagerBase:_all_ao_by_prio(prio)
-	return table.find_all_values(self.__aos, function (ao)
+	return table.find_all_values(self.__aos, function(ao)
 		return self.__ao2prio[ao] == prio
 	end)
 end
 
 function ManagerBase:_all_really_active_by_prio(prio)
-	return table.find_all_values(self.__really_active, function (ao)
+	return table.find_all_values(self.__really_active, function(ao)
 		return self.__ao2prio[ao] == prio
 	end)
 end
 
 function ManagerBase:_all_active_requested_by_prio(prio)
-	return table.find_all_values(self.__active_requested, function (ao)
+	return table.find_all_values(self.__active_requested, function(ao)
 		return self.__ao2prio[ao] == prio
 	end)
 end
 
 function ManagerBase:_prioritize_and_activate()
-	self.__active_requested = table.find_all_values(self.__aos, function (ao)
+	self.__active_requested = table.find_all_values(self.__aos, function(ao)
 		return ao:active_requested()
 	end)
+
 	local req_prio = math.huge
 
 	for _, ao in ipairs(self.__active_requested) do
@@ -117,7 +118,7 @@ function ManagerBase:_prioritize_and_activate()
 		end
 	end
 
-	self.__really_active = table.find_all_values(self.__aos, function (ao)
+	self.__really_active = table.find_all_values(self.__aos, function(ao)
 		return ao:really_active()
 	end)
 	self.__changed = true

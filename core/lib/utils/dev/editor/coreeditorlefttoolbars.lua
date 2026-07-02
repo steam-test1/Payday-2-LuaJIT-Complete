@@ -15,21 +15,21 @@ function CoreEditor:build_left_toolbar()
 	self._left_upper_toolbar:add_check_tool("TB_DRAW_OCCLUDERS", "Draw Occluders", CoreEWS.image_path("world_editor\\draw_occluders_16x16.png"), "Toggle debug draw of occluder objects")
 	self._left_upper_toolbar:set_tool_state("TB_DRAW_OCCLUDERS", self._draw_occluders)
 	self._left_upper_toolbar:connect("TB_DRAW_OCCLUDERS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "toolbar_toggle"), {
-		value = "_draw_occluders",
+		menu = "_debug_menu",
 		toolbar = "_left_upper_toolbar",
-		menu = "_debug_menu"
+		value = "_draw_occluders"
 	})
 	self._left_upper_toolbar:add_check_tool("TB_DRAW_HIDDEN_UNITS", "Draw Hidden Units", CoreEWS.image_path("world_editor\\draw_hidden_units_16x16.png"), "Toggle debug draw of hidden units")
 	self._left_upper_toolbar:set_tool_state("TB_DRAW_HIDDEN_UNITS", self._draw_hidden_units)
 	self._left_upper_toolbar:connect("TB_DRAW_HIDDEN_UNITS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "toolbar_toggle"), {
-		value = "_draw_hidden_units",
-		toolbar = "_left_upper_toolbar"
+		toolbar = "_left_upper_toolbar",
+		value = "_draw_hidden_units"
 	})
 	self._left_upper_toolbar:add_check_tool("TB_DRAW_BODIES", "Draw Bodies", CoreEWS.image_path("blob_16x16.png"), "Toggle debug draw of bodies")
 	self._left_upper_toolbar:set_tool_state("TB_DRAW_BODIES", self._draw_bodies_on)
 	self._left_upper_toolbar:connect("TB_DRAW_BODIES", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "toolbar_toggle"), {
-		value = "_draw_bodies_on",
-		toolbar = "_left_upper_toolbar"
+		toolbar = "_left_upper_toolbar",
+		value = "_draw_bodies_on"
 	})
 	self._left_upper_toolbar:add_check_tool("TB_FRUSTUM_FREEZE", "Frustum freeze/unfreeze", CoreEws.image_path("sequencer\\clip_icon_camera_00.png"), "Toggle frustum freeze on/off")
 	self._left_upper_toolbar:set_tool_state("TB_FRUSTUM_FREEZE", false)
@@ -73,6 +73,7 @@ function CoreEditor:build_left_toolbar()
 end
 
 function CoreEditor:_project_add_left_upper_toolbar_tool()
+	return
 end
 
 function CoreEditor:show_element_flow()
@@ -112,6 +113,7 @@ function CoreEditor:on_list_units()
 
 	for _, u in ipairs(units) do
 		total = total + 1
+
 		local name = u:name():s()
 
 		if amount[name] then

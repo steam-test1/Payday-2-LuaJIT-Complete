@@ -2502,7 +2502,9 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+
 	local crime_spree_atlas_size = 128
+
 	self.crime_spree_health = {
 		texture = "guis/dlcs/cee/textures/pd2/crime_spree/modifiers_atlas",
 		texture_rect = {
@@ -2737,8 +2739,10 @@ function HudIconsTweakData:init()
 			crime_spree_atlas_size
 		}
 	}
+
 	local csm_w = 280
 	local csm_h = 140
+
 	self.csm_biker_1 = {
 		texture = "guis/dlcs/cee/textures/pd2/crime_spree/missions_atlas",
 		texture_rect = {
@@ -3279,7 +3283,9 @@ function HudIconsTweakData:init()
 			csm_h
 		}
 	}
+
 	local csb_size = 128
+
 	self.csb_reload = {
 		texture = "guis/dlcs/cee/textures/pd2/crime_spree/boosts_atlas",
 		texture_rect = {
@@ -11447,6 +11453,7 @@ function HudIconsTweakData:init()
 	self.skill_6 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
 	self.skill_7 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
 	self.skill_8 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+
 	local sidebar_atlas = "guis/dlcs/new/textures/pd2/crimenet/crimenet_sidebar_icons"
 
 	self:create_grid_atlas(sidebar_atlas, 256, 256, 64, 64)
@@ -15501,13 +15508,13 @@ function HudIconsTweakData:init()
 	}
 end
 
-local atlas_data = nil
+local atlas_data
 
 function HudIconsTweakData:create_grid_atlas(image_name, tex_w, tex_h, grid_w, grid_h)
 	atlas_data = atlas_data or {}
 	atlas_data[image_name] = {
-		y = 0,
 		x = 0,
+		y = 0,
 		tex_w = tex_w,
 		tex_h = tex_h,
 		grid_w = grid_w,
@@ -15530,9 +15537,10 @@ function HudIconsTweakData:create_next_icon(image_name)
 			data.grid_h
 		}
 	}
+
 	data.x = data.x + data.grid_w
 
-	if data.tex_w <= data.x then
+	if data.x >= data.tex_w then
 		data.x = 0
 		data.y = data.y + data.grid_h
 	end

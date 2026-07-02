@@ -1,45 +1,46 @@
-PlayerAction.StockholmSyndromeTrade = {
-	Priority = 1,
-	Function = function (pos, peer_id)
-		managers.hint:show_hint("skill_stockholm_syndrome_trade")
+PlayerAction.StockholmSyndromeTrade = {}
+PlayerAction.StockholmSyndromeTrade.Priority = 1
 
-		local controller = managers.controller:create_controller("player_custody", nil, false)
+function PlayerAction.StockholmSyndromeTrade.Function(pos, peer_id)
+	managers.hint:show_hint("skill_stockholm_syndrome_trade")
 
-		controller:enable()
+	local controller = managers.controller:create_controller("player_custody", nil, false)
 
-		local quit = false
-		local previous_state = game_state_machine:current_state_name()
-		local co = coroutine.running()
+	controller:enable()
 
-		while not quit do
-			if controller:get_input_pressed("jump") and not managers.hud:chat_focus() then
-				if Network:is_server() then
-					managers.player:init_auto_respawn_callback(pos, peer_id, true)
-					managers.player:change_stockholm_syndrome_count(-1)
-				else
-					managers.network:session():send_to_host("auto_respawn_player", pos, peer_id)
-					managers.network:session():send_to_host("sync_set_super_syndrome", peer_id, false)
-				end
+	local quit = false
+	local previous_state = game_state_machine:current_state_name()
+	local co = coroutine.running()
 
-				quit = true
+	while not quit do
+		if controller:get_input_pressed("jump") and not managers.hud:chat_focus() then
+			if Network:is_server() then
+				managers.player:init_auto_respawn_callback(pos, peer_id, true)
+				managers.player:change_stockholm_syndrome_count(-1)
+			else
+				managers.network:session():send_to_host("auto_respawn_player", pos, peer_id)
+				managers.network:session():send_to_host("sync_set_super_syndrome", peer_id, false)
 			end
 
-			local current_state = game_state_machine:current_state_name()
-
-			if previous_state == "ingame_waiting_for_respawn" and current_state ~= previous_state then
-				quit = true
-			end
-
-			previous_state = current_state
-
-			coroutine.yield(co)
+			quit = true
 		end
 
-		controller:destroy()
+		local current_state = game_state_machine:current_state_name()
 
-		controller = nil
+		if previous_state == "ingame_waiting_for_respawn" and current_state ~= previous_state then
+			quit = true
+		end
+
+		previous_state = current_state
+
+		coroutine.yield(co)
 	end
-}
+
+	controller:destroy()
+
+	controller = nil
+end
+
 StockholmSyndromeTradeAction = StockholmSyndromeTradeAction or class()
 
 function StockholmSyndromeTradeAction:init(pos, peer_id)

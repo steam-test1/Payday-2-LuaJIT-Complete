@@ -7,10 +7,13 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	print("[ClientNetworkSession:request_join_host]", host_rpc, result_cb)
 
 	self._cb_find_game = result_cb
+
 	local host_name = managers.network.matchmake:game_owner_name()
 	local host_account_type_str = managers.network.matchmake:game_owner_account_type_str()
 	local host_account_id = managers.network.matchmake:game_owner_account_id()
+
 	host_name = managers.network:sanitize_peer_name(host_name)
+
 	local drop_in_name = host_name
 
 	if host_account_type_str == "STEAM" then
@@ -42,6 +45,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	local rank = managers.experience:current_rank()
 	local join_stinger_index = managers.infamy:selected_join_stinger_index()
 	local join_req_id = self:_get_join_attempt_identifier()
+
 	self._join_request_params = {
 		host_rpc = host_rpc,
 		params = {
@@ -56,6 +60,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 			join_req_id
 		}
 	}
+
 	local account_type = self._local_peer:account_type_str()
 
 	if account_type == "EPIC" then
@@ -90,6 +95,7 @@ function ClientNetworkSession:on_auth_request_received(reply, auth_ticket, sende
 	end
 
 	local cb = self._cb_find_game
+
 	self._last_join_request_t = TimerManager:wall():time()
 
 	if reply == HostNetworkSession.JOIN_REPLY.OK then
@@ -197,6 +203,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	end
 
 	local cb = self._cb_find_game
+
 	self._cb_find_game = nil
 
 	if reply == HostNetworkSession.JOIN_REPLY.OK then
@@ -274,6 +281,7 @@ function ClientNetworkSession:on_join_request_timed_out()
 	self:_cancel_crime_spree()
 
 	local cb = self._cb_find_game
+
 	self._cb_find_game = nil
 
 	cb("TIMED_OUT")
@@ -311,7 +319,7 @@ function ClientNetworkSession:on_host_discovered(new_host, new_host_name, level_
 			state = state,
 			difficulty = difficulty
 		}
-		local already_known = nil
+		local already_known
 
 		for i_host, host_data in ipairs(self._discovered_hosts) do
 			if host_data.host_name == new_host_name and host_data.rpc:ip_at_index(0) == new_host:ip_at_index(0) then
@@ -379,7 +387,7 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_a
 		return
 	end
 
-	local rpc = nil
+	local rpc
 
 	if self._server_protocol == SystemInfo:matchmaking_protocol() then
 		rpc = Network:handshake(peer_user_id, nil, SystemInfo:matchmaking_protocol())
@@ -389,16 +397,20 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_a
 
 	if SystemInfo:platform() == Idstring("X360") then
 		local ip = managers.network.matchmake:internal_address(xuid)
+
 		rpc = Network:handshake(ip, managers.network.DEFAULT_PORT, "TCP_IP")
 
 		Network:add_co_client(rpc)
 	end
 
-	if SystemInfo:platform() ~= self._ids_WIN32 then
+	if SystemInfo:platform() == self._ids_WIN32 then
+		-- Nothing
+	else
 		peer_user_id = false
 	end
 
 	name = managers.network:sanitize_peer_name(name)
+
 	local drop_in_name = name
 
 	if peer_account_type_str == "STEAM" then
@@ -552,7 +564,7 @@ function ClientNetworkSession:update()
 	if not self._closing then
 		local wall_time = TimerManager:wall():time()
 
-		if self._server_peer and self._host_sanity_send_t and self._host_sanity_send_t < wall_time then
+		if self._server_peer and self._host_sanity_send_t and wall_time > self._host_sanity_send_t then
 			self._server_peer:send("sanity_check_network_status")
 
 			self._host_sanity_send_t = wall_time + self.HOST_SANITY_CHECK_INTERVAL
@@ -641,9 +653,11 @@ function ClientNetworkSession:_upd_request_join_resend(wall_time)
 		return
 	end
 
-	if ClientNetworkSession.JOIN_REQUEST_TIMEOUT < wall_time - self._first_join_request_t and self._server_peer and self._cb_find_game then
+	if wall_time - self._first_join_request_t > ClientNetworkSession.JOIN_REQUEST_TIMEOUT and self._server_peer and self._cb_find_game then
 		self._last_join_request_t = nil
+
 		local cb = self._cb_find_game
+
 		self._cb_find_game = nil
 
 		self:remove_peer(self._server_peer, 1)
@@ -652,7 +666,7 @@ function ClientNetworkSession:_upd_request_join_resend(wall_time)
 		return
 	end
 
-	if ClientNetworkSession.HOST_REQUEST_JOIN_INTERVAL < wall_time - self._last_join_request_t then
+	if wall_time - self._last_join_request_t > ClientNetworkSession.HOST_REQUEST_JOIN_INTERVAL then
 		local account_type = self._local_peer:account_type_str()
 
 		if self._join_request_params.ticket then

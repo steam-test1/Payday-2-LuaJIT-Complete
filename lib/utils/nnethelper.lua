@@ -113,6 +113,7 @@ local function rot_from_shortest_arc(from, to)
 end
 
 NNetHelper = NNetHelper or {}
+
 local VALUE_SCALE = 20
 
 function NNetHelper.create_body_config(arm_length, head_to_shoulder, shoulder_width)
@@ -197,6 +198,7 @@ function NNetHelper.preprocess_input_sample(input_sample)
 	local rpos, rrot = unpack(input_sample.right_controller)
 	local lpos, lrot = unpack(input_sample.left_controller)
 	local hmdpos, hmdrot = unpack(input_sample.hmd)
+
 	rpos = mvector3.copy(rpos)
 	lpos = mvector3.copy(lpos)
 	rrot = Rotation() * rrot
@@ -332,6 +334,7 @@ function NNetHelper.inv_transform_output_sample(input, output)
 	mvector3.subtract_scaled(p, lsp, cfg.half_shoulder_width)
 
 	local len = mvector3.normalize(p)
+
 	len = math.min(len * cfg.inv_arm_length, 1)
 	len = len * alen
 
@@ -366,6 +369,7 @@ function NNetHelper.inv_transform_output_sample(input, output)
 	mvector3.subtract_scaled(p, rsp, cfg.half_shoulder_width)
 
 	local len = mvector3.normalize(p)
+
 	len = math.min(len * cfg.inv_arm_length, 1)
 	len = len * alen
 
@@ -421,6 +425,7 @@ function NNetHelper.inv_transform_output_sample(input, output)
 end
 
 NNetHelper.ENABLE_CONSTRAINTS = true
+
 local tmprot1 = Rotation()
 local tmprot2 = Rotation()
 local tmprot3 = Rotation()
@@ -494,6 +499,7 @@ function apply_rotation_constraints(pose, index)
 		35
 	})
 	pose.hand[index] = ConstraintHelper.constrain_rotation(pose.fore_arm[index], pose.hand[index], CONSTRAINT_ANGLES_HAND)
+
 	local temp = ConstraintHelper.constrain_orientation(pose.fore_arm[index], pose.hand[index], {
 		-45,
 		90
@@ -521,6 +527,7 @@ function apply_model_constraints(pose, index)
 	mvector3.add(fp, ap)
 
 	fp = ellipse_clamp(fp, 15, 15)
+
 	local dir = ap
 
 	mvector3.subtract(dir, fp)
@@ -551,6 +558,7 @@ local ARM_BASE_ROTATION = Rotation(0, -45, 0)
 
 local function calculate_arm_pose(pose, index, shoulder, other_shoulder, elbow, hand, hand_rotation, prev_pose)
 	hand_rotation = Rotation(-hand_rotation:y(), -hand_rotation:x(), -hand_rotation:z())
+
 	local shoulder_forward = tmpvec1
 
 	mvector3.set(shoulder_forward, shoulder)
@@ -576,7 +584,9 @@ local function calculate_arm_pose(pose, index, shoulder, other_shoulder, elbow, 
 	mvector3.cross(shoulder_right, shoulder_forward, shoulder_up)
 
 	local shoulder_rotation = Rotation(shoulder_forward, shoulder_up, shoulder_right)
+
 	shoulder_rotation = SHOULDER_BASE_ROTATION * shoulder_rotation
+
 	local arm_forward = tmpvec1
 	local v = tmpvec3
 
@@ -618,6 +628,7 @@ local function calculate_arm_pose(pose, index, shoulder, other_shoulder, elbow, 
 	end
 
 	local lift_angle = mvector3.dot(arm_forward, math.UP) * -45
+
 	lift_angle = math.max(lift_angle, 5)
 
 	mrotation.multiply(shoulder_rotation, Rotation(lift_angle, 0, 0))
@@ -666,10 +677,12 @@ local function calculate_arm_pose(pose, index, shoulder, other_shoulder, elbow, 
 
 	if mrotation.dot(arm_rotation, r) < 0 then
 		local x, y, z, w = r:raw()
+
 		r = Rotation(-x, -y, -z, -w)
 	end
 
 	local fore_arm_rotation = arm_rotation * r
+
 	fore_arm_rotation = Rotation(fore_arm_rotation:x(), arm_rotation:y(), fore_arm_rotation:z())
 
 	mrotation.normalize(fore_arm_rotation)
@@ -686,6 +699,7 @@ local function calculate_arm_pose(pose, index, shoulder, other_shoulder, elbow, 
 	end
 
 	pose.fore_arm[index + 2] = fore_arm_rotation * Rotation()
+
 	local proj = fore_arm_rotation:x()
 
 	mvector3.multiply(proj, mvector3.dot(arm_rotation:z(), fore_arm_rotation:x()))
@@ -696,6 +710,7 @@ local function calculate_arm_pose(pose, index, shoulder, other_shoulder, elbow, 
 
 	if mrotation.dot(arm_rotation, r) < 0 then
 		local x, y, z, w = r:raw()
+
 		r = Rotation(-x, -y, -z, -w)
 	end
 
@@ -757,6 +772,7 @@ local function apply_aim_constraint(index, target_pos, align_dir, pose, swap, pr
 
 	if mrotation.dot(hand_rotation, q) < 0 then
 		local x, y, z, w = q:raw()
+
 		q = Rotation(-x, -y, -z, -w)
 	end
 

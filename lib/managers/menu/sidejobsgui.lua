@@ -16,7 +16,7 @@ end
 function SideJobsGui:populate_tabs_data(tabs_data)
 	table.insert(tabs_data, {
 		name_id = "menu_cs_daily_challenge",
-		width_multiplier = 1,
-		page_class = "CustomSafehouseGuiPageDaily"
+		page_class = "CustomSafehouseGuiPageDaily",
+		width_multiplier = 1
 	})
 end

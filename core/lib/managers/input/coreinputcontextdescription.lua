@@ -25,6 +25,7 @@ end
 
 function ContextDescription:device_layout_description(device_type, layout_name)
 	layout_name = layout_name or "default"
+
 	local layout_description = self._layout_descriptions[layout_name]
 
 	if layout_description == nil then

@@ -6,15 +6,15 @@ core:import("CoreKeywordArguments")
 local parse_kwargs = CoreKeywordArguments.parse_kwargs
 local DEFAULT = Vector3(1, 1, 1)
 local HIGHLIGHTED = Vector3(0.8, 0.8, 1)
-local PERCENT = 0
-local SECONDS = 1
-local PLAIN = 2
+local PERCENT, SECONDS, PLAIN = 0, 1, 2
 local DEFAULT_FORMAT = PERCENT
 local DEFAULT_INFOKEY = "total_time"
+
 LuaProfilerTreeBox = LuaProfilerTreeBox or CoreClass.class()
 
 function LuaProfilerTreeBox:init(...)
 	local args = CoreKeywordArguments.KeywordArguments:new(...)
+
 	self._ews_parent = args:mandatory_object("parent")
 
 	args:assert_all_consumed()
@@ -134,6 +134,7 @@ function LuaProfilerTreeBox:_populate_plus2(cnid, plus1)
 
 		if self._lpd:cn_treenodeid(child_id) == -1 then
 			populated_children = true
+
 			local label = self:_makelabel(child_id)
 			local tnid = self._treectrl:append(self._lpd:cn_treenodeid(cnid), label)
 
@@ -198,6 +199,7 @@ function LuaProfilerTreeBox:_makelabel(cnid)
 		end
 
 		local fnid = self._lpd:cn_funcnode(cnid)
+
 		label = label .. string.format("%s (%s/%s)", self._lpd:fn_func(fnid), self._lpd:fn_file(fnid), self._lpd:fn_line(fnid))
 
 		if self._lpd:cn_num_acc_nodes(cnid) > 1 then

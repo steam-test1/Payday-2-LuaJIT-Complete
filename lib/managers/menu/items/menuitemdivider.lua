@@ -13,18 +13,22 @@ end
 
 function MenuItemDivider:setup_gui(node, row_item)
 	local scaled_size = managers.gui_data:scaled_size()
+
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})
+
 	local h = row_item.item:parameters().size or 10
 
 	if row_item.text then
-		row_item.text = node:_text_item_part(row_item, row_item.gui_panel, 0)
+		row_item.text = node._text_item_part(node, row_item, row_item.gui_panel, 0)
+
 		local _, _, tw, th = row_item.text:text_rect()
 
 		row_item.text:set_size(tw, th)
 
 		h = th
+
 		local color_ranges = row_item.color_ranges
 
 		if color_ranges then
@@ -36,7 +40,7 @@ function MenuItemDivider:setup_gui(node, row_item)
 		end
 	end
 
-	row_item.gui_panel:set_left(node:_mid_align())
+	row_item.gui_panel:set_left(node._mid_align(node))
 	row_item.gui_panel:set_w(scaled_size.width - row_item.gui_panel:left())
 	row_item.gui_panel:set_h(h)
 

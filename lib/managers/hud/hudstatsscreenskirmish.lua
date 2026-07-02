@@ -8,14 +8,15 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 HUDStatsScreenSkirmish = HUDStatsScreenSkirmish or class(HUDStatsScreen)
 
 function HUDStatsScreenSkirmish:recreate_left()
 	self._left:clear()
 	self._left:bitmap({
-		texture = "guis/textures/test_blur_df",
 		layer = -1,
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "grow",
 		w = self._left:w(),
 		h = self._left:h()
@@ -52,8 +53,8 @@ function HUDStatsScreenSkirmish:recreate_left()
 	end
 
 	local objectives_title = self._left:fine_text({
-		vertical = "top",
 		align = "left",
+		vertical = "top",
 		font_size = tweak_data.hud_stats.objectives_title_size,
 		font = tweak_data.hud_stats.objectives_font,
 		text = managers.localization:to_upper_text("hud_objective")
@@ -66,19 +67,19 @@ function HUDStatsScreenSkirmish:recreate_left()
 
 	for i, data in pairs(managers.objectives:get_active_objectives()) do
 		placer:add_bottom(self._left:fine_text({
+			align = "left",
 			word_wrap = true,
 			wrap = true,
-			align = "left",
 			text = utf8.to_upper(data.text),
 			font = tweak_data.hud.medium_font,
 			font_size = tweak_data.hud.active_objective_title_font_size,
 			w = row_w
 		}))
 		placer:add_bottom(self._left:fine_text({
+			align = "left",
+			font_size = 24,
 			word_wrap = true,
 			wrap = true,
-			font_size = 24,
-			align = "left",
 			text = data.description,
 			font = tweak_data.hud_stats.objective_desc_font,
 			w = row_w
@@ -88,6 +89,7 @@ function HUDStatsScreenSkirmish:recreate_left()
 	local loot_panel = ExtendedPanel:new(self._left, {
 		w = self._left:w() - 16 - 8
 	})
+
 	placer = UiPlacer:new(16, 0, 8, 4)
 
 	if managers.player:has_category_upgrade("player", "convert_enemies") then
@@ -102,8 +104,8 @@ function HUDStatsScreenSkirmish:recreate_left()
 
 		local minion_texture, minion_rect = tweak_data.hud_icons:get_icon_data("minions_converted")
 		local minion_icon = placer:add_left(loot_panel:fit_bitmap({
-			w = 17,
 			h = 17,
+			w = 17,
 			texture = minion_texture,
 			texture_rect = minion_rect
 		}))

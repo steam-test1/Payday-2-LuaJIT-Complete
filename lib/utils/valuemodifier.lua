@@ -7,6 +7,7 @@ end
 function ValueModifier:add_modifier(type, callback)
 	local key = {}
 	local modifiers = self._modifiers[type] or {}
+
 	self._modifiers[type] = modifiers
 	modifiers[key] = callback
 

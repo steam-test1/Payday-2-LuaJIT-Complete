@@ -7,11 +7,10 @@ end
 
 function InfamyManager:_setup(reset)
 	if not Global.infamy_manager or reset then
-		Global.infamy_manager = {
-			points = Application:digest_value(0, true),
-			VERSION = InfamyManager.VERSION,
-			reset_message = false
-		}
+		Global.infamy_manager = {}
+		Global.infamy_manager.points = Application:digest_value(0, true)
+		Global.infamy_manager.VERSION = InfamyManager.VERSION
+		Global.infamy_manager.reset_message = false
 		self._global = Global.infamy_manager
 		self._global.unlocks = {}
 
@@ -53,7 +52,7 @@ end
 
 function InfamyManager:required_points(item)
 	if tweak_data.infamy.items[item] then
-		return Application:digest_value(tweak_data.infamy.items[item].cost, false) <= self:points()
+		return self:points() >= Application:digest_value(tweak_data.infamy.items[item].cost, false)
 	end
 end
 
@@ -66,7 +65,7 @@ function InfamyManager:unlock_item(item)
 		return
 	end
 
-	if Application:digest_value(infamy_item.cost, false) <= self:points() then
+	if self:points() >= Application:digest_value(infamy_item.cost, false) then
 		for bonus, item in ipairs(infamy_item.upgrades) do
 			local global_value = item[1]
 			local category = item[2]
@@ -97,12 +96,13 @@ function InfamyManager:available(item)
 
 	local tree_cols = tweak_data.infamy.tree_cols or 3
 	local tree_rows = tweak_data.infamy.tree_rows or 3
-	local up, down, left, right, new_x, new_y = nil
+	local up, down, left, right, new_x, new_y
 
 	for index, name in pairs(tweak_data.infamy.tree) do
 		if item == name then
 			local item_x = (index - 1) % tree_cols + 1
 			local item_y = math.floor((index - 1) / tree_cols) + 1
+
 			new_x = math.clamp(item_x + 0, 1, tree_cols)
 			new_y = math.clamp(item_y - 1, 1, tree_rows)
 			up = (new_y - 1) * tree_cols + new_x
@@ -168,6 +168,7 @@ function InfamyManager:save(data)
 		VERSION = self._global.VERSION or 0,
 		reset_message = self._global.reset_message
 	}
+
 	data.InfamyManager = state
 end
 

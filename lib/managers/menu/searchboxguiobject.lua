@@ -1,5 +1,6 @@
 local medium_font = tweak_data.menu.pd2_medium_font
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
+
 SearchBoxGuiObject = SearchBoxGuiObject or class()
 
 function SearchBoxGuiObject:init(parent_panel, ws, current_search, override_panel_parameters)
@@ -29,9 +30,9 @@ end
 
 function SearchBoxGuiObject:set_searchbox(parent_panel, override_panel_parameters)
 	local panel_parameters = {
-		w = 256,
 		alpha = 1,
 		layer = 15,
+		w = 256,
 		h = medium_font_size
 	}
 
@@ -42,8 +43,8 @@ function SearchBoxGuiObject:set_searchbox(parent_panel, override_panel_parameter
 	self.panel = parent_panel:panel(panel_parameters)
 
 	self.panel:rect({
-		visible = true,
 		layer = -1,
+		visible = true,
 		color = Color.black:with_alpha(0.25)
 	})
 	BoxGuiObject:new(self.panel, {
@@ -56,33 +57,33 @@ function SearchBoxGuiObject:set_searchbox(parent_panel, override_panel_parameter
 	})
 
 	self.placeholder_text = self.panel:text({
-		vertical = "top",
 		align = "center",
 		alpha = 0.6,
 		layer = 2,
+		vertical = "top",
 		text = managers.localization:to_upper_text("menu_filter_search"),
 		font = medium_font,
 		font_size = medium_font_size,
 		color = tweak_data.screen_colors.text
 	})
 	self.text = self.panel:text({
-		vertical = "top",
-		alpha = 1,
 		align = "center",
-		text = "",
+		alpha = 1,
 		layer = 2,
+		text = "",
+		vertical = "top",
 		font = medium_font,
 		font_size = medium_font_size,
 		color = tweak_data.screen_colors.text,
 		w = self.panel:w() - 3
 	})
 	self.caret = self.panel:rect({
-		name = "caret",
 		h = 0,
-		y = 0,
+		layer = 200,
+		name = "caret",
 		w = 0,
 		x = 0,
-		layer = 200,
+		y = 0,
 		color = Color(0.05, 1, 1, 1)
 	})
 
@@ -212,6 +213,7 @@ function SearchBoxGuiObject:search_key_press(o, k)
 	local s, e = text:selection()
 	local n = utf8.len(text:text())
 	local d = math.abs(e - s)
+
 	self._key_pressed = k
 
 	text:stop()
@@ -241,7 +243,7 @@ function SearchBoxGuiObject:search_key_press(o, k)
 
 		local lbs = text:line_breaks()
 
-		if SearchBoxGuiObject.MAX_SEARCH_LENGTH < #text:text() then
+		if #text:text() > SearchBoxGuiObject.MAX_SEARCH_LENGTH then
 			text:set_text(string.sub(text:text(), 1, SearchBoxGuiObject.MAX_SEARCH_LENGTH))
 		end
 
@@ -325,7 +327,7 @@ function SearchBoxGuiObject:update_key_down(o, k)
 
 			text:replace_text(clipboard)
 
-			if SearchBoxGuiObject.MAX_SEARCH_LENGTH < #text:text() then
+			if #text:text() > SearchBoxGuiObject.MAX_SEARCH_LENGTH then
 				text:set_text(string.sub(text:text(), 1, SearchBoxGuiObject.MAX_SEARCH_LENGTH))
 			end
 
@@ -407,7 +409,7 @@ function SearchBoxGuiObject:enter_key_callback()
 end
 
 function SearchBoxGuiObject:esc_key_callback()
-	call_on_next_update(function ()
+	call_on_next_update(function()
 		self:build_and_apply_filter()
 		self:disconnect_search_input()
 	end)

@@ -55,15 +55,14 @@ function EditUnitSettings:init(editor)
 	horizontal_sizer:add(settings_sizer, 0, 0, "ALIGN_LEFT")
 	sizer:add(horizontal_sizer, 1, 0, "ALIGN_LEFT,EXPAND")
 
-	self._ctrls = {
-		cutscene_actor_name = cutscene_actor_name,
-		cutscene_actor_toolbar = cutscene_toolbar,
-		disable_shadows = disable_shadows,
-		disable_collision = disable_collision,
-		delayed_load = delayed_load,
-		hide_on_projection_light = hide_on_projection_light,
-		disable_on_ai_graph = disable_on_ai_graph
-	}
+	self._ctrls = {}
+	self._ctrls.cutscene_actor_name = cutscene_actor_name
+	self._ctrls.cutscene_actor_toolbar = cutscene_toolbar
+	self._ctrls.disable_shadows = disable_shadows
+	self._ctrls.disable_collision = disable_collision
+	self._ctrls.delayed_load = delayed_load
+	self._ctrls.hide_on_projection_light = hide_on_projection_light
+	self._ctrls.disable_on_ai_graph = disable_on_ai_graph
 
 	panel:layout()
 	panel:set_enabled(false)
@@ -110,6 +109,7 @@ function EditUnitSettings:set_disable_collision()
 	for _, unit in ipairs(self._ctrls.units) do
 		if alive(unit) then
 			local disable = self._ctrls.disable_collision:get_value()
+
 			unit:unit_data().disable_collision = disable
 
 			for index = 0, unit:num_bodies() - 1 do

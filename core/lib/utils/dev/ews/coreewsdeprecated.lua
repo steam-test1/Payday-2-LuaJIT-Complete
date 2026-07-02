@@ -8,6 +8,7 @@ CoreEWS.TIP_MAX_LEN = 512
 
 function CoreEWS.image_path(file_name)
 	file_name = file_name or ""
+
 	local base_path = managers.database and managers.database:base_path() or Application:base_path() .. (arg_value("-assetslocation") or "../../") .. "assets\\"
 	local path = base_path .. "lib\\utils\\dev\\ews\\images\\"
 
@@ -112,15 +113,10 @@ end
 function CoreEWS.verify_entered_number(params)
 	local value = tonumber(params.number_ctrlr:get_value()) or 0
 
-	if params.min and value < params.min then
-		value = params.min or value
-	end
-
-	if params.max and params.max < value then
-		value = params.max or value
-	end
-
+	value = params.min and value < params.min and params.min or value
+	value = params.max and value > params.max and params.max or value
 	params.value = value
+
 	local floats = params.floats or 0
 
 	params.number_ctrlr:change_value(string.format("%." .. floats .. "f", value))
@@ -129,6 +125,7 @@ end
 
 function CoreEWS.change_entered_number(params, value)
 	local floats = params.floats or 0
+
 	params.value = value
 
 	params.number_ctrlr:change_value(string.format("%." .. floats .. "f", params.value))
@@ -160,12 +157,14 @@ function CoreEWS.combobox(params)
 	local value = params.value or options[1]
 	local name_proportions = params.name_proportions or 1
 	local ctrlr_proportions = params.ctrlr_proportions or 1
+
 	params.sizer_proportions = params.sizer_proportions or 0
+
 	local tooltip = params.tooltip
 	local styles = params.styles or "CB_DROPDOWN,CB_READONLY"
 	local sorted = params.sorted
 	local ctrl_sizer = EWS:BoxSizer("HORIZONTAL")
-	local name_ctrlr = nil
+	local name_ctrlr
 
 	if name then
 		name_ctrlr = EWS:StaticText(panel, name, 0, "")
@@ -301,15 +300,10 @@ function CoreEWS.verify_entered_number(params)
 	local ctrlr = params.ctrlr or params.number_ctrlr
 	local value = tonumber(ctrlr:get_value()) or 0
 
-	if params.min and value < params.min then
-		value = params.min or value
-	end
-
-	if params.max and params.max < value then
-		value = params.max or value
-	end
-
+	value = params.min and value < params.min and params.min or value
+	value = params.max and value > params.max and params.max or value
 	params.value = value
+
 	local floats = params.floats or 0
 
 	ctrlr:change_value(string.format("%." .. floats .. "f", value))

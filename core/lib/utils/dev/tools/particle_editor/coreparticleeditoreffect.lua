@@ -117,11 +117,11 @@ function CoreEffectStack:remove(idx)
 end
 
 function CoreEffectStack:validate(channels)
-	local ret = {
-		valid = true,
-		message = "",
-		node = nil
-	}
+	local ret = {}
+
+	ret.valid = true
+	ret.message = ""
+	ret.node = nil
 
 	if #self._stack == 0 then
 		ret.valid = false
@@ -161,6 +161,7 @@ function CoreEffectStack:validate(channels)
 		end
 
 		m._valid_properties = true
+
 		local access = m:access()
 
 		for _, a in ipairs(access) do
@@ -231,24 +232,20 @@ CoreEffectAtom = CoreEffectAtom or class(CoreEffectPropertyContainer)
 function CoreEffectAtom:init(name)
 	self.super.init(self, name)
 
-	local help = [[
-Defines the minimum and maximum number of particles in the atom
-The minimum number will be used if the effect quality setting is at the lowest,
-the maximum number if the effect quality setting is at the highest, otherwise in between the two.
-Test how your effect looks at minimum and maximum quality
-using the Play Lowest Quality Once and Play Highest Quality Once buttons.
-The default playback mode is the medium quality.]]
+	local help = "Defines the minimum and maximum number of particles in the atom\nThe minimum number will be used if the effect quality setting is at the lowest,\nthe maximum number if the effect quality setting is at the highest, otherwise in between the two.\nTest how your effect looks at minimum and maximum quality\nusing the Play Lowest Quality Once and Play Highest Quality Once buttons.\nThe default playback mode is the medium quality."
 
 	self:add_property(CoreEffectProperty:new("min_size", "int", "1", help))
 	self:add_property(CoreEffectProperty:new("max_size", "int", "1", help))
 
 	help = "Defines the lifetime of the atom - can be -1 which means infinite, or a set number of seconds"
+
 	local p = CoreEffectProperty:new("lifetime", "time", "1", help)
 
 	p:set_can_be_infinite(true)
 	self:add_property(p)
 
 	help = "Defines the start time of the atom, relative to effect spawn time. The atom will not be updated or rendered during this time."
+
 	local p = CoreEffectProperty:new("random_start_time", "variant", "false", help)
 
 	p:add_variant("false", CoreEffectProperty:new("start_time", "time", "0", "Start time for atom"))
@@ -265,18 +262,7 @@ The default playback mode is the medium quality.]]
 	p:add_variant("true", random_start_time)
 	self:add_property(p)
 
-	p = CoreEffectProperty:new("preroll", "time", "0", [[
-Preroll time for the atom, in seconds.
-Atom will appear to have already lived for this time when it is spawned.
-This is an expensive parameter - each second corresponds to a number of iterations of the atom simulation stack.
-
-Note that only this effect in isolation will be processed - events generated will be processed after preroll.
-This means that effects depending on event handlers being called per frame will not work well with preroll.
-
-The maximum preroll time is 5s. This limitation is for preventing stalls during spawn.
-Only infinite-lifetime effects may be prerolled. This limitation is here since the effects that are most
-in need of preroll are infinite lifetime effects - other effects should be designed to reach the same
-effect by construction of the initializer stack.]])
+	p = CoreEffectProperty:new("preroll", "time", "0", "Preroll time for the atom, in seconds.\nAtom will appear to have already lived for this time when it is spawned.\nThis is an expensive parameter - each second corresponds to a number of iterations of the atom simulation stack.\n\nNote that only this effect in isolation will be processed - events generated will be processed after preroll.\nThis means that effects depending on event handlers being called per frame will not work well with preroll.\n\nThe maximum preroll time is 5s. This limitation is for preventing stalls during spawn.\nOnly infinite-lifetime effects may be prerolled. This limitation is here since the effects that are most\nin need of preroll are infinite lifetime effects - other effects should be designed to reach the same\neffect by construction of the initializer stack.")
 
 	self:add_property(p)
 	self:add_property(CoreEffectProperty:new("inherit_velocity_multiplier", "float", "1", "Multiplier for inherited initial velocity- 0 means no velocity, 2 means double velocity."))
@@ -351,14 +337,7 @@ effect by construction of the initializer stack.]])
 	p:add_value("initialize")
 	self:add_property(p)
 
-	help = [[
-Determines what happens when atom is culled:
-kill - removes the atom from world
-freeze - stops updating atom
-update - keeps updating atom, only use this when absolutely required since it is expensive
-update_render - keeps both updating and rendering atom, only use this when absolutely positively required since it is expensive
-
-The update_render option is required for screen aligned effects to be rendered]]
+	help = "Determines what happens when atom is culled:\nkill - removes the atom from world\nfreeze - stops updating atom\nupdate - keeps updating atom, only use this when absolutely required since it is expensive\nupdate_render - keeps both updating and rendering atom, only use this when absolutely positively required since it is expensive\n\nThe update_render option is required for screen aligned effects to be rendered"
 	p = CoreEffectProperty:new("cull_policy", "value_list", "kill", help)
 
 	p:add_value("kill")
@@ -371,13 +350,7 @@ The update_render option is required for screen aligned effects to be rendered]]
 
 	self:add_property(CoreEffectProperty:new("cull_gracetime", "time", "0", help))
 
-	help = [[
-If this is set to a value >= 0, the given value will be used as the max radius for the visual representation of a particle
-You do not need to set this value if the visualizer uses a key curve or a constant for determining its size,
-but if the size is dependent on channel input you must set it to get a valid radius.
-
-The max visual radius of a particle is used for building the bounding volume, so if this value is too low
-the effect will be culled while still visible]]
+	help = "If this is set to a value >= 0, the given value will be used as the max radius for the visual representation of a particle\nYou do not need to set this value if the visualizer uses a key curve or a constant for determining its size,\nbut if the size is dependent on channel input you must set it to get a valid radius.\n\nThe max visual radius of a particle is used for building the bounding volume, so if this value is too low\nthe effect will be culled while still visible"
 
 	self:add_property(CoreEffectProperty:new("max_particle_radius", "float", "-1", help))
 
@@ -532,13 +505,14 @@ function CoreEffectAtom:collect_stack_time_events()
 end
 
 function CoreEffectAtom:collect_time_events()
-	local start_time = self:get_property("random_start_time")._variants.false
+	local start_time = self:get_property("random_start_time")._variants["false"]
 	local lifetime = self:get_property("lifetime")
 	local ret = self:collect_stack_time_events()
 
 	for _, e in ipairs(ret) do
 		local name = e[1]
 		local t = tonumber(e[2][e[3]]) + tonumber(start_time._value)
+
 		e[2] = {
 			t
 		}
@@ -566,7 +540,7 @@ end
 
 function CoreEffectAtom:scale_timeline(istart, iend, tstart, tend)
 	local events = self:collect_stack_time_events()
-	local start_time = self:get_property("random_start_time")._variants.false
+	local start_time = self:get_property("random_start_time")._variants["false"]
 	local lifetime = self:get_property("lifetime")
 	local end_time = {
 		"end_time",
@@ -622,7 +596,7 @@ end
 
 function CoreEffectAtom:extend_timeline(istart, iend, tstart, tend)
 	local events = self:collect_stack_time_events()
-	local start_time = self:get_property("random_start_time")._variants.false
+	local start_time = self:get_property("random_start_time")._variants["false"]
 	local lifetime = self:get_property("lifetime")
 	local end_time = {
 		"end_time",
@@ -669,11 +643,11 @@ function CoreEffectAtom:extend_timeline(istart, iend, tstart, tend)
 end
 
 function CoreEffectAtom:validate()
-	local ret = {
-		valid = true,
-		message = "",
-		node = nil
-	}
+	local ret = {}
+
+	ret.valid = true
+	ret.message = ""
+	ret.node = nil
 	ret = self:validate_properties()
 
 	if not ret.valid then
@@ -706,6 +680,7 @@ function CoreEffectAtom:validate()
 	end
 
 	local channels = {}
+
 	ret = self._stacks.initializer:validate(channels)
 
 	if not ret.valid then
@@ -757,6 +732,7 @@ function CoreEffectDefinition:init()
 
 	self._atoms = {}
 	self._description = ""
+
 	local p = CoreEffectProperty:new("use", "list_objects", "", "Effects referenced in this list will be included in this effect")
 	local use_effect_prop = CoreEffectProperty:new("use", "compound", "", "")
 
@@ -770,6 +746,7 @@ function CoreEffectDefinition:init()
 	self:add_property(p)
 
 	p = CoreEffectProperty:new("use_random", "list_objects", "", "One effect from each of the sets specified here will be chosen at random and included when this effect is spawned.\nThe typical case is to only have one set and several effects in it - \nif you specify several sets, this means you will get a random combination of one effect from each set.")
+
 	local random_set_prop = CoreEffectProperty:new("use_random", "list_objects", "", "")
 
 	random_set_prop:set_save_to_child(false)
@@ -807,11 +784,11 @@ function CoreEffectDefinition:remove_atom(atom)
 end
 
 function CoreEffectDefinition:validate()
-	local ret = {
-		valid = true,
-		message = "",
-		node = nil
-	}
+	local ret = {}
+
+	ret.valid = true
+	ret.message = ""
+	ret.node = nil
 	ret = self:validate_properties()
 
 	if not ret.valid then

@@ -28,6 +28,7 @@ local math_up = math.UP
 local math_clamp = math.clamp
 local next = next
 local pairs = pairs
+
 CharmManager = CharmManager or class()
 CharmManager.fps = SystemInfo:platform() ~= Idstring("WIN32") and 30 or 45
 CharmManager.beta = 0.8
@@ -57,7 +58,9 @@ function CharmManager:init()
 	self._random_i_max = 8
 	self._weapons = {}
 	self._enabled_weapons = {}
+
 	local set_fps = self.fps
+
 	set_fps = set_fps ~= 300 and set_fps
 	self._fps = set_fps and 1 / set_fps
 	self._is_upd_capped = set_fps and true or false
@@ -97,6 +100,7 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 	end
 
 	data.prev_weapon_rot = Rotation()
+
 	local base_ext = user:base()
 
 	if base_ext and base_ext.is_local_player then
@@ -107,8 +111,10 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 
 			if mov_ext then
 				data.update_type = "simulate_ingame_vr"
+
 				local ghost_pos = mov_ext:ghost_position()
 				local ghost_head_pos = mov_ext:m_head_pos()
+
 				data.ghost_m_pos = ghost_pos
 				data.ghost_m_head_pos = ghost_head_pos
 				data.user_m_pos = ghost_pos:with_z(mvec3_z(ghost_head_pos))
@@ -121,6 +127,7 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 			cat_print("charm_manager", "[CharmManager:get_movement_data] weapon has user unit: local player")
 
 			data.update_type = "simulate_ingame_standard"
+
 			local cam_ext = user:camera()
 
 			if cam_ext then
@@ -178,10 +185,15 @@ function CharmManager:set_common_mov_data(weapon, data)
 	data.inertia_transpired = 0
 	data.m_fwd = data.m_fwd or Vector3()
 	data.m_right = data.m_right or Vector3()
+
 	local cur_user_pos = data.user_m_pos
+
 	data.prev_user_pos = mvec3_cpy(cur_user_pos)
+
 	local prev_weap_pos = mvec3_cpy(cur_user_pos)
+
 	data.prev_weap_pos = prev_weap_pos
+
 	local weap_pos = tmp_vec1
 
 	weapon:m_position(weap_pos)
@@ -225,7 +237,9 @@ function CharmManager:get_charm_data(charm_data_table, charm_unit, custom_body_o
 		orig_ring_rot = charm_ring:local_rotation()
 	}
 	local enable_updating = is_menu or charm_unit:enabled() and charm_unit:visible()
+
 	charm_entry.update_enabled = enable_updating
+
 	local cur_body_parent = charm_body:parent()
 
 	if cur_body_parent ~= charm_ring then
@@ -244,6 +258,7 @@ end
 
 function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_params)
 	custom_params = custom_params or {}
+
 	local custom_units = custom_params.custom_units
 
 	if not custom_units and not parts then
@@ -260,9 +275,7 @@ function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_
 	if custom_units then
 		for i = 1, #custom_units do
 			local custom_data = custom_units[i]
-			local custom_unit = custom_data.unit
-			local custom_body_name = custom_data.body_name
-			local custom_parent_name = custom_data.parent_name
+			local custom_unit, custom_body_name, custom_parent_name = custom_data.unit, custom_data.body_name, custom_data.parent_name
 
 			self:get_charm_data(charm_data, custom_unit, custom_body_name, custom_parent_name, is_menu)
 		end
@@ -287,15 +300,14 @@ function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_
 				local charm_part = get_part_f(factory_manager, find_type, cloned_parts)
 
 				if not charm_part then
-					break
+					do break end
 					break
 				end
 
 				local charm_unit = charm_part.unit
 
 				if charm_unit then
-					local custom_body_name = find_data.body_name
-					local custom_parent_name = find_data.parent_name
+					local custom_body_name, custom_parent_name = find_data.body_name, find_data.parent_name
 
 					self:get_charm_data(charm_data, charm_unit, custom_body_name, custom_parent_name, is_menu)
 				end
@@ -343,6 +355,7 @@ function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_
 			charm_data = charm_data,
 			mov_data = self:get_movement_data(weapon_unit, user_unit, is_menu)
 		}
+
 		existing_entries[u_key] = entry
 
 		if enable_updating then
@@ -356,8 +369,7 @@ end
 
 function CharmManager:remove_weapon(weapon_unit)
 	local u_key = weapon_unit:key()
-	local weapons = self._weapons
-	local enabled_weapons = self._enabled_weapons
+	local weapons, enabled_weapons = self._weapons, self._enabled_weapons
 	local entry = weapons[u_key]
 
 	if not entry then
@@ -370,8 +382,7 @@ function CharmManager:remove_weapon(weapon_unit)
 				local charm_unit = c_data.unit
 
 				if alive(charm_unit) then
-					local charm_body = c_data.body
-					local charm_ring = c_data.ring
+					local charm_body, charm_ring = c_data.body, c_data.ring
 
 					if alive(charm_body) then
 						local orig_parent = c_data.orig_body_parent
@@ -435,6 +446,7 @@ function CharmManager:enable_charm_upd(weapon_unit)
 		if c_data.update_enabled then
 			if not cur_upd_state then
 				c_data.update_enabled = false
+
 				local charm_body = c_data.body
 				local orig_parent = c_data.orig_body_parent
 
@@ -520,10 +532,11 @@ function CharmManager:_chk_updator()
 end
 
 function CharmManager:update_empty()
+	return
 end
 
 function CharmManager:update(_, dt)
-	local mov_data = nil
+	local mov_data
 
 	for _, entry in pairs(self._enabled_weapons) do
 		mov_data = entry.mov_data
@@ -540,7 +553,8 @@ function CharmManager:update_capped(t, dt)
 	end
 
 	self._last_frame_timestamp = t
-	local mov_data = nil
+
+	local mov_data
 
 	for _, entry in pairs(self._enabled_weapons) do
 		mov_data = entry.mov_data
@@ -554,20 +568,20 @@ function CharmManager:_orient_charm(prev_rot, cur_rot)
 	local prev_roll = mrot_roll(prev_rot)
 	local cur_pitch = mrot_pitch(cur_rot)
 	local cur_roll = mrot_roll(cur_rot)
-	local prev_vec = tmp_vec1
-	local cur_vec = tmp_vec2
+	local prev_vec, cur_vec = tmp_vec1, tmp_vec2
 
 	mvec3_set_stat(prev_vec, 0, prev_pitch, prev_roll)
 	mvec3_set_stat(cur_vec, 0, cur_pitch, cur_roll)
 	mvec3_sub(prev_vec, cur_vec)
 
-	local charm_pitch, charm_roll = nil
+	local charm_pitch, charm_roll
 
 	if mvec3_len_sq(prev_vec) >= 10000 then
 		charm_pitch = prev_pitch
 		charm_roll = prev_roll
 	else
 		local beta = self.beta
+
 		charm_pitch = prev_pitch * beta + cur_pitch * (1 - beta)
 		charm_roll = prev_roll * beta + cur_roll * (1 - beta)
 	end
@@ -586,10 +600,11 @@ function CharmManager:GetMappedRangeValueClamped(input_range_first, input_range_
 end
 
 function CharmManager:random_smooth(value)
-	local array = self._random_array
-	local index = self._random_i
+	local array, index = self._random_array, self._random_i
+
 	self._random_i = index < self._random_i_max and index + 1 or 1
 	array[index] = value
+
 	local sum = 0
 	local array_size = #array
 
@@ -631,9 +646,7 @@ function CharmManager:reset_vel_mutables(entry, mov_data)
 end
 
 function CharmManager:set_velocities(m_comb_vel, m_user_vel, m_weap_vel, mov_data, weap_unit, dt)
-	local cur_user_pos = mov_data.user_m_pos
-	local prev_user_pos = mov_data.prev_user_pos
-	local prev_weap_pos = mov_data.prev_weap_pos
+	local cur_user_pos, prev_user_pos, prev_weap_pos = mov_data.user_m_pos, mov_data.prev_user_pos, mov_data.prev_weap_pos
 
 	mvec3_set(m_user_vel, cur_user_pos)
 	mvec3_sub(m_user_vel, prev_user_pos)
@@ -673,10 +686,9 @@ function CharmManager:get_new_dots(mov_data, fwd_vel_dot, side_vel_dot, vert_vel
 	local fwd_dot = mov_data.fwd_dot * beta + fwd_vel_dot * (1 - beta)
 	local right_dot = mov_data.right_dot * beta + side_vel_dot * (1 - beta)
 	local up_dot = mov_data.up_dot * beta + vert_vel_dot * (1 - beta)
-	local inertia = mov_data.inertia
-	local inertia_transpired = mov_data.inertia_transpired
+	local inertia, inertia_transpired = mov_data.inertia, mov_data.inertia_transpired
 	local has_inertia = inertia ~= 0
-	local user_has_stopped = not has_inertia and self.apply_inertia_epsilon < math_abs(fwd_dot) and math_abs(fwd_vel_dot) < self.velocity_epsilon
+	local user_has_stopped = not has_inertia and math_abs(fwd_dot) > self.apply_inertia_epsilon and math_abs(fwd_vel_dot) < self.velocity_epsilon
 
 	if user_has_stopped then
 		inertia = -fwd_dot * self.inertia_factor * dt
@@ -684,7 +696,7 @@ function CharmManager:get_new_dots(mov_data, fwd_vel_dot, side_vel_dot, vert_vel
 	end
 
 	if has_inertia then
-		if self.inertia_duration < inertia_transpired then
+		if inertia_transpired > self.inertia_duration then
 			inertia = 0
 		else
 			fwd_dot = (fwd_dot + inertia) * self.friction
@@ -733,14 +745,11 @@ function CharmManager:simulate_menu_vr(...)
 end
 
 function CharmManager:_get_ingame_rotation(entry, mov_data, dt)
-	local weap_unit = entry.weapon_unit
-	local weap_rot = tmp_rot1
+	local weap_unit, weap_rot = entry.weapon_unit, tmp_rot1
 
 	weap_unit:m_rotation(weap_rot)
 
-	local combined_vel = tmp_vec1
-	local user_vel = tmp_vec2
-	local weap_vel = tmp_vec3
+	local combined_vel, user_vel, weap_vel = tmp_vec1, tmp_vec2, tmp_vec3
 
 	self:set_velocities(combined_vel, user_vel, weap_vel, mov_data, weap_unit, dt)
 
@@ -757,14 +766,13 @@ function CharmManager:_get_ingame_rotation(entry, mov_data, dt)
 	self:_orient_charm(old_to_new_prev_rot, weap_rot)
 
 	local get_range_value_f = self.GetMappedRangeValueClamped
-	local max_speed = self.max_speed
-	local yaw_angle = self.yaw_angle
-	local pitch_angle = self.pitch_angle
-	local left_roll_angle = self.left_roll_angle
+	local max_speed, yaw_angle, pitch_angle, left_roll_angle = self.max_speed, self.yaw_angle, self.pitch_angle, self.left_roll_angle
 	local curr_yaw = get_range_value_f(self, -max_speed, max_speed, -yaw_angle, yaw_angle, fwd_dot) + mrot_yaw(old_to_new_prev_rot)
 	local curr_pitch = get_range_value_f(self, -max_speed, max_speed, -pitch_angle, pitch_angle, fwd_dot) + mrot_pitch(old_to_new_prev_rot)
 	local curr_roll = get_range_value_f(self, -max_speed, max_speed, left_roll_angle, -left_roll_angle, right_dot) + mrot_roll(old_to_new_prev_rot)
+
 	curr_roll = curr_roll + get_range_value_f(self, -max_speed, 0, -left_roll_angle * self.falling_factor, 0, up_dot)
+
 	local new_rot = Rotation()
 
 	mrot_set(new_rot, math_clamp(curr_yaw, -yaw_angle, yaw_angle), math_clamp(curr_pitch, -pitch_angle, pitch_angle), math_clamp(curr_roll, -left_roll_angle, self.right_roll_angle))

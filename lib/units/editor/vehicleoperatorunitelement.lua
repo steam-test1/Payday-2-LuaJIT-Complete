@@ -89,8 +89,8 @@ function VehicleOperatorUnitElement:draw_links_unselected(...)
 
 		if alive(unit) then
 			local params = {
-				g = 0,
 				b = 0.5,
+				g = 0,
 				r = 0,
 				from_unit = unit,
 				to_unit = self._unit
@@ -108,8 +108,8 @@ function VehicleOperatorUnitElement:draw_links_selected(...)
 	for _, id in ipairs(self._hed.elements) do
 		local unit = managers.editor:unit_with_id(id)
 		local params = {
-			g = 0,
 			b = 0.5,
+			g = 0,
 			r = 0,
 			from_unit = unit,
 			to_unit = self._unit

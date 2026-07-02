@@ -9,6 +9,7 @@ function FindSession:init()
 end
 
 function FindSession:destroy()
+	return
 end
 
 function FindSession:_sessions_found(sessions)

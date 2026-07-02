@@ -87,6 +87,7 @@ function SelectGroupByName:on_delete()
 end
 
 function SelectGroupByName:on_mark_group()
+	return
 end
 
 function SelectGroupByName:on_ungroup()
@@ -145,6 +146,7 @@ end
 function SelectGroupByName:group_created(group)
 	local i = self._list:append_item(group:name())
 	local j = #self._groups + 1
+
 	self._groups[j] = group
 
 	self._list:set_item_data(i, j)
@@ -175,6 +177,7 @@ function SelectGroupByName:fill_group_list()
 	local groups = managers.editor:groups():groups()
 	local j = 1
 	local filter = self._filter:get_value()
+
 	self._groups = {}
 
 	self._list:freeze()
@@ -182,6 +185,7 @@ function SelectGroupByName:fill_group_list()
 	for name, group in pairs(groups) do
 		if string.find(name, filter, 1, true) then
 			local i = self._list:append_item(name)
+
 			self._groups[j] = group
 
 			self._list:set_item_data(i, j)

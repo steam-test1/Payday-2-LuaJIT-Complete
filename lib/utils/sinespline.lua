@@ -40,14 +40,14 @@ function SineSpline:prepare_walk_data(backward)
 			local next_subseg = self._segments[nr_seg]
 			local cur_subseg = self:_position_at_time_on_segment((self._nr_subseg - 1) / self._nr_subseg, self._segments[nr_seg - 1], self._segments[nr_seg], self._control_points[nr_seg].p1, self._control_points[nr_seg - 1].p2)
 			local subseg_len = mvector3.distance(cur_subseg, next_subseg)
-			local playtime_data = {
-				seg_i = nr_seg - 1,
-				subseg_i = self._nr_subseg - 1,
-				subseg_start = cur_subseg,
-				subseg_end = next_subseg,
-				subseg_dis = subseg_len,
-				subseg_len = subseg_len
-			}
+			local playtime_data = {}
+
+			playtime_data.seg_i = nr_seg - 1
+			playtime_data.subseg_i = self._nr_subseg - 1
+			playtime_data.subseg_start = cur_subseg
+			playtime_data.subseg_end = next_subseg
+			playtime_data.subseg_dis = subseg_len
+			playtime_data.subseg_len = subseg_len
 			self._playtime_data = playtime_data
 		else
 			if not self._control_points[2] then
@@ -61,14 +61,14 @@ function SineSpline:prepare_walk_data(backward)
 			local cur_subseg = self._segments[1]
 			local next_subseg = self:_position_at_time_on_segment(1 / self._nr_subseg, cur_subseg, self._segments[2], self._control_points[2].p1, self._control_points[1].p2)
 			local subseg_len = mvector3.distance(cur_subseg, next_subseg)
-			local playtime_data = {
-				seg_i = 1,
-				subseg_i = 1,
-				subseg_start = cur_subseg,
-				subseg_end = next_subseg,
-				subseg_dis = 0,
-				subseg_len = subseg_len
-			}
+			local playtime_data = {}
+
+			playtime_data.seg_i = 1
+			playtime_data.subseg_i = 1
+			playtime_data.subseg_start = cur_subseg
+			playtime_data.subseg_end = next_subseg
+			playtime_data.subseg_dis = 0
+			playtime_data.subseg_len = subseg_len
 			self._playtime_data = playtime_data
 		end
 	end
@@ -91,7 +91,7 @@ function SineSpline:_position_at_time_on_segment(seg_t, pos_start, pos_end, p1, 
 end
 
 function SineSpline:walk(delta_dis)
-	local result_pos = nil
+	local result_pos
 
 	if #self._segments > 1 then
 		local segments = self._segments
@@ -133,7 +133,7 @@ function SineSpline:walk(delta_dis)
 
 			return math.lerp(play_data.subseg_start, play_data.subseg_end, play_data.subseg_dis / play_data.subseg_len), play_data.subseg_i == 1 and undershot
 		else
-			while play_data.subseg_len < new_subseg_dis do
+			while new_subseg_dis > play_data.subseg_len do
 				local overshot = new_subseg_dis - play_data.subseg_len
 
 				if play_data.subseg_i == self._nr_subseg then
@@ -184,8 +184,11 @@ function SineSpline:_extract_control_points_at_index(index)
 			local last_vec = (control_points[#segments - 1].p2 or segments[1]) - segments[#segments - 1]
 			local last_angle = last_vec:angle(last_seg)
 			local last_rot = last_seg:cross(last_vec)
+
 			last_rot = Rotation(last_rot, 180 - 2 * last_angle)
+
 			local w_vec = pos + last_vec:rotate_with(last_rot)
+
 			segment_control_points.p1 = w_vec
 		else
 			segment_control_points.p1 = pos
@@ -196,8 +199,11 @@ function SineSpline:_extract_control_points_at_index(index)
 			local first_seg = segments[2] - segments[1]
 			local first_angle = first_vec:angle(first_seg)
 			local first_rot = first_seg:cross(first_vec)
+
 			first_rot = Rotation(first_rot, 180 - 2 * first_angle)
+
 			local w_vec = segments[1] + first_vec:rotate_with(first_rot)
+
 			segment_control_points.p2 = w_vec
 		else
 			segment_control_points.p2 = pos

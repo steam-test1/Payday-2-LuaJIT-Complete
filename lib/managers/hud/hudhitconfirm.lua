@@ -16,26 +16,26 @@ function HUDHitConfirm:init(hud)
 	end
 
 	self._hit_confirm = self._hud_panel:bitmap({
-		texture = "guis/textures/pd2/hitconfirm",
-		name = "hit_confirm",
-		halign = "center",
-		visible = false,
-		layer = 0,
 		blend_mode = "add",
+		halign = "center",
+		layer = 0,
+		name = "hit_confirm",
+		texture = "guis/textures/pd2/hitconfirm",
 		valign = "center",
+		visible = false,
 		color = Color.white
 	})
 
 	self._hit_confirm:set_center(self._hud_panel:w() / 2, self._hud_panel:h() / 2)
 
 	self._crit_confirm = self._hud_panel:bitmap({
-		texture = "guis/textures/pd2/hitconfirm_crit",
-		name = "crit_confirm",
-		halign = "center",
-		visible = false,
-		layer = 0,
 		blend_mode = "add",
+		halign = "center",
+		layer = 0,
+		name = "crit_confirm",
+		texture = "guis/textures/pd2/hitconfirm_crit",
 		valign = "center",
+		visible = false,
 		color = Color.white
 	})
 
@@ -62,6 +62,7 @@ function HUDHitConfirm:_animate_show(hint_confirm, done_cb, seconds, damage_scal
 	hint_confirm:set_alpha(1)
 
 	damage_scale = damage_scale or 1
+
 	local cx, cy = hint_confirm:center()
 
 	hint_confirm:set_size(hint_confirm:texture_width() * damage_scale, hint_confirm:texture_height() * damage_scale)
@@ -71,6 +72,7 @@ function HUDHitConfirm:_animate_show(hint_confirm, done_cb, seconds, damage_scal
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 
 		hint_confirm:set_alpha(t / seconds)
@@ -81,6 +83,7 @@ function HUDHitConfirm:_animate_show(hint_confirm, done_cb, seconds, damage_scal
 end
 
 function HUDHitConfirm:show_done()
+	return
 end
 
 if _G.IS_VR then

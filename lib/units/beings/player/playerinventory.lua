@@ -6,12 +6,14 @@ PlayerInventory._all_event_types = {
 	"shield_equip",
 	"shield_unequip"
 }
+
 local ids_unit = Idstring("unit")
+
 PlayerInventory._NET_EVENTS = {
 	feedback_start = 3,
+	feedback_stop = 4,
 	jammer_start = 1,
-	jammer_stop = 2,
-	feedback_stop = 4
+	jammer_stop = 2
 }
 
 function PlayerInventory:init(unit)
@@ -21,15 +23,14 @@ function PlayerInventory:init(unit)
 	self._latest_addition = nil
 	self._selected_primary = nil
 	self._use_data_alias = "player"
-	self._align_places = {
-		right_hand = {
-			on_body = false,
-			obj3d_name = Idstring("a_weapon_right")
-		},
-		left_hand = {
-			on_body = false,
-			obj3d_name = Idstring("a_weapon_left")
-		}
+	self._align_places = {}
+	self._align_places.right_hand = {
+		on_body = false,
+		obj3d_name = Idstring("a_weapon_right")
+	}
+	self._align_places.left_hand = {
+		on_body = false,
+		obj3d_name = Idstring("a_weapon_left")
 	}
 	self._listener_id = "PlayerInventory" .. tostring(unit:key())
 	self._listener_holder = EventListenerHolder:new()
@@ -65,7 +66,7 @@ function PlayerInventory:pre_destroy(unit)
 
 		for _, ig_unit in pairs(self._ignore_units) do
 			if alive(ig_unit) then
-				local has_destroy_listener = nil
+				local has_destroy_listener
 				local listener_class = ig_unit:base()
 
 				if listener_class and listener_class.add_destroy_listener then
@@ -137,7 +138,7 @@ function PlayerInventory:destroy_all_items()
 end
 
 function PlayerInventory:add_ignore_unit(unit)
-	local has_destroy_listener = nil
+	local has_destroy_listener
 	local listener_class = unit:base()
 
 	if listener_class and listener_class.add_destroy_listener then
@@ -207,7 +208,7 @@ function PlayerInventory:remove_ignore_unit(unit, is_callback)
 	end
 
 	if not is_callback and alive(unit) then
-		local has_destroy_listener = nil
+		local has_destroy_listener
 		local listener_class = unit:base()
 
 		if listener_class and listener_class.add_destroy_listener then
@@ -247,6 +248,7 @@ end
 function PlayerInventory:add_unit(new_unit, is_equip, equip_is_instant)
 	local new_selection = {}
 	local use_data = new_unit:base():get_use_data(self._use_data_alias)
+
 	new_selection.use_data = use_data
 	new_selection.unit = new_unit
 
@@ -256,6 +258,7 @@ function PlayerInventory:add_unit(new_unit, is_equip, equip_is_instant)
 
 	if self._available_selections[selection_index] then
 		local old_weapon_unit = self._available_selections[selection_index].unit
+
 		is_equip = is_equip or old_weapon_unit == self:equipped_unit()
 
 		old_weapon_unit:base():remove_destroy_listener(self._listener_id)
@@ -331,14 +334,14 @@ function PlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 		end
 	end
 
-	local setup_data = {
-		user_unit = self._unit,
-		ignore_units = ignore_units,
-		expend_ammo = true,
-		autoaim = true,
-		alert_AI = true,
-		alert_filter = self._unit:movement():SO_access()
-	}
+	local setup_data = {}
+
+	setup_data.user_unit = self._unit
+	setup_data.ignore_units = ignore_units
+	setup_data.expend_ammo = true
+	setup_data.autoaim = true
+	setup_data.alert_AI = true
+	setup_data.alert_filter = self._unit:movement():SO_access()
 
 	new_unit:base():setup(setup_data)
 	self:add_unit(new_unit, equip, instant)
@@ -372,15 +375,15 @@ function PlayerInventory:add_unit_by_factory_name(factory_name, equip, instant, 
 		end
 	end
 
-	local setup_data = {
-		user_unit = self._unit,
-		ignore_units = ignore_units,
-		expend_ammo = true,
-		autoaim = true,
-		alert_AI = true,
-		alert_filter = self._unit:movement():SO_access(),
-		timer = managers.player:player_timer()
-	}
+	local setup_data = {}
+
+	setup_data.user_unit = self._unit
+	setup_data.ignore_units = ignore_units
+	setup_data.expend_ammo = true
+	setup_data.autoaim = true
+	setup_data.alert_AI = true
+	setup_data.alert_filter = self._unit:movement():SO_access()
+	setup_data.timer = managers.player:player_timer()
 
 	if blueprint then
 		setup_data.panic_suppression_skill = not managers.weapon_factory:has_perk("silencer", factory_name, blueprint) and managers.player:has_category_upgrade("player", "panic_suppression") or false
@@ -396,6 +399,7 @@ end
 
 function PlayerInventory:remove_selection(selection_index, instant)
 	selection_index = selection_index or self._equipped_selection
+
 	local weap_unit = self._available_selections[selection_index].unit
 
 	if alive(weap_unit) then
@@ -563,7 +567,7 @@ function PlayerInventory:_place_selection(selection_index, is_equip)
 
 	if align_place then
 		if is_equip then
-			call_on_next_update(function ()
+			call_on_next_update(function()
 				if alive(unit) then
 					unit:set_enabled(true)
 					unit:base():on_enabled()
@@ -634,6 +638,7 @@ function PlayerInventory._chk_create_w_factory_indexes()
 	end
 
 	local weapon_factory_indexed = {}
+
 	PlayerInventory._weapon_factory_indexed = weapon_factory_indexed
 
 	for id, data in pairs(tweak_data.weapon.factory) do
@@ -642,7 +647,7 @@ function PlayerInventory._chk_create_w_factory_indexes()
 		end
 	end
 
-	table.sort(weapon_factory_indexed, function (a, b)
+	table.sort(weapon_factory_indexed, function(a, b)
 		return a < b
 	end)
 end
@@ -707,14 +712,12 @@ function PlayerInventory:show_equipped_unit()
 	end
 end
 
-PlayerInventory._start_jammer_func_lookup_drop_in_save = {
-	jamming = "_start_jammer_effect_drop_in_save",
-	feedback = "_start_feedback_effect_drop_in_save"
-}
-PlayerInventory._start_jammer_func_lookup_drop_in_load = {
-	jamming = "_start_jammer_effect_drop_in_load",
-	feedback = "_start_feedback_effect_drop_in_load"
-}
+PlayerInventory._start_jammer_func_lookup_drop_in_save = {}
+PlayerInventory._start_jammer_func_lookup_drop_in_save.jamming = "_start_jammer_effect_drop_in_save"
+PlayerInventory._start_jammer_func_lookup_drop_in_save.feedback = "_start_feedback_effect_drop_in_save"
+PlayerInventory._start_jammer_func_lookup_drop_in_load = {}
+PlayerInventory._start_jammer_func_lookup_drop_in_load.jamming = "_start_jammer_effect_drop_in_load"
+PlayerInventory._start_jammer_func_lookup_drop_in_load.feedback = "_start_feedback_effect_drop_in_load"
 
 function PlayerInventory:_start_jammer_effect_drop_in_save(save_data, jammer_data)
 	save_data._jammer_data = {
@@ -746,10 +749,12 @@ function PlayerInventory:save(save_data)
 	if self._equipped_selection then
 		local eq_weap_name = self:equipped_unit():base()._factory_id or self:equipped_unit():name()
 		local index = self._get_weapon_sync_index(eq_weap_name)
+
 		my_save_data.equipped_weapon_index = index
 		my_save_data.mask_visibility = self._mask_visibility
 		my_save_data.blueprint_string = self:equipped_unit():base().blueprint_to_string and self:equipped_unit():base():blueprint_to_string() or nil
 		my_save_data.gadget_on = self:equipped_unit():base().gadget_on and self:equipped_unit():base()._gadget_on
+
 		local gadget = self:equipped_unit():base().get_active_gadget and self:equipped_unit():base():get_active_gadget()
 
 		if gadget and gadget.color then
@@ -757,6 +762,7 @@ function PlayerInventory:save(save_data)
 		end
 
 		local cosmetics_data = self:equipped_unit():base().get_cosmetics and self:equipped_unit():base():get_cosmetics()
+
 		my_save_data.cosmetics_string = managers.blackmarket:outfit_string_from_cosmetics(cosmetics_data)
 	end
 
@@ -797,18 +803,20 @@ function PlayerInventory:load(load_data)
 
 	if my_load_data.equipped_weapon_index then
 		self._weapon_add_clbk = "playerinventory_load_weapon_add" .. tostring(self._unit:key())
-		local delayed_data = {
-			equipped_weapon_index = my_load_data.equipped_weapon_index,
-			blueprint_string = my_load_data.blueprint_string,
-			cosmetics_string = my_load_data.cosmetics_string,
-			gadget_on = my_load_data.gadget_on,
-			gadget_color = my_load_data.gadget_color
-		}
+
+		local delayed_data = {}
+
+		delayed_data.equipped_weapon_index = my_load_data.equipped_weapon_index
+		delayed_data.blueprint_string = my_load_data.blueprint_string
+		delayed_data.cosmetics_string = my_load_data.cosmetics_string
+		delayed_data.gadget_on = my_load_data.gadget_on
+		delayed_data.gadget_color = my_load_data.gadget_color
 
 		managers.enemy:add_delayed_clbk(self._weapon_add_clbk, callback(self, self, "_clbk_weapon_add", delayed_data), Application:time() + 1)
 	end
 
 	self._mask_visibility = my_load_data.mask_visibility and true or false
+
 	local jammer_data = my_load_data._jammer_data
 	local jammer_func = jammer_data and self._start_jammer_func_lookup_drop_in_load[jammer_data.effect]
 
@@ -822,6 +830,7 @@ function PlayerInventory:load(load_data)
 
 	if my_load_data.chk_shield_dummy_removal then
 		self._shield_unit_name = nil
+
 		local shield_unit = self._shield_unit
 
 		if alive(shield_unit) and shield_unit:id() == -1 then
@@ -879,6 +888,7 @@ function PlayerInventory:_clbk_weapon_add(data)
 end
 
 function PlayerInventory:on_weapon_add()
+	return
 end
 
 function PlayerInventory:mask_visibility()
@@ -928,6 +938,7 @@ function PlayerInventory:set_mask_visibility(state)
 	end
 
 	mask_unit_name = mask_unit_name[Global.level_data.level_id] or mask_unit_name.default or mask_unit_name
+
 	local mask_align = self._unit:get_object(Idstring("Head"))
 	local mask_unit = World:spawn_unit(Idstring(mask_unit_name), mask_align:position(), mask_align:rotation())
 
@@ -935,6 +946,7 @@ function PlayerInventory:set_mask_visibility(state)
 	self._unit:link(mask_align:name(), mask_unit)
 
 	self._mask_unit = mask_unit
+
 	local mask_id = managers.criminals:character_data_by_name(character_name).mask_id
 	local peer = managers.network:session():peer_by_unit(self._unit)
 	local mask_data = {
@@ -975,7 +987,7 @@ function PlayerInventory:set_mask_visibility(state)
 end
 
 function PlayerInventory:update_mask_offset(mask_data)
-	local char = nil
+	local char
 
 	if mask_data.peer_id then
 		char = managers.blackmarket:get_real_character(nil, mask_data.peer_id)
@@ -1027,6 +1039,7 @@ function PlayerInventory:set_melee_weapon(melee_weapon_id, is_npc)
 end
 
 function PlayerInventory:set_melee_weapon_by_peer(peer)
+	return
 end
 
 function PlayerInventory:get_melee_weapon_id()
@@ -1095,7 +1108,7 @@ function PlayerInventory:equip_shield(shield_unit, align_name)
 		return
 	end
 
-	local has_destroy_listener = nil
+	local has_destroy_listener
 	local listener_class = shield_unit:base()
 
 	if listener_class and listener_class.add_destroy_listener then
@@ -1131,6 +1144,7 @@ end
 
 function PlayerInventory:unequip_shield(is_callback)
 	local shield_unit = self._shield_unit
+
 	self._shield_unit = nil
 
 	if alive(shield_unit) then
@@ -1141,7 +1155,7 @@ function PlayerInventory:unequip_shield(is_callback)
 		end
 
 		if not is_callback and self._shield_destroyed_clbk_id then
-			local has_destroy_listener = nil
+			local has_destroy_listener
 			local listener_class = shield_unit:base()
 
 			if listener_class and listener_class.add_destroy_listener then
@@ -1170,6 +1184,7 @@ function PlayerInventory:unequip_shield(is_callback)
 end
 
 function PlayerInventory:from_server_link_shield(shield_unit)
+	return
 end
 
 function PlayerInventory:on_shield_break(attacker_unit)
@@ -1226,14 +1241,12 @@ function PlayerInventory:set_shield_enabled(state)
 	end
 end
 
-PlayerInventory._start_jammer_func_lookup = {
-	jamming = "_start_jammer_effect",
-	feedback = "_start_feedback_effect"
-}
-PlayerInventory._stop_jammer_func_lookup = {
-	jamming = "_stop_jammer_effect",
-	feedback = "_stop_feedback_effect"
-}
+PlayerInventory._start_jammer_func_lookup = {}
+PlayerInventory._start_jammer_func_lookup.jamming = "_start_jammer_effect"
+PlayerInventory._start_jammer_func_lookup.feedback = "_start_feedback_effect"
+PlayerInventory._stop_jammer_func_lookup = {}
+PlayerInventory._stop_jammer_func_lookup.jamming = "_stop_jammer_effect"
+PlayerInventory._stop_jammer_func_lookup.feedback = "_stop_feedback_effect"
 
 function PlayerInventory:sync_net_event(event_id, peer)
 	if self._unit:base().is_local_player then
@@ -1315,13 +1328,16 @@ function PlayerInventory:_start_jammer_effect(end_time)
 	end
 
 	end_time = TimerManager:game():time() + end_time
+
 	local key_str = tostring(self._unit:key())
+
 	self._jammer_data = {
 		effect = "jamming",
 		t = end_time,
 		sound = self._unit:sound_source():post_event("ecm_jammer_jam_signal"),
 		stop_jamming_callback_key = "PocketECMJamming" .. key_str
 	}
+
 	local affects_cameras, affects_pagers = self:get_jammer_affect()
 
 	managers.groupai:state():register_ecm_jammer(self._unit, {
@@ -1409,7 +1425,7 @@ function PlayerInventory:_start_feedback_effect(end_time)
 		return false
 	end
 
-	local interval, range, nr_ticks = nil
+	local interval, range, nr_ticks
 
 	if Network:is_server() then
 		interval, range = self:get_feedback_values()
@@ -1423,6 +1439,7 @@ function PlayerInventory:_start_feedback_effect(end_time)
 
 	local t = TimerManager:game():time()
 	local key_str = tostring(self._unit:key())
+
 	end_time = t + end_time
 	self._jammer_data = {
 		effect = "feedback",
@@ -1437,9 +1454,7 @@ function PlayerInventory:_start_feedback_effect(end_time)
 	if Network:is_server() then
 		local interval_t = t + interval
 
-		if nr_ticks == 1 and end_time < interval_t then
-			interval_t = end_time or interval_t
-		end
+		interval_t = nr_ticks == 1 and end_time < interval_t and end_time or interval_t
 
 		managers.enemy:add_delayed_clbk(self._jammer_data.feedback_callback_key, callback(self, self, "_do_feedback"), interval_t)
 	else
@@ -1577,6 +1592,7 @@ function PlayerInventory:_do_feedback()
 	ECMJammerBase._detect_and_give_dmg(self:_get_feedback_pos(), nil, self._unit, jammer_data.range)
 
 	jammer_data.nr_ticks = jammer_data.nr_ticks - 1
+
 	local t = TimerManager:game():time()
 	local end_time = jammer_data.t
 
@@ -1592,9 +1608,7 @@ function PlayerInventory:_do_feedback()
 
 	local interval_t = t + jammer_data.interval
 
-	if jammer_data.nr_ticks == 1 and end_time < interval_t then
-		interval_t = end_time or interval_t
-	end
+	interval_t = jammer_data.nr_ticks == 1 and end_time < interval_t and end_time or interval_t
 
 	managers.enemy:add_delayed_clbk(jammer_data.feedback_callback_key, callback(self, self, "_do_feedback"), interval_t)
 end

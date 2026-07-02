@@ -10,6 +10,7 @@ function MenuNodeDoubleColumnGui:_setup_size(node)
 	local safe_width = self:_scaled_size().width
 	local item_width = safe_width * (1 - self._align_line_proportions)
 	local column_ratio = tonumber(node:parameters().column_ratio) or 0.5
+
 	self._split_size = 10
 	self._width_primary = item_width * (1 - column_ratio) - self._split_size * 0.5
 	self._width_secondary = item_width * column_ratio - self._split_size * 0.5
@@ -75,6 +76,7 @@ function MenuNodeDoubleColumnGui:_set_item_positions()
 
 				if row_item.gui_panel.set_text then
 					local x, y, w, h = row_item.gui_panel:text_rect()
+
 					left = x
 					right = x + w
 				end
@@ -98,6 +100,7 @@ function MenuNodeDoubleColumnGui:_set_item_positions()
 			end
 
 			local x, y, w, h = row_item.gui_panel:shape()
+
 			current_item_height = h + self.spacing
 			current_y = current_y + current_item_height
 		end
@@ -139,6 +142,7 @@ function MenuNodeDoubleColumnGui:_set_item_positions()
 
 				if row_item.gui_panel.set_text then
 					local x, y, w, h = row_item.gui_panel:text_rect()
+
 					left = x
 					right = x + w
 				end
@@ -162,6 +166,7 @@ function MenuNodeDoubleColumnGui:_set_item_positions()
 			end
 
 			local x, y, w, h = row_item.gui_panel:shape()
+
 			current_item_height = h + self.spacing
 			current_y = current_y + current_item_height
 		end
@@ -193,8 +198,8 @@ end
 function MenuNodeDoubleColumnGui:_setup_item_rows(node)
 	if node:parameters().title and not self.safe_rect_panel:child("primary_title") then
 		self._primary_title = self.safe_rect_panel:text({
-			name = "primary_title",
 			layer = 99999,
+			name = "primary_title",
 			text = utf8.to_upper(managers.localization:text(node:parameters().title)),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size
@@ -203,8 +208,8 @@ function MenuNodeDoubleColumnGui:_setup_item_rows(node)
 
 	if node:parameters().secondary_title and not self.safe_rect_panel:child("secondary_title") then
 		self._secondary_title = self.safe_rect_panel:text({
-			name = "secondary_title",
 			layer = 99999,
+			name = "secondary_title",
 			text = utf8.to_upper(managers.localization:text(node:parameters().secondary_title)),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size
@@ -213,12 +218,14 @@ function MenuNodeDoubleColumnGui:_setup_item_rows(node)
 
 	self.primary_row_items = {}
 	self.secondary_row_items = {}
+
 	local items = node:items()
 	local i = 0
 
 	for _, item in pairs(items) do
 		if item:visible() then
 			item:parameters().gui_node = self
+
 			local item_name = item:name()
 			local item_text = "menu item missing 'text_id'"
 
@@ -226,7 +233,7 @@ function MenuNodeDoubleColumnGui:_setup_item_rows(node)
 				item_text = nil
 			end
 
-			local help_text = nil
+			local help_text
 			local params = item:parameters()
 
 			if params.text_id then
@@ -389,23 +396,26 @@ function MenuNodeDoubleColumnGui:_item_panel_height()
 	for _, row_item in pairs(self.primary_row_items) do
 		if not row_item.item:parameters().back and not row_item.item:parameters().pd2_corner then
 			local x, y, w, h = row_item.gui_panel:shape()
+
 			primary_height = primary_height + h + self.spacing
 		end
 	end
 
 	primary_height = primary_height - (table.size(self.primary_row_items) > 0 and self.spacing or 0)
+
 	local secondary_height = self.height_padding * 2
 
 	for _, row_item in pairs(self.secondary_row_items) do
 		if not row_item.item:parameters().back and not row_item.item:parameters().pd2_corner then
 			local x, y, w, h = row_item.gui_panel:shape()
+
 			secondary_height = secondary_height + h + self.spacing
 		end
 	end
 
 	secondary_height = secondary_height - (table.size(self.secondary_row_items) > 0 and self.spacing or 0)
 
-	return primary_height > secondary_height and primary_height or secondary_height
+	return secondary_height < primary_height and primary_height or secondary_height
 end
 
 function MenuNodeDoubleColumnGui:highlight_item(item, mouse_over)
@@ -509,8 +519,7 @@ end
 
 function MenuNodeDoubleColumnGui:confirm_pressed()
 	local selected_item = self.node:selected_item()
-	local column = "primary"
-	local index = 1
+	local column, index = "primary", 1
 
 	if selected_item then
 		self:get_item_index(selected_item)
@@ -522,7 +531,7 @@ function MenuNodeDoubleColumnGui:confirm_pressed()
 end
 
 function MenuNodeDoubleColumnGui:get_item_index(item)
-	local index, primary = nil
+	local index, primary
 
 	if item then
 		for i, row in ipairs(self.primary_row_items) do

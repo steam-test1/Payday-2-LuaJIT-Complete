@@ -16,29 +16,29 @@ function HUDChat:init(ws, hud)
 	self._typing_callback = 0
 	self._skip_first = false
 	self._panel = self._hud_panel:panel({
-		name = "chat_panel",
 		h = 500,
 		halign = "left",
-		x = 0,
+		name = "chat_panel",
 		valign = "bottom",
+		x = 0,
 		w = self._panel_width
 	})
 
 	self._panel:set_bottom(self._panel:parent():h() - 112)
 
 	local output_panel = self._panel:panel({
-		name = "output_panel",
 		h = 10,
-		x = 0,
 		layer = 1,
+		name = "output_panel",
+		x = 0,
 		w = self._output_width
 	})
 
 	output_panel:gradient({
 		blend_mode = "sub",
+		layer = -1,
 		name = "output_bg",
 		valign = "grow",
-		layer = -1,
 		gradient_points = {
 			0,
 			Color.white:with_alpha(0),
@@ -50,11 +50,12 @@ function HUDChat:init(ws, hud)
 	})
 
 	local scroll_panel = output_panel:panel({
+		h = 10,
 		name = "scroll_panel",
 		x = 0,
-		h = 10,
 		w = self._output_width
 	})
+
 	self._scroll_indicator_box_class = BoxGuiObject:new(output_panel, {
 		sides = {
 			0,
@@ -63,35 +64,36 @@ function HUDChat:init(ws, hud)
 			0
 		}
 	})
+
 	local scroll_up_indicator_shade = output_panel:bitmap({
-		texture = "guis/textures/headershadow",
-		name = "scroll_up_indicator_shade",
-		visible = false,
-		rotation = 180,
 		layer = 2,
+		name = "scroll_up_indicator_shade",
+		rotation = 180,
+		texture = "guis/textures/headershadow",
+		visible = false,
 		color = Color.white,
 		w = output_panel:w()
 	})
 	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 	local scroll_up_indicator_arrow = self._panel:bitmap({
-		name = "scroll_up_indicator_arrow",
 		layer = 2,
+		name = "scroll_up_indicator_arrow",
 		texture = texture,
 		texture_rect = rect,
 		color = Color.white
 	})
 	local scroll_down_indicator_shade = output_panel:bitmap({
-		texture = "guis/textures/headershadow",
-		name = "scroll_down_indicator_shade",
-		visible = false,
 		layer = 2,
+		name = "scroll_down_indicator_shade",
+		texture = "guis/textures/headershadow",
+		visible = false,
 		color = Color.white,
 		w = output_panel:w()
 	})
 	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 	local scroll_down_indicator_arrow = self._panel:bitmap({
-		name = "scroll_down_indicator_arrow",
 		layer = 2,
+		name = "scroll_down_indicator_arrow",
 		rotation = 180,
 		texture = texture,
 		texture_rect = rect,
@@ -100,18 +102,19 @@ function HUDChat:init(ws, hud)
 	local bar_h = scroll_down_indicator_arrow:top() - scroll_up_indicator_arrow:bottom()
 	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar")
 	local scroll_bar = self._panel:panel({
-		w = 15,
-		name = "scroll_bar",
 		layer = 2,
+		name = "scroll_bar",
+		w = 15,
 		h = bar_h
 	})
 	local scroll_bar_box_panel = scroll_bar:panel({
-		name = "scroll_bar_box_panel",
 		halign = "scale",
+		name = "scroll_bar_box_panel",
+		valign = "scale",
 		w = 4,
-		x = 5,
-		valign = "scale"
+		x = 5
 	})
+
 	self._scroll_bar_box_class = BoxGuiObject:new(scroll_bar_box_panel, {
 		sides = {
 			2,
@@ -160,31 +163,31 @@ end
 
 function HUDChat:_create_input_panel()
 	self._input_panel = self._panel:panel({
-		name = "input_panel",
-		h = 24,
 		alpha = 0,
-		x = 0,
+		h = 24,
 		layer = 1,
+		name = "input_panel",
+		x = 0,
 		w = self._panel_width
 	})
 
 	self._input_panel:rect({
-		name = "focus_indicator",
 		layer = 0,
+		name = "focus_indicator",
 		visible = false,
 		color = Color.white:with_alpha(0.2)
 	})
 
 	local say = self._input_panel:text({
-		y = 0,
-		name = "say",
-		vertical = "center",
-		hvertical = "center",
 		align = "left",
 		blend_mode = "normal",
 		halign = "left",
-		x = 0,
+		hvertical = "center",
 		layer = 1,
+		name = "say",
+		vertical = "center",
+		x = 0,
+		y = 0,
 		text = utf8.to_upper(managers.localization:text("debug_chat_say")),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -195,29 +198,29 @@ function HUDChat:_create_input_panel()
 	say:set_size(w, self._input_panel:h())
 
 	local input_text = self._input_panel:text({
-		y = 0,
-		name = "input_text",
-		vertical = "center",
-		wrap = true,
 		align = "left",
 		blend_mode = "normal",
-		hvertical = "center",
-		text = "",
-		word_wrap = false,
 		halign = "left",
-		x = 0,
+		hvertical = "center",
 		layer = 1,
+		name = "input_text",
+		text = "",
+		vertical = "center",
+		word_wrap = false,
+		wrap = true,
+		x = 0,
+		y = 0,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = Color.white
 	})
 	local caret = self._input_panel:rect({
-		name = "caret",
 		h = 0,
-		y = 0,
+		layer = 2,
+		name = "caret",
 		w = 0,
 		x = 0,
-		layer = 2,
+		y = 0,
 		color = Color(0.05, 1, 1, 1)
 	})
 
@@ -228,9 +231,9 @@ function HUDChat:_create_input_panel()
 
 	self._input_panel:gradient({
 		blend_mode = "sub",
+		layer = -1,
 		name = "input_bg",
 		valign = "grow",
-		layer = -1,
 		gradient_points = {
 			0,
 			Color.white:with_alpha(0),
@@ -354,9 +357,9 @@ function HUDChat:set_scroll_indicators(force_update_scroll_indicators)
 	scroll_bar:set_y(scroll_up_indicator_arrow:bottom() - scroll_panel:y() * (output_panel:h() - scroll_up_indicator_arrow:h() * 2) / sh)
 	scroll_bar:set_center_x(scroll_up_indicator_arrow:center_x())
 
-	local visible = output_panel:h() < scroll_panel:h() and self._focus
+	local visible = scroll_panel:h() > output_panel:h() and self._focus
 	local scroll_up_visible = visible and scroll_panel:top() < 0
-	local scroll_dn_visible = visible and output_panel:h() < scroll_panel:bottom()
+	local scroll_dn_visible = visible and scroll_panel:bottom() > output_panel:h()
 
 	self:_layout_input_panel()
 	scroll_bar:set_visible(visible)
@@ -393,7 +396,7 @@ function HUDChat:scroll_up()
 	local output_panel = self._panel:child("output_panel")
 	local scroll_panel = output_panel:child("scroll_panel")
 
-	if output_panel:h() < scroll_panel:h() then
+	if scroll_panel:h() > output_panel:h() then
 		scroll_panel:set_top(math.min(0, scroll_panel:top() + HUDChat.line_height))
 
 		return true
@@ -404,7 +407,7 @@ function HUDChat:scroll_down()
 	local output_panel = self._panel:child("output_panel")
 	local scroll_panel = output_panel:child("scroll_panel")
 
-	if output_panel:h() < scroll_panel:h() then
+	if scroll_panel:h() > output_panel:h() then
 		scroll_panel:set_bottom(math.max(scroll_panel:bottom() - HUDChat.line_height, output_panel:h()))
 
 		return true
@@ -694,6 +697,7 @@ function HUDChat:key_press(o, k)
 	local s, e = text:selection()
 	local n = utf8.len(text:text())
 	local d = math.abs(e - s)
+
 	self._key_pressed = k
 
 	text:stop()
@@ -769,6 +773,7 @@ function HUDChat:key_press(o, k)
 end
 
 function HUDChat:send_message(name, message)
+	return
 end
 
 function HUDChat:receive_message(name, message, color, icon)
@@ -776,10 +781,11 @@ function HUDChat:receive_message(name, message, color, icon)
 	local scroll_panel = output_panel:child("scroll_panel")
 	local len = utf8.len(name) + 1
 	local x = 0
-	local icon_bitmap = nil
+	local icon_bitmap
 
 	if icon then
 		local icon_texture, icon_texture_rect = tweak_data.hud_icons:get_icon_data(icon)
+
 		icon_bitmap = scroll_panel:bitmap({
 			y = 1,
 			texture = icon_texture,
@@ -790,15 +796,15 @@ function HUDChat:receive_message(name, message, color, icon)
 	end
 
 	local line = scroll_panel:text({
-		halign = "left",
-		vertical = "top",
-		hvertical = "top",
-		wrap = true,
 		align = "left",
 		blend_mode = "normal",
-		word_wrap = true,
-		y = 0,
+		halign = "left",
+		hvertical = "top",
 		layer = 0,
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
+		y = 0,
 		text = name .. ": " .. message,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -837,10 +843,12 @@ end
 function HUDChat:_animate_show_output(o, start_alpha)
 	local TOTAL_T = 0.25
 	local t = 0
+
 	start_alpha = start_alpha or 0
 
 	while t < TOTAL_T do
 		local dt = coroutine.yield()
+
 		t = t + dt
 
 		self:set_output_alpha(start_alpha + t / TOTAL_T * (1 - start_alpha))
@@ -854,15 +862,17 @@ function HUDChat:_animate_fade_output()
 	local fade_t = 1
 	local t = 0
 
-	while wait_t > t do
+	while t < wait_t do
 		local dt = coroutine.yield()
+
 		t = t + dt
 	end
 
 	local t = 0
 
-	while fade_t > t do
+	while t < fade_t do
 		local dt = coroutine.yield()
+
 		t = t + dt
 
 		self:set_output_alpha(1 - t / fade_t)
@@ -874,10 +884,12 @@ end
 function HUDChat:_animate_show_component(input_panel, start_alpha)
 	local TOTAL_T = 0.25
 	local t = 0
+
 	start_alpha = start_alpha or 0
 
 	while t < TOTAL_T do
 		local dt = coroutine.yield()
+
 		t = t + dt
 
 		input_panel:set_alpha(start_alpha + t / TOTAL_T * (1 - start_alpha))
@@ -890,8 +902,9 @@ function HUDChat:_animate_hide_input(input_panel)
 	local TOTAL_T = 0.25
 	local t = 0
 
-	while TOTAL_T > t do
+	while t < TOTAL_T do
 		local dt = coroutine.yield()
+
 		t = t + dt
 
 		input_panel:set_alpha(1 - t / TOTAL_T)
@@ -905,7 +918,9 @@ function HUDChat:_animate_input_bg(input_bg)
 
 	while true do
 		local dt = coroutine.yield()
+
 		t = t + dt
+
 		local a = 0.75 + (1 + math.sin(t * 200)) / 8
 
 		input_bg:set_alpha(a)

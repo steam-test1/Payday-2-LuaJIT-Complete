@@ -11,6 +11,7 @@ function ElementInventoryDummy:init(...)
 end
 
 function ElementInventoryDummy:client_on_executed(...)
+	return
 end
 
 function ElementInventoryDummy:on_executed(instigator)
@@ -55,6 +56,7 @@ end
 function ElementInventoryDummy:assemble_weapon(factory_id, blueprint, position, rotation)
 	position = position or self._values.position
 	rotation = rotation or self._values.rotation
+
 	local unit_name = tweak_data.weapon.factory[factory_id].unit
 
 	managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
@@ -98,6 +100,7 @@ end
 function ElementInventoryDummy:assemble_mask(mask_id, blueprint, position, rotation)
 	position = position or self._values.position
 	rotation = rotation or self._values.rotation
+
 	local mask_unit_name = managers.blackmarket:mask_unit_name_by_mask_id(mask_id)
 
 	managers.dyn_resource:load(Idstring("unit"), Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)

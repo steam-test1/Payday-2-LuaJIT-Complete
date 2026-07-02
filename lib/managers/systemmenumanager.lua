@@ -67,6 +67,7 @@ function GenericSystemMenuManager:init_finalize()
 
 	if Global.dialog_manager.init_show_data_list then
 		local init_show_data_list = Global.dialog_manager.init_show_data_list
+
 		Global.dialog_manager.init_show_data_list = nil
 
 		for index, data in ipairs(init_show_data_list) do
@@ -179,10 +180,10 @@ end
 
 function GenericSystemMenuManager:update_queue()
 	if not self:is_active(true) and self._dialog_queue then
-		local dialog, index = nil
+		local dialog, index
 
 		for next_index, next_dialog in ipairs(self._dialog_queue) do
-			if not dialog or dialog:priority() < next_dialog:priority() then
+			if not dialog or next_dialog:priority() > dialog:priority() then
 				index = next_index
 				dialog = next_dialog
 			end
@@ -267,7 +268,7 @@ function GenericSystemMenuManager:close(id, hard)
 		return
 	end
 
-	local remove_list = nil
+	local remove_list
 
 	for i, dialog in ipairs(self._dialog_queue) do
 		if dialog:id() == id then
@@ -476,6 +477,7 @@ end
 
 function GenericSystemMenuManager:set_active_dialog(dialog)
 	self._active_dialog = dialog
+
 	local is_ws_visible = dialog and dialog._get_ws and dialog:_get_ws() == self._ws
 
 	if not self._is_ws_visible ~= not is_ws_visible then

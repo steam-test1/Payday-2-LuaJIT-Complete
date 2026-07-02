@@ -43,6 +43,7 @@ end
 
 function LightLoadingSetup:_init_vr_camera()
 	local pos, rot = VRManager:hmd_pose()
+
 	self._initial_pose = {
 		position = Vector3(pos.x, pos.y, 140)
 	}

@@ -12,6 +12,7 @@ function NPCRaycastWeaponBase:init(unit)
 	self._player_manager = managers.player
 	self._unit = unit
 	self._name_id = self.name_id or "m4_npc"
+
 	local td = tweak_data.weapon[self._name_id]
 	local bullet_class = td.bullet_class
 
@@ -93,6 +94,7 @@ function NPCRaycastWeaponBase:init(unit)
 	end
 
 	local tweak_trail = td.trail
+
 	self._trail_effect_table = {
 		position = Vector3(),
 		normal = Vector3(),
@@ -123,13 +125,13 @@ function NPCRaycastWeaponBase:init(unit)
 			local flashlight_light_obj = self._unit:get_object(Idstring("ls_flashlight"))
 
 			if flashlight_light_obj then
-				self._flashlight_data = {
-					effect = flashlight_effect
-				}
+				self._flashlight_data = {}
+				self._flashlight_data.effect = flashlight_effect
 
 				flashlight_light_obj:set_rotation(self._unit:rotation())
 
 				local light = World:create_light("spot|specular")
+
 				self._flashlight_data.light = light
 
 				light:link(flashlight_light_obj)
@@ -198,7 +200,7 @@ function NPCRaycastWeaponBase:singleshot(...)
 end
 
 function NPCRaycastWeaponBase:trigger_held(...)
-	local fired = nil
+	local fired
 
 	if self._next_fire_allowed <= Application:time() then
 		fired = self:fire(...)
@@ -327,7 +329,7 @@ local mvec_spread = Vector3()
 
 function NPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit)
 	local result = {}
-	local hit_unit = nil
+	local hit_unit
 	local miss, extra_spread = self:_check_smoke_shot(user_unit, target_unit)
 
 	if miss then
@@ -343,7 +345,7 @@ function NPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 	local damage = self._damage * (dmg_mul or 1)
 	local bullet_slotmask = self._bullet_slotmask
 	local col_ray = World:raycast("ray", from_pos, mvec_to, "slot_mask", bullet_slotmask, "ignore_unit", self._setup.ignore_units)
-	local player_hit, player_ray_data = nil
+	local player_hit, player_ray_data
 
 	if shoot_player and self._hit_player then
 		player_hit, player_ray_data = self:damage_player(col_ray, from_pos, direction, result)
@@ -353,7 +355,7 @@ function NPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 		end
 	end
 
-	local char_hit = nil
+	local char_hit
 
 	if not player_hit and col_ray then
 		char_hit = self._unit:base():bullet_class():on_collision(col_ray, self._unit, user_unit, damage, self._fires_blanks)
@@ -404,14 +406,13 @@ function NPCRaycastWeaponBase:_check_smoke_shot(user_unit, target_unit)
 	if in_smoke then
 		local smoke_tweak = tweak_data.projectiles[variant]
 
-		if smoke_tweak.accuracy_roll_chance < math.random() then
+		if math.random() > smoke_tweak.accuracy_roll_chance then
 			return
 		end
 
 		if not self._ignore_unit_tables then
-			self._ignore_unit_tables = {
-				normal = clone(self._setup.ignore_units)
-			}
+			self._ignore_unit_tables = {}
+			self._ignore_unit_tables.normal = clone(self._setup.ignore_units)
 		end
 
 		local key = "smoke_" .. tostring(target_unit:key())
@@ -525,6 +526,7 @@ function NPCRaycastWeaponBase:set_laser_enabled(state)
 		local spawn_prop = Idstring(self.laser_acc_unit or "units/payday2/weapons/wpn_npc_upg_fl_ass_smg_sho_peqbox/wpn_npc_upg_fl_ass_smg_sho_peqbox")
 		local spawn_rot = self._obj_fire:rotation()
 		local spawn_pos = self._obj_fire:position()
+
 		spawn_pos = self.get_laser_attachment_offset(spawn_pos, spawn_rot)
 		self._laser_unit = World:spawn_unit(spawn_prop, spawn_pos, spawn_rot)
 

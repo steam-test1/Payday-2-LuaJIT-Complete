@@ -42,6 +42,7 @@ function RandomInstanceElement:draw_links_selected(t, dt, selected_unit)
 end
 
 function RandomInstanceElement:draw_links_unselected(t, dt, selected_unit)
+	return
 end
 
 function RandomInstanceElement:_draw_instance_link(t, dt, instance_name, color_multiplier)
@@ -68,9 +69,9 @@ end
 
 function RandomInstanceElement:_instance_name_raycast()
 	local ray = managers.editor:unit_by_raycast({
+		mask = 1,
 		ray_type = "body editor",
-		skip_instance_check = true,
-		mask = 1
+		skip_instance_check = true
 	})
 
 	if not ray or not ray.unit then
@@ -165,9 +166,10 @@ function RandomInstanceElement:_remove_counter_id(unit)
 end
 
 function RandomInstanceElement:_on_gui_select_instance_list()
-	local settings = {
-		list_style = "LC_REPORT,LC_NO_HEADER,LC_SORT_ASCENDING"
-	}
+	local settings = {}
+
+	settings.list_style = "LC_REPORT,LC_NO_HEADER,LC_SORT_ASCENDING"
+
 	local names = managers.world_instance:instance_names_by_script(self._unit:mission_element_data().script)
 	local dialog = SelectNameModal:new("Select instances", names, settings)
 
@@ -185,6 +187,7 @@ function RandomInstanceElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local btn_toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	btn_toolbar:add_tool("SELECT_UNIT_LIST", "Select unit from unit list", CoreEws.image_path("world_editor\\unit_by_name_list.png"), nil)
@@ -230,12 +233,12 @@ function RandomInstanceElement:_add_instance_item(data)
 	panel_sizer:add(h_sizer, 0, 1, "EXPAND,LEFT")
 
 	local event_params = {
-		name = "Event:",
 		ctrlr_proportions = 2,
+		name = "Event:",
 		name_proportions = 1,
 		sizer_proportions = 1,
-		tooltip = "Select an instance event from the combobox",
 		sorted = true,
+		tooltip = "Select an instance event from the combobox",
 		panel = panel,
 		sizer = h_sizer,
 		options = self:_get_events(data.instance),
@@ -268,6 +271,7 @@ end
 
 function RandomInstanceElement:_on_set_instance_event(data)
 	local event_combo = data.event
+
 	data.data.event = event_combo:get_value()
 end
 
@@ -287,11 +291,11 @@ RandomInstanceElementInputEvent = RandomInstanceElementInputEvent or class(Rando
 RandomInstanceElementInputEvent._type = "input"
 RandomInstanceElementInputEvent.LINK_VALUES = {
 	{
+		layer = "Instances",
 		output = true,
-		type = "input",
 		table_key = "instance",
 		table_value = "instances",
-		layer = "Instances"
+		type = "input"
 	}
 }
 RandomInstanceElementOutputEvent = RandomInstanceElementOutputEvent or class(RandomInstanceElement)

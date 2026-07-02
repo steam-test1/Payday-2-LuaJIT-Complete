@@ -65,7 +65,7 @@ function PlayerHandStateItem:_prompt(prompt)
 		end
 	end
 
-	local text = nil
+	local text
 
 	if prompt.text then
 		text = prompt.text
@@ -73,7 +73,7 @@ function PlayerHandStateItem:_prompt(prompt)
 		text = managers.localization:to_upper_text(prompt.text_id, prompt.macros)
 	end
 
-	local offset = nil
+	local offset
 	local hand_id = self:hsm():hand_id()
 
 	if self._item_type == "mask" and alive(self._item_unit) then
@@ -153,7 +153,9 @@ function PlayerHandStateItem:at_enter(prev_state, params)
 		end
 
 		local projectile_entry = managers.blackmarket:equipped_projectile()
+
 		self._throwable_data = tweak_data.blackmarket.projectiles[projectile_entry]
+
 		local offset = tweak_data.vr:get_offset_by_id(managers.blackmarket:equipped_grenade())
 
 		if offset then
@@ -285,7 +287,7 @@ function PlayerHandStateItem:update(t, dt)
 		self._wants_dynamic = false
 	end
 
-	if self._dynamic_t and self._dynamic_t < t then
+	if self._dynamic_t and t > self._dynamic_t then
 		self:set_bodies_dynamic(true, self._body)
 
 		self._dynamic_t = nil
@@ -330,7 +332,7 @@ function PlayerHandStateItem:update(t, dt)
 			self._hand_unit:damage():run_sequence_simple("ready")
 		end
 	elseif self._item_type == "throwable" then
-		if self._throwable_reuse_t and self._throwable_reuse_t <= t then
+		if self._throwable_reuse_t and t >= self._throwable_reuse_t then
 			local player = managers.player:player_unit()
 			local reuse_expire_t = player:equipment():use_throwable(self._item_unit)
 
@@ -359,7 +361,7 @@ function PlayerHandStateItem:update(t, dt)
 
 		local mag_locator = weapon:get_object(Idstring("a_m"))
 		local offset = tweak_data.vr:get_offset_by_id("magazine", weapon:base().name_id)
-		local mag_pos = nil
+		local mag_pos
 
 		if mag_locator and not offset.weapon_offset then
 			mag_pos = mag_locator:position()

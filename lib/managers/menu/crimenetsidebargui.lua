@@ -1,4 +1,5 @@
 CrimeNetSidebarGui = CrimeNetSidebarGui or class(MenuGuiComponent)
+
 local padding = 10
 
 function CrimeNetSidebarGui:init(ws, fullscreen_ws, node)
@@ -33,8 +34,8 @@ end
 
 function CrimeNetSidebarGui:_setup()
 	self._panel = self._ws:panel():panel({
-		w = 256,
-		layer = 100
+		layer = 100,
+		w = 256
 	})
 	self._ws_panel = self._ws:panel():panel({
 		layer = 100,
@@ -57,11 +58,11 @@ function CrimeNetSidebarGui:_setup()
 		color = Color.black
 	})
 	self._bg_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur_bg",
 		halign = "scale",
 		layer = -1,
+		name = "blur_bg",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = self._bg_panel:w(),
 		h = self._bg_panel:h()
@@ -98,6 +99,7 @@ function CrimeNetSidebarGui:_setup()
 				icon = item.icon,
 				callback = item.callback and callback(self, self, item.callback)
 			})
+
 			next_position = next_position + btn:panel():height() + item_margin
 
 			table.insert(self._buttons, btn)
@@ -194,7 +196,7 @@ function CrimeNetSidebarGui:_update_crimenet_elements()
 		return
 	end
 
-	local x, _x = nil
+	local x, _x
 
 	if alive(self._panel) then
 		if self:collapsed() then
@@ -218,15 +220,14 @@ function CrimeNetSidebarGui:collapsed()
 end
 
 function CrimeNetSidebarGui:mouse_moved(o, x, y)
-	local used, pointer = nil
+	local used, pointer
 
 	for _, btn in ipairs(self._buttons) do
 		if btn:accepts_interaction() then
 			if not used and btn:inside(x, y) then
 				btn:set_highlight(true)
 
-				pointer = "link"
-				used = true
+				used, pointer = true, "link"
 			else
 				btn:set_highlight(false)
 			end
@@ -274,10 +275,9 @@ function CrimeNetSidebarGui:update(t, dt)
 	end
 
 	if not managers.menu:is_pc_controller() and managers.mouse_pointer:mouse_move_x() == 0 and managers.mouse_pointer:mouse_move_y() == 0 then
-		local closest_btn = nil
+		local closest_btn
 		local closest_dist = 100000000
-		local closest_x = 0
-		local closest_y = 0
+		local closest_x, closest_y = 0, 0
 		local mx, my = managers.mouse_pointer:modified_mouse_pos()
 
 		if (self:collapsed() and self._icons_panel or self._panel):inside(mx, my) then
@@ -287,7 +287,7 @@ function CrimeNetSidebarGui:update(t, dt)
 					local y = btn_y - my
 					local dist = y * y
 
-					if closest_dist > dist then
+					if dist < closest_dist then
 						closest_btn = btn
 						closest_dist = dist
 						closest_y = btn_y
@@ -423,10 +423,10 @@ function CrimeNetSidebarGui:clbk_skirmish()
 	managers.menu_component:post_event("menu_enter")
 	managers.menu:open_node("skirmish_select_contract", {
 		{
-			job_filter = "perform_job_filter_skirmish",
-			hide_title = true,
-			hide_filters = true,
 			align = "right",
+			hide_filters = true,
+			hide_title = true,
+			job_filter = "perform_job_filter_skirmish",
 			tabs = tabs
 		}
 	})
@@ -466,9 +466,10 @@ function CrimeNetSidebarSeparator:init(sidebar, parent_panel, parameters)
 		x = padding,
 		y = parameters.position
 	})
+
 	local bitmap = self._panel:bitmap({
-		texture = "guis/dlcs/sju/textures/pd2/crimenet_menu_dots_df",
 		name = "separator",
+		texture = "guis/dlcs/sju/textures/pd2/crimenet_menu_dots_df",
 		color = tweak_data.screen_colors.button_stage_3
 	})
 
@@ -488,6 +489,7 @@ function CrimeNetSidebarSeparator:accepts_interaction()
 end
 
 function CrimeNetSidebarSeparator:update(t, dt)
+	return
 end
 
 CrimeNetSidebarItem = CrimeNetSidebarItem or class()
@@ -496,6 +498,7 @@ function CrimeNetSidebarItem:init(sidebar, panel, parameters)
 	local font_size = math.ceil(tweak_data.menu.pd2_small_font_size)
 	local icon_size = 24
 	local panel_size = math.max(font_size, icon_size)
+
 	self._collapsed = false
 	self._show_name_while_collapsed = parameters.show_name_while_collapsed
 	self._callback = parameters.callback
@@ -508,30 +511,33 @@ function CrimeNetSidebarItem:init(sidebar, panel, parameters)
 		x = padding,
 		y = parameters.position
 	})
+
 	local texture, rect = tweak_data.hud_icons:get_icon_data(parameters.icon)
+
 	self._icon = self._panel:bitmap({
-		name = "icon",
 		blend_mode = "normal",
 		layer = 1,
+		name = "icon",
 		texture = texture,
 		texture_rect = rect,
 		w = icon_size,
 		h = icon_size
 	})
 	self._text = self._panel:text({
-		text = "",
-		name = "title",
-		valign = "scale",
-		halign = "scale",
 		blend_mode = "normal",
-		y = 2,
+		halign = "scale",
 		layer = 2,
+		name = "title",
+		text = "",
+		valign = "scale",
+		y = 2,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = font_size,
 		color = tweak_data.screen_colors.button_stage_3,
 		x = icon_size + 4,
 		h = font_size
 	})
+
 	local macros = {}
 
 	if parameters.btn_macro then
@@ -541,10 +547,10 @@ function CrimeNetSidebarItem:init(sidebar, panel, parameters)
 	self:set_text(managers.localization:text(parameters.name_id, macros))
 
 	self._bg = self._panel:rect({
-		blend_mode = "normal",
-		layer = 1,
-		halign = "scale",
 		alpha = 0.66,
+		blend_mode = "normal",
+		halign = "scale",
+		layer = 1,
 		valign = "scale",
 		x = icon_size,
 		color = Color.black
@@ -648,6 +654,7 @@ end
 
 function CrimeNetSidebarItem:create_glow(panel, color, scale)
 	scale = scale or 1
+
 	local glow_panel = panel:panel({
 		alpha = 0,
 		layer = 10,
@@ -655,39 +662,39 @@ function CrimeNetSidebarItem:create_glow(panel, color, scale)
 		h = 96 * scale
 	})
 	local glow_center = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_center",
-		blend_mode = "add",
 		alpha = 0.55,
+		blend_mode = "add",
+		name = "glow_center",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
 		w = 96 * scale,
 		h = 96 * scale,
 		color = color
 	})
 	local glow_stretch = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_stretch",
-		blend_mode = "add",
 		alpha = 0.55,
+		blend_mode = "add",
+		name = "glow_stretch",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
 		w = 448 * scale,
 		h = 64 * scale,
 		color = color
 	})
 	local glow_center_dark = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_center_dark",
-		blend_mode = "normal",
 		alpha = 0.7,
+		blend_mode = "normal",
 		layer = -1,
+		name = "glow_center_dark",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
 		w = 80 * scale,
 		h = 80 * scale,
 		color = Color.black
 	})
 	local glow_stretch_dark = glow_panel:bitmap({
-		texture = "guis/textures/pd2/crimenet_marker_glow",
-		name = "glow_stretch_dark",
-		blend_mode = "normal",
 		alpha = 0.75,
+		blend_mode = "normal",
 		layer = -1,
+		name = "glow_stretch_dark",
+		texture = "guis/textures/pd2/crimenet_marker_glow",
 		w = 462 * scale,
 		h = 64 * scale,
 		color = Color.black
@@ -769,6 +776,7 @@ CrimeNetSidebarStoryMissionItem = CrimeNetSidebarStoryMissionItem or class(Crime
 
 function CrimeNetSidebarStoryMissionItem:init(sidebar, panel, parameters)
 	local current = managers.story:current_mission()
+
 	parameters.calling_attention = current and current.completed and not current.rewarded
 
 	CrimeNetSidebarStoryMissionItem.super.init(self, sidebar, panel, parameters)
@@ -864,6 +872,7 @@ function CrimeNetSidebarMutatorsItem:init(sidebar, panel, parameters)
 
 	if managers.mutators:are_mutators_enabled() then
 		local color = parameters.glow_color or Color(1, 0, 1)
+
 		self._glow_panel = self:create_glow(sidebar._fullscreen_panel, color * 0.8, 0.85)
 
 		self._glow_panel:set_center(self._icon:right() + self._icon:w() + 14 - 2, self._panel:bottom() + self._panel:h() * 0.5 - 2)
@@ -896,6 +905,7 @@ function CrimeNetSidebarLeakedRecordingItem:init(sidebar, panel, parameters)
 end
 
 function CrimeNetSidebarLeakedRecordingItem:update(t, dt)
+	return
 end
 
 CrimeNetSidebarCrimeSpreeItem = CrimeNetSidebarCrimeSpreeItem or class(CrimeNetSidebarItem)

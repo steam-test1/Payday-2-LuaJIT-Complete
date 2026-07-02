@@ -24,10 +24,12 @@ function AnimatedVehicleBase:update(unit, t, dt)
 		mvector3.divide(new_vel, dt)
 
 		self._last_pos = new_pos
+
 		local listener_pos = self._listener_obj:position()
 		local listener_vec = listener_pos - new_pos
 		local listener_dis = mvector3.normalize(listener_vec)
 		local vel_dot = mvector3.dot(listener_vec, new_vel)
+
 		vel_dot = math.clamp(vel_dot / 15000, -1, 1)
 
 		self._sound_source:set_rtpc("vel_to_listener", vel_dot)
@@ -133,12 +135,13 @@ end
 
 function AnimatedVehicleBase:spawn_module(module_unit_name, align_obj_name, module_id)
 	local align_obj = self._unit:get_object(Idstring(align_obj_name))
-	local module_unit = nil
+	local module_unit
 
 	if type_name(module_unit_name) == "string" then
 		if Network:is_server() then
 			local spawn_pos = align_obj:position()
 			local spawn_rot = align_obj:rotation()
+
 			module_unit = World:spawn_unit(Idstring(module_unit_name), spawn_pos, spawn_rot)
 		end
 	else
@@ -150,7 +153,8 @@ function AnimatedVehicleBase:spawn_module(module_unit_name, align_obj_name, modu
 	end
 
 	self._modules = self._modules or {}
-	local destroy_clbk_key = nil
+
+	local destroy_clbk_key
 
 	if module_unit:base() and module_unit:base().add_destroy_listener then
 		destroy_clbk_key = "AnimatedVehicleBase" .. tostring(self._unit:key())
@@ -165,6 +169,7 @@ function AnimatedVehicleBase:spawn_module(module_unit_name, align_obj_name, modu
 		destroy_clbk_key = destroy_clbk_key,
 		unit = module_unit
 	}
+
 	self._modules[module_id] = module_entry
 
 	if Network:is_server() then
@@ -182,6 +187,7 @@ function AnimatedVehicleBase:clbk_module_unit_destroyed(module_id, module_unit)
 	end
 
 	local entry = self._modules[module_id]
+
 	self._modules[module_id] = nil
 
 	if not next(self._modules) then
@@ -316,6 +322,7 @@ end
 function AnimatedVehicleBase:destroy(unit)
 	if self._modules then
 		local modules = self._modules
+
 		self._modules = nil
 
 		for module_id, entry in pairs(modules) do
@@ -332,6 +339,7 @@ end
 function AnimatedVehicleBase:store_current_pos()
 	local pos = Vector3(self._unit:position().x / 10, self._unit:position().y / 10, self._unit:position().z / 10)
 	local rot = Vector3(self._unit:rotation():yaw() / 10, self._unit:rotation():pitch() / 10, self._unit:rotation():roll() / 10)
+
 	self._stored_pos = pos
 	self._stored_rot = rot
 end

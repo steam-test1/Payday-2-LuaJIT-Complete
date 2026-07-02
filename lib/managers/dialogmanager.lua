@@ -5,6 +5,7 @@ function DialogManager:init()
 	self._current_dialog = nil
 	self._next_dialog = nil
 	self._bain_unit = World:spawn_unit(Idstring("units/payday2/characters/fps_mover/bain"), Vector3(), Rotation())
+
 	local level_id = Global.level_data and Global.level_data.level_id
 	local level_tweak = tweak_data.levels[level_id]
 
@@ -21,7 +22,7 @@ function DialogManager:update(t, dt)
 	for i = #self._delayed_dialog_requests, 1, -1 do
 		local entry = self._delayed_dialog_requests[i]
 
-		if entry.time <= t then
+		if t >= entry.time then
 			self:queue_dialog(unpack(entry.request))
 			table.remove(self._delayed_dialog_requests, i)
 		end
@@ -68,7 +69,7 @@ function DialogManager:queue_dialog(id, params)
 	else
 		local dialog = self._dialog_list[id]
 
-		if self._next_dialog and self._dialog_list[self._next_dialog.id].priority < dialog.priority then
+		if self._next_dialog and dialog.priority > self._dialog_list[self._next_dialog.id].priority then
 			self:_call_done_callback(params and params.done_cbk, "skipped")
 
 			return false
@@ -95,6 +96,7 @@ end
 
 function DialogManager:_add_delayed_dialog(dialog_request)
 	local delay = dialog_request[2].delay
+
 	dialog_request[2] = clone(dialog_request[2])
 	dialog_request[2].delay = nil
 
@@ -110,6 +112,7 @@ end
 
 function DialogManager:set_narrator(narrator)
 	local narrator_prefix = tweak_data.levels:get_narrator_prefix(narrator)
+
 	self._narrator_prefix = "Play_" .. narrator_prefix .. "_"
 end
 

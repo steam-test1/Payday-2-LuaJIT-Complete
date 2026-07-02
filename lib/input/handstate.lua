@@ -33,6 +33,7 @@ function HandState:apply(hand, key_map)
 
 	local hand_name = hand == 1 and "r" or "l"
 	local key_set = {}
+
 	self._disabled_connections = {}
 
 	for connection_name, connection_data in pairs(self._connections) do
@@ -48,7 +49,7 @@ function HandState:apply(hand, key_map)
 
 				if connection_data.exclusive or condition == "exclusive" then
 					for key, connections in pairs(key_map) do
-						table.remove_condition(connections, function (name)
+						table.remove_condition(connections, function(name)
 							return name == connection_name
 						end)
 						table.insert(self._disabled_connections, connection_name)

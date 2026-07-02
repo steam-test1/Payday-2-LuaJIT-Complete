@@ -45,6 +45,7 @@ function CoreCutsceneMayaExporter:_combined_camera_node_name()
 
 	while self.__sampled_units[node_name] ~= nil do
 		local node_name, num_suffix = string.match(node_name, "(.-)(%d*)$")
+
 		num_suffix = tonumber(num_suffix)
 		node_name = node_name_without_num_suffix .. (num_suffix and num_suffix + 1 or "")
 	end
@@ -241,6 +242,7 @@ function CoreCutsceneMayaExporter:_curve_set(unit_name, object)
 		end
 
 		local target_object_name = self:_maya_node_name(unit_name, object, true)
+
 		curve_set = CoreCutsceneMayaExporterCurveSet:new(target_object_name)
 		curve_sets_for_unit[object] = curve_set
 	end

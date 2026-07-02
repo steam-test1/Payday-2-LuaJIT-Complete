@@ -5,6 +5,7 @@ require("lib/utils/accelbyte/LoginEntitlement")
 
 local base64 = require("lib/utils/base64")
 local json = require("lib/utils/accelbyte/json")
+
 MenuTitlescreenState = MenuTitlescreenState or class(GameState)
 
 function MenuTitlescreenState:init(game_state_machine, setup)
@@ -26,6 +27,7 @@ local is_mm_eos = SystemInfo:matchmaking() == Idstring("MM_EPIC")
 
 function MenuTitlescreenState:setup()
 	local res = RenderSettings.resolution
+
 	self._workspace = managers.gui_data:create_saferect_workspace()
 
 	self._workspace:hide()
@@ -37,8 +39,8 @@ function MenuTitlescreenState:setup()
 	BlackBorders:new(self._full_workspace:panel())
 
 	local bitmap = self._workspace:panel():bitmap({
-		texture = "guis/textures/menu_title_screen",
-		layer = 1
+		layer = 1,
+		texture = "guis/textures/menu_title_screen"
 	})
 
 	bitmap:set_center(self._workspace:panel():w() / 2, self._workspace:panel():h() / 2)
@@ -50,9 +52,9 @@ function MenuTitlescreenState:setup()
 
 	local text_id = (is_ps3 or is_x360 or is_ps4 or is_xb1) and "menu_press_start" or "menu_visit_forum3"
 	local text = self._workspace:panel():text({
-		vertical = "bottom",
 		align = "center",
 		layer = 2,
+		vertical = "bottom",
 		text = managers.localization:text(text_id),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.topic_font_size,
@@ -60,6 +62,7 @@ function MenuTitlescreenState:setup()
 		w = self._workspace:panel():w(),
 		h = self._workspace:panel():h()
 	})
+
 	self._text = text
 
 	text:set_bottom(self._workspace:panel():h() / 1.25)
@@ -89,7 +92,7 @@ end
 
 function MenuTitlescreenState:_update_pc_xbox_controller_connection(params)
 	local text_string = managers.localization:to_upper_text(params.text_id)
-	local added_text = nil
+	local added_text
 
 	for _, controller in pairs(self._controller_list) do
 		if controller:get_type() == "xbox360" and controller:connected() then
@@ -115,10 +118,10 @@ function MenuTitlescreenState:at_enter()
 	end
 
 	managers.overlay_effect:play_effect({
-		sustain = 0.1,
-		fade_in = 0,
 		blend_mode = "normal",
+		fade_in = 0,
 		fade_out = 0.4,
+		sustain = 0.1,
 		color = Color.black
 	})
 	managers.menu_scene:setup_camera()
@@ -163,11 +166,12 @@ function MenuTitlescreenState:_get_eos_login_time()
 	end
 
 	self._queried_login_time = true
+
 	local userid = EpicMM:userid()
 
 	EpicMM:query_users({
 		userid
-	}, function (s, data)
+	}, function(s, data)
 		if s then
 			managers.network.matchmake:set_login_time(data[userid].last_login_time)
 			managers.perpetual_event:fetch_event()
@@ -200,15 +204,15 @@ function MenuTitlescreenState:update(t, dt)
 				self._waiting_on_connection = true
 
 				managers.menu:show_eos_no_connect_dialog({
-					play_offline_func = function ()
+					play_offline_func = function()
 						self._waiting_on_connection = false
 
 						managers.perpetual_event:fetch_event()
 					end,
-					quit_func = function ()
+					quit_func = function()
 						_G.setup:quit()
 					end,
-					wait_func = function ()
+					wait_func = function()
 						self._waiting_on_connection = nil
 					end
 				})
@@ -348,18 +352,20 @@ function MenuTitlescreenState:check_user_callback(success)
 	if success then
 		managers.user:check_storage(callback(self, self, "check_storage_callback"), true)
 	else
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("dialog_skip_signin_warning")
-		}
-		local yes_button = {
-			text = managers.localization:text("dialog_yes"),
-			callback_func = callback(self, self, "continue_without_saving_yes_callback")
-		}
-		local no_button = {
-			text = managers.localization:text("dialog_no"),
-			callback_func = callback(self, self, "continue_without_saving_no_callback")
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("dialog_skip_signin_warning")
+
+		local yes_button = {}
+
+		yes_button.text = managers.localization:text("dialog_yes")
+		yes_button.callback_func = callback(self, self, "continue_without_saving_yes_callback")
+
+		local no_button = {}
+
+		no_button.text = managers.localization:text("dialog_no")
+		no_button.callback_func = callback(self, self, "continue_without_saving_no_callback")
 		dialog_data.button_list = {
 			yes_button,
 			no_button
@@ -373,18 +379,20 @@ function MenuTitlescreenState:check_storage_callback(success)
 	if success then
 		self._waiting_for_loaded_savegames = true
 	else
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("dialog_skip_storage_warning")
-		}
-		local yes_button = {
-			text = managers.localization:text("dialog_yes"),
-			callback_func = callback(self, self, "continue_without_saving_yes_callback")
-		}
-		local no_button = {
-			text = managers.localization:text("dialog_no"),
-			callback_func = callback(self, self, "continue_without_saving_no_callback")
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("dialog_skip_storage_warning")
+
+		local yes_button = {}
+
+		yes_button.text = managers.localization:text("dialog_yes")
+		yes_button.callback_func = callback(self, self, "continue_without_saving_yes_callback")
+
+		local no_button = {}
+
+		no_button.text = managers.localization:text("dialog_no")
+		no_button.callback_func = callback(self, self, "continue_without_saving_no_callback")
 		dialog_data.button_list = {
 			yes_button,
 			no_button
@@ -460,7 +468,7 @@ function MenuTitlescreenState:play_attract_video()
 	local screen_width = self._full_workspace:width()
 	local screen_height = self._full_workspace:height()
 	local src_width, src_height = managers.gui_data:get_base_res()
-	local dest_width, dest_height = nil
+	local dest_width, dest_height
 
 	if src_width / src_height > screen_width / screen_height then
 		dest_width = screen_width
@@ -472,6 +480,7 @@ function MenuTitlescreenState:play_attract_video()
 
 	local x = (screen_width - dest_width) / 2
 	local y = (screen_height - dest_height) / 2
+
 	self._attract_video_gui = self._full_workspace:panel():video({
 		video = "movies/attract",
 		x = x,
@@ -487,7 +496,7 @@ end
 
 function MenuTitlescreenState:at_exit()
 	managers.platform:remove_event_callback("media_player_control", self._clbk_game_has_music_control_callback)
-	setup:add_end_frame_callback(function ()
+	setup:add_end_frame_callback(function()
 		if alive(self._workspace) then
 			managers.gui_data:destroy_workspace(self._workspace)
 

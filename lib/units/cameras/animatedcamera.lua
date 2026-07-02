@@ -5,6 +5,7 @@ function AnimatedCamera:init(unit)
 end
 
 function AnimatedCamera:update(unit, t, dt)
+	return
 end
 
 function AnimatedCamera:set_position(pos)
@@ -36,4 +37,5 @@ function AnimatedCamera:play_state(state_name)
 end
 
 function AnimatedCamera:destroy()
+	return
 end

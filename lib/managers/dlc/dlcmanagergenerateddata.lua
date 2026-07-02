@@ -451,604 +451,491 @@ function GenericDLCManager:has_xmn()
 end
 
 function WINDLCManager:init_generated()
-	Global.dlc_manager.all_dlc_data.a10th = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.a11th = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.afp = {
-		app_id = "1255151",
-		epic_id = "77aa4f7bb9374ce3ba5300d4e132caf4",
-		no_install = true,
-		webpage = "https://pd2.link/bexwpyb"
-	}
-	Global.dlc_manager.all_dlc_data.anv = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.apfo = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.atw = {
-		app_id = "1351060",
-		epic_id = "7ae51c06cfce4adb9870352bb6909b14",
-		no_install = true,
-		webpage = "https://pd2.link/pexwpyb"
-	}
-	Global.dlc_manager.all_dlc_data.bex = {
-		app_id = "1252200",
-		epic_id = "d530394a24f5418ebdccf8140912d836",
-		no_install = true,
-		webpage = "https://pd2.link/bexheistyb"
-	}
-	Global.dlc_manager.all_dlc_data.ccmt = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.cctp = {
-		app_id = "1778791",
-		epic_id = "487a05f4abdc4cef887aff4f6c58000a",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.cg22 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.chas = {
-		app_id = "1555040",
-		epic_id = "3605463dbbac44b2b3e779110df2d0dd",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.chca = {
-		app_id = "1778790",
-		epic_id = "ed8f0ab3d922464b89d7f5c504a17951",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.copr = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.corp = {
-		app_id = "2215010",
-		epic_id = "c5a8d3c732b5498b9989d921dc9660cb",
-		no_install = true,
-		webpage = "https://pd2.link/HostileTakeoverHeistYBS"
-	}
-	Global.dlc_manager.all_dlc_data.cot = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.deep = {
-		app_id = "2353512",
-		epic_id = "f46f3eb2ddef40f28e8d0875eef443b3",
-		no_install = true,
-		webpage = "https://pd2.link/CrudeAwakeningHeistYBS"
-	}
-	Global.dlc_manager.all_dlc_data.dgs = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.dot = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.esp = {
-		app_id = "4543600",
-		epic_id = "ae3c8e32b54f49b29988ed77dc43965a",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.ess = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.faco = {
-		app_id = "1555050",
-		epic_id = "7a827925c8be48cabb9e0ea809489ae4",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.fall = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.fawp = {
-		app_id = "1555050",
-		epic_id = "7a827925c8be48cabb9e0ea809489ae4",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.fcmsk = {
-		app_id = "1889360",
-		epic_id = "c692f5dc802f46b39965635596972219",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.fex = {
-		app_id = "1449450",
-		epic_id = "9248ff7cc0a04444994d8dee4b57809c",
-		no_install = true,
-		webpage = "https://pd2.link/FEXBMHYB"
-	}
-	Global.dlc_manager.all_dlc_data.flm = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.gdtp = {
-		app_id = "1907080",
-		epic_id = "7dbb0cef2df84bc898bc8c208999898b",
-		no_install = true,
-		webpage = "https://pd2.link/MountainMasterYBS2"
-	}
-	Global.dlc_manager.all_dlc_data.ghx = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.gpo = {
-		app_id = "1449440",
-		epic_id = "cde3b34730b74606b59a0047cf1672ae",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.h22 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.hnd = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.in31 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.in32 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.in33 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.in40 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.inf = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.ja21 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.ja22 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.jun21 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.laco = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.lawp = {
-		app_id = "1901420",
-		epic_id = "ca4528520efe4b89a5df2850989ab111",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.lrfo = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.m422 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.mar21 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.mar22 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.maw = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.mbs = {
-		app_id = "1255150",
-		epic_id = "e8b99080ed6c46c9a3875181f97b3108",
-		no_install = true,
-		webpage = "https://pd2.link/bextp2yb"
-	}
-	Global.dlc_manager.all_dlc_data.mex = {
-		app_id = "1184411",
-		epic_id = "cfc5a94ba4f74e02a7628d8bbf40d993",
-		no_install = true,
-		webpage = "https://pd2.link/ingame2BorderCrossing"
-	}
-	Global.dlc_manager.all_dlc_data.mmh = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.mrwi = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.mts = {
-		app_id = "1872590",
-		epic_id = "17bbf8b897044c1f9195b36c96f544b0",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.mwm = {
-		app_id = "1184412",
-		epic_id = "646f01e31690479ba2a59620fcad57ae",
-		no_install = true,
-		webpage = "https://pd2.link/ingame2CartelOptics"
-	}
-	Global.dlc_manager.all_dlc_data.mxm = {
-		app_id = "2218650",
-		epic_id = "6d3370810045406c92867e56e206ed37",
-		no_install = true,
-		webpage = "https://pd2.link/McShayModPackYBS"
-	}
-	Global.dlc_manager.all_dlc_data.mxw = {
-		app_id = "1449441",
-		epic_id = "1e53666bc6e4449f8e99a09d402aaeab",
-		no_install = true,
-		webpage = "https://pd2.link/FEXGWPYB"
-	}
-	Global.dlc_manager.all_dlc_data.ocp = {
-		app_id = "1449442",
-		epic_id = "e8f714b12cc3466ea3beae881c37ab47",
-		no_install = true,
-		webpage = "https://pd2.link/FEXWCP3YB"
-	}
-	Global.dlc_manager.all_dlc_data.oct21 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.pda10 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.pda8 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.pda9 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.pent = {
-		app_id = "1906240",
-		epic_id = "ab4d1181fc854c5490920bcf1bf2bb4d",
-		no_install = true,
-		webpage = "https://pd2.link/MountainMasterYBS"
-	}
-	Global.dlc_manager.all_dlc_data.pex = {
-		app_id = "1347750",
-		epic_id = "868e206d0eb34fb4b132929351b8daca",
-		no_install = true,
-		webpage = "https://pd2.link/pexheistyb"
-	}
-	Global.dlc_manager.all_dlc_data.pgo = {
-		app_id = "1449440",
-		epic_id = "cde3b34730b74606b59a0047cf1672ae",
-		no_install = true,
-		webpage = "https://pd2.link/FEXTP3YB"
-	}
-	Global.dlc_manager.all_dlc_data.prim = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.pxp1 = {
-		app_id = "1945682",
-		epic_id = "8b635892a38f4d15ac0c5bf18894073e",
-		no_install = true,
-		webpage = "https://pd2.link/McShayWeaponPackYBS"
-	}
-	Global.dlc_manager.all_dlc_data.pxp2 = {
-		app_id = "2074230",
-		epic_id = "e03c8aebea5f4fa89ff9c36437a2dcab",
-		no_install = true,
-		webpage = "https://pd2.link/McShayWeaponPack2YBS"
-	}
-	Global.dlc_manager.all_dlc_data.pxp3 = {
-		app_id = "2200970",
-		epic_id = "b85fe29809d54f4aa0c3cd5255870650",
-		no_install = true,
-		webpage = "https://pd2.link/McShayWeaponPack3YBS"
-	}
-	Global.dlc_manager.all_dlc_data.pxp4 = {
-		app_id = "2353510",
-		epic_id = "902a7404f1db486cb2a58b822b387533",
-		no_install = true,
-		webpage = "https://pd2.link/McShayWeaponPack4YBS"
-	}
-	Global.dlc_manager.all_dlc_data.ranc = {
-		app_id = "1945681",
-		epic_id = "4dac7848b70d40c7a3e220714dc9beb6",
-		no_install = true,
-		webpage = "https://pd2.link/MidlandRanchYBS"
-	}
-	Global.dlc_manager.all_dlc_data.rat = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.saco = {
-		app_id = "1619070",
-		epic_id = "b0adb3e8cd734612950224011ad83d20",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.sand = {
-		app_id = "1654480",
-		epic_id = "9a6807952b044d5299900ca7e8b3e29d",
-		no_install = true,
-		webpage = "https://pd2.link/UkrainianPrisonerYBS"
-	}
-	Global.dlc_manager.all_dlc_data.savi = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.sawp = {
-		app_id = "1619070",
-		epic_id = "b0adb3e8cd734612950224011ad83d20",
-		no_install = true,
-		webpage = "https://pd2.link/SmugglerPack2YBS"
-	}
-	Global.dlc_manager.all_dlc_data.sbzac2 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true,
-		external = true
-	}
-	Global.dlc_manager.all_dlc_data.scm = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.sdm = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.sdtp = {
-		app_id = "1654481",
-		epic_id = "8b8a9291e5df4865b806d56617ff6ba0",
-		no_install = true,
-		webpage = "https://pd2.link/UkrainianPrisonerYBS2"
-	}
-	Global.dlc_manager.all_dlc_data.sft = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.shl = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.skm = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.smo = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.sms = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.snow = {
-		app_id = "1824880",
-		epic_id = "1bc3645942d44f96b3f793b9abc8248f",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.srtr = {
-		app_id = "978300",
-		no_install = true,
-		external = true
-	}
-	Global.dlc_manager.all_dlc_data.sus = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.svc = {
-		app_id = "1257320",
-		epic_id = "eadc4fe12b56461492f9670631b2fa29",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.taco = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.tam = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.tar = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.tawp = {
-		app_id = "1746580",
-		epic_id = "27b9f68d33704d27bd56354bad84c19a",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.tjp = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.tma1 = {
-		app_id = "2076560",
-		epic_id = "59ea2b8bd95743dc869b70903c6c143a",
-		no_install = true,
-		webpage = "https://pd2.link/TijuanaMusicPackYB"
-	}
-	Global.dlc_manager.all_dlc_data.toon = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.trai = {
-		app_id = "2074240",
-		epic_id = "fbf60134f292473cac6bd29989e79a89",
-		no_install = true,
-		webpage = "https://pd2.link/LostInTransitHeistYBS"
-	}
-	Global.dlc_manager.all_dlc_data.trd = {
-		app_id = "1184410",
-		epic_id = "9f045b7afd3445e394bc22b8c8b4ddfc",
-		no_install = true,
-		webpage = "https://pd2.link/ingame2TailorPack"
-	}
-	Global.dlc_manager.all_dlc_data.trik = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.trt = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.tstp = {
-		app_id = "1555040",
-		epic_id = "3605463dbbac44b2b3e779110df2d0dd",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.txt1 = {
-		app_id = "1945680",
-		epic_id = "99deadceb9964985be09aebde8f96268",
-		no_install = true,
-		webpage = "https://pd2.link/SouthboundTailorPackYBS"
-	}
-	Global.dlc_manager.all_dlc_data.txt2 = {
-		app_id = "2074220",
-		epic_id = "9d0312be40884088ad89cc450cbd944a",
-		no_install = true,
-		webpage = "https://pd2.link/HighOctaneTailorPackYBS"
-	}
-	Global.dlc_manager.all_dlc_data.txt3 = {
-		app_id = "2200971",
-		epic_id = "fa0b3c0cd71d4040b846b1ed46a86fdc",
-		no_install = true,
-		webpage = "https://pd2.link/StreetSmartTailorPackYBS"
-	}
-	Global.dlc_manager.all_dlc_data.txt4 = {
-		app_id = "2352300",
-		epic_id = "52c49755b2b04f32a569a418b720399d",
-		no_install = true,
-		webpage = "https://pd2.link/LawlessTailorPackYBS"
-	}
-	Global.dlc_manager.all_dlc_data.unk = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.wcc = {
-		app_id = "1347751",
-		epic_id = "4c371acada21422cb711289b653e9600",
-		no_install = true,
-		webpage = "https://pd2.link/pexwcp2yb"
-	}
-	Global.dlc_manager.all_dlc_data.wcc_s01 = {
-		app_id = "1349280",
-		epic_id = "0e24c3ae53d748cea63c99b5f36f1d05",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.wcc_s02 = {
-		app_id = "1349281",
-		epic_id = "325fdb2dd4554b0591e0060540dbaf26",
-		no_install = true,
-		webpage = "https://pd2.link/pexlcyb"
-	}
-	Global.dlc_manager.all_dlc_data.wcs = {
-		app_id = "1255152",
-		epic_id = "d8480500d20b4e9480cc921248f34758",
-		no_install = true,
-		webpage = "https://pd2.link/bexwcp1yb"
-	}
-	Global.dlc_manager.all_dlc_data.wel = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.xm20 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.xm21 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.xm22 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.xm25 = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.xmn = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
+	Global.dlc_manager.all_dlc_data.a10th = {}
+	Global.dlc_manager.all_dlc_data.a10th.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.a10th.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.a10th.no_install = true
+	Global.dlc_manager.all_dlc_data.a11th = {}
+	Global.dlc_manager.all_dlc_data.a11th.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.a11th.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.a11th.no_install = true
+	Global.dlc_manager.all_dlc_data.afp = {}
+	Global.dlc_manager.all_dlc_data.afp.app_id = "1255151"
+	Global.dlc_manager.all_dlc_data.afp.epic_id = "77aa4f7bb9374ce3ba5300d4e132caf4"
+	Global.dlc_manager.all_dlc_data.afp.no_install = true
+	Global.dlc_manager.all_dlc_data.afp.webpage = "https://pd2.link/bexwpyb"
+	Global.dlc_manager.all_dlc_data.anv = {}
+	Global.dlc_manager.all_dlc_data.anv.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.anv.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.anv.no_install = true
+	Global.dlc_manager.all_dlc_data.apfo = {}
+	Global.dlc_manager.all_dlc_data.apfo.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.apfo.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.apfo.no_install = true
+	Global.dlc_manager.all_dlc_data.atw = {}
+	Global.dlc_manager.all_dlc_data.atw.app_id = "1351060"
+	Global.dlc_manager.all_dlc_data.atw.epic_id = "7ae51c06cfce4adb9870352bb6909b14"
+	Global.dlc_manager.all_dlc_data.atw.no_install = true
+	Global.dlc_manager.all_dlc_data.atw.webpage = "https://pd2.link/pexwpyb"
+	Global.dlc_manager.all_dlc_data.bex = {}
+	Global.dlc_manager.all_dlc_data.bex.app_id = "1252200"
+	Global.dlc_manager.all_dlc_data.bex.epic_id = "d530394a24f5418ebdccf8140912d836"
+	Global.dlc_manager.all_dlc_data.bex.no_install = true
+	Global.dlc_manager.all_dlc_data.bex.webpage = "https://pd2.link/bexheistyb"
+	Global.dlc_manager.all_dlc_data.ccmt = {}
+	Global.dlc_manager.all_dlc_data.ccmt.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.ccmt.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.ccmt.no_install = true
+	Global.dlc_manager.all_dlc_data.cctp = {}
+	Global.dlc_manager.all_dlc_data.cctp.app_id = "1778791"
+	Global.dlc_manager.all_dlc_data.cctp.epic_id = "487a05f4abdc4cef887aff4f6c58000a"
+	Global.dlc_manager.all_dlc_data.cctp.no_install = true
+	Global.dlc_manager.all_dlc_data.cg22 = {}
+	Global.dlc_manager.all_dlc_data.cg22.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.cg22.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.cg22.no_install = true
+	Global.dlc_manager.all_dlc_data.chas = {}
+	Global.dlc_manager.all_dlc_data.chas.app_id = "1555040"
+	Global.dlc_manager.all_dlc_data.chas.epic_id = "3605463dbbac44b2b3e779110df2d0dd"
+	Global.dlc_manager.all_dlc_data.chas.no_install = true
+	Global.dlc_manager.all_dlc_data.chca = {}
+	Global.dlc_manager.all_dlc_data.chca.app_id = "1778790"
+	Global.dlc_manager.all_dlc_data.chca.epic_id = "ed8f0ab3d922464b89d7f5c504a17951"
+	Global.dlc_manager.all_dlc_data.chca.no_install = true
+	Global.dlc_manager.all_dlc_data.copr = {}
+	Global.dlc_manager.all_dlc_data.copr.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.copr.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.copr.no_install = true
+	Global.dlc_manager.all_dlc_data.corp = {}
+	Global.dlc_manager.all_dlc_data.corp.app_id = "2215010"
+	Global.dlc_manager.all_dlc_data.corp.epic_id = "c5a8d3c732b5498b9989d921dc9660cb"
+	Global.dlc_manager.all_dlc_data.corp.no_install = true
+	Global.dlc_manager.all_dlc_data.corp.webpage = "https://pd2.link/HostileTakeoverHeistYBS"
+	Global.dlc_manager.all_dlc_data.cot = {}
+	Global.dlc_manager.all_dlc_data.cot.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.cot.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.cot.no_install = true
+	Global.dlc_manager.all_dlc_data.deep = {}
+	Global.dlc_manager.all_dlc_data.deep.app_id = "2353512"
+	Global.dlc_manager.all_dlc_data.deep.epic_id = "f46f3eb2ddef40f28e8d0875eef443b3"
+	Global.dlc_manager.all_dlc_data.deep.no_install = true
+	Global.dlc_manager.all_dlc_data.deep.webpage = "https://pd2.link/CrudeAwakeningHeistYBS"
+	Global.dlc_manager.all_dlc_data.dgs = {}
+	Global.dlc_manager.all_dlc_data.dgs.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.dgs.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.dgs.no_install = true
+	Global.dlc_manager.all_dlc_data.dot = {}
+	Global.dlc_manager.all_dlc_data.dot.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.dot.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.dot.no_install = true
+	Global.dlc_manager.all_dlc_data.esp = {}
+	Global.dlc_manager.all_dlc_data.esp.app_id = "4543600"
+	Global.dlc_manager.all_dlc_data.esp.epic_id = "ae3c8e32b54f49b29988ed77dc43965a"
+	Global.dlc_manager.all_dlc_data.esp.no_install = true
+	Global.dlc_manager.all_dlc_data.ess = {}
+	Global.dlc_manager.all_dlc_data.ess.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.ess.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.ess.no_install = true
+	Global.dlc_manager.all_dlc_data.faco = {}
+	Global.dlc_manager.all_dlc_data.faco.app_id = "1555050"
+	Global.dlc_manager.all_dlc_data.faco.epic_id = "7a827925c8be48cabb9e0ea809489ae4"
+	Global.dlc_manager.all_dlc_data.faco.no_install = true
+	Global.dlc_manager.all_dlc_data.fall = {}
+	Global.dlc_manager.all_dlc_data.fall.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.fall.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.fall.no_install = true
+	Global.dlc_manager.all_dlc_data.fawp = {}
+	Global.dlc_manager.all_dlc_data.fawp.app_id = "1555050"
+	Global.dlc_manager.all_dlc_data.fawp.epic_id = "7a827925c8be48cabb9e0ea809489ae4"
+	Global.dlc_manager.all_dlc_data.fawp.no_install = true
+	Global.dlc_manager.all_dlc_data.fcmsk = {}
+	Global.dlc_manager.all_dlc_data.fcmsk.app_id = "1889360"
+	Global.dlc_manager.all_dlc_data.fcmsk.epic_id = "c692f5dc802f46b39965635596972219"
+	Global.dlc_manager.all_dlc_data.fcmsk.no_install = true
+	Global.dlc_manager.all_dlc_data.fex = {}
+	Global.dlc_manager.all_dlc_data.fex.app_id = "1449450"
+	Global.dlc_manager.all_dlc_data.fex.epic_id = "9248ff7cc0a04444994d8dee4b57809c"
+	Global.dlc_manager.all_dlc_data.fex.no_install = true
+	Global.dlc_manager.all_dlc_data.fex.webpage = "https://pd2.link/FEXBMHYB"
+	Global.dlc_manager.all_dlc_data.flm = {}
+	Global.dlc_manager.all_dlc_data.flm.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.flm.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.flm.no_install = true
+	Global.dlc_manager.all_dlc_data.gdtp = {}
+	Global.dlc_manager.all_dlc_data.gdtp.app_id = "1907080"
+	Global.dlc_manager.all_dlc_data.gdtp.epic_id = "7dbb0cef2df84bc898bc8c208999898b"
+	Global.dlc_manager.all_dlc_data.gdtp.no_install = true
+	Global.dlc_manager.all_dlc_data.gdtp.webpage = "https://pd2.link/MountainMasterYBS2"
+	Global.dlc_manager.all_dlc_data.ghx = {}
+	Global.dlc_manager.all_dlc_data.ghx.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.ghx.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.ghx.no_install = true
+	Global.dlc_manager.all_dlc_data.gpo = {}
+	Global.dlc_manager.all_dlc_data.gpo.app_id = "1449440"
+	Global.dlc_manager.all_dlc_data.gpo.epic_id = "cde3b34730b74606b59a0047cf1672ae"
+	Global.dlc_manager.all_dlc_data.gpo.no_install = true
+	Global.dlc_manager.all_dlc_data.h22 = {}
+	Global.dlc_manager.all_dlc_data.h22.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.h22.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.h22.no_install = true
+	Global.dlc_manager.all_dlc_data.hnd = {}
+	Global.dlc_manager.all_dlc_data.hnd.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.hnd.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.hnd.no_install = true
+	Global.dlc_manager.all_dlc_data.in31 = {}
+	Global.dlc_manager.all_dlc_data.in31.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.in31.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.in31.no_install = true
+	Global.dlc_manager.all_dlc_data.in32 = {}
+	Global.dlc_manager.all_dlc_data.in32.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.in32.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.in32.no_install = true
+	Global.dlc_manager.all_dlc_data.in33 = {}
+	Global.dlc_manager.all_dlc_data.in33.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.in33.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.in33.no_install = true
+	Global.dlc_manager.all_dlc_data.in40 = {}
+	Global.dlc_manager.all_dlc_data.in40.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.in40.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.in40.no_install = true
+	Global.dlc_manager.all_dlc_data.inf = {}
+	Global.dlc_manager.all_dlc_data.inf.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.inf.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.inf.no_install = true
+	Global.dlc_manager.all_dlc_data.ja21 = {}
+	Global.dlc_manager.all_dlc_data.ja21.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.ja21.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.ja21.no_install = true
+	Global.dlc_manager.all_dlc_data.ja22 = {}
+	Global.dlc_manager.all_dlc_data.ja22.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.ja22.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.ja22.no_install = true
+	Global.dlc_manager.all_dlc_data.jun21 = {}
+	Global.dlc_manager.all_dlc_data.jun21.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.jun21.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.jun21.no_install = true
+	Global.dlc_manager.all_dlc_data.laco = {}
+	Global.dlc_manager.all_dlc_data.laco.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.laco.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.laco.no_install = true
+	Global.dlc_manager.all_dlc_data.lawp = {}
+	Global.dlc_manager.all_dlc_data.lawp.app_id = "1901420"
+	Global.dlc_manager.all_dlc_data.lawp.epic_id = "ca4528520efe4b89a5df2850989ab111"
+	Global.dlc_manager.all_dlc_data.lawp.no_install = true
+	Global.dlc_manager.all_dlc_data.lrfo = {}
+	Global.dlc_manager.all_dlc_data.lrfo.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.lrfo.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.lrfo.no_install = true
+	Global.dlc_manager.all_dlc_data.m422 = {}
+	Global.dlc_manager.all_dlc_data.m422.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.m422.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.m422.no_install = true
+	Global.dlc_manager.all_dlc_data.mar21 = {}
+	Global.dlc_manager.all_dlc_data.mar21.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.mar21.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.mar21.no_install = true
+	Global.dlc_manager.all_dlc_data.mar22 = {}
+	Global.dlc_manager.all_dlc_data.mar22.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.mar22.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.mar22.no_install = true
+	Global.dlc_manager.all_dlc_data.maw = {}
+	Global.dlc_manager.all_dlc_data.maw.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.maw.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.maw.no_install = true
+	Global.dlc_manager.all_dlc_data.mbs = {}
+	Global.dlc_manager.all_dlc_data.mbs.app_id = "1255150"
+	Global.dlc_manager.all_dlc_data.mbs.epic_id = "e8b99080ed6c46c9a3875181f97b3108"
+	Global.dlc_manager.all_dlc_data.mbs.no_install = true
+	Global.dlc_manager.all_dlc_data.mbs.webpage = "https://pd2.link/bextp2yb"
+	Global.dlc_manager.all_dlc_data.mex = {}
+	Global.dlc_manager.all_dlc_data.mex.app_id = "1184411"
+	Global.dlc_manager.all_dlc_data.mex.epic_id = "cfc5a94ba4f74e02a7628d8bbf40d993"
+	Global.dlc_manager.all_dlc_data.mex.no_install = true
+	Global.dlc_manager.all_dlc_data.mex.webpage = "https://pd2.link/ingame2BorderCrossing"
+	Global.dlc_manager.all_dlc_data.mmh = {}
+	Global.dlc_manager.all_dlc_data.mmh.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.mmh.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.mmh.no_install = true
+	Global.dlc_manager.all_dlc_data.mrwi = {}
+	Global.dlc_manager.all_dlc_data.mrwi.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.mrwi.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.mrwi.no_install = true
+	Global.dlc_manager.all_dlc_data.mts = {}
+	Global.dlc_manager.all_dlc_data.mts.app_id = "1872590"
+	Global.dlc_manager.all_dlc_data.mts.epic_id = "17bbf8b897044c1f9195b36c96f544b0"
+	Global.dlc_manager.all_dlc_data.mts.no_install = true
+	Global.dlc_manager.all_dlc_data.mwm = {}
+	Global.dlc_manager.all_dlc_data.mwm.app_id = "1184412"
+	Global.dlc_manager.all_dlc_data.mwm.epic_id = "646f01e31690479ba2a59620fcad57ae"
+	Global.dlc_manager.all_dlc_data.mwm.no_install = true
+	Global.dlc_manager.all_dlc_data.mwm.webpage = "https://pd2.link/ingame2CartelOptics"
+	Global.dlc_manager.all_dlc_data.mxm = {}
+	Global.dlc_manager.all_dlc_data.mxm.app_id = "2218650"
+	Global.dlc_manager.all_dlc_data.mxm.epic_id = "6d3370810045406c92867e56e206ed37"
+	Global.dlc_manager.all_dlc_data.mxm.no_install = true
+	Global.dlc_manager.all_dlc_data.mxm.webpage = "https://pd2.link/McShayModPackYBS"
+	Global.dlc_manager.all_dlc_data.mxw = {}
+	Global.dlc_manager.all_dlc_data.mxw.app_id = "1449441"
+	Global.dlc_manager.all_dlc_data.mxw.epic_id = "1e53666bc6e4449f8e99a09d402aaeab"
+	Global.dlc_manager.all_dlc_data.mxw.no_install = true
+	Global.dlc_manager.all_dlc_data.mxw.webpage = "https://pd2.link/FEXGWPYB"
+	Global.dlc_manager.all_dlc_data.ocp = {}
+	Global.dlc_manager.all_dlc_data.ocp.app_id = "1449442"
+	Global.dlc_manager.all_dlc_data.ocp.epic_id = "e8f714b12cc3466ea3beae881c37ab47"
+	Global.dlc_manager.all_dlc_data.ocp.no_install = true
+	Global.dlc_manager.all_dlc_data.ocp.webpage = "https://pd2.link/FEXWCP3YB"
+	Global.dlc_manager.all_dlc_data.oct21 = {}
+	Global.dlc_manager.all_dlc_data.oct21.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.oct21.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.oct21.no_install = true
+	Global.dlc_manager.all_dlc_data.pda10 = {}
+	Global.dlc_manager.all_dlc_data.pda10.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.pda10.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.pda10.no_install = true
+	Global.dlc_manager.all_dlc_data.pda8 = {}
+	Global.dlc_manager.all_dlc_data.pda8.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.pda8.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.pda8.no_install = true
+	Global.dlc_manager.all_dlc_data.pda9 = {}
+	Global.dlc_manager.all_dlc_data.pda9.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.pda9.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.pda9.no_install = true
+	Global.dlc_manager.all_dlc_data.pent = {}
+	Global.dlc_manager.all_dlc_data.pent.app_id = "1906240"
+	Global.dlc_manager.all_dlc_data.pent.epic_id = "ab4d1181fc854c5490920bcf1bf2bb4d"
+	Global.dlc_manager.all_dlc_data.pent.no_install = true
+	Global.dlc_manager.all_dlc_data.pent.webpage = "https://pd2.link/MountainMasterYBS"
+	Global.dlc_manager.all_dlc_data.pex = {}
+	Global.dlc_manager.all_dlc_data.pex.app_id = "1347750"
+	Global.dlc_manager.all_dlc_data.pex.epic_id = "868e206d0eb34fb4b132929351b8daca"
+	Global.dlc_manager.all_dlc_data.pex.no_install = true
+	Global.dlc_manager.all_dlc_data.pex.webpage = "https://pd2.link/pexheistyb"
+	Global.dlc_manager.all_dlc_data.pgo = {}
+	Global.dlc_manager.all_dlc_data.pgo.app_id = "1449440"
+	Global.dlc_manager.all_dlc_data.pgo.epic_id = "cde3b34730b74606b59a0047cf1672ae"
+	Global.dlc_manager.all_dlc_data.pgo.no_install = true
+	Global.dlc_manager.all_dlc_data.pgo.webpage = "https://pd2.link/FEXTP3YB"
+	Global.dlc_manager.all_dlc_data.prim = {}
+	Global.dlc_manager.all_dlc_data.prim.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.prim.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.prim.no_install = true
+	Global.dlc_manager.all_dlc_data.pxp1 = {}
+	Global.dlc_manager.all_dlc_data.pxp1.app_id = "1945682"
+	Global.dlc_manager.all_dlc_data.pxp1.epic_id = "8b635892a38f4d15ac0c5bf18894073e"
+	Global.dlc_manager.all_dlc_data.pxp1.no_install = true
+	Global.dlc_manager.all_dlc_data.pxp1.webpage = "https://pd2.link/McShayWeaponPackYBS"
+	Global.dlc_manager.all_dlc_data.pxp2 = {}
+	Global.dlc_manager.all_dlc_data.pxp2.app_id = "2074230"
+	Global.dlc_manager.all_dlc_data.pxp2.epic_id = "e03c8aebea5f4fa89ff9c36437a2dcab"
+	Global.dlc_manager.all_dlc_data.pxp2.no_install = true
+	Global.dlc_manager.all_dlc_data.pxp2.webpage = "https://pd2.link/McShayWeaponPack2YBS"
+	Global.dlc_manager.all_dlc_data.pxp3 = {}
+	Global.dlc_manager.all_dlc_data.pxp3.app_id = "2200970"
+	Global.dlc_manager.all_dlc_data.pxp3.epic_id = "b85fe29809d54f4aa0c3cd5255870650"
+	Global.dlc_manager.all_dlc_data.pxp3.no_install = true
+	Global.dlc_manager.all_dlc_data.pxp3.webpage = "https://pd2.link/McShayWeaponPack3YBS"
+	Global.dlc_manager.all_dlc_data.pxp4 = {}
+	Global.dlc_manager.all_dlc_data.pxp4.app_id = "2353510"
+	Global.dlc_manager.all_dlc_data.pxp4.epic_id = "902a7404f1db486cb2a58b822b387533"
+	Global.dlc_manager.all_dlc_data.pxp4.no_install = true
+	Global.dlc_manager.all_dlc_data.pxp4.webpage = "https://pd2.link/McShayWeaponPack4YBS"
+	Global.dlc_manager.all_dlc_data.ranc = {}
+	Global.dlc_manager.all_dlc_data.ranc.app_id = "1945681"
+	Global.dlc_manager.all_dlc_data.ranc.epic_id = "4dac7848b70d40c7a3e220714dc9beb6"
+	Global.dlc_manager.all_dlc_data.ranc.no_install = true
+	Global.dlc_manager.all_dlc_data.ranc.webpage = "https://pd2.link/MidlandRanchYBS"
+	Global.dlc_manager.all_dlc_data.rat = {}
+	Global.dlc_manager.all_dlc_data.rat.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.rat.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.rat.no_install = true
+	Global.dlc_manager.all_dlc_data.saco = {}
+	Global.dlc_manager.all_dlc_data.saco.app_id = "1619070"
+	Global.dlc_manager.all_dlc_data.saco.epic_id = "b0adb3e8cd734612950224011ad83d20"
+	Global.dlc_manager.all_dlc_data.saco.no_install = true
+	Global.dlc_manager.all_dlc_data.sand = {}
+	Global.dlc_manager.all_dlc_data.sand.app_id = "1654480"
+	Global.dlc_manager.all_dlc_data.sand.epic_id = "9a6807952b044d5299900ca7e8b3e29d"
+	Global.dlc_manager.all_dlc_data.sand.no_install = true
+	Global.dlc_manager.all_dlc_data.sand.webpage = "https://pd2.link/UkrainianPrisonerYBS"
+	Global.dlc_manager.all_dlc_data.savi = {}
+	Global.dlc_manager.all_dlc_data.savi.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.savi.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.savi.no_install = true
+	Global.dlc_manager.all_dlc_data.sawp = {}
+	Global.dlc_manager.all_dlc_data.sawp.app_id = "1619070"
+	Global.dlc_manager.all_dlc_data.sawp.epic_id = "b0adb3e8cd734612950224011ad83d20"
+	Global.dlc_manager.all_dlc_data.sawp.no_install = true
+	Global.dlc_manager.all_dlc_data.sawp.webpage = "https://pd2.link/SmugglerPack2YBS"
+	Global.dlc_manager.all_dlc_data.sbzac2 = {}
+	Global.dlc_manager.all_dlc_data.sbzac2.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.sbzac2.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.sbzac2.no_install = true
+	Global.dlc_manager.all_dlc_data.sbzac2.external = true
+	Global.dlc_manager.all_dlc_data.scm = {}
+	Global.dlc_manager.all_dlc_data.scm.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.scm.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.scm.no_install = true
+	Global.dlc_manager.all_dlc_data.sdm = {}
+	Global.dlc_manager.all_dlc_data.sdm.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.sdm.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.sdm.no_install = true
+	Global.dlc_manager.all_dlc_data.sdtp = {}
+	Global.dlc_manager.all_dlc_data.sdtp.app_id = "1654481"
+	Global.dlc_manager.all_dlc_data.sdtp.epic_id = "8b8a9291e5df4865b806d56617ff6ba0"
+	Global.dlc_manager.all_dlc_data.sdtp.no_install = true
+	Global.dlc_manager.all_dlc_data.sdtp.webpage = "https://pd2.link/UkrainianPrisonerYBS2"
+	Global.dlc_manager.all_dlc_data.sft = {}
+	Global.dlc_manager.all_dlc_data.sft.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.sft.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.sft.no_install = true
+	Global.dlc_manager.all_dlc_data.shl = {}
+	Global.dlc_manager.all_dlc_data.shl.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.shl.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.shl.no_install = true
+	Global.dlc_manager.all_dlc_data.skm = {}
+	Global.dlc_manager.all_dlc_data.skm.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.skm.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.skm.no_install = true
+	Global.dlc_manager.all_dlc_data.smo = {}
+	Global.dlc_manager.all_dlc_data.smo.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.smo.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.smo.no_install = true
+	Global.dlc_manager.all_dlc_data.sms = {}
+	Global.dlc_manager.all_dlc_data.sms.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.sms.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.sms.no_install = true
+	Global.dlc_manager.all_dlc_data.snow = {}
+	Global.dlc_manager.all_dlc_data.snow.app_id = "1824880"
+	Global.dlc_manager.all_dlc_data.snow.epic_id = "1bc3645942d44f96b3f793b9abc8248f"
+	Global.dlc_manager.all_dlc_data.snow.no_install = true
+	Global.dlc_manager.all_dlc_data.srtr = {}
+	Global.dlc_manager.all_dlc_data.srtr.app_id = "978300"
+	Global.dlc_manager.all_dlc_data.srtr.no_install = true
+	Global.dlc_manager.all_dlc_data.srtr.external = true
+	Global.dlc_manager.all_dlc_data.sus = {}
+	Global.dlc_manager.all_dlc_data.sus.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.sus.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.sus.no_install = true
+	Global.dlc_manager.all_dlc_data.svc = {}
+	Global.dlc_manager.all_dlc_data.svc.app_id = "1257320"
+	Global.dlc_manager.all_dlc_data.svc.epic_id = "eadc4fe12b56461492f9670631b2fa29"
+	Global.dlc_manager.all_dlc_data.svc.no_install = true
+	Global.dlc_manager.all_dlc_data.taco = {}
+	Global.dlc_manager.all_dlc_data.taco.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.taco.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.taco.no_install = true
+	Global.dlc_manager.all_dlc_data.tam = {}
+	Global.dlc_manager.all_dlc_data.tam.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.tam.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.tam.no_install = true
+	Global.dlc_manager.all_dlc_data.tar = {}
+	Global.dlc_manager.all_dlc_data.tar.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.tar.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.tar.no_install = true
+	Global.dlc_manager.all_dlc_data.tawp = {}
+	Global.dlc_manager.all_dlc_data.tawp.app_id = "1746580"
+	Global.dlc_manager.all_dlc_data.tawp.epic_id = "27b9f68d33704d27bd56354bad84c19a"
+	Global.dlc_manager.all_dlc_data.tawp.no_install = true
+	Global.dlc_manager.all_dlc_data.tjp = {}
+	Global.dlc_manager.all_dlc_data.tjp.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.tjp.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.tjp.no_install = true
+	Global.dlc_manager.all_dlc_data.tma1 = {}
+	Global.dlc_manager.all_dlc_data.tma1.app_id = "2076560"
+	Global.dlc_manager.all_dlc_data.tma1.epic_id = "59ea2b8bd95743dc869b70903c6c143a"
+	Global.dlc_manager.all_dlc_data.tma1.no_install = true
+	Global.dlc_manager.all_dlc_data.tma1.webpage = "https://pd2.link/TijuanaMusicPackYB"
+	Global.dlc_manager.all_dlc_data.toon = {}
+	Global.dlc_manager.all_dlc_data.toon.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.toon.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.toon.no_install = true
+	Global.dlc_manager.all_dlc_data.trai = {}
+	Global.dlc_manager.all_dlc_data.trai.app_id = "2074240"
+	Global.dlc_manager.all_dlc_data.trai.epic_id = "fbf60134f292473cac6bd29989e79a89"
+	Global.dlc_manager.all_dlc_data.trai.no_install = true
+	Global.dlc_manager.all_dlc_data.trai.webpage = "https://pd2.link/LostInTransitHeistYBS"
+	Global.dlc_manager.all_dlc_data.trd = {}
+	Global.dlc_manager.all_dlc_data.trd.app_id = "1184410"
+	Global.dlc_manager.all_dlc_data.trd.epic_id = "9f045b7afd3445e394bc22b8c8b4ddfc"
+	Global.dlc_manager.all_dlc_data.trd.no_install = true
+	Global.dlc_manager.all_dlc_data.trd.webpage = "https://pd2.link/ingame2TailorPack"
+	Global.dlc_manager.all_dlc_data.trik = {}
+	Global.dlc_manager.all_dlc_data.trik.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.trik.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.trik.no_install = true
+	Global.dlc_manager.all_dlc_data.trt = {}
+	Global.dlc_manager.all_dlc_data.trt.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.trt.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.trt.no_install = true
+	Global.dlc_manager.all_dlc_data.tstp = {}
+	Global.dlc_manager.all_dlc_data.tstp.app_id = "1555040"
+	Global.dlc_manager.all_dlc_data.tstp.epic_id = "3605463dbbac44b2b3e779110df2d0dd"
+	Global.dlc_manager.all_dlc_data.tstp.no_install = true
+	Global.dlc_manager.all_dlc_data.txt1 = {}
+	Global.dlc_manager.all_dlc_data.txt1.app_id = "1945680"
+	Global.dlc_manager.all_dlc_data.txt1.epic_id = "99deadceb9964985be09aebde8f96268"
+	Global.dlc_manager.all_dlc_data.txt1.no_install = true
+	Global.dlc_manager.all_dlc_data.txt1.webpage = "https://pd2.link/SouthboundTailorPackYBS"
+	Global.dlc_manager.all_dlc_data.txt2 = {}
+	Global.dlc_manager.all_dlc_data.txt2.app_id = "2074220"
+	Global.dlc_manager.all_dlc_data.txt2.epic_id = "9d0312be40884088ad89cc450cbd944a"
+	Global.dlc_manager.all_dlc_data.txt2.no_install = true
+	Global.dlc_manager.all_dlc_data.txt2.webpage = "https://pd2.link/HighOctaneTailorPackYBS"
+	Global.dlc_manager.all_dlc_data.txt3 = {}
+	Global.dlc_manager.all_dlc_data.txt3.app_id = "2200971"
+	Global.dlc_manager.all_dlc_data.txt3.epic_id = "fa0b3c0cd71d4040b846b1ed46a86fdc"
+	Global.dlc_manager.all_dlc_data.txt3.no_install = true
+	Global.dlc_manager.all_dlc_data.txt3.webpage = "https://pd2.link/StreetSmartTailorPackYBS"
+	Global.dlc_manager.all_dlc_data.txt4 = {}
+	Global.dlc_manager.all_dlc_data.txt4.app_id = "2352300"
+	Global.dlc_manager.all_dlc_data.txt4.epic_id = "52c49755b2b04f32a569a418b720399d"
+	Global.dlc_manager.all_dlc_data.txt4.no_install = true
+	Global.dlc_manager.all_dlc_data.txt4.webpage = "https://pd2.link/LawlessTailorPackYBS"
+	Global.dlc_manager.all_dlc_data.unk = {}
+	Global.dlc_manager.all_dlc_data.unk.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.unk.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.unk.no_install = true
+	Global.dlc_manager.all_dlc_data.wcc = {}
+	Global.dlc_manager.all_dlc_data.wcc.app_id = "1347751"
+	Global.dlc_manager.all_dlc_data.wcc.epic_id = "4c371acada21422cb711289b653e9600"
+	Global.dlc_manager.all_dlc_data.wcc.no_install = true
+	Global.dlc_manager.all_dlc_data.wcc.webpage = "https://pd2.link/pexwcp2yb"
+	Global.dlc_manager.all_dlc_data.wcc_s01 = {}
+	Global.dlc_manager.all_dlc_data.wcc_s01.app_id = "1349280"
+	Global.dlc_manager.all_dlc_data.wcc_s01.epic_id = "0e24c3ae53d748cea63c99b5f36f1d05"
+	Global.dlc_manager.all_dlc_data.wcc_s01.no_install = true
+	Global.dlc_manager.all_dlc_data.wcc_s02 = {}
+	Global.dlc_manager.all_dlc_data.wcc_s02.app_id = "1349281"
+	Global.dlc_manager.all_dlc_data.wcc_s02.epic_id = "325fdb2dd4554b0591e0060540dbaf26"
+	Global.dlc_manager.all_dlc_data.wcc_s02.no_install = true
+	Global.dlc_manager.all_dlc_data.wcc_s02.webpage = "https://pd2.link/pexlcyb"
+	Global.dlc_manager.all_dlc_data.wcs = {}
+	Global.dlc_manager.all_dlc_data.wcs.app_id = "1255152"
+	Global.dlc_manager.all_dlc_data.wcs.epic_id = "d8480500d20b4e9480cc921248f34758"
+	Global.dlc_manager.all_dlc_data.wcs.no_install = true
+	Global.dlc_manager.all_dlc_data.wcs.webpage = "https://pd2.link/bexwcp1yb"
+	Global.dlc_manager.all_dlc_data.wel = {}
+	Global.dlc_manager.all_dlc_data.wel.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.wel.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.wel.no_install = true
+	Global.dlc_manager.all_dlc_data.xm20 = {}
+	Global.dlc_manager.all_dlc_data.xm20.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.xm20.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.xm20.no_install = true
+	Global.dlc_manager.all_dlc_data.xm21 = {}
+	Global.dlc_manager.all_dlc_data.xm21.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.xm21.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.xm21.no_install = true
+	Global.dlc_manager.all_dlc_data.xm22 = {}
+	Global.dlc_manager.all_dlc_data.xm22.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.xm22.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.xm22.no_install = true
+	Global.dlc_manager.all_dlc_data.xm25 = {}
+	Global.dlc_manager.all_dlc_data.xm25.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.xm25.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.xm25.no_install = true
+	Global.dlc_manager.all_dlc_data.xmn = {}
+	Global.dlc_manager.all_dlc_data.xmn.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.xmn.epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	Global.dlc_manager.all_dlc_data.xmn.no_install = true
 end

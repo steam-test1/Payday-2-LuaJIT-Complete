@@ -8,7 +8,9 @@ function EditZipLine:init(editor)
 		name = "ZipLine",
 		class = self
 	})
+
 	self._panel = panel
+
 	local end_pos_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	sizer:add(end_pos_sizer, 0, 0, "EXPAND")
@@ -28,13 +30,13 @@ function EditZipLine:init(editor)
 	end_pos_sizer:add(btn_toolbar, 0, 1, "EXPAND,LEFT")
 
 	self._speed_params = {
-		value = 0,
-		name = "Speed [cm/s]:",
 		ctrlr_proportions = 1,
+		floats = 0,
+		min = 0,
+		name = "Speed [cm/s]:",
 		name_proportions = 1,
 		tooltip = "Sets the speed of the zipline in cm/s",
-		min = 0,
-		floats = 0,
+		value = 0,
 		panel = panel,
 		sizer = sizer,
 		events = {
@@ -52,13 +54,13 @@ function EditZipLine:init(editor)
 	CoreEws.number_controller(self._speed_params)
 
 	self._slack_params = {
-		value = 0,
-		name = "Slack [cm]:",
 		ctrlr_proportions = 1,
+		floats = 0,
+		min = 0,
+		name = "Slack [cm]:",
 		name_proportions = 1,
 		tooltip = "Value to define slack of the zipline in cm",
-		min = 0,
-		floats = 0,
+		value = 0,
 		panel = panel,
 		sizer = sizer,
 		events = {
@@ -76,10 +78,10 @@ function EditZipLine:init(editor)
 	CoreEws.number_controller(self._slack_params)
 
 	self._type_params = {
-		sorted = true,
+		ctrlr_proportions = 1,
 		name = "Type:",
 		name_proportions = 1,
-		ctrlr_proportions = 1,
+		sorted = true,
 		tooltip = "Select a type from the combobox",
 		panel = panel,
 		sizer = sizer,

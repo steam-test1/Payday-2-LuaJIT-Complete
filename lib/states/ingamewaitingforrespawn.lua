@@ -22,6 +22,7 @@ function IngameWaitingForRespawnState:_setup_controller()
 	self._controller = managers.controller:create_controller("waiting_for_respawn", managers.controller:get_default_wrapper_index(), false)
 	self._next_player_cb = callback(self, self, "cb_next_player")
 	self._prev_player_cb = callback(self, self, "cb_prev_player")
+
 	local next_btn = "right"
 	local prev_btn = "left"
 
@@ -105,8 +106,8 @@ function IngameWaitingForRespawnState:_setup_sound_listener()
 
 	self._listener_activation_id = managers.listener:activate_set("main", "spectator_camera")
 	self._sound_check_object = managers.sound_environment:add_check_object({
-		primary = true,
 		active = true,
+		primary = true,
 		object = self._camera_object
 	})
 end
@@ -141,8 +142,10 @@ function IngameWaitingForRespawnState:_begin_game_enter_transition()
 
 	self._auto_respawn_t = nil
 	self._ai_trade_respawn_gui_enabled = nil
+
 	local overlay_effect_desc = tweak_data.overlay_effects.spectator
 	local fade_in_duration = overlay_effect_desc.fade_in
+
 	self._fade_in_overlay_eff_id = managers.overlay_effect:play_effect(overlay_effect_desc)
 	self._ready_to_spawn_t = TimerManager:game():time() + fade_in_duration
 end
@@ -156,6 +159,7 @@ function IngameWaitingForRespawnState.request_player_spawn(peer_to_spawn)
 
 		if not pos_rot and managers.network then
 			local spawn_point = managers.network:session() and managers.network:session():get_next_spawn_point() or managers.network:spawn_point(1)
+
 			pos_rot = spawn_point and spawn_point.pos_rot
 		end
 
@@ -222,7 +226,7 @@ function IngameWaitingForRespawnState:update(t, dt)
 		self._ai_trade_respawn_gui_enabled = false
 	end
 
-	if ai_trade_time and (not self._auto_respawn_t or math.max(0, ai_trade_time) < self._auto_respawn_t - t) and not self._ready_to_spawn_t then
+	if ai_trade_time and (not self._auto_respawn_t or self._auto_respawn_t - t > math.max(0, ai_trade_time)) and not self._ready_to_spawn_t then
 		if not self._auto_respawn_t and not self._ai_trade_respawn_gui_enabled then
 			managers.hud:set_custody_timer_visibility(true)
 
@@ -235,12 +239,12 @@ function IngameWaitingForRespawnState:update(t, dt)
 		managers.hud:set_custody_respawn_type(false)
 		managers.hud:set_custody_respawn_time(self._auto_respawn_t - t)
 
-		if self._auto_respawn_t < t then
+		if t > self._auto_respawn_t then
 			self._auto_respawn_t = nil
 
 			self:_begin_game_enter_transition()
 		end
-	elseif self._ready_to_spawn_t and self._ready_to_spawn_t < t then
+	elseif self._ready_to_spawn_t and t > self._ready_to_spawn_t then
 		IngameWaitingForRespawnState.request_player_spawn()
 	end
 
@@ -257,7 +261,7 @@ function IngameWaitingForRespawnState:update(t, dt)
 		end
 	end
 
-	if self._play_too_long_line_t and self._play_too_long_line_t < t and managers.groupai:state():bain_state() then
+	if self._play_too_long_line_t and t > self._play_too_long_line_t and managers.groupai:state():bain_state() then
 		self._play_too_long_line_t = nil
 
 		managers.dialog:queue_narrator_dialog("h38x", {})
@@ -335,7 +339,7 @@ function IngameWaitingForRespawnState:_upd_watch(t, dt)
 			end
 		end
 
-		local vehicle_unit, vehicle_seat = nil
+		local vehicle_unit, vehicle_seat
 
 		if managers.network and managers.network:session() and watch_u_record.unit:network() then
 			if watch_u_record.unit:brain() then
@@ -374,7 +378,7 @@ function IngameWaitingForRespawnState:_upd_watch(t, dt)
 		mrot_set_look_at(self._rot, self._fwd, math_up)
 
 		local col_ray = World:raycast("ray", self._vec_target, self._vec_eye, "slot_mask", self._slotmask)
-		local dis_new = nil
+		local dis_new
 
 		if col_ray then
 			mvec3_set(self._vec_dir, col_ray.ray)
@@ -387,8 +391,9 @@ function IngameWaitingForRespawnState:_upd_watch(t, dt)
 			dis_new = mvec3_normalize(self._vec_dir)
 		end
 
-		if self._dis_curr and self._dis_curr < dis_new then
+		if self._dis_curr and dis_new > self._dis_curr then
 			local speed = math.max((dis_new - self._dis_curr) / 5, 1.5)
+
 			self._dis_curr = math.lerp(self._dis_curr, dis_new, speed * dt)
 		else
 			self._dis_curr = dis_new
@@ -411,14 +416,14 @@ function IngameWaitingForRespawnState:at_enter()
 
 	managers.player:force_drop_carry()
 	managers.hud:set_player_health({
-		total = 100,
 		current = 0,
-		no_hint = true
+		no_hint = true,
+		total = 100
 	})
 	managers.hud:set_player_armor({
-		total = 100,
 		current = 0,
-		no_hint = true
+		no_hint = true,
+		total = 100
 	})
 	managers.hud:set_player_condition("mugshot_in_custody", managers.localization:text("debug_mugshot_in_custody"))
 	managers.overlay_effect:play_effect(tweak_data.overlay_effects.fade_in)
@@ -434,6 +439,7 @@ function IngameWaitingForRespawnState:at_enter()
 	self._player_state_change_needed = true
 	self._respawn_delay = nil
 	self._play_too_long_line_t = nil
+
 	local level_tweak = tweak_data.levels[managers.job:current_level_id()]
 
 	if level_tweak and (level_tweak.death_track or level_tweak.death_event) then
@@ -521,7 +527,7 @@ end
 function IngameWaitingForRespawnState:_refresh_teammate_list()
 	local all_teammates = self._spectator_data.teammate_records
 	local teammate_list = self._spectator_data.teammate_list
-	local lost_teammate_at_i = nil
+	local lost_teammate_at_i
 	local i = #teammate_list
 
 	while i > 0 do
@@ -616,6 +622,7 @@ function IngameWaitingForRespawnState:cb_next_player()
 	end
 
 	local i_watch = self:_get_teammate_index_by_unit_key(watch_u_key)
+
 	i_watch = i_watch == #self._spectator_data.teammate_list and 1 or i_watch + 1
 	watch_u_key = self._spectator_data.teammate_list[i_watch]
 	self._spectator_data.watch_u_key = watch_u_key

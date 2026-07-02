@@ -76,15 +76,9 @@ end
 function CoreDepthOfFieldCutsceneKey:update(player, time)
 	local transition_time = self:transition_time()
 	local t = transition_time > 0 and math.min(time / transition_time, 1) or 1
-	local alpha = nil
+	local alpha
 
-	if self:_is_editing_initial_values() then
-		alpha = 0
-	elseif self:_is_editing_target_values() then
-		alpha = 1
-	else
-		alpha = self:_calc_interpolation(t)
-	end
+	alpha = self:_is_editing_initial_values() and 0 or self:_is_editing_target_values() and 1 or self:_calc_interpolation(t)
 
 	local start_near = self:_final_near_distance(player)
 	local end_near = transition_time == 0 and start_near or self:_final_target_near_distance(player)

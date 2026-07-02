@@ -9,12 +9,12 @@ ControllerWrapperPC.CONTROLLER_TYPE_LIST = {
 }
 
 function ControllerWrapperPC:init(manager, id, name, controller, setup, debug, skip_virtual_controller, gamepads)
-	local func_map = {
-		keyboard_axis_1 = callback(self, self, "virtual_connect_keyboard_axis_1"),
-		keyboard_axis_2 = callback(self, self, "virtual_connect_keyboard_axis_2"),
-		confirm = callback(self, self, "virtual_connect_confirm"),
-		cancel = callback(self, self, "virtual_connect_cancel")
-	}
+	local func_map = {}
+
+	func_map.keyboard_axis_1 = callback(self, self, "virtual_connect_keyboard_axis_1")
+	func_map.keyboard_axis_2 = callback(self, self, "virtual_connect_keyboard_axis_2")
+	func_map.confirm = callback(self, self, "virtual_connect_confirm")
+	func_map.cancel = callback(self, self, "virtual_connect_cancel")
 
 	ControllerWrapperPC.super.init(self, manager, id, name, {
 		keyboard = Input:keyboard(),
@@ -55,47 +55,47 @@ function ControllerWrapperPC:virtual_connect2(controller_id, controller, input_n
 	local connect_dest_type = connection:get_connect_dest_type()
 
 	if connection._btn_connections and input_name == "buttons" then
-		local btn_data = {
-			up = {
-				1,
-				0,
-				1
-			},
-			down = {
-				1,
-				0,
-				-1
-			},
-			left = {
-				0,
-				0,
-				-1
-			},
-			right = {
-				0,
-				0,
-				1
-			},
-			accelerate = {
-				1,
-				0,
-				1
-			},
-			brake = {
-				1,
-				0,
-				-1
-			},
-			turn_left = {
-				0,
-				0,
-				-1
-			},
-			turn_right = {
-				0,
-				0,
-				1
-			}
+		local btn_data = {}
+
+		btn_data.up = {
+			1,
+			0,
+			1
+		}
+		btn_data.down = {
+			1,
+			0,
+			-1
+		}
+		btn_data.left = {
+			0,
+			0,
+			-1
+		}
+		btn_data.right = {
+			0,
+			0,
+			1
+		}
+		btn_data.accelerate = {
+			1,
+			0,
+			1
+		}
+		btn_data.brake = {
+			1,
+			0,
+			-1
+		}
+		btn_data.turn_left = {
+			0,
+			0,
+			-1
+		}
+		btn_data.turn_right = {
+			0,
+			0,
+			1
 		}
 
 		if not self._virtual_controller:has_axis(Idstring(connection_name)) then

@@ -4,6 +4,7 @@ local medium_font = tweak_data.menu.pd2_medium_font
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font = tweak_data.menu.pd2_small_font
 local small_font_size = tweak_data.menu.pd2_small_font_size
+
 MenuGuiItem = MenuGuiItem or class()
 
 function MenuGuiItem:init()
@@ -11,9 +12,11 @@ function MenuGuiItem:init()
 end
 
 function MenuGuiItem:refresh()
+	return
 end
 
 function MenuGuiItem:inside()
+	return
 end
 
 function MenuGuiItem:is_selected()
@@ -50,6 +53,7 @@ function MenuGuiItem:trigger()
 end
 
 function MenuGuiItem:flash()
+	return
 end
 
 MenuGuiTabItem = MenuGuiTabItem or class(MenuGuiItem)
@@ -68,15 +72,16 @@ function MenuGuiTabItem:init(index, title_id, page_item, gui, tab_x, tab_panel)
 	self._selected = false
 	self._gui = gui
 	self._page_item = page_item
+
 	local page_panel = tab_panel:panel({
 		name = "Page" .. string.capitalize(tostring(title_id)),
 		x = tab_x
 	})
 	local page_text = page_panel:text({
-		name = "PageText",
-		vertical = "center",
 		align = "center",
 		layer = 1,
+		name = "PageText",
+		vertical = "center",
 		text = managers.localization:to_upper_text(title_id),
 		font = self.FONT,
 		font_size = self.FONT_SIZE,
@@ -88,12 +93,13 @@ function MenuGuiTabItem:init(index, title_id, page_item, gui, tab_x, tab_panel)
 	page_text:set_size(page_panel:size())
 
 	local page_tab_bg = page_panel:bitmap({
-		texture = "guis/textures/pd2/shared_tab_box",
 		name = "PageTabBG",
+		texture = "guis/textures/pd2/shared_tab_box",
 		w = page_panel:w(),
 		h = page_panel:h(),
 		color = tweak_data.screen_colors.text
 	})
+
 	self._page_panel = page_panel
 
 	self:refresh()
@@ -167,6 +173,7 @@ function MenuGuiTabPage:init(page_id, page_panel, fullscreen_panel, gui)
 end
 
 function MenuGuiTabPage:update(t, dt)
+	return
 end
 
 function MenuGuiTabPage:event_listener()
@@ -187,6 +194,7 @@ function MenuGuiTabPage:set_active(active)
 end
 
 function MenuGuiTabPage:on_notify(tree, msg)
+	return
 end
 
 function MenuGuiTabPage:name()
@@ -209,36 +217,47 @@ function MenuGuiTabPage:stack_panels(padding, panels)
 end
 
 function MenuGuiTabPage:mouse_clicked(o, button, x, y)
+	return
 end
 
 function MenuGuiTabPage:mouse_pressed(button, x, y)
+	return
 end
 
 function MenuGuiTabPage:mouse_released(button, x, y)
+	return
 end
 
 function MenuGuiTabPage:mouse_moved(button, x, y)
+	return
 end
 
 function MenuGuiTabPage:mouse_wheel_up(x, y)
+	return
 end
 
 function MenuGuiTabPage:mouse_wheel_down(x, y)
+	return
 end
 
 function MenuGuiTabPage:move_up()
+	return
 end
 
 function MenuGuiTabPage:move_down()
+	return
 end
 
 function MenuGuiTabPage:move_left()
+	return
 end
 
 function MenuGuiTabPage:move_right()
+	return
 end
 
 function MenuGuiTabPage:confirm_pressed()
+	return
 end
 
 function MenuGuiTabPage:special_btn_pressed(button)
@@ -271,8 +290,10 @@ function MenuGuiButtonItem:init(panel, data, x, priority)
 	MenuGuiButtonItem.super.init(self, panel, data)
 
 	self._callback = data.callback
+
 	local prefix = not managers.menu:is_pc_controller() and data.btn and managers.localization:get_default_macro(data.btn) or ""
 	local up_font_size = NOT_WIN_32 and RenderSettings.resolution.y < 720 and data.btn == "BTN_STICK_R" and 2 or 0
+
 	self._panel = panel:panel({
 		x = x,
 		y = x + (priority - 1) * small_font_size,
@@ -280,11 +301,11 @@ function MenuGuiButtonItem:init(panel, data, x, priority)
 		h = medium_font_size
 	})
 	self._btn_text = self._panel:text({
-		name = "text",
 		blend_mode = "add",
+		layer = 1,
+		name = "text",
 		text = "",
 		x = 0,
-		layer = 1,
 		align = data.align or "right",
 		w = self._panel:w(),
 		font_size = small_font_size + up_font_size,
@@ -295,10 +316,10 @@ function MenuGuiButtonItem:init(panel, data, x, priority)
 	self:set_text(prefix .. managers.localization:text(data.name_id))
 
 	self._select_rect = self._panel:rect({
-		blend_mode = "add",
-		name = "select_rect",
-		halign = "scale",
 		alpha = 0.3,
+		blend_mode = "add",
+		halign = "scale",
+		name = "select_rect",
 		valign = "scale",
 		color = tweak_data.screen_colors.button_stage_3
 	})

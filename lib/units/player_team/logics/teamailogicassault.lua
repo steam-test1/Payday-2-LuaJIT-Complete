@@ -20,6 +20,7 @@ function TeamAILogicAssault.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.combat
 	my_data.cover_chk_t = data.t + TeamAILogicAssault._COVER_CHK_INTERVAL
@@ -36,6 +37,7 @@ function TeamAILogicAssault.enter(data, new_logic_name, enter_params)
 	end
 
 	local key_str = tostring(data.key)
+
 	my_data.detection_task_key = "TeamAILogicAssault._upd_enemy_detection" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, TeamAILogicAssault._upd_enemy_detection, data, data.t)
@@ -95,10 +97,14 @@ function TeamAILogicAssault.update(data)
 
 	local enemy_visible = focus_enemy.verified
 	local action_taken = my_data.turning or data.unit:movement():chk_action_forbidden("walk") or my_data.moving_to_cover or my_data.walking_to_cover_shoot_pos or my_data._turning_to_intimidate
+
 	my_data.want_to_take_cover = CopLogicAttack._chk_wants_to_take_cover(data, my_data)
+
 	local want_to_take_cover = my_data.want_to_take_cover
+
 	action_taken = action_taken or CopLogicAttack._upd_pose(data, my_data)
-	local move_to_cover = nil
+
+	local move_to_cover
 
 	if action_taken then
 		-- Nothing
@@ -129,7 +135,7 @@ function TeamAILogicAssault.update(data)
 		end
 	end
 
-	if my_data.cover_chk_t < data.t then
+	if data.t > my_data.cover_chk_t then
 		CopLogicAttack._update_cover(data)
 
 		my_data.cover_chk_t = data.t + TeamAILogicAssault._COVER_CHK_INTERVAL
@@ -140,8 +146,9 @@ function TeamAILogicAssault._upd_enemy_detection(data, is_synchronous)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
-	local max_reaction = nil
+	local max_reaction
 
 	if data.cool then
 		max_reaction = AIAttentionObject.REACT_SURPRISED
@@ -191,6 +198,7 @@ function TeamAILogicAssault._upd_enemy_detection(data, is_synchronous)
 
 	if (not TeamAILogicAssault._mark_special_chk_t or TeamAILogicAssault._mark_special_chk_t + 0.75 < data.t) and (not TeamAILogicAssault._mark_special_t or TeamAILogicAssault._mark_special_t + 6 < data.t) and not my_data.acting and not data.unit:sound():speaking() then
 		local nmy = TeamAILogicAssault.find_enemy_to_mark(data.detected_attention_objects)
+
 		TeamAILogicAssault._mark_special_chk_t = data.t
 
 		if nmy then
@@ -208,10 +216,10 @@ function TeamAILogicAssault._upd_enemy_detection(data, is_synchronous)
 end
 
 function TeamAILogicAssault.find_enemy_to_mark(enemies)
-	local best_nmy, best_nmy_wgt = nil
+	local best_nmy, best_nmy_wgt
 
 	for key, attention_info in pairs(enemies) do
-		if attention_info.identified and (attention_info.verified or attention_info.nearly_visible) and attention_info.is_person and attention_info.char_tweak and attention_info.char_tweak.priority_shout and AIAttentionObject.REACT_COMBAT <= attention_info.reaction and (not attention_info.char_tweak.priority_shout_max_dis or attention_info.dis < attention_info.char_tweak.priority_shout_max_dis) and (not best_nmy_wgt or attention_info.verified_dis < best_nmy_wgt) then
+		if attention_info.identified and (attention_info.verified or attention_info.nearly_visible) and attention_info.is_person and attention_info.char_tweak and attention_info.char_tweak.priority_shout and attention_info.reaction >= AIAttentionObject.REACT_COMBAT and (not attention_info.char_tweak.priority_shout_max_dis or attention_info.dis < attention_info.char_tweak.priority_shout_max_dis) and (not best_nmy_wgt or best_nmy_wgt > attention_info.verified_dis) then
 			best_nmy_wgt = attention_info.verified_dis
 			best_nmy = attention_info.unit
 		end
@@ -222,7 +230,7 @@ end
 
 function TeamAILogicAssault.mark_enemy(data, criminal, to_mark, play_sound, play_action)
 	if play_sound then
-		local callout = not criminal:brain()._last_mark_shout or tweak_data.sound.criminal_sound.ai_callout_cooldown < TimerManager:game():time() - criminal:brain()._last_mark_shout
+		local callout = not criminal:brain()._last_mark_shout or TimerManager:game():time() - criminal:brain()._last_mark_shout > tweak_data.sound.criminal_sound.ai_callout_cooldown
 
 		if callout then
 			criminal:sound():say(to_mark:base():char_tweak().priority_shout .. "x_any", true)
@@ -233,9 +241,9 @@ function TeamAILogicAssault.mark_enemy(data, criminal, to_mark, play_sound, play
 
 	if play_action and not data.unit:anim_data().reload and not criminal:movement():chk_action_forbidden("action") then
 		local new_action = {
-			variant = "arrest",
 			body_part = 3,
-			type = "act"
+			type = "act",
+			variant = "arrest"
 		}
 
 		if criminal:brain():action_request(new_action) then
@@ -292,6 +300,7 @@ function TeamAILogicAssault.damage_clbk(data, damage_info)
 end
 
 function TeamAILogicAssault.death_clbk(data, damage_info)
+	return
 end
 
 function TeamAILogicAssault.on_detected_enemy_destroyed(data, enemy_unit)
@@ -301,7 +310,7 @@ end
 function TeamAILogicAssault._chk_request_combat_chatter(data, my_data)
 	local focus_enemy = data.attention_obj
 
-	if focus_enemy and focus_enemy.verified and focus_enemy.is_person and AIAttentionObject.REACT_COMBAT <= focus_enemy.reaction and (my_data.firing or data.unit:character_damage():health_ratio() < 1) and not data.unit:movement():chk_action_forbidden("walk") and not data.unit:sound():speaking() then
+	if focus_enemy and focus_enemy.verified and focus_enemy.is_person and focus_enemy.reaction >= AIAttentionObject.REACT_COMBAT and (my_data.firing or data.unit:character_damage():health_ratio() < 1) and not data.unit:movement():chk_action_forbidden("walk") and not data.unit:sound():speaking() then
 		managers.groupai:state():chk_say_teamAI_combat_chatter(data.unit)
 	end
 end

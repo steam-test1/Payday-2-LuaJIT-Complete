@@ -46,10 +46,10 @@ function RepKey:update(d, dt)
 			down = true
 		end
 
-		if self._pause <= self._current_time then
+		if self._current_time >= self._pause then
 			down = true
 
-			if self._rep <= self._current_rep_time then
+			if self._current_rep_time >= self._rep then
 				down = true
 				self._current_rep_time = 0
 			else

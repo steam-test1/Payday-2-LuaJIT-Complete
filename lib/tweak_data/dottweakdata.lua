@@ -8,10 +8,12 @@ function DOTTweakData:init(tweak_data)
 end
 
 function DOTTweakData:_init_tweak_data()
+	return
 end
 
 function DOTTweakData:_init_dot_entries(...)
 	local entries = {}
+
 	self.dot_entries = entries
 
 	self:_init_dot_entries_poison(entries, ...)
@@ -34,15 +36,16 @@ end
 
 function DOTTweakData:_init_dot_entries_poison(entries)
 	local poison_entries = {}
+
 	entries.poison = poison_entries
 	poison_entries.default_poison = {
 		PROCESSED = true,
-		name = "default",
-		dot_length = 6,
-		dot_damage = 25,
 		damage_class = "PoisonBulletBase",
-		dot_tick_period = 0.5,
+		dot_damage = 25,
 		dot_grace_period = 1,
+		dot_length = 6,
+		dot_tick_period = 0.5,
+		name = "default",
 		variant = "poison"
 	}
 	poison_entries.weapon_dotbulletbase = {
@@ -59,17 +62,17 @@ function DOTTweakData:_init_dot_entries_poison(entries)
 	poison_entries.ammo_proj_elastic = clone(poison_entries.ammo_proj_bow)
 	poison_entries.ammo_proj_dart = clone(poison_entries.ammo_proj_bow)
 	poison_entries.ammo_rip = {
-		use_weapon_damage_falloff = true,
+		dot_damage = 12,
+		dot_length = 5,
+		use_weapon_damage_falloff = true
+	}
+	poison_entries.melee_piggy_hammer = {
 		dot_damage = 12,
 		dot_length = 5
 	}
-	poison_entries.melee_piggy_hammer = {
-		dot_length = 5,
-		dot_damage = 12
-	}
 	poison_entries.melee_cqc = {
-		hurt_animation_chance = 0.7,
-		dot_length = 1
+		dot_length = 1,
+		hurt_animation_chance = 0.7
 	}
 	poison_entries.melee_fear = {
 		dot_length = 3
@@ -118,6 +121,7 @@ end
 
 function DOTTweakData:_setup_networking()
 	local names_lookup = {}
+
 	self._idx_to_name = names_lookup
 
 	if self.dot_entries and next(self.dot_entries) then
@@ -134,8 +138,10 @@ function DOTTweakData:_setup_networking()
 	end
 
 	local indexes_lookup = {}
+
 	self._name_to_idx = indexes_lookup
-	local tweak_name = nil
+
+	local tweak_name
 
 	for idx = 1, #names_lookup do
 		tweak_name = names_lookup[idx]

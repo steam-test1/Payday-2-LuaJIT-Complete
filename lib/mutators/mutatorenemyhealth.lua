@@ -4,8 +4,8 @@ MutatorEnemyHealth.name_id = "mutator_enemy_health"
 MutatorEnemyHealth.desc_id = "mutator_enemy_health_desc"
 MutatorEnemyHealth.has_options = true
 MutatorEnemyHealth.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 MutatorEnemyHealth.disables_achievements = true
 MutatorEnemyHealth.categories = {
@@ -62,16 +62,16 @@ end
 
 function MutatorEnemyHealth:setup_options_gui(node)
 	local params = {
-		name = "enemy_health_slider",
 		callback = "_update_mutator_value",
+		name = "enemy_health_slider",
 		text_id = "menu_mutator_enemy_health",
 		update_callback = callback(self, self, "_update_health_multiplier")
 	}
 	local data_node = {
+		decimal_count = 2,
 		show_value = true,
 		step = 0.1,
 		type = "CoreMenuItemSlider.ItemSlider",
-		decimal_count = 2,
 		min = self:_min_health(),
 		max = self:_max_health()
 	}

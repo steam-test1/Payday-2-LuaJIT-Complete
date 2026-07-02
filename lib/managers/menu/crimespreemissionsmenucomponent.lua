@@ -1,14 +1,16 @@
 CrimeSpreeMissionsMenuComponent = CrimeSpreeMissionsMenuComponent or class(MenuGuiComponentGeneric)
+
 local padding = 10
 local size = 280
+
 CrimeSpreeMissionsMenuComponent.button_size = {
 	w = size * 0.6666666666666666,
 	h = size * 0.5 * 0.6666666666666666,
 	title_h = tweak_data.menu.pd2_medium_font_size + 4
 }
 CrimeSpreeMissionsMenuComponent.menu_nodes = {
-	start_menu = "crime_spree_lobby",
-	mission_end_menu = "main"
+	mission_end_menu = "main",
+	start_menu = "crime_spree_lobby"
 }
 
 function CrimeSpreeMissionsMenuComponent:init(ws, fullscreen_ws, node)
@@ -49,9 +51,11 @@ function CrimeSpreeMissionsMenuComponent:_setup()
 	self._panel = parent:panel({
 		layer = self._init_layer
 	})
+
 	local w = (self.button_size.w + padding) * tweak_data.crime_spree.gui.missions_displayed - padding
 	local h = self.button_size.h + self.button_size.title_h
 	local bottom = parent:bottom() - tweak_data.menu.pd2_large_font_size * 1.5
+
 	self._title_panel = self._panel:panel({})
 
 	self._title_panel:set_w(w)
@@ -59,13 +63,13 @@ function CrimeSpreeMissionsMenuComponent:_setup()
 	self._title_panel:set_right(parent:right())
 	self._title_panel:set_bottom(bottom - h - 4)
 	self._title_panel:text({
+		align = "left",
+		halign = "left",
 		layer = 51,
+		valign = "bottom",
 		vertical = "bottom",
 		word_wrap = true,
 		wrap = true,
-		align = "left",
-		halign = "left",
-		valign = "bottom",
 		text = managers.localization:to_upper_text("menu_cs_select_next_heist"),
 		color = Color.white,
 		font = tweak_data.menu.pd2_medium_font,
@@ -79,7 +83,7 @@ function CrimeSpreeMissionsMenuComponent:_setup()
 	self._buttons_panel:set_right(parent:right())
 	self._buttons_panel:set_bottom(bottom)
 
-	local default_index = nil
+	local default_index
 
 	for idx = 1, tweak_data.crime_spree.gui.missions_displayed do
 		local data = managers.crime_spree:server_missions()[idx] or {}
@@ -106,40 +110,42 @@ function CrimeSpreeMissionsMenuComponent:_setup()
 	end
 
 	self._host_failed_text = self._buttons_panel:text({
-		halign = "right",
-		vertical = "bottom",
-		layer = 51,
-		wrap = true,
 		align = "right",
-		word_wrap = true,
-		y = 0,
-		x = 0,
+		halign = "right",
+		layer = 51,
 		valign = "bottom",
+		vertical = "bottom",
+		word_wrap = true,
+		wrap = true,
+		x = 0,
+		y = 0,
 		text = managers.localization:text("menu_cs_host_failed_text"),
 		color = Color.white,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size
 	})
+
 	local _, _, _, h = self._host_failed_text:text_rect()
 
 	self._host_failed_text:set_h(h)
 	self._host_failed_text:set_bottom(self._buttons_panel:h())
 
 	self._host_failed = self._buttons_panel:text({
-		halign = "right",
-		vertical = "bottom",
-		layer = 51,
-		wrap = true,
 		align = "right",
-		word_wrap = true,
-		y = 0,
-		x = 0,
+		halign = "right",
+		layer = 51,
 		valign = "bottom",
+		vertical = "bottom",
+		word_wrap = true,
+		wrap = true,
+		x = 0,
+		y = 0,
 		text = managers.localization:to_upper_text("menu_cs_host_failed"),
 		color = Color.white,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	})
+
 	local _, _, _, h = self._host_failed:text_rect()
 
 	self._host_failed:set_h(h)
@@ -214,6 +220,7 @@ function CrimeSpreeMissionsMenuComponent:_set_button_index_selected(idx, selecte
 	end
 
 	self._selected_button = idx
+
 	local btn = self._buttons[idx]
 
 	if btn then
@@ -278,14 +285,13 @@ function CrimeSpreeMissionsMenuComponent:mouse_moved(o, x, y)
 		return
 	end
 
-	local used, pointer = nil
+	local used, pointer
 
 	for idx, btn in ipairs(self._buttons) do
 		btn:set_selected(btn:inside(x, y))
 
 		if btn:is_selected() then
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		end
 	end
 
@@ -323,14 +329,15 @@ function CrimeSpreeMissionsMenuComponent:move_right()
 end
 
 function CrimeSpreeMissionsMenuComponent:input_focus()
+	return
 end
 
 CrimeSpreeMissionButton = CrimeSpreeMissionButton or class(MenuGuiItem)
 CrimeSpreeMissionButton._type = "CrimeSpreeMissionButton"
 CrimeSpreeMissionButton.RandomState = {
 	Cleanup = 5,
-	Rollback = 3,
 	Done = 4,
+	Rollback = 3,
 	Slow = 2,
 	Spin = 1
 }
@@ -352,6 +359,7 @@ function CrimeSpreeMissionButton:init(idx, parent, mission_data)
 		layer = -2,
 		color = Color.black
 	})
+
 	local texture, rect = tweak_data.hud_icons:get_icon_data(mission_data.icon)
 
 	if not texture or not DB:has(Idstring("texture"), texture) then
@@ -366,18 +374,19 @@ function CrimeSpreeMissionButton:init(idx, parent, mission_data)
 
 	self._mission_image = self._image_panel:bitmap({
 		blend_mode = "add",
-		name = "mission_image",
 		layer = 9,
+		name = "mission_image",
 		stream = true,
 		texture = texture,
 		texture_rect = rect,
 		w = self._panel:w(),
 		h = self._panel:h()
 	})
+
 	local image_scanlines = self._image_panel:bitmap({
-		texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
-		name = "scalines",
 		layer = 11,
+		name = "scalines",
+		texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
 		wrap_mode = "wrap",
 		texture_rect = {
 			0,
@@ -389,6 +398,7 @@ function CrimeSpreeMissionButton:init(idx, parent, mission_data)
 		h = self._panel:h()
 	})
 	local h = tweak_data.menu.pd2_medium_font_size
+
 	self._info_panel = self._panel:panel({
 		layer = 50,
 		h = h
@@ -402,6 +412,7 @@ function CrimeSpreeMissionButton:init(idx, parent, mission_data)
 		h = h,
 		color = Color(0.05, 0.05, 0.05)
 	})
+
 	self._highlight_name = self._panel:rect({
 		layer = 1,
 		y = self._panel:h() - h,
@@ -409,14 +420,14 @@ function CrimeSpreeMissionButton:init(idx, parent, mission_data)
 		color = tweak_data.screen_colors.button_stage_3
 	})
 	self._level_text = self._panel:text({
-		halign = "center",
-		vertical = "center",
-		layer = 51,
 		align = "center",
+		halign = "center",
+		layer = 51,
 		text = "",
-		y = 0,
-		x = 0,
 		valign = "center",
+		vertical = "center",
+		x = 0,
+		y = 0,
 		color = Color.white,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
@@ -426,14 +437,14 @@ function CrimeSpreeMissionButton:init(idx, parent, mission_data)
 	self._level_text:set_center_x(self._panel:w() * 0.5)
 
 	self._info_text = self._info_panel:text({
-		halign = "center",
-		vertical = "center",
-		layer = 1,
 		align = "center",
+		halign = "center",
+		layer = 1,
 		text = "",
-		y = 0,
-		x = 0,
 		valign = "center",
+		vertical = "center",
+		x = 0,
+		y = 0,
 		color = Color.white,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
@@ -452,11 +463,11 @@ function CrimeSpreeMissionButton:init(idx, parent, mission_data)
 		color = tweak_data.screen_colors.button_stage_3
 	})
 	self._blur = self._panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		layer = -1,
-		halign = "scale",
 		alpha = 1,
+		halign = "scale",
+		layer = -1,
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = self._panel:w(),
 		h = self._panel:h()
@@ -522,6 +533,7 @@ function CrimeSpreeMissionButton:update(t, dt)
 	if self._randomize then
 		if self._randomize.state == CrimeSpreeMissionButton.RandomState.Spin then
 			self._randomize.t = self._randomize.t - dt
+
 			local speed = math.clamp(self._randomize.t * tweak_data.crime_spree.gui.spin_speed, unpack(tweak_data.crime_spree.gui.spin_speed_limit))
 
 			self:_move_random_texts(speed, dt)
@@ -538,7 +550,7 @@ function CrimeSpreeMissionButton:update(t, dt)
 			local speed = tweak_data.crime_spree.gui.spin_speed_limit[1]
 
 			if self._randomize.t then
-				speed = speed * self._randomize.t / slow_time[2]
+				speed = speed * (self._randomize.t / slow_time[2])
 			end
 
 			self:_move_random_texts(speed, dt)
@@ -621,6 +633,7 @@ end
 function CrimeSpreeMissionButton:update_button_text(text, mission_data, dont_reset_pos)
 	text = text or self._level_text
 	mission_data = mission_data or self._mission_data
+
 	local level_tweak = tweak_data.levels[mission_data.level.level_id] or {}
 
 	text:set_text(managers.localization:to_upper_text(level_tweak.name_id))
@@ -628,7 +641,7 @@ function CrimeSpreeMissionButton:update_button_text(text, mission_data, dont_res
 
 	local x, y, w, h = text:text_rect()
 
-	if self._panel:w() <= w then
+	if w >= self._panel:w() then
 		text:set_font_size(tweak_data.menu.pd2_small_font_size * 0.8)
 	end
 
@@ -646,12 +659,14 @@ end
 
 function CrimeSpreeMissionButton:update_info_text(mission_data)
 	mission_data = mission_data or self._mission_data
+
 	local text = ""
 	local spacer = " "
 	local category = self:_get_mission_category(mission_data)
 
 	if category then
 		local timer_text = managers.localization:get_default_macro("BTN_SPREE_" .. utf8.to_upper(category))
+
 		text = text .. timer_text
 	end
 
@@ -659,14 +674,17 @@ function CrimeSpreeMissionButton:update_info_text(mission_data)
 
 	if level_tweak and level_tweak.ghost_bonus then
 		local stealth_text = managers.localization:get_default_macro("BTN_SPREE_STEALTH")
+
 		text = text .. spacer .. stealth_text
 	end
 
 	text = text .. spacer
+
 	local len = utf8.len(text)
 	local inc_text = managers.localization:text("menu_cs_lobby_mission_inc", {
 		inc = mission_data.add
 	})
+
 	text = text .. inc_text
 
 	self._info_text:set_text(text)
@@ -700,14 +718,14 @@ function CrimeSpreeMissionButton:_create_random_texts()
 
 	for i = 1, 8 do
 		local text = self._panel:text({
-			halign = "center",
-			vertical = "center",
-			layer = 1,
 			align = "center",
+			halign = "center",
+			layer = 1,
 			text = "",
-			y = 0,
-			x = 0,
 			valign = "center",
+			vertical = "center",
+			x = 0,
+			y = 0,
 			color = Color.white,
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size
@@ -742,12 +760,10 @@ function CrimeSpreeMissionButton:_move_random_texts(speed, dt)
 	for i, text in ipairs(self._random_texts) do
 		text:set_y(text:y() + speed * dt)
 
-		if self._panel:h() < text:y() then
+		if text:y() > self._panel:h() then
 			local idx = (i - 1) % #self._random_texts
 
-			if idx == 0 then
-				idx = #self._random_texts or idx
-			end
+			idx = idx == 0 and #self._random_texts or idx
 
 			text:set_bottom(self._random_texts[idx]:top())
 

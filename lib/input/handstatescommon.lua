@@ -1,4 +1,5 @@
 HandStatesCommon = HandStatesCommon or {}
+
 local M = HandStatesCommon
 
 function M.warp_inputs()

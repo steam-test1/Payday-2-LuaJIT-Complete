@@ -1,4 +1,5 @@
 local tmp_vec1 = Vector3()
+
 CivilianLogicIdle = class(CivilianLogicBase)
 
 function CivilianLogicIdle.enter(data, new_logic_name, enter_params)
@@ -7,6 +8,7 @@ function CivilianLogicIdle.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 
 	if not data.char_tweak.detection then
@@ -46,6 +48,7 @@ function CivilianLogicIdle.enter(data, new_logic_name, enter_params)
 
 		if objective.action_duration then
 			my_data.action_timeout_clbk_id = "CivilianLogicIdle_action_timeout" .. key_str
+
 			local action_timeout_t = data.t + objective.action_duration
 
 			CopLogicBase.add_delayed_clbk(my_data, my_data.action_timeout_clbk_id, callback(CivilianLogicIdle, CivilianLogicIdle, "clbk_action_timeout", data), action_timeout_t)
@@ -73,7 +76,7 @@ function CivilianLogicIdle.enter(data, new_logic_name, enter_params)
 		data.unit:movement():set_stance(objective.stance)
 	end
 
-	local attention_settings = nil
+	local attention_settings
 
 	if is_cool then
 		attention_settings = {
@@ -121,7 +124,7 @@ function CivilianLogicIdle._upd_outline_detection(data)
 	local t = TimerManager:game():time()
 	local visibility_slotmask = managers.slot:get_mask("AI_visibility")
 	local seen = false
-	local seeing_unit = nil
+	local seeing_unit
 	local my_tracker = data.unit:movement():nav_tracker()
 	local chk_vis_func = my_tracker.check_visibility
 
@@ -170,7 +173,7 @@ function CivilianLogicIdle.on_alert(data, alert_data)
 	end
 
 	local my_data = data.internal_data
-	local my_dis, alert_delay = nil
+	local my_dis, alert_delay
 	local my_listen_pos = data.unit:movement():m_head_pos()
 	local alert_epicenter = alert_data[2]
 
@@ -183,7 +186,7 @@ function CivilianLogicIdle.on_alert(data, alert_data)
 			local aggressor = alert_data[5]
 
 			if aggressor and aggressor:base() then
-				local is_intimidation = nil
+				local is_intimidation
 
 				if aggressor:base().is_local_player then
 					if managers.player:has_category_upgrade("player", "civ_calming_alerts") then
@@ -234,7 +237,9 @@ function CivilianLogicIdle._delayed_alert_clbk(ignore_this, params)
 	CopLogicBase.on_delayed_clbk(my_data, my_data.delayed_alert_id)
 
 	my_data.delayed_alert_id = nil
+
 	local alerting_unit = alert_data[5]
+
 	alerting_unit = alive(alerting_unit) and alerting_unit
 
 	if not CivilianLogicIdle.is_obstructed(data, alerting_unit) then
@@ -262,8 +267,7 @@ function CivilianLogicIdle.on_intimidated(data, amount, aggressor_unit)
 	data.unit:movement():set_cool(false, managers.groupai:state().analyse_giveaway(data.unit:base()._tweak_table, aggressor_unit))
 	data.unit:movement():set_stance(data.is_tied and "cbt" or "hos")
 
-	local att_obj_data = aggressor_unit and CopLogicBase.identify_attention_obj_instant(data, aggressor_unit:key())
-	local is_new = nil
+	local att_obj_data, is_new = aggressor_unit and CopLogicBase.identify_attention_obj_instant(data, aggressor_unit:key())
 
 	if not data.char_tweak.intimidateable or data.unit:base().unintimidateable or data.unit:anim_data().unintimidateable then
 		return
@@ -362,13 +366,14 @@ function CivilianLogicIdle._upd_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local delay = CopLogicBase._upd_attention_obj_detection(data, nil, nil)
 	local new_attention, new_reaction = CivilianLogicIdle._get_priority_attention(data, data.detected_attention_objects)
 
 	CivilianLogicIdle._set_attention_obj(data, new_attention, new_reaction)
 
-	if new_reaction and AIAttentionObject.REACT_SCARED <= new_reaction then
+	if new_reaction and new_reaction >= AIAttentionObject.REACT_SCARED then
 		local objective = data.objective
 		local allow_trans, obj_failed = CopLogicBase.is_obstructed(data, objective, nil, new_attention)
 
@@ -420,7 +425,7 @@ function CivilianLogicIdle.is_available_for_assignment(data, objective)
 
 	local my_data = data.internal_data
 
-	return (not my_data.acting or data.unit:anim_data().act_idle) and not my_data.exiting and not my_data.delayed_alert_id
+	return (not my_data.acting or not not data.unit:anim_data().act_idle) and not my_data.exiting and not my_data.delayed_alert_id
 end
 
 function CivilianLogicIdle.anim_clbk(data, info_type)
@@ -437,6 +442,7 @@ function CivilianLogicIdle.clbk_action_timeout(ignore_this, data)
 	CopLogicBase.on_delayed_clbk(my_data, my_data.action_timeout_clbk_id)
 
 	my_data.action_timeout_clbk_id = nil
+
 	local old_objective = data.objective
 
 	if not old_objective then
@@ -469,7 +475,7 @@ function CivilianLogicIdle.is_obstructed(data, aggressor_unit)
 		return true
 	end
 
-	if aggressor_unit and aggressor_unit:movement() and objective.interrupt_dis and mvector3.distance_sq(data.m_pos, aggressor_unit:movement():m_newest_pos()) < objective.interrupt_dis * objective.interrupt_dis then
+	if aggressor_unit and aggressor_unit:movement() and objective.interrupt_dis and objective.interrupt_dis * objective.interrupt_dis > mvector3.distance_sq(data.m_pos, aggressor_unit:movement():m_newest_pos()) then
 		return true
 	end
 
@@ -483,7 +489,7 @@ function CivilianLogicIdle.is_obstructed(data, aggressor_unit)
 end
 
 function CivilianLogicIdle._get_priority_attention(data, attention_objects)
-	local best_target, best_target_priority, best_target_reaction = nil
+	local best_target, best_target_priority, best_target_reaction
 
 	for u_key, attention_data in pairs(attention_objects) do
 		local att_unit = attention_data.unit
@@ -491,17 +497,17 @@ function CivilianLogicIdle._get_priority_attention(data, attention_objects)
 		if not attention_data.identified then
 			-- Nothing
 		elseif attention_data.pause_expire_t then
-			if attention_data.pause_expire_t < data.t and (not attention_data.settings.attract_chance or math.random() < attention_data.settings.attract_chance) then
+			if data.t > attention_data.pause_expire_t and (not attention_data.settings.attract_chance or math.random() < attention_data.settings.attract_chance) then
 				attention_data.pause_expire_t = nil
 			end
-		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
+		elseif attention_data.stare_expire_t and data.t > attention_data.stare_expire_t then
 			if attention_data.settings.pause then
 				attention_data.stare_expire_t = nil
 			end
 		else
 			local distance = attention_data.dis
 			local reaction = attention_data.settings.reaction
-			local reaction_too_mild = nil
+			local reaction_too_mild
 
 			if not reaction or best_target_reaction and reaction < best_target_reaction then
 				reaction_too_mild = true
@@ -530,21 +536,23 @@ end
 
 function CivilianLogicIdle._set_attention_obj(data, new_att_obj, new_reaction)
 	local old_att_obj = data.attention_obj
+
 	data.attention_obj = new_att_obj
 
 	if new_att_obj then
 		new_reaction = new_reaction or new_att_obj.settings.reaction
 		new_att_obj.reaction = new_reaction
-		local is_same_obj = nil
+
+		local is_same_obj
 
 		if old_att_obj and old_att_obj.u_key == new_att_obj.u_key then
 			is_same_obj = true
 
-			if new_att_obj.stare_expire_t and new_att_obj.stare_expire_t < data.t then
+			if new_att_obj.stare_expire_t and data.t > new_att_obj.stare_expire_t then
 				if new_att_obj.settings.pause then
 					new_att_obj.stare_expire_t = nil
 				end
-			elseif new_att_obj.pause_expire_t and new_att_obj.pause_expire_t < data.t then
+			elseif new_att_obj.pause_expire_t and data.t > new_att_obj.pause_expire_t then
 				if not new_att_obj.settings.attract_chance or math.random() < new_att_obj.settings.attract_chance then
 					new_att_obj.pause_expire_t = nil
 				else

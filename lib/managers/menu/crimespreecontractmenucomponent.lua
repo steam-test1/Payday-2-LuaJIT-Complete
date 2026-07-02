@@ -63,9 +63,9 @@ function CrimeSpreeContractMenuComponent:_setup()
 	})
 
 	local blur = self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		render_template = "VertexColorTexturedBlur3D",
 		layer = 1,
+		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
@@ -73,7 +73,7 @@ function CrimeSpreeContractMenuComponent:_setup()
 	local function func(o)
 		local start_blur = 0
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(start_blur, 1, p))
 		end)
 	end
@@ -83,10 +83,11 @@ function CrimeSpreeContractMenuComponent:_setup()
 	local show_level = managers.crime_spree:in_progress() or not self:_is_host()
 	local spree_text = show_level and "cn_crime_spree_level" or "cn_crime_spree"
 	local spree_level = self:_is_host() and managers.crime_spree:spree_level() or self:_host_spree_level()
+
 	self._contact_text_header = self._panel:text({
-		vertical = "top",
 		align = "left",
 		layer = 1,
+		vertical = "top",
 		text = managers.localization:to_upper_text(spree_text, {
 			level = managers.experience:cash_string(spree_level, "")
 		}),
@@ -94,6 +95,7 @@ function CrimeSpreeContractMenuComponent:_setup()
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
 	})
+
 	local x, y, w, h = self._contact_text_header:text_rect()
 
 	self._contact_text_header:set_size(width, h)
@@ -137,9 +139,9 @@ function CrimeSpreeContractMenuComponent:_setup()
 	})
 
 	self._desc_text = self._contract_panel:text({
+		align = "left",
 		vertical = "top",
 		wrap = true,
-		align = "left",
 		wrap_word = true,
 		text = managers.localization:text("cn_crime_spree_brief"),
 		w = text_w,
@@ -150,14 +152,18 @@ function CrimeSpreeContractMenuComponent:_setup()
 		x = padding,
 		y = padding
 	})
-	local _, _, _, h = self._desc_text:text_rect()
-	local scale = 1
 
-	if text_h < h then
-		scale = text_h / (h - font_size)
+	do
+		local _, _, _, h = self._desc_text:text_rect()
+		local scale = 1
+
+		if text_h < h then
+			scale = text_h / (h - font_size)
+		end
+
+		self._desc_text:set_font_size(font_size * scale)
 	end
 
-	self._desc_text:set_font_size(font_size * scale)
 	CrimeNetGui.make_color_text(self, self._desc_text, tweak_data.screen_colors.important_1)
 
 	if managers.crime_spree:in_progress() then
@@ -169,6 +175,7 @@ end
 
 function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 	local padding = tweak_data.gui.crime_net.contract_gui.padding
+
 	self._coins_panel = self._contract_panel:panel({
 		x = padding,
 		y = padding,
@@ -178,11 +185,12 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 	self._coins_panel:set_bottom(self._contract_panel:h() - padding)
 
 	local coins = 0
+
 	coins = managers.custom_safehouse:coins()
 	self._cost_text = self._coins_panel:text({
-		y = 0,
-		x = 0,
 		layer = 1,
+		x = 0,
+		y = 0,
 		text = managers.experience:cash_string(math.floor(coins), managers.localization:get_default_macro("BTN_CONTINENTAL_COINS")),
 		color = Color.white,
 		font = tweak_data.menu.pd2_medium_font,
@@ -192,6 +200,7 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 	BlackMarketGui.make_fine_text(self, self._cost_text)
 
 	local h = CrimeSpreeStartingLevelItem.size.h + padding * 2
+
 	self._levels_panel = self._contract_panel:panel({
 		layer = 1,
 		x = padding,
@@ -199,10 +208,11 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 		w = text_w,
 		h = h
 	})
+
 	local starting_text = self._contract_panel:text({
+		align = "left",
 		vertical = "top",
 		wrap = true,
-		align = "left",
 		wrap_word = true,
 		text = managers.localization:to_upper_text("cn_crime_spree_starting"),
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -226,7 +236,7 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 	if tweak_data.crime_spree.allow_highscore_continue then
 		local level = managers.crime_spree:highest_level()
 
-		if not self:_is_host() and self:_host_spree_level() < level then
+		if not self:_is_host() and level > self:_host_spree_level() then
 			level = self:_host_spree_level()
 		end
 
@@ -260,11 +270,11 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 		self._levels_panel:grow(0, grow_size)
 
 		local btn = CrimeSpreeStartingLevelItem:new(self._levels_panel, {
-			num_items = 1,
 			highest_level = 1,
+			level = -1,
+			num_items = 1,
 			text = "",
 			x = 0,
-			level = -1,
 			y = CrimeSpreeStartingLevelItem.size.h + padding * 2,
 			w = self._levels_panel:w(),
 			h = grow_size,
@@ -275,10 +285,12 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 		btn._cost_text:set_center_y(btn._panel:h() * 0.5)
 
 		local coins = 0
+
 		coins = managers.custom_safehouse:coins()
+
 		local insert_pos = 1
 
-		if tweak_data.crime_spree.initial_cost <= coins then
+		if coins >= tweak_data.crime_spree.initial_cost then
 			insert_pos = #self._buttons
 		end
 
@@ -293,8 +305,8 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 
 	if not self:_is_host() then
 		local warning_text = self._contract_panel:text({
-			vertical = "bottom",
 			align = "left",
+			vertical = "bottom",
 			text = managers.localization:to_upper_text("menu_cs_not_in_progress_join_lobby"),
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			font = tweak_data.menu.pd2_medium_font,
@@ -304,9 +316,9 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 			h = tweak_data.menu.pd2_medium_font_size
 		})
 		local warning_desc = self._contract_panel:text({
+			align = "left",
 			vertical = "bottom",
 			wrap = true,
-			align = "left",
 			wrap_word = true,
 			text = managers.localization:text("menu_cs_not_in_progress_join_lobby_desc"),
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -325,9 +337,9 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 
 	if not managers.menu:is_pc_controller() then
 		local controls_text = self._contract_panel:text({
+			align = "left",
 			vertical = "top",
 			wrap = true,
-			align = "left",
 			wrap_word = true,
 			text = managers.localization:get_default_macro("BTN_X") .. " / " .. managers.localization:get_default_macro("BTN_Y"),
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -355,6 +367,7 @@ function CrimeSpreeContractMenuComponent:_setup_continue_host(text_w, text_h)
 	local next_modifiers_h = tweak_data.menu.pd2_small_font_size * 2
 	local line_h = tweak_data.menu.pd2_small_font_size * 1.5
 	local table_split = 0.125
+
 	self._modifiers_panel = self._contract_panel:panel({
 		x = padding,
 		y = self._desc_text:bottom() + padding + tweak_data.menu.pd2_medium_font_size,
@@ -365,9 +378,9 @@ function CrimeSpreeContractMenuComponent:_setup_continue_host(text_w, text_h)
 	CrimeSpreeModifierDetailsPage.add_modifiers_panel(self, self._modifiers_panel, managers.crime_spree:active_modifiers(), false)
 
 	local text = self._contract_panel:text({
+		align = "left",
 		vertical = "top",
 		wrap = true,
-		align = "left",
 		wrap_word = true,
 		text = managers.localization:to_upper_text("cn_crime_spree_modifiers"),
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -386,13 +399,13 @@ function CrimeSpreeContractMenuComponent:_setup_continue_host(text_w, text_h)
 		})
 
 		panel:text({
-			halign = "left",
-			vertical = "center",
 			align = "left",
-			layer = 1,
 			alpha = 0.8,
-			y = 5,
+			halign = "left",
+			layer = 1,
 			valign = "center",
+			vertical = "center",
+			y = 5,
 			text = managers.localization:text("cn_crime_spree_no_modifiers"),
 			x = padding + panel:w() * table_split,
 			font = tweak_data.menu.pd2_small_font,
@@ -408,16 +421,18 @@ end
 
 function CrimeSpreeContractMenuComponent:_setup_continue_client(text_w, text_h)
 	local padding = tweak_data.gui.crime_net.contract_gui.padding
+
 	self._info_panel = self._contract_panel:panel({
 		x = padding,
 		y = self._desc_text:bottom() + padding + tweak_data.menu.pd2_medium_font_size,
 		w = text_w,
 		h = self._contract_panel:h() - text_h - padding * 3 - tweak_data.menu.pd2_medium_font_size
 	})
+
 	local text = self._contract_panel:text({
+		align = "left",
 		vertical = "top",
 		wrap = true,
-		align = "left",
 		wrap_word = true,
 		text = managers.localization:to_upper_text("menu_cs_in_progress"),
 		font_size = tweak_data.menu.pd2_medium_font_size,
@@ -430,9 +445,9 @@ function CrimeSpreeContractMenuComponent:_setup_continue_client(text_w, text_h)
 	text:set_left(self._info_panel:left())
 
 	local desc = self._info_panel:text({
+		align = "left",
 		vertical = "top",
 		wrap = true,
-		align = "left",
 		wrap_word = true,
 		x = 0,
 		text = managers.localization:text("menu_cs_in_progress_desc"),
@@ -446,8 +461,8 @@ function CrimeSpreeContractMenuComponent:_setup_continue_client(text_w, text_h)
 
 	BlackMarketGui.make_fine_text(self, desc)
 
-	local level_desc_text, level_desc_col = nil
-	local level_higher = self:_host_spree_level() < managers.crime_spree:spree_level()
+	local level_desc_text, level_desc_col
+	local level_higher = managers.crime_spree:spree_level() > self:_host_spree_level()
 	local level_lower = managers.crime_spree:spree_level() < self:_host_spree_level()
 
 	if level_higher then
@@ -460,9 +475,9 @@ function CrimeSpreeContractMenuComponent:_setup_continue_client(text_w, text_h)
 
 	if level_desc_text then
 		local level_warning = self._info_panel:text({
+			align = "left",
 			vertical = "top",
 			wrap = true,
-			align = "left",
 			wrap_word = true,
 			x = 0,
 			text = managers.localization:text(level_desc_text),
@@ -505,14 +520,13 @@ function CrimeSpreeContractMenuComponent:set_active_starting_level(btn)
 end
 
 function CrimeSpreeContractMenuComponent:mouse_moved(o, x, y)
-	local used, pointer = nil
+	local used, pointer
 
 	for idx, btn in ipairs(self._buttons) do
 		btn:set_selected(btn:inside(x, y))
 
 		if btn:is_selected() then
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		end
 	end
 
@@ -570,10 +584,9 @@ function CrimeSpreeContractMenuComponent:special_btn_pressed(button)
 end
 
 function CrimeSpreeContractMenuComponent:_setup_controller_input()
-	self._gui = {
-		_left_axis_vector = Vector3(),
-		_right_axis_vector = Vector3()
-	}
+	self._gui = {}
+	self._gui._left_axis_vector = Vector3()
+	self._gui._right_axis_vector = Vector3()
 
 	self._ws:connect_controller(managers.menu:active_menu().input:get_controller(), true)
 	self._panel:axis_move(callback(self, self, "_axis_move"))
@@ -603,14 +616,17 @@ CrimeSpreeStartingLevelItem.size = {
 
 function CrimeSpreeStartingLevelItem:init(parent, data)
 	local padding = tweak_data.gui.crime_net.contract_gui.padding
+
 	self._parent = parent
 	self._level = data.level or 0
 	self._start_cost = managers.crime_spree:get_start_cost(self._level)
+
 	local index = data.index or 1
 	local w = (parent:w() - padding * (data.num_items - 1)) / data.num_items
 	local h = 48
 	local x = padding * (index - 1) + w * (index - 1)
 	local y = padding
+
 	self._panel = parent:panel({
 		w = data.w or w,
 		h = data.h or CrimeSpreeStartingLevelItem.size.h,
@@ -643,11 +659,13 @@ function CrimeSpreeStartingLevelItem:init(parent, data)
 		layer = 0,
 		color = tweak_data.screen_colors.button_stage_3
 	})
+
 	local level_w = self._level / (data.highest_level or 100)
+
 	level_w = level_w == 0 and 10 or self._panel:w() * level_w
 	self._level_bg = self._panel:rect({
-		blend_mode = "add",
 		alpha = 0.2,
+		blend_mode = "add",
 		layer = -1,
 		color = Color.white,
 		w = level_w
@@ -656,12 +674,12 @@ function CrimeSpreeStartingLevelItem:init(parent, data)
 	self._level_bg:set_visible(false)
 
 	self._text = self._panel:text({
-		halign = "center",
-		vertical = "center",
-		layer = 1,
 		align = "center",
-		x = 0,
+		halign = "center",
+		layer = 1,
 		valign = "center",
+		vertical = "center",
+		x = 0,
 		text = data.text or managers.localization:text("menu_cs_level", {
 			level = self._level
 		}),
@@ -672,11 +690,11 @@ function CrimeSpreeStartingLevelItem:init(parent, data)
 		font_size = tweak_data.menu.pd2_large_font_size
 	})
 	self._cost_text = self._panel:text({
-		layer = 1,
-		vertical = "center",
-		halign = "center",
 		align = "center",
+		halign = "center",
+		layer = 1,
 		valign = "center",
+		vertical = "center",
 		text = data.cost_text or managers.localization:text("menu_cs_coin_cost", {
 			coins = managers.experience:cash_string(math.floor(self._start_cost), "")
 		}),
@@ -689,12 +707,12 @@ function CrimeSpreeStartingLevelItem:init(parent, data)
 
 	if data.is_maximum then
 		self._maximum_text = self._panel:text({
-			layer = 1,
-			vertical = "center",
-			halign = "center",
-			alpha = 0.6,
 			align = "center",
+			alpha = 0.6,
+			halign = "center",
+			layer = 1,
 			valign = "center",
+			vertical = "center",
 			text = managers.localization:to_upper_text("menu_cs_maximum"),
 			y = self._text:top() - tweak_data.menu.pd2_medium_font_size - 5,
 			h = tweak_data.menu.pd2_medium_font_size,
@@ -705,6 +723,7 @@ function CrimeSpreeStartingLevelItem:init(parent, data)
 	end
 
 	local coins = 0
+
 	coins = managers.custom_safehouse:coins()
 
 	if coins < self._start_cost then
@@ -733,6 +752,7 @@ function CrimeSpreeStartingLevelItem:refresh()
 	self._outline_panel:set_visible(self:is_active())
 
 	local coins = 0
+
 	coins = managers.custom_safehouse:coins()
 
 	if coins < self._start_cost then
@@ -745,7 +765,7 @@ function CrimeSpreeStartingLevelItem:refresh()
 end
 
 function CrimeSpreeStartingLevelItem:can_activate()
-	return self._start_cost <= managers.custom_safehouse:coins()
+	return managers.custom_safehouse:coins() >= self._start_cost
 end
 
 function CrimeSpreeStartingLevelItem:inside(x, y)
@@ -788,7 +808,7 @@ function MenuCrimeNetCrimeSpreeContractInitiator:modify_node(original_node, data
 
 		if tweak_data.quickplay.stealth_levels[data.job_id] then
 			local job_plan_item = node:item("lobby_job_plan")
-			local stealth_option = nil
+			local stealth_option
 
 			for _, option in ipairs(job_plan_item:options()) do
 				if option:value() == 2 then

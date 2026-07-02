@@ -5,6 +5,7 @@ function IngameUIExt:init(unit)
 end
 
 function IngameUIExt:set_active(unit)
+	return
 end
 
 AIAttentionObject = AIAttentionObject or class()
@@ -14,6 +15,7 @@ function AIAttentionObject:init(unit)
 end
 
 function AIAttentionObject:set_active()
+	return
 end
 
 UseInteractionExt = UseInteractionExt or class()
@@ -23,6 +25,7 @@ function UseInteractionExt:init(unit)
 end
 
 function UseInteractionExt:set_active()
+	return
 end
 
 SecurityCamera = SecurityCamera or class()
@@ -38,6 +41,7 @@ function SecurityCameraInteractionExt:init(unit)
 end
 
 function SecurityCameraInteractionExt:set_active()
+	return
 end
 
 ContourExt = ContourExt or class()
@@ -47,9 +51,11 @@ function ContourExt:init(unit)
 end
 
 function ContourExt:set_active()
+	return
 end
 
 function ContourExt:update_materials()
+	return
 end
 
 SyncUnitData = SyncUnitData or class()
@@ -59,6 +65,7 @@ function SyncUnitData:init(unit)
 end
 
 function SyncUnitData:set_active()
+	return
 end
 
 AccessWeaponMenuInteractionExt = AccessWeaponMenuInteractionExt or class()
@@ -68,6 +75,7 @@ function AccessWeaponMenuInteractionExt:init(unit)
 end
 
 function AccessWeaponMenuInteractionExt:set_active()
+	return
 end
 
 NetworkBaseExtension = NetworkBaseExtension or class()
@@ -77,6 +85,7 @@ function NetworkBaseExtension:init(unit)
 end
 
 function NetworkBaseExtension:set_active()
+	return
 end
 
 DrivingInteractionExt = DrivingInteractionExt or class()
@@ -86,6 +95,7 @@ function DrivingInteractionExt:init(unit)
 end
 
 function DrivingInteractionExt:set_active()
+	return
 end
 
 VehicleDamage = VehicleDamage or class()
@@ -95,6 +105,7 @@ function VehicleDamage:init(unit)
 end
 
 function VehicleDamage:set_active()
+	return
 end
 
 CarryData = CarryData or class()
@@ -104,6 +115,7 @@ function CarryData:init(unit)
 end
 
 function CarryData:set_active()
+	return
 end
 
 VehicleDrivingExt = VehicleDrivingExt or class()

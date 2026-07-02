@@ -7,6 +7,7 @@ function ElementForceEndAssaultState:init(...)
 end
 
 function ElementForceEndAssaultState:client_on_executed(...)
+	return
 end
 
 function ElementForceEndAssaultState:on_executed(instigator)

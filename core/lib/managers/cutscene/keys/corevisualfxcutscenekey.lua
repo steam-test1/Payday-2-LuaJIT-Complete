@@ -24,6 +24,7 @@ function CoreVisualFXCutsceneKey:can_evaluate_with_player(player)
 end
 
 function CoreVisualFXCutsceneKey:prime(player)
+	return
 end
 
 function CoreVisualFXCutsceneKey:unload(player)
@@ -54,7 +55,7 @@ function CoreVisualFXCutsceneKey:play(player, undo, fast_forward)
 end
 
 function CoreVisualFXCutsceneKey:update(player, time)
-	if self:duration() and self:duration() < time then
+	if self:duration() and time > self:duration() then
 		self:stop()
 	end
 end

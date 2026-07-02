@@ -13,6 +13,7 @@ function CoreMaterialEditorSeparator:init(parent)
 end
 
 function CoreMaterialEditorSeparator:update(t, dt)
+	return
 end
 
 function CoreMaterialEditorSeparator:destroy()

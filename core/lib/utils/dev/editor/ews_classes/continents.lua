@@ -16,6 +16,7 @@ end
 
 function ContinentPanel:create_toolbar()
 	local toolbar_sizer = EWS:BoxSizer("VERTICAL")
+
 	self._toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER,TB_VERTICAL")
 
 	self._toolbar:add_tool("CREATE_CONTINENT", "Create a new continent", CoreEWS.image_path("world_editor\\new_continent_16x16.png"), "Create a new continent")
@@ -30,6 +31,7 @@ end
 
 function ContinentPanel:create_world_setting()
 	local sizer = EWS:BoxSizer("HORIZONTAL")
+
 	self._world_setting_toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	self._world_setting_toolbar:add_tool("CREATE_WORLD_SETTING", "Create a world setting file", CoreEWS.image_path("world_editor\\continent\\create_world_setting_16x16.png"), "Create a world setting file")
@@ -97,7 +99,9 @@ end
 
 function ContinentPanel:add_continent(params)
 	local panel = EWS:Panel(self._continent_panel, "", "TAB_TRAVERSAL")
+
 	params.panel = panel
+
 	local sizer = EWS:BoxSizer("HORIZONTAL")
 
 	panel:set_sizer(sizer)
@@ -135,6 +139,7 @@ function ContinentPanel:add_continent(params)
 end
 
 function ContinentPanel:toggle_visible(params)
+	return
 end
 
 function ContinentPanel:toggle_locked(params)

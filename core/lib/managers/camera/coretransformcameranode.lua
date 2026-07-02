@@ -8,6 +8,7 @@ local mvector3_set = mvector3.set
 local mvector3_rotate_with = mvector3.rotate_with
 local mrotation_set_zero = mrotation.set_zero
 local mrotation_mul = mrotation.multiply
+
 TransformCameraNode = TransformCameraNode or CoreClass.class()
 
 function TransformCameraNode:init(settings)
@@ -127,6 +128,7 @@ function TransformCameraNode:set_local_rotation_from_world_rotation(rotation)
 
 	if parent_camera then
 		local parent_rotation = parent_camera:rotation()
+
 		self._local_rotation = parent_rotation:inverse() * rotation
 	else
 		self._local_rotation = rotation

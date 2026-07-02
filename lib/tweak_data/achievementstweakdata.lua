@@ -1,7 +1,7 @@
 require("lib/tweak_data/GeneratedAchievementTweakData")
 
 local function get_texture_path(tweak_data, category, id)
-	local td = nil
+	local td
 	local rtn = {}
 
 	if category == "armor_skins" then
@@ -11,6 +11,7 @@ local function get_texture_path(tweak_data, category, id)
 		local suit_variation = id[2]
 		local ps_td = tweak_data:get_raw_value("blackmarket", "player_styles", player_style)
 		local sv_td = ps_td.material_variations and ps_td.material_variations[suit_variation]
+
 		td = sv_td and (sv_td.texture_bundle_folder and sv_td or ps_td)
 	else
 		td = tweak_data:get_raw_value("blackmarket", category, id)
@@ -34,6 +35,7 @@ local function get_texture_path(tweak_data, category, id)
 		elseif category == "suit_variations" then
 			local player_style = id[1]
 			local suit_variation = id[2]
+
 			rtn.texture = guis_catalog .. "textures/pd2/blackmarket/icons/player_styles/" .. player_style .. "_" .. suit_variation
 		else
 			rtn.texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (category == "weapon_mods" and "mods" or category) .. "/" .. id
@@ -94,6 +96,7 @@ function AchievementsTweakData:init(tweak_data)
 	local sm_wish_and_above = {
 		"sm_wish"
 	}
+
 	self.im_a_healer_tank_damage_dealer = 10
 	self.iron_man = "level_7"
 	self.going_places = 1000000
@@ -105,29 +108,29 @@ function AchievementsTweakData:init(tweak_data)
 	self.like_an_angry_bear = "bear"
 	self.merry_christmas = "santa_happy"
 	self.witch_doctor = {
-		stat = "halloween_4_stats",
-		mask = "witch"
+		mask = "witch",
+		stat = "halloween_4_stats"
 	}
 	self.its_alive_its_alive = {
-		stat = "halloween_5_stats",
-		mask = "frank"
+		mask = "frank",
+		stat = "halloween_5_stats"
 	}
 	self.pump_action = {
-		stat = "halloween_6_stats",
-		mask = "pumpkin_king"
+		mask = "pumpkin_king",
+		stat = "halloween_6_stats"
 	}
 	self.cant_hear_you_scream = {
-		stat = "halloween_7_stats",
-		mask = "venomorph"
+		mask = "venomorph",
+		stat = "halloween_7_stats"
 	}
 	self.unique_selling_point = "usp"
 	self.relation_with_bulldozer = {
-		stat = "armored_8_stat",
-		mask = "clinton"
+		mask = "clinton",
+		stat = "armored_8_stat"
 	}
 	self.no_we_cant = {
-		stat = "armored_10_stat",
-		mask = "obama"
+		mask = "obama",
+		stat = "armored_10_stat"
 	}
 	self.heat_around_the_corner = "heat"
 	self.fire_in_the_hole = {
@@ -166,16 +169,16 @@ function AchievementsTweakData:init(tweak_data)
 			level = 100
 		},
 		story_basics_lvl10 = {
-			story = "story_basics_lvl10",
-			level = 10
+			level = 10,
+			story = "story_basics_lvl10"
 		},
 		story_chill_level = {
-			story = "story_chill_level",
-			level = 25
+			level = 25,
+			story = "story_chill_level"
 		},
 		story_half_lvl = {
-			story = "story_half_lvl",
-			level = 50
+			level = 50,
+			story = "story_half_lvl"
 		}
 	}
 	self.tango_4 = {
@@ -184,14 +187,14 @@ function AchievementsTweakData:init(tweak_data)
 		difficulty = overkill_and_above
 	}
 	self.ja22_01 = {
-		weapon = "new_m4",
+		award = "ja22_01",
 		percentage_dmg = 0.05,
-		award = "ja22_01"
+		weapon = "new_m4"
 	}
 	self.ranc_9 = {
-		vehicle_id = "golfcart",
 		award = "ranc_9",
 		job = "ranc",
+		vehicle_id = "golfcart",
 		difficulty = overkill_and_above
 	}
 	self.infamous = {
@@ -219,20 +222,20 @@ function AchievementsTweakData:init(tweak_data)
 		"ignominy_22",
 		"ignominy_23",
 		"ignominy_24",
-		"ignominy_25",
-		[50] = "ignominy_50",
-		[75] = "ignominy_75",
-		[100] = "ignominy_100"
+		"ignominy_25"
 	}
+	self.infamous[50] = "ignominy_50"
+	self.infamous[75] = "ignominy_75"
+	self.infamous[100] = "ignominy_100"
 	self.final_rule = {
 		heist = "nightclub",
-		stat = "gage2_3_stats",
-		melee_type = "fists"
+		melee_type = "fists",
+		stat = "gage2_3_stats"
 	}
 	self.easy_as_breathing = {
 		award = "gage2_4",
-		weapon_type = "lmg",
-		count = 10
+		count = 10,
+		weapon_type = "lmg"
 	}
 	self.first_blood = {
 		award = "gage2_5",
@@ -254,66 +257,66 @@ function AchievementsTweakData:init(tweak_data)
 	self.vote_for_change = "g22c"
 	self.steam_500k = "akm_gold"
 	self.shotgun_one_o_one = {
+		accuracy = 101,
 		award = "gage4_5",
-		count = 50,
-		accuracy = 101
+		count = 50
 	}
 	self.close_and_personal = {
-		kill_type = "melee",
+		award = "gage4_3",
 		count = 50,
-		award = "gage4_3"
+		kill_type = "melee"
 	}
 	self.cavity = {
 		award = "bulldog_4",
 		melee_type = "toothbrush"
 	}
 	self.never_let_you_go = {
-		weapon_id = "m134",
+		award = "ovk_3",
 		timer = 25,
-		award = "ovk_3"
+		weapon_id = "m134"
 	}
 	self.nothing_to_see_here = {
-		timer = 90,
 		award = "slakt_2",
+		timer = 90,
 		total_value = 4
 	}
 	self.drive_away = "fort_2"
 	self.disco_inferno = "grill_1"
 	self.overgrill = "grill_4"
 	self.pickup_sticks = {
-		weapon_category = "bow",
-		stat = "scorpion_1_stats"
+		stat = "scorpion_1_stats",
+		weapon_category = "bow"
 	}
 	self.pincushion = {
 		award = "scorpion_3",
-		weapon_category = "bow",
+		count = 10,
 		enemy_tag = "tank",
-		count = 10
+		weapon_category = "bow"
 	}
 	self.jordan_1 = "brooklyn_1"
 	self.jordan_2 = {
 		award = "brooklyn_2",
-		timer = 30,
-		count = 100
+		count = 100,
+		timer = 30
 	}
 	self.one_man_army = {
 		award = "gage5_3",
 		equipped = {
-			secondary = "serbu",
+			armor = "level_7",
 			primary = "gre_m79",
-			armor = "level_7"
+			secondary = "serbu"
 		}
 	}
 	self.man_5 = {
-		weapon_category = "grenade_launcher",
 		award = "man_5",
 		job = "man",
+		weapon_category = "grenade_launcher",
 		difficulty = overkill_and_above
 	}
 	self.mad_5 = "mad_5"
 	self.peta_4 = {
-		carry_id = "goat",
 		award = "peta_4",
+		carry_id = "goat",
 		count = 1
 	}
 	self.convert_enemies = {
@@ -341,11 +344,11 @@ function AchievementsTweakData:init(tweak_data)
 		}
 	}
 	self.gage_assignments = {
-		green_mantis = "gmod_1_stats",
-		yellow_bull = "gmod_2_stats",
-		red_spider = "gmod_3_stats",
 		blue_eagle = "gmod_4_stats",
-		purple_snake = "gmod_5_stats"
+		green_mantis = "gmod_1_stats",
+		purple_snake = "gmod_5_stats",
+		red_spider = "gmod_3_stats",
+		yellow_bull = "gmod_2_stats"
 	}
 	self.gonna_find_them_all = 1
 	self.weapon_blueprints = {
@@ -378,8 +381,8 @@ function AchievementsTweakData:init(tweak_data)
 	}
 	self.explosion_achievements = {
 		shock_awe = {
-			count = 4,
 			award = "gage4_9",
+			count = 4,
 			weapon_type = "shotgun"
 		}
 	}
@@ -392,88 +395,88 @@ function AchievementsTweakData:init(tweak_data)
 	}
 	self.grenade_achievements = {
 		bada_boom = {
-			kill = true,
-			grenade_type = "launcher_frag",
+			award = "gage5_2",
 			count = 4,
-			award = "gage5_2"
+			grenade_type = "launcher_frag",
+			kill = true
 		},
 		artillery_barrage = {
-			kill = true,
-			grenade_type = "launcher_frag",
 			distance = 4000,
+			grenade_type = "launcher_frag",
+			kill = true,
 			stat = "gage5_5_stats"
 		},
 		boom_shakalaka = {
-			kill = true,
-			flying_strike = true,
 			award = "gage5_7",
 			enemy = "spooc",
-			grenade_type = "launcher_frag"
+			flying_strike = true,
+			grenade_type = "launcher_frag",
+			kill = true
 		},
 		not_invited = {
-			timer = 10,
-			grenade_type = "launcher_frag_m32",
 			award = "grill_3",
-			kill_count = 10
+			grenade_type = "launcher_frag_m32",
+			kill_count = 10,
+			timer = 10
 		},
 		threemite = {
-			kill = true,
-			grenade_type = "dynamite",
+			award = "scorpion_2",
 			count = 3,
-			award = "scorpion_2"
+			grenade_type = "dynamite",
+			kill = true
 		},
 		steel_3 = {
-			kill = true,
-			grenade_type = "wpn_prj_jav",
 			award = "steel_3",
-			enemy = "spooc"
+			enemy = "spooc",
+			grenade_type = "wpn_prj_jav",
+			kill = true
 		},
 		pim_2 = {
-			kill = true,
-			is_civilian = false,
-			success = true,
-			job = "dark",
 			crouching = true,
-			stat = "pim_2_stats"
+			is_civilian = false,
+			job = "dark",
+			kill = true,
+			stat = "pim_2_stats",
+			success = true
 		},
 		tango_2 = {
-			kill = true,
-			stat = "tango_2_stats",
 			enemy = "sniper",
-			grenade_type = "launcher_frag_arbiter"
+			grenade_type = "launcher_frag_arbiter",
+			kill = true,
+			stat = "tango_2_stats"
 		},
 		any_kills = {
-			kill = true,
-			challenge_stat = "any_kills"
+			challenge_stat = "any_kills",
+			kill = true
 		},
 		any_sniper_kills = {
-			kill = true,
+			challenge_stat = "any_sniper_kills",
 			enemy = "sniper",
-			challenge_stat = "any_sniper_kills"
+			kill = true
 		},
 		any_shield_kills = {
-			kill = true,
 			challenge_stat = "any_shield_kills",
+			kill = true,
 			enemy_tags_any = {
 				"shield"
 			}
 		},
 		any_taser_kills = {
-			kill = true,
+			challenge_stat = "any_taser_kills",
 			enemy = "taser",
-			challenge_stat = "any_taser_kills"
+			kill = true
 		},
 		any_tank_kills = {
-			kill = true,
 			challenge_stat = "any_tank_kills",
+			kill = true,
 			enemy_tags_any = {
 				"tank"
 			}
 		},
 		any_spooc_kills = {
-			kill = true,
+			challenge_stat = "any_spooc_kills",
 			enemy = "spooc",
-			challenge_stat = "any_spooc_kills"
+			kill = true
 		},
 		trophy_special_kills = {
 			kill = true,
@@ -483,9 +486,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_ace = {
+			grenade_type = "wpn_prj_ace",
 			kill = true,
 			trophy_stat = "trophy_ace",
-			grenade_type = "wpn_prj_ace",
 			difficulties = overkill_and_above
 		},
 		trophy_washington = {
@@ -500,40 +503,40 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		daily_grenades = {
-			kill = true,
-			trophy_stat = "daily_grenades",
 			grenade_type = "frag",
-			is_civilian = false
+			is_civilian = false,
+			kill = true,
+			trophy_stat = "daily_grenades"
 		},
 		daily_grenades_community = {
-			kill = true,
-			trophy_stat = "daily_grenades",
 			grenade_type = "frag_com",
-			is_civilian = false
+			is_civilian = false,
+			kill = true,
+			trophy_stat = "daily_grenades"
 		},
 		daily_grenades_dynamite = {
-			kill = true,
-			trophy_stat = "daily_grenades",
 			grenade_type = "dynamite",
-			is_civilian = false
+			is_civilian = false,
+			kill = true,
+			trophy_stat = "daily_grenades"
 		},
 		daily_grenades_dada = {
-			kill = true,
-			trophy_stat = "daily_grenades",
 			grenade_type = "dada_com",
-			is_civilian = false
+			is_civilian = false,
+			kill = true,
+			trophy_stat = "daily_grenades"
 		},
 		explosive_kills = {
-			kill = true,
+			challenge_stat = "explosive_kills",
 			explosive = true,
-			challenge_stat = "explosive_kills"
+			kill = true
 		},
 		cac_1 = {
-			kill = true,
-			grenade_type = "launcher_frag_slap",
+			award = "cac_1",
 			distance = 4000,
 			enemy = "sniper",
-			award = "cac_1"
+			grenade_type = "launcher_frag_slap",
+			kill = true
 		},
 		cac_35 = {
 			player_state = "driving",
@@ -543,9 +546,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		dec21_02 = {
+			explosive = false,
 			kill = true,
-			stat = "dec21_02_stat",
-			explosive = false
+			stat = "dec21_02_stat"
 		},
 		pxp1_1 = {
 			kill = true,
@@ -564,14 +567,14 @@ function AchievementsTweakData:init(tweak_data)
 				"launcher_poison_contraband"
 			},
 			player_style = {
-				variation = "default",
-				style = "scrub"
+				style = "scrub",
+				variation = "default"
 			}
 		},
 		pxp2_3 = {
+			grenade_type = "poison_gas_grenade",
 			kill = true,
 			stat = "pxp2_3_stats",
-			grenade_type = "poison_gas_grenade",
 			difficulties = overkill_and_above
 		},
 		cg22_personal_1 = {
@@ -586,8 +589,8 @@ function AchievementsTweakData:init(tweak_data)
 		tango_1 = {
 			award = "tango_achieve_1",
 			count = 3,
-			is_not_civilian = true,
 			headshot = true,
+			is_not_civilian = true,
 			blueprint = {
 				"wpn_fps_upg_ns_duck"
 			}
@@ -595,70 +598,70 @@ function AchievementsTweakData:init(tweak_data)
 	}
 	self.enemy_kill_achievements = {
 		try_out_your_usp = {
-			weapon = "usp",
-			stat = "halloween_8_stats"
+			stat = "halloween_8_stats",
+			weapon = "usp"
 		},
 		license_to_kill = {
-			weapon = "ppk",
-			stat = "armored_5_stat"
+			stat = "armored_5_stat",
+			weapon = "ppk"
 		},
 		im_not_a_crook = {
-			weapon = "s552",
-			stat = "armored_7_stat",
 			enemy = "sniper",
-			mask = "nixon"
+			mask = "nixon",
+			stat = "armored_7_stat",
+			weapon = "s552"
 		},
 		fool_me_once = {
-			weapon = "m45",
-			stat = "armored_9_stat",
 			mask = "bush",
+			stat = "armored_9_stat",
+			weapon = "m45",
 			enemy_tags_any = {
 				"shield"
 			}
 		},
 		wanted = {
-			weapon = "ak5",
+			mask = "goat",
 			stat = "gage_1_stats",
-			mask = "goat"
+			weapon = "ak5"
 		},
 		three_thousand_miles = {
-			weapon = "p90",
+			mask = "panda",
 			stat = "gage_2_stats",
-			mask = "panda"
+			weapon = "p90"
 		},
 		commando = {
-			weapon = "aug",
+			mask = "pitbull",
 			stat = "gage_3_stats",
-			mask = "pitbull"
+			weapon = "aug"
 		},
 		public_enemies = {
-			weapon = "colt_1911",
+			mask = "eagle",
 			stat = "gage_4_stats",
-			mask = "eagle"
+			weapon = "colt_1911"
 		},
 		inception = {
-			weapon = "scar",
-			stat = "gage_5_stats"
+			stat = "gage_5_stats",
+			weapon = "scar"
 		},
 		hard_corps = {
-			weapon = "mp7",
-			stat = "gage_6_stats"
+			stat = "gage_6_stats",
+			weapon = "mp7"
 		},
 		above_the_law = {
-			weapon = "p226",
-			stat = "gage_7_stats"
+			stat = "gage_7_stats",
+			weapon = "p226"
 		},
 		surprise_motherfucker = {
-			weapon = "m95",
 			stat = "gage3_12_stats",
+			weapon = "m95",
 			enemy_tags_any = {
 				"tank"
 			}
 		},
 		man_with_golden_gun = {
-			weapon = "akm_gold",
-			stat = "gage3_2_stats",
 			enemy_weapon = "m249",
+			stat = "gage3_2_stats",
+			weapon = "akm_gold",
 			enemy_tags_any = {
 				"tank"
 			}
@@ -684,60 +687,60 @@ function AchievementsTweakData:init(tweak_data)
 			weapon_type = "snp"
 		},
 		far_far_away = {
-			weapon = "m95",
+			distance = 4000,
 			stat = "gage3_7_stats",
-			distance = 4000
+			weapon = "m95"
 		},
 		last_action_villian = {
-			in_head = true,
-			weapon = "r93",
 			award = "gage3_8",
-			on_zipline = true
+			in_head = true,
+			on_zipline = true,
+			weapon = "r93"
 		},
 		dodge_this = {
+			enemy = "spooc",
 			in_head = true,
 			stat = "gage3_11_stats",
-			enemy = "spooc",
 			weapon = "m95"
 		},
 		didnt_see_this_coming = {
+			on_zipline = true,
 			stat = "gage3_13_stats",
-			weapon_type = "snp",
-			on_zipline = true
+			weapon_type = "snp"
 		},
 		grand_master_sniper = {
-			weapon = "msr",
+			enemy = "sniper",
 			stat = "gage3_14_stats",
-			enemy = "sniper"
+			weapon = "msr"
 		},
 		public_enemy_no_one = {
-			weapon = "msr",
-			stat = "gage3_17_stats"
+			stat = "gage3_17_stats",
+			weapon = "msr"
 		},
 		knock_knock = {
-			weapon_type = "shotgun",
-			stat = "gage4_6_stats",
 			part_id = "wpn_fps_upg_a_slug",
+			stat = "gage4_6_stats",
+			weapon_type = "shotgun",
 			enemy_tags_any = {
 				"shield"
 			}
 		},
 		peek_a_boo = {
-			weapon_type = "shotgun",
-			stat = "gage4_8_stats",
 			enemy = "sniper",
-			part_id = "wpn_fps_upg_a_piercing"
+			part_id = "wpn_fps_upg_a_piercing",
+			stat = "gage4_8_stats",
+			weapon_type = "shotgun"
 		},
 		seven_eleven = {
-			count = 7,
-			timer = 11,
 			award = "gage4_4",
+			count = 7,
 			in_head = true,
+			timer = 11,
 			weapon_type = "shotgun"
 		},
 		bang_for_buck = {
-			weapon_type = "shotgun",
 			stat = "gage4_10_stats",
+			weapon_type = "shotgun",
 			enemy_tags_any = {
 				"tank"
 			},
@@ -747,31 +750,31 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		grind_fest = {
-			weapon = "g3",
 			stat = "gage5_1_stats",
+			weapon = "g3",
 			enemy_tags_any = {
 				"tank"
 			}
 		},
 		kill_streak = {
-			weapon = "galil",
+			enemy = "spooc",
 			stat = "gage5_9_stats",
-			enemy = "spooc"
+			weapon = "galil"
 		},
 		le_picnic = {
-			weapon = "famas",
-			stat = "gage5_10_stats"
+			stat = "gage5_10_stats",
+			weapon = "famas"
 		},
 		repel_from_rope = {
-			weapon = "mosin",
+			on_rope = true,
 			stat = "eagle_1_stats",
-			on_rope = true
+			weapon = "mosin"
 		},
 		bullet_hell = {
-			weapon = "mg42",
-			timer = 10,
 			award = "eagle_5",
-			count = 10
+			count = 10,
+			timer = 10,
+			weapon = "mg42"
 		},
 		akm4_shootout = {
 			is_cop = true,
@@ -791,60 +794,60 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		scorpion_4 = {
+			award = "scorpion_4",
+			count = 6,
 			in_steelsight = false,
 			timer = 6,
-			award = "scorpion_4",
-			weapon = "peacemaker",
-			count = 6
+			weapon = "peacemaker"
 		},
 		turtles_1 = {
-			weapon = "wa2000",
 			award = "turtles_1",
-			count_no_reload = 11
+			count_no_reload = 11,
+			weapon = "wa2000"
 		},
 		turtles_2 = {
-			weapon = "polymer",
+			award = "turtles_2",
 			kill_count = 100,
-			award = "turtles_2"
+			weapon = "polymer"
 		},
 		berry_5 = {
-			in_steelsight = false,
-			count_in_row = 10,
 			award = "berry_5",
+			count_in_row = 10,
 			in_head = true,
+			in_steelsight = false,
 			weapon_type = "snp"
 		},
 		assault_rifle_kills = {
-			weapon_type = "assault_rifle",
-			challenge_stat = "assault_rifle_kills"
+			challenge_stat = "assault_rifle_kills",
+			weapon_type = "assault_rifle"
 		},
 		shotgun_kills = {
-			weapon_type = "shotgun",
-			challenge_stat = "shotgun_kills"
+			challenge_stat = "shotgun_kills",
+			weapon_type = "shotgun"
 		},
 		smg_kills = {
-			weapon_type = "smg",
-			challenge_stat = "smg_kills"
+			challenge_stat = "smg_kills",
+			weapon_type = "smg"
 		},
 		pistol_kills = {
-			weapon_type = "pistol",
-			challenge_stat = "pistol_kills"
+			challenge_stat = "pistol_kills",
+			weapon_type = "pistol"
 		},
 		lmg_kills = {
-			weapon_type = "lmg",
-			challenge_stat = "lmg_kills"
+			challenge_stat = "lmg_kills",
+			weapon_type = "lmg"
 		},
 		sniper_kills = {
-			weapon_type = "snp",
-			challenge_stat = "sniper_kills"
+			challenge_stat = "sniper_kills",
+			weapon_type = "snp"
 		},
 		critical_kills = {
-			critical = true,
-			challenge_stat = "critical_kills"
+			challenge_stat = "critical_kills",
+			critical = true
 		},
 		explosive_kills = {
-			variant = "explosion",
-			challenge_stat = "explosive_kills"
+			challenge_stat = "explosive_kills",
+			variant = "explosion"
 		},
 		sentry_kills = {
 			challenge_stat = "sentry_kills",
@@ -864,12 +867,12 @@ function AchievementsTweakData:init(tweak_data)
 			challenge_stat = "any_kills"
 		},
 		any_headshot_kills = {
-			in_head = true,
-			challenge_stat = "any_headshot_kills"
+			challenge_stat = "any_headshot_kills",
+			in_head = true
 		},
 		any_sniper_kills = {
-			enemy = "sniper",
-			challenge_stat = "any_sniper_kills"
+			challenge_stat = "any_sniper_kills",
+			enemy = "sniper"
 		},
 		any_shield_kills = {
 			challenge_stat = "any_shield_kills",
@@ -878,8 +881,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		any_taser_kills = {
-			enemy = "taser",
-			challenge_stat = "any_taser_kills"
+			challenge_stat = "any_taser_kills",
+			enemy = "taser"
 		},
 		any_tank_kills = {
 			challenge_stat = "any_tank_kills",
@@ -888,8 +891,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		any_spooc_kills = {
-			enemy = "spooc",
-			challenge_stat = "any_spooc_kills"
+			challenge_stat = "any_spooc_kills",
+			enemy = "spooc"
 		},
 		trophy_headshots = {
 			in_head = true,
@@ -899,10 +902,10 @@ function AchievementsTweakData:init(tweak_data)
 			trophy_stat = "trophy_washington"
 		},
 		trophy_smg = {
+			count = 25,
 			timer = 25,
 			trophy_stat = "trophy_smg",
-			weapon_type = "smg",
-			count = 25
+			weapon_type = "smg"
 		},
 		trophy_medic = {
 			trophy_stat = "trophy_medic",
@@ -934,9 +937,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		grv_2 = {
-			weapon = "coal",
 			award = "grv_2",
-			count_no_reload = 32
+			count_no_reload = 32,
+			weapon = "coal"
 		},
 		grv_3 = {
 			stat = "grv_3_stats",
@@ -975,8 +978,8 @@ function AchievementsTweakData:init(tweak_data)
 			stat = "pxp1_1_stats",
 			difficulty = overkill_and_above,
 			player_style = {
-				variation = "default",
-				style = "scrub"
+				style = "scrub",
+				variation = "default"
 			},
 			parts = {
 				"wpn_fps_upg_a_bow_poison",
@@ -989,8 +992,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		pxp2_1 = {
-			stat = "pxp2_1_stats",
 			fire_mode = "volley",
+			stat = "pxp2_1_stats",
 			weapons = {
 				"hailstorm"
 			}
@@ -1013,11 +1016,11 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trai_11 = {
-			count_in_row = 5,
-			timer = 10,
 			award = "trai_11",
-			level_id = "trai",
+			count_in_row = 5,
 			in_head = true,
+			level_id = "trai",
+			timer = 10,
 			weapon_type = "revolver",
 			difficulty = overkill_and_above
 		},
@@ -1044,13 +1047,13 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		cg22_post_objective_1 = {
-			weapon_type = "snp",
-			stat = "cg22_post_objective_1"
+			stat = "cg22_post_objective_1",
+			weapon_type = "snp"
 		},
 		cg22_post_objective_2 = {
-			weapon = "victor",
-			stat = "cg22_post_objective_2",
 			enemy = "spooc",
+			stat = "cg22_post_objective_2",
+			weapon = "victor",
 			difficulty = veryhard_and_above
 		},
 		cg22_post_objective_5 = {
@@ -1067,20 +1070,20 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		pda10_musket_post_objective = {
-			weapon_type = "snp",
-			stat = "pda10_musket_post_objective"
+			stat = "pda10_musket_post_objective",
+			weapon_type = "snp"
 		}
 	}
 	self.enemy_melee_hit_achievements = {
 		cloak_n_dagger = {
+			award = "gage2_2",
 			enemy = "spooc",
 			melee_type = "knife",
-			award = "gage2_2",
 			result = "death"
 		},
 		are_you_kidding_me = {
-			melee_type = "knife",
 			award = "gage2_10",
+			melee_type = "knife",
 			result = "death",
 			enemy_tags_any = {
 				"tank"
@@ -1088,9 +1091,9 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		no_time_to_bleed = {
 			health = 25,
+			melee_type = "knife",
 			result = "death",
 			stat = "gage2_9_stats",
-			melee_type = "knife",
 			enemies = {
 				"fbi_swat",
 				"fbi_heavy_swat"
@@ -1098,25 +1101,25 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = overkill_and_above
 		},
 		police_brutality = {
-			melee_id = "baton",
 			award = "gage4_1",
+			melee_id = "baton",
 			result = "death",
 			enemy_tags_any = {
 				"shield"
 			}
 		},
 		every_day_shovelin = {
-			stat = "gage4_7_stats",
-			level_id = "nightclub",
 			is_cop = true,
+			level_id = "nightclub",
+			melee_id = "shovel",
 			result = "death",
-			melee_id = "shovel"
+			stat = "gage4_7_stats"
 		},
 		cant_touch_this = {
-			melee_id = "dingdong",
-			stat = "gage5_8_stats",
 			is_gangster = true,
-			result = "death"
+			melee_id = "dingdong",
+			result = "death",
+			stat = "gage5_8_stats"
 		},
 		hurting_people = {
 			melee_id = "baseballbat",
@@ -1132,26 +1135,26 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		special_operations = {
-			stat = "eagle_2_stats",
-			melee_id = "fairbair",
+			is_not_civilian = true,
 			is_stealth = true,
+			melee_id = "fairbair",
 			result = "death",
-			is_not_civilian = true
+			stat = "eagle_2_stats"
 		},
 		knockout = {
-			melee_id = "boxing_gloves",
 			award = "gorilla_1",
+			melee_id = "boxing_gloves",
 			result = "death",
 			enemy_tags_any = {
 				"tank"
 			}
 		},
 		stick_a_fork_in_me = {
-			is_not_civilian = true,
 			award = "grill_2",
-			result = "death",
+			is_not_civilian = true,
+			is_on_fire = true,
 			melee_id = "fork",
-			is_on_fire = true
+			result = "death"
 		},
 		steel_2 = {
 			award = "steel_2",
@@ -1163,24 +1166,24 @@ function AchievementsTweakData:init(tweak_data)
 				"great"
 			},
 			enemy_kills = {
-				enemy = "shield",
-				count = 10
+				count = 10,
+				enemy = "shield"
 			}
 		},
 		steel_4 = {
-			enemy_weapon = "saiga",
 			award = "steel_4",
-			result = "death",
+			enemy_weapon = "saiga",
 			melee_id = "great",
+			result = "death",
 			enemy_tags_any = {
 				"tank"
 			}
 		},
 		gsu_01 = {
-			melee_id = "spoon",
-			stat = "gsu_stat",
 			is_not_civilian = true,
-			result = "death"
+			melee_id = "spoon",
+			result = "death",
+			stat = "gsu_stat"
 		},
 		sawp_1 = {
 			is_not_civilian = true,
@@ -1192,66 +1195,66 @@ function AchievementsTweakData:init(tweak_data)
 				"funder_strike"
 			},
 			player_style = {
-				variation = "default",
-				style = "cable_guy"
+				style = "cable_guy",
+				variation = "default"
 			},
 			difficulty = overkill_and_above
 		},
 		pda9_n4 = {
-			stat = "pda9_n4",
 			is_not_civilian = true,
 			result = "death",
+			stat = "pda9_n4",
 			melee_weapons = {
 				"moneybundle"
 			}
 		},
 		melee_kills = {
-			result = "death",
+			challenge_stat = "melee_kills",
 			is_not_civilian = true,
-			challenge_stat = "melee_kills"
+			result = "death"
 		},
 		any_kills = {
-			result = "death",
+			challenge_stat = "any_kills",
 			is_not_civilian = true,
-			challenge_stat = "any_kills"
+			result = "death"
 		},
 		any_sniper_kills = {
-			result = "death",
-			is_not_civilian = true,
+			challenge_stat = "any_sniper_kills",
 			enemy = "sniper",
-			challenge_stat = "any_sniper_kills"
+			is_not_civilian = true,
+			result = "death"
 		},
 		any_shield_kills = {
-			result = "death",
-			is_not_civilian = true,
 			challenge_stat = "any_shield_kills",
+			is_not_civilian = true,
+			result = "death",
 			enemy_tags_any = {
 				"shield"
 			}
 		},
 		any_taser_kills = {
-			result = "death",
-			is_not_civilian = true,
+			challenge_stat = "any_taser_kills",
 			enemy = "taser",
-			challenge_stat = "any_taser_kills"
+			is_not_civilian = true,
+			result = "death"
 		},
 		any_tank_kills = {
-			result = "death",
-			is_not_civilian = true,
 			challenge_stat = "any_tank_kills",
+			is_not_civilian = true,
+			result = "death",
 			enemy_tags_any = {
 				"tank"
 			}
 		},
 		any_spooc_kills = {
-			result = "death",
-			is_not_civilian = true,
+			challenge_stat = "any_spooc_kills",
 			enemy = "spooc",
-			challenge_stat = "any_spooc_kills"
+			is_not_civilian = true,
+			result = "death"
 		},
 		trophy_knockouts = {
-			melee_id = "boxing_gloves",
 			is_not_civilian = true,
+			melee_id = "boxing_gloves",
 			result = "death",
 			trophy_stat = "trophy_knockouts",
 			enemy_tags_any = {
@@ -1260,47 +1263,47 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trophy_washington = {
 			is_not_civilian = true,
-			trophy_stat = "trophy_washington",
-			result = "death"
+			result = "death",
+			trophy_stat = "trophy_washington"
 		},
 		trophy_medic = {
 			is_not_civilian = true,
-			trophy_stat = "trophy_medic",
 			result = "death",
+			trophy_stat = "trophy_medic",
 			enemy_tags_any = {
 				"medic"
 			}
 		},
 		trophy_special_kills = {
 			is_not_civilian = true,
-			trophy_stat = "trophy_special_kills",
 			result = "death",
+			trophy_stat = "trophy_special_kills",
 			enemy_tags_any = {
 				"special"
 			}
 		},
 		daily_hangover = {
-			melee_id = "whiskey",
-			trophy_stat = "daily_hangover",
 			is_not_civilian = true,
-			result = "death"
+			melee_id = "whiskey",
+			result = "death",
+			trophy_stat = "daily_hangover"
 		},
 		raid_aru_1 = {
+			is_not_civilian = true,
 			melee_id = "push",
-			stat = "aru_1",
+			result = "death",
+			stat = "aru_1"
+		},
+		critical_kills = {
+			challenge_stat = "critical_kills",
+			critical = true,
 			is_not_civilian = true,
 			result = "death"
 		},
-		critical_kills = {
-			critical = true,
-			is_not_civilian = true,
-			result = "death",
-			challenge_stat = "critical_kills"
-		},
 		challenge_melee_creeps = {
-			result = "death",
-			is_not_civilian = true,
 			challenge_stat = "challenge_melee_creeps",
+			is_not_civilian = true,
+			result = "death",
 			mutators = {
 				"MutatorExplodingEnemies"
 			}
@@ -1316,13 +1319,13 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		cac_6 = {
 			award = "cac_6",
-			melee_id = "moneybundle",
 			enemy = "cop_female",
-			job = "rvd"
+			job = "rvd",
+			melee_id = "moneybundle"
 		},
 		cac_14 = {
-			melee_id = "baton",
 			award = "cac_14",
+			melee_id = "baton",
 			result = "death",
 			enemy_tags_all = {
 				"spooc"
@@ -1330,9 +1333,9 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		cac_25 = {
 			award = "cac_25",
-			melee_id = "moneybundle",
 			enemy = "bank_manager",
-			job = "red2"
+			job = "red2",
+			melee_id = "moneybundle"
 		},
 		cac_29 = {
 			award = "cac_29",
@@ -1367,17 +1370,17 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		bph_9 = {
-			melee_id = "toothbrush",
 			job = "bph",
+			melee_id = "toothbrush",
 			result = "death",
 			stat = "bph_9_stat",
 			difficulty = overkill_and_above
 		},
 		bex_9 = {
 			award = "bex_9",
-			melee_id = "chac",
 			enemy = "civilian_mariachi",
-			job = "bex"
+			job = "bex",
+			melee_id = "chac"
 		},
 		pxp1_1 = {
 			is_not_civilian = true,
@@ -1389,26 +1392,26 @@ function AchievementsTweakData:init(tweak_data)
 				"fear"
 			},
 			player_style = {
-				variation = "default",
-				style = "scrub"
+				style = "scrub",
+				variation = "default"
 			}
 		},
 		pda10_hammer_objective = {
-			stat = "pda10_hammer_objective",
 			is_not_civilian = true,
 			result = "death",
+			stat = "pda10_hammer_objective",
 			melee_weapons = {
 				"piggy_hammer"
 			}
 		},
 		pda10_hammer_post_objective = {
 			is_not_civilian = true,
-			stat = "pda10_hammer_post_objective",
-			result = "death"
+			result = "death",
+			stat = "pda10_hammer_post_objective"
 		},
 		pda10_dozer_post_objective = {
-			stat = "pda10_dozer_post_objective",
 			result = "death",
+			stat = "pda10_dozer_post_objective",
 			enemy_tags_any = {
 				"tank"
 			}
@@ -1417,13 +1420,13 @@ function AchievementsTweakData:init(tweak_data)
 	self.complete_heist_achievements = {
 		in_soviet_russia = {
 			contract = "vlad",
-			stat = "halloween_10_stats",
 			mask = "bear",
+			stat = "halloween_10_stats",
 			difficulty = overkill_and_above
 		},
 		i_take_scores = {
-			stat = "armored_4_stat",
 			mask = "heat",
+			stat = "armored_4_stat",
 			difficulty = overkill_and_above,
 			jobs = {
 				"arm_cro",
@@ -1435,19 +1438,19 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		eco_round = {
 			award = "charliesierra_7",
-			no_shots = "primaries",
 			job = "roberts",
+			no_shots = "primaries",
 			difficulty = overkill_and_above
 		},
 		stealth_election_day = {
-			stealth = true,
 			award = "bob_3",
-			job = "election_day"
+			job = "election_day",
+			stealth = true
 		},
 		death_stealth_election_day = {
 			award = "bob_7",
-			stealth = true,
 			job = "election_day",
+			stealth = true,
 			difficulty = deathwish_and_above
 		},
 		easywish_ukranian = {
@@ -2082,26 +2085,26 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_wish_ukranian = {
 			award = "axe_1",
-			one_down = true,
 			job = "ukrainian_job_prof",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_mallcrasher = {
 			award = "axe_2",
-			one_down = true,
 			job = "mallcrasher",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_four_stores = {
 			award = "axe_3",
-			one_down = true,
 			job = "four_stores",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_nightclub = {
 			award = "axe_4",
-			one_down = true,
 			job = "nightclub",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_watchdogs = {
@@ -2116,20 +2119,20 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_wish_rats = {
 			award = "axe_7",
-			one_down = true,
 			job = "alex",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_firestarter = {
 			award = "axe_9",
-			one_down = true,
 			job = "firestarter",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_framing_frame = {
 			award = "axe_11",
-			one_down = true,
 			job = "framing_frame",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_big_oil = {
@@ -2144,164 +2147,164 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_wish_jewelry_store = {
 			award = "axe_14",
-			one_down = true,
 			job = "jewelry_store",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_diamond_store = {
 			award = "axe_15",
-			one_down = true,
 			job = "family",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_go_bank = {
 			award = "axe_16",
-			one_down = true,
 			job = "roberts",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist = {
 			award = "axe_17",
-			one_down = true,
 			job = "branchbank_prof",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist_gold = {
 			award = "axe_18",
-			one_down = true,
 			job = "branchbank_gold_prof",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist_cash = {
 			award = "axe_19",
-			one_down = true,
 			job = "branchbank_cash",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist_deposit = {
 			award = "axe_20",
-			one_down = true,
 			job = "branchbank_deposit",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_crossroads = {
 			award = "axe_21",
-			one_down = true,
 			job = "arm_cro",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_downtown = {
 			award = "axe_22",
-			one_down = true,
 			job = "arm_hcm",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_harbor = {
 			award = "axe_23",
-			one_down = true,
 			job = "arm_fac",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_park = {
 			award = "axe_24",
-			one_down = true,
 			job = "arm_par",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_underpass = {
 			award = "axe_25",
-			one_down = true,
 			job = "arm_und",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_train = {
 			award = "axe_26",
-			one_down = true,
 			job = "arm_for",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_election_day = {
 			award = "axe_27",
-			one_down = true,
 			job = "election_day",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_kosugi = {
 			award = "axe_29",
-			one_down = true,
 			job = "kosugi",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bigbank = {
 			award = "axe_30",
-			one_down = true,
 			job = "big",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_miami = {
 			award = "axe_31",
-			one_down = true,
 			job = "mia",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_artgallery = {
 			award = "axe_33",
-			one_down = true,
 			job = "gallery",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_hoxton = {
 			award = "axe_34",
-			one_down = true,
 			job = "hox",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_mus = {
 			award = "axe_36",
-			one_down = true,
 			job = "mus",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_red = {
 			award = "axe_37",
-			one_down = true,
 			job = "red2",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_dinner = {
 			award = "axe_38",
-			one_down = true,
 			job = "dinner",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_hox_3 = {
 			award = "axe_39",
-			one_down = true,
 			job = "hox_3",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_rat = {
 			award = "axe_40",
-			one_down = true,
 			job = "rat",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_cage = {
 			award = "axe_41",
-			one_down = true,
 			job = "cage",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_shoutout = {
 			award = "axe_42",
-			one_down = true,
 			job = "shoutout_raid",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_arena = {
 			award = "axe_43",
-			one_down = true,
 			job = "arena",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_kenaz = {
@@ -2313,27 +2316,27 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		sm_wish_sinus = {
-			one_down = true,
 			award = "axe_45",
 			job = "jolly",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_nails = {
-			one_down = true,
 			award = "axe_46",
 			job = "nail",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_berry = {
 			award = "axe_47",
-			one_down = true,
 			job = "pbr",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_jerry = {
 			award = "axe_48",
-			one_down = true,
 			job = "pbr2",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_peta = {
@@ -2346,86 +2349,86 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_wish_pal = {
 			award = "axe_51",
-			one_down = true,
 			job = "pal",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_man = {
 			award = "axe_52",
-			one_down = true,
 			job = "man",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_dark = {
 			award = "axe_53",
-			one_down = true,
 			job = "dark",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_cane = {
 			award = "axe_54",
-			one_down = true,
 			job = "cane",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_flat = {
 			award = "axe_55",
-			one_down = true,
 			job = "flat",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_mad = {
 			award = "axe_56",
-			one_down = true,
 			job = "mad",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_born = {
 			award = "axe_57",
-			one_down = true,
 			job = "born",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_help = {
 			award = "orange_3",
-			one_down = true,
 			job = "help",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_moon = {
 			award = "moon_3",
-			one_down = true,
 			job = "moon",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_friend = {
 			award = "friend_3",
-			one_down = true,
 			job = "friend",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_spa = {
 			award = "spa_3",
-			one_down = true,
 			job = "spa",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_fish = {
 			award = "fish_3",
-			one_down = true,
 			job = "fish",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_glace = {
 			award = "glace_7",
-			one_down = true,
 			job = "glace",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_run = {
 			award = "run_7",
-			one_down = true,
 			job = "run",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		complete_pines_sm_wish = {
@@ -2510,36 +2513,36 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = normal_and_above
 		},
 		farm_1 = {
-			phalanx_vip_alive = true,
 			award = "farm_1",
 			job = "dinner",
+			phalanx_vip_alive = true,
 			difficulty = overkill_and_above
 		},
 		hox_3_silent = {
-			stealth = true,
 			award = "payback_2",
-			job = "hox_3"
+			job = "hox_3",
+			stealth = true
 		},
 		owe_saw = {
 			award = "ameno_1",
 			job = "nightclub",
 			equipped_team = {
-				secondary = "wpn_fps_saw_secondary",
-				primary = "wpn_fps_saw"
+				primary = "wpn_fps_saw",
+				secondary = "wpn_fps_saw_secondary"
 			}
 		},
 		pain_train = {
-			loud = true,
-			num_players = 4,
 			award = "ameno_4",
+			loud = true,
 			need_full_job = true,
+			num_players = 4,
 			jobs = {
 				"firestarter"
 			},
 			difficulty = overkill_and_above,
 			equipped_team = {
-				secondary_unmodded = true,
 				primary_unmodded = true,
+				secondary_unmodded = true,
 				primaries = {
 					"wpn_fps_ass_74"
 				},
@@ -2549,20 +2552,20 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		turtle_wins = {
-			timer = 240,
-			stealth = true,
 			award = "ameno_6",
 			job = "gallery",
+			stealth = true,
+			timer = 240,
 			equipped_team = {
-				reverse_deployable = true,
 				armor = "level_7",
-				deployable = "armor_kit"
+				deployable = "armor_kit",
+				reverse_deployable = true
 			}
 		},
 		anticimex = {
-			num_players = 4,
 			award = "ovk_1",
 			need_full_job = true,
+			num_players = 4,
 			jobs = {
 				"alex"
 			},
@@ -2579,9 +2582,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		modern_ninja = {
-			stealth = true,
 			award = "ovk_2",
 			job = "kosugi",
+			stealth = true,
 			equipped = {
 				primaries = {
 					weapon_id = "m134"
@@ -2618,9 +2621,9 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = overkill_and_above
 		},
 		ovk_8 = {
-			num_players = 2,
 			award = "ovk_8",
 			need_full_job = true,
+			num_players = 2,
 			jobs = {
 				"welcome_to_the_jungle_wrapper_prof"
 			},
@@ -2633,22 +2636,22 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		kenaz_silent = {
-			stealth = true,
 			award = "kenaz_2",
+			stealth = true,
 			jobs = {
 				"kenaz"
 			}
 		},
 		kenaz_timed = {
-			timer = 840,
 			award = "kenaz_4",
+			timer = 840,
 			jobs = {
 				"kenaz"
 			}
 		},
 		not_for_old_men = {
-			stealth = true,
 			award = "gage4_11",
+			stealth = true,
 			equipped = {
 				secondaries = {
 					weapon_id = "serbu",
@@ -2661,12 +2664,12 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		turtles_3 = {
+			award = "turtles_3",
+			civilians_killed = 0,
+			killed_by_grenade = 4,
+			killed_by_melee = 0,
 			killed_by_weapons = 0,
 			stealth = true,
-			award = "turtles_3",
-			killed_by_melee = 0,
-			killed_by_grenade = 4,
-			civilians_killed = 0,
 			equipped = {
 				grenades = "wpn_prj_four"
 			}
@@ -2678,17 +2681,17 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		jordan_4 = {
-			jump_timer = 4,
 			award = "brooklyn_4",
+			jump_timer = 4,
 			memory = {
-				value = true,
-				is_shortterm = false
+				is_shortterm = false,
+				value = true
 			}
 		},
 		steel_1 = {
-			num_players = 4,
 			award = "steel_1",
 			need_full_job = true,
+			num_players = 4,
 			difficulty = overkill_and_above,
 			equipped_team = {
 				primaries = {
@@ -2718,9 +2721,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		green_2 = {
-			num_players = 4,
 			award = "green_2",
 			job = "red2",
+			num_players = 4,
 			difficulty = overkill_and_above,
 			equipped_team = {
 				primaries = {
@@ -2742,17 +2745,17 @@ function AchievementsTweakData:init(tweak_data)
 			job = "pbr2",
 			difficulty = overkill_and_above,
 			equipped_team = {
-				secondary_category = "pistol",
 				armor = "level_1",
-				primary_category = "akimbo"
+				primary_category = "akimbo",
+				secondary_category = "pistol"
 			}
 		},
 		cane_4 = {
 			award = "cane_4",
 			job = "cane",
 			equipped_team = {
-				secondary_category = "shotgun",
-				primary_category = "shotgun"
+				primary_category = "shotgun",
+				secondary_category = "shotgun"
 			}
 		},
 		mad_3 = {
@@ -2760,8 +2763,8 @@ function AchievementsTweakData:init(tweak_data)
 			job = "mad",
 			difficulty = veryhard_and_above,
 			memory = {
-				value = true,
-				is_shortterm = false
+				is_shortterm = false,
+				value = true
 			}
 		},
 		mad_4 = {
@@ -2794,20 +2797,20 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		pim_4 = {
-			everyone_killed_by_melee = 0,
 			award = "pim_4",
+			everyone_killed_by_grenade = 0,
+			everyone_killed_by_melee = 0,
 			job = "firestarter",
 			need_full_job = true,
-			everyone_killed_by_grenade = 0,
 			difficulty = overkill_and_above,
 			shots_by_weapon = tweak_data.weapons_by_category.pistol
 		},
 		orange_6 = {
 			award = "orange_6",
-			job = "help",
-			need_full_job = true,
 			everyone_killed_by_grenade = 0,
 			everyone_killed_by_weapons = 0,
+			job = "help",
+			need_full_job = true,
 			difficulty = hard_and_above,
 			characters = {
 				"old_hoxton"
@@ -2822,8 +2825,8 @@ function AchievementsTweakData:init(tweak_data)
 			award = "tango_achieve_3",
 			difficulty = veryhard_and_above,
 			killed_by_blueprint = {
-				blueprint = "wpn_fps_upg_o_spot",
-				amount = 200
+				amount = 200,
+				blueprint = "wpn_fps_upg_o_spot"
 			}
 		},
 		spa_4 = {
@@ -2839,24 +2842,24 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		fish_4 = {
-			timer = 360,
 			award = "fish_4",
 			job = "fish",
+			timer = 360,
 			difficulty = overkill_and_above
 		},
 		fish_5 = {
-			everyone_killed_by_weapons = 0,
-			everyone_killed_by_melee = 0,
 			award = "fish_5",
-			job = "fish",
-			everyone_killed_by_grenade = 0
+			everyone_killed_by_grenade = 0,
+			everyone_killed_by_melee = 0,
+			everyone_killed_by_weapons = 0,
+			job = "fish"
 		},
 		grv_1 = {
 			award = "grv_1",
 			difficulty = overkill_and_above,
 			equipped_outfit = {
-				secondary = "wpn_fps_smg_coal",
 				melee_weapon = "oxide",
+				secondary = "wpn_fps_smg_coal",
 				primaries = {
 					"wpn_fps_snp_siltstone",
 					"wpn_fps_ass_flint"
@@ -2864,11 +2867,11 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		grv_4 = {
-			stealth = true,
 			award = "grv_4",
+			stealth = true,
 			equipped_outfit = {
-				secondary = "wpn_fps_smg_coal",
 				melee_weapon = "oxide",
+				secondary = "wpn_fps_smg_coal",
 				primaries = {
 					"wpn_fps_snp_siltstone",
 					"wpn_fps_ass_flint"
@@ -2947,8 +2950,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		wwh_7 = {
 			award = "wwh_7",
-			one_down = true,
 			job = "wwh",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		dah_1 = {
@@ -2983,8 +2986,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		dah_7 = {
 			award = "dah_7",
-			one_down = true,
 			job = "dah",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_af_0 = {
@@ -3847,8 +3850,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_sa_6 = {
 			award = "trk_sa_6",
-			one_down = true,
 			job = "chill_combat",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_sf_0 = {
@@ -4199,14 +4202,14 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		rvd_7 = {
 			award = "rvd_7",
-			one_down = true,
 			job = "rvd",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		rvd_8 = {
-			melee_used = false,
 			award = "rvd_8",
 			job = "rvd",
+			melee_used = false,
 			difficulty = overkill_and_above,
 			weapons_used = tweak_data.weapons_by_category.assault_rifle,
 			equipped = {
@@ -4247,8 +4250,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		brb_7 = {
 			award = "brb_7",
-			one_down = true,
 			job = "brb",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		ggez_13 = {
@@ -4625,8 +4628,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		ckr_7 = {
 			award = "ckr_7",
-			one_down = true,
 			job = "hvh",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		nbm_1 = {
@@ -4661,8 +4664,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		axe_666 = {
 			award = "axe_666",
-			one_down = true,
 			job = "haunted",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		tag_1 = {
@@ -4702,8 +4705,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		tag_8 = {
 			award = "tag_8",
-			one_down = true,
 			job = "tag",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		des_1 = {
@@ -4743,13 +4746,13 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		des_8 = {
 			award = "des_8",
-			one_down = true,
 			job = "des",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		cac_4 = {
-			loud = true,
 			award = "cac_4",
+			loud = true,
 			memory = {
 				is_shortterm = false
 			}
@@ -4761,28 +4764,28 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = overkill_and_above
 		},
 		cac_23 = {
-			everyone_killed_by_grenade = 0,
 			award = "cac_23",
-			job = "man",
-			everyone_used_weapon_category = "bow",
+			everyone_killed_by_grenade = 0,
 			everyone_killed_by_melee = 0,
+			everyone_used_weapon_category = "bow",
+			job = "man",
 			no_bots = true,
 			difficulty = overkill_and_above,
 			equipped_team = {
-				primary_unmodded = true,
-				primary_category = "bow"
+				primary_category = "bow",
+				primary_unmodded = true
 			}
 		},
 		cac_27 = {
+			award = "cac_27",
 			everyone_killed_by_grenade = 0,
 			everyone_killed_by_melee = 0,
-			award = "cac_27",
-			job = "wwh",
-			everyone_used_weapon_category = "flamethrower"
+			everyone_used_weapon_category = "flamethrower",
+			job = "wwh"
 		},
 		cac_31 = {
-			loud = true,
 			award = "cac_31",
+			loud = true,
 			max_players = 1,
 			no_bots = true,
 			difficulty = overkill_and_above
@@ -4824,8 +4827,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sah_8 = {
 			award = "sah_8",
-			one_down = true,
 			job = "sah",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		nmh_1 = {
@@ -4865,8 +4868,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		nmh_8 = {
 			award = "nmh_8",
-			one_down = true,
 			job = "nmh",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		bph_1 = {
@@ -4906,8 +4909,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		bph_8 = {
 			award = "bph_8",
-			one_down = true,
 			job = "bph",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		vit_1 = {
@@ -4947,8 +4950,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		vit_8 = {
 			award = "vit_8",
-			one_down = true,
 			job = "vit",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		vit_11 = {
@@ -5006,8 +5009,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		mex_8 = {
 			award = "mex_8",
-			one_down = true,
 			job = "mex",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		mex2_1 = {
@@ -5047,8 +5050,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		mex2_8 = {
 			award = "mex2_8",
-			one_down = true,
 			job = "mex_cooking",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		bex_1 = {
@@ -5088,8 +5091,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		bex_8 = {
 			award = "bex_8",
-			one_down = true,
 			job = "bex",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		pex_1 = {
@@ -5129,8 +5132,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		pex_8 = {
 			award = "pex_8",
-			one_down = true,
 			job = "pex",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		fex_1 = {
@@ -5170,8 +5173,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		fex_8 = {
 			award = "fex_8",
-			one_down = true,
 			job = "fex",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		chas_1 = {
@@ -5211,8 +5214,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		chas_8 = {
 			award = "chas_8",
-			one_down = true,
 			job = "chas",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sand_1 = {
@@ -5252,8 +5255,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sand_8 = {
 			award = "sand_8",
-			one_down = true,
 			job = "sand",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		chca_1 = {
@@ -5293,16 +5296,16 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		chca_8 = {
 			award = "chca_8",
-			one_down = true,
 			job = "chca",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		chca_9 = {
-			stealth = true,
 			award = "chca_9",
 			job = "chca",
-			used_projectile = "",
 			shots_by_weapon = "",
+			stealth = true,
+			used_projectile = "",
 			difficulty = overkill_and_above
 		},
 		pent_1 = {
@@ -5342,8 +5345,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		pent_8 = {
 			award = "pent_8",
-			one_down = true,
 			job = "pent",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		ranc_1 = {
@@ -5383,8 +5386,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		ranc_8 = {
 			award = "ranc_8",
-			one_down = true,
 			job = "ranc",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trai_1 = {
@@ -5424,21 +5427,21 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trai_8 = {
 			award = "trai_8",
-			one_down = true,
 			job = "trai",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trai_10 = {
-			loud = true,
 			award = "trai_10",
 			job = "trai",
+			loud = true,
 			need_full_job = true,
 			difficulty = overkill_and_above,
 			equipped_team = {
-				secondary = "wpn_fps_pis_chinchilla",
-				primary = "wpn_fps_shot_huntsman",
+				armor = "level_1",
 				num_skills = 0,
-				armor = "level_1"
+				primary = "wpn_fps_shot_huntsman",
+				secondary = "wpn_fps_pis_chinchilla"
 			}
 		},
 		corp_1 = {
@@ -5478,8 +5481,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		corp_8 = {
 			award = "corp_8",
-			one_down = true,
 			job = "corp",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		deep_1 = {
@@ -5519,8 +5522,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		deep_8 = {
 			award = "deep_8",
-			one_down = true,
 			job = "deep",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		uno_1 = {
@@ -5534,14 +5537,14 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		tawp_1 = {
-			mask = "flm",
 			award = "tawp_1",
 			job = "help",
+			mask = "flm",
 			difficulty = normal_and_above,
 			specials_killed = {
 				{
-					enemy = "spooc",
-					count = 1
+					count = 1,
+					enemy = "spooc"
 				}
 			}
 		},
@@ -5574,9 +5577,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		dec21_01_fex = {
-			stealth = true,
 			award = "dec21_01",
 			no_alarm_pager = true,
+			stealth = true,
 			difficulty = easywish_and_above,
 			jobs = {
 				"fex"
@@ -5603,38 +5606,38 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		bain_jobs = {
+			challenge_stat = "bain_jobs",
 			complete_job = true,
-			contract = "bain",
-			challenge_stat = "bain_jobs"
+			contract = "bain"
 		},
 		vlad_jobs = {
+			challenge_stat = "vlad_jobs",
 			complete_job = true,
-			contract = "vlad",
-			challenge_stat = "vlad_jobs"
+			contract = "vlad"
 		},
 		hector_jobs = {
+			challenge_stat = "hector_jobs",
 			complete_job = true,
-			contract = "hector",
-			challenge_stat = "hector_jobs"
+			contract = "hector"
 		},
 		elephant_jobs = {
+			challenge_stat = "elephant_jobs",
 			complete_job = true,
-			contract = "the_elephant",
-			challenge_stat = "elephant_jobs"
+			contract = "the_elephant"
 		},
 		dentist_jobs = {
+			challenge_stat = "dentist_jobs",
 			complete_job = true,
-			contract = "the_dentist",
-			challenge_stat = "dentist_jobs"
+			contract = "the_dentist"
 		},
 		butcher_jobs = {
+			challenge_stat = "butcher_jobs",
 			complete_job = true,
-			contract = "the_butcher",
-			challenge_stat = "butcher_jobs"
+			contract = "the_butcher"
 		},
 		any_jobs = {
-			complete_job = true,
-			challenge_stat = "any_jobs"
+			challenge_stat = "any_jobs",
+			complete_job = true
 		},
 		monthly_rats = {
 			challenge_award = "monthly_rats",
@@ -5644,8 +5647,8 @@ function AchievementsTweakData:init(tweak_data)
 			},
 			difficulty = overkill_and_above,
 			equipped_team = {
-				num_skills = 0,
 				armor = "level_1",
+				num_skills = 0,
 				primaries = {
 					"wpn_fps_ass_amcar"
 				},
@@ -5662,8 +5665,8 @@ function AchievementsTweakData:init(tweak_data)
 			},
 			difficulty = overkill_and_above,
 			equipped_team = {
-				num_skills = 0,
 				armor = "level_1",
+				num_skills = 0,
 				primaries = {
 					"wpn_fps_ass_amcar"
 				},
@@ -5678,8 +5681,8 @@ function AchievementsTweakData:init(tweak_data)
 			need_full_job = true,
 			difficulty = overkill_and_above,
 			equipped_team = {
-				num_skills = 0,
 				armor = "level_1",
+				num_skills = 0,
 				primaries = {
 					"wpn_fps_ass_amcar"
 				},
@@ -5689,39 +5692,39 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		challenge_safehouse_raid = {
-			need_full_job = true,
 			challenge_stat = "challenge_safehouse_raid",
+			need_full_job = true,
 			jobs = {
 				"chill_combat"
 			}
 		},
 		challenge_xmas_white = {
-			need_full_job = true,
 			challenge_award = "challenge_xmas_white",
+			need_full_job = true,
 			jobs = {
 				"pines"
 			}
 		},
 		challenge_xmas_santas = {
-			need_full_job = true,
 			challenge_award = "challenge_xmas_santas",
+			need_full_job = true,
 			jobs = {
 				"cane"
 			}
 		},
 		challenge_xmas_stealing = {
-			need_full_job = true,
 			challenge_award = "challenge_xmas_stealing",
+			need_full_job = true,
 			jobs = {
 				"moon"
 			}
 		},
 		challenge_art_ghost = {
-			everyone_killed_by_melee = 0,
 			challenge_award = "challenge_art_ghost",
+			everyone_killed_by_grenade = 0,
+			everyone_killed_by_melee = 0,
 			everyone_killed_by_weapons = 0,
 			job = "gallery",
-			everyone_killed_by_grenade = 0,
 			stealth = true,
 			secured = {
 				carry_id = "painting",
@@ -5729,32 +5732,32 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		challenge_cookoff_mutated = {
-			need_full_job = true,
 			challenge_award = "challenge_cookoff_mutated",
+			job = "rat",
 			mutators = 6,
-			job = "rat"
+			need_full_job = true
 		},
 		challenge_mallcrasher_stealth = {
-			need_full_job = true,
 			challenge_award = "challenge_mallcrasher_stealth",
-			stealth = true,
-			job = "mallcrasher"
+			job = "mallcrasher",
+			need_full_job = true,
+			stealth = true
 		},
 		challenge_rats_pacifist = {
-			need_full_job = true,
 			challenge_award = "challenge_rats_pacifist",
 			job = "alex",
+			need_full_job = true,
 			memory = {
 				is_shortterm = false
 			}
 		},
 		challenge_crime_spree = {
-			crime_spree = true,
-			challenge_stat = "challenge_crime_spree"
+			challenge_stat = "challenge_crime_spree",
+			crime_spree = true
 		},
 		challenge_walking_nightmare = {
-			need_full_job = true,
 			challenge_award = "challenge_walking_nightmare",
+			need_full_job = true,
 			jobs = {
 				"pines",
 				"cane",
@@ -5839,8 +5842,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		monthly_prison = {
-			everyone_killed_by_grenade = 0,
 			challenge_award = "monthly_prison",
+			everyone_killed_by_grenade = 0,
 			everyone_killed_by_weapons = 0,
 			job = "help",
 			difficulty = overkill_and_above
@@ -5859,33 +5862,33 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_transport_crossroads = {
-			trophy_stat = "trophy_transport_crossroads",
 			level_id = "arm_cro",
+			trophy_stat = "trophy_transport_crossroads",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_downtown = {
-			trophy_stat = "trophy_transport_downtown",
 			level_id = "arm_hcm",
+			trophy_stat = "trophy_transport_downtown",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_harbor = {
-			trophy_stat = "trophy_transport_harbor",
 			level_id = "arm_fac",
+			trophy_stat = "trophy_transport_harbor",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_park = {
-			trophy_stat = "trophy_transport_park",
 			level_id = "arm_par",
+			trophy_stat = "trophy_transport_park",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_underpass = {
-			trophy_stat = "trophy_transport_underpass",
 			level_id = "arm_und",
+			trophy_stat = "trophy_transport_underpass",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_train = {
-			trophy_stat = "trophy_transport_train",
 			level_id = "arm_for",
+			trophy_stat = "trophy_transport_train",
 			difficulty = overkill_and_above
 		},
 		trophy_escapes = {
@@ -5935,14 +5938,14 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_nightclub_dw = {
+			job = "nightclub",
 			stealth = true,
 			trophy_stat = "trophy_nightclub_dw",
-			job = "nightclub",
 			difficulty = deathwish_and_above
 		},
 		trophy_tiara = {
-			trophy_stat = "trophy_tiara",
 			job = "ukrainian_job_prof",
+			trophy_stat = "trophy_tiara",
 			difficulty = deathwish_and_above,
 			equipped_team = {
 				deployable = "ecm_jammer",
@@ -5959,15 +5962,15 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_shoutout = {
+			job = "shoutout_raid",
 			timer = 420,
 			trophy_stat = "trophy_shoutout",
-			job = "shoutout_raid",
 			difficulty = overkill_and_above
 		},
 		trophy_stealth = {
+			complete_job = true,
 			stealth = true,
 			trophy_stat = "trophy_stealth",
-			complete_job = true,
 			difficulty = overkill_and_above
 		},
 		trophy_bank_heists = {
@@ -5981,11 +5984,11 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_carshop_stealth = {
-			trophy_stat = "trophy_carshop_stealth",
 			job = "cage",
+			trophy_stat = "trophy_carshop_stealth",
 			equipped_team = {
-				reverse_deployable = true,
 				deployable = "ecm_jammer",
+				reverse_deployable = true,
 				detection = {
 					max = 100,
 					min = 70
@@ -5993,10 +5996,10 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_watchout = {
-			trophy_stat = "trophy_watchout",
 			need_full_job = true,
-			used_weapon_category = "snp",
 			total_accuracy = 100,
+			trophy_stat = "trophy_watchout",
+			used_weapon_category = "snp",
 			jobs = {
 				"watchdogs_wrapper",
 				"watchdogs_night",
@@ -6009,18 +6012,18 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_piggy_bank = {
-			trophy_stat = "trophy_piggy_bank",
 			job = "big",
+			trophy_stat = "trophy_piggy_bank",
 			difficulty = overkill_and_above,
 			equipped_team = {
 				num_skills = 0
 			}
 		},
 		trophy_jfk = {
-			everyone_killed_by_melee = 0,
 			everyone_killed_by_grenade = 0,
-			job = "man",
+			everyone_killed_by_melee = 0,
 			everyone_used_weapon_category = "snp",
+			job = "man",
 			trophy_stat = "trophy_jfk",
 			difficulty = overkill_and_above,
 			equipped_team = {
@@ -6030,31 +6033,31 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_dance = {
-			killed_by_weapons = 0,
-			killed_by_melee = 0,
 			job = "nightclub",
-			trophy_stat = "trophy_dance",
 			killed_by_grenade = 0,
+			killed_by_melee = 0,
+			killed_by_weapons = 0,
+			trophy_stat = "trophy_dance",
 			equipped_team = {
 				deployable = "trip_mine"
 			}
 		},
 		trophy_fbi = {
-			trophy_stat = "trophy_fbi",
 			stealth = true,
+			trophy_stat = "trophy_fbi",
 			levels = {
 				"firestarter_2"
 			}
 		},
 		trophy_host = {
+			is_host = true,
 			need_full_job = true,
-			trophy_stat = "trophy_host",
-			is_host = true
+			trophy_stat = "trophy_host"
 		},
 		trophy_framing_frame = {
+			need_full_job = true,
 			need_full_stealth = true,
 			trophy_stat = "trophy_framing_frame",
-			need_full_job = true,
 			difficulty = overkill_and_above,
 			jobs = {
 				"framing_frame"
@@ -6071,8 +6074,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trophy_evolution = {
 			complete_job = true,
-			trophy_stat = "trophy_evolution",
-			mutators = true
+			mutators = true,
+			trophy_stat = "trophy_evolution"
 		},
 		trophy_flawless = {
 			complete_job = true,
@@ -6095,10 +6098,10 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_friendly_car = {
-			stealth = false,
 			complete_job = true,
 			job = "friend",
 			num_players = 4,
+			stealth = false,
 			trophy_stat = "trophy_friendly_car",
 			difficulty = easywish_and_above,
 			equipped_team = {
@@ -6107,9 +6110,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_fish_trophy = {
+			job = "fish",
 			need_full_job = true,
 			trophy_stat = "trophy_fish_trophy",
-			job = "fish",
 			equipped_team = {
 				detection = {
 					max = 100,
@@ -6118,8 +6121,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		trophy_glace_completion = {
-			trophy_stat = "trophy_glace_completion",
 			job = "glace",
+			trophy_stat = "trophy_glace_completion",
 			difficulty = normal_and_above
 		},
 		daily_classics = {
@@ -6141,8 +6144,8 @@ function AchievementsTweakData:init(tweak_data)
 			trophy_stat = "daily_discord"
 		},
 		daily_fwtd = {
-			everyone_killed_by_melee = 0,
 			everyone_killed_by_grenade = 0,
+			everyone_killed_by_melee = 0,
 			job = "red2",
 			trophy_stat = "daily_fwtd",
 			difficulty = overkill_and_above,
@@ -6185,9 +6188,9 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		daily_night_out = {
-			trophy_stat = "daily_night_out",
 			everyone_killed_by_weapons = 0,
-			job = "nightclub"
+			job = "nightclub",
+			trophy_stat = "daily_night_out"
 		},
 		daily_naked = {
 			trophy_stat = "daily_naked",
@@ -6197,15 +6200,15 @@ function AchievementsTweakData:init(tweak_data)
 				"pbr2"
 			},
 			equipped_team = {
-				perk_deck = 3,
 				armor = "level_1",
-				num_skills = 0
+				num_skills = 0,
+				perk_deck = 3
 			}
 		},
 		daily_ninja = {
+			job = "arm_cro",
 			killed_by_weapons = 0,
 			trophy_stat = "daily_ninja",
-			job = "arm_cro",
 			equipped_outfit = {
 				grenade = {
 					"wpn_prj_ace",
@@ -6231,8 +6234,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		daily_akimbo = {
-			trophy_stat = "daily_akimbo",
 			total_accuracy = 80,
+			trophy_stat = "daily_akimbo",
 			equipped_outfit = {
 				primary_category = "akimbo"
 			},
@@ -6552,10 +6555,10 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = veryhard_and_above
 		},
 		challenge_srtd = {
-			everyone_killed_by_melee = 0,
-			everyone_killed_by_grenade = 0,
-			job = "chill_combat",
 			challenge_award = "challenge_srtd",
+			everyone_killed_by_grenade = 0,
+			everyone_killed_by_melee = 0,
+			job = "chill_combat",
 			difficulty = overkill_and_above,
 			everyone_weapons_used = {
 				"sentry_gun",
@@ -6563,8 +6566,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		challenge_geneva = {
-			complete_job = true,
 			challenge_award = "challenge_geneva",
+			complete_job = true,
 			job = "red2",
 			difficulty = overkill_and_above,
 			killed = {
@@ -6575,6 +6578,7 @@ function AchievementsTweakData:init(tweak_data)
 			stat = "pda10_heist_post_objective"
 		}
 	}
+
 	local skirmish_complete_heists = {
 		"skm_cas",
 		"skm_big2",
@@ -6586,10 +6590,12 @@ function AchievementsTweakData:init(tweak_data)
 		"skm_mus",
 		"skm_bex"
 	}
+
 	self.skirmish_wave_achievements = {}
 
 	for index, job_id in pairs(skirmish_complete_heists) do
 		local achievement_index = (index - 1) * 4
+
 		self.skirmish_wave_achievements["skm_" .. tostring(achievement_index + 1)] = {
 			skirmish_wave = 3,
 			award = "skm_" .. tostring(achievement_index + 1),
@@ -6618,8 +6624,8 @@ function AchievementsTweakData:init(tweak_data)
 	}
 	self.complete_heist_statistics_achievements = {
 		immortal_ballot = {
-			num_players = 4,
 			award = "ovk_5",
+			num_players = 4,
 			total_downs = 0,
 			levels = {
 				"election_day_3",
@@ -6629,28 +6635,28 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = deathwish_and_above
 		},
 		full_two_twenty = {
-			num_players = 4,
-			total_kills = 120,
 			award = "ovk_7",
-			total_accuracy = 120
+			num_players = 4,
+			total_accuracy = 120,
+			total_kills = 120
 		},
 		berry_4 = {
-			is_dropin = false,
 			award = "berry_4",
+			is_dropin = false,
 			level_id = "pbr",
 			total_downs = 0,
 			difficulty = overkill_and_above
 		},
 		flat_5 = {
-			success = true,
-			level_id = "flat",
 			award = "flat_5",
+			level_id = "flat",
+			success = true,
 			total_accuracy = 200
 		},
 		sand_11 = {
-			local_accuracy = 100,
 			award = "sand_11",
 			level_id = "sand",
+			local_accuracy = 100,
 			success = true,
 			killed_by_weapon_categories = {
 				snp = 100
@@ -6661,16 +6667,16 @@ function AchievementsTweakData:init(tweak_data)
 			trophy_stat = "daily_professional",
 			difficulty = overkill_and_above,
 			total_headshots = {
-				invert = true,
-				amount = 0
+				amount = 0,
+				invert = true
 			}
 		}
 	}
 	self.loot_cash_achievements = {
 		mallrunner = {
 			award = "ameno_3",
-			total_value = 1800000,
 			total_time = 50,
+			total_value = 1800000,
 			jobs = {
 				"mallcrasher"
 			},
@@ -6681,8 +6687,8 @@ function AchievementsTweakData:init(tweak_data)
 		cane_5 = {
 			award = "cane_5",
 			job = "cane",
-			no_deployable = true,
 			no_assets = true,
+			no_deployable = true,
 			secured = {
 				carry_id = "present",
 				total_amount = 10
@@ -6701,8 +6707,8 @@ function AchievementsTweakData:init(tweak_data)
 			job = "dah",
 			difficulties = overkill_and_above,
 			secured = {
-				carry_id = "red_diamond",
-				amount = 1
+				amount = 1,
+				carry_id = "red_diamond"
 			}
 		},
 		pda9_n1 = {
@@ -6717,21 +6723,21 @@ function AchievementsTweakData:init(tweak_data)
 		pda9_n3 = {
 			stat = "pda9_n3",
 			secured = {
-				carry_id = "money_bundle",
-				amount = 1
+				amount = 1,
+				carry_id = "money_bundle"
 			}
 		},
 		pda9_n5 = {
 			stat = "pda9_n5",
 			difficulties = overkill_and_above,
 			secured = {
-				carry_id = "sandwich",
-				amount = 1
+				amount = 1,
+				carry_id = "sandwich"
 			}
 		},
 		trophy_tfturret = {
-			trophy_stat = "trophy_tfturret",
 			is_dropin = false,
+			trophy_stat = "trophy_tfturret",
 			jobs = {
 				"arm_for"
 			},
@@ -6748,8 +6754,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		daily_mortage = {
-			trophy_stat = "daily_mortage",
 			is_dropin = false,
+			trophy_stat = "daily_mortage",
 			jobs = {
 				"family"
 			},
@@ -6759,26 +6765,26 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		daily_toast = {
-			trophy_stat = "daily_toast",
 			is_dropin = false,
+			trophy_stat = "daily_toast",
 			jobs = {
 				"pines"
 			},
 			secured = {
-				carry_id = "sandwich",
-				amount = 1
+				amount = 1,
+				carry_id = "sandwich"
 			}
 		},
 		daily_lodsofemone = {
 			trophy_stat = "daily_lodsofemone",
 			secured = {
-				carry_id = "money",
-				amount = 1
+				amount = 1,
+				carry_id = "money"
 			}
 		},
 		daily_heirloom = {
-			trophy_stat = "daily_heirloom",
 			is_dropin = false,
+			trophy_stat = "daily_heirloom",
 			jobs = {
 				"kosugi"
 			},
@@ -6803,8 +6809,8 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		daily_art = {
-			trophy_stat = "daily_art",
 			is_dropin = false,
+			trophy_stat = "daily_art",
 			jobs = {
 				"gallery"
 			},
@@ -6839,607 +6845,607 @@ function AchievementsTweakData:init(tweak_data)
 			stat = "pda10_bags_post_objective"
 		}
 	}
-	self.job_list = {
-		vlad = {
-			"ukrainian_job_prof",
-			"mallcrasher",
-			"four_stores",
-			"nightclub",
-			"pines",
-			"shoutout_raid",
-			"jolly",
-			"cane",
-			"peta",
-			"moon",
-			"bex",
-			"fex",
-			"chca"
-		},
-		hector = {
-			"watchdogs_wrapper",
-			"alex",
-			"firestarter"
-		},
-		the_elephant = {
-			"framing_frame",
-			"welcome_to_the_jungle_wrapper_prof",
-			"election_day",
-			"born"
-		},
-		bain = {
-			"jewelry_store",
-			"family",
-			"roberts",
-			"branchbank_prof",
-			"branchbank_gold_prof",
-			"branchbank_cash",
-			"branchbank_deposit",
-			"arm_cro",
-			"arm_hcm",
-			"arm_fac",
-			"arm_par",
-			"arm_und",
-			"arm_for",
-			"kosugi",
-			"gallery",
-			"rat",
-			"cage",
-			"arena",
-			"rvd"
-		},
-		the_dentist = {
-			"big",
-			"mia",
-			"hox",
-			"mus",
-			"hox_3",
-			"kenaz"
-		},
-		the_butcher = {
-			"crojob_wrapper",
-			"crojob1",
-			"friend"
-		},
-		classic = {
-			"red2",
-			"dinner",
-			"pal",
-			"man",
-			"flat",
-			"run",
-			"glace",
-			"dah",
-			"nmh"
-		},
-		locke = {
-			"pbr",
-			"pbr2",
-			"wwh",
-			"brb",
-			"tag",
-			"des",
-			"sah",
-			"bph",
-			"vit",
-			"mex",
-			"mex_cooking",
-			"pex"
-		},
-		jimmy = {
-			"mad",
-			"dark"
-		},
-		events = {
-			"nail",
-			"help",
-			"haunted",
-			"hvh"
-		},
-		the_continental = {
-			"spa",
-			"fish"
-		},
-		jiufeng = {
-			"chas",
-			"sand"
-		},
-		shayu = {
-			"pent"
-		},
-		mcshay = {
-			"ranc",
-			"trai"
-		},
-		blaine = {
-			"corp",
-			"deep"
-		}
+	self.job_list = {}
+	self.job_list.vlad = {
+		"ukrainian_job_prof",
+		"mallcrasher",
+		"four_stores",
+		"nightclub",
+		"pines",
+		"shoutout_raid",
+		"jolly",
+		"cane",
+		"peta",
+		"moon",
+		"bex",
+		"fex",
+		"chca"
+	}
+	self.job_list.hector = {
+		"watchdogs_wrapper",
+		"alex",
+		"firestarter"
+	}
+	self.job_list.the_elephant = {
+		"framing_frame",
+		"welcome_to_the_jungle_wrapper_prof",
+		"election_day",
+		"born"
+	}
+	self.job_list.bain = {
+		"jewelry_store",
+		"family",
+		"roberts",
+		"branchbank_prof",
+		"branchbank_gold_prof",
+		"branchbank_cash",
+		"branchbank_deposit",
+		"arm_cro",
+		"arm_hcm",
+		"arm_fac",
+		"arm_par",
+		"arm_und",
+		"arm_for",
+		"kosugi",
+		"gallery",
+		"rat",
+		"cage",
+		"arena",
+		"rvd"
+	}
+	self.job_list.the_dentist = {
+		"big",
+		"mia",
+		"hox",
+		"mus",
+		"hox_3",
+		"kenaz"
+	}
+	self.job_list.the_butcher = {
+		"crojob_wrapper",
+		"crojob1",
+		"friend"
+	}
+	self.job_list.classic = {
+		"red2",
+		"dinner",
+		"pal",
+		"man",
+		"flat",
+		"run",
+		"glace",
+		"dah",
+		"nmh"
+	}
+	self.job_list.locke = {
+		"pbr",
+		"pbr2",
+		"wwh",
+		"brb",
+		"tag",
+		"des",
+		"sah",
+		"bph",
+		"vit",
+		"mex",
+		"mex_cooking",
+		"pex"
+	}
+	self.job_list.jimmy = {
+		"mad",
+		"dark"
+	}
+	self.job_list.events = {
+		"nail",
+		"help",
+		"haunted",
+		"hvh"
+	}
+	self.job_list.the_continental = {
+		"spa",
+		"fish"
+	}
+	self.job_list.jiufeng = {
+		"chas",
+		"sand"
+	}
+	self.job_list.shayu = {
+		"pent"
+	}
+	self.job_list.mcshay = {
+		"ranc",
+		"trai"
+	}
+	self.job_list.blaine = {
+		"corp",
+		"deep"
 	}
 	self.persistent_stat_unlocks = {
 		gage_9_stats = {
 			{
-				award = "gage_9",
-				at = 100
+				at = 100,
+				award = "gage_9"
 			}
 		},
 		halloween_4_stats = {
 			{
-				award = "halloween_4",
-				at = 50
+				at = 50,
+				award = "halloween_4"
 			}
 		},
 		halloween_5_stats = {
 			{
-				award = "halloween_5",
-				at = 25
+				at = 25,
+				award = "halloween_5"
 			}
 		},
 		halloween_6_stats = {
 			{
-				award = "halloween_6",
-				at = 666
+				at = 666,
+				award = "halloween_6"
 			}
 		},
 		halloween_7_stats = {
 			{
-				award = "halloween_7",
-				at = 50
+				at = 50,
+				award = "halloween_7"
 			}
 		},
 		armored_8_stat = {
 			{
-				award = "armored_8",
-				at = 7
+				at = 7,
+				award = "armored_8"
 			}
 		},
 		armored_10_stat = {
 			{
-				award = "armored_10",
-				at = 61
+				at = 61,
+				award = "armored_10"
 			}
 		},
 		gage2_3_stats = {
 			{
-				award = "gage2_3",
-				at = 50
+				at = 50,
+				award = "gage2_3"
 			}
 		},
 		scorpion_1_stats = {
 			{
-				award = "scorpion_1",
-				at = 100
+				at = 100,
+				award = "scorpion_1"
 			}
 		},
 		gage_10_stats = {
 			{
-				award = "gage_10",
-				at = 100
+				at = 100,
+				award = "gage_10"
 			}
 		},
 		halloween_8_stats = {
 			{
-				award = "halloween_8",
-				at = 666
+				at = 666,
+				award = "halloween_8"
 			}
 		},
 		armored_5_stat = {
 			{
-				award = "armored_5",
-				at = 378
+				at = 378,
+				award = "armored_5"
 			}
 		},
 		armored_7_stat = {
 			{
-				award = "armored_7",
-				at = 69
+				at = 69,
+				award = "armored_7"
 			}
 		},
 		armored_9_stat = {
 			{
-				award = "armored_9",
-				at = 95
+				at = 95,
+				award = "armored_9"
 			}
 		},
 		gage_1_stats = {
 			{
-				award = "gage_1",
-				at = 100
+				at = 100,
+				award = "gage_1"
 			}
 		},
 		gage_2_stats = {
 			{
-				award = "gage_2",
-				at = 100
+				at = 100,
+				award = "gage_2"
 			}
 		},
 		gage_3_stats = {
 			{
-				award = "gage_3",
-				at = 100
+				at = 100,
+				award = "gage_3"
 			}
 		},
 		gage_4_stats = {
 			{
-				award = "gage_4",
-				at = 100
+				at = 100,
+				award = "gage_4"
 			}
 		},
 		gage_5_stats = {
 			{
-				award = "gage_5",
-				at = 100
+				at = 100,
+				award = "gage_5"
 			}
 		},
 		gage_6_stats = {
 			{
-				award = "gage_6",
-				at = 100
+				at = 100,
+				award = "gage_6"
 			}
 		},
 		gage_7_stats = {
 			{
-				award = "gage_7",
-				at = 100
+				at = 100,
+				award = "gage_7"
 			}
 		},
 		gage3_12_stats = {
 			{
-				award = "gage3_12",
-				at = 10
+				at = 10,
+				award = "gage3_12"
 			}
 		},
 		gage3_2_stats = {
 			{
-				award = "gage3_2",
-				at = 6
+				at = 6,
+				award = "gage3_2"
 			}
 		},
 		gage3_3_stats = {
 			{
-				award = "gage3_3",
-				at = 50
+				at = 50,
+				award = "gage3_3"
 			}
 		},
 		gage3_4_stats = {
 			{
-				award = "gage3_4",
-				at = 100
+				at = 100,
+				award = "gage3_4"
 			}
 		},
 		gage3_5_stats = {
 			{
-				award = "gage3_5",
-				at = 250
+				at = 250,
+				award = "gage3_5"
 			}
 		},
 		gage3_6_stats = {
 			{
-				award = "gage3_6",
-				at = 500
+				at = 500,
+				award = "gage3_6"
 			}
 		},
 		gage3_7_stats = {
 			{
-				award = "gage3_7",
-				at = 25
+				at = 25,
+				award = "gage3_7"
 			}
 		},
 		gage3_11_stats = {
 			{
-				award = "gage3_11",
-				at = 10
+				at = 10,
+				award = "gage3_11"
 			}
 		},
 		gage3_13_stats = {
 			{
-				award = "gage3_13",
-				at = 10
+				at = 10,
+				award = "gage3_13"
 			}
 		},
 		gage3_14_stats = {
 			{
-				award = "gage3_14",
-				at = 25
+				at = 25,
+				award = "gage3_14"
 			}
 		},
 		gage3_17_stats = {
 			{
-				award = "gage3_17",
-				at = 250
+				at = 250,
+				award = "gage3_17"
 			}
 		},
 		gage4_6_stats = {
 			{
-				award = "gage4_6",
-				at = 50
+				at = 50,
+				award = "gage4_6"
 			}
 		},
 		gage4_8_stats = {
 			{
-				award = "gage4_8",
-				at = 10
+				at = 10,
+				award = "gage4_8"
 			}
 		},
 		gage4_10_stats = {
 			{
-				award = "gage4_10",
-				at = 10
+				at = 10,
+				award = "gage4_10"
 			}
 		},
 		gage5_1_stats = {
 			{
-				award = "gage5_1",
-				at = 25
+				at = 25,
+				award = "gage5_1"
 			}
 		},
 		gage5_9_stats = {
 			{
-				award = "gage5_9",
-				at = 10
+				at = 10,
+				award = "gage5_9"
 			}
 		},
 		gage5_10_stats = {
 			{
-				award = "gage5_10",
-				at = 200
+				at = 200,
+				award = "gage5_10"
 			}
 		},
 		eagle_1_stats = {
 			{
-				award = "eagle_1",
-				at = 25
+				at = 25,
+				award = "eagle_1"
 			}
 		},
 		ameno_08_stats = {
 			{
-				award = "ameno_8",
-				at = 100
+				at = 100,
+				award = "ameno_8"
 			}
 		},
 		pim_1_stats = {
 			{
-				award = "pim_1",
-				at = 30
+				at = 30,
+				award = "pim_1"
 			}
 		},
 		pim_3_stats = {
 			{
-				award = "pim_3",
-				at = 45
+				at = 45,
+				award = "pim_3"
 			}
 		},
 		grv_3_stats = {
 			{
-				award = "grv_3",
-				at = 300
+				at = 300,
+				award = "grv_3"
 			}
 		},
 		gmod_1_stats = {
 			{
-				award = "gmod_1",
-				at = 5
+				at = 5,
+				award = "gmod_1"
 			}
 		},
 		gmod_2_stats = {
 			{
-				award = "gmod_2",
-				at = 10
+				at = 10,
+				award = "gmod_2"
 			}
 		},
 		gmod_3_stats = {
 			{
-				award = "gmod_3",
-				at = 15
+				at = 15,
+				award = "gmod_3"
 			}
 		},
 		gmod_4_stats = {
 			{
-				award = "gmod_4",
-				at = 20
+				at = 20,
+				award = "gmod_4"
 			}
 		},
 		gmod_5_stats = {
 			{
-				award = "gmod_5",
-				at = 25
+				at = 25,
+				award = "gmod_5"
 			}
 		},
 		gage5_5_stats = {
 			{
-				award = "gage5_5",
-				at = 25
+				at = 25,
+				award = "gage5_5"
 			}
 		},
 		pim_2_stats = {
 			{
-				award = "pim_2",
-				at = 8
+				at = 8,
+				award = "pim_2"
 			}
 		},
 		tango_2_stats = {
 			{
-				award = "tango_achieve_2",
-				at = 50
+				at = 50,
+				award = "tango_achieve_2"
 			}
 		},
 		gage2_9_stats = {
 			{
-				award = "gage2_9",
-				at = 15
+				at = 15,
+				award = "gage2_9"
 			}
 		},
 		gage4_7_stats = {
 			{
-				award = "gage4_7",
-				at = 25
+				at = 25,
+				award = "gage4_7"
 			}
 		},
 		gage5_8_stats = {
 			{
-				award = "gage5_8",
-				at = 25
+				at = 25,
+				award = "gage5_8"
 			}
 		},
 		pig_3_stats = {
 			{
-				award = "pig_3",
-				at = 30
+				at = 30,
+				award = "pig_3"
 			}
 		},
 		eagle_2_stats = {
 			{
-				award = "eagle_2",
-				at = 25
+				at = 25,
+				award = "eagle_2"
 			}
 		},
 		halloween_10_stats = {
 			{
-				award = "halloween_10",
-				at = 25
+				at = 25,
+				award = "halloween_10"
 			}
 		},
 		armored_4_stat = {
 			{
-				award = "armored_4",
-				at = 15
+				at = 15,
+				award = "armored_4"
 			}
 		},
 		gage3_10_stats = {
 			{
-				award = "gage3_10",
-				at = 10
+				at = 10,
+				award = "gage3_10"
 			}
 		},
 		gage3_15_stats = {
 			{
-				award = "gage3_15",
-				at = 25
+				at = 25,
+				award = "gage3_15"
 			}
 		},
 		gage3_16_stats = {
 			{
-				award = "gage3_16",
-				at = 25
+				at = 25,
+				award = "gage3_16"
 			}
 		},
 		eng_1_stats = {
 			{
-				award = "eng_1",
-				at = 5
+				at = 5,
+				award = "eng_1"
 			}
 		},
 		eng_2_stats = {
 			{
-				award = "eng_2",
-				at = 5
+				at = 5,
+				award = "eng_2"
 			}
 		},
 		eng_3_stats = {
 			{
-				award = "eng_3",
-				at = 5
+				at = 5,
+				award = "eng_3"
 			}
 		},
 		eng_4_stats = {
 			{
-				award = "eng_4",
-				at = 5
+				at = 5,
+				award = "eng_4"
 			}
 		},
 		rvd_12_stats = {
 			{
-				award = "rvd_12",
-				at = 92
+				at = 92,
+				award = "rvd_12"
 			}
 		},
 		cac_3_stats = {
 			{
-				award = "cac_3",
-				at = 30
+				at = 30,
+				award = "cac_3"
 			}
 		},
 		cac_7_stats = {
 			{
-				award = "cac_7",
-				at = 1000000000
+				at = 1000000000,
+				award = "cac_7"
 			}
 		},
 		cac_34_stats = {
 			{
-				award = "cac_34",
-				at = 300
+				at = 300,
+				award = "cac_34"
 			}
 		},
 		cac_35_stats = {
 			{
-				award = "cac_35",
-				at = 10
+				at = 10,
+				award = "cac_35"
 			}
 		},
 		bph_9_stat = {
 			{
-				award = "bph_9",
-				at = 13
+				at = 13,
+				award = "bph_9"
 			}
 		},
 		gsu_stat = {
 			{
 				at = 100,
-				check_func_name = "check_gsu_01_achievement",
-				award = "gsu_01"
+				award = "gsu_01",
+				check_func_name = "check_gsu_01_achievement"
 			}
 		},
 		sawp_stat = {
 			{
-				award = "sawp_1",
-				at = 200
+				at = 200,
+				award = "sawp_1"
 			}
 		},
 		dec21_02_stat = {
 			{
-				award = "dec21_02",
-				at = 75
+				at = 75,
+				award = "dec21_02"
 			}
 		},
 		pxp1_1_stats = {
 			{
-				award = "pxp1_1",
-				at = 200
+				at = 200,
+				award = "pxp1_1"
 			}
 		},
 		pxp2_1_stats = {
 			{
-				award = "pxp2_1",
-				at = 500
+				at = 500,
+				award = "pxp2_1"
 			}
 		},
 		pxp2_2_stats = {
 			{
-				award = "pxp2_2",
-				at = 1000
+				at = 1000,
+				award = "pxp2_2"
 			}
 		},
 		pxp2_3_stats = {
 			{
-				award = "pxp2_3",
-				at = 100
+				at = 100,
+				award = "pxp2_3"
 			}
 		},
 		ranc_9_stat = {
 			{
-				award = "ranc_9",
-				at = 100
+				at = 100,
+				award = "ranc_9"
 			}
 		},
 		ranc_11_stat = {
 			{
-				award = "ranc_11",
-				at = 4
+				at = 4,
+				award = "ranc_11"
 			}
 		}
 	}
+
 	local jobs = {}
-	local job_data = nil
+	local job_data
 	local available_jobs = {}
 	local misplaced_jobs = {}
 	local contact_exclude_list = {
@@ -7542,26 +7548,26 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_vlad = {
 			award = "axe_62",
-			one_down = true,
 			contact = "vlad",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_hector = {
 			award = "axe_63",
-			one_down = true,
 			contact = "hector",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_elephant = {
 			award = "axe_64",
-			one_down = true,
 			contact = "the_elephant",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		sm_bain = {
 			award = "axe_65",
-			one_down = true,
 			contact = "bain",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		skull_hard = {
@@ -7651,8 +7657,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_c_6 = {
 			award = "trk_c_6",
-			one_down = true,
 			contact = "the_continental",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_cb_0 = {
@@ -7687,8 +7693,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_cb_6 = {
 			award = "trk_cb_6",
-			one_down = true,
 			contact = "the_butcher",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_cc_0 = {
@@ -7723,8 +7729,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_cc_6 = {
 			award = "trk_cc_6",
-			one_down = true,
 			contact = "classic",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_d_0 = {
@@ -7759,8 +7765,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_d_6 = {
 			award = "trk_d_6",
-			one_down = true,
 			contact = "the_dentist",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_e_0 = {
@@ -7815,8 +7821,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_ev_6 = {
 			award = "trk_ev_6",
-			one_down = true,
 			contact = "events",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_h_0 = {
@@ -7871,8 +7877,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_j_6 = {
 			award = "trk_j_6",
-			one_down = true,
 			contact = "jimmy",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_l_0 = {
@@ -7907,8 +7913,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_l_6 = {
 			award = "trk_l_6",
-			one_down = true,
 			contact = "locke",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		trk_v_0 = {
@@ -7933,8 +7939,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		ggez_1 = {
 			award = "ggez_1",
-			one_down = true,
 			contact = "all",
+			one_down = true,
 			difficulty = sm_wish_and_above
 		},
 		ggez_2 = {
@@ -7993,9 +7999,9 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = sm_wish_and_above
 		},
 		trophy_smwish = {
+			contact = "all",
 			one_down = true,
 			trophy_stat = "trophy_smwish",
-			contact = "all",
 			difficulty = sm_wish_and_above
 		}
 	}
@@ -8125,39 +8131,39 @@ function AchievementsTweakData:init(tweak_data)
 	}
 	self.sniper_kill_achievements = {
 		did_i_do_that = {
-			weapon_type = "snp",
 			award = "gage3_9",
-			multi_kill = 3
+			multi_kill = 3,
+			weapon_type = "snp"
 		},
 		max_peneration = {
-			weapon = "r93",
-			stat = "gage3_10_stats",
+			enemy_tag = "shield",
 			obstacle = "shield",
-			enemy_tag = "shield"
+			stat = "gage3_10_stats",
+			weapon = "r93"
 		},
 		you_cant_hide = {
-			weapon = "r93",
+			obstacle = "wall",
 			stat = "gage3_15_stats",
-			obstacle = "wall"
+			weapon = "r93"
 		},
 		two_for_one = {
-			weapon = "msr",
+			multi_kill = 2,
 			stat = "gage3_16_stats",
-			multi_kill = 2
+			weapon = "msr"
 		},
 		pda9_n2 = {
 			multi_kill = 2,
 			stat = "pda9_n2"
 		},
 		cg22_post_objective_3 = {
-			weapon = "victor",
+			multi_kill = 2,
 			stat = "cg22_post_objective_3",
-			multi_kill = 2
+			weapon = "victor"
 		},
 		pda10_musket_objective = {
-			weapon = "bessy",
+			multi_kill = 2,
 			stat = "pda10_musket_objective",
-			multi_kill = 2
+			weapon = "bessy"
 		}
 	}
 	self.inventory = {}
@@ -8175,16 +8181,17 @@ function AchievementsTweakData:init(tweak_data)
 			level = 250
 		},
 		story_crime_spree = {
-			story = "story_crime_spree",
-			level = 20
+			level = 20,
+			story = "story_crime_spree"
 		}
 	}
 	self.medic_heal_achievements = {
 		challenge_overheal = {
-			total = 50,
-			challenge_award = "challenge_overheal"
+			challenge_award = "challenge_overheal",
+			total = 50
 		}
 	}
+
 	local gage_5_1_achievement = {
 		max_progress = 25,
 		stat = "gage5_1_stats",
@@ -8305,6 +8312,7 @@ function AchievementsTweakData:init(tweak_data)
 		award = "tawp_1",
 		text_id = "bm_wp_tawp_1_achievment"
 	}
+
 	self.mask_tracker = {}
 	self.weapon_part_tracker = {
 		wpn_fps_snp_m95_barrel_long = {
@@ -8331,8 +8339,8 @@ function AchievementsTweakData:init(tweak_data)
 			text_id = "bm_wp_m95_b_barrel_suppressed_achievment"
 		},
 		wpn_fps_snp_m95_barrel_short = {
-			max_progress = 10,
 			award = "gage3_12_stats",
+			max_progress = 10,
 			text_id = "bm_wp_m95_b_barrel_short_achievment"
 		},
 		wpn_fps_upg_o_leupold = {
@@ -8556,99 +8564,101 @@ function AchievementsTweakData:init(tweak_data)
 	end
 
 	local default = "guis/dlcs/ami/textures/pd2/milestone_trophy_icon"
+
 	self.milestones = {
 		{
-			id = "ami_0",
 			at = 20,
 			coins = 4,
+			id = "ami_0",
 			texture = default
 		},
 		{
-			id = "ami_1",
 			at = 50,
 			coins = 8,
+			id = "ami_1",
 			texture = default
 		},
 		{
 			at = 90,
+			coins = 12,
 			has_drop = true,
 			id = "ami_2",
-			coins = 12,
 			texture = default
 		},
 		{
-			id = "ami_3",
 			at = 140,
 			coins = 16,
+			id = "ami_3",
 			texture = default
 		},
 		{
 			at = 200,
+			coins = 20,
 			has_drop = true,
 			id = "ami_4",
-			coins = 20,
 			texture = default
 		},
 		{
-			id = "ami_5",
 			at = 270,
 			coins = 24,
+			id = "ami_5",
 			texture = default
 		},
 		{
 			at = 350,
+			coins = 28,
 			has_drop = true,
 			id = "ami_6",
-			coins = 28,
 			texture = default
 		},
 		{
-			id = "ami_7",
 			at = 450,
 			coins = 36,
+			id = "ami_7",
 			texture = default
 		},
 		{
 			at = 550,
+			coins = 36,
 			has_drop = true,
 			id = "ami_8",
-			coins = 36,
 			texture = default
 		},
 		{
-			id = "ami_9",
 			at = 650,
 			coins = 36,
+			id = "ami_9",
 			texture = default
 		},
 		{
 			at = 750,
+			coins = 36,
 			has_drop = true,
 			id = "ami_10",
-			coins = 36,
 			texture = default
 		},
 		{
-			id = "ami_11",
 			at = 850,
 			coins = 36,
+			id = "ami_11",
 			texture = default
 		},
 		{
 			at = 950,
+			coins = 36,
 			has_drop = true,
 			id = "ami_12",
-			coins = 36,
 			texture = default
 		},
 		{
 			at = 1000,
+			coins = 36,
 			has_drop = true,
 			id = "ami_13",
-			coins = 36,
 			texture = default
 		}
 	}
+
 	local last_at = 0
 
 	for _, v in ipairs(self.milestones) do
@@ -8664,7 +8674,7 @@ function AchievementsTweakData:init(tweak_data)
 			local data = tweak_data.dlc[v.id]
 
 			for _, loot in ipairs(data.content.loot_drops) do
-				local td, data = nil
+				local td, data
 
 				if loot.type_items == "armor_skins" then
 					td = tweak_data.economy.armor_skins[loot.item_entry]
@@ -8690,8 +8700,8 @@ function AchievementsTweakData:init(tweak_data)
 
 		if v.id == "ami_13" then
 			local tam_weapon_skin_reward = {
-				texture = "guis/dlcs/tam/textures/pd2/blackmarket/icons/weapon_skins/tam_achievement_reward",
-				name_id = "bm_wskn_tam"
+				name_id = "bm_wskn_tam",
+				texture = "guis/dlcs/tam/textures/pd2/blackmarket/icons/weapon_skins/tam_achievement_reward"
 			}
 
 			table.insert(v.rewards, tam_weapon_skin_reward)
@@ -8702,16 +8712,17 @@ function AchievementsTweakData:init(tweak_data)
 end
 
 local tracking = {
-	second = "second",
+	rarely = "rarely",
 	realtime = "realtime",
-	rarely = "rarely"
+	second = "second"
 }
 
 local function from_complete_heist_stats_item(self, item)
-	local heists = nil
+	local heists
 
 	if item.contact == "all" then
 		local lists = table.map_values(self.job_list)
+
 		heists = table.list_union(unpack(lists))
 	else
 		heists = table.list_copy(self.job_list[item.contact])
@@ -8734,10 +8745,10 @@ local function from_complete_heist_stats_item(self, item)
 	end
 
 	return {
-		persistent = true,
 		is_list = true,
+		persistent = true,
 		get_todo_list = get_todo,
-		get = function ()
+		get = function()
 			return #heists - #get_todo()
 		end,
 		checklist = heists,
@@ -8748,7 +8759,7 @@ end
 
 local function from_crimespree_item(item)
 	return {
-		get = function ()
+		get = function()
 			local rtn = managers.crime_spree:spree_level()
 
 			return rtn == -1 and 0 or rtn
@@ -8765,7 +8776,7 @@ local function from_level(level)
 
 	return {
 		persistent = true,
-		get = function ()
+		get = function()
 			return managers.experience:current_level()
 		end,
 		max = level,
@@ -8780,7 +8791,7 @@ local function from_owned_weapons(num)
 
 	return {
 		persistent = true,
-		get = function ()
+		get = function()
 			return table.size(managers.blackmarket:get_crafted_category("primaries")) + table.size(managers.blackmarket:get_crafted_category("secondaries"))
 		end,
 		max = num,
@@ -8796,11 +8807,11 @@ local function from_timed_memory(item, memory_name, count_name)
 	end
 
 	return {
-		get = function ()
+		get = function()
 			local mem = managers.job:get_memory(memory_name, true) or {}
 			local t = TimerManager:game():time()
 
-			return table.count(mem, function (time)
+			return table.count(mem, function(time)
 				return t - time < item.timer
 			end)
 		end,
@@ -8894,7 +8905,7 @@ function AchievementsTweakData:_init_visual(tweak_data)
 			elseif type(data.progress) ~= "table" then
 				data.progress = {
 					persistent = true,
-					get = function ()
+					get = function()
 						return managers.achievment:get_stat(stat)
 					end,
 					max = v.at,
@@ -8938,7 +8949,7 @@ function AchievementsTweakData:_init_visual(tweak_data)
 					"textures"
 				}
 
-				table.sort(visual.unlock_icons, function (lhs, rhs)
+				table.sort(visual.unlock_icons, function(lhs, rhs)
 					local l = table.index_of(sort_order, lhs.type_items)
 					local r = table.index_of(sort_order, rhs.type_items)
 
@@ -8970,21 +8981,21 @@ end
 function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 	self.visual.bulldog_1.unlock_icons = {
 		{
-			type_items = "characters",
-			type_index = -1,
 			original_order = -1,
-			texture = "guis/dlcs/trk/textures/pd2/old_hoxton_unlock_icon"
+			texture = "guis/dlcs/trk/textures/pd2/old_hoxton_unlock_icon",
+			type_index = -1,
+			type_items = "characters"
 		},
 		table.map_append({
-			type_items = "melee_weapons",
+			original_order = 0,
 			type_index = 99,
-			original_order = 0
+			type_items = "melee_weapons"
 		}, get_texture_path(tweak_data, "melee_weapons", "toothbrush"))
 	}
 	self.visual.frog_1.unlock_icons = {
 		{
-			type_items = "kill_slot",
-			texture = "guis/dlcs/trk/textures/pd2/skills_slot_unlock_icon"
+			texture = "guis/dlcs/trk/textures/pd2/skills_slot_unlock_icon",
+			type_items = "kill_slot"
 		}
 	}
 	self.visual.armored_2.need_unlock_icons = false
@@ -9011,7 +9022,7 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 
 	for i, v in pairs(self.infamous) do
 		self.visual[v].progress = {
-			get = function ()
+			get = function()
 				return managers.experience:current_rank() or 0
 			end,
 			max = i
@@ -9027,35 +9038,37 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 	self.visual.scorpion_4.progress = from_timed_memory(self.enemy_kill_achievements.scorpion_4, "scorpion_4")
 	self.visual.brooklyn_1.progress = {
 		max = 1,
-		get = function ()
+		get = function()
 			return 0
 		end,
 		update = tracking.realtime
 	}
 	self.visual.berry_5.progress = {
-		get = function ()
+		get = function()
 			return managers.job:get_memory("berry_5", true) or 0
 		end,
 		max = self.enemy_kill_achievements.berry_5.count_in_row,
 		update = tracking.realtime
 	}
 	self.visual.turtles_1.progress = {
-		get = function ()
+		get = function()
 			return managers.job:get_memory("kill_count_no_reload_wa2000", true) or 0
 		end,
 		max = self.enemy_kill_achievements.turtles_1.count_no_reload,
 		update = tracking.realtime
 	}
 	self.visual.grv_2.progress = {
-		get = function ()
+		get = function()
 			return managers.job:get_memory("kill_count_no_reload_coal", true) or 0
 		end,
 		max = self.enemy_kill_achievements.grv_2.count_no_reload,
 		update = tracking.realtime
 	}
+
 	local cane_5 = self.loot_cash_achievements.cane_5
+
 	self.visual.cane_5.progress = {
-		get = function ()
+		get = function()
 			local total, _, _ = managers.loot:_count_achievement_secured("cane_5", cane_5.secured)
 
 			return total or 0
@@ -9064,22 +9077,24 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 		update = tracking.second
 	}
 	self.visual.gage2_5.progress = {
-		get = function ()
+		get = function()
 			return managers.statistics:session_killed_by_weapon_category(self.first_blood.weapon_type)
 		end,
 		max = self.first_blood.count,
 		update = tracking.realtime
 	}
 	self.visual.going_places.progress = {
-		get = function ()
+		get = function()
 			return managers.money:total()
 		end,
 		max = self.going_places,
 		update = tracking.realtime
 	}
+
 	local pal_2 = self.loot_cash_achievements.pal_2
+
 	self.visual.pal_2.progress = {
-		get = function ()
+		get = function()
 			local _, _, value = managers.loot:_count_achievement_secured("pal_2", pal_2.secured)
 
 			return value or 0
@@ -9087,9 +9102,11 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 		max = pal_2.secured.value,
 		update = tracking.second
 	}
+
 	local steel_2 = self.enemy_melee_hit_achievements.steel_2
+
 	self.visual.steel_2.progress = {
-		get = function ()
+		get = function()
 			if table.contains(steel_2.melee_weapons, managers.blackmarket:equipped_melee_weapon()) then
 				return managers.statistics:session_enemy_killed_by_type(steel_2.enemy_kills.enemy, "melee")
 			end
@@ -9099,9 +9116,11 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 		max = steel_2.enemy_kills.count,
 		update = tracking.second
 	}
+
 	local tango_3 = self.complete_heist_achievements.tango_3
+
 	self.visual.tango_achieve_3.progress = {
-		get = function ()
+		get = function()
 			if not table.contains(tango_3.difficulty, Global.game_settings.difficulty) then
 				return 0
 			end
@@ -9124,7 +9143,7 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 		update = tracking.realtime
 	}
 	self.visual.tango_achieve_4.progress = {
-		get = function ()
+		get = function()
 			local unit = managers.player:equipped_weapon_unit()
 
 			if not unit or not unit:base() then
@@ -9137,21 +9156,23 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 		end,
 		max = self.tango_4.count
 	}
+
 	local turtles_2 = self.enemy_kill_achievements.turtles_2
+
 	self.visual.turtles_2.progress = {
-		get = function ()
+		get = function()
 			return managers.statistics:session_killed_by_weapon(turtles_2.weapon) or 0
 		end,
 		max = turtles_2.kill_count
 	}
 	self.visual.gage4_3.progress = {
-		get = function ()
+		get = function()
 			return managers.statistics:session_total_killed()[self.close_and_personal.kill_type] or 0
 		end,
 		max = self.close_and_personal.count
 	}
 	self.visual.spend_money_to_make_money.progress = {
-		get = function ()
+		get = function()
 			return managers.money:total_spent()
 		end,
 		max = self.spend_money_to_make_money
@@ -9168,7 +9189,7 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 	}
 	self.visual.cac_20.progress = {
 		max = 7,
-		get = function ()
+		get = function()
 			local masks = {
 				"sds_01",
 				"sds_02",

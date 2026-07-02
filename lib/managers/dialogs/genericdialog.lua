@@ -42,6 +42,7 @@ function GenericDialog:init(manager, data, is_title_outside)
 		top_marigin = data.top_marigin,
 		bottom_marigin = data.bottom_marigin
 	}
+
 	self._ws = self._data.ws or manager:_get_ws()
 	self._panel_script = _G[self.PANEL_SCRIPT_CLASS]:new(self._ws, self._data.title or "", self._data.text or "", self._data, text_config)
 
@@ -190,12 +191,12 @@ function GenericDialog:update_input(t, dt)
 		return
 	end
 
-	local dir, move_time = nil
+	local dir, move_time
 	local move = self._controller:get_input_axis("menu_move")
 
 	if self._controller:get_input_bool("menu_down") or move.y < -self.MOVE_AXIS_LIMIT then
 		dir = 1
-	elseif self._controller:get_input_bool("menu_up") or self.MOVE_AXIS_LIMIT < move.y then
+	elseif self._controller:get_input_bool("menu_up") or move.y > self.MOVE_AXIS_LIMIT then
 		dir = -1
 	end
 
@@ -211,9 +212,10 @@ function GenericDialog:update_input(t, dt)
 
 	self._move_button_dir = dir
 	self._move_button_time = move_time
+
 	local scroll = self._controller:get_input_axis("menu_scroll")
 
-	if self.MOVE_AXIS_LIMIT < scroll.y then
+	if scroll.y > self.MOVE_AXIS_LIMIT then
 		self._panel_script:scroll_up()
 	elseif scroll.y < -self.MOVE_AXIS_LIMIT then
 		self._panel_script:scroll_down()
@@ -230,12 +232,13 @@ function GenericDialog:set_input_enabled(enabled)
 
 				self._mouse_id = managers.mouse_pointer:get_id()
 				self._removed_mouse = nil
-				local data = {
-					mouse_move = callback(self, self, "mouse_moved"),
-					mouse_press = callback(self, self, "mouse_pressed"),
-					mouse_release = callback(self, self, "mouse_released"),
-					id = self._mouse_id
-				}
+
+				local data = {}
+
+				data.mouse_move = callback(self, self, "mouse_moved")
+				data.mouse_press = callback(self, self, "mouse_pressed")
+				data.mouse_release = callback(self, self, "mouse_released")
+				data.id = self._mouse_id
 
 				managers.mouse_pointer:use_mouse(data)
 			else
@@ -353,7 +356,9 @@ function GenericDialog:button_pressed_callback()
 	if button_list then
 		local button = button_list[button_index]
 
-		if not button or not button.no_close then
+		if button and button.no_close then
+			-- Nothing
+		else
 			self:remove_mouse()
 		end
 	else
@@ -393,4 +398,5 @@ function GenericDialog:remove_mouse()
 end
 
 function GenericDialog:resolution_changed_callback()
+	return
 end

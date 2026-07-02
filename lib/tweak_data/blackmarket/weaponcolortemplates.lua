@@ -12,93 +12,93 @@ end
 function WeaponColorTemplates._setup_color_variation_template(tweak_data)
 	local weapon_color_variation_template = {
 		{
-			base_foregrip = "base_metal",
-			base_vertical_grip = "base_variation",
-			base_stock = "base_variation",
-			base_sights = "base_variation",
-			gradient_default = "gradient_default",
-			base_magazine = "base_variation",
-			pattern_default = "pattern_default",
 			base_default = "base_default",
+			base_foregrip = "base_metal",
 			base_gadget = "base_variation",
-			base_grip = "base_variation"
+			base_grip = "base_variation",
+			base_magazine = "base_variation",
+			base_sights = "base_variation",
+			base_stock = "base_variation",
+			base_vertical_grip = "base_variation",
+			gradient_default = "gradient_default",
+			pattern_default = "pattern_default"
 		},
 		{
-			base_barrel_ext = "base_variation",
 			base_barrel = "base_variation",
+			base_barrel_ext = "base_variation",
+			base_default = "base_default",
+			base_gadget = "base_variation",
+			base_grip = "base_variation",
+			base_magazine = "base_variation",
 			base_sights = "base_variation",
 			base_slide = "base_variation",
 			gradient_default = "gradient_default",
-			base_magazine = "base_variation",
-			pattern_default = "pattern_default",
-			base_default = "base_default",
-			base_gadget = "base_variation",
-			base_grip = "base_variation"
+			pattern_default = "pattern_default"
 		},
 		{
-			base_sights = "base_variation",
-			gradient_default = "gradient_default",
-			pattern_default = "pattern_default",
 			base_default = "base_metal",
 			base_gadget = "base_variation",
-			base_magazine = "base_variation"
-		},
-		{
+			base_magazine = "base_variation",
 			base_sights = "base_variation",
 			gradient_default = "gradient_default",
-			pattern_default = "pattern_default",
+			pattern_default = "pattern_default"
+		},
+		{
 			base_default = "base_plastic",
 			base_gadget = "base_variation",
-			base_magazine = "base_variation"
-		},
-		{
+			base_magazine = "base_variation",
 			base_sights = "base_variation",
 			gradient_default = "gradient_default",
-			pattern_default = "pattern_default",
+			pattern_default = "pattern_default"
+		},
+		{
 			base_default = "base_half",
 			base_gadget = "base_variation",
-			base_magazine = "base_variation"
-		},
-		{
+			base_magazine = "base_variation",
 			base_sights = "base_variation",
-			base_barrel_ext = "base_variation",
-			pattern_default = "pattern_default",
-			base_default = "base_half_02",
 			gradient_default = "gradient_default",
-			base_gadget = "base_variation",
-			base_magazine = "base_variation"
+			pattern_default = "pattern_default"
 		},
 		{
-			base_default = "base_variation",
+			base_barrel_ext = "base_variation",
+			base_default = "base_half_02",
+			base_gadget = "base_variation",
+			base_magazine = "base_variation",
+			base_sights = "base_variation",
+			gradient_default = "gradient_default",
+			pattern_default = "pattern_default"
+		},
+		{
 			base_barrel = "base_default",
+			base_barrel_ext = "base_default",
+			base_default = "base_variation",
+			base_gadget = "base_default",
 			base_grip = "base_default",
+			base_magazine = "base_default",
 			base_sights = "base_default",
 			base_slide = "base_default",
+			base_stock = "base_default",
 			gradient_default = "gradient_default",
-			base_magazine = "base_default",
-			pattern_default = "pattern_default",
-			base_barrel_ext = "base_default",
-			base_gadget = "base_default",
-			base_stock = "base_default"
+			pattern_default = "pattern_default"
 		},
 		{
-			base_sights = "base_metal",
-			gradient_default = "gradient_default",
-			pattern_default = "pattern_default",
 			base_default = "base_default",
 			base_gadget = "base_plastic",
-			base_magazine = "base_plastic"
+			base_magazine = "base_plastic",
+			base_sights = "base_metal",
+			gradient_default = "gradient_default",
+			pattern_default = "pattern_default"
 		},
 		{
-			pattern_default = "pattern_default",
-			gradient_default = "gradient_default",
+			base_default = "base_detail",
 			base_grip = "base_plastic",
-			base_default = "base_detail"
+			gradient_default = "gradient_default",
+			pattern_default = "pattern_default"
 		},
 		{
+			base_default = "base_default",
 			gradient_default = "gradient_default",
-			pattern_default = "pattern_default",
-			base_default = "base_default"
+			pattern_default = "pattern_default"
 		}
 	}
 
@@ -113,6 +113,7 @@ function WeaponColorTemplates._setup_color_skin_template(tweak_data)
 		parts = {}
 	}
 	local types = weapon_color_skin_template.types
+
 	types.sight = {
 		base_gradient = "base_sights"
 	}

@@ -16,6 +16,7 @@ function DrillConvertDialog:init(manager, data, is_title_outside)
 	end
 
 	self._ws = self._data.ws or manager:_get_ws()
+
 	local text_config = {
 		no_close_legend = true,
 		no_scroll_legend = true,
@@ -32,6 +33,7 @@ function DrillConvertDialog:init(manager, data, is_title_outside)
 		text_formating_color_table = data.text_formating_color_table,
 		text_blend_mode = data.text_blend_mode
 	}
+
 	self._panel_script = DrillConvertBoxGui:new(self._ws, self._data.title or "", self._data.text or "", self._data, text_config)
 
 	self._panel_script:add_background()
@@ -63,7 +65,7 @@ end
 function DrillConvertDialog:update(t, dt)
 	DrillConvertDialog.super.update(self, t, dt)
 
-	if self._start_sound_t and self._start_sound_t < t then
+	if self._start_sound_t and t > self._start_sound_t then
 		managers.menu_component:post_event(self._sound_event)
 
 		self._start_sound_t = nil
@@ -136,6 +138,7 @@ DrillConvertBoxGui.TEXT = ""
 
 function DrillConvertBoxGui:init(...)
 	local ws, title, text, content_data, config = ...
+
 	config.forced_h = 210
 	config.w = 600
 	config.is_title_outside = true
@@ -180,8 +183,8 @@ function DrillConvertBoxGui:_create_lower_static_panel(lower_static_panel)
 	local progress_panel = lower_static_panel
 	local progress_text = progress_panel:text({
 		blend_mode = "add",
-		x = 10,
 		layer = 1,
+		x = 10,
 		text = managers.localization:to_upper_text("menu_st_spec_xp_progress"),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
@@ -200,10 +203,10 @@ function DrillConvertBoxGui:_create_lower_static_panel(lower_static_panel)
 	progress_bg:set_w(progress_panel:w() - progress_bg:left() - 5 - 10)
 
 	local progress_bar = progress_panel:rect({
-		blend_mode = "add",
-		name = "progress_bar",
 		alpha = 1,
+		blend_mode = "add",
 		layer = 2,
+		name = "progress_bar",
 		color = Color.white
 	})
 
@@ -214,10 +217,10 @@ function DrillConvertBoxGui:_create_lower_static_panel(lower_static_panel)
 	progress_bar:set_center_y(progress_bg:center_y())
 
 	local progress_end = progress_panel:rect({
-		blend_mode = "add",
-		name = "progress_end",
 		alpha = 1,
+		blend_mode = "add",
 		layer = 3,
+		name = "progress_end",
 		color = Color.white
 	})
 
@@ -236,7 +239,7 @@ end
 function DrillConvertBoxGui._update(o, self)
 	local info_area = self._text_box:child("info_area")
 	local buttons_panel = info_area:child("buttons_panel")
-	local drills_left, num_drills, end_progress_width = nil
+	local drills_left, num_drills, end_progress_width
 
 	while true do
 		local dt = coroutine.yield()

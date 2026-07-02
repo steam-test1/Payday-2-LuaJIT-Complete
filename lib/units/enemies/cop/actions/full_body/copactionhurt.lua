@@ -13,10 +13,11 @@ local mvec3_dis = mvector3.distance
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 local tmp_vec3 = Vector3()
+
 CopActionHurt = CopActionHurt or class()
 CopActionHurt.running_death_anim_variants = {
-	male = 26,
-	female = 5
+	female = 5,
+	male = 26
 }
 CopActionHurt.death_anim_variants = {
 	normal = {
@@ -275,13 +276,12 @@ CopActionHurt.fire_death_anim_variants_length = {
 	7,
 	4
 }
-CopActionHurt.fire_death_anim_variants = {
-	fire = 5,
-	money = 10
-}
+CopActionHurt.fire_death_anim_variants = {}
+CopActionHurt.fire_death_anim_variants.fire = 5
+CopActionHurt.fire_death_anim_variants.money = 10
 CopActionHurt.poison_death_anim_variants = {
-	male = 1,
-	female = 1
+	female = 1,
+	male = 1
 }
 CopActionHurt.fire_hurt_sounds = {}
 CopActionHurt.fire_death_sounds = {}
@@ -300,44 +300,47 @@ CopActionHurt.fire_death_sounds.money = {
 	sound_name = "moneythrower_death"
 }
 CopActionHurt.network_allowed_hurt_types = {
-	light_hurt = true,
-	hurt = true,
-	heavy_hurt = true,
-	stagger = true,
+	bleedout = true,
+	counter_tased = true,
 	death = true,
+	expl_hurt = true,
 	fatal = true,
 	fire_hurt = true,
-	poison_hurt = true,
-	bleedout = true,
+	heavy_hurt = true,
+	hurt = true,
 	knock_down = true,
-	expl_hurt = true,
-	counter_tased = true,
-	shield_knock = true
+	light_hurt = true,
+	poison_hurt = true,
+	shield_knock = true,
+	stagger = true
 }
 ShieldActionHurt = ShieldActionHurt or class(CopActionHurt)
 ShieldActionHurt.explosion_tased_variants = 4
 ShieldActionHurt.hurt_anim_variants_highest_num = 4
 ShieldActionHurt.hurt_anim_variants = deep_clone(CopActionHurt.hurt_anim_variants)
-local shield_anim_overrides = {
-	heavy_hurt = 2,
-	hurt = 2,
-	concussion = 4,
-	expl_hurt = 2
-}
 
-for hurt_type, override in pairs(shield_anim_overrides) do
-	if ShieldActionHurt.hurt_anim_variants[hurt_type] then
-		for _, crh_state_entry in pairs(ShieldActionHurt.hurt_anim_variants[hurt_type]) do
-			for _, dir_entry in pairs(crh_state_entry) do
-				for height_name, height_entry in pairs(dir_entry) do
-					dir_entry[height_name] = override
+do
+	local shield_anim_overrides = {
+		concussion = 4,
+		expl_hurt = 2,
+		heavy_hurt = 2,
+		hurt = 2
+	}
+
+	for hurt_type, override in pairs(shield_anim_overrides) do
+		if ShieldActionHurt.hurt_anim_variants[hurt_type] then
+			for _, crh_state_entry in pairs(ShieldActionHurt.hurt_anim_variants[hurt_type]) do
+				for _, dir_entry in pairs(crh_state_entry) do
+					for height_name, height_entry in pairs(dir_entry) do
+						dir_entry[height_name] = override
+					end
 				end
 			end
 		end
 	end
-end
 
-shield_anim_overrides = nil
+	shield_anim_overrides = nil
+end
 
 function CopActionHurt:init(action_desc, common_data)
 	self._common_data = common_data
@@ -349,13 +352,14 @@ function CopActionHurt:init(action_desc, common_data)
 	self._machine = common_data.machine
 	self._attention = common_data.attention
 	self._action_desc = action_desc
+
 	local t = TimerManager:game():time()
 	local tweak_table = self._unit:base()._tweak_table
 	local is_civilian = CopDamage.is_civilian(tweak_table)
 	local is_female = (self._machine:get_global("female") or 0) == 1
 	local crouching = self._ext_anim.crouch or self._ext_anim.crouching or self._ext_anim.hurt and self._machine:get_parameter(self._machine:segment_state(Idstring("base")), "crh") > 0
 	local fire_variant = "fire"
-	local redir_res = nil
+	local redir_res
 	local action_type = action_desc.hurt_type
 
 	if action_type == "knock_down" then
@@ -383,14 +387,14 @@ function CopActionHurt:init(action_desc, common_data)
 
 		managers.hud:set_mugshot_tased(self._unit:unit_data().mugshot_id)
 	elseif action_type == "fire_hurt" then
-		local weapon_unit = action_desc.weapon_unit
-		local base_ext = alive(weapon_unit) and weapon_unit:base()
+		do
+			local weapon_unit = action_desc.weapon_unit
+			local base_ext = alive(weapon_unit) and weapon_unit:base()
 
-		if base_ext then
-			local td = base_ext.weapon_tweak_data and base_ext:weapon_tweak_data() or base_ext.get_name_id and tweak_data.weapon[base_ext:get_name_id()]
+			if base_ext then
+				local td = base_ext.weapon_tweak_data and base_ext:weapon_tweak_data() or base_ext.get_name_id and tweak_data.weapon[base_ext:get_name_id()]
 
-			if td then
-				fire_variant = td.fire_variant or fire_variant
+				fire_variant = td and td.fire_variant or fire_variant
 			end
 		end
 
@@ -402,7 +406,7 @@ function CopActionHurt:init(action_desc, common_data)
 			return
 		end
 
-		local dir_str = nil
+		local dir_str
 		local fwd_dot = action_desc.direction_vec:dot(common_data.fwd)
 
 		if fwd_dot < 0 then
@@ -473,7 +477,7 @@ function CopActionHurt:init(action_desc, common_data)
 				return
 			end
 
-			local dir_str = nil
+			local dir_str
 			local fwd_dot = action_desc.direction_vec:dot(common_data.fwd)
 
 			if fwd_dot < 0 then
@@ -491,7 +495,7 @@ function CopActionHurt:init(action_desc, common_data)
 
 			self._machine:set_parameter(redir_res, dir_str, 1)
 
-			local height_str = self._ext_movement:m_com().z < action_desc.hit_pos.z and "high" or "low"
+			local height_str = action_desc.hit_pos.z > self._ext_movement:m_com().z and "high" or "low"
 
 			self._machine:set_parameter(redir_res, height_str, 1)
 		end
@@ -515,6 +519,7 @@ function CopActionHurt:init(action_desc, common_data)
 		end
 
 		local variant = #sick_variants == 1 and sick_variants[1] or sick_variants[self:_pseudorandom(#sick_variants)]
+
 		redir_res = self._ext_movement:play_redirect("hurt_sick_" .. tostring(variant))
 
 		if not redir_res then
@@ -524,6 +529,7 @@ function CopActionHurt:init(action_desc, common_data)
 		end
 
 		local duration = ecm_hurts_table[variant]
+
 		self._sick_time = t + duration
 	elseif action_type == "poison_hurt" then
 		redir_res = self._ext_movement:play_redirect("hurt_poison")
@@ -543,14 +549,15 @@ function CopActionHurt:init(action_desc, common_data)
 		end
 	elseif action_type == "death" and action_desc.variant == "fire" then
 		local variant = 1
-		local weapon_unit = action_desc.weapon_unit
-		local base_ext = alive(weapon_unit) and weapon_unit:base()
 
-		if base_ext then
-			local td = base_ext.weapon_tweak_data and base_ext:weapon_tweak_data() or base_ext.get_name_id and tweak_data.weapon[base_ext:get_name_id()]
+		do
+			local weapon_unit = action_desc.weapon_unit
+			local base_ext = alive(weapon_unit) and weapon_unit:base()
 
-			if td then
-				fire_variant = td.fire_variant or fire_variant
+			if base_ext then
+				local td = base_ext.weapon_tweak_data and base_ext:weapon_tweak_data() or base_ext.get_name_id and tweak_data.weapon[base_ext:get_name_id()]
+
+				fire_variant = td and td.fire_variant or fire_variant
 			end
 		end
 
@@ -663,7 +670,7 @@ function CopActionHurt:init(action_desc, common_data)
 
 		self._machine:set_parameter(redir_res, "var" .. tostring(variant), 1)
 	else
-		local variant, height, old_variant, old_info = nil
+		local variant, height, old_variant, old_info
 
 		if (action_type == "hurt" or action_type == "heavy_hurt") and self._ext_anim.hurt then
 			for i = 1, self.hurt_anim_variants_highest_num do
@@ -707,40 +714,29 @@ function CopActionHurt:init(action_desc, common_data)
 			return
 		end
 
-		if action_desc.variant ~= "bleeding" then
+		if action_desc.variant == "bleeding" then
+			-- Nothing
+		else
 			local nr_variants = self._ext_anim.base_nr_variants
-			local death_type = nil
+			local death_type
 
 			if nr_variants then
 				variant = self:_pseudorandom(nr_variants)
 			else
 				local fwd_dot = action_desc.direction_vec:dot(common_data.fwd)
 				local right_dot = action_desc.direction_vec:dot(common_data.right)
-				local dir_str = nil
+				local dir_str
 
-				if math.abs(right_dot) < math.abs(fwd_dot) then
-					if fwd_dot < 0 then
-						dir_str = "fwd"
-					else
-						dir_str = "bwd"
-					end
-				elseif right_dot > 0 then
-					dir_str = "l"
-				else
-					dir_str = "r"
-				end
+				dir_str = math.abs(fwd_dot) > math.abs(right_dot) and (fwd_dot < 0 and "fwd" or "bwd") or right_dot > 0 and "l" or "r"
 
 				self._machine:set_parameter(redir_res, dir_str, 1)
 
 				local hit_z = action_desc.hit_pos.z
-				height = self._ext_movement:m_com().z < hit_z and "high" or "low"
+
+				height = hit_z > self._ext_movement:m_com().z and "high" or "low"
 
 				if action_type == "death" then
-					if is_civilian then
-						death_type = "normal"
-					else
-						death_type = action_desc.death_type
-					end
+					death_type = is_civilian and "normal" or action_desc.death_type
 
 					if is_female then
 						variant = self.death_anim_fe_variants[death_type][crouching and "crouching" or "not_crouching"][dir_str][height]
@@ -812,9 +808,12 @@ function CopActionHurt:init(action_desc, common_data)
 		end
 
 		local weapon_unit = self._ext_inventory:equipped_unit()
+
 		self._weapon_base = weapon_unit:base()
+
 		local weap_tweak = weapon_unit:base():weapon_tweak_data()
 		local weapon_usage_tweak = common_data.char_tweak.weapon[weap_tweak.usage]
+
 		self._weapon_unit = weapon_unit
 		self._weap_tweak = weap_tweak
 		self._w_usage_tweak = weapon_usage_tweak
@@ -848,7 +847,7 @@ function CopActionHurt:init(action_desc, common_data)
 		self.update = self._upd_hurt
 	end
 
-	local shoot_chance = nil
+	local shoot_chance
 
 	if self._ext_inventory and not self._weapon_dropped and common_data.char_tweak.shooting_death and not self._ext_movement:cool() and t - self._ext_movement:not_cool_t() > 3 then
 		local weapon_unit = self._ext_inventory:equipped_unit()
@@ -1003,7 +1002,7 @@ function CopActionHurt:_pseudorandom(a, b)
 
 	math.randomseed(seed)
 
-	local ret = nil
+	local ret
 
 	if a and b then
 		ret = math.random(a, b)
@@ -1043,7 +1042,7 @@ CopActionHurt.idx_to_hurt_type_map = {
 }
 
 function CopActionHurt.hurt_type_to_idx(hurt_type)
-	local res = nil
+	local res
 
 	for idx, hurt in pairs(CopActionHurt.idx_to_hurt_type_map) do
 		if hurt == hurt_type then
@@ -1067,8 +1066,8 @@ function CopActionHurt.idx_to_hurt_type(idx)
 end
 
 CopActionHurt.idx_to_death_type_map = {
-	[1.0] = "normal",
-	[2.0] = "heavy"
+	[1] = "normal",
+	[2] = "heavy"
 }
 
 function CopActionHurt.death_type_to_idx(death)
@@ -1116,7 +1115,7 @@ function CopActionHurt.idx_to_variant(idx)
 	return CopActionHurt.idx_to_variant_map[idx]
 end
 
-local tmp_used_flame_objects = nil
+local tmp_used_flame_objects
 
 function CopActionHurt:_start_enemy_fire_effect_on_death(death_variant, fire_variant)
 	if self._burn_death_effects_clbk_id then
@@ -1135,44 +1134,48 @@ function CopActionHurt:_start_enemy_fire_effect_on_death(death_variant, fire_var
 	end
 
 	local effect_tbl = fire_variant and fire_td[fire_variant .. "_death_anims"] or fire_td.fire_death_anims
+
 	effect_tbl = effect_tbl[death_variant] or effect_tbl[0]
+
 	local effect_category = fire_td.effects[effect_tbl.effect]
 	local num_objects = #fire_bones
 	local num_effects = num_objects == 0 and 0 or num_objects <= 3 and math.random(num_objects) or math.random(3, num_objects)
 	local effects_table = {}
-	local costs = fire_td.effects_cost
-	local get_object_f = self._unit.get_object
-	local effect_m = World:effect_manager()
-	local spawn_f = effect_m.spawn
-	local idx = 1
-	local effect_id = nil
 
-	for i = 1, num_effects do
-		while tmp_used_flame_objects[idx] do
-			idx = math.random(num_objects)
-		end
+	do
+		local costs = fire_td.effects_cost
+		local get_object_f = self._unit.get_object
+		local effect_m = World:effect_manager()
+		local spawn_f = effect_m.spawn
+		local idx = 1
+		local effect_id
 
-		local effect_name = effect_category[costs[i] or "cheap"]
-
-		if effect_name then
-			local bone = get_object_f(self._unit, Idstring(fire_bones[idx]))
-
-			if bone then
-				effect_id = spawn_f(effect_m, {
-					effect = Idstring(effect_name),
-					parent = bone
-				})
-
-				table.insert(effects_table, effect_id)
+		for i = 1, num_effects do
+			while tmp_used_flame_objects[idx] do
+				idx = math.random(num_objects)
 			end
-		end
 
-		tmp_used_flame_objects[idx] = true
+			local effect_name = effect_category[costs[i] or "cheap"]
+
+			if effect_name then
+				local bone = get_object_f(self._unit, Idstring(fire_bones[idx]))
+
+				if bone then
+					effect_id = spawn_f(effect_m, {
+						effect = Idstring(effect_name),
+						parent = bone
+					})
+
+					table.insert(effects_table, effect_id)
+				end
+			end
+
+			tmp_used_flame_objects[idx] = true
+		end
 	end
 
-	self._burn_death_effects = {
-		fire_effects = effects_table
-	}
+	self._burn_death_effects = {}
+	self._burn_death_effects.fire_effects = effects_table
 
 	for idx, _ in ipairs(tmp_used_flame_objects) do
 		tmp_used_flame_objects[idx] = false
@@ -1232,7 +1235,7 @@ function CopActionHurt:_get_floor_normal(at_pos, fwd, right)
 	local fall = 100
 	local down_vec = Vector3(0, 0, -fall - padding_height)
 	local dis = 50
-	local fwd_pos, bwd_pos, r_pos, l_pos = nil
+	local fwd_pos, bwd_pos, r_pos, l_pos
 	local from_pos = fwd * dis
 
 	mvec3_add(from_pos, center_pos)
@@ -1375,7 +1378,7 @@ function CopActionHurt:_get_pos_clamped_to_graph(test_head)
 	mvec3_set_z(new_pos, 0)
 	mvec3_add(new_pos, r)
 
-	local ray_params = nil
+	local ray_params
 
 	if test_head then
 		local h = tmp_vec2
@@ -1388,6 +1391,7 @@ function CopActionHurt:_get_pos_clamped_to_graph(test_head)
 			tracker_from = tracker,
 			pos_to = h
 		}
+
 		local hit = managers.navigation:raycast(ray_params)
 		local nh = ray_params.trace[1]
 		local collision_side = ray_params.trace[2]
@@ -1418,10 +1422,11 @@ function CopActionHurt:_get_pos_clamped_to_graph(test_head)
 end
 
 function CopActionHurt:_upd_empty(t)
+	return
 end
 
 function CopActionHurt:_upd_sick(t)
-	if not self._sick_time or self._sick_time < t then
+	if not self._sick_time or t > self._sick_time then
 		if self._ext_anim.needs_idle then
 			self._ext_movement:play_redirect("exit")
 
@@ -1439,7 +1444,7 @@ function CopActionHurt:_upd_sick_exit(t)
 end
 
 function CopActionHurt:_upd_tased(t)
-	if not self._tased_time or self._tased_time < t then
+	if not self._tased_time or t > self._tased_time then
 		if self._tased_down_time and t < self._tased_down_time then
 			local redir_res = self._ext_movement:play_redirect("fatal")
 
@@ -1455,13 +1460,13 @@ function CopActionHurt:_upd_tased(t)
 end
 
 function CopActionHurt:_upd_tased_down(t)
-	if not self._tased_down_time or self._tased_down_time < t then
+	if not self._tased_down_time or t > self._tased_down_time then
 		self._expired = true
 	end
 end
 
 function CopActionHurt:_upd_taser_tased(t)
-	if not self._taser_tased_t or self._taser_tased_t < t then
+	if not self._taser_tased_t or t > self._taser_tased_t then
 		self._expired = true
 	end
 end
@@ -1495,6 +1500,7 @@ function CopActionHurt:_upd_hurt(t)
 		CopActionWalk._set_new_pos(self, dt)
 
 		local new_rot = self._unit:get_animation_delta_rotation()
+
 		new_rot = self._common_data.rot * new_rot
 
 		mrotation.set_yaw_pitch_roll(new_rot, new_rot:yaw(), 0, 0)
@@ -1533,12 +1539,15 @@ end
 
 function CopActionHurt:_upd_bleedout(t)
 	if self._floor_normal then
-		local normal = nil
+		local normal
 
 		if self._ext_anim.bleedout_enter then
 			local rel_t = self._machine:segment_relative_time(Idstring("base"))
+
 			rel_t = math.min(1, rel_t + 0.5)
+
 			local rel_prog = math.clamp(rel_t, 0, 1)
+
 			normal = math.lerp(math.UP, self._floor_normal, rel_prog)
 
 			self._ext_movement:set_m_pos(self._common_data.pos)
@@ -1557,7 +1566,7 @@ function CopActionHurt:_upd_bleedout(t)
 
 	if not self._ext_anim.bleedout_enter and self._weapon_unit then
 		if self._attention and not self._ext_anim.reload and not self._ext_anim.equip then
-			local autotarget, target_pos = nil
+			local autotarget, target_pos
 
 			if self._attention.handler then
 				target_pos = self._attention.handler:get_attention_m_pos()
@@ -1588,6 +1597,7 @@ function CopActionHurt:_upd_bleedout(t)
 				local rot_amount = math.min(rot_speed * dt, angle_diff)
 				local diff_axis = self._look_dir:cross(target_vec)
 				local rot = Rotation(diff_axis, rot_amount)
+
 				self._look_dir = self._look_dir:rotate_with(rot)
 
 				mvector3.normalize(self._look_dir)
@@ -1619,7 +1629,7 @@ function CopActionHurt:_upd_bleedout(t)
 
 			self._machine:set_parameter(anim, "angle90", r)
 
-			if self._shoot_t < t then
+			if t > self._shoot_t then
 				if self._weapon_unit:base():clip_empty() then
 					local res = CopActionReload._play_bleedout_reload(self)
 				elseif self._common_data.allow_fire then
@@ -1644,6 +1654,7 @@ function CopActionHurt:_upd_bleedout(t)
 					self._weapon_base:singleshot(shoot_from_pos, target_vec, falloff.dmg_mul)
 
 					local rand = self:_pseudorandom()
+
 					self._shoot_t = t + math.lerp(falloff.recoil[1], falloff.recoil[2], rand)
 				end
 			end
@@ -1775,6 +1786,7 @@ function CopActionHurt:on_inventory_event(event)
 	if weapon_unit then
 		local weap_tweak = weapon_unit:base():weapon_tweak_data()
 		local weapon_usage_tweak = self._common_data.char_tweak.weapon[weap_tweak.usage]
+
 		self._weapon_unit = weapon_unit
 		self._weapon_base = weapon_unit:base()
 		self._weap_tweak = weap_tweak
@@ -1827,6 +1839,7 @@ function CopActionHurt:_start_ragdoll(reset_momentum)
 		self._unit:add_body_activation_callback(callback(self, self, "clbk_body_active_state"))
 
 		self._root_act_tags = {}
+
 		local hips_body = self._unit:body("rag_Hips")
 		local tag = hips_body:activate_tag()
 
@@ -1852,6 +1865,7 @@ function CopActionHurt:_start_ragdoll(reset_momentum)
 		self._ext_movement:enable_update()
 
 		local hips_pos = self._hips_obj:position()
+
 		self._rag_pos = hips_pos
 		self._ragdoll_freeze_clbk_id = "freeze_rag" .. tostring(self._unit:key())
 

@@ -12,6 +12,7 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 MenuCustomizeWeaponColorInitiator = MenuCustomizeWeaponColorInitiator or class(MenuInitiatorBase)
 
 function MenuCustomizeWeaponColorInitiator:modify_node(original_node, node_data)
@@ -25,8 +26,11 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 
 	node.topic_id = node_data.topic_id
 	node.topic_params = node_data.topic_params
+
 	local weapon_color_data = {}
+
 	node.weapon_color_data = weapon_color_data
+
 	local crafted = managers.blackmarket:get_crafted_category_slot(node_data.category, node_data.slot)
 
 	if not crafted or not crafted.cosmetics then
@@ -37,23 +41,26 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 	local weapon_color_quality = crafted.cosmetics.quality or node_data.cosmetic_quality
 	local weapon_color_index = crafted.cosmetics.color_index or node_data.cosmetic_index
 	local weapon_pattern_scale = crafted.cosmetics.pattern_scale or node_data.pattern_scale or tweak_data.blackmarket.weapon_color_pattern_scale_default
+
 	weapon_color_data.category = node_data.category
 	weapon_color_data.slot = node_data.slot
 	weapon_color_data.cosmetic_data = clone(crafted.cosmetics)
+
 	local weapon_color_tweak_data = tweak_data.blackmarket.weapon_skins[weapon_color_id]
 	local weapon_color_variation_template = tweak_data.blackmarket.weapon_color_templates.color_variation
 	local color_group_data = {}
+
 	node.color_group_data = color_group_data
 	color_group_data.options = {}
 	color_group_data.selected = 1
 	color_group_data.highlighted = nil
 
 	table.insert(color_group_data.options, {
-		value = "all",
-		text_id = "menu_weapon_color_group_all"
+		text_id = "menu_weapon_color_group_all",
+		value = "all"
 	})
 
-	local global_value_data = nil
+	local global_value_data
 
 	for index, id in ipairs(tweak_data.blackmarket.weapon_color_groups) do
 		global_value_data = tweak_data.lootdrop.global_value_category[id] or tweak_data.lootdrop.global_values[id] or tweak_data.lootdrop.global_value_category.normal
@@ -67,7 +74,7 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 	end
 
 	if not node:item("divider_end") then
-		local guis_catalog, bundle_folder, color_tweak, unlocked, have_color, dlc, global_value = nil
+		local guis_catalog, bundle_folder, color_tweak, unlocked, have_color, dlc, global_value
 		local colors_data = {}
 
 		for index, id in ipairs(tweak_data.blackmarket.weapon_colors) do
@@ -85,10 +92,10 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 			have_color = managers.blackmarket:has_item(global_value, "weapon_skins", id)
 
 			table.insert(colors_data, {
-				visible_callback = "is_weapon_color_option_visible",
 				_meta = "option",
 				disabled_icon_callback = "get_weapon_color_disabled_icon",
 				enabled_callback = "is_weapon_color_option_unlocked",
+				visible_callback = "is_weapon_color_option_visible",
 				value = id,
 				color = color_tweak.color,
 				text_id = "bm_wskn_" .. id,
@@ -99,14 +106,14 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 		end
 
 		local color_item = self:create_grid(node, colors_data, {
-			callback = "refresh_node",
-			name = "cosmetic_color",
-			height_aspect = 0.85,
-			text_id = "menu_weapon_color_title",
 			align_line_proportions = 0,
+			callback = "refresh_node",
+			columns = 20,
+			height_aspect = 0.85,
+			name = "cosmetic_color",
 			rows = 2.5,
 			sort_callback = "sort_weapon_colors",
-			columns = 20
+			text_id = "menu_weapon_color_title"
 		})
 
 		color_item:set_value(weapon_color_id)
@@ -134,16 +141,16 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 
 		for id, data in pairs(tweak_data.economy.qualities) do
 			table.insert(qualities, {
-				localize = true,
 				_meta = "option",
+				localize = true,
 				value = id,
 				text_id = data.name_id,
 				index = data.index
 			})
 		end
 
-		table.sort(qualities, function (x, y)
-			return y.index < x.index
+		table.sort(qualities, function(x, y)
+			return x.index > y.index
 		end)
 
 		local quality_item = self:create_multichoice(node, qualities, {
@@ -167,10 +174,10 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 		end
 
 		local pattern_scale_item = self:create_multichoice(node, pattern_scales, {
-			visible_callback = "should_show_pattern_scale",
-			name = "pattern_scale",
 			callback = "refresh_node",
-			text_id = "menu_weapon_color_pattern_scale"
+			name = "pattern_scale",
+			text_id = "menu_weapon_color_pattern_scale",
+			visible_callback = "should_show_pattern_scale"
 		})
 
 		pattern_scale_item:set_value(weapon_pattern_scale)
@@ -178,38 +185,41 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 
 	self:create_divider(node, "end", nil, 8)
 
-	local new_item = nil
+	local new_item
 	local apply_params = {
-		visible_callback = "should_show_weapon_color_apply",
-		name = "apply",
+		align = "right",
 		callback = "apply_weapon_color",
+		name = "apply",
 		text_id = "dialog_apply",
-		align = "right"
+		visible_callback = "should_show_weapon_color_apply"
 	}
+
 	new_item = node:create_item({}, apply_params)
 
 	new_item:set_enabled(false)
 	node:add_item(new_item)
 
 	local buy_dlc_params = {
-		visible_callback = "should_show_weapon_color_buy",
-		name = "buy_dlc",
+		align = "right",
 		callback = "buy_weapon_color_dlc",
+		name = "buy_dlc",
 		text_id = "menu_dlc_buy_weapon_color",
-		align = "right"
+		visible_callback = "should_show_weapon_color_buy"
 	}
+
 	new_item = node:create_item({}, buy_dlc_params)
 
 	node:add_item(new_item)
 
 	if managers.menu:is_pc_controller() then
 		local back_params = {
+			align = "right",
 			last_item = "true",
 			name = "back",
-			text_id = "menu_back",
-			align = "right",
-			previous_node = "true"
+			previous_node = "true",
+			text_id = "menu_back"
 		}
+
 		new_item = node:create_item({}, back_params)
 
 		node:add_item(new_item)
@@ -240,10 +250,12 @@ function MenuCustomizeWeaponColorInitiator:refresh_node(node)
 	local color_index = cosmetic_variation_item:value()
 	local color_quality = quality_item:value()
 	local color_tweak_data = tweak_data.blackmarket.weapon_skins[color_id]
+
 	cosmetic_data.id = color_id
 	cosmetic_data.instance_id = color_id
 	cosmetic_data.color_index = color_index
 	cosmetic_data.quality = color_quality
+
 	local pattern_scale = color_tweak_data.pattern_scale
 
 	if pattern_scale then
@@ -251,6 +263,7 @@ function MenuCustomizeWeaponColorInitiator:refresh_node(node)
 	elseif MenuCallbackHandler:should_show_pattern_scale() then
 		local cosmetic_pattern_scale_item = node:item("pattern_scale")
 		local color_pattern_scale = cosmetic_pattern_scale_item:value()
+
 		cosmetic_data.pattern_scale = color_tweak_data.color_skin_data and color_tweak_data.color_skin_data.pattern_default and color_pattern_scale or nil
 	else
 		cosmetic_data.pattern_scale = nil
@@ -270,6 +283,7 @@ function MenuCustomizeWeaponColorInitiator:refresh_node(node)
 	end
 
 	node.color_group_data.highlighted = nil
+
 	local can_apply = MenuCallbackHandler:can_apply_weapon_color(node)
 
 	apply_item:set_enabled(can_apply)
@@ -322,25 +336,26 @@ function MenuNodeCustomizeWeaponColorGui:_setup_item_panel(safe_rect, res)
 	self.item_panel:set_bottom(safe_rect.height - align_padding * 2 - (alive(self._legends_panel) and self._legends_panel:h() + align_padding or 0))
 
 	local title_string = managers.localization:to_upper_text(self.node.topic_id, self.node.topic_params)
+
 	self._text_panel = self._item_panel_parent:panel({
 		name = "title_panel",
 		layer = self.layers.background
 	})
 
 	self._text_panel:text({
-		name = "title_text",
 		layer = 1,
+		name = "title_text",
 		text = title_string,
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
 	})
 	self._text_panel:text({
-		rotation = 360,
-		name = "title_bg_text",
 		alpha = 0.4,
-		y = -13,
+		name = "title_bg_text",
+		rotation = 360,
 		x = -13,
+		y = -13,
 		text = title_string,
 		font_size = tweak_data.menu.pd2_massive_font_size,
 		font = tweak_data.menu.pd2_massive_font,
@@ -359,7 +374,8 @@ function MenuNodeCustomizeWeaponColorGui:_setup_item_panel(safe_rect, res)
 	self._tab_scroll_panel = self._tab_scroll_parent_panel:panel({
 		x = self.node.tab_panel_position or 0
 	})
-	local _, tw, th, tab_panel, tab_text, tab_select_rect = nil
+
+	local _, tw, th, tab_panel, tab_text, tab_select_rect
 	local color_group_data = self.node.color_group_data
 	local tab_scroll_h = 0
 	local tab_padding = 15
@@ -367,18 +383,18 @@ function MenuNodeCustomizeWeaponColorGui:_setup_item_panel(safe_rect, res)
 	for index, option in ipairs(color_group_data.options) do
 		tab_panel = self._tab_scroll_panel:panel()
 		tab_select_rect = tab_panel:bitmap({
-			texture = "guis/textures/pd2/shared_tab_box",
 			halign = "grow",
+			texture = "guis/textures/pd2/shared_tab_box",
 			valign = "grow",
 			w = tab_panel:w(),
 			h = tab_panel:h()
 		})
 		tab_text = tab_panel:text({
-			vertical = "center",
-			halign = "grow",
 			align = "center",
+			halign = "grow",
 			layer = 1,
 			valign = "grow",
+			vertical = "center",
 			text = managers.localization:to_upper_text(option.text_id),
 			font = medium_font,
 			font_size = medium_font_size
@@ -402,10 +418,10 @@ function MenuNodeCustomizeWeaponColorGui:_setup_item_panel(safe_rect, res)
 	self._tab_scroll_parent_panel:set_bottom(self.item_panel:top() + 2 - align_padding)
 	self._tab_scroll_panel:set_size(self._tabs[#self._tabs].panel:right(), tab_scroll_h)
 
-	if self._tab_scroll_parent_panel:width() < self._tab_scroll_panel:width() then
+	if self._tab_scroll_panel:width() > self._tab_scroll_parent_panel:width() then
 		local is_pc_controller = managers.menu:is_pc_controller()
 		local is_steam_controller = is_pc_controller and managers.menu:is_steam_controller() or false
-		local prev_string = nil
+		local prev_string
 
 		if is_pc_controller then
 			prev_string = is_steam_controller and managers.localization:steam_btn("bumper_l") or "<"
@@ -415,19 +431,20 @@ function MenuNodeCustomizeWeaponColorGui:_setup_item_panel(safe_rect, res)
 
 		local prev_color = self._prev_page_highlighted and tweak_data.screen_colors.button_stage_2 or tweak_data.screen_colors.button_stage_3
 		local prev_page = self._tab_panel:text({
-			name = "prev_page",
 			layer = 1,
+			name = "prev_page",
 			font_size = medium_font_size,
 			font = medium_font,
 			color = prev_color,
 			text = prev_string
 		})
+
 		_, _, tw, th = prev_page:text_rect()
 
 		prev_page:set_size(tw, tab_scroll_h)
 		prev_page:set_position(align_padding, self._tab_scroll_parent_panel:top())
 
-		local next_string = nil
+		local next_string
 
 		if is_pc_controller then
 			next_string = is_steam_controller and managers.localization:steam_btn("bumper_r") or ">"
@@ -437,13 +454,14 @@ function MenuNodeCustomizeWeaponColorGui:_setup_item_panel(safe_rect, res)
 
 		local next_color = self._next_page_highlighted and tweak_data.screen_colors.button_stage_2 or tweak_data.screen_colors.button_stage_3
 		local next_page = self._tab_panel:text({
-			name = "next_page",
 			layer = 1,
+			name = "next_page",
 			font_size = medium_font_size,
 			font = medium_font,
 			color = next_color,
 			text = next_string
 		})
+
 		_, _, tw, th = next_page:text_rect()
 
 		next_page:set_size(tw, tab_scroll_h)
@@ -490,23 +508,24 @@ function MenuNodeCustomizeWeaponColorGui:_setup_item_panel(safe_rect, res)
 	self.boxgui:set_clipping(false)
 	self.box_panel:rect({
 		alpha = 0.6,
-		rotation = 360,
 		layer = 0,
+		rotation = 360,
 		color = Color.black
 	})
 
 	self.blur = self.box_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		w = self.box_panel:w(),
 		h = self.box_panel:h()
 	})
+
 	local start_blur = self.start_blur or 0
 
 	local function func(o)
 		local blur = start_blur
 
-		over(0.6, function (p)
+		over(0.6, function(p)
 			o:set_alpha(math.lerp(blur, 1, p))
 		end)
 	end
@@ -543,11 +562,12 @@ function MenuNodeCustomizeWeaponColorGui:update_tab_panel_position()
 
 	if tab_panel:left() + self._tab_scroll_panel:x() < 0 then
 		self._tab_scroll_panel:set_left(-tab_panel:left())
-	elseif self._tab_scroll_parent_panel:width() < tab_panel:right() + self._tab_scroll_panel:x() then
+	elseif tab_panel:right() + self._tab_scroll_panel:x() > self._tab_scroll_parent_panel:width() then
 		self._tab_scroll_panel:set_right(self._tab_scroll_parent_panel:width() - (tab_panel:right() - self._tab_scroll_panel:width()))
 	end
 
 	self.node.tab_panel_position = self._tab_scroll_panel:left()
+
 	local prev_page = self._tab_panel:child("prev_page")
 
 	if alive(prev_page) then
@@ -557,7 +577,7 @@ function MenuNodeCustomizeWeaponColorGui:update_tab_panel_position()
 	local next_page = self._tab_panel:child("next_page")
 
 	if alive(next_page) then
-		next_page:set_visible(self._tab_scroll_parent_panel:width() < self._tab_scroll_panel:right())
+		next_page:set_visible(self._tab_scroll_panel:right() > self._tab_scroll_parent_panel:width())
 	end
 end
 
@@ -588,8 +608,7 @@ function MenuNodeCustomizeWeaponColorGui:input_focus()
 end
 
 function MenuNodeCustomizeWeaponColorGui:mouse_moved(o, x, y)
-	local used = false
-	local icon = "arrow"
+	local used, icon = false, "arrow"
 
 	if managers.menu_scene:input_focus() then
 		self._mouse_over_row_item = nil
@@ -600,13 +619,13 @@ function MenuNodeCustomizeWeaponColorGui:mouse_moved(o, x, y)
 
 	local current_item = managers.menu:active_menu().logic:selected_item()
 	local current_row_item = current_item and self:row_item(current_item)
-	local selected_row_item = nil
+	local selected_row_item
 
 	if current_row_item and current_row_item.gui_panel and current_row_item.gui_panel:inside(x, y) then
 		selected_row_item = current_row_item
 	else
 		local inside_item_panel_parent = self:item_panel_parent():inside(x, y)
-		local item, is_inside = nil
+		local item, is_inside
 
 		for _, row_item in pairs(self.row_items) do
 			item = row_item.item
@@ -626,6 +645,7 @@ function MenuNodeCustomizeWeaponColorGui:mouse_moved(o, x, y)
 
 	if selected_row_item then
 		local selected_name = selected_row_item.name
+
 		used = true
 		icon = "link"
 
@@ -659,6 +679,7 @@ function MenuNodeCustomizeWeaponColorGui:mouse_moved(o, x, y)
 	end
 
 	self._mouse_over_tab_panel = self._tab_scroll_parent_panel:inside(x, y)
+
 	local prev_page = self._tab_panel:child("prev_page")
 
 	if alive(prev_page) then
@@ -721,6 +742,7 @@ function MenuNodeCustomizeWeaponColorGui:mouse_moved(o, x, y)
 		end
 
 		local prev_highlighted = color_group_data.highlighted
+
 		color_group_data.highlighted = nil
 
 		self:_update_tab(prev_highlighted)
@@ -845,7 +867,7 @@ function MenuNodeCustomizeWeaponColorGui:mouse_pressed(button, x, y)
 end
 
 function MenuNodeCustomizeWeaponColorGui:mouse_released(button, x, y)
-	local item = nil
+	local item
 
 	for _, row_item in pairs(self.row_items) do
 		item = row_item.item
@@ -957,7 +979,9 @@ function MenuNodeCustomizeWeaponColorGui:update_color_info(node)
 
 	local function _add_string(new_string, color, separator)
 		separator = separator or ""
+
 		local s = utf8.len(info_string) + 1
+
 		info_string = info_string .. separator .. new_string
 
 		if color then
@@ -975,7 +999,7 @@ function MenuNodeCustomizeWeaponColorGui:update_color_info(node)
 	local color_tweak = tweak_data.blackmarket.weapon_skins[color_id]
 	local name_id = color_tweak.name_id
 	local desc_id = color_tweak.desc_id
-	local unlock_id = nil
+	local unlock_id
 	local unlock_macros = {}
 	local dlc = color_tweak.dlc or managers.dlc:global_value_to_dlc(color_tweak.global_value)
 	local global_value = color_tweak.global_value or managers.dlc:dlc_to_global_value(dlc)
@@ -996,6 +1020,7 @@ function MenuNodeCustomizeWeaponColorGui:update_color_info(node)
 
 		if achievement and managers.achievment:get_info(achievement) then
 			local achievement_visual = tweak_data.achievement.visual[achievement]
+
 			unlock_id = achievement_visual and achievement_visual.desc_id or "achievement_" .. tostring(achievement) .. "_desc" or "bm_menu_dlc_locked"
 		elseif milestone_locked_content then
 			for _, data in ipairs(tweak_data.achievement.milestones) do
@@ -1006,14 +1031,8 @@ function MenuNodeCustomizeWeaponColorGui:update_color_info(node)
 					break
 				end
 			end
-		elseif managers.dlc:is_content_skirmish_locked("weapon_skins", color_id) then
-			unlock_id = "bm_menu_skirmish_content_reward"
-		elseif managers.dlc:is_content_crimespree_locked("weapon_skins", color_id) then
-			unlock_id = "bm_menu_crimespree_content_reward"
-		elseif managers.dlc:is_content_infamy_locked("weapon_skins", color_id) then
-			unlock_id = "menu_infamy_lock_info"
 		else
-			unlock_id = "bm_menu_dlc_locked"
+			unlock_id = managers.dlc:is_content_skirmish_locked("weapon_skins", color_id) and "bm_menu_skirmish_content_reward" or managers.dlc:is_content_crimespree_locked("weapon_skins", color_id) and "bm_menu_crimespree_content_reward" or managers.dlc:is_content_infamy_locked("weapon_skins", color_id) and "menu_infamy_lock_info" or "bm_menu_dlc_locked"
 		end
 	end
 

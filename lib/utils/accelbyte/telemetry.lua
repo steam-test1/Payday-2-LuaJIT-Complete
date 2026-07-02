@@ -1,7 +1,9 @@
 require("lib/utils/accelbyte/StatisticsAdaptor")
 
 local json = require("lib/utils/accelbyte/json")
+
 Telemetry = Telemetry or class()
+
 local base_url = "https://analytics.starbreeze.com"
 local telemetry_endpoint = "/payday2/v1/events/batch"
 local payload_content_type = "application/json"
@@ -18,9 +20,11 @@ local connection_errors = {
 	request_timeout = 2,
 	unknown_conn_error = 0
 }
+
 Telemetry.event_actions = {
 	piggybank_fed = 1
 }
+
 local is_steam = SystemInfo:distribution() == Idstring("STEAM")
 local is_epic = SystemInfo:distribution() == Idstring("EPIC")
 
@@ -41,11 +45,12 @@ local function build_json(event_name, payload, event_namespace)
 		return nil
 	end
 
-	local telemetry_body = {
-		eventNamespace = event_namespace,
-		eventName = event_name,
-		payload = payload or {}
-	}
+	local telemetry_body = {}
+
+	telemetry_body.eventNamespace = event_namespace
+	telemetry_body.eventName = event_name
+	telemetry_body.payload = payload or {}
+
 	local telemetry_json = json.encode(telemetry_body)
 
 	return telemetry_json
@@ -60,11 +65,11 @@ local function build_payload(event_name, payload, event_namespace)
 		return nil
 	end
 
-	local telemetry_body = {
-		eventNamespace = event_namespace,
-		eventName = event_name,
-		payload = payload or {}
-	}
+	local telemetry_body = {}
+
+	telemetry_body.eventNamespace = event_namespace
+	telemetry_body.eventName = event_name
+	telemetry_body.payload = payload or {}
 
 	return telemetry_body
 end
@@ -116,6 +121,7 @@ end
 local function on_total_playtime_retrieved(success, response_body)
 	if success then
 		local response_json = json.decode(response_body)
+
 		Global.telemetry._total_playtime = response_json.total_playtime
 
 		cat_print("telemetry", log_name, "Got total playtime")
@@ -177,9 +183,10 @@ local function get_geolocation()
 
 	if not Global.telemetry._geolocation then
 		Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
-		local headers = {
-			Authorization = "Bearer " .. Global.telemetry._bearer_token
-		}
+
+		local headers = {}
+
+		headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
 		HttpRequest:get(Utility:get_telemetry_url() .. geolocation_endpoint, on_geolocation_retrieved, headers)
 	end
@@ -216,7 +223,7 @@ local function get_oldest_achievement_date()
 end
 
 local function update_total_playtime(new_playtime)
-	local endpoint = nil
+	local endpoint
 
 	if is_steam then
 		endpoint = update_playtime_endpoint_steam
@@ -231,9 +238,10 @@ local function update_total_playtime(new_playtime)
 	end
 
 	Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
-	local headers = {
-		Authorization = "Bearer " .. Global.telemetry._bearer_token
-	}
+
+	local headers = {}
+
+	headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
 	HttpRequest:put(Utility:get_telemetry_url() .. endpoint, on_playtime_updated, payload_content_type, nil, headers)
 end
@@ -258,6 +266,7 @@ local function gather_player_skill_information()
 						local skill_points = managers.skilltree:next_skill_step(skill)
 						local skill_bought = skill_points > 1 and 1 or 0
 						local skill_aced = skill_points > 2 and 1 or 0
+
 						stats["skill_" .. tree.skill .. "_" .. skill] = skill_bought
 						stats["skill_" .. tree.skill .. "_" .. skill .. "_ace"] = skill_aced
 						skill_amount[tree_index] = skill_amount[tree_index] + skill_bought + skill_aced
@@ -274,6 +283,7 @@ local function gather_player_skill_information()
 	end
 
 	local current_specialization_idx = managers.skilltree:get_specialization_value("current_specialization")
+
 	stats.player_specialization_active = tweak_data.skilltree.specializations[current_specialization_idx].name_id
 	stats.player_specialization_tier = managers.skilltree:current_specialization_tier()
 	stats.player_specialization_points = managers.skilltree:specialization_points()
@@ -284,6 +294,7 @@ end
 local function gather_or_convert_loadout_data(loadout)
 	local _, _, mask_list, weapon_list, melee_list, grenade_list, _, armor_list, character_list, deployable_list, suit_list, weapon_color_list, glove_list, charm_list = tweak_data.statistics:statistics_table()
 	local loadout_data = loadout
+
 	loadout_data = loadout_data or managers.statistics:gather_equipment_data()
 
 	if not loadout_data then
@@ -291,6 +302,7 @@ local function gather_or_convert_loadout_data(loadout)
 	end
 
 	local converted_loadout = StatisticsAdaptor:run(loadout_data)
+
 	converted_loadout.equipped_character = character_list[converted_loadout.equipped_character]
 	converted_loadout.equipped_mask = mask_list[converted_loadout.equipped_mask]
 	converted_loadout.equipped_grenade = grenade_list[converted_loadout.equipped_grenade]
@@ -311,29 +323,28 @@ function Telemetry:init()
 	end
 
 	if not Global.telemetry then
-		Global.telemetry = {
-			_geolocation = true,
-			_telemetries_to_send_arr = {},
-			_session_uuid = nil,
-			_enabled = false,
-			_gamesight_enabled = false,
-			_start_time = os.time(),
-			_mission_payout = 0,
-			_last_quickplay_room_id = 0,
-			_logged_in = false,
-			_times_logged_in = 0,
-			_total_playtime = nil,
-			_login_screen_passed = false,
-			_bearer_token = nil,
-			_login_inprogress = false,
-			_login_retries = 0,
-			_oldest_achievement_date = nil,
-			_achievement_list = {},
-			_has_pdth = false,
-			_has_overdrill = false,
-			_objective_id = nil,
-			_has_account_checked = false
-		}
+		Global.telemetry = {}
+		Global.telemetry._geolocation = true
+		Global.telemetry._telemetries_to_send_arr = {}
+		Global.telemetry._session_uuid = nil
+		Global.telemetry._enabled = false
+		Global.telemetry._gamesight_enabled = false
+		Global.telemetry._start_time = os.time()
+		Global.telemetry._mission_payout = 0
+		Global.telemetry._last_quickplay_room_id = 0
+		Global.telemetry._logged_in = false
+		Global.telemetry._times_logged_in = 0
+		Global.telemetry._total_playtime = nil
+		Global.telemetry._login_screen_passed = false
+		Global.telemetry._bearer_token = nil
+		Global.telemetry._login_inprogress = false
+		Global.telemetry._login_retries = 0
+		Global.telemetry._oldest_achievement_date = nil
+		Global.telemetry._achievement_list = {}
+		Global.telemetry._has_pdth = false
+		Global.telemetry._has_overdrill = false
+		Global.telemetry._objective_id = nil
+		Global.telemetry._has_account_checked = false
 
 		cat_print("telemetry", log_name, "Telemetry initiated")
 	end
@@ -349,7 +360,7 @@ function Telemetry:update(t, dt)
 
 	self._dt = self._dt + dt
 
-	if Global.telemetry._login_screen_passed and not self._global._logged_in and login_period < self._dt then
+	if Global.telemetry._login_screen_passed and not self._global._logged_in and self._dt > login_period then
 		self._dt = 0
 
 		if not Global.telemetry._login_inprogress and managers.menu:is_open("menu_main") then
@@ -357,7 +368,7 @@ function Telemetry:update(t, dt)
 			self:on_login()
 		end
 
-		if login_retry_limit <= Global.telemetry._login_retries then
+		if Global.telemetry._login_retries >= login_retry_limit then
 			cat_print("telemetry", log_name, "login attempts exceeded. disabling telemetry")
 			self:enable(false)
 		end
@@ -365,7 +376,7 @@ function Telemetry:update(t, dt)
 		return
 	end
 
-	if self._global._logged_in and beats_period < self._dt then
+	if self._global._logged_in and self._dt > beats_period then
 		self:send_on_player_heartbeat()
 		self:send_telemetry(self._global._telemetries_to_send_arr)
 		clear_table(self._global._telemetries_to_send_arr)
@@ -453,6 +464,7 @@ function Telemetry:send_telemetry(telemetry_body, callback)
 		cat_print("telemetry", log_name, telemetry_json)
 
 		local headers = {}
+
 		Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
 		headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
@@ -472,6 +484,7 @@ function Telemetry:send(event_name, payload, event_namespace)
 
 	payload.eventTimestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
 	payload.entityID = managers.network.account:player_id()
+
 	local telemetry_body = build_payload(event_name, payload, event_namespace)
 
 	table.insert(self._global._telemetries_to_send_arr, telemetry_body)
@@ -490,6 +503,7 @@ function Telemetry:send_telemetry_immediately(event_name, payload, event_namespa
 
 	payload.eventTimestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
 	payload.entityID = managers.network.account:player_id()
+
 	local telemetry_body = {
 		build_payload(event_name, payload, event_namespace)
 	}
@@ -515,6 +529,7 @@ function Telemetry:send_gamesight_telemetry_immediately(event_name, payload, eve
 		cat_print("telemetry", log_name, "send_gamesight_telemetry_immediately", telemetry_json)
 
 		local headers = {}
+
 		Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
 		headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
@@ -552,33 +567,35 @@ function Telemetry:send_on_player_logged_in(reason)
 	end
 
 	self._global._session_uuid = self._global._session_uuid or Utility:generate_uuid()
+
 	local rev = Application:version()
 
 	if Global.revision and Global.revision ~= "" then
 		rev = Global.revision
 	end
 
-	local total_playtime_hours = nil
+	local total_playtime_hours
 
 	if Global.telemetry._total_playtime ~= -1 then
 		total_playtime_hours = math.floor(Global.telemetry._total_playtime / 60)
 	end
 
-	local telemetry_payload = {
-		platform = get_distribution(),
-		platformUserID = managers.network.account:player_id(),
-		sourceType = "",
-		revision = rev,
-		gameSessionGUID = self._global._session_uuid,
-		totalHeistTime = managers.statistics:get_play_time(),
-		totalPlayTime = total_playtime_hours,
-		titleID = Global.dlc_manager.all_dlc_data.full_game.app_id,
-		oldestAchievement = self._global._oldest_achievement_date,
-		playerLevel = managers.experience:current_level(),
-		infamyLevel = managers.experience:current_rank(),
-		reason = Global.telemetry._times_logged_in == 0 and "startup" or "optin",
-		pd2StarbreezeAccountID = Login.player_session.user_id or ""
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.platform = get_distribution()
+	telemetry_payload.platformUserID = managers.network.account:player_id()
+	telemetry_payload.sourceType = ""
+	telemetry_payload.revision = rev
+	telemetry_payload.gameSessionGUID = self._global._session_uuid
+	telemetry_payload.totalHeistTime = managers.statistics:get_play_time()
+	telemetry_payload.totalPlayTime = total_playtime_hours
+	telemetry_payload.titleID = Global.dlc_manager.all_dlc_data.full_game.app_id
+	telemetry_payload.oldestAchievement = self._global._oldest_achievement_date
+	telemetry_payload.playerLevel = managers.experience:current_level()
+	telemetry_payload.infamyLevel = managers.experience:current_rank()
+	telemetry_payload.reason = Global.telemetry._times_logged_in == 0 and "startup" or "optin"
+	telemetry_payload.pd2StarbreezeAccountID = Login.player_session.user_id or ""
+
 	local installed_dlc_list = {}
 	local installed_entitlement_list = {}
 
@@ -633,12 +650,12 @@ function Telemetry:send_on_player_economy_event(event_origin, currency, amount, 
 		return
 	end
 
-	local telemetry_payload = {
-		origin = event_origin,
-		currency = currency,
-		amount = amount,
-		transactionType = transaction_type
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.origin = event_origin
+	telemetry_payload.currency = currency
+	telemetry_payload.amount = amount
+	telemetry_payload.transactionType = transaction_type
 
 	self:send("player_economy", telemetry_payload)
 end
@@ -650,6 +667,7 @@ function Telemetry:send_on_player_logged_out(reason)
 
 	local telemetry_payload = {}
 	local play_duration = os.time() - Global.telemetry._start_time
+
 	telemetry_payload.gameSessionGUID = self._global._session_uuid
 	telemetry_payload.timePlayed = play_duration
 	telemetry_payload.reason = reason
@@ -746,6 +764,7 @@ function Telemetry:send_on_player_heist_start()
 		local slot = BlackMarketManager:equipped_weapon_slot(category)
 		local blueprint = managers.blackmarket:get_weapon_blueprint(category, slot)
 		local cosmetics = managers.blackmarket:get_weapon_cosmetics(category, slot)
+
 		weapon_mods[weapon_mods_category[idx]] = {}
 
 		for _, mod_name in pairs(blueprint) do
@@ -771,21 +790,21 @@ function Telemetry:send_on_player_heist_start()
 		is_quickplay = Global.telemetry._last_quickplay_room_id == managers.network.matchmake.lobby_handler:id()
 	end
 
-	local telemetry_payload = {
-		mapName = self._map_name,
-		heistName = self._heist_name,
-		heistID = self._heist_id,
-		heistType = self._heist_type,
-		contractorName = managers.job:current_contact_id(),
-		quickPlay = is_quickplay,
-		difficulty = managers.job:current_difficulty_stars(),
-		tactic = job_plan,
-		mods = weapon_mods,
-		loadout = gather_or_convert_loadout_data(),
-		skills = gather_player_skill_information(),
-		story = managers.story:is_heist_story_started(managers.job:current_level_id()),
-		mutators = managers.mutators:get_mutators_from_lobby_data()
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.mapName = self._map_name
+	telemetry_payload.heistName = self._heist_name
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.heistType = self._heist_type
+	telemetry_payload.contractorName = managers.job:current_contact_id()
+	telemetry_payload.quickPlay = is_quickplay
+	telemetry_payload.difficulty = managers.job:current_difficulty_stars()
+	telemetry_payload.tactic = job_plan
+	telemetry_payload.mods = weapon_mods
+	telemetry_payload.loadout = gather_or_convert_loadout_data()
+	telemetry_payload.skills = gather_player_skill_information()
+	telemetry_payload.story = managers.story:is_heist_story_started(managers.job:current_level_id())
+	telemetry_payload.mutators = managers.mutators:get_mutators_from_lobby_data()
 
 	self:send("player_heist_start", telemetry_payload)
 end
@@ -798,23 +817,20 @@ function Telemetry:send_on_player_heist_end()
 	local job_plan = "any"
 
 	if managers.groupai then
-		if managers.groupai:state():whisper_mode() then
-			job_plan = "stealth"
-		else
-			job_plan = "loud"
-		end
+		job_plan = managers.groupai:state():whisper_mode() and "stealth" or "loud"
 	end
 
-	local telemetry_payload = {
-		mapName = self._map_name,
-		heistName = self._heist_name,
-		heistID = self._heist_id,
-		heistEndReason = self._end_reason,
-		heistDuration = self._heist_duration,
-		tactic = job_plan,
-		totalCashEarned = Global.telemetry._mission_payout,
-		totalExpEarned = self._total_exp_earned
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.mapName = self._map_name
+	telemetry_payload.heistName = self._heist_name
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.heistEndReason = self._end_reason
+	telemetry_payload.heistDuration = self._heist_duration
+	telemetry_payload.tactic = job_plan
+	telemetry_payload.totalCashEarned = Global.telemetry._mission_payout
+	telemetry_payload.totalExpEarned = self._total_exp_earned
+
 	local total_spoons = 0
 
 	if managers.blackmarket:equipped_melee_weapon() == "spoon" and Global.statistics_manager and Global.statistics_manager.session and Global.statistics_manager.session.killed_by_melee then
@@ -846,12 +862,12 @@ function Telemetry:send_on_heist_start()
 		player_count = table.size(managers.network:session():all_peers())
 	end
 
-	local telemetry_payload = {
-		heistName = self._heist_name,
-		heistID = self._heist_id,
-		heistType = self._heist_type,
-		playerCount = player_count
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistName = self._heist_name
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.heistType = self._heist_type
+	telemetry_payload.playerCount = player_count
 
 	self:send("heist_start", telemetry_payload)
 end
@@ -871,14 +887,14 @@ function Telemetry:send_on_heist_end(end_reason)
 		player_count = table.size(managers.network:session():all_peers())
 	end
 
-	local telemetry_payload = {
-		heistName = self._heist_name,
-		heistID = self._heist_id,
-		heistType = self._heist_type,
-		endReason = self._end_reason,
-		playerCount = player_count,
-		heistDuration = self._heist_duration
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistName = self._heist_name
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.heistType = self._heist_type
+	telemetry_payload.endReason = self._end_reason
+	telemetry_payload.playerCount = player_count
+	telemetry_payload.heistDuration = self._heist_duration
 
 	self:send("heist_end", telemetry_payload)
 end
@@ -888,9 +904,9 @@ function Telemetry:send_on_player_heartbeat()
 		return
 	end
 
-	local telemetry_payload = {
-		gameSessionGUID = self._global._session_uuid
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.gameSessionGUID = self._global._session_uuid
 
 	cat_print("telemetry", "heartbeat *budump* " .. inspect(telemetry_payload))
 	self:send("player_heartbeat", telemetry_payload)
@@ -925,11 +941,11 @@ function Telemetry:send_on_player_tutorial(id)
 		return
 	end
 
-	local telemetry_payload = {
-		tutorialName = tutorial_name,
-		tutorialStep = step,
-		tutorialObjective = id
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.tutorialName = tutorial_name
+	telemetry_payload.tutorialStep = step
+	telemetry_payload.tutorialObjective = id
 
 	self:send("player_tutorial", telemetry_payload)
 	self:send_batch_immediately()
@@ -948,9 +964,9 @@ function Telemetry:send_on_player_lobby_setting()
 		return
 	end
 
-	local telemetry_payload = {
-		status = status
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.status = status
 
 	self:send("player_lobby_setting", telemetry_payload)
 end
@@ -960,10 +976,10 @@ function Telemetry:send_on_player_change_loadout(loadout)
 		return
 	end
 
-	local telemetry_payload = {
-		loadout = gather_or_convert_loadout_data(),
-		skills = gather_player_skill_information()
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.loadout = gather_or_convert_loadout_data()
+	telemetry_payload.skills = gather_player_skill_information()
 
 	self:send("player_loadout", telemetry_payload)
 end
@@ -973,22 +989,22 @@ function Telemetry:send_on_player_hardware_survey()
 		return
 	end
 
-	local telemetry_payload = {
-		gameSessionGUID = self._global._session_uuid,
-		os = Utility:get_os_acrhitecture(),
-		osVersion = Utility:get_os_version(),
-		gpuName = Utility:get_gpu_brand(),
-		gpuType = Utility:get_gpu_model(),
-		gpuMemory = Utility:get_gpu_memory_gb(),
-		ram = Utility:get_ram_gb(),
-		processorType = Utility:get_cpu_vendor(),
-		processor = Utility:get_cpu_freq_ghz(),
-		cpu = Utility:get_cpu_model(),
-		hardDriveSizeTotal = Utility:get_strg_capacity(),
-		hardDriveSizeAvailable = Utility:get_strg_freespace(),
-		hardDriveType = Utility:get_strg_type(),
-		vrHardware = _G.IS_VR
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.gameSessionGUID = self._global._session_uuid
+	telemetry_payload.os = Utility:get_os_acrhitecture()
+	telemetry_payload.osVersion = Utility:get_os_version()
+	telemetry_payload.gpuName = Utility:get_gpu_brand()
+	telemetry_payload.gpuType = Utility:get_gpu_model()
+	telemetry_payload.gpuMemory = Utility:get_gpu_memory_gb()
+	telemetry_payload.ram = Utility:get_ram_gb()
+	telemetry_payload.processorType = Utility:get_cpu_vendor()
+	telemetry_payload.processor = Utility:get_cpu_freq_ghz()
+	telemetry_payload.cpu = Utility:get_cpu_model()
+	telemetry_payload.hardDriveSizeTotal = Utility:get_strg_capacity()
+	telemetry_payload.hardDriveSizeAvailable = Utility:get_strg_freespace()
+	telemetry_payload.hardDriveType = Utility:get_strg_type()
+	telemetry_payload.vrHardware = _G.IS_VR
 
 	self:send("player_hardware_survey", telemetry_payload)
 end
@@ -1047,7 +1063,9 @@ function Telemetry:send_on_game_launch()
 
 	local gamesight_identifiers = {}
 	local resolution = RenderSettings.resolution.x .. "x" .. RenderSettings.resolution.y
+
 	gamesight_identifiers.resolution = resolution
+
 	local os_name = Utility:get_os_name()
 
 	if os_name == "error" then
@@ -1057,6 +1075,7 @@ function Telemetry:send_on_game_launch()
 	end
 
 	gamesight_identifiers.os = os_name
+
 	local os_language = Utility:get_current_language()
 
 	if string.len(os_language) > 6 then
@@ -1066,6 +1085,7 @@ function Telemetry:send_on_game_launch()
 	end
 
 	gamesight_identifiers.language = os_language
+
 	local os_timezone = Utility:get_current_timezone()
 
 	if os_timezone == -1 then
@@ -1073,24 +1093,25 @@ function Telemetry:send_on_game_launch()
 	end
 
 	gamesight_identifiers.timezone = os_timezone
-	local telemetry_payload = {
-		user_id = managers.network.account:player_id(),
-		type = event_name,
-		identifiers = gamesight_identifiers or {}
-	}
+
+	local telemetry_payload = {}
+
+	telemetry_payload.user_id = managers.network.account:player_id()
+	telemetry_payload.type = event_name
+	telemetry_payload.identifiers = gamesight_identifiers or {}
 
 	self:send_gamesight_telemetry_immediately(event_name, telemetry_payload, Utility:get_telemetry_namespace(), telemetry_callback)
 end
 
 function Telemetry:send_on_player_heist_objective_start()
-	local telemetry_payload = {
-		mapName = self._map_name,
-		heistName = self._heist_name,
-		heistID = self._heist_id,
-		objectiveID = Global.telemetry._objective_id .. "_hl",
-		difficulty = managers.job:current_difficulty_stars(),
-		objectiveState = "started"
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.mapName = self._map_name
+	telemetry_payload.heistName = self._heist_name
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.objectiveID = Global.telemetry._objective_id .. "_hl"
+	telemetry_payload.difficulty = managers.job:current_difficulty_stars()
+	telemetry_payload.objectiveState = "started"
 
 	self:send("player_heist_objective", telemetry_payload)
 end
@@ -1099,24 +1120,20 @@ function Telemetry:send_on_player_heist_objective_end()
 	local job_plan = "any"
 
 	if managers.groupai then
-		if managers.groupai:state():whisper_mode() then
-			job_plan = "stealth"
-		else
-			job_plan = "loud"
-		end
+		job_plan = managers.groupai:state():whisper_mode() and "stealth" or "loud"
 	end
 
 	local duration = os.time() - Global.telemetry._objective_start_time
-	local telemetry_payload = {
-		mapName = self._map_name,
-		heistName = self._heist_name,
-		heistID = self._heist_id,
-		objectiveID = Global.telemetry._objective_id .. "_hl",
-		difficulty = managers.job:current_difficulty_stars(),
-		objectiveState = "completed",
-		objectiveTactic = job_plan,
-		objectiveDuration = duration
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.mapName = self._map_name
+	telemetry_payload.heistName = self._heist_name
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.objectiveID = Global.telemetry._objective_id .. "_hl"
+	telemetry_payload.difficulty = managers.job:current_difficulty_stars()
+	telemetry_payload.objectiveState = "completed"
+	telemetry_payload.objectiveTactic = job_plan
+	telemetry_payload.objectiveDuration = duration
 
 	self:send("player_heist_objective", telemetry_payload)
 end
@@ -1136,9 +1153,9 @@ function Telemetry:send_on_player_achievements(achievements)
 		table.insert(achievement_list, ach)
 	end
 
-	local telemetry_payload = {
-		achievements = achievement_list
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.achievements = achievement_list
 
 	if is_steam then
 		self:send("player_steam_achievements", telemetry_payload)
@@ -1162,10 +1179,10 @@ function Telemetry:send_on_player_steam_stats_overdrill()
 		return
 	end
 
-	local telemetry_payload = {
-		overdrill = self._global._has_overdrill,
-		pdth = self._global._has_pdth
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.overdrill = self._global._has_overdrill
+	telemetry_payload.pdth = self._global._has_pdth
 
 	self:send("player_steam_stats_overdrill", telemetry_payload)
 end
@@ -1176,10 +1193,10 @@ function Telemetry:send_on_game_event_piggybank_fed(params)
 	end
 
 	local total_kills = managers.statistics:session_anyone_killed_by_grenade() + managers.statistics:session_anyone_killed_by_melee() + managers.statistics:session_anyone_killed_by_weapons()
-	local telemetry_payload = {
-		heistID = self._heist_id,
-		totalKills = total_kills
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.totalKills = total_kills
 
 	self:send("piggybank_fed", telemetry_payload)
 end
@@ -1189,11 +1206,11 @@ function Telemetry:send_on_game_event_on_bag_collected(params)
 		return
 	end
 
-	local telemetry_payload = {
-		heistID = self._heist_id,
-		bagType = params.bag_type,
-		collectedType = params.collection_type
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.bagType = params.bag_type
+	telemetry_payload.collectedType = params.collection_type
 
 	self:send("cg22_bag_collected", telemetry_payload)
 end
@@ -1203,10 +1220,10 @@ function Telemetry:send_on_game_event_snoman_death(params)
 		return
 	end
 
-	local telemetry_payload = {
-		heistID = self._heist_id,
-		weaponID = params.weapon_id
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.weaponID = params.weapon_id
 
 	self:send("cg22_snowman_death", telemetry_payload)
 end
@@ -1216,9 +1233,9 @@ function Telemetry:send_on_game_event_tree_interacted(params)
 		return
 	end
 
-	local telemetry_payload = {
-		heistID = self._heist_id
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistID = self._heist_id
 
 	self:send("cg22_tree_interacted", telemetry_payload)
 end
@@ -1228,9 +1245,9 @@ function Telemetry:send_on_leakedrecording_played(params)
 		return
 	end
 
-	local telemetry_payload = {
-		recordingID = params.recording_id
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.recordingID = params.recording_id
 
 	self:send("leakedrecording_played", telemetry_payload)
 end
@@ -1241,10 +1258,10 @@ function Telemetry:send_on_game_event_piggyrevenge_fed(params)
 	end
 
 	local total_kills = managers.statistics:session_anyone_killed_by_grenade() + managers.statistics:session_anyone_killed_by_melee() + managers.statistics:session_anyone_killed_by_weapons()
-	local telemetry_payload = {
-		heistID = self._heist_id,
-		totalKills = total_kills
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.totalKills = total_kills
 
 	self:send("piggyrevenge_fed", telemetry_payload)
 end
@@ -1254,11 +1271,11 @@ function Telemetry:send_on_game_event_piggyrevenge_exploded(params)
 		return
 	end
 
-	local telemetry_payload = {
-		heistID = self._heist_id,
-		piggyStage = params.stage,
-		bagProcess = params.progress
-	}
+	local telemetry_payload = {}
+
+	telemetry_payload.heistID = self._heist_id
+	telemetry_payload.piggyStage = params.stage
+	telemetry_payload.bagProcess = params.progress
 
 	self:send("piggyrevenge_exploded", telemetry_payload)
 end

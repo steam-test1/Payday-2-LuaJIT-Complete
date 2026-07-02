@@ -15,6 +15,7 @@ function NewUnlockDialog:init(manager, data, is_title_outside)
 	end
 
 	self._ws = self._data.ws or manager:_get_ws()
+
 	local text_config = {
 		no_close_legend = true,
 		no_scroll_legend = true,
@@ -32,10 +33,10 @@ function NewUnlockDialog:init(manager, data, is_title_outside)
 		text_blend_mode = data.text_blend_mode
 	}
 	local image_config = {
-		layer = 2,
 		keep_ratio = true,
-		video_start_paused = true,
+		layer = 2,
 		padding = 10,
+		video_start_paused = true,
 		w = data.image_w or 128,
 		h = data.image_h or 128,
 		textures = data.textures,
@@ -86,7 +87,7 @@ end
 function NewUnlockDialog:update(t, dt)
 	NewUnlockDialog.super.update(self, t, dt)
 
-	if self._start_sound_t and self._start_sound_t < t then
+	if self._start_sound_t and t > self._start_sound_t then
 		managers.menu_component:post_event(self._sound_event)
 
 		self._start_sound_t = nil

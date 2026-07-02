@@ -11,7 +11,7 @@ function arg_supplied(key)
 end
 
 function arg_value(key)
-	local found = nil
+	local found
 
 	for _, arg in ipairs(Application:argv()) do
 		if found then
@@ -23,4 +23,5 @@ function arg_value(key)
 end
 
 function min_exe_version(version, system_name)
+	return
 end

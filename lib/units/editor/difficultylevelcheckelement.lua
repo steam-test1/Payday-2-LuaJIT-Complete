@@ -13,13 +13,14 @@ function DifficultyLevelCheckElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local difficulty_params = {
+		ctrlr_proportions = 2,
 		default = "easy",
 		name = "Difficulty:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select a difficulty",
 		sorted = false,
+		tooltip = "Select a difficulty",
 		panel = panel,
 		sizer = panel_sizer,
 		options = {
@@ -36,11 +37,11 @@ function DifficultyLevelCheckElement:_build_panel(panel, panel_sizer)
 		ctrlr = difficulty
 	})
 
-	local help = {
-		text = "The element will only execute if the difficulty level is set to what you pick.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "The element will only execute if the difficulty level is set to what you pick."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

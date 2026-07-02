@@ -65,6 +65,7 @@ function CoreCutsceneInputParam:validate_number(number, min_value, max_value, de
 
 	if self._decimals ~= nil then
 		local round_helper = 10^self._decimals
+
 		number = math.round(number * round_helper)
 		number = number == 0 and 0 or number / round_helper
 	end

@@ -10,21 +10,27 @@ function NetworkAccount:init()
 end
 
 function NetworkAccount:update()
+	return
 end
 
 function NetworkAccount:create_account(name, password, email)
+	return
 end
 
 function NetworkAccount:reset_password(name, email)
+	return
 end
 
 function NetworkAccount:login(name, password, cdkey)
+	return
 end
 
 function NetworkAccount:logout()
+	return
 end
 
 function NetworkAccount:register_callback(event, callback)
+	return
 end
 
 function NetworkAccount:register_post_username(cb)
@@ -141,6 +147,7 @@ function NetworkAccount:is_overlay_enabled()
 end
 
 function NetworkAccount:overlay_activate()
+	return
 end
 
 function NetworkAccount:open_dlc_store_page(dlc_data, context)
@@ -164,21 +171,27 @@ function NetworkAccount:_standard_username(name)
 end
 
 function NetworkAccount:set_playing(state)
+	return
 end
 
 function NetworkAccount:set_played_with(peer)
+	return
 end
 
 function NetworkAccount:_load_globals()
+	return
 end
 
 function NetworkAccount:_save_globals()
+	return
 end
 
 function NetworkAccount:inventory_load()
+	return
 end
 
 function NetworkAccount:inventory_is_loading()
+	return
 end
 
 function NetworkAccount:inventory_reward(item)
@@ -186,18 +199,23 @@ function NetworkAccount:inventory_reward(item)
 end
 
 function NetworkAccount:inventory_reward_dlc()
+	return
 end
 
 function NetworkAccount:inventory_reward_unlock(box, key)
+	return
 end
 
 function NetworkAccount:inventory_reward_open(item)
+	return
 end
 
 function NetworkAccount:inventory_outfit_refresh()
+	return
 end
 
 function NetworkAccount:inventory_outfit_verify(id, outfit_data, outfit_callback)
+	return
 end
 
 function NetworkAccount:inventory_outfit_signature()
@@ -205,6 +223,7 @@ function NetworkAccount:inventory_outfit_signature()
 end
 
 function NetworkAccount:inventory_repair_list(list)
+	return
 end
 
 function NetworkAccount:is_ready_to_close()
@@ -212,6 +231,7 @@ function NetworkAccount:is_ready_to_close()
 end
 
 function NetworkAccount:experience_loaded()
+	return
 end
 
 local sa_handler_funcs = {
@@ -252,7 +272,7 @@ local sa_handler_funcs = {
 local sa_handler_stub = class()
 
 for _, func_name in ipairs(sa_handler_funcs) do
-	sa_handler_stub[func_name] = function (self)
+	sa_handler_stub[func_name] = function(self)
 		print("[NetworkAccount] sa_handler NYI", func_name)
 	end
 end
@@ -262,6 +282,7 @@ function NetworkAccount:get_sa_handler()
 end
 
 function NetworkAccount:set_stat(key, value)
+	return
 end
 
 function NetworkAccount:get_stat(key)
@@ -285,4 +306,5 @@ function NetworkAccount:get_global_stat(key, days)
 end
 
 function NetworkAccount:publish_statistics(stats, force_store)
+	return
 end

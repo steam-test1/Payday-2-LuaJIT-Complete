@@ -27,6 +27,7 @@ function ActionMessagingManager:_parse_message(data)
 	local event = data.event
 	local dialog_id = data.dialog_id
 	local equipment_id = data.equipment_id
+
 	self._messages[id] = {
 		text_id = text_id,
 		event = event,
@@ -75,12 +76,14 @@ function ActionMessagingManager:_show_message(id, instigator)
 	end
 
 	local title = instigator:base():nick_name()
-	local icon = nil
+	local icon
 	local msg = ""
 
 	if msg_data.equipment_id then
 		title = title .. " " .. managers.localization:text("message_obtained_equipment")
+
 		local equipment = tweak_data.equipments.specials[msg_data.equipment_id]
+
 		icon = equipment.icon
 		msg = managers.localization:text(equipment.text_id)
 	else
@@ -108,7 +111,9 @@ function ActionMessagingManager:sync_show_message(id, instigator)
 end
 
 function ActionMessagingManager:save(data)
+	return
 end
 
 function ActionMessagingManager:load(data)
+	return
 end

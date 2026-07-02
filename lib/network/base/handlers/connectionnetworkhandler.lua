@@ -347,6 +347,7 @@ function ConnectionNetworkHandler:sync_stage_settings(level_id_index, stage_num,
 	end
 
 	local level_id = tweak_data.levels:get_level_name_from_index(level_id_index)
+
 	Global.game_settings.level_id = level_id
 
 	managers.job:set_current_stage(stage_num)
@@ -591,11 +592,7 @@ function ConnectionNetworkHandler:set_member_ready(peer_id, ready, mode, outfit_
 	end
 
 	if mode == 1 then
-		if ready ~= 0 then
-			ready = true
-		else
-			ready = false
-		end
+		ready = ready ~= 0 and true or false
 
 		local ready_state = peer:waiting_for_player_ready()
 
@@ -820,15 +817,17 @@ function ConnectionNetworkHandler:feed_lootdrop_skirmish(reward_string, sender)
 	local loot_index = 1
 	local lootdrop_data = {
 		peer = peer,
-		items = {},
-		coins = tonumber(lootdrops[loot_index])
+		items = {}
 	}
+
+	lootdrop_data.coins = tonumber(lootdrops[loot_index])
 	loot_index = loot_index + 1
 	lootdrop_data.cash = tonumber(lootdrops[loot_index])
 	lootdrop_data.xp = tonumber(lootdrops[loot_index + 1])
 	loot_index = loot_index + 2
+
 	local global_values = tweak_data.lootdrop.global_value_list_index
-	local item = nil
+	local item
 
 	for index = loot_index, #lootdrops do
 		item = string.split(lootdrops[index], "-")
@@ -912,18 +911,18 @@ function ConnectionNetworkHandler:sync_explosion_results(count_cops, count_gangs
 
 		for i = 1, enemies_hit do
 			managers.statistics:shot_fired({
-				skip_bullet_count = true,
 				hit = true,
+				skip_bullet_count = true,
 				weapon_unit = weapon_unit
 			})
 		end
 
-		local weapon_pass, weapon_type_pass, count_pass, all_pass = nil
+		local weapon_pass, weapon_type_pass, count_pass, all_pass
 
 		for achievement, achievement_data in pairs(tweak_data.achievement.explosion_achievements) do
 			weapon_pass = not achievement_data.weapon or true
 			weapon_type_pass = not achievement_data.weapon_type or weapon_unit:base() and weapon_unit:base().weapon_tweak_data and weapon_unit:base():is_category(achievement_data.weapon_type)
-			count_pass = not achievement_data.count or achievement_data.count <= (achievement_data.kill and enemies_killed or enemies_hit)
+			count_pass = not achievement_data.count or (achievement_data.kill and enemies_killed or enemies_hit) >= achievement_data.count
 			all_pass = weapon_pass and weapon_type_pass and count_pass
 
 			if all_pass and achievement_data.award then
@@ -954,13 +953,13 @@ function ConnectionNetworkHandler:sync_fire_results(count_cops, count_gangsters,
 
 		for i = 1, enemies_hit do
 			managers.statistics:shot_fired({
-				skip_bullet_count = true,
 				hit = true,
+				skip_bullet_count = true,
 				weapon_unit = weapon_unit
 			})
 		end
 
-		local weapon_pass, weapon_type_pass, count_pass, all_pass = nil
+		local weapon_pass, weapon_type_pass, count_pass, all_pass
 	end
 end
 

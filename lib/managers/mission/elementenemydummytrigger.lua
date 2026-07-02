@@ -23,4 +23,5 @@ function ElementEnemyDummyTrigger:on_executed(instigator)
 end
 
 function ElementEnemyDummyTrigger:load()
+	return
 end

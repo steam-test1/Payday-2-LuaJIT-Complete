@@ -8,21 +8,22 @@ function HUDBlackScreen:init(hud)
 	end
 
 	self._blackscreen_panel = self._hud_panel:panel({
-		y = 0,
-		name = "blackscreen_panel",
 		halign = "grow",
-		visible = true,
 		layer = 200,
-		valign = "grow"
-	})
-	local mid_text = self._blackscreen_panel:text({
-		name = "mid_text",
-		y = 0,
-		vertical = "center",
-		align = "center",
-		text = "000",
+		name = "blackscreen_panel",
+		valign = "grow",
 		visible = true,
+		y = 0
+	})
+
+	local mid_text = self._blackscreen_panel:text({
+		align = "center",
 		layer = 1,
+		name = "mid_text",
+		text = "000",
+		vertical = "center",
+		visible = true,
+		y = 0,
 		color = Color.white,
 		valign = {
 			0.4,
@@ -49,11 +50,11 @@ function HUDBlackScreen:init(hud)
 		BTN_ACCEPT = continue_button
 	}))
 	local skip_text = self._blackscreen_panel:text({
-		y = 0,
-		vertical = "bottom",
-		name = "skip_text",
 		align = "right",
 		layer = 1,
+		name = "skip_text",
+		vertical = "bottom",
+		y = 0,
 		visible = is_server,
 		text = text,
 		color = Color.white,
@@ -63,16 +64,17 @@ function HUDBlackScreen:init(hud)
 		prog = 0
 	}))
 	local loading_text_object = self._blackscreen_panel:text({
-		y = 0,
-		vertical = "bottom",
-		name = "loading_text",
 		align = "right",
-		visible = false,
 		layer = 1,
+		name = "loading_text",
+		vertical = "bottom",
+		visible = false,
+		y = 0,
 		text = loading_text,
 		color = Color.white,
 		font = tweak_data.hud.medium_font_noshadow
 	})
+
 	self._circle_radius = 16
 	self._sides = 64
 
@@ -141,10 +143,10 @@ function HUDBlackScreen:skip_circle_done()
 	self._blackscreen_panel:child("skip_text"):set_visible(false)
 
 	local bitmap = self._blackscreen_panel:bitmap({
-		blend_mode = "add",
-		texture = "guis/textures/pd2/hud_progress_32px",
-		layer = 2,
 		align = "center",
+		blend_mode = "add",
+		layer = 2,
+		texture = "guis/textures/pd2/hud_progress_32px",
 		valign = "center",
 		w = self._circle_radius * 2,
 		h = self._circle_radius * 2
@@ -153,12 +155,12 @@ function HUDBlackScreen:skip_circle_done()
 	bitmap:set_position(self._skip_circle:position())
 
 	local circle = CircleBitmapGuiObject:new(self._blackscreen_panel, {
-		sides = 64,
-		total = 64,
+		blend_mode = "normal",
 		current = 64,
 		image = "guis/textures/pd2/hud_progress_32px",
-		blend_mode = "normal",
 		layer = 3,
+		sides = 64,
+		total = 64,
 		radius = self._circle_radius,
 		color = Color.white:with_alpha(1)
 	})
@@ -181,20 +183,21 @@ function HUDBlackScreen:_set_job_data()
 	end
 
 	local job_panel = self._blackscreen_panel:panel({
-		y = 0,
-		name = "job_panel",
 		halign = "grow",
-		visible = true,
 		layer = 1,
-		valign = "grow"
+		name = "job_panel",
+		valign = "grow",
+		visible = true,
+		y = 0
 	})
 	local risk_panel = job_panel:panel({})
-	local last_risk_level = nil
+	local last_risk_level
 	local blackscreen_risk_textures = tweak_data.gui.blackscreen_risk_textures
 
 	for i = 1, managers.job:current_difficulty_stars() do
 		local difficulty_name = tweak_data.difficulties[i + 2]
 		local texture = blackscreen_risk_textures[difficulty_name] or "guis/textures/pd2/risklevel_blackscreen"
+
 		last_risk_level = risk_panel:bitmap({
 			texture = texture,
 			color = tweak_data.screen_colors.risk
@@ -215,8 +218,8 @@ function HUDBlackScreen:_set_job_data()
 	end
 
 	local risk_text = job_panel:text({
-		vertical = "bottom",
 		align = "center",
+		vertical = "bottom",
 		text = managers.localization:to_upper_text(tweak_data.difficulty_name_id),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_small_large_size,
@@ -229,16 +232,16 @@ end
 
 function HUDBlackScreen:_set_job_data_crime_spree()
 	local job_panel = self._blackscreen_panel:panel({
-		y = 0,
-		name = "job_panel",
 		halign = "grow",
-		visible = true,
 		layer = 1,
-		valign = "grow"
+		name = "job_panel",
+		valign = "grow",
+		visible = true,
+		y = 0
 	})
 	local job_text = job_panel:text({
-		vertical = "bottom",
 		align = "center",
+		vertical = "bottom",
 		text = managers.localization:to_upper_text("cn_crime_spree"),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -249,8 +252,8 @@ function HUDBlackScreen:_set_job_data_crime_spree()
 	job_text:set_center_x(job_panel:center_x())
 
 	local risk_text = job_panel:text({
-		vertical = "top",
 		align = "center",
+		vertical = "top",
 		text = managers.localization:to_upper_text("menu_cs_level", {
 			level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")
 		}),
@@ -267,8 +270,8 @@ function HUDBlackScreen:_create_stages()
 	local job_chain = managers.job:current_job_chain_data()
 	local job_panel = self._blackscreen_panel:child("job_panel")
 	local stages_panel = job_panel:panel({
-		name = "stages_panel",
 		h = 256,
+		name = "stages_panel",
 		visible = true,
 		x = 320,
 		y = job_panel:child("contact_name"):bottom()
@@ -337,26 +340,26 @@ function HUDBlackScreen:_create_stages()
 		local is_current_stage = managers.job:current_stage() == i
 		local is_completed = i < managers.job:current_stage()
 		local panel = stages_panel:panel({
-			y = 0,
 			name = "panel",
 			visible = true,
+			y = 0,
 			x = x,
 			w = is_current_stage and 256 or 80
 		})
 
 		if not is_completed and not is_current_stage then
 			local image = panel:bitmap({
-				texture = "guis/textures/pd2/icon_mission_overview_unknown",
 				blend_mode = "normal",
-				layer = 1
+				layer = 1,
+				texture = "guis/textures/pd2/icon_mission_overview_unknown"
 			})
 
 			image:set_center(panel:w() / 2, panel:h() / 2)
 		else
 			local image = panel:bitmap({
-				texture = "guis/textures/pd2/icon_mission_overview",
 				blend_mode = "normal",
 				layer = 1,
+				texture = "guis/textures/pd2/icon_mission_overview",
 				texture_rect = level_rects[i]
 			})
 
@@ -364,8 +367,8 @@ function HUDBlackScreen:_create_stages()
 		end
 
 		local badge = panel:bitmap({
-			texture = "guis/textures/pd2/gui_grade_badges",
 			layer = 4,
+			texture = "guis/textures/pd2/gui_grade_badges",
 			texture_rect = types[heist.type]
 		})
 
@@ -382,27 +385,33 @@ function HUDBlackScreen:_create_stages()
 			(Color(230, 200, 150) / 255):with_alpha(0.5),
 			1,
 			(Color(230, 200, 150) / 255):with_alpha(0)
-		} or Color.black:with_alpha(0)
+		} or {
+			0,
+			Color.black:with_alpha(0),
+			1,
+			Color.black:with_alpha(0)
+		}
 
 		panel:gradient({
-			orientation = "vertical",
 			layer = 3,
+			orientation = "vertical",
 			gradient_points = gradient_points,
 			h = panel:h() / 2
 		})
 
 		x = x + panel:w() + 10
+
 		local level_data = tweak_data.levels[heist.level_id]
 
 		if is_current_stage then
 			local pad = 8
 
 			panel:text({
-				vertical = "top",
-				h = 24,
-				name = "stage_name",
 				align = "left",
+				h = 24,
 				layer = 4,
+				name = "stage_name",
+				vertical = "top",
 				text = utf8.to_upper(managers.localization:text(level_data.name_id)),
 				font_size = tweak_data.hud.small_font_size,
 				font = tweak_data.hud.small_font,
@@ -411,11 +420,11 @@ function HUDBlackScreen:_create_stages()
 				y = pad
 			})
 			panel:text({
-				vertical = "top",
-				h = 24,
-				name = "type",
 				align = "left",
+				h = 24,
 				layer = 4,
+				name = "type",
+				vertical = "top",
 				text = utf8.to_upper(managers.localization:text(heist.type_id)),
 				font_size = tweak_data.hud.small_font_size,
 				font = tweak_data.hud.small_font,
@@ -453,7 +462,9 @@ function HUDBlackScreen:_animate_fade_in(mid_text)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
+
 		local a = (d - t) / d
 
 		mid_text:set_alpha(a)
@@ -481,7 +492,9 @@ function HUDBlackScreen:_animate_fade_out(mid_text)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
+
 		local a = t / d
 
 		mid_text:set_alpha(a)

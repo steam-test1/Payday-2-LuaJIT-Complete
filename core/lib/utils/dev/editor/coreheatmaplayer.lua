@@ -15,12 +15,15 @@ function HeatmapLayer:get_layer_name()
 end
 
 function HeatmapLayer:get_setting(setting)
+	return
 end
 
 function HeatmapLayer:load(world_holder, offset)
+	return
 end
 
 function HeatmapLayer:save(save_params)
+	return
 end
 
 function HeatmapLayer:update(t, dt)
@@ -77,6 +80,7 @@ function HeatmapLayer:build_panel(notebook)
 	self._ews_panel:set_sizer(self._main_sizer)
 
 	self._sizer = EWS:BoxSizer("VERTICAL")
+
 	local add_btn = EWS:Button(self._ews_panel, "Add heatmap data", "", "BU_EXACTFIT,NO_BORDER")
 
 	self._sizer:add(add_btn, 0, 5, "RIGHT")
@@ -104,6 +108,7 @@ function HeatmapLayer:_add_data()
 		local data = {}
 		local name = file:gets()
 		local server = file:gets() == "true"
+
 		data.name = name
 		data.is_server = server
 		data.player = {}
@@ -130,7 +135,7 @@ function HeatmapLayer:_add_data()
 				table.insert(data.player, pos)
 			elseif type == 2 then
 				local unit_type = tonumber(comp[6])
-				local tble = nil
+				local tble
 
 				if unit_type == 1 then
 					tble = data.enemies
@@ -149,7 +154,7 @@ function HeatmapLayer:_add_data()
 				end
 			elseif type == 3 then
 				local e_type = comp[6]
-				local color = nil
+				local color
 
 				if e_type == "downed" then
 					color = Vector3(1, 1, 0)

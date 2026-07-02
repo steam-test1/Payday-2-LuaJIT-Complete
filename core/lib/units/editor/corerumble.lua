@@ -26,6 +26,7 @@ function CoreRumbleHubElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local rumble_sizer = EWS:BoxSizer("HORIZONTAL")
 	local ctrlr_sizer = EWS:BoxSizer("VERTICAL")
 	local engines_sizer = EWS:BoxSizer("HORIZONTAL")

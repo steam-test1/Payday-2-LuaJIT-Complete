@@ -44,6 +44,7 @@ function CoreWorldInstanceManager:get_safe_name(instance_name, name)
 
 		for i = string.len(name), 0, -1 do
 			local sub = string.sub(name, i, string.len(name))
+
 			sub_name = string.sub(name, 0, i)
 
 			if tonumber(sub) then
@@ -66,6 +67,7 @@ function CoreWorldInstanceManager:get_safe_name(instance_name, name)
 
 	for i = start_number, 10000 do
 		i = (i < 10 and "00" or i < 100 and "0" or "") .. i
+
 		local name_id = name .. i
 
 		if not names[name_id] then
@@ -196,8 +198,10 @@ function CoreWorldInstanceManager:custom_create_instance(instance_name, custom_d
 
 	local continent_data = managers.worlddefinition._continents[instance.continent]
 	local package_data = managers.world_instance:packages_by_instance(instance)
+
 	instance.position = custom_data.position or Vector3()
 	instance.rotation = custom_data.rotation or Rotation()
+
 	local prepared_unit_data = managers.world_instance:prepare_unit_data(instance, continent_data)
 
 	if prepared_unit_data.statics then
@@ -298,7 +302,8 @@ function CoreWorldInstanceManager:check_highest_id(instance)
 
 		for _, data in ipairs(datas) do
 			local mod_id = self:_get_mod_id(data.unit_data.unit_id)
-			highest_id = highest_id < mod_id and mod_id or highest_id
+
+			highest_id = mod_id > highest_id and mod_id or highest_id
 			amount = amount + 1
 			type_amount = type_amount + 1
 		end
@@ -308,10 +313,13 @@ function CoreWorldInstanceManager:check_highest_id(instance)
 
 	local path = folder .. "/" .. "world"
 	local instance_data = self:_serialize_to_script("continent", path)
+
 	type_amount.statics = compare(instance_data.statics)
 	type_amount.dynamics = compare(instance_data.dynamics)
+
 	local path = folder .. "/" .. "mission"
 	local instance_data = self:_serialize_to_script("continent", path)
+
 	type_amount.mission = compare(instance_data.mission)
 
 	return highest_id, amount, type_amount
@@ -558,6 +566,7 @@ function CoreWorldInstanceManager:sync_save(data)
 	local state = {
 		instance_params = self._instance_params
 	}
+
 	data.CoreWorldInstanceManager = state
 end
 

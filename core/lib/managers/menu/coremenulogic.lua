@@ -5,30 +5,28 @@ Logic = Logic or class()
 function Logic:init(menu_data)
 	self._data = menu_data
 	self._node_stack = {}
-	self._callback_map = {
-		renderer_show_node = nil,
-		renderer_refresh_node_stack = nil,
-		renderer_refresh_node = nil,
-		renderer_update_node = nil,
-		renderer_select_item = nil,
-		renderer_deselect_item = nil,
-		renderer_trigger_item = nil,
-		renderer_navigate_back = nil,
-		renderer_node_item_dirty = nil,
-		input_accept_input = nil,
-		menu_manager_menu_closed = nil,
-		menu_manager_select_node = nil
-	}
+	self._callback_map = {}
+	self._callback_map.renderer_show_node = nil
+	self._callback_map.renderer_refresh_node_stack = nil
+	self._callback_map.renderer_refresh_node = nil
+	self._callback_map.renderer_update_node = nil
+	self._callback_map.renderer_select_item = nil
+	self._callback_map.renderer_deselect_item = nil
+	self._callback_map.renderer_trigger_item = nil
+	self._callback_map.renderer_navigate_back = nil
+	self._callback_map.renderer_node_item_dirty = nil
+	self._callback_map.input_accept_input = nil
+	self._callback_map.menu_manager_menu_closed = nil
+	self._callback_map.menu_manager_select_node = nil
 	self._action_queue = {}
-	self._action_callback_map = {
-		select_node = callback(self, self, "_select_node"),
-		navigate_back = callback(self, self, "_navigate_back"),
-		select_item = callback(self, self, "_select_item"),
-		trigger_item = callback(self, self, "_trigger_item"),
-		refresh_node = callback(self, self, "_refresh_node"),
-		refresh_node_stack = callback(self, self, "_refresh_node_stack"),
-		update_node = callback(self, self, "_update_node")
-	}
+	self._action_callback_map = {}
+	self._action_callback_map.select_node = callback(self, self, "_select_node")
+	self._action_callback_map.navigate_back = callback(self, self, "_navigate_back")
+	self._action_callback_map.select_item = callback(self, self, "_select_item")
+	self._action_callback_map.trigger_item = callback(self, self, "_trigger_item")
+	self._action_callback_map.refresh_node = callback(self, self, "_refresh_node")
+	self._action_callback_map.refresh_node_stack = callback(self, self, "_refresh_node_stack")
+	self._action_callback_map.update_node = callback(self, self, "_update_node")
 end
 
 function Logic:open(...)
@@ -266,7 +264,7 @@ function Logic:_trigger_item(item)
 end
 
 function Logic:selected_item()
-	local item = nil
+	local item
 	local node = self:selected_node()
 
 	if node then
@@ -277,7 +275,7 @@ function Logic:selected_item()
 end
 
 function Logic:get_item(name)
-	local item = nil
+	local item
 	local node = self:selected_node()
 
 	if node then

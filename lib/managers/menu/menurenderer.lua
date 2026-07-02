@@ -40,8 +40,8 @@ function MenuRenderer:show_node(node)
 	end
 
 	local parameters = {
-		marker_alpha = 0.6,
 		align = "right",
+		marker_alpha = 0.6,
 		row_item_blend_mode = "add",
 		to_upper = true,
 		font = tweak_data.menu.pd2_medium_font,
@@ -76,12 +76,13 @@ end
 function MenuRenderer:_create_framing()
 	local bh = CoreMenuRenderer.Renderer.border_height
 	local scaled_size = managers.gui_data:scaled_size()
+
 	self._bottom_line = self._main_panel:bitmap({
-		texture = "guis/textures/headershadow",
 		alpha = 0,
 		blend_mode = "add",
-		rotation = 180,
 		layer = 1,
+		rotation = 180,
+		texture = "guis/textures/headershadow",
 		color = Color.white:with_alpha(0),
 		w = scaled_size.width,
 		y = scaled_size.height - bh
@@ -93,15 +94,16 @@ end
 
 function MenuRenderer:_create_bottom_text()
 	local scaled_size = managers.gui_data:scaled_size()
+
 	self._bottom_text = self._main_panel:text({
-		vertical = "top",
-		wrap = true,
-		word_wrap = true,
 		align = "right",
-		text = "",
-		hvertical = "top",
 		halign = "right",
+		hvertical = "top",
 		layer = 2,
+		text = "",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		font = tweak_data.menu.pd2_small_font,
 		w = scaled_size.width * 0.66
@@ -255,9 +257,11 @@ function MenuRenderer:resolution_changed(...)
 end
 
 function MenuRenderer:set_bg_visible(visible)
+	return
 end
 
 function MenuRenderer:set_bg_area(area)
+	return
 end
 
 function MenuRenderer:set_stencil_image(image)
@@ -289,6 +293,7 @@ function MenuRenderer:set_stencil_align(align, percent)
 
 	self._menu_stencil_align = align
 	self._menu_stencil_align_percent = percent
+
 	local res = RenderSettings.resolution
 	local safe_rect_pixels = managers.gui_data:scaled_size()
 	local y = safe_rect_pixels.height - tweak_data.load_level.upper_saferect_border * 2 + 2
@@ -418,6 +423,7 @@ function MenuRenderer:mouse_moved(o, x, y)
 
 	if self:active_node_gui() and self:active_node_gui().mouse_moved and managers.menu_component:input_focus() ~= true then
 		local used, pointer = self:active_node_gui():mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -426,6 +432,7 @@ function MenuRenderer:mouse_moved(o, x, y)
 	end
 
 	local used, pointer = managers.menu_component:mouse_moved(o, x, y)
+
 	wanted_pointer = pointer or wanted_pointer
 
 	if used then
@@ -434,6 +441,7 @@ function MenuRenderer:mouse_moved(o, x, y)
 
 	if managers.menu_scene then
 		local used, pointer = managers.menu_scene:mouse_moved(o, x, y)
+
 		wanted_pointer = pointer or wanted_pointer
 
 		if used then
@@ -539,23 +547,24 @@ function MenuRenderer:ws_test()
 
 	self._test_safe = managers.gui_data:create_saferect_workspace()
 	self._test_full = managers.gui_data:create_fullscreen_workspace()
+
 	local x = 150
 	local y = 200
 	local fx, fy = managers.gui_data:safe_to_full(x, y)
 	local safe = self._test_safe:panel():rect({
 		h = 48,
-		w = 48,
-		orientation = "vertical",
 		layer = 0,
+		orientation = "vertical",
+		w = 48,
 		x = x,
 		y = y,
 		color = Color.green
 	})
 	local full = self._test_full:panel():rect({
 		h = 48,
-		w = 48,
-		orientation = "vertical",
 		layer = 0,
+		orientation = "vertical",
+		w = 48,
 		x = fx,
 		y = fy,
 		color = Color.red

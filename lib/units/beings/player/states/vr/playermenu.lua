@@ -9,6 +9,7 @@ require("lib/utils/VRFadeout")
 PlayerMenuCamera = PlayerMenuCamera or class()
 
 function PlayerMenuCamera:init(unit)
+	return
 end
 
 function PlayerMenuCamera:set_menu_player(player)
@@ -24,6 +25,7 @@ function PlayerMenuCamera:rotation()
 end
 
 local hand_states_menu = require("lib/input/HandStatesPlayerMenu")
+
 TouchWheel = TouchWheel or class()
 
 function TouchWheel:init(granularity_x, granularity_y)
@@ -96,7 +98,7 @@ function StickWheel:feed(v)
 		mvector3.set_y(self._value, v.y)
 	end
 
-	if self._next_scroll_t and self._next_scroll_t < t then
+	if self._next_scroll_t and t > self._next_scroll_t then
 		self._next_scroll_t = t + 0.15
 
 		mvector3.set_x(self._value, v.x)
@@ -137,6 +139,7 @@ PlayerMenu.MAX_WARP_DISTANCE = 500
 PlayerMenu.MAX_WARP_JUMP_DISTANCE = 450
 PlayerMenu.WARP_JUMP_TIME = 2 * tweak_data.player.movement_state.standard.movement.jump_velocity.z / 982
 PlayerMenu.MAX_WARP_JUMP_MOVE_SPEED = PlayerMenu.MAX_WARP_JUMP_DISTANCE / PlayerMenu.WARP_JUMP_TIME
+
 local mvec_temp1 = Vector3()
 local mvec_temp2 = Vector3()
 local mvec_temp3 = Vector3()
@@ -167,16 +170,17 @@ function PlayerMenu:init(position, is_start_menu)
 
 	self:register_workspace({
 		ws = managers.mouse_pointer:workspace(),
-		activate = function ()
+		activate = function()
 			if managers.menu:active_menu() then
 				local index = self._input_cache[managers.menu:active_menu().name]
 
 				managers.menu:active_menu().input:activate_mouse(index or 1)
 			end
 		end,
-		deactivate = function ()
+		deactivate = function()
 			if managers.menu:active_menu() then
 				local index = managers.menu:active_menu().input:deactivate_mouse()
+
 				self._input_cache[managers.menu:active_menu().name] = index
 			end
 		end
@@ -248,6 +252,7 @@ function PlayerMenu:change_state(state, ...)
 	end
 
 	self._current_state = state
+
 	local enter = self._states[self._current_state].enter
 
 	if enter then
@@ -344,6 +349,7 @@ function PlayerMenu:update(t, dt)
 
 		if self._is_start_menu then
 			self._pos_mover = self._mover_unit:position()
+
 			local pos_mover = mvector3.copy(self._pos_mover)
 
 			mvector3.subtract(mvec_mover_to_ghost, pos_mover)
@@ -360,6 +366,7 @@ function PlayerMenu:update(t, dt)
 
 				self._position = self._position + pos_diff
 				pos_mover = pos_mover + movement
+
 				local len = mvector3.length(mvec_mover_to_ghost)
 
 				if len > 30 then
@@ -410,10 +417,12 @@ function PlayerMenu:update(t, dt)
 
 		for i, hand in ipairs(self._hands) do
 			local pos, rot = self._vr_controller:pose(i - 1)
+
 			hand.prev_rotation_raw = hand.prev_rotation_raw or Rotation()
 			hand.prev_rotation = hand.prev_rotation or Rotation()
 			hand.prev_pos = hand.prev_pos or Vector3()
 			hand.speed = hand.speed or 0
+
 			local da = math.max(math.acos(math.abs(mrotation.dot(rot, hand.prev_rotation_raw))), 0)
 
 			mrotation.set_zero(hand.prev_rotation_raw)
@@ -480,7 +489,7 @@ local function intersect_ws(shape, normal, from, dir)
 
 	for i = 1, #shape do
 		local p1 = shape[i]
-		local p2 = nil
+		local p2
 
 		if i ~= #shape then
 			p2 = shape[i + 1]
@@ -505,14 +514,14 @@ local function intersect_ws(shape, normal, from, dir)
 end
 
 function PlayerMenu:raycast(from, dir)
-	local closest_point, min_length_sq = nil
+	local closest_point, min_length_sq
 	local workspaces = self._workspaces
 	local p = {}
 	local v1 = mvec_temp1
 	local v2 = mvec_temp2
 	local normal = mvec_temp3
 	local v = mvec_temp1
-	local hit_ws = nil
+	local hit_ws
 
 	for _, data in pairs(workspaces) do
 		local ws = data.ws
@@ -684,7 +693,7 @@ function PlayerMenu:draw()
 
 	local from = hand:position() + offset
 	local p, ws = self:raycast(from, hand:forward())
-	local to = nil
+	local to
 
 	if p and ws then
 		to = p
@@ -727,6 +736,7 @@ end
 
 function PlayerMenu:target_enter()
 	local hand = self._hands[self._primary_hand == 1 and 2 or 1]
+
 	self._warp_ext = hand:unit():warp()
 
 	self._warp_ext:set_targeting(true)
@@ -763,10 +773,12 @@ function PlayerMenu:warp_enter(position)
 end
 
 function PlayerMenu:warp_exit()
+	return
 end
 
 function PlayerMenu:warp_update(t, dt)
 	self._warp_dir = self._target_position - self._position
+
 	local dist = mvector3.normalize(self._warp_dir)
 	local warp_len = dt * PlayerMenu.WARP_SPEED
 
@@ -827,6 +839,7 @@ function PlayerMenu:_setup_states()
 		},
 		[PlayerMenu.STATE_EMPTY] = {}
 	}
+
 	local hand_states = {
 		empty = hand_states_menu.EmptyHandState:new(),
 		laser = hand_states_menu.LaserHandState:new(),
@@ -846,7 +859,9 @@ PlayerMenuHandBase = PlayerMenuHandBase or class()
 
 function PlayerMenuHandBase:init(config, laser_orientation_object)
 	self._hand_data = {}
+
 	local data = self._hand_data
+
 	data._base_position = config.base_position or Vector3()
 	data._base_rotation = config.base_rotation or Rotation()
 	data._base_rotation_controller = config.base_rotation_controller or Rotation()
@@ -893,6 +908,7 @@ function PlayerMenuHandBase:forward()
 end
 
 function PlayerMenuHandBase:set_state(state)
+	return
 end
 
 function PlayerMenuHandBase:laser_position()
@@ -900,6 +916,7 @@ function PlayerMenuHandBase:laser_position()
 end
 
 function PlayerMenuHandBase:set_orientation(position, rotation)
+	return
 end
 
 PlayerMenuHandUnit = PlayerMenuHandUnit or class(PlayerMenuHandBase)
@@ -1105,6 +1122,7 @@ function PlayerMenu:_create_camera()
 		self._fadeout:play()
 	else
 		local rt_resolution = Vector3(1280, 720, 0)
+
 		self._render_target_resolution = rt_resolution
 		self._render_target = Application:create_texture("render_target", rt_resolution.x, rt_resolution.y)
 
@@ -1113,6 +1131,7 @@ function PlayerMenu:_create_camera()
 		local resolution = VRManager:target_resolution()
 		local scale_x = rt_resolution.x / resolution.x
 		local scale_y = rt_resolution.y / resolution.y
+
 		self._camera_object = MenuRoom:create_camera()
 
 		self._camera_object:set_near_range(3)

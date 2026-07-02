@@ -65,13 +65,13 @@ function MedicActionHeal.check_achievements()
 
 	managers.job:set_memory("medic_heal_total", total_healed, true)
 
-	local all_pass, total_pass = nil
+	local all_pass, total_pass
 
 	for achievement, achievement_data in pairs(tweak_data.achievement.medic_heal_achievements or {}) do
 		total_pass = not achievement_data.total
 
 		if achievement_data.total then
-			total_pass = achievement_data.total <= total_healed
+			total_pass = total_healed >= achievement_data.total
 		end
 
 		all_pass = total_pass

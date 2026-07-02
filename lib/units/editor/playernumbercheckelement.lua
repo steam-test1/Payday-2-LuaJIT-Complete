@@ -19,6 +19,7 @@ function PlayerNumberCheckElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local num1 = EWS:CheckBox(panel, "1", "")
 
 	num1:set_value(self._hed.num1)
@@ -55,11 +56,11 @@ function PlayerNumberCheckElement:_build_panel(panel, panel_sizer)
 	})
 	panel_sizer:add(num4, 0, 0, "EXPAND")
 
-	local help = {
-		text = "The element will only execute if the number of players is set to what you pick.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "The element will only execute if the number of players is set to what you pick."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

@@ -13,6 +13,7 @@ function BlackscreenVariantElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local bscreen_params = self:_get_params(panel, panel_sizer)
 	local bscreen = CoreEWS.combobox(bscreen_params)
 
@@ -21,23 +22,23 @@ function BlackscreenVariantElement:_build_panel(panel, panel_sizer)
 		ctrlr = bscreen
 	})
 
-	local help = {
-		text = "Set blackscreen variant.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Set blackscreen variant."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end
 
 function BlackscreenVariantElement:_get_params(panel, panel_sizer)
 	local bscreen_params = {
+		ctrlr_proportions = 2,
 		default = "0",
 		name = "Blackscreen variant:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select variant, from level_tweak_data.level.intro_event",
 		sorted = false,
+		tooltip = "Select variant, from level_tweak_data.level.intro_event",
 		panel = panel,
 		sizer = panel_sizer,
 		options = {
@@ -86,12 +87,12 @@ end
 
 function EndscreenVariantElement:_get_params(panel, panel_sizer)
 	local bscreen_params = {
+		ctrlr_proportions = 2,
 		default = "0",
 		name = "Endscreen variant:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select variant, from level_tweak_data.level.outro_event",
 		sorted = false,
+		tooltip = "Select variant, from level_tweak_data.level.outro_event",
 		panel = panel,
 		sizer = panel_sizer,
 		options = {
@@ -140,12 +141,12 @@ end
 
 function FailureVariantElement:_get_params(panel, panel_sizer)
 	local bscreen_params = {
+		ctrlr_proportions = 2,
 		default = "0",
 		name = "Failure variant:",
-		ctrlr_proportions = 2,
 		name_proportions = 1,
-		tooltip = "Select variant, from level_tweak_data.level.failure_music",
 		sorted = false,
+		tooltip = "Select variant, from level_tweak_data.level.failure_music",
 		panel = panel,
 		sizer = panel_sizer,
 		options = {

@@ -31,22 +31,24 @@ function SkirmishContractBoxGui:create_contract_box()
 
 	self._contract_panel = nil
 	self._contract_text_header = nil
+
 	local contact_data = managers.job:current_contact_data()
 	local job_data = managers.job:current_job_data()
 	local job_chain = managers.job:current_job_chain_data()
 	local job_id = managers.job:current_job_id()
 	local job_tweak = tweak_data.levels[job_id]
+
 	self._contract_panel = self._panel:panel({
-		name = "contract_box_panel",
 		h = 100,
 		layer = 0,
+		name = "contract_box_panel",
 		w = self._panel:w() * 0.35
 	})
 
 	self._contract_panel:rect({
 		halign = "grow",
-		valign = "grow",
 		layer = -1,
+		valign = "grow",
 		color = Color(0.5, 0, 0, 0)
 	})
 
@@ -62,6 +64,7 @@ function SkirmishContractBoxGui:create_contract_box()
 			font = tweak_data.menu.pd2_medium_font,
 			color = tweak_data.screen_colors.text
 		})
+
 		local _, _, tw, th = self._contract_text_header:text_rect()
 
 		self._contract_text_header:set_size(tw, th)
@@ -96,11 +99,13 @@ function SkirmishContractBoxGui:create_contract_box()
 				font = font,
 				color = tweak_data.screen_colors.text
 			})
+
 			heading_max_width = math.max(heading_max_width, heading:width())
 
 			heading:set_top(next_top)
 
 			next_top = math.round(heading:bottom())
+
 			local value = FineText:new(self._contract_panel, {
 				text = value_text,
 				font = font,
@@ -144,10 +149,10 @@ function SkirmishContractBoxGui:create_contract_box()
 	elseif managers.menu:debug_menu_enabled() then
 		local debug_start = self._contract_panel:text({
 			text = "Use DEBUG START to start your level",
-			y = 10,
+			word_wrap = true,
 			wrap = true,
 			x = 10,
-			word_wrap = true,
+			y = 10,
 			font_size = font_size,
 			font = font,
 			color = tweak_data.screen_colors.text

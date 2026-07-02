@@ -14,28 +14,27 @@ function SlotManager:init()
 	unit_manager:set_slot_infinite(29)
 	unit_manager:set_slot_infinite(35)
 
-	self._masks = {
-		statics = World:make_slot_mask(1, 15, 36),
-		editor_all = World:make_slot_mask(1, 10, 11, 15, 19, 35, 36),
-		mission_elements = World:make_slot_mask(10),
-		surface_move = World:make_slot_mask(1, 11, 20, 21, 24, 35, 38),
-		hub_elements = World:make_slot_mask(10),
-		sound_layer = World:make_slot_mask(19),
-		environment_layer = World:make_slot_mask(19),
-		portal_layer = World:make_slot_mask(19),
-		ai_layer = World:make_slot_mask(19),
-		dynamics = World:make_slot_mask(11),
-		statics_layer = World:make_slot_mask(1, 11, 15),
-		dynamics_layer = World:make_slot_mask(11),
-		dump_all = World:make_slot_mask(1),
-		wires = World:make_slot_mask(35),
-		brush_placeable = World:make_slot_mask(1),
-		brushes = World:make_slot_mask(29)
-	}
+	self._masks = {}
+	self._masks.statics = World:make_slot_mask(1, 15, 36)
+	self._masks.editor_all = World:make_slot_mask(1, 10, 11, 15, 19, 35, 36)
+	self._masks.mission_elements = World:make_slot_mask(10)
+	self._masks.surface_move = World:make_slot_mask(1, 11, 20, 21, 24, 35, 38)
+	self._masks.hub_elements = World:make_slot_mask(10)
+	self._masks.sound_layer = World:make_slot_mask(19)
+	self._masks.environment_layer = World:make_slot_mask(19)
+	self._masks.portal_layer = World:make_slot_mask(19)
+	self._masks.ai_layer = World:make_slot_mask(19)
+	self._masks.dynamics = World:make_slot_mask(11)
+	self._masks.statics_layer = World:make_slot_mask(1, 11, 15)
+	self._masks.dynamics_layer = World:make_slot_mask(11)
+	self._masks.dump_all = World:make_slot_mask(1)
+	self._masks.wires = World:make_slot_mask(35)
+	self._masks.brush_placeable = World:make_slot_mask(1)
+	self._masks.brushes = World:make_slot_mask(29)
 end
 
 function SlotManager:get_mask(...)
-	local mask = nil
+	local mask
 	local arg_list = {
 		...
 	}
@@ -96,7 +95,7 @@ function SlotManager:make_slot_mask_table(v)
 		end
 	end
 
-	local slotmask = nil
+	local slotmask
 
 	if next(str_slotmasks) then
 		slotmask = managers.slot:get_mask(unpack(str_slotmasks))
@@ -126,7 +125,7 @@ function SlotManager:make_slot_mask_table(v)
 end
 
 function SlotManager:make_slot_mask_number(v)
-	local slotmask = nil
+	local slotmask
 
 	if v < 0 then
 		print("[SlotManager:make_slot_mask_number] Can't make a slotmask using a negative value, numbers above 0 or equal should be used")

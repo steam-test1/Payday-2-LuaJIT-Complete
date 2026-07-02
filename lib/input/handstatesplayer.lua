@@ -1,6 +1,7 @@
 require("lib/input/HandState")
 
 local common = require("lib/input/HandStatesCommon")
+
 EmptyHandState = EmptyHandState or class(HandState)
 
 function EmptyHandState:init()

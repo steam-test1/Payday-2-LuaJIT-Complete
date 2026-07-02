@@ -17,6 +17,7 @@ function Stack:pop()
 	end
 
 	local value = self._table[self._last]
+
 	self._table[self._last] = nil
 	self._last = self._last - 1
 

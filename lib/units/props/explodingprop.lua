@@ -20,9 +20,9 @@ function ExplodingProp:detonate(pos, range, damage, player_damage)
 	end
 
 	local effect_params = {
-		sound_event = "grenade_explode",
-		effect = "effects/payday2/particles/explosions/grenade_explosion",
 		camera_shake_max_mul = 4,
+		effect = "effects/payday2/particles/explosions/grenade_explosion",
+		sound_event = "grenade_explode",
 		sound_muffle_effect = true,
 		feedback_range = range * 2
 	}
@@ -31,9 +31,9 @@ function ExplodingProp:detonate(pos, range, damage, player_damage)
 		local normal = math.UP
 		local slot_mask = managers.slot:get_mask("explosion_targets")
 		local damage_params = {
-			player_damage = 0,
 			curve_pow = 3,
 			no_raycast_check_characters = false,
+			player_damage = 0,
 			hit_pos = pos,
 			range = range,
 			collision_slotmask = slot_mask,

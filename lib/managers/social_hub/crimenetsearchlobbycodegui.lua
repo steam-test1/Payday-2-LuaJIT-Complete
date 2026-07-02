@@ -8,6 +8,7 @@ local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
+
 CrimenetSearchLobbyCodeGui = CrimenetSearchLobbyCodeGui or class()
 
 function CrimenetSearchLobbyCodeGui:init(ws, fullscreen_ws, node)
@@ -20,9 +21,9 @@ function CrimenetSearchLobbyCodeGui:init(ws, fullscreen_ws, node)
 		layer = 50
 	})
 	self._main_panel = self._panel:panel({
-		w = 650,
 		h = 550,
-		layer = 50
+		layer = 50,
+		w = 650
 	})
 
 	self._main_panel:set_center_x(self._panel:center_x())
@@ -36,10 +37,10 @@ function CrimenetSearchLobbyCodeGui:init(ws, fullscreen_ws, node)
 
 	if managers.menu:is_pc_controller() then
 		local back_button = self._panel:text({
-			vertical = "bottom",
-			name = "back_button",
 			align = "right",
 			blend_mode = "add",
+			name = "back_button",
+			vertical = "bottom",
 			text = utf8.to_upper(managers.localization:text("menu_back")),
 			h = tweak_data.menu.pd2_large_font_size,
 			font_size = tweak_data.menu.pd2_large_font_size,
@@ -55,13 +56,13 @@ function CrimenetSearchLobbyCodeGui:init(ws, fullscreen_ws, node)
 		back_button:set_layer(101)
 
 		local bg_back = self._fullscreen_panel:text({
-			name = "TitleTextBg",
-			vertical = "bottom",
-			h = 90,
 			align = "right",
 			alpha = 0.4,
 			blend_mode = "add",
+			h = 90,
 			layer = 1,
+			name = "TitleTextBg",
+			vertical = "bottom",
 			text = back_button:text(),
 			font_size = tweak_data.menu.pd2_massive_font_size,
 			font = tweak_data.menu.pd2_massive_font,
@@ -149,9 +150,9 @@ function CrimenetSearchLobbyCodeGui:setup_panel()
 	self._searchbox.panel:set_y(15)
 
 	self._paste_icon = self._main_panel:bitmap({
+		layer = 10,
 		texture = "guis/dlcs/shub/textures/paste_icon",
 		y = 15,
-		layer = 10,
 		x = self._searchbox.panel:right() + 2,
 		w = self._searchbox.panel:h(),
 		h = self._searchbox.panel:h()
@@ -159,8 +160,8 @@ function CrimenetSearchLobbyCodeGui:setup_panel()
 
 	if not managers.menu:is_pc_controller() then
 		self._paste_button_prompt = self._main_panel:text({
-			name = "paste_button_prompt",
 			layer = 1,
+			name = "paste_button_prompt",
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			text = utf8.to_upper(managers.localization:btn_macro("menu_respec_tree") .. " " .. managers.localization:text("menu_socialhub_controller_paste"))
@@ -176,8 +177,8 @@ function CrimenetSearchLobbyCodeGui:setup_panel()
 	})
 	self.scroll = ScrollItemList:new(self._scroll_panel, {
 		input_focus = true,
-		scrollbar_padding = 0,
-		padding = 0
+		padding = 0,
+		scrollbar_padding = 0
 	}, {
 		layer = 100
 	})

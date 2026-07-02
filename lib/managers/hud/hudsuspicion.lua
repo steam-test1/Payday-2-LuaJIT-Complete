@@ -9,11 +9,11 @@ function HUDSuspicion:init(hud, sound_source)
 	end
 
 	self._suspicion_panel = self._hud_panel:panel({
-		y = 0,
-		name = "suspicion_panel",
 		layer = 1,
+		name = "suspicion_panel",
+		valign = "center",
 		visible = false,
-		valign = "center"
+		y = 0
 	})
 	self._misc_panel = self._suspicion_panel:panel({
 		name = "misc_panel"
@@ -24,16 +24,16 @@ function HUDSuspicion:init(hud, sound_source)
 
 	local scale = 1.175
 	local suspicion_left = self._suspicion_panel:bitmap({
-		texture = "guis/textures/pd2/hud_stealthmeter",
-		name = "suspicion_left",
-		h = 128,
-		w = 128,
 		alpha = 1,
-		layer = 1,
 		blend_mode = "add",
-		visible = true,
+		h = 128,
+		layer = 1,
+		name = "suspicion_left",
 		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/hud_stealthmeter",
 		valign = "center",
+		visible = true,
+		w = 128,
 		color = Color(0, 1, 1)
 	})
 
@@ -42,16 +42,16 @@ function HUDSuspicion:init(hud, sound_source)
 	suspicion_left:set_center_y(self._suspicion_panel:h() / 2)
 
 	local suspicion_right = self._suspicion_panel:bitmap({
-		texture = "guis/textures/pd2/hud_stealthmeter",
-		name = "suspicion_right",
-		h = 128,
-		w = 128,
 		alpha = 1,
-		layer = 1,
 		blend_mode = "add",
-		visible = true,
+		h = 128,
+		layer = 1,
+		name = "suspicion_right",
 		render_template = "VertexColorTexturedRadial",
+		texture = "guis/textures/pd2/hud_stealthmeter",
 		valign = "center",
+		visible = true,
+		w = 128,
 		color = Color(0, 1, 1)
 	})
 
@@ -60,13 +60,13 @@ function HUDSuspicion:init(hud, sound_source)
 	suspicion_left:set_texture_rect(128, 0, -128, 128)
 
 	local hud_stealthmeter_bg = self._misc_panel:bitmap({
-		texture = "guis/textures/pd2/hud_stealthmeter_bg",
-		name = "hud_stealthmeter_bg",
-		h = 128,
-		w = 128,
 		alpha = 0,
 		blend_mode = "normal",
+		h = 128,
+		name = "hud_stealthmeter_bg",
+		texture = "guis/textures/pd2/hud_stealthmeter_bg",
 		visible = true,
+		w = 128,
 		color = Color(0.2, 1, 1, 1),
 		valign = {
 			0.5,
@@ -78,11 +78,11 @@ function HUDSuspicion:init(hud, sound_source)
 	hud_stealthmeter_bg:set_center(suspicion_left:center())
 
 	local suspicion_detected = self._suspicion_panel:text({
-		name = "suspicion_detected",
-		vertical = "center",
 		align = "center",
 		alpha = 0,
 		layer = 2,
+		name = "suspicion_detected",
+		vertical = "center",
 		text = managers.localization:to_upper_text("hud_detected"),
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		font = tweak_data.menu.pd2_medium_font
@@ -92,29 +92,29 @@ function HUDSuspicion:init(hud, sound_source)
 	suspicion_detected:set_center(suspicion_left:center())
 
 	local hud_stealth_eye = self._misc_panel:bitmap({
-		texture = "guis/textures/pd2/hud_stealth_eye",
-		name = "hud_stealth_eye",
-		h = 32,
 		alpha = 0,
-		w = 32,
-		layer = 1,
 		blend_mode = "add",
+		h = 32,
+		layer = 1,
+		name = "hud_stealth_eye",
+		texture = "guis/textures/pd2/hud_stealth_eye",
+		valign = "center",
 		visible = true,
-		valign = "center"
+		w = 32
 	})
 
 	hud_stealth_eye:set_center(suspicion_left:center_x(), suspicion_left:bottom() - 4)
 
 	local hud_stealth_exclam = self._misc_panel:bitmap({
-		texture = "guis/textures/pd2/hud_stealth_exclam",
-		name = "hud_stealth_exclam",
-		h = 32,
 		alpha = 0,
-		w = 32,
-		layer = 1,
 		blend_mode = "add",
+		h = 32,
+		layer = 1,
+		name = "hud_stealth_exclam",
+		texture = "guis/textures/pd2/hud_stealth_exclam",
+		valign = "center",
 		visible = true,
-		valign = "center"
+		w = 32
 	})
 
 	hud_stealth_exclam:set_center(suspicion_left:center_x(), suspicion_left:top() - 4)
@@ -147,7 +147,7 @@ function HUDSuspicion:animate_eye()
 			local start_alpha = hud_stealth_eye:alpha()
 
 			wait(1.8)
-			over(0.1, function (p)
+			over(0.1, function(p)
 				hud_stealthmeter_bg:set_alpha(math.lerp(start_alpha, 0, p))
 				hud_stealth_eye:set_alpha(math.lerp(start_alpha, 0, p))
 			end)
@@ -158,7 +158,7 @@ function HUDSuspicion:animate_eye()
 			local hud_stealth_eye = o:child("hud_stealth_eye")
 			local start_alpha = hud_stealth_eye:alpha()
 
-			over(0.1, function (p)
+			over(0.1, function(p)
 				hud_stealthmeter_bg:set_alpha(math.lerp(start_alpha, 1, p))
 				hud_stealth_eye:set_alpha(math.lerp(start_alpha, 1, p))
 			end)
@@ -168,7 +168,7 @@ function HUDSuspicion:animate_eye()
 		misc_panel:animate(animate_show_misc)
 
 		local c = math.lerp(1, 0, math.clamp((value - 0.75) * 4, 0, 1))
-		local dt = nil
+		local dt
 		local detect_me = false
 		local time_to_end = 4
 
@@ -200,7 +200,7 @@ function HUDSuspicion:animate_eye()
 						local a = 0
 						local font_scale = o:font_scale()
 
-						over(0.8, function (p)
+						over(0.8, function(p)
 							c = math.lerp(1, 0, math.clamp((p - 0.75) * 6, 0, 1))
 							s = math.lerp(0, 1, math.min(1, p * 2))
 							a = math.lerp(0, 1, math.min(1, p * 3))

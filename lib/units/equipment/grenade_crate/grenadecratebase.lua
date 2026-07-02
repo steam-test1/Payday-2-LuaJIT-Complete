@@ -42,13 +42,12 @@ function GrenadeCrateBase:setup()
 		local ray = self._unit:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("world_geometry"))
 
 		if ray then
-			self._attached_data = {
-				body = ray.body,
-				position = ray.body:position(),
-				rotation = ray.body:rotation(),
-				index = 1,
-				max_index = 3
-			}
+			self._attached_data = {}
+			self._attached_data.body = ray.body
+			self._attached_data.position = ray.body:position()
+			self._attached_data.rotation = ray.body:rotation()
+			self._attached_data.index = 1
+			self._attached_data.max_index = 3
 
 			self._unit:set_extension_update_enabled(Idstring("base"), true)
 		end
@@ -182,15 +181,16 @@ function GrenadeCrateBase:_set_empty()
 end
 
 function GrenadeCrateBase:save(data)
-	local state = {
-		grenade_amount = self._grenade_amount,
-		is_dynamic = self._is_dynamic
-	}
+	local state = {}
+
+	state.grenade_amount = self._grenade_amount
+	state.is_dynamic = self._is_dynamic
 	data.GrenadeCrateBase = state
 end
 
 function GrenadeCrateBase:load(data)
 	local state = data.GrenadeCrateBase
+
 	self._grenade_amount = state.grenade_amount
 
 	if state.is_dynamic then
@@ -205,6 +205,7 @@ function GrenadeCrateBase:load(data)
 end
 
 function GrenadeCrateBase:destroy()
+	return
 end
 
 CustomGrenadeCrateBase = CustomGrenadeCrateBase or class(GrenadeCrateBase)
@@ -343,6 +344,7 @@ end
 function GrenadeCrateDeployableBase:_set_empty()
 	self._grenade_amount = 0
 	self._empty = true
+
 	local unit = self._unit
 
 	if Network:is_server() or unit:id() == -1 then

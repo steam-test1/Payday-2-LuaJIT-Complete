@@ -7,6 +7,7 @@ function InfamyTweakData:init()
 
 	local cost_old = digest(200000000)
 	local cost_new = digest(0)
+
 	self.ranks = {
 		cost_old,
 		cost_old,
@@ -68,6 +69,7 @@ function InfamyTweakData:init()
 		tier1 = digest(1)
 	}
 	self.items = {}
+
 	local skilltree_multiplier = 0.9
 	local skillcost_multiplier = 0.75
 	local skilltree_readable_multiplier = "10%"
@@ -82,10 +84,11 @@ function InfamyTweakData:init()
 	local infamous_readable_xp_multiplier_medium = "10%"
 	local infamous_xp_multiplier_large = 1.15
 	local infamous_readable_xp_multiplier_large = "15%"
+
 	self.items.infamy_root = {
 		add_tier = false,
-		name_id = "menu_infamy_name_root",
 		desc_id = "menu_infamy_desc_root",
+		name_id = "menu_infamy_name_root",
 		desc_params = {
 			cashcost = skillcost_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -110,8 +113,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_mastermind = {
 		add_tier = false,
-		name_id = "menu_infamy_name_mastermind",
 		desc_id = "menu_infamy_desc_mastermind",
+		name_id = "menu_infamy_name_mastermind",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -149,8 +152,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_enforcer = {
 		add_tier = false,
-		name_id = "menu_infamy_name_enforcer",
 		desc_id = "menu_infamy_desc_enforcer",
+		name_id = "menu_infamy_name_enforcer",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -188,8 +191,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_technician = {
 		add_tier = false,
-		name_id = "menu_infamy_name_technician",
 		desc_id = "menu_infamy_desc_technician",
+		name_id = "menu_infamy_name_technician",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -227,8 +230,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_ghost = {
 		add_tier = false,
-		name_id = "menu_infamy_name_ghost",
 		desc_id = "menu_infamy_desc_ghost",
+		name_id = "menu_infamy_name_ghost",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -264,10 +267,11 @@ function InfamyTweakData:init()
 			}
 		}
 	}
+
 	local generic_medium_xp_item = {
-		name_id = "menu_infamy_name_xp",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_xp",
+		name_id = "menu_infamy_name_xp",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_medium
 		},
@@ -286,9 +290,9 @@ function InfamyTweakData:init()
 	end
 
 	self.items.infamy_maskpack_balaclava = {
-		name_id = "menu_infamy_name_balaclava",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_balaclava",
+		name_id = "menu_infamy_name_balaclava",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -317,9 +321,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_lurker = {
-		name_id = "menu_infamy_name_lurker",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_lurker",
+		name_id = "menu_infamy_name_lurker",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -348,9 +352,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_hood = {
-		name_id = "menu_infamy_name_hood",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_hood",
+		name_id = "menu_infamy_name_hood",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -379,9 +383,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_pain = {
-		name_id = "menu_infamy_name_pain",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_pain",
+		name_id = "menu_infamy_name_pain",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -410,9 +414,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_ranger = {
-		name_id = "menu_infamy_name_ranger",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_ranger",
+		name_id = "menu_infamy_name_ranger",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -441,9 +445,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_punk = {
-		name_id = "menu_infamy_name_punk",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_punk",
+		name_id = "menu_infamy_name_punk",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -472,9 +476,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_daft = {
-		name_id = "menu_infamy_name_daft",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_daft",
+		name_id = "menu_infamy_name_daft",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -503,9 +507,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_destroyer = {
-		name_id = "menu_infamy_name_destroyer",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_destroyer",
+		name_id = "menu_infamy_name_destroyer",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},

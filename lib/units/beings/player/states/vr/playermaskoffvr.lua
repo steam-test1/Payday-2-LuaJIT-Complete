@@ -1,4 +1,5 @@
 PlayerMaskOffVR = PlayerMaskOff
+
 local __enter_default = PlayerMaskOff._enter
 local __exit_default = PlayerMaskOff.exit
 local __check_use_item_default = PlayerMaskOff._check_use_item
@@ -6,10 +7,10 @@ local __check_use_item_default = PlayerMaskOff._check_use_item
 function PlayerMaskOffVR:_enter(enter_data)
 	__enter_default(self, enter_data)
 
-	local mask_unit_name = nil
+	local mask_unit_name
 	local equipped_mask = managers.blackmarket:equipped_mask()
 	local peer_id = managers.network:session():local_peer():id()
-	local blueprint = nil
+	local blueprint
 	local mask_id = equipped_mask.mask_id and managers.blackmarket:get_real_mask_id(equipped_mask.mask_id, peer_id)
 
 	if mask_id then

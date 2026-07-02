@@ -33,6 +33,7 @@ end
 
 function SafehouseVaultMoneyStacks:_setup()
 	self._tiers = {}
+
 	local cash_index = (self.tier - 1) * self.CHUNKS
 
 	for i = 1, self.CHUNKS do
@@ -55,12 +56,12 @@ function SafehouseVaultMoneyStacks:_setup()
 	end
 
 	local total = managers.money:total()
-	local target_tier = nil
+	local target_tier
 
 	for i = #self._tiers, 1, -1 do
 		local data = self._tiers[i]
 
-		if data.cash < total then
+		if total > data.cash then
 			target_tier = i
 
 			break

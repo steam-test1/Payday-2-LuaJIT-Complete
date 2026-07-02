@@ -37,12 +37,14 @@ MutatorCG22.bag_spawn_sequences = {
 }
 MutatorCG22.briefing_dialog = "Play_alm_xmas22_brf"
 MutatorCG22.briefing_event = "Play_alm_xmas22_cbf"
+
 local mvec1 = Vector3()
 local mvec2 = Vector3()
 local mrot1 = Rotation()
 local mrot2 = Rotation()
 
 function MutatorCG22:register_values(mutator_manager)
+	return
 end
 
 function MutatorCG22:next_interupt_stage(interupt)
@@ -53,15 +55,23 @@ function MutatorCG22:setup(mutator_manager)
 	print("MutatorCG22:setup")
 
 	self._tweakdata = tweak_data.mutators.cg22
+
 	local spawn_data = tweak_data.mutators:get_cg22_tree_coordinates()[Global.level_data.level_id]
+
 	self._position = spawn_data and spawn_data.position or Vector3()
 	self._rotation = spawn_data and spawn_data.rotation or Rotation()
+
 	local sled_data = tweak_data.mutators:get_cg22_sled_coordinates()[Global.level_data.level_id]
+
 	self._sled_position = sled_data and sled_data.position + Vector3(0, 0, 10) or self._position + Vector3(600, 0, 0)
 	self._sled_rotation = sled_data and Rotation(sled_data.rotation:yaw() + 180, sled_data.rotation:pitch(), sled_data.rotation:roll()) or Rotation()
+
 	local shredder_data = tweak_data.mutators:get_cg22_shredder_offsets()[Global.level_data.level_id]
+
 	self._shredder_position = self._position + (shredder_data and shredder_data.position or self._tweakdata.shredder_generic_offset)
+
 	local look_rot = Rotation:look_at(self._shredder_position, self._position, Vector3(0, 0, 1))
+
 	self._shredder_rotation = Rotation(look_rot:yaw() - 90, 0, 0)
 	self._shredder_direction = Vector3(math.cos(self._shredder_rotation:yaw()), math.sin(self._shredder_rotation:yaw()), 0)
 	self._sled_sound_source = SoundDevice:create_source("CG22Sled")
@@ -86,20 +96,20 @@ function MutatorCG22:on_game_started(mutator_manager)
 
 	self._bags_collected = {
 		shredded = {
+			cg22_bag = 0,
 			cg22_bag_green = 0,
-			cg22_bag_yellow = 0,
-			cg22_bag = 0
+			cg22_bag_yellow = 0
 		},
 		sledded = {
+			cg22_bag = 0,
 			cg22_bag_green = 0,
-			cg22_bag_yellow = 0,
-			cg22_bag = 0
+			cg22_bag_yellow = 0
 		}
 	}
 	self._enemy_buffs = {
+		cg22_bag = 0,
 		cg22_bag_green = 0,
-		cg22_bag_yellow = 0,
-		cg22_bag = 0
+		cg22_bag_yellow = 0
 	}
 	self._temp_buffs = {
 		ammo_types = {}
@@ -109,9 +119,9 @@ function MutatorCG22:on_game_started(mutator_manager)
 		bag_speed_amount = 0
 	}
 	self._next_player_buff = {
+		cg22_bag = 1,
 		cg22_bag_green = 1,
-		cg22_bag_yellow = 1,
-		cg22_bag = 1
+		cg22_bag_yellow = 1
 	}
 	self._announcer_unit = World:spawn_unit(Idstring(MutatorCG22.announcer_unit), self._position + Vector3(0, 0, 100), self._rotation)
 
@@ -165,8 +175,10 @@ function MutatorCG22:spawn_network_units()
 	if Network:is_server() and not self._sync_listener_key then
 		self._tree = World:spawn_unit(Idstring(MutatorCG22.tree), self._position, self._rotation)
 		self._sled = World:spawn_unit(Idstring(MutatorCG22.sled), self._sled_position, self._sled_rotation)
+
 		local direction = Vector3(math.cos(self._sled_rotation:yaw()), math.sin(self._sled_rotation:yaw()), 0)
 		local santa_rotation = Rotation(self._sled:rotation():yaw() + 180, self._sled:rotation():pitch(), self._sled:rotation():roll())
+
 		self._santa = World:spawn_unit(Idstring(MutatorCG22.santa), self._sled:position() + Vector3(math.cos(self._sled:rotation():yaw() + 90) * -115, math.sin(self._sled:rotation():yaw() + 90) * -115, 0) + Vector3(0, 0, 30), santa_rotation)
 
 		self._santa:movement():set_team(managers.groupai:state():team_data("cg22"))
@@ -247,6 +259,7 @@ end
 
 function MutatorCG22:sync_save(mutator_manager, save_data)
 	local my_save_data = {}
+
 	save_data.cg22_mutator = my_save_data
 	my_save_data.bags_collected = self._bags_collected
 	my_save_data.tree_unit = self._tree
@@ -259,6 +272,7 @@ end
 
 function MutatorCG22:sync_load(mutator_manager, load_data)
 	local my_load_data = load_data.cg22_mutator
+
 	self._bags_collected = my_load_data.bags_collected
 	self._next_player_buff = my_load_data.next_buffs
 
@@ -291,6 +305,7 @@ function MutatorCG22:update(t, dt)
 
 			if self._sled_bag_check_t < 0 then
 				self._sled_bag_check_t = self._sled_bag_check_t + 0.1
+
 				local pos = mvec1
 
 				self._sled:get_object(Idstring("c_box_10")):m_position(pos)
@@ -318,6 +333,7 @@ function MutatorCG22:update(t, dt)
 
 			if self._shredder_bag_check_t < 0 then
 				self._shredder_bag_check_t = self._shredder_bag_check_t + 0.1
+
 				local pos = mvec1
 
 				self._shredder:get_object(Idstring("c_box_01")):m_position(pos)
@@ -343,6 +359,7 @@ function MutatorCG22:update(t, dt)
 
 			if self._tree_area_check_t < 0 then
 				self._tree_area_check_t = self._tree_area_check_t + 0.1
+
 				local pos = mvec1
 
 				self._tree:get_object(Idstring("c_box_01")):m_position(pos)
@@ -406,7 +423,7 @@ function MutatorCG22:update(t, dt)
 		local bag_id = managers.network:session() and managers.player:get_my_carry_data() and managers.player:get_my_carry_data().carry_id or ""
 
 		if not managers.interaction:active_unit() and not table.contains(invalid_states, current_state) and (bag_id == "cg22_bag" or bag_id == "cg22_bag_green" or bag_id == "cg22_bag_yellow") then
-			local text_string, text_icon = nil
+			local text_string, text_icon
 			local current_player_state = managers.player:get_current_state()
 			local fwd_ray = current_player_state and current_player_state.get_fwd_ray and current_player_state:get_fwd_ray()
 
@@ -416,9 +433,10 @@ function MutatorCG22:update(t, dt)
 				}
 				local progress_range = self._tweakdata.progress_range or 500
 				local buff_td = self:get_next_buff_for_bag_id(bag_id)
+
 				macros.BUFF_STRING = managers.localization:text(buff_td.hud_string_id)
 
-				if fwd_ray.distance < progress_range then
+				if progress_range > fwd_ray.distance then
 					text_string = managers.localization:text("hud_cg22_show_buff", macros)
 				end
 			end
@@ -441,6 +459,7 @@ function MutatorCG22:update(t, dt)
 
 				if sub_buff_data.timer <= 0 then
 					self._temp_buffs[buff_id][sub_buff_id] = nil
+
 					local func = self["remove_" .. buff_id .. "_buff"]
 
 					if func then
@@ -486,7 +505,7 @@ end
 function MutatorCG22:_spawn_present()
 	print("CG22__spawn_present!")
 
-	local spawn_pos = nil
+	local spawn_pos
 
 	for index = 1, 3 do
 		if not alive(self._bag_que[index]) then
@@ -508,7 +527,7 @@ function MutatorCG22:_spawn_present()
 	end
 
 	local random_spawn_nr = math.random(max_spawn)
-	local bag_spawn_item = nil
+	local bag_spawn_item
 
 	for index, item in pairs(self._bag_pool) do
 		if random_spawn_nr <= item.amount then
@@ -523,7 +542,9 @@ function MutatorCG22:_spawn_present()
 
 	if bag_spawn_item then
 		local bag_spawn_string = bag_spawn_item.bag_type
+
 		self._next_spawn_pos = spawn_pos
+
 		local sequence = "spawn_" .. bag_spawn_string .. "_present_pos_" .. spawn_pos
 
 		if max_spawn - 1 <= 0 then
@@ -579,7 +600,9 @@ function MutatorCG22:_server_present_shredded(bag_unit)
 
 	local debuff_vo_trigger = self._voice_line_amount_triggers.spawn_present_enemy_buff
 
-	if (self:get_total_collected_bags() + (debuff_vo_trigger.initial and 1 or 0)) % debuff_vo_trigger.trigger_amount ~= 0 then
+	if (self:get_total_collected_bags() + (debuff_vo_trigger.initial and 1 or 0)) % debuff_vo_trigger.trigger_amount == 0 then
+		-- Nothing
+	else
 		self:announcer_say("Play_alm_xmas22_07", true)
 	end
 
@@ -590,7 +613,9 @@ function MutatorCG22:sync_present_shredded(shredder_unit, bag_carry_int, next_bu
 	print("CG22_SYNCPresentShredded!")
 
 	local bag_carry_id = MutatorCG22.bag_carry_ids[bag_carry_int]
+
 	self._bags_collected.shredded[bag_carry_id] = self._bags_collected.shredded[bag_carry_id] + 1
+
 	local buff_td = self:get_next_buff_for_bag_id(bag_carry_id)
 
 	self:activate_buff(buff_td)
@@ -619,7 +644,9 @@ function MutatorCG22:_server_present_sledded(bag_unit)
 
 	local debuff_vo_trigger = self._voice_line_amount_triggers.spawn_present_enemy_buff
 
-	if (self:get_total_collected_bags() + (debuff_vo_trigger.initial and 1 or 0)) % debuff_vo_trigger.trigger_amount ~= 0 then
+	if (self:get_total_collected_bags() + (debuff_vo_trigger.initial and 1 or 0)) % debuff_vo_trigger.trigger_amount == 0 then
+		-- Nothing
+	else
 		self:announcer_say("Play_alm_xmas22_06", true)
 	end
 
@@ -635,6 +662,7 @@ function MutatorCG22:sync_present_sledded(sled_unit, bag_carry_int, last_carried
 	print("CG22_SyncPresentSledded!")
 
 	local bag_carry_id = MutatorCG22.bag_carry_ids[bag_carry_int]
+
 	self._bags_collected.sledded[bag_carry_id] = self._bags_collected.sledded[bag_carry_id] + 1
 
 	managers.event_jobs:award("cg22_secure_objective")
@@ -656,8 +684,8 @@ end
 
 function MutatorCG22:sync_on_snowman_spawned()
 	managers.hud:add_buff({
-		name_id = "hud_buff_snowman_warning",
 		buff_id = "snowman_spawn",
+		name_id = "hud_buff_snowman_warning",
 		time_left = 5,
 		color = Color.white
 	})
@@ -827,7 +855,7 @@ function MutatorCG22:get_random_buff_no_repeat(buff_selection, last_buff)
 		return buff_amount == 1 and buff_selection[1] or nil
 	end
 
-	local selected_buff = nil
+	local selected_buff
 
 	repeat
 		selected_buff = buff_selection[math.random(buff_amount)]
@@ -843,8 +871,8 @@ function MutatorCG22:activate_health_refresh_buff(buff_td)
 	if unit_damage then
 		unit_damage:restore_health(buff_td.amount, true)
 		managers.hud:add_buff({
-			name_id = "buff_td.hud_string_id",
 			buff_id = "recover_health",
+			name_id = "buff_td.hud_string_id",
 			time_left = 2,
 			color = buff_td.color
 		})
@@ -939,6 +967,7 @@ end
 function MutatorCG22:on_bag_pickup(carry_id)
 	if not self._has_played_first_pickup and carry_id == "cg22_bag" or carry_id == "cg22_bag_green" or carry_id == "cg22_bag_yellow" then
 		self._has_played_first_pickup = true
+
 		local success = self:announcer_say("Play_alm_xmas22_05", false)
 	end
 end

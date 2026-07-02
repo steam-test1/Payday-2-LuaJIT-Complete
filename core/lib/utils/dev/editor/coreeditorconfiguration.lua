@@ -1,8 +1,11 @@
 function CoreEditor:build_configuration()
 	self._config = {}
+
 	local frame_size_height = 400
 	local frame_size_width = 500
+
 	self._configuration = EWS:Dialog(nil, "Configuration", "_configuration", Vector3(-1, -1, 0), Vector3(frame_size_width, frame_size_height), "")
+
 	local main_sizer = EWS:BoxSizer("VERTICAL")
 
 	self._configuration:set_sizer(main_sizer)
@@ -173,6 +176,7 @@ function CoreEditor:_add_notes_page(notebook)
 	page_notes:set_sizer(notes_sizer)
 
 	local note_text = EWS:TextCtrl(page_notes, self._notes, "", "TE_MULTILINE,TE_RICH2,TE_DONTWRAP,VSCROLL,ALWAYS_SHOW_SB")
+
 	self._config._notes = note_text
 
 	notes_sizer:add(note_text, 1, 0, "EXPAND")
@@ -188,6 +192,7 @@ function CoreEditor:_add_slave_page(notebook)
 	local slave_sizer = EWS:StaticBoxSizer(page_slave, "VERTICAL", "")
 	local slave_host_name_sizer = EWS:StaticBoxSizer(page_slave, "HORIZONTAL", "Host / Port / LSPort: (0 is default.)")
 	local slave_host_name = EWS:TextCtrl(page_slave, self._slave_host_name or "", "", "")
+
 	self._config._slave_host_name = slave_host_name
 
 	slave_host_name_sizer:add(slave_host_name, 2, 0, "EXPAND")

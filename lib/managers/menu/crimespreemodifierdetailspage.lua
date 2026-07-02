@@ -1,4 +1,5 @@
 CrimeSpreeModifierDetailsPage = CrimeSpreeModifierDetailsPage or class(CrimeSpreeDetailsPage)
+
 local padding = 10
 
 function CrimeSpreeModifierDetailsPage:init(...)
@@ -7,7 +8,7 @@ function CrimeSpreeModifierDetailsPage:init(...)
 	local modifiers = managers.crime_spree:server_active_modifiers()
 	local next_modifiers_h = tweak_data.menu.pd2_small_font_size * 2 + padding * 0.5
 	local line_h = tweak_data.menu.pd2_small_font_size * 1.5
-	local warning_title, warning_text = nil
+	local warning_title, warning_text
 
 	if managers.crime_spree:server_spree_level() < managers.crime_spree:spree_level() then
 		warning_title = "menu_cs_modifiers_suspended"
@@ -28,20 +29,20 @@ function CrimeSpreeModifierDetailsPage:init(...)
 		})
 
 		level_panel:bitmap({
-			texture = "guis/textures/pd2/cs_warning_background",
-			name = "background",
 			h = 128,
 			layer = 10,
+			name = "background",
+			texture = "guis/textures/pd2/cs_warning_background",
 			color = Color.white,
 			w = level_panel:w()
 		})
 
 		local suspend_text = level_panel:text({
-			word_wrap = true,
-			vertical = "left",
-			wrap = true,
 			align = "left",
 			layer = 20,
+			vertical = "left",
+			word_wrap = true,
+			wrap = true,
 			text = warning_title and managers.localization:to_upper_text(warning_title) or "",
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			font = tweak_data.menu.pd2_medium_font,
@@ -54,13 +55,13 @@ function CrimeSpreeModifierDetailsPage:init(...)
 
 		local w_multi = 0.75
 		local suspend_desc_text = level_panel:text({
+			align = "left",
+			layer = 20,
 			vertical = "top",
 			word_wrap = true,
 			wrap = true,
-			align = "left",
-			layer = 20,
 			text = warning_text and managers.localization:text(warning_text) or "",
-			x = self:panel():w() * (1 - w_multi) * 0.5,
+			x = self:panel():w() * ((1 - w_multi) * 0.5),
 			w = self:panel():w() * w_multi,
 			font_size = tweak_data.menu.pd2_small_font_size,
 			font = tweak_data.menu.pd2_small_font,
@@ -77,12 +78,14 @@ function CrimeSpreeModifierDetailsPage:init(...)
 	self._next_panel = self:panel():panel({
 		h = next_modifiers_h
 	})
+
 	local name_color = managers.crime_spree:in_progress() and tweak_data.screen_colors.text or tweak_data.screen_colors.important_1
+
 	self._next_text = self._next_panel:text({
-		vertical = "center",
 		align = "left",
 		halign = "left",
 		layer = 1,
+		vertical = "center",
 		text = self:upcoming_modifiers_text(),
 		x = padding,
 		color = name_color,
@@ -94,26 +97,28 @@ function CrimeSpreeModifierDetailsPage:init(...)
 	self._next_text:set_visible(not warning_title)
 
 	self._cached_server_level = managers.crime_spree:server_spree_level()
+
 	local modifiers_panel = self:panel():panel({
 		y = self._next_panel:h() - padding,
 		h = self:panel():h() - self._next_panel:h() + padding
 	})
 	local modifiers_h = CrimeSpreeModifierDetailsPage.add_modifiers_panel(self, modifiers_panel, nil, true)
+
 	modifiers_h = modifiers_h + next_modifiers_h
 
 	self:panel():bitmap({
-		texture = "guis/textures/test_blur_df",
-		layer = -1,
-		halign = "scale",
 		alpha = 1,
+		halign = "scale",
+		layer = -1,
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = self:panel():w(),
 		h = modifiers_h
 	})
 	self:panel():rect({
-		halign = "scale",
 		alpha = 0.5,
+		halign = "scale",
 		valign = "scale",
 		color = Color.black,
 		h = modifiers_h
@@ -151,6 +156,7 @@ function CrimeSpreeModifierDetailsPage:upcoming_modifiers_text()
 			local localized = managers.localization:to_upper_text(text_id, {
 				next = next_level - managers.crime_spree:server_spree_level()
 			})
+
 			upcoming_modifiers_text = upcoming_modifiers_text .. padding .. localized
 		end
 	end
@@ -192,7 +198,8 @@ end
 
 function CrimeSpreeModifierDetailsPage:add_modifiers_panel(parent, modifiers, is_tab)
 	modifiers = modifiers or managers.crime_spree:server_active_modifiers()
-	local left_scroll, ignore_up_indicator, extra_padding_right = nil
+
+	local left_scroll, ignore_up_indicator, extra_padding_right
 
 	if is_tab then
 		left_scroll = true
@@ -206,28 +213,31 @@ function CrimeSpreeModifierDetailsPage:add_modifiers_panel(parent, modifiers, is
 
 	local max_level = (modifiers[#modifiers] or {}).level or 0
 	local max_level_text = parent:text({
-		vertical = "top",
-		halign = "right",
 		align = "right",
+		halign = "right",
 		valign = "top",
+		vertical = "top",
 		text = managers.localization:get_default_macro("BTN_SPREE_STEALTH") .. managers.experience:cash_string(max_level, ""),
 		color = Color.white,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	})
 	local _, _, level_w, _ = max_level_text:text_rect()
+
 	level_w = level_w + padding
 
 	parent:remove(max_level_text)
 
 	local params = {
 		force_scroll_indicators = true,
-		padding = 0,
 		layer = 1,
+		padding = 0,
 		left_scrollbar = left_scroll,
 		ignore_up_indicator = ignore_up_indicator
 	}
+
 	self._scroll = ScrollablePanel:new(parent, "modifiers_scroll", params)
+
 	local modifiers_count = {}
 	local count = 0
 	local next_y = 0
@@ -242,17 +252,19 @@ function CrimeSpreeModifierDetailsPage:add_modifiers_panel(parent, modifiers, is
 				w = self._scroll:canvas():w(),
 				y = next_y
 			})
+
 			modifiers_count[modifier.class] = (modifiers_count[modifier.class] or 0) + 1
+
 			local desc = panel:text({
-				halign = "left",
-				vertical = "top",
-				wrap = true,
 				align = "left",
-				layer = 1,
 				alpha = 0.8,
-				y = 5,
-				word_wrap = true,
+				halign = "left",
+				layer = 1,
 				valign = "top",
+				vertical = "top",
+				word_wrap = true,
+				wrap = true,
+				y = 5,
 				text = managers.crime_spree:make_modifier_description(modifier_data.id, modifiers_count[modifier.class] == 1),
 				x = padding * 1.5 + level_w,
 				font = tweak_data.menu.pd2_small_font,
@@ -262,12 +274,12 @@ function CrimeSpreeModifierDetailsPage:add_modifiers_panel(parent, modifiers, is
 				color = Color.white
 			})
 			local level = panel:text({
-				halign = "right",
-				vertical = "top",
 				align = "right",
+				halign = "right",
 				layer = 1,
-				y = 2,
 				valign = "top",
+				vertical = "top",
+				y = 2,
 				text = managers.experience:cash_string(modifier_data.level, ""),
 				x = padding,
 				color = Color.white,

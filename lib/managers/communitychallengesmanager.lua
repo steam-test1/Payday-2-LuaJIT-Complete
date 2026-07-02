@@ -78,8 +78,9 @@ function CommunityChallengesManager:_on_global_stats_refresh_complete_steam(succ
 		local base = challenge.base_target
 		local stat_value = get_60_day_stat(challenge.statistic_id)
 		local total_value = math.floor(tonumber(stat_value * (challenge.display_multiplier or 1)))
-		local stage = math.floor(math.log(1 - total_value * (1 - ratio) / base) / math.log(ratio))
-		local stage_base_value = math.floor(base * (1 - math.pow(ratio, stage)) / (1 - ratio))
+		local stage = math.floor(math.log(1 - total_value * ((1 - ratio) / base)) / math.log(ratio))
+		local stage_base_value = math.floor(base * ((1 - math.pow(ratio, stage)) / (1 - ratio)))
+
 		self._global.challenge_data[challenge.statistic_id] = {
 			stage = stage + 1,
 			total_value = total_value,

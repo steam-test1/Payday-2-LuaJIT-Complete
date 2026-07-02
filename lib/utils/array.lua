@@ -60,6 +60,7 @@ function Array.from_node(node)
 	if width and height then
 		width = tonumber(width)
 		height = tonumber(height)
+
 		local data = {}
 		local items = node:data():split(" ")
 
@@ -75,6 +76,7 @@ end
 
 function Array.random(height, width, out)
 	local data = out and out._data or {}
+
 	out = out or Array:new(data, height, width)
 
 	for i = 1, width * height do
@@ -86,6 +88,7 @@ end
 
 function Array.zero(height, width, out)
 	local data = out and out._data or {}
+
 	out = out or Array:new(data, height, width)
 
 	for i = 1, width * height do
@@ -139,7 +142,9 @@ function Array:dot(other, out)
 	local src = self._data
 	local dst = other._data
 	local data = out and out._data or {}
+
 	out = out or Array:new(data, self._height, other._width)
+
 	local oindex = 1
 	local srowindex = 0
 
@@ -167,7 +172,9 @@ function Array:dot_transpose(other, out)
 	local src = self._data
 	local dst = other._data
 	local data = out and out._data or {}
+
 	out = out or Array:new(data, self._height, other._height)
+
 	local oindex = 1
 	local srowindex = 0
 
@@ -195,6 +202,7 @@ end
 function Array:transpose(out)
 	local data = out and out._data or {}
 	local oindex = 1
+
 	out = out or Array:new(data, self._width, self._height)
 
 	for i = 1, self._width do
@@ -268,6 +276,7 @@ function array_relu_d(dst, src)
 
 	for i = 1, src:width() * src:height() do
 		local v = src_data[i]
+
 		dst_data[i] = v >= 0 and 1 or 0
 	end
 
@@ -291,6 +300,7 @@ function array_softplus_d(dst, src)
 
 	for i = 1, src:width() * src:height() do
 		local v = src_data[i]
+
 		dst_data[i] = 1 / (1 + math.exp(-src_data[i]))
 	end
 
@@ -311,7 +321,7 @@ function array_dropout(dst, src, probability)
 	local inv_probability = 1 / probability
 
 	for i = 1, src:width() * src:height() do
-		dst_data[i] = src_data[i] * (math.random() < probability and inv_probability or 0)
+		dst_data[i] = src_data[i] * (probability > math.random() and inv_probability or 0)
 	end
 end
 

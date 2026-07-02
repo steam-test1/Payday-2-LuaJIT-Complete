@@ -5,9 +5,9 @@ function SpawnManager:init()
 end
 
 function SpawnManager:spawn_enemy_group_in_vis_group(event, i_vis_group)
-	local spawn_request = {
-		groups = {}
-	}
+	local spawn_request = {}
+
+	spawn_request.groups = {}
 
 	for unit_name, unit_data in pairs(event.groups) do
 		spawn_request.groups[unit_name] = {
@@ -40,9 +40,9 @@ function SpawnManager:spawn_enemy_group_in_vis_group(event, i_vis_group)
 end
 
 function SpawnManager:spawn_enemy_group(event)
-	local spawn_request = {
-		groups = {}
-	}
+	local spawn_request = {}
+
+	spawn_request.groups = {}
 
 	for unit_name, unit_data in pairs(event.groups) do
 		spawn_request.groups[unit_name] = {
@@ -51,6 +51,7 @@ function SpawnManager:spawn_enemy_group(event)
 	end
 
 	spawn_request.ai = event.ai
+
 	local criminals = World:find_units_quick("all", managers.slot:get_mask("players"))
 
 	if #criminals > 0 then
@@ -111,15 +112,16 @@ function SpawnManager:spawn_enemy_group(event)
 end
 
 function SpawnManager:update(unit, t, dt)
+	return
 end
 
 function SpawnManager:_spawn_units()
 	if self._spawn_requests then
 		local units_spawned = {}
-		local trash_requests = nil
+		local trash_requests
 
 		for request_id, spawn_request in pairs(self._spawn_requests) do
-			local trash_groups = nil
+			local trash_groups
 
 			for unit_name, unit_data in pairs(spawn_request.groups) do
 				if unit_data.amount == 1 then

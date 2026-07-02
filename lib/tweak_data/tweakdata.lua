@@ -54,30 +54,39 @@ require("lib/tweak_data/SkirmishTweakData")
 TweakData = TweakData or class()
 
 function TweakData:_init_wip_tweak_data()
+	return
 end
 
 function TweakData:_init_wip_blackmarket(tweak_data)
+	return
 end
 
 function TweakData:_init_wip_levels()
+	return
 end
 
 function TweakData:_init_wip_narrative()
+	return
 end
 
 function TweakData:_init_wip_assets(tweak_data)
+	return
 end
 
 function TweakData:_init_wip_weapon_factory(tweak_data)
+	return
 end
 
 function TweakData:_init_wip_skilltree()
+	return
 end
 
 function TweakData:_init_wip_upgrades()
+	return
 end
 
 function TweakData:_init_wip_economy()
+	return
 end
 
 require("lib/tweak_data/TweakDataPD2")
@@ -140,7 +149,7 @@ function TweakData:get_raw_value(...)
 		...
 	}
 	local value = self
-	local v = nil
+	local v
 
 	for i = 1, #arg do
 		v = arg[i]
@@ -381,16 +390,15 @@ function TweakData:init()
 		80,
 		80
 	}
-	self.difficulty_name_ids = {
-		easy = "menu_difficulty_easy",
-		normal = "menu_difficulty_normal",
-		hard = "menu_difficulty_hard",
-		overkill = "menu_difficulty_very_hard",
-		overkill_145 = "menu_difficulty_overkill",
-		easy_wish = "menu_difficulty_easy_wish",
-		overkill_290 = "menu_difficulty_apocalypse",
-		sm_wish = "menu_difficulty_sm_wish"
-	}
+	self.difficulty_name_ids = {}
+	self.difficulty_name_ids.easy = "menu_difficulty_easy"
+	self.difficulty_name_ids.normal = "menu_difficulty_normal"
+	self.difficulty_name_ids.hard = "menu_difficulty_hard"
+	self.difficulty_name_ids.overkill = "menu_difficulty_very_hard"
+	self.difficulty_name_ids.overkill_145 = "menu_difficulty_overkill"
+	self.difficulty_name_ids.easy_wish = "menu_difficulty_easy_wish"
+	self.difficulty_name_ids.overkill_290 = "menu_difficulty_apocalypse"
+	self.difficulty_name_ids.sm_wish = "menu_difficulty_sm_wish"
 	self.permissions = {
 		"public",
 		"friends_only",
@@ -413,255 +421,254 @@ function TweakData:init()
 		"payday",
 		"custom_safehouse"
 	}
-	self.criminals = {
-		characters = {
-			{
-				name = "russian",
-				order = 1,
-				static_data = {
-					voice = "rb4",
-					ai_mask_id = "dallas",
-					ai_character_id = "ai_dallas",
-					ssuffix = "a"
-				},
-				body_g_object = Idstring("g_body")
+	self.criminals = {}
+	self.criminals.characters = {
+		{
+			name = "russian",
+			order = 1,
+			static_data = {
+				ai_character_id = "ai_dallas",
+				ai_mask_id = "dallas",
+				ssuffix = "a",
+				voice = "rb4"
 			},
-			{
-				name = "german",
-				order = 2,
-				static_data = {
-					voice = "rb3",
-					ai_mask_id = "wolf",
-					ai_character_id = "ai_wolf",
-					ssuffix = "c"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "spanish",
-				order = 3,
-				static_data = {
-					voice = "rb1",
-					ai_mask_id = "chains",
-					ai_character_id = "ai_chains",
-					ssuffix = "b"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "american",
-				order = 4,
-				static_data = {
-					voice = "rb2",
-					ai_mask_id = "hoxton",
-					ai_character_id = "ai_hoxton",
-					ssuffix = "l"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "jowi",
-				order = 5,
-				static_data = {
-					voice = "rb6",
-					ai_mask_id = "jw_shades",
-					ai_character_id = "ai_jowi",
-					ssuffix = "m"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "old_hoxton",
-				order = 6,
-				static_data = {
-					voice = "rb5",
-					ai_mask_id = "old_hoxton",
-					ai_character_id = "ai_old_hoxton",
-					ssuffix = "d"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "female_1",
-				order = 7,
-				static_data = {
-					voice = "rb7",
-					ai_mask_id = "msk_grizel",
-					ai_character_id = "ai_female_1",
-					ssuffix = "n"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "dragan",
-				order = 8,
-				static_data = {
-					voice = "rb8",
-					ai_mask_id = "dragan",
-					ai_character_id = "ai_dragan",
-					ssuffix = "o"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "jacket",
-				order = 9,
-				static_data = {
-					voice = "rb9",
-					ai_mask_id = "richard_returns",
-					ai_character_id = "ai_jacket",
-					ssuffix = "p"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "bonnie",
-				order = 10,
-				static_data = {
-					voice = "rb10",
-					ai_mask_id = "bonnie",
-					ai_character_id = "ai_bonnie",
-					ssuffix = "q"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "sokol",
-				order = 11,
-				static_data = {
-					voice = "rb11",
-					ai_mask_id = "sokol",
-					ai_character_id = "ai_sokol",
-					ssuffix = "r"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "dragon",
-				order = 12,
-				static_data = {
-					voice = "rb12",
-					ai_mask_id = "jiro",
-					ai_character_id = "ai_dragon",
-					ssuffix = "s"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "bodhi",
-				order = 13,
-				static_data = {
-					voice = "rb13",
-					ai_mask_id = "bodhi",
-					ai_character_id = "ai_bodhi",
-					ssuffix = "t"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "jimmy",
-				order = 14,
-				static_data = {
-					voice = "rb14",
-					ai_mask_id = "jimmy_duct",
-					ai_character_id = "ai_jimmy",
-					ssuffix = "u"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "sydney",
-				order = 15,
-				static_data = {
-					voice = "rb15",
-					ai_mask_id = "sydney",
-					ai_character_id = "ai_sydney",
-					ssuffix = "v"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "wild",
-				order = 16,
-				static_data = {
-					voice = "rb16",
-					ai_mask_id = "rust",
-					ai_character_id = "ai_wild",
-					ssuffix = "w"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "chico",
-				order = 17,
-				static_data = {
-					voice = "rb17",
-					ai_mask_id = "chc_terry",
-					ai_character_id = "ai_chico",
-					ssuffix = "x"
-				},
-				body_g_object = Idstring("g_body_terry")
-			},
-			{
-				name = "max",
-				order = 18,
-				static_data = {
-					voice = "rb18",
-					ai_mask_id = "max",
-					ai_character_id = "ai_max",
-					ssuffix = "y"
-				},
-				body_g_object = Idstring("g_body_max")
-			},
-			{
-				name = "joy",
-				order = 19,
-				static_data = {
-					voice = "rb19",
-					ai_mask_id = "joy",
-					ai_character_id = "ai_joy",
-					ssuffix = "z"
-				},
-				body_g_object = Idstring("g_body")
-			},
-			{
-				name = "myh",
-				order = 20,
-				static_data = {
-					voice = "rb22",
-					ai_mask_id = "myh",
-					ai_character_id = "ai_myh",
-					ssuffix = "ac"
-				},
-				body_g_object = Idstring("g_body_myh")
-			},
-			{
-				name = "ecp_male",
-				order = 21,
-				static_data = {
-					voice = "rb20",
-					ai_mask_id = "ecp_male",
-					ai_character_id = "ai_ecp_male",
-					ssuffix = "aa"
-				},
-				body_g_object = Idstring("g_body_ecp_male")
-			},
-			{
-				name = "ecp_female",
-				order = 22,
-				static_data = {
-					voice = "rb21",
-					ai_mask_id = "ecp_female",
-					ai_character_id = "ai_ecp_female",
-					ssuffix = "ab"
-				},
-				body_g_object = Idstring("g_body_ecp_female")
-			}
+			body_g_object = Idstring("g_body")
 		},
-		character_names = {}
+		{
+			name = "german",
+			order = 2,
+			static_data = {
+				ai_character_id = "ai_wolf",
+				ai_mask_id = "wolf",
+				ssuffix = "c",
+				voice = "rb3"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "spanish",
+			order = 3,
+			static_data = {
+				ai_character_id = "ai_chains",
+				ai_mask_id = "chains",
+				ssuffix = "b",
+				voice = "rb1"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "american",
+			order = 4,
+			static_data = {
+				ai_character_id = "ai_hoxton",
+				ai_mask_id = "hoxton",
+				ssuffix = "l",
+				voice = "rb2"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "jowi",
+			order = 5,
+			static_data = {
+				ai_character_id = "ai_jowi",
+				ai_mask_id = "jw_shades",
+				ssuffix = "m",
+				voice = "rb6"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "old_hoxton",
+			order = 6,
+			static_data = {
+				ai_character_id = "ai_old_hoxton",
+				ai_mask_id = "old_hoxton",
+				ssuffix = "d",
+				voice = "rb5"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "female_1",
+			order = 7,
+			static_data = {
+				ai_character_id = "ai_female_1",
+				ai_mask_id = "msk_grizel",
+				ssuffix = "n",
+				voice = "rb7"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "dragan",
+			order = 8,
+			static_data = {
+				ai_character_id = "ai_dragan",
+				ai_mask_id = "dragan",
+				ssuffix = "o",
+				voice = "rb8"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "jacket",
+			order = 9,
+			static_data = {
+				ai_character_id = "ai_jacket",
+				ai_mask_id = "richard_returns",
+				ssuffix = "p",
+				voice = "rb9"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "bonnie",
+			order = 10,
+			static_data = {
+				ai_character_id = "ai_bonnie",
+				ai_mask_id = "bonnie",
+				ssuffix = "q",
+				voice = "rb10"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "sokol",
+			order = 11,
+			static_data = {
+				ai_character_id = "ai_sokol",
+				ai_mask_id = "sokol",
+				ssuffix = "r",
+				voice = "rb11"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "dragon",
+			order = 12,
+			static_data = {
+				ai_character_id = "ai_dragon",
+				ai_mask_id = "jiro",
+				ssuffix = "s",
+				voice = "rb12"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "bodhi",
+			order = 13,
+			static_data = {
+				ai_character_id = "ai_bodhi",
+				ai_mask_id = "bodhi",
+				ssuffix = "t",
+				voice = "rb13"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "jimmy",
+			order = 14,
+			static_data = {
+				ai_character_id = "ai_jimmy",
+				ai_mask_id = "jimmy_duct",
+				ssuffix = "u",
+				voice = "rb14"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "sydney",
+			order = 15,
+			static_data = {
+				ai_character_id = "ai_sydney",
+				ai_mask_id = "sydney",
+				ssuffix = "v",
+				voice = "rb15"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "wild",
+			order = 16,
+			static_data = {
+				ai_character_id = "ai_wild",
+				ai_mask_id = "rust",
+				ssuffix = "w",
+				voice = "rb16"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "chico",
+			order = 17,
+			static_data = {
+				ai_character_id = "ai_chico",
+				ai_mask_id = "chc_terry",
+				ssuffix = "x",
+				voice = "rb17"
+			},
+			body_g_object = Idstring("g_body_terry")
+		},
+		{
+			name = "max",
+			order = 18,
+			static_data = {
+				ai_character_id = "ai_max",
+				ai_mask_id = "max",
+				ssuffix = "y",
+				voice = "rb18"
+			},
+			body_g_object = Idstring("g_body_max")
+		},
+		{
+			name = "joy",
+			order = 19,
+			static_data = {
+				ai_character_id = "ai_joy",
+				ai_mask_id = "joy",
+				ssuffix = "z",
+				voice = "rb19"
+			},
+			body_g_object = Idstring("g_body")
+		},
+		{
+			name = "myh",
+			order = 20,
+			static_data = {
+				ai_character_id = "ai_myh",
+				ai_mask_id = "myh",
+				ssuffix = "ac",
+				voice = "rb22"
+			},
+			body_g_object = Idstring("g_body_myh")
+		},
+		{
+			name = "ecp_male",
+			order = 21,
+			static_data = {
+				ai_character_id = "ai_ecp_male",
+				ai_mask_id = "ecp_male",
+				ssuffix = "aa",
+				voice = "rb20"
+			},
+			body_g_object = Idstring("g_body_ecp_male")
+		},
+		{
+			name = "ecp_female",
+			order = 22,
+			static_data = {
+				ai_character_id = "ai_ecp_female",
+				ai_mask_id = "ecp_female",
+				ssuffix = "ab",
+				voice = "rb21"
+			},
+			body_g_object = Idstring("g_body_ecp_female")
+		}
 	}
+	self.criminals.character_names = {}
 
-	table.sort(self.criminals.characters, function (a, b)
+	table.sort(self.criminals.characters, function(a, b)
 		return a.order < b.order
 	end)
 
@@ -692,26 +699,28 @@ function TweakData:init()
 		table.sort(data)
 	end
 
-	local weapon_tweak_meta = {
-		__index = function (table, key)
-			if key == "category" then
-				local categories = rawget(table, "categories")
+	do
+		local weapon_tweak_meta = {
+			__index = function(table, key)
+				if key == "category" then
+					local categories = rawget(table, "categories")
 
-				return categories and categories[1]
-			elseif key == "sub_category" then
-				local categories = rawget(table, "categories")
+					return categories and categories[1]
+				elseif key == "sub_category" then
+					local categories = rawget(table, "categories")
 
-				return categories and categories[2]
+					return categories and categories[2]
+				end
 			end
-		end
-	}
+		}
 
-	for key, table in pairs(self.weapon) do
-		if not getmetatable(table) then
-			table.category = nil
-			table.sub_category = nil
+		for key, table in pairs(self.weapon) do
+			if not getmetatable(table) then
+				table.category = nil
+				table.sub_category = nil
 
-			setmetatable(table, weapon_tweak_meta)
+				setmetatable(table, weapon_tweak_meta)
+			end
 		end
 	end
 
@@ -786,15 +795,13 @@ function TweakData:init()
 	self.blackmarket:build_player_style_list(self)
 	self.blackmarket:build_glove_list(self)
 
-	self.ai_carry = {
-		throw_distance = 500,
-		throw_force = 100,
-		revive_distance_autopickup = 300,
-		death_distance_teleport = 300
-	}
-	self.custom_colors = {
-		defaults = {}
-	}
+	self.ai_carry = {}
+	self.ai_carry.throw_distance = 500
+	self.ai_carry.throw_force = 100
+	self.ai_carry.revive_distance_autopickup = 300
+	self.ai_carry.death_distance_teleport = 300
+	self.custom_colors = {}
+	self.custom_colors.defaults = {}
 	self.custom_colors.defaults.flashlight = Color(1, 1, 1)
 	self.custom_colors.defaults.laser = Color(0, 0.4, 0)
 	self.custom_colors.defaults.laser_alpha = 0.5
@@ -805,84 +812,82 @@ function TweakData:init()
 
 	self.menu_themes = {
 		old = {
-			bg_support = "guis/textures/menu/old_theme/bg_support",
-			bg_setupgame = "guis/textures/menu/old_theme/bg_setupgame",
-			bg_lobby_fullteam = "guis/textures/menu/old_theme/bg_lobby_fullteam",
-			bg_upgrades = "guis/textures/menu/old_theme/bg_upgrades",
 			background = "guis/textures/menu/old_theme/background",
-			bg_hoxton = "guis/textures/menu/old_theme/bg_hoxton",
-			bg_options = "guis/textures/menu/old_theme/bg_options",
-			bg_technician = "guis/textures/menu/old_theme/bg_technician",
-			bg_dlc = "guis/textures/menu/old_theme/bg_dlc",
-			bg_stats = "guis/textures/menu/old_theme/bg_stats",
-			bg_creategame = "guis/textures/menu/old_theme/bg_creategame",
-			bg_challenge = "guis/textures/menu/old_theme/bg_challenge",
 			bg_assault = "guis/textures/menu/old_theme/bg_assault",
-			bg_wolf = "guis/textures/menu/old_theme/bg_wolf",
 			bg_chains = "guis/textures/menu/old_theme/bg_chains",
+			bg_challenge = "guis/textures/menu/old_theme/bg_challenge",
+			bg_creategame = "guis/textures/menu/old_theme/bg_creategame",
+			bg_dallas = "guis/textures/menu/old_theme/bg_dallas",
+			bg_dlc = "guis/textures/menu/old_theme/bg_dlc",
+			bg_hoxton = "guis/textures/menu/old_theme/bg_hoxton",
+			bg_lobby_fullteam = "guis/textures/menu/old_theme/bg_lobby_fullteam",
+			bg_options = "guis/textures/menu/old_theme/bg_options",
+			bg_setupgame = "guis/textures/menu/old_theme/bg_setupgame",
 			bg_sharpshooter = "guis/textures/menu/old_theme/bg_sharpshooter",
 			bg_startscreen = "guis/textures/menu/old_theme/bg_startscreen",
-			bg_dallas = "guis/textures/menu/old_theme/bg_dallas"
+			bg_stats = "guis/textures/menu/old_theme/bg_stats",
+			bg_support = "guis/textures/menu/old_theme/bg_support",
+			bg_technician = "guis/textures/menu/old_theme/bg_technician",
+			bg_upgrades = "guis/textures/menu/old_theme/bg_upgrades",
+			bg_wolf = "guis/textures/menu/old_theme/bg_wolf"
 		},
 		fire = {
-			bg_support = "guis/textures/menu/fire_theme/bg_support",
-			bg_setupgame = "guis/textures/menu/fire_theme/bg_setupgame",
-			bg_lobby_fullteam = "guis/textures/menu/fire_theme/bg_lobby_fullteam",
-			bg_upgrades = "guis/textures/menu/fire_theme/bg_upgrades",
 			background = "guis/textures/menu/fire_theme/background",
-			bg_hoxton = "guis/textures/menu/fire_theme/bg_hoxton",
-			bg_options = "guis/textures/menu/fire_theme/bg_options",
-			bg_technician = "guis/textures/menu/fire_theme/bg_technician",
-			bg_dlc = "guis/textures/menu/fire_theme/bg_dlc",
-			bg_stats = "guis/textures/menu/fire_theme/bg_stats",
-			bg_creategame = "guis/textures/menu/fire_theme/bg_creategame",
-			bg_challenge = "guis/textures/menu/fire_theme/bg_challenge",
 			bg_assault = "guis/textures/menu/fire_theme/bg_assault",
-			bg_wolf = "guis/textures/menu/fire_theme/bg_wolf",
 			bg_chains = "guis/textures/menu/fire_theme/bg_chains",
+			bg_challenge = "guis/textures/menu/fire_theme/bg_challenge",
+			bg_creategame = "guis/textures/menu/fire_theme/bg_creategame",
+			bg_dallas = "guis/textures/menu/fire_theme/bg_dallas",
+			bg_dlc = "guis/textures/menu/fire_theme/bg_dlc",
+			bg_hoxton = "guis/textures/menu/fire_theme/bg_hoxton",
+			bg_lobby_fullteam = "guis/textures/menu/fire_theme/bg_lobby_fullteam",
+			bg_options = "guis/textures/menu/fire_theme/bg_options",
+			bg_setupgame = "guis/textures/menu/fire_theme/bg_setupgame",
 			bg_sharpshooter = "guis/textures/menu/fire_theme/bg_sharpshooter",
 			bg_startscreen = "guis/textures/menu/fire_theme/bg_startscreen",
-			bg_dallas = "guis/textures/menu/fire_theme/bg_dallas"
+			bg_stats = "guis/textures/menu/fire_theme/bg_stats",
+			bg_support = "guis/textures/menu/fire_theme/bg_support",
+			bg_technician = "guis/textures/menu/fire_theme/bg_technician",
+			bg_upgrades = "guis/textures/menu/fire_theme/bg_upgrades",
+			bg_wolf = "guis/textures/menu/fire_theme/bg_wolf"
 		},
 		zombie = {
-			bg_support = "guis/textures/menu/zombie_theme/bg_support",
-			bg_setupgame = "guis/textures/menu/zombie_theme/bg_setupgame",
-			bg_lobby_fullteam = "guis/textures/menu/zombie_theme/bg_lobby_fullteam",
-			bg_upgrades = "guis/textures/menu/zombie_theme/bg_upgrades",
 			background = "guis/textures/menu/zombie_theme/background",
-			bg_hoxton = "guis/textures/menu/zombie_theme/bg_hoxton",
-			bg_options = "guis/textures/menu/zombie_theme/bg_options",
-			bg_technician = "guis/textures/menu/zombie_theme/bg_technician",
-			bg_dlc = "guis/textures/menu/fire_theme/bg_dlc",
-			bg_stats = "guis/textures/menu/zombie_theme/bg_stats",
-			bg_creategame = "guis/textures/menu/zombie_theme/bg_creategame",
-			bg_challenge = "guis/textures/menu/zombie_theme/bg_challenge",
 			bg_assault = "guis/textures/menu/zombie_theme/bg_assault",
-			bg_wolf = "guis/textures/menu/zombie_theme/bg_wolf",
 			bg_chains = "guis/textures/menu/zombie_theme/bg_chains",
+			bg_challenge = "guis/textures/menu/zombie_theme/bg_challenge",
+			bg_creategame = "guis/textures/menu/zombie_theme/bg_creategame",
+			bg_dallas = "guis/textures/menu/zombie_theme/bg_dallas",
+			bg_dlc = "guis/textures/menu/fire_theme/bg_dlc",
+			bg_hoxton = "guis/textures/menu/zombie_theme/bg_hoxton",
+			bg_lobby_fullteam = "guis/textures/menu/zombie_theme/bg_lobby_fullteam",
+			bg_options = "guis/textures/menu/zombie_theme/bg_options",
+			bg_setupgame = "guis/textures/menu/zombie_theme/bg_setupgame",
 			bg_sharpshooter = "guis/textures/menu/zombie_theme/bg_sharpshooter",
 			bg_startscreen = "guis/textures/menu/zombie_theme/bg_startscreen",
-			bg_dallas = "guis/textures/menu/zombie_theme/bg_dallas"
+			bg_stats = "guis/textures/menu/zombie_theme/bg_stats",
+			bg_support = "guis/textures/menu/zombie_theme/bg_support",
+			bg_technician = "guis/textures/menu/zombie_theme/bg_technician",
+			bg_upgrades = "guis/textures/menu/zombie_theme/bg_upgrades",
+			bg_wolf = "guis/textures/menu/zombie_theme/bg_wolf"
 		}
 	}
-	self.states = {
-		title = {}
-	}
+	self.states = {}
+	self.states.title = {}
 	self.states.title.ATTRACT_VIDEO_DELAY = 90
-	self.menu = {
-		BRIGHTNESS_CHANGE = 0.05,
-		MIN_BRIGHTNESS = 0.5,
-		MAX_BRIGHTNESS = 1.5,
-		MUSIC_CHANGE = 5,
-		MIN_MUSIC_VOLUME = 0,
-		MAX_MUSIC_VOLUME = 100,
-		SFX_CHANGE = 5,
-		MIN_SFX_VOLUME = 0,
-		MAX_SFX_VOLUME = 100,
-		VOICE_CHANGE = 0.05,
-		MIN_VOICE_VOLUME = 0,
-		MAX_VOICE_VOLUME = 1
-	}
+	self.menu = {}
+	self.menu.BRIGHTNESS_CHANGE = 0.05
+	self.menu.MIN_BRIGHTNESS = 0.5
+	self.menu.MAX_BRIGHTNESS = 1.5
+	self.menu.MUSIC_CHANGE = 5
+	self.menu.MIN_MUSIC_VOLUME = 0
+	self.menu.MAX_MUSIC_VOLUME = 100
+	self.menu.SFX_CHANGE = 5
+	self.menu.MIN_SFX_VOLUME = 0
+	self.menu.MAX_SFX_VOLUME = 100
+	self.menu.VOICE_CHANGE = 0.05
+	self.menu.MIN_VOICE_VOLUME = 0
+	self.menu.MAX_VOICE_VOLUME = 1
 
 	self:set_menu_scale()
 
@@ -891,6 +896,7 @@ function TweakData:init()
 	local brown = Vector3(178, 104, 89) / 255
 	local orange = Vector3(204, 161, 102) / 255
 	local team_ai = Vector3(0.2, 0.8, 1)
+
 	self.peer_vector_colors = {
 		green,
 		blue,
@@ -922,29 +928,28 @@ function TweakData:init()
 
 	self:_setup_access_cameras()
 
-	self.dialog = {
-		WIDTH = 400,
-		HEIGHT = 300,
-		PADDING = 30,
-		BUTTON_PADDING = 5,
-		BUTTON_SPACING = 10,
-		FONT = self.menu.default_font,
-		BG_COLOR = self.menu.default_menu_background_color,
-		TITLE_TEXT_COLOR = Color(1, 1, 1, 1),
-		TEXT_COLOR = self.menu.default_font_row_item_color,
-		BUTTON_BG_COLOR = Color(0, 0.5, 0.5, 0.5),
-		BUTTON_TEXT_COLOR = self.menu.default_font_row_item_color,
-		SELECTED_BUTTON_BG_COLOR = self.menu.default_font_row_item_color,
-		SELECTED_BUTTON_TEXT_COLOR = self.menu.default_hightlight_row_item_color,
-		TITLE_SIZE = self.menu.topic_font_size,
-		TEXT_SIZE = self.menu.dialog_text_font_size,
-		BUTTON_SIZE = self.menu.dialog_title_font_size,
-		TITLE_TEXT_SPACING = 20,
-		BUTTON_TEXT_SPACING = 3,
-		DEFAULT_PRIORITY = 1,
-		MINIMUM_DURATION = 2,
-		DURATION_PER_CHAR = 0.07
-	}
+	self.dialog = {}
+	self.dialog.WIDTH = 400
+	self.dialog.HEIGHT = 300
+	self.dialog.PADDING = 30
+	self.dialog.BUTTON_PADDING = 5
+	self.dialog.BUTTON_SPACING = 10
+	self.dialog.FONT = self.menu.default_font
+	self.dialog.BG_COLOR = self.menu.default_menu_background_color
+	self.dialog.TITLE_TEXT_COLOR = Color(1, 1, 1, 1)
+	self.dialog.TEXT_COLOR = self.menu.default_font_row_item_color
+	self.dialog.BUTTON_BG_COLOR = Color(0, 0.5, 0.5, 0.5)
+	self.dialog.BUTTON_TEXT_COLOR = self.menu.default_font_row_item_color
+	self.dialog.SELECTED_BUTTON_BG_COLOR = self.menu.default_font_row_item_color
+	self.dialog.SELECTED_BUTTON_TEXT_COLOR = self.menu.default_hightlight_row_item_color
+	self.dialog.TITLE_SIZE = self.menu.topic_font_size
+	self.dialog.TEXT_SIZE = self.menu.dialog_text_font_size
+	self.dialog.BUTTON_SIZE = self.menu.dialog_title_font_size
+	self.dialog.TITLE_TEXT_SPACING = 20
+	self.dialog.BUTTON_TEXT_SPACING = 3
+	self.dialog.DEFAULT_PRIORITY = 1
+	self.dialog.MINIMUM_DURATION = 2
+	self.dialog.DURATION_PER_CHAR = 0.07
 	self.hud = {}
 
 	self:set_hud_values()
@@ -962,167 +967,168 @@ function TweakData:init()
 	self.gui.SAVEFILE_LAYER = 1400
 	self.color_grading = {
 		{
-			value = "color_payday",
-			text_id = "menu_color_off"
+			text_id = "menu_color_off",
+			value = "color_payday"
 		},
 		{
 			text_id = "menu_color_default"
 		},
 		{
-			value = "color_heat",
-			text_id = "menu_color_heat"
+			text_id = "menu_color_heat",
+			value = "color_heat"
 		},
 		{
-			value = "color_nice",
-			text_id = "menu_color_nice"
+			text_id = "menu_color_nice",
+			value = "color_nice"
 		},
 		{
-			value = "color_bhd",
-			text_id = "menu_color_bhd"
+			text_id = "menu_color_bhd",
+			value = "color_bhd"
 		},
 		{
-			value = "color_xgen",
-			text_id = "menu_color_xgen"
+			text_id = "menu_color_xgen",
+			value = "color_xgen"
 		},
 		{
-			value = "color_xxxgen",
-			text_id = "menu_color_xxxgen"
+			text_id = "menu_color_xxxgen",
+			value = "color_xxxgen"
 		},
 		{
-			value = "color_matrix_classic",
-			text_id = "menu_color_matrix_classic"
+			text_id = "menu_color_matrix_classic",
+			value = "color_matrix_classic"
 		},
 		{
-			value = "color_sin_classic",
-			text_id = "menu_color_sin_classic"
+			text_id = "menu_color_sin_classic",
+			value = "color_sin_classic"
 		},
 		{
-			value = "color_sepia",
-			text_id = "menu_color_sepia"
+			text_id = "menu_color_sepia",
+			value = "color_sepia"
 		},
 		{
-			value = "color_sunsetstrip",
-			text_id = "menu_color_sunsetstrip"
+			text_id = "menu_color_sunsetstrip",
+			value = "color_sunsetstrip"
 		},
 		{
-			value = "color_colorful",
-			text_id = "menu_color_colorful"
+			text_id = "menu_color_colorful",
+			value = "color_colorful"
 		},
 		{
-			value = "color_madplanet",
-			text_id = "menu_color_madplanet"
+			text_id = "menu_color_madplanet",
+			value = "color_madplanet"
 		}
 	}
-	self.overlay_effects = {
-		spectator = {
-			blend_mode = "normal",
-			fade_out = 2,
-			play_paused = true,
-			fade_in = 3,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:main()
-		},
-		level_fade_in = {
-			blend_mode = "normal",
-			sustain = 1,
-			play_paused = true,
-			fade_in = 0,
-			fade_out = 3,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:game()
-		},
-		fade_in = {
-			blend_mode = "normal",
-			sustain = 0,
-			play_paused = true,
-			fade_in = 0,
-			fade_out = 3,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:main()
-		},
-		fade_out = {
-			blend_mode = "normal",
-			sustain = 30,
-			play_paused = true,
-			fade_in = 3,
-			fade_out = 0,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:main()
-		},
-		fade_out_permanent = {
-			blend_mode = "normal",
-			fade_out = 0,
-			play_paused = true,
-			fade_in = 1,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:main()
-		},
-		fade_out_in = {
-			blend_mode = "normal",
-			sustain = 1,
-			play_paused = true,
-			fade_in = 1,
-			fade_out = 1,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:main()
-		},
-		white_fade_in = {
-			blend_mode = "add",
-			sustain = 0,
-			play_paused = true,
-			fade_in = 0,
-			fade_out = 3,
-			color = Color(1, 1, 1, 1),
-			timer = TimerManager:main()
-		},
-		white_fade_out = {
-			blend_mode = "add",
-			sustain = 30,
-			play_paused = true,
-			fade_in = 3,
-			fade_out = 0,
-			color = Color(1, 1, 1, 1),
-			timer = TimerManager:main()
-		},
-		white_fade_out_permanent = {
-			blend_mode = "add",
-			fade_out = 0,
-			play_paused = true,
-			fade_in = 1,
-			color = Color(1, 1, 1, 1),
-			timer = TimerManager:main()
-		},
-		white_fade_out_in = {
-			blend_mode = "add",
-			sustain = 1,
-			play_paused = true,
-			fade_in = 1,
-			fade_out = 1,
-			color = Color(1, 1, 1, 1),
-			timer = TimerManager:main()
-		},
-		element_fade_in = {
-			blend_mode = "normal",
-			sustain = 0,
-			play_paused = true,
-			fade_in = 0,
-			fade_out = 3,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:main()
-		},
-		element_fade_out = {
-			blend_mode = "normal",
-			sustain = 0,
-			play_paused = true,
-			fade_in = 3,
-			fade_out = 0,
-			color = Color(1, 0, 0, 0),
-			timer = TimerManager:main()
-		}
+	self.overlay_effects = {}
+	self.overlay_effects.spectator = {
+		blend_mode = "normal",
+		fade_in = 3,
+		fade_out = 2,
+		play_paused = true,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:main()
 	}
+	self.overlay_effects.level_fade_in = {
+		blend_mode = "normal",
+		fade_in = 0,
+		fade_out = 3,
+		play_paused = true,
+		sustain = 1,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:game()
+	}
+	self.overlay_effects.fade_in = {
+		blend_mode = "normal",
+		fade_in = 0,
+		fade_out = 3,
+		play_paused = true,
+		sustain = 0,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.fade_out = {
+		blend_mode = "normal",
+		fade_in = 3,
+		fade_out = 0,
+		play_paused = true,
+		sustain = 30,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.fade_out_permanent = {
+		blend_mode = "normal",
+		fade_in = 1,
+		fade_out = 0,
+		play_paused = true,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.fade_out_in = {
+		blend_mode = "normal",
+		fade_in = 1,
+		fade_out = 1,
+		play_paused = true,
+		sustain = 1,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.white_fade_in = {
+		blend_mode = "add",
+		fade_in = 0,
+		fade_out = 3,
+		play_paused = true,
+		sustain = 0,
+		color = Color(1, 1, 1, 1),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.white_fade_out = {
+		blend_mode = "add",
+		fade_in = 3,
+		fade_out = 0,
+		play_paused = true,
+		sustain = 30,
+		color = Color(1, 1, 1, 1),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.white_fade_out_permanent = {
+		blend_mode = "add",
+		fade_in = 1,
+		fade_out = 0,
+		play_paused = true,
+		color = Color(1, 1, 1, 1),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.white_fade_out_in = {
+		blend_mode = "add",
+		fade_in = 1,
+		fade_out = 1,
+		play_paused = true,
+		sustain = 1,
+		color = Color(1, 1, 1, 1),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.element_fade_in = {
+		blend_mode = "normal",
+		fade_in = 0,
+		fade_out = 3,
+		play_paused = true,
+		sustain = 0,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:main()
+	}
+	self.overlay_effects.element_fade_out = {
+		blend_mode = "normal",
+		fade_in = 3,
+		fade_out = 0,
+		play_paused = true,
+		sustain = 0,
+		color = Color(1, 0, 0, 0),
+		timer = TimerManager:main()
+	}
+
 	local d_color = Color(0.75, 1, 1, 1)
 	local d_sustain = 0.1
 	local d_fade_out = 0.9
+
 	self.overlay_effects.damage = {
 		blend_mode = "add",
 		fade_in = 0,
@@ -1205,40 +1211,36 @@ function TweakData:init()
 	self.overlay_effects.maingun_zoomed = {
 		blend_mode = "add",
 		fade_in = 0,
-		sustain = 0,
 		fade_out = 0.4,
+		sustain = 0,
 		color = Color(0.1, 1, 1, 1)
 	}
 	self.overlay_effects.fade_out_e3_demo = {
-		text_to_upper = true,
-		sustain = 30,
 		blend_mode = "normal",
 		fade_in = 3,
-		text_blend_mode = "add",
 		fade_out = 0,
 		font = "fonts/font_large_mf",
-		text = [[
-Great job, gang!
-
-You've reached the end of our E3 demo.
-Play the full version soon to get your full PAYDAY!]],
 		font_size = 44,
 		play_paused = true,
+		sustain = 30,
+		text = "Great job, gang!\n\nYou've reached the end of our E3 demo.\nPlay the full version soon to get your full PAYDAY!",
+		text_blend_mode = "add",
+		text_to_upper = true,
 		color = Color(1, 0, 0, 0),
 		timer = TimerManager:main(),
 		text_color = Color(255, 255, 204, 0) / 255
 	}
 	self.overlay_effects.fade_out_mex = {
-		text_to_upper = true,
-		sustain = 4,
-		localize = true,
+		blend_mode = "normal",
 		fade_in = 1,
-		text_blend_mode = "add",
 		fade_out = 1,
 		font = "fonts/font_large_mf",
-		text = "heist_mex_transition",
 		font_size = 44,
-		blend_mode = "normal",
+		localize = true,
+		sustain = 4,
+		text = "heist_mex_transition",
+		text_blend_mode = "add",
+		text_to_upper = true,
 		color = Color(1, 0, 0, 0),
 		timer = TimerManager:main(),
 		text_color = Color(255, 255, 153, 0) / 255
@@ -1246,65 +1248,62 @@ Play the full version soon to get your full PAYDAY!]],
 	self.overlay_effects.fade_out_e3_video = {
 		blend_mode = "normal",
 		fade_in = 0,
-		sustain = 0,
 		fade_out = 0,
+		sustain = 0,
 		color = Color(1, 0, 0, 0)
 	}
-	self.materials = {
-		[Idstring("concrete"):key()] = "concrete",
-		[Idstring("ceramic"):key()] = "ceramic",
-		[Idstring("marble"):key()] = "marble",
-		[Idstring("flesh"):key()] = "flesh",
-		[Idstring("parket"):key()] = "parket",
-		[Idstring("sheet_metal"):key()] = "sheet_metal",
-		[Idstring("iron"):key()] = "iron",
-		[Idstring("wood"):key()] = "wood",
-		[Idstring("gravel"):key()] = "gravel",
-		[Idstring("cloth"):key()] = "cloth",
-		[Idstring("cloth_no_decal"):key()] = "cloth",
-		[Idstring("cloth_stuffed"):key()] = "cloth_stuffed",
-		[Idstring("dirt"):key()] = "dirt",
-		[Idstring("grass"):key()] = "grass",
-		[Idstring("carpet"):key()] = "carpet",
-		[Idstring("metal"):key()] = "metal",
-		[Idstring("glass_breakable"):key()] = "glass_breakable",
-		[Idstring("glass_unbreakable"):key()] = "glass_unbreakable",
-		[Idstring("glass_no_decal"):key()] = "glass_unbreakable",
-		[Idstring("rubber"):key()] = "rubber",
-		[Idstring("plastic"):key()] = "plastic",
-		[Idstring("asphalt"):key()] = "asphalt",
-		[Idstring("foliage"):key()] = "foliage",
-		[Idstring("stone"):key()] = "stone",
-		[Idstring("sand"):key()] = "sand",
-		[Idstring("thin_layer"):key()] = "thin_layer",
-		[Idstring("no_decal"):key()] = "silent_material",
-		[Idstring("plaster"):key()] = "plaster",
-		[Idstring("no_material"):key()] = "no_material",
-		[Idstring("paper"):key()] = "paper",
-		[Idstring("metal_hollow"):key()] = "metal_hollow",
-		[Idstring("metal_chassis"):key()] = "metal_chassis",
-		[Idstring("metal_catwalk"):key()] = "metal_catwalk",
-		[Idstring("hardwood"):key()] = "hardwood",
-		[Idstring("fence"):key()] = "fence",
-		[Idstring("steel"):key()] = "steel",
-		[Idstring("steel_no_decal"):key()] = "steel",
-		[Idstring("tile"):key()] = "tile",
-		[Idstring("water_deep"):key()] = "water_deep",
-		[Idstring("water_puddle"):key()] = "water_puddle",
-		[Idstring("water_shallow"):key()] = "water_puddle",
-		[Idstring("shield"):key()] = "shield",
-		[Idstring("heavy_swat_steel_no_decal"):key()] = "shield",
-		[Idstring("snow"):key()] = "snow",
-		[Idstring("ice"):key()] = "ice_thick",
-		[Idstring("aim_debug"):key()] = "aim_debug",
-		[Idstring("flesh_devil"):key()] = "flesh"
-	}
-	self.screen = {
-		fadein_delay = 1
-	}
-	self.experience_manager = {
-		values = {}
-	}
+	self.materials = {}
+	self.materials[Idstring("concrete"):key()] = "concrete"
+	self.materials[Idstring("ceramic"):key()] = "ceramic"
+	self.materials[Idstring("marble"):key()] = "marble"
+	self.materials[Idstring("flesh"):key()] = "flesh"
+	self.materials[Idstring("parket"):key()] = "parket"
+	self.materials[Idstring("sheet_metal"):key()] = "sheet_metal"
+	self.materials[Idstring("iron"):key()] = "iron"
+	self.materials[Idstring("wood"):key()] = "wood"
+	self.materials[Idstring("gravel"):key()] = "gravel"
+	self.materials[Idstring("cloth"):key()] = "cloth"
+	self.materials[Idstring("cloth_no_decal"):key()] = "cloth"
+	self.materials[Idstring("cloth_stuffed"):key()] = "cloth_stuffed"
+	self.materials[Idstring("dirt"):key()] = "dirt"
+	self.materials[Idstring("grass"):key()] = "grass"
+	self.materials[Idstring("carpet"):key()] = "carpet"
+	self.materials[Idstring("metal"):key()] = "metal"
+	self.materials[Idstring("glass_breakable"):key()] = "glass_breakable"
+	self.materials[Idstring("glass_unbreakable"):key()] = "glass_unbreakable"
+	self.materials[Idstring("glass_no_decal"):key()] = "glass_unbreakable"
+	self.materials[Idstring("rubber"):key()] = "rubber"
+	self.materials[Idstring("plastic"):key()] = "plastic"
+	self.materials[Idstring("asphalt"):key()] = "asphalt"
+	self.materials[Idstring("foliage"):key()] = "foliage"
+	self.materials[Idstring("stone"):key()] = "stone"
+	self.materials[Idstring("sand"):key()] = "sand"
+	self.materials[Idstring("thin_layer"):key()] = "thin_layer"
+	self.materials[Idstring("no_decal"):key()] = "silent_material"
+	self.materials[Idstring("plaster"):key()] = "plaster"
+	self.materials[Idstring("no_material"):key()] = "no_material"
+	self.materials[Idstring("paper"):key()] = "paper"
+	self.materials[Idstring("metal_hollow"):key()] = "metal_hollow"
+	self.materials[Idstring("metal_chassis"):key()] = "metal_chassis"
+	self.materials[Idstring("metal_catwalk"):key()] = "metal_catwalk"
+	self.materials[Idstring("hardwood"):key()] = "hardwood"
+	self.materials[Idstring("fence"):key()] = "fence"
+	self.materials[Idstring("steel"):key()] = "steel"
+	self.materials[Idstring("steel_no_decal"):key()] = "steel"
+	self.materials[Idstring("tile"):key()] = "tile"
+	self.materials[Idstring("water_deep"):key()] = "water_deep"
+	self.materials[Idstring("water_puddle"):key()] = "water_puddle"
+	self.materials[Idstring("water_shallow"):key()] = "water_puddle"
+	self.materials[Idstring("shield"):key()] = "shield"
+	self.materials[Idstring("heavy_swat_steel_no_decal"):key()] = "shield"
+	self.materials[Idstring("snow"):key()] = "snow"
+	self.materials[Idstring("ice"):key()] = "ice_thick"
+	self.materials[Idstring("aim_debug"):key()] = "aim_debug"
+	self.materials[Idstring("flesh_devil"):key()] = "flesh"
+	self.screen = {}
+	self.screen.fadein_delay = 1
+	self.experience_manager = {}
+	self.experience_manager.values = {}
 	self.experience_manager.values.size02 = 0
 	self.experience_manager.values.size03 = 10
 	self.experience_manager.values.size04 = 15
@@ -1316,21 +1315,20 @@ Play the full version soon to get your full PAYDAY!]],
 	self.experience_manager.values.size16 = 250
 	self.experience_manager.values.size18 = 500
 	self.experience_manager.values.size20 = 1000
-	self.experience_manager.loot_drop_value = {
-		xp10 = 2000,
-		xp15 = 3000,
-		xp20 = 4000,
-		xp30 = 7000,
-		xp40 = 10000,
-		xp50 = 12000,
-		xp60 = 15000,
-		xp70 = 20000,
-		xp80 = 24000,
-		xp90 = 28000,
-		xp100 = 32000,
-		xp_pda9_1 = 250000,
-		xp_pda9_2 = 3000000
-	}
+	self.experience_manager.loot_drop_value = {}
+	self.experience_manager.loot_drop_value.xp10 = 2000
+	self.experience_manager.loot_drop_value.xp15 = 3000
+	self.experience_manager.loot_drop_value.xp20 = 4000
+	self.experience_manager.loot_drop_value.xp30 = 7000
+	self.experience_manager.loot_drop_value.xp40 = 10000
+	self.experience_manager.loot_drop_value.xp50 = 12000
+	self.experience_manager.loot_drop_value.xp60 = 15000
+	self.experience_manager.loot_drop_value.xp70 = 20000
+	self.experience_manager.loot_drop_value.xp80 = 24000
+	self.experience_manager.loot_drop_value.xp90 = 28000
+	self.experience_manager.loot_drop_value.xp100 = 32000
+	self.experience_manager.loot_drop_value.xp_pda9_1 = 250000
+	self.experience_manager.loot_drop_value.xp_pda9_2 = 3000000
 	self.experience_manager.stage_completion = {
 		0,
 		0,
@@ -1369,21 +1367,20 @@ Play the full version soon to get your full PAYDAY!]],
 	}
 	self.experience_manager.limited_bonus_multiplier = 1
 	self.experience_manager.limited_xmas_bonus_multiplier = 1.15
-	self.experience_manager.level_limit = {
-		low_cap_level = -1,
-		low_cap_multiplier = 0.75,
-		pc_difference_multipliers = {
-			0.9,
-			0.8,
-			0.7,
-			0.6,
-			0.5,
-			0.4,
-			0.3,
-			0.2,
-			0.1,
-			0.01
-		}
+	self.experience_manager.level_limit = {}
+	self.experience_manager.level_limit.low_cap_level = -1
+	self.experience_manager.level_limit.low_cap_multiplier = 0.75
+	self.experience_manager.level_limit.pc_difference_multipliers = {
+		0.9,
+		0.8,
+		0.7,
+		0.6,
+		0.5,
+		0.4,
+		0.3,
+		0.2,
+		0.1,
+		0.01
 	}
 	self.experience_manager.civilians_killed = 0
 	self.experience_manager.day_multiplier = {
@@ -1407,36 +1404,38 @@ Play the full version soon to get your full PAYDAY!]],
 	self.experience_manager.total_level_objectives = 500
 	self.experience_manager.total_criminals_finished = 50
 	self.experience_manager.total_objectives_finished = 500
+
 	local multiplier = 1
-	self.experience_manager.levels = {
-		{
-			points = 900 * multiplier
-		},
-		{
-			points = 1250 * multiplier
-		},
-		{
-			points = 1550 * multiplier
-		},
-		{
-			points = 1850 * multiplier
-		},
-		{
-			points = 2200 * multiplier
-		},
-		{
-			points = 2600 * multiplier
-		},
-		{
-			points = 3000 * multiplier
-		},
-		{
-			points = 3500 * multiplier
-		},
-		{
-			points = 4000 * multiplier
-		}
+
+	self.experience_manager.levels = {}
+	self.experience_manager.levels[1] = {
+		points = 900 * multiplier
 	}
+	self.experience_manager.levels[2] = {
+		points = 1250 * multiplier
+	}
+	self.experience_manager.levels[3] = {
+		points = 1550 * multiplier
+	}
+	self.experience_manager.levels[4] = {
+		points = 1850 * multiplier
+	}
+	self.experience_manager.levels[5] = {
+		points = 2200 * multiplier
+	}
+	self.experience_manager.levels[6] = {
+		points = 2600 * multiplier
+	}
+	self.experience_manager.levels[7] = {
+		points = 3000 * multiplier
+	}
+	self.experience_manager.levels[8] = {
+		points = 3500 * multiplier
+	}
+	self.experience_manager.levels[9] = {
+		points = 4000 * multiplier
+	}
+
 	local exp_step_start = 10
 	local exp_step_end = 100
 	local exp_step = 1 / (exp_step_end - exp_step_start)
@@ -1455,57 +1454,56 @@ Play the full version soon to get your full PAYDAY!]],
 
 	for i = 146, exp_step_end do
 		self.experience_manager.levels[i] = {
-			points = math.round(22000 * exp_step * (i - exp_step_start) - 6000) * multiplier
+			points = math.round(22000 * (exp_step * (i - exp_step_start)) - 6000) * multiplier
 		}
 	end
 
 	self.experience_manager.prestige_xp_max = 30000000
-	self.pickups = {
-		ammo = {
-			unit = Idstring("units/pickups/ammo/ammo_pickup")
-		},
-		bank_manager_key = {
-			unit = Idstring("units/pickups/pickup_bank_manager_key/pickup_bank_manager_key")
-		},
-		chavez_key = {
-			unit = Idstring("units/pickups/pickup_chavez_key/pickup_chavez_key")
-		},
-		gen_fbi_usb_stick = {
-			unit = Idstring("units/pd2_dlc_friend/props/sfm_fbi_usb_stick/sfm_fbi_usb_stick")
-		},
-		sfm_fbi_usb_stick = {
-			unit = Idstring("units/pd2_dlc_friend/props/sfm_fbi_usb_stick/sfm_fbi_usb_stick")
-		},
-		drill = {
-			unit = Idstring("units/pickups/pickup_drill/pickup_drill")
-		},
-		keycard = {
-			unit = Idstring("units/payday2/pickups/gen_pku_keycard/gen_pku_keycard")
-		},
-		keycard_outlined = {
-			unit = Idstring("units/pd2_dlc_red/pickups/gen_pku_keycard_outlined/gen_pku_keycard_outlined")
-		},
-		keycard_standard_outlined = {
-			unit = Idstring("units/payday2/pickups/gen_pku_keycard_standard_outline/gen_pku_keycard_standard_outline")
-		},
-		hotel_room_key = {
-			unit = Idstring("units/pd2_dlc_casino/props/cas_prop_keycard/cas_prop_keycard")
-		},
-		pku_rambo = {
-			unit = Idstring("units/pd2_dlc_jolly/pickups/gen_pku_rambo/gen_pku_rambo")
-		},
-		keycard_outlined_waypoint = {
-			unit = Idstring("units/pd2_dlc_red/pickups/gen_pku_keycard_outlined_waypoint/gen_pku_keycard_outlined_waypoint")
-		},
-		keychain = {
-			unit = Idstring("units/pd2_dlc_chas/pickups/chas_pku_keychain/chas_pku_keychain")
-		},
-		hand = {
-			unit = Idstring("units/pd2_dlc_chca/pickups/chca_pku_hand/chca_pku_hand")
-		},
-		corp_access_tag = {
-			unit = Idstring("units/pd2_dlc_corp/pickups/corp_pku_security_fob/corp_pku_security_fob")
-		}
+	self.pickups = {}
+	self.pickups.ammo = {
+		unit = Idstring("units/pickups/ammo/ammo_pickup")
+	}
+	self.pickups.bank_manager_key = {
+		unit = Idstring("units/pickups/pickup_bank_manager_key/pickup_bank_manager_key")
+	}
+	self.pickups.chavez_key = {
+		unit = Idstring("units/pickups/pickup_chavez_key/pickup_chavez_key")
+	}
+	self.pickups.gen_fbi_usb_stick = {
+		unit = Idstring("units/pd2_dlc_friend/props/sfm_fbi_usb_stick/sfm_fbi_usb_stick")
+	}
+	self.pickups.sfm_fbi_usb_stick = {
+		unit = Idstring("units/pd2_dlc_friend/props/sfm_fbi_usb_stick/sfm_fbi_usb_stick")
+	}
+	self.pickups.drill = {
+		unit = Idstring("units/pickups/pickup_drill/pickup_drill")
+	}
+	self.pickups.keycard = {
+		unit = Idstring("units/payday2/pickups/gen_pku_keycard/gen_pku_keycard")
+	}
+	self.pickups.keycard_outlined = {
+		unit = Idstring("units/pd2_dlc_red/pickups/gen_pku_keycard_outlined/gen_pku_keycard_outlined")
+	}
+	self.pickups.keycard_standard_outlined = {
+		unit = Idstring("units/payday2/pickups/gen_pku_keycard_standard_outline/gen_pku_keycard_standard_outline")
+	}
+	self.pickups.hotel_room_key = {
+		unit = Idstring("units/pd2_dlc_casino/props/cas_prop_keycard/cas_prop_keycard")
+	}
+	self.pickups.pku_rambo = {
+		unit = Idstring("units/pd2_dlc_jolly/pickups/gen_pku_rambo/gen_pku_rambo")
+	}
+	self.pickups.keycard_outlined_waypoint = {
+		unit = Idstring("units/pd2_dlc_red/pickups/gen_pku_keycard_outlined_waypoint/gen_pku_keycard_outlined_waypoint")
+	}
+	self.pickups.keychain = {
+		unit = Idstring("units/pd2_dlc_chas/pickups/chas_pku_keychain/chas_pku_keychain")
+	}
+	self.pickups.hand = {
+		unit = Idstring("units/pd2_dlc_chca/pickups/chca_pku_hand/chca_pku_hand")
+	}
+	self.pickups.corp_access_tag = {
+		unit = Idstring("units/pd2_dlc_corp/pickups/corp_pku_security_fob/corp_pku_security_fob")
 	}
 	self.danger_zones = {
 		0.6,
@@ -1513,9 +1511,8 @@ Play the full version soon to get your full PAYDAY!]],
 		0.35,
 		0.1
 	}
-	self.contour = {
-		character = {}
-	}
+	self.contour = {}
+	self.contour.character = {}
 	self.contour.character.standard_color = Vector3(0.1, 1, 0.5)
 	self.contour.character.friendly_color = Vector3(0.2, 0.8, 1)
 	self.contour.character.friendly_minion_color = Vector3(0.1, 0.4, 1)
@@ -1527,80 +1524,67 @@ Play the full version soon to get your full PAYDAY!]],
 	self.contour.character.heal_color = Vector3(0, 1, 0)
 	self.contour.character.tmp_invulnerable_color = Vector3(0.8, 0.3, 0)
 	self.contour.character.vulnerable_color = Vector3(0.6, 0.2, 0.2)
-	self.contour.character_interactable = {
-		standard_color = Vector3(1, 0.5, 0),
-		selected_color = Vector3(1, 1, 1)
-	}
-	self.contour.interactable = {
-		standard_color = Vector3(1, 0.5, 0),
-		selected_color = Vector3(1, 1, 1)
-	}
-	self.contour.contour_off = {
-		standard_color = Vector3(0, 0, 0),
-		selected_color = Vector3(0, 0, 0),
-		standard_opacity = 0
-	}
-	self.contour.deployable = {
-		standard_color = Vector3(0.1, 1, 0.5),
-		selected_color = Vector3(1, 1, 1),
-		active_color = Vector3(0.1, 0.4, 1),
-		interact_color = Vector3(0.1, 1, 0.1),
-		disabled_color = Vector3(1, 0.1, 0.1)
-	}
-	self.contour.upgradable = {
-		standard_color = Vector3(0.1, 0.5, 1),
-		selected_color = Vector3(1, 1, 1)
-	}
-	self.contour.pickup = {
-		standard_color = Vector3(0.1, 1, 0.5),
-		selected_color = Vector3(1, 1, 1),
-		standard_opacity = 1
-	}
-	self.contour.interactable_icon = {
-		standard_color = Vector3(0, 0, 0),
-		selected_color = Vector3(0, 1, 0),
-		standard_opacity = 0
-	}
-	self.contour.interactable_look_at = {
-		standard_color = Vector3(0, 0, 0),
-		selected_color = Vector3(1, 1, 1)
-	}
-	self.music = {
-		hit = {}
-	}
+	self.contour.character_interactable = {}
+	self.contour.character_interactable.standard_color = Vector3(1, 0.5, 0)
+	self.contour.character_interactable.selected_color = Vector3(1, 1, 1)
+	self.contour.interactable = {}
+	self.contour.interactable.standard_color = Vector3(1, 0.5, 0)
+	self.contour.interactable.selected_color = Vector3(1, 1, 1)
+	self.contour.contour_off = {}
+	self.contour.contour_off.standard_color = Vector3(0, 0, 0)
+	self.contour.contour_off.selected_color = Vector3(0, 0, 0)
+	self.contour.contour_off.standard_opacity = 0
+	self.contour.deployable = {}
+	self.contour.deployable.standard_color = Vector3(0.1, 1, 0.5)
+	self.contour.deployable.selected_color = Vector3(1, 1, 1)
+	self.contour.deployable.active_color = Vector3(0.1, 0.4, 1)
+	self.contour.deployable.interact_color = Vector3(0.1, 1, 0.1)
+	self.contour.deployable.disabled_color = Vector3(1, 0.1, 0.1)
+	self.contour.upgradable = {}
+	self.contour.upgradable.standard_color = Vector3(0.1, 0.5, 1)
+	self.contour.upgradable.selected_color = Vector3(1, 1, 1)
+	self.contour.pickup = {}
+	self.contour.pickup.standard_color = Vector3(0.1, 1, 0.5)
+	self.contour.pickup.selected_color = Vector3(1, 1, 1)
+	self.contour.pickup.standard_opacity = 1
+	self.contour.interactable_icon = {}
+	self.contour.interactable_icon.standard_color = Vector3(0, 0, 0)
+	self.contour.interactable_icon.selected_color = Vector3(0, 1, 0)
+	self.contour.interactable_icon.standard_opacity = 0
+	self.contour.interactable_look_at = {}
+	self.contour.interactable_look_at.standard_color = Vector3(0, 0, 0)
+	self.contour.interactable_look_at.selected_color = Vector3(1, 1, 1)
+	self.music = {}
+	self.music.hit = {}
 	self.music.hit.intro = "music_hit_setup"
 	self.music.hit.anticipation = "music_hit_anticipation"
 	self.music.hit.assault = "music_hit_assault"
 	self.music.hit.fake_assault = "music_hit_assault"
 	self.music.hit.control = "music_hit_control"
-	self.music.stress = {
-		intro = "music_stress_setup",
-		anticipation = "music_stress_anticipation",
-		assault = "music_stress_assault",
-		fake_assault = "music_stress_assault",
-		control = "music_stress_control"
-	}
-	self.music.stealth = {
-		intro = "music_stealth_setup",
-		anticipation = "music_stealth_anticipation",
-		assault = "music_stealth_assault",
-		fake_assault = "music_stealth_assault",
-		control = "music_stealth_control"
-	}
-	self.music.heist = {
-		intro = "music_heist_setup",
-		anticipation = "music_heist_anticipation",
-		assault = "music_heist_assault",
-		fake_assault = "music_heist_assault",
-		control = "music_heist_control"
-	}
-	self.music.big_bank = {
-		intro = "music_heist_setup",
-		anticipation = "music_heist_anticipation",
-		assault = "music_heist_assault",
-		fake_assault = "music_heist_assault",
-		control = "music_heist_control"
-	}
+	self.music.stress = {}
+	self.music.stress.intro = "music_stress_setup"
+	self.music.stress.anticipation = "music_stress_anticipation"
+	self.music.stress.assault = "music_stress_assault"
+	self.music.stress.fake_assault = "music_stress_assault"
+	self.music.stress.control = "music_stress_control"
+	self.music.stealth = {}
+	self.music.stealth.intro = "music_stealth_setup"
+	self.music.stealth.anticipation = "music_stealth_anticipation"
+	self.music.stealth.assault = "music_stealth_assault"
+	self.music.stealth.fake_assault = "music_stealth_assault"
+	self.music.stealth.control = "music_stealth_control"
+	self.music.heist = {}
+	self.music.heist.intro = "music_heist_setup"
+	self.music.heist.anticipation = "music_heist_anticipation"
+	self.music.heist.assault = "music_heist_assault"
+	self.music.heist.fake_assault = "music_heist_assault"
+	self.music.heist.control = "music_heist_control"
+	self.music.big_bank = {}
+	self.music.big_bank.intro = "music_heist_setup"
+	self.music.big_bank.anticipation = "music_heist_anticipation"
+	self.music.big_bank.assault = "music_heist_assault"
+	self.music.big_bank.fake_assault = "music_heist_assault"
+	self.music.big_bank.control = "music_heist_control"
 	self.music.default = deep_clone(self.music.heist)
 	self.music.track_list = {
 		{
@@ -1628,26 +1612,26 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_08"
 		},
 		{
-			track = "track_09",
-			lock = "armored"
+			lock = "armored",
+			track = "track_09"
 		},
 		{
 			track = "track_10"
 		},
 		{
-			track = "track_11",
-			lock = "infamy"
+			lock = "infamy",
+			track = "track_11"
 		},
 		{
-			track = "track_12",
-			lock = "deathwish"
+			lock = "deathwish",
+			track = "track_12"
 		},
 		{
 			track = "track_13"
 		},
 		{
-			track = "track_14",
-			lock = "bigbank"
+			lock = "bigbank",
+			track = "track_14"
 		},
 		{
 			track = "track_15"
@@ -1656,16 +1640,16 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_16"
 		},
 		{
-			track = "track_17",
-			lock = "assault"
+			lock = "assault",
+			track = "track_17"
 		},
 		{
-			track = "track_18",
-			lock = "miami"
+			lock = "miami",
+			track = "track_18"
 		},
 		{
-			track = "track_19",
-			lock = "miami"
+			lock = "miami",
+			track = "track_19"
 		},
 		{
 			track = "track_20"
@@ -1680,12 +1664,12 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_23"
 		},
 		{
-			track = "track_24",
-			lock = "diamond"
+			lock = "diamond",
+			track = "track_24"
 		},
 		{
-			track = "track_25",
-			lock = "thebomb"
+			lock = "thebomb",
+			track = "track_25"
 		},
 		{
 			track = "track_26"
@@ -1697,8 +1681,8 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_28"
 		},
 		{
-			track = "track_29",
-			lock = "kenaz"
+			lock = "kenaz",
+			track = "track_29"
 		},
 		{
 			track = "track_30"
@@ -1713,46 +1697,46 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_36"
 		},
 		{
-			track = "track_37",
 			hide_unavailable = true,
-			lock = "berry"
+			lock = "berry",
+			track = "track_37"
 		},
 		{
-			track = "track_38",
 			hide_unavailable = true,
-			lock = "berry"
+			lock = "berry",
+			track = "track_38"
 		},
 		{
 			track = "track_39"
 		},
 		{
-			track = "track_40",
-			lock = "peta"
+			lock = "peta",
+			track = "track_40"
 		},
 		{
-			track = "track_41",
-			lock = "peta"
+			lock = "peta",
+			track = "track_41"
 		},
 		{
-			track = "track_42",
-			lock = "pal"
+			lock = "pal",
+			track = "track_42"
 		},
 		{
-			track = "track_43",
-			lock = "pal"
+			lock = "pal",
+			track = "track_43"
 		},
 		{
-			track = "track_44",
 			hide_unavailable = true,
-			lock = "mad"
+			lock = "mad",
+			track = "track_44"
 		},
 		{
-			track = "track_45",
-			lock = "born"
+			lock = "born",
+			track = "track_45"
 		},
 		{
-			track = "track_46",
-			lock = "born"
+			lock = "born",
+			track = "track_46"
 		},
 		{
 			track = "track_47_gen"
@@ -1764,14 +1748,14 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_49"
 		},
 		{
-			track = "track_50",
 			hide_unavailable = true,
-			lock = "friend"
+			lock = "friend",
+			track = "track_50"
 		},
 		{
-			track = "track_51",
 			hide_unavailable = true,
-			lock = "spa"
+			lock = "spa",
+			track = "track_51"
 		},
 		{
 			track = "track_52"
@@ -1789,14 +1773,14 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_56"
 		},
 		{
-			track = "track_57",
 			hide_unavailable = true,
-			lock = "rvd"
+			lock = "rvd",
+			track = "track_57"
 		},
 		{
-			track = "track_58",
 			hide_unavailable = true,
-			lock = "rvd"
+			lock = "rvd",
+			track = "track_58"
 		},
 		{
 			track = "track_59"
@@ -1874,40 +1858,40 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_80"
 		},
 		{
-			track = "track_pth_01",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_01"
 		},
 		{
-			track = "track_pth_02",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_02"
 		},
 		{
-			track = "track_pth_03",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_03"
 		},
 		{
-			track = "track_pth_04",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_04"
 		},
 		{
-			track = "track_pth_05",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_05"
 		},
 		{
-			track = "track_pth_06",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_06"
 		},
 		{
-			track = "track_pth_07",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_07"
 		},
 		{
-			track = "track_pth_08",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_08"
 		},
 		{
-			track = "track_pth_09",
-			lock = "payday"
+			lock = "payday",
+			track = "track_pth_09"
 		}
 	}
 	self.music.track_ghost_list = {
@@ -1915,14 +1899,14 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "kosugi_music"
 		},
 		{
-			track = "music_dark",
 			hide_unavailable = true,
-			lock = "mad"
+			lock = "mad",
+			track = "music_dark"
 		},
 		{
-			track = "music_fish",
 			hide_unavailable = true,
-			lock = "fish"
+			lock = "fish",
+			track = "music_fish"
 		},
 		{
 			track = "music_tag"
@@ -1963,213 +1947,213 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "criminals_ambition"
 		},
 		{
-			track = "criminals_ambition_instrumental",
-			lock = "soundtrack"
+			lock = "soundtrack",
+			track = "criminals_ambition_instrumental"
 		},
 		{
-			track = "release_trailer_track",
-			lock = "soundtrack"
+			lock = "soundtrack",
+			track = "release_trailer_track"
 		},
 		{
-			track = "ode_all_avidita",
-			lock = "soundtrack"
+			lock = "soundtrack",
+			track = "ode_all_avidita"
 		},
 		{
-			track = "ode_all_avidita_instrumental",
-			lock = "soundtrack"
+			lock = "soundtrack",
+			track = "ode_all_avidita_instrumental"
 		},
 		{
-			track = "drifting",
-			lock = "soundtrack"
+			lock = "soundtrack",
+			track = "drifting"
 		},
 		{
-			track = "im_a_wild_one",
-			lock = "soundtrack"
+			lock = "soundtrack",
+			track = "im_a_wild_one"
 		},
 		{
 			track = "the_flames_of_love"
 		},
 		{
-			track = "alesso_payday",
-			lock = "alesso"
+			lock = "alesso",
+			track = "alesso_payday"
 		},
 		{
-			track = "pb_do_you_wanna",
 			hide_unavailable = true,
-			lock = "locked"
+			lock = "locked",
+			track = "pb_do_you_wanna"
 		},
 		{
-			track = "pb_i_need_your_love",
 			hide_unavailable = true,
-			lock = "locked"
+			lock = "locked",
+			track = "pb_i_need_your_love"
 		},
 		{
-			track = "pb_still_breathing",
 			hide_unavailable = true,
-			lock = "locked"
+			lock = "locked",
+			track = "pb_still_breathing"
 		},
 		{
-			track = "pb_take_me_down",
 			hide_unavailable = true,
-			lock = "locked"
+			lock = "locked",
+			track = "pb_take_me_down"
 		},
 		{
-			track = "biting_elbows_bad_motherfucker",
 			hide_unavailable = true,
-			lock = "locked"
+			lock = "locked",
+			track = "biting_elbows_bad_motherfucker"
 		},
 		{
-			track = "biting_elbows_for_the_kill",
 			hide_unavailable = true,
-			lock = "locked"
+			lock = "locked",
+			track = "biting_elbows_for_the_kill"
 		},
 		{
-			track = "half_passed_wicked",
-			lock = "born_wild"
+			lock = "born_wild",
+			track = "half_passed_wicked"
 		},
 		{
-			track = "bsides_04_double_lmgs",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_04_double_lmgs"
 		},
 		{
-			track = "bsides_11_meat_and_machine_guns",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_11_meat_and_machine_guns"
 		},
 		{
-			track = "bsides_05_rule_britannia",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_05_rule_britannia"
 		},
 		{
-			track = "bsides_07_an_unexpected_call",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_07_an_unexpected_call"
 		},
 		{
-			track = "bsides_13_infamy_2_0",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_13_infamy_2_0"
 		},
 		{
-			track = "bsides_12_the_enforcer",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_12_the_enforcer"
 		},
 		{
-			track = "bsides_03_showdown",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_03_showdown"
 		},
 		{
-			track = "bsides_15_duel",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_15_duel"
 		},
 		{
-			track = "bsides_02_swat_attack",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_02_swat_attack"
 		},
 		{
-			track = "bsides_08_this_is_goodbye",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_08_this_is_goodbye"
 		},
 		{
-			track = "bsides_10_zagrebacka",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_10_zagrebacka"
 		},
 		{
-			track = "bsides_16_pilgrim",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_16_pilgrim"
 		},
 		{
-			track = "bsides_14_collide",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_14_collide"
 		},
 		{
-			track = "bsides_01_enter_the_hallway",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_01_enter_the_hallway"
 		},
 		{
-			track = "bsides_06_hur_jag_trivs",
-			lock = "bsides"
+			lock = "bsides",
+			track = "bsides_06_hur_jag_trivs"
 		},
 		{
-			track = "pth_i_will_give_you_my_all",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_i_will_give_you_my_all"
 		},
 		{
-			track = "pth_breaking_news",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_breaking_news"
 		},
 		{
-			track = "pth_breaking_news_instrumental",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_breaking_news_instrumental"
 		},
 		{
-			track = "pth_criminal_intent",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_criminal_intent"
 		},
 		{
-			track = "pth_busted",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_busted"
 		},
 		{
-			track = "pth_busted_instrumental",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_busted_instrumental"
 		},
 		{
-			track = "pth_see_you_at_the_safe_house",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_see_you_at_the_safe_house"
 		},
 		{
-			track = "pth_preparations",
-			lock = "payday"
+			lock = "payday",
+			track = "pth_preparations"
 		},
 		{
-			track = "xmas13_a_merry_payday_christmas",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_a_merry_payday_christmas"
 		},
 		{
-			track = "xmas13_a_heist_not_attempted_before",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_a_heist_not_attempted_before"
 		},
 		{
-			track = "xmas13_if_it_has_to_be_christmas",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_if_it_has_to_be_christmas"
 		},
 		{
-			track = "xmas13_ive_been_a_bad_boy",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_ive_been_a_bad_boy"
 		},
 		{
-			track = "xmas13_christmas_in_prison",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_christmas_in_prison"
 		},
 		{
-			track = "xmas13_deck_the_safe_house",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_deck_the_safe_house"
 		},
 		{
-			track = "xmas13_if_it_has_to_be_christmas_american_version",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_if_it_has_to_be_christmas_american_version"
 		},
 		{
-			track = "xmas13_a_merry_payday_christmas_instrumental",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_a_merry_payday_christmas_instrumental"
 		},
 		{
-			track = "xmas13_a_heist_not_attempted_before_instrumental",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_a_heist_not_attempted_before_instrumental"
 		},
 		{
-			track = "xmas13_if_it_has_to_be_christmas_instrumental",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_if_it_has_to_be_christmas_instrumental"
 		},
 		{
-			track = "xmas13_ive_been_a_bad_boy_instrumental",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_ive_been_a_bad_boy_instrumental"
 		},
 		{
-			track = "xmas13_christmas_in_prison_instrumental",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_christmas_in_prison_instrumental"
 		},
 		{
-			track = "xmas13_deck_the_safe_house_instrumental",
-			lock = "xmas"
+			lock = "xmas",
+			track = "xmas13_deck_the_safe_house_instrumental"
 		},
 		{
 			track = "its_payday"
@@ -2187,24 +2171,24 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "today_is_payday_too"
 		},
 		{
-			track = "jokes_on_them",
-			lock = "tma1"
+			lock = "tma1",
+			track = "jokes_on_them"
 		},
 		{
-			track = "ojos_de_diamante_new",
-			lock = "tma1"
+			lock = "tma1",
+			track = "ojos_de_diamante_new"
 		},
 		{
-			track = "ojos_de_esmeralda_new",
-			lock = "tma1"
+			lock = "tma1",
+			track = "ojos_de_esmeralda_new"
 		},
 		{
-			track = "silk_road",
-			lock = "tma1"
+			lock = "tma1",
+			track = "silk_road"
 		},
 		{
-			track = "its_clown_time",
-			lock = "tma1"
+			lock = "tma1",
+			track = "its_clown_time"
 		}
 	}
 	self.music.soundbank_list = {
@@ -2212,125 +2196,123 @@ Play the full version soon to get your full PAYDAY!]],
 		"soundbanks/music_alesso"
 	}
 	self.music.event_track_overrides = {}
-	self.blame = {
-		default = "hint_blame_missing",
-		empty = nil,
-		cam_criminal = "hint_cam_criminal",
-		cam_dead_body = "hint_cam_dead_body",
-		cam_hostage = "hint_cam_hostage",
-		cam_distress = "hint_cam_distress",
-		cam_body_bag = "hint_body_bag",
-		cam_gunfire = "hint_gunfire",
-		cam_drill = "hint_cam_drill",
-		cam_saw = "hint_cam_saw",
-		cam_sentry_gun = "hint_sentry_gun",
-		cam_trip_mine = "hint_trip_mine",
-		cam_ecm_jammer = "hint_ecm_jammer",
-		cam_c4 = "hint_c4",
-		cam_computer = "hint_computer",
-		cam_glass = "hint_glass",
-		cam_broken_cam = "hint_cam_broken_cam",
-		cam_vault = "hint_vault",
-		cam_fire = "hint_fire",
-		cam_voting = "hint_voting",
-		cam_breaking_entering = "hint_breaking_entering",
-		civ_criminal = "hint_civ_criminal",
-		civ_dead_body = "hint_civ_dead_body",
-		civ_hostage = "hint_civ_hostage",
-		civ_distress = "hint_civ_distress",
-		civ_body_bag = "hint_civ_body_bag",
-		civ_gunfire = "hint_civ_gunfire",
-		civ_drill = "hint_civ_drill",
-		civ_saw = "hint_civ_saw",
-		civ_sentry_gun = "hint_civ_sentry_gun",
-		civ_trip_mine = "hint_civ_trip_mine",
-		civ_ecm_jammer = "hint_civ_ecm_jammer",
-		civ_c4 = "hint_civ_c4",
-		civ_computer = "hint_civ_computer",
-		civ_glass = "hint_civ_glass",
-		civ_broken_cam = "hint_civ_broken_cam",
-		civ_vault = "hint_civ_vault",
-		civ_fire = "hint_civ_fire",
-		civ_voting = "hint_civ_voting",
-		civ_breaking_entering = "hint_civ_breaking_entering",
-		cop_criminal = "hint_cop_criminal",
-		cop_dead_body = "hint_cop_dead_body",
-		cop_hostage = "hint_cop_hostage",
-		cop_distress = "hint_cop_distress",
-		cop_body_bag = "hint_cop_body_bag",
-		cop_gunfire = "hint_cop_gunfire",
-		cop_drill = "hint_cop_drill",
-		cop_saw = "hint_cop_saw",
-		cop_sentry_gun = "hint_cop_sentry_gun",
-		cop_trip_mine = "hint_cop_trip_mine",
-		cop_ecm_jammer = "hint_cop_ecm_jammer",
-		cop_c4 = "hint_cop_c4",
-		cop_computer = "hint_cop_computer",
-		cop_glass = "hint_cop_glass",
-		cop_broken_cam = "hint_cop_broken_cam",
-		cop_vault = "hint_cop_vault",
-		cop_fire = "hint_cop_fire",
-		cop_voting = "hint_cop_voting",
-		cop_breaking_entering = "hint_cop_breaking_entering",
-		sys_explosion = "hint_alert_explosion",
-		civ_explosion = "hint_alert_explosion",
-		cop_explosion = "hint_alert_explosion",
-		gan_explosion = "hint_alert_explosion",
-		cam_explosion = "hint_alert_explosion",
-		sys_blackmailer = "hint_blame_blackmailer",
-		sys_gensec = "hint_blame_gensec",
-		sys_police_alerted = "hint_blame_police_alerted",
-		sys_csgo_gunfire = "hint_blame_csgo_gunfire",
-		met_criminal = "hint_met_criminal",
-		mot_criminal = "hint_mot_criminal",
-		gls_alarm = "hint_alarm_glass",
-		alarm_pager_bluff_failed = "hint_alarm_pager_bluff_failed",
-		alarm_pager_not_answered = "hint_alarm_pager_not_answered",
-		alarm_pager_hang_up = "hint_alarm_pager_hang_up",
-		civ_too_many_killed = "hint_civ_too_many_killed",
-		civ_alarm = "hint_alarm_civ",
-		cop_alarm = "hint_alarm_cop",
-		gan_alarm = "hint_alarm_cop",
-		cam_crate_open = "hint_cam_crate_open",
-		civ_crate_open = "hint_civ_crate_open",
-		cop_crate_open = "hint_cop_crate_open",
-		gan_crate_open = "hint_cop_crate_open"
+	self.blame = {}
+	self.blame.default = "hint_blame_missing"
+	self.blame.empty = nil
+	self.blame.cam_criminal = "hint_cam_criminal"
+	self.blame.cam_dead_body = "hint_cam_dead_body"
+	self.blame.cam_hostage = "hint_cam_hostage"
+	self.blame.cam_distress = "hint_cam_distress"
+	self.blame.cam_body_bag = "hint_body_bag"
+	self.blame.cam_gunfire = "hint_gunfire"
+	self.blame.cam_drill = "hint_cam_drill"
+	self.blame.cam_saw = "hint_cam_saw"
+	self.blame.cam_sentry_gun = "hint_sentry_gun"
+	self.blame.cam_trip_mine = "hint_trip_mine"
+	self.blame.cam_ecm_jammer = "hint_ecm_jammer"
+	self.blame.cam_c4 = "hint_c4"
+	self.blame.cam_computer = "hint_computer"
+	self.blame.cam_glass = "hint_glass"
+	self.blame.cam_broken_cam = "hint_cam_broken_cam"
+	self.blame.cam_vault = "hint_vault"
+	self.blame.cam_fire = "hint_fire"
+	self.blame.cam_voting = "hint_voting"
+	self.blame.cam_breaking_entering = "hint_breaking_entering"
+	self.blame.civ_criminal = "hint_civ_criminal"
+	self.blame.civ_dead_body = "hint_civ_dead_body"
+	self.blame.civ_hostage = "hint_civ_hostage"
+	self.blame.civ_distress = "hint_civ_distress"
+	self.blame.civ_body_bag = "hint_civ_body_bag"
+	self.blame.civ_gunfire = "hint_civ_gunfire"
+	self.blame.civ_drill = "hint_civ_drill"
+	self.blame.civ_saw = "hint_civ_saw"
+	self.blame.civ_sentry_gun = "hint_civ_sentry_gun"
+	self.blame.civ_trip_mine = "hint_civ_trip_mine"
+	self.blame.civ_ecm_jammer = "hint_civ_ecm_jammer"
+	self.blame.civ_c4 = "hint_civ_c4"
+	self.blame.civ_computer = "hint_civ_computer"
+	self.blame.civ_glass = "hint_civ_glass"
+	self.blame.civ_broken_cam = "hint_civ_broken_cam"
+	self.blame.civ_vault = "hint_civ_vault"
+	self.blame.civ_fire = "hint_civ_fire"
+	self.blame.civ_voting = "hint_civ_voting"
+	self.blame.civ_breaking_entering = "hint_civ_breaking_entering"
+	self.blame.cop_criminal = "hint_cop_criminal"
+	self.blame.cop_dead_body = "hint_cop_dead_body"
+	self.blame.cop_hostage = "hint_cop_hostage"
+	self.blame.cop_distress = "hint_cop_distress"
+	self.blame.cop_body_bag = "hint_cop_body_bag"
+	self.blame.cop_gunfire = "hint_cop_gunfire"
+	self.blame.cop_drill = "hint_cop_drill"
+	self.blame.cop_saw = "hint_cop_saw"
+	self.blame.cop_sentry_gun = "hint_cop_sentry_gun"
+	self.blame.cop_trip_mine = "hint_cop_trip_mine"
+	self.blame.cop_ecm_jammer = "hint_cop_ecm_jammer"
+	self.blame.cop_c4 = "hint_cop_c4"
+	self.blame.cop_computer = "hint_cop_computer"
+	self.blame.cop_glass = "hint_cop_glass"
+	self.blame.cop_broken_cam = "hint_cop_broken_cam"
+	self.blame.cop_vault = "hint_cop_vault"
+	self.blame.cop_fire = "hint_cop_fire"
+	self.blame.cop_voting = "hint_cop_voting"
+	self.blame.cop_breaking_entering = "hint_cop_breaking_entering"
+	self.blame.sys_explosion = "hint_alert_explosion"
+	self.blame.civ_explosion = "hint_alert_explosion"
+	self.blame.cop_explosion = "hint_alert_explosion"
+	self.blame.gan_explosion = "hint_alert_explosion"
+	self.blame.cam_explosion = "hint_alert_explosion"
+	self.blame.sys_blackmailer = "hint_blame_blackmailer"
+	self.blame.sys_gensec = "hint_blame_gensec"
+	self.blame.sys_police_alerted = "hint_blame_police_alerted"
+	self.blame.sys_csgo_gunfire = "hint_blame_csgo_gunfire"
+	self.blame.met_criminal = "hint_met_criminal"
+	self.blame.mot_criminal = "hint_mot_criminal"
+	self.blame.gls_alarm = "hint_alarm_glass"
+	self.blame.alarm_pager_bluff_failed = "hint_alarm_pager_bluff_failed"
+	self.blame.alarm_pager_not_answered = "hint_alarm_pager_not_answered"
+	self.blame.alarm_pager_hang_up = "hint_alarm_pager_hang_up"
+	self.blame.civ_too_many_killed = "hint_civ_too_many_killed"
+	self.blame.civ_alarm = "hint_alarm_civ"
+	self.blame.cop_alarm = "hint_alarm_cop"
+	self.blame.gan_alarm = "hint_alarm_cop"
+	self.blame.cam_crate_open = "hint_cam_crate_open"
+	self.blame.civ_crate_open = "hint_civ_crate_open"
+	self.blame.cop_crate_open = "hint_cop_crate_open"
+	self.blame.gan_crate_open = "hint_cop_crate_open"
+	self.casino = {}
+	self.casino.unlock_level = 10
+	self.casino.entrance_level = {
+		14,
+		28,
+		40,
+		45,
+		55,
+		65,
+		75
 	}
-	self.casino = {
-		unlock_level = 10,
-		entrance_level = {
-			14,
-			28,
-			40,
-			45,
-			55,
-			65,
-			75
-		},
-		entrance_fee = {
-			500000,
-			500000,
-			500000,
-			750000,
-			1000000,
-			1250000,
-			1500000
-		},
-		prefer_cost = 500000,
-		prefer_chance = 0.1,
-		secure_card_cost = {
-			1000000,
-			3300000,
-			6500000
-		},
-		secure_card_level = {
-			10,
-			40,
-			60
-		},
-		infamous_cost = 3000000,
-		infamous_chance = 3
+	self.casino.entrance_fee = {
+		500000,
+		500000,
+		500000,
+		750000,
+		1000000,
+		1250000,
+		1500000
 	}
+	self.casino.prefer_cost = 500000
+	self.casino.prefer_chance = 0.1
+	self.casino.secure_card_cost = {
+		1000000,
+		3300000,
+		6500000
+	}
+	self.casino.secure_card_level = {
+		10,
+		40,
+		60
+	}
+	self.casino.infamous_cost = 3000000
+	self.casino.infamous_chance = 3
 	self.weapon_disable_crit_for_damage = {
 		frag = {
 			explosion = false,
@@ -2456,151 +2438,138 @@ Play the full version soon to get your full PAYDAY!]],
 			tase = false
 		}
 	}
-	self.projectiles = {
-		frag = {}
-	}
+	self.projectiles = {}
+	self.projectiles.frag = {}
 	self.projectiles.frag.damage = 160
 	self.projectiles.frag.curve_pow = 0.1
 	self.projectiles.frag.player_damage = 10
 	self.projectiles.frag.range = 500
 	self.projectiles.frag.name_id = "bm_grenade_frag"
-	self.projectiles.launcher_frag = {
-		damage = 130,
-		launch_speed = 1250,
-		curve_pow = 0.1,
-		player_damage = 8,
-		range = 350,
-		init_timer = 2.5,
-		mass_look_up_modifier = 1,
-		sound_event = "gl_explode",
-		name_id = "bm_launcher_frag"
-	}
-	self.projectiles.launcher_rocket = {
-		damage = 1250,
-		launch_speed = 2500,
-		curve_pow = 0.1,
-		player_damage = 40,
-		range = 500,
-		init_timer = 2.5,
-		mass_look_up_modifier = 1,
-		sound_event = "rpg_explode",
-		name_id = "bm_launcher_rocket"
-	}
-	self.projectiles.molotov = {
-		damage = 3,
-		player_damage = 1,
-		dot_data_name = "proj_molotov",
-		range = 350,
-		burn_duration = 15,
-		burn_tick_period = 0.5,
-		sound_event = "molotov_impact",
-		sound_event_impact_duration = 0,
-		name_id = "bm_grenade_molotov",
-		alert_radius = 1500,
-		fire_alert_radius = 1500
-	}
-	self.projectiles.cs_grenade_quick = {
-		radius = 300,
-		radius_blurzone_multiplier = 1.3,
-		damage_tick_period = 0.25,
-		damage_per_tick = 0.75
-	}
-	self.projectiles.launcher_incendiary = {
-		damage = 10,
-		launch_speed = 1250,
-		curve_pow = 0.1,
-		player_damage = 2,
-		dot_data_name = "proj_launcher_incendiary",
-		range = 350,
-		init_timer = 2.5,
-		mass_look_up_modifier = 1,
-		sound_event = "gl_explode",
-		sound_event_impact_duration = 1,
-		effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion",
-		name_id = "bm_launcher_incendiary",
-		burn_duration = 6,
-		burn_tick_period = 0.5
-	}
+	self.projectiles.launcher_frag = {}
+	self.projectiles.launcher_frag.damage = 130
+	self.projectiles.launcher_frag.launch_speed = 1250
+	self.projectiles.launcher_frag.curve_pow = 0.1
+	self.projectiles.launcher_frag.player_damage = 8
+	self.projectiles.launcher_frag.range = 350
+	self.projectiles.launcher_frag.init_timer = 2.5
+	self.projectiles.launcher_frag.mass_look_up_modifier = 1
+	self.projectiles.launcher_frag.sound_event = "gl_explode"
+	self.projectiles.launcher_frag.name_id = "bm_launcher_frag"
+	self.projectiles.launcher_rocket = {}
+	self.projectiles.launcher_rocket.damage = 1250
+	self.projectiles.launcher_rocket.launch_speed = 2500
+	self.projectiles.launcher_rocket.curve_pow = 0.1
+	self.projectiles.launcher_rocket.player_damage = 40
+	self.projectiles.launcher_rocket.range = 500
+	self.projectiles.launcher_rocket.init_timer = 2.5
+	self.projectiles.launcher_rocket.mass_look_up_modifier = 1
+	self.projectiles.launcher_rocket.sound_event = "rpg_explode"
+	self.projectiles.launcher_rocket.name_id = "bm_launcher_rocket"
+	self.projectiles.molotov = {}
+	self.projectiles.molotov.damage = 3
+	self.projectiles.molotov.player_damage = 1
+	self.projectiles.molotov.dot_data_name = "proj_molotov"
+	self.projectiles.molotov.range = 350
+	self.projectiles.molotov.burn_duration = 15
+	self.projectiles.molotov.burn_tick_period = 0.5
+	self.projectiles.molotov.sound_event = "molotov_impact"
+	self.projectiles.molotov.sound_event_impact_duration = 0
+	self.projectiles.molotov.name_id = "bm_grenade_molotov"
+	self.projectiles.molotov.alert_radius = 1500
+	self.projectiles.molotov.fire_alert_radius = 1500
+	self.projectiles.cs_grenade_quick = {}
+	self.projectiles.cs_grenade_quick.radius = 300
+	self.projectiles.cs_grenade_quick.radius_blurzone_multiplier = 1.3
+	self.projectiles.cs_grenade_quick.damage_tick_period = 0.25
+	self.projectiles.cs_grenade_quick.damage_per_tick = 0.75
+	self.projectiles.launcher_incendiary = {}
+	self.projectiles.launcher_incendiary.damage = 10
+	self.projectiles.launcher_incendiary.launch_speed = 1250
+	self.projectiles.launcher_incendiary.curve_pow = 0.1
+	self.projectiles.launcher_incendiary.player_damage = 2
+	self.projectiles.launcher_incendiary.dot_data_name = "proj_launcher_incendiary"
+	self.projectiles.launcher_incendiary.range = 350
+	self.projectiles.launcher_incendiary.init_timer = 2.5
+	self.projectiles.launcher_incendiary.mass_look_up_modifier = 1
+	self.projectiles.launcher_incendiary.sound_event = "gl_explode"
+	self.projectiles.launcher_incendiary.sound_event_impact_duration = 1
+	self.projectiles.launcher_incendiary.effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion"
+	self.projectiles.launcher_incendiary.name_id = "bm_launcher_incendiary"
+	self.projectiles.launcher_incendiary.burn_duration = 6
+	self.projectiles.launcher_incendiary.burn_tick_period = 0.5
 	self.projectiles.launcher_frag_m32 = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_frag_m32.damage = 130
 	self.projectiles.launcher_incendiary_m32 = deep_clone(self.projectiles.launcher_incendiary)
 	self.projectiles.launcher_frag_china = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_frag_china.damage = 96
 	self.projectiles.launcher_incendiary_china = deep_clone(self.projectiles.launcher_incendiary)
-	self.projectiles.launcher_frag_arbiter = {
-		damage = 48,
-		launch_speed = 7000,
-		curve_pow = 0.1,
-		player_damage = 8,
-		range = 350,
-		init_timer = 2.5,
-		mass_look_up_modifier = 1,
-		sound_event = "gl_explode",
-		name_id = "bm_launcher_frag"
-	}
-	self.projectiles.launcher_incendiary_arbiter = {
-		damage = 10,
-		launch_speed = 7000,
-		curve_pow = 0.1,
-		player_damage = 2,
-		dot_data_name = "proj_launcher_incendiary_arbiter",
-		range = 350,
-		init_timer = 2.5,
-		mass_look_up_modifier = 1,
-		sound_event = "gl_explode",
-		sound_event_impact_duration = 1,
-		effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion",
-		name_id = "bm_launcher_incendiary",
-		burn_duration = 3,
-		burn_tick_period = 0.5
-	}
+	self.projectiles.launcher_frag_arbiter = {}
+	self.projectiles.launcher_frag_arbiter.damage = 48
+	self.projectiles.launcher_frag_arbiter.launch_speed = 7000
+	self.projectiles.launcher_frag_arbiter.curve_pow = 0.1
+	self.projectiles.launcher_frag_arbiter.player_damage = 8
+	self.projectiles.launcher_frag_arbiter.range = 350
+	self.projectiles.launcher_frag_arbiter.init_timer = 2.5
+	self.projectiles.launcher_frag_arbiter.mass_look_up_modifier = 1
+	self.projectiles.launcher_frag_arbiter.sound_event = "gl_explode"
+	self.projectiles.launcher_frag_arbiter.name_id = "bm_launcher_frag"
+	self.projectiles.launcher_incendiary_arbiter = {}
+	self.projectiles.launcher_incendiary_arbiter.damage = 10
+	self.projectiles.launcher_incendiary_arbiter.launch_speed = 7000
+	self.projectiles.launcher_incendiary_arbiter.curve_pow = 0.1
+	self.projectiles.launcher_incendiary_arbiter.player_damage = 2
+	self.projectiles.launcher_incendiary_arbiter.dot_data_name = "proj_launcher_incendiary_arbiter"
+	self.projectiles.launcher_incendiary_arbiter.range = 350
+	self.projectiles.launcher_incendiary_arbiter.init_timer = 2.5
+	self.projectiles.launcher_incendiary_arbiter.mass_look_up_modifier = 1
+	self.projectiles.launcher_incendiary_arbiter.sound_event = "gl_explode"
+	self.projectiles.launcher_incendiary_arbiter.sound_event_impact_duration = 1
+	self.projectiles.launcher_incendiary_arbiter.effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion"
+	self.projectiles.launcher_incendiary_arbiter.name_id = "bm_launcher_incendiary"
+	self.projectiles.launcher_incendiary_arbiter.burn_duration = 3
+	self.projectiles.launcher_incendiary_arbiter.burn_tick_period = 0.5
 	self.projectiles.launcher_frag_slap = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_incendiary_slap = deep_clone(self.projectiles.launcher_incendiary)
-	self.projectiles.fir_com = {
-		damage = 3,
-		curve_pow = 0.1,
-		player_damage = 3,
-		dot_data_name = "proj_fire_com",
-		range = 500,
-		name_id = "bm_grenade_fir_com",
-		sound_event = "white_explosion",
-		effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion"
-	}
-	self.projectiles.rocket_frag = {
-		launch_speed = 2500,
-		adjust_z = 0,
-		push_at_body_index = 0
-	}
-	self.projectiles.west_arrow = {
-		damage = 100,
-		launch_speed = 2000,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		name_id = "bm_west_arrow",
-		push_at_body_index = 0
-	}
+	self.projectiles.fir_com = {}
+	self.projectiles.fir_com.damage = 3
+	self.projectiles.fir_com.curve_pow = 0.1
+	self.projectiles.fir_com.player_damage = 3
+	self.projectiles.fir_com.dot_data_name = "proj_fire_com"
+	self.projectiles.fir_com.range = 500
+	self.projectiles.fir_com.name_id = "bm_grenade_fir_com"
+	self.projectiles.fir_com.sound_event = "white_explosion"
+	self.projectiles.fir_com.effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion"
+	self.projectiles.rocket_frag = {}
+	self.projectiles.rocket_frag.launch_speed = 2500
+	self.projectiles.rocket_frag.adjust_z = 0
+	self.projectiles.rocket_frag.push_at_body_index = 0
+	self.projectiles.west_arrow = {}
+	self.projectiles.west_arrow.damage = 100
+	self.projectiles.west_arrow.launch_speed = 2000
+	self.projectiles.west_arrow.adjust_z = 0
+	self.projectiles.west_arrow.mass_look_up_modifier = 1
+	self.projectiles.west_arrow.name_id = "bm_west_arrow"
+	self.projectiles.west_arrow.push_at_body_index = 0
 	self.projectiles.west_arrow_exp = deep_clone(self.projectiles.west_arrow)
 	self.projectiles.west_arrow_exp.damage = 75
 	self.projectiles.west_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.west_arrow_exp.remove_on_impact = true
-	self.projectiles.dynamite = {
-		damage = 160,
-		curve_pow = 0.1,
-		player_damage = 10,
-		range = 500,
-		name_id = "bm_grenade_frag",
-		effect_name = "effects/payday2/particles/explosions/dynamite_explosion"
-	}
+	self.projectiles.dynamite = {}
+	self.projectiles.dynamite.damage = 160
+	self.projectiles.dynamite.curve_pow = 0.1
+	self.projectiles.dynamite.player_damage = 10
+	self.projectiles.dynamite.range = 500
+	self.projectiles.dynamite.name_id = "bm_grenade_frag"
+	self.projectiles.dynamite.effect_name = "effects/payday2/particles/explosions/dynamite_explosion"
 	self.projectiles.bow_poison_arrow = deep_clone(self.projectiles.west_arrow)
 	self.projectiles.bow_poison_arrow.damage = 6.6
 	self.projectiles.bow_poison_arrow.bullet_class = "PoisonBulletBase"
-	self.projectiles.crossbow_arrow = {
-		damage = 35,
-		launch_speed = 2000,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		push_at_body_index = 0
-	}
+	self.projectiles.crossbow_arrow = {}
+	self.projectiles.crossbow_arrow.damage = 35
+	self.projectiles.crossbow_arrow.launch_speed = 2000
+	self.projectiles.crossbow_arrow.adjust_z = 0
+	self.projectiles.crossbow_arrow.mass_look_up_modifier = 1
+	self.projectiles.crossbow_arrow.push_at_body_index = 0
 	self.projectiles.crossbow_poison_arrow = deep_clone(self.projectiles.crossbow_arrow)
 	self.projectiles.crossbow_poison_arrow.damage = 10
 	self.projectiles.crossbow_poison_arrow.bullet_class = "PoisonBulletBase"
@@ -2608,51 +2577,47 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.crossbow_arrow_exp.damage = 45
 	self.projectiles.crossbow_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.crossbow_arrow_exp.remove_on_impact = true
-	self.projectiles.wpn_prj_four = {
-		damage = 10,
-		launch_speed = 1500,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		name_id = "bm_prj_four",
-		push_at_body_index = 0,
-		dot_data_name = "proj_four",
-		bullet_class = "ProjectilesPoisonBulletBase",
-		sounds = {}
-	}
+	self.projectiles.wpn_prj_four = {}
+	self.projectiles.wpn_prj_four.damage = 10
+	self.projectiles.wpn_prj_four.launch_speed = 1500
+	self.projectiles.wpn_prj_four.adjust_z = 0
+	self.projectiles.wpn_prj_four.mass_look_up_modifier = 1
+	self.projectiles.wpn_prj_four.name_id = "bm_prj_four"
+	self.projectiles.wpn_prj_four.push_at_body_index = 0
+	self.projectiles.wpn_prj_four.dot_data_name = "proj_four"
+	self.projectiles.wpn_prj_four.bullet_class = "ProjectilesPoisonBulletBase"
+	self.projectiles.wpn_prj_four.sounds = {}
 	self.projectiles.wpn_prj_four.sounds.flyby = "throwing_star_flyby"
 	self.projectiles.wpn_prj_four.sounds.flyby_stop = "throwing_star_flyby_stop"
 	self.projectiles.wpn_prj_four.sounds.impact = "throwables_impact_gen"
-	self.projectiles.wpn_prj_ace = {
-		damage = 4,
-		launch_speed = 1500,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		name_id = "bm_prj_ace",
-		push_at_body_index = 0,
-		sounds = {}
-	}
+	self.projectiles.wpn_prj_ace = {}
+	self.projectiles.wpn_prj_ace.damage = 4
+	self.projectiles.wpn_prj_ace.launch_speed = 1500
+	self.projectiles.wpn_prj_ace.adjust_z = 0
+	self.projectiles.wpn_prj_ace.mass_look_up_modifier = 1
+	self.projectiles.wpn_prj_ace.name_id = "bm_prj_ace"
+	self.projectiles.wpn_prj_ace.push_at_body_index = 0
+	self.projectiles.wpn_prj_ace.sounds = {}
 	self.projectiles.wpn_prj_ace.sounds.flyby = "throwing_star_flyby"
 	self.projectiles.wpn_prj_ace.sounds.flyby_stop = "throwing_star_flyby_stop"
 	self.projectiles.wpn_prj_ace.sounds.impact = "throwables_impact_gen"
-	self.projectiles.wpn_prj_jav = {
-		damage = 325,
-		launch_speed = 1500,
-		adjust_z = 30,
-		mass_look_up_modifier = 1,
-		name_id = "bm_prj_jav",
-		push_at_body_index = 0,
-		sounds = {}
-	}
+	self.projectiles.wpn_prj_jav = {}
+	self.projectiles.wpn_prj_jav.damage = 325
+	self.projectiles.wpn_prj_jav.launch_speed = 1500
+	self.projectiles.wpn_prj_jav.adjust_z = 30
+	self.projectiles.wpn_prj_jav.mass_look_up_modifier = 1
+	self.projectiles.wpn_prj_jav.name_id = "bm_prj_jav"
+	self.projectiles.wpn_prj_jav.push_at_body_index = 0
+	self.projectiles.wpn_prj_jav.sounds = {}
 	self.projectiles.wpn_prj_jav.sounds.flyby = "jav_flyby"
 	self.projectiles.wpn_prj_jav.sounds.flyby_stop = "jav_flyby_stop"
 	self.projectiles.wpn_prj_jav.sounds.impact = "jav_impact_gen"
-	self.projectiles.arblast_arrow = {
-		damage = 200,
-		launch_speed = 3500,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		push_at_body_index = 0
-	}
+	self.projectiles.arblast_arrow = {}
+	self.projectiles.arblast_arrow.damage = 200
+	self.projectiles.arblast_arrow.launch_speed = 3500
+	self.projectiles.arblast_arrow.adjust_z = 0
+	self.projectiles.arblast_arrow.mass_look_up_modifier = 1
+	self.projectiles.arblast_arrow.push_at_body_index = 0
 	self.projectiles.arblast_poison_arrow = deep_clone(self.projectiles.arblast_arrow)
 	self.projectiles.arblast_poison_arrow.damage = 30
 	self.projectiles.arblast_poison_arrow.bullet_class = "PoisonBulletBase"
@@ -2660,13 +2625,12 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.arblast_arrow_exp.damage = 140
 	self.projectiles.arblast_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.arblast_arrow_exp.remove_on_impact = true
-	self.projectiles.frankish_arrow = {
-		damage = 75,
-		launch_speed = 2500,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		push_at_body_index = 0
-	}
+	self.projectiles.frankish_arrow = {}
+	self.projectiles.frankish_arrow.damage = 75
+	self.projectiles.frankish_arrow.launch_speed = 2500
+	self.projectiles.frankish_arrow.adjust_z = 0
+	self.projectiles.frankish_arrow.mass_look_up_modifier = 1
+	self.projectiles.frankish_arrow.push_at_body_index = 0
 	self.projectiles.frankish_poison_arrow = deep_clone(self.projectiles.frankish_arrow)
 	self.projectiles.frankish_poison_arrow.damage = 10
 	self.projectiles.frankish_poison_arrow.bullet_class = "PoisonBulletBase"
@@ -2674,13 +2638,12 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.frankish_arrow_exp.damage = 70
 	self.projectiles.frankish_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.frankish_arrow_exp.remove_on_impact = true
-	self.projectiles.long_arrow = {
-		damage = 200,
-		launch_speed = 3500,
-		adjust_z = -30,
-		mass_look_up_modifier = 1,
-		push_at_body_index = 0
-	}
+	self.projectiles.long_arrow = {}
+	self.projectiles.long_arrow.damage = 200
+	self.projectiles.long_arrow.launch_speed = 3500
+	self.projectiles.long_arrow.adjust_z = -30
+	self.projectiles.long_arrow.mass_look_up_modifier = 1
+	self.projectiles.long_arrow.push_at_body_index = 0
 	self.projectiles.long_poison_arrow = deep_clone(self.projectiles.long_arrow)
 	self.projectiles.long_poison_arrow.damage = 30
 	self.projectiles.long_poison_arrow.bullet_class = "PoisonBulletBase"
@@ -2688,46 +2651,42 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.long_arrow_exp.damage = 140
 	self.projectiles.long_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.long_arrow_exp.remove_on_impact = true
-	self.projectiles.wpn_prj_hur = {
-		damage = 110,
-		launch_speed = 1000,
-		adjust_z = 120,
-		mass_look_up_modifier = 1,
-		name_id = "bm_prj_hur",
-		push_at_body_index = "dynamic_body_spinn",
-		sounds = {}
-	}
+	self.projectiles.wpn_prj_hur = {}
+	self.projectiles.wpn_prj_hur.damage = 110
+	self.projectiles.wpn_prj_hur.launch_speed = 1000
+	self.projectiles.wpn_prj_hur.adjust_z = 120
+	self.projectiles.wpn_prj_hur.mass_look_up_modifier = 1
+	self.projectiles.wpn_prj_hur.name_id = "bm_prj_hur"
+	self.projectiles.wpn_prj_hur.push_at_body_index = "dynamic_body_spinn"
+	self.projectiles.wpn_prj_hur.sounds = {}
 	self.projectiles.wpn_prj_hur.sounds.flyby = "hur_flyby"
 	self.projectiles.wpn_prj_hur.sounds.flyby_stop = "hur_flyby_stop"
 	self.projectiles.wpn_prj_hur.sounds.impact = "hur_impact_gen"
-	self.projectiles.wpn_prj_target = {
-		damage = 110,
-		launch_speed = 1000,
-		adjust_z = 120,
-		mass_look_up_modifier = 1,
-		name_id = "bm_prj_target",
-		push_at_body_index = "dynamic_body_spinn",
-		sounds = {}
-	}
+	self.projectiles.wpn_prj_target = {}
+	self.projectiles.wpn_prj_target.damage = 110
+	self.projectiles.wpn_prj_target.launch_speed = 1000
+	self.projectiles.wpn_prj_target.adjust_z = 120
+	self.projectiles.wpn_prj_target.mass_look_up_modifier = 1
+	self.projectiles.wpn_prj_target.name_id = "bm_prj_target"
+	self.projectiles.wpn_prj_target.push_at_body_index = "dynamic_body_spinn"
+	self.projectiles.wpn_prj_target.sounds = {}
 	self.projectiles.wpn_prj_target.sounds.flyby = "target_flyby"
 	self.projectiles.wpn_prj_target.sounds.flyby_stop = "target_flyby_stop"
 	self.projectiles.wpn_prj_target.sounds.impact = "target_impact_gen"
-	self.projectiles.frag_com = {
-		damage = 60,
-		curve_pow = 0.1,
-		range = 1000,
-		name_id = "bm_grenade_frag_com"
-	}
-	self.projectiles.concussion = {
-		damage = 0,
-		curve_pow = 0.1,
-		range = 1500,
-		name_id = "bm_concussion",
-		sound_event = "concussion_explosion",
-		duration = {
-			additional = 10,
-			min = 4
-		}
+	self.projectiles.frag_com = {}
+	self.projectiles.frag_com.damage = 60
+	self.projectiles.frag_com.curve_pow = 0.1
+	self.projectiles.frag_com.range = 1000
+	self.projectiles.frag_com.name_id = "bm_grenade_frag_com"
+	self.projectiles.concussion = {}
+	self.projectiles.concussion.damage = 0
+	self.projectiles.concussion.curve_pow = 0.1
+	self.projectiles.concussion.range = 1500
+	self.projectiles.concussion.name_id = "bm_concussion"
+	self.projectiles.concussion.sound_event = "concussion_explosion"
+	self.projectiles.concussion.duration = {
+		additional = 10,
+		min = 4
 	}
 	self.projectiles.launcher_m203 = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_m203.projectile_trail = true
@@ -2736,34 +2695,31 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.rocket_ray_frag.projectile_trail = true
 	self.projectiles.rocket_ray_frag.adjust_z = 0
 	self.projectiles.rocket_ray_frag.push_at_body_index = 0
-	self.projectiles.smoke_screen_grenade = {
-		damage = 0,
-		curve_pow = 0.1,
-		range = 1500,
-		name_id = "bm_smoke_screen_grenade",
-		duration = 10,
-		dodge_chance = 0.5,
-		init_timer = 0,
-		accuracy_roll_chance = 0.5,
-		accuracy_fail_spread = {
-			5,
-			10
-		}
+	self.projectiles.smoke_screen_grenade = {}
+	self.projectiles.smoke_screen_grenade.damage = 0
+	self.projectiles.smoke_screen_grenade.curve_pow = 0.1
+	self.projectiles.smoke_screen_grenade.range = 1500
+	self.projectiles.smoke_screen_grenade.name_id = "bm_smoke_screen_grenade"
+	self.projectiles.smoke_screen_grenade.duration = 10
+	self.projectiles.smoke_screen_grenade.dodge_chance = 0.5
+	self.projectiles.smoke_screen_grenade.init_timer = 0
+	self.projectiles.smoke_screen_grenade.accuracy_roll_chance = 0.5
+	self.projectiles.smoke_screen_grenade.accuracy_fail_spread = {
+		5,
+		10
 	}
-	self.projectiles.dada_com = {
-		damage = 160,
-		curve_pow = 0.1,
-		range = 500,
-		name_id = "bm_grenade_dada_com",
-		sound_event = "mtl_explosion"
-	}
-	self.projectiles.ecp_arrow = {
-		damage = 70,
-		launch_speed = 3500,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		push_at_body_index = 0
-	}
+	self.projectiles.dada_com = {}
+	self.projectiles.dada_com.damage = 160
+	self.projectiles.dada_com.curve_pow = 0.1
+	self.projectiles.dada_com.range = 500
+	self.projectiles.dada_com.name_id = "bm_grenade_dada_com"
+	self.projectiles.dada_com.sound_event = "mtl_explosion"
+	self.projectiles.ecp_arrow = {}
+	self.projectiles.ecp_arrow.damage = 70
+	self.projectiles.ecp_arrow.launch_speed = 3500
+	self.projectiles.ecp_arrow.adjust_z = 0
+	self.projectiles.ecp_arrow.mass_look_up_modifier = 1
+	self.projectiles.ecp_arrow.push_at_body_index = 0
 	self.projectiles.ecp_arrow_poison = deep_clone(self.projectiles.ecp_arrow)
 	self.projectiles.ecp_arrow_poison.damage = 10
 	self.projectiles.ecp_arrow_poison.bullet_class = "PoisonBulletBase"
@@ -2771,13 +2727,12 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.ecp_arrow_exp.damage = 55
 	self.projectiles.ecp_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.ecp_arrow_exp.remove_on_impact = true
-	self.projectiles.elastic_arrow = {
-		damage = 200,
-		launch_speed = 3500,
-		adjust_z = -130,
-		mass_look_up_modifier = 1,
-		push_at_body_index = 0
-	}
+	self.projectiles.elastic_arrow = {}
+	self.projectiles.elastic_arrow.damage = 200
+	self.projectiles.elastic_arrow.launch_speed = 3500
+	self.projectiles.elastic_arrow.adjust_z = -130
+	self.projectiles.elastic_arrow.mass_look_up_modifier = 1
+	self.projectiles.elastic_arrow.push_at_body_index = 0
 	self.projectiles.elastic_arrow_poison = deep_clone(self.projectiles.elastic_arrow)
 	self.projectiles.elastic_arrow_poison.damage = 30
 	self.projectiles.elastic_arrow_poison.bullet_class = "PoisonBulletBase"
@@ -2785,13 +2740,12 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.elastic_arrow_exp.damage = 140
 	self.projectiles.elastic_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.elastic_arrow_exp.remove_on_impact = true
-	self.projectiles.wpn_gre_electric = {
-		damage = 60,
-		curve_pow = 3.5,
-		range = 1000,
-		name_id = "bm_electric_grenade",
-		sound_event = "grenade_electric_explode"
-	}
+	self.projectiles.wpn_gre_electric = {}
+	self.projectiles.wpn_gre_electric.damage = 60
+	self.projectiles.wpn_gre_electric.curve_pow = 3.5
+	self.projectiles.wpn_gre_electric.range = 1000
+	self.projectiles.wpn_gre_electric.name_id = "bm_electric_grenade"
+	self.projectiles.wpn_gre_electric.sound_event = "grenade_electric_explode"
 	self.projectiles.launcher_electric = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_electric.launch_speed = 1250
 	self.projectiles.launcher_electric.projectile_trail = true
@@ -2824,21 +2778,20 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.underbarrel_electric_groza = deep_clone(self.projectiles.underbarrel_electric)
 	self.projectiles.underbarrel_electric_groza.sound_event = "gl_electric_explode"
 	self.projectiles.underbarrel_m203_groza = deep_clone(self.projectiles.launcher_m203)
-	self.projectiles.xmas_snowball = {
-		damage = 28,
-		curve_pow = 0.1,
-		player_damage = 1,
-		range = 100,
-		name_id = "bm_grenade_xmas_snowball",
-		launch_speed = 1000,
-		adjust_z = 0,
-		mass_look_up_modifier = 1,
-		push_at_body_index = 0,
-		bullet_class = "InstantSnowballBase",
-		remove_on_impact = true,
-		sound_event = "no_sound",
-		sounds = {}
-	}
+	self.projectiles.xmas_snowball = {}
+	self.projectiles.xmas_snowball.damage = 28
+	self.projectiles.xmas_snowball.curve_pow = 0.1
+	self.projectiles.xmas_snowball.player_damage = 1
+	self.projectiles.xmas_snowball.range = 100
+	self.projectiles.xmas_snowball.name_id = "bm_grenade_xmas_snowball"
+	self.projectiles.xmas_snowball.launch_speed = 1000
+	self.projectiles.xmas_snowball.adjust_z = 0
+	self.projectiles.xmas_snowball.mass_look_up_modifier = 1
+	self.projectiles.xmas_snowball.push_at_body_index = 0
+	self.projectiles.xmas_snowball.bullet_class = "InstantSnowballBase"
+	self.projectiles.xmas_snowball.remove_on_impact = true
+	self.projectiles.xmas_snowball.sound_event = "no_sound"
+	self.projectiles.xmas_snowball.sounds = {}
 	self.projectiles.xmas_snowball.sounds.flyby = "jav_flyby"
 	self.projectiles.xmas_snowball.sounds.flyby_stop = "jav_flyby_stop"
 	self.projectiles.xmas_snowball.sounds.impact = "snow_impact_gen"
@@ -2846,18 +2799,17 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.xmas_snowball.idstr_decal = Idstring("snow_explosion_std")
 	self.projectiles.xmas_snowball.idstr_effect = Idstring("")
 	self.projectiles.xmas_snowball.alert_radius = 0
-	self.projectiles.poison_gas_grenade = {
-		damage = 100,
-		player_damage = 0,
-		curve_pow = 0.1,
-		range = 200,
-		name_id = "bm_poison_gas_grenade",
-		poison_gas_range = 800,
-		poison_gas_duration = 20,
-		poison_gas_fade_time = 2,
-		poison_gas_tick_time = 0.3,
-		poison_gas_dot_data_name = "proj_gas_grenade_cloud"
-	}
+	self.projectiles.poison_gas_grenade = {}
+	self.projectiles.poison_gas_grenade.damage = 100
+	self.projectiles.poison_gas_grenade.player_damage = 0
+	self.projectiles.poison_gas_grenade.curve_pow = 0.1
+	self.projectiles.poison_gas_grenade.range = 200
+	self.projectiles.poison_gas_grenade.name_id = "bm_poison_gas_grenade"
+	self.projectiles.poison_gas_grenade.poison_gas_range = 800
+	self.projectiles.poison_gas_grenade.poison_gas_duration = 20
+	self.projectiles.poison_gas_grenade.poison_gas_fade_time = 2
+	self.projectiles.poison_gas_grenade.poison_gas_tick_time = 0.3
+	self.projectiles.poison_gas_grenade.poison_gas_dot_data_name = "proj_gas_grenade_cloud"
 	self.projectiles.launcher_poison = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_poison.launch_speed = 1250
 	self.projectiles.launcher_poison.projectile_trail = true
@@ -2904,18 +2856,17 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_electric_ms3gl = deep_clone(self.projectiles.launcher_electric)
 	self.projectiles.launcher_electric_ms3gl.damage = 14
 	self.projectiles.launcher_electric_ms3gl.sound_event = "gl_electric_explode"
-	self.projectiles.sticky_grenade = {
-		damage = 120,
-		curve_pow = 0.1,
-		player_damage = 10,
-		range = 500,
-		launch_speed = 500,
-		in_air_timer = 10,
-		detonate_timer = 2.5,
-		sweep_radius = 25,
-		name_id = "bm_sticky_grenade",
-		sounds = {}
-	}
+	self.projectiles.sticky_grenade = {}
+	self.projectiles.sticky_grenade.damage = 120
+	self.projectiles.sticky_grenade.curve_pow = 0.1
+	self.projectiles.sticky_grenade.player_damage = 10
+	self.projectiles.sticky_grenade.range = 500
+	self.projectiles.sticky_grenade.launch_speed = 500
+	self.projectiles.sticky_grenade.in_air_timer = 10
+	self.projectiles.sticky_grenade.detonate_timer = 2.5
+	self.projectiles.sticky_grenade.sweep_radius = 25
+	self.projectiles.sticky_grenade.name_id = "bm_sticky_grenade"
+	self.projectiles.sticky_grenade.sounds = {}
 	self.projectiles.sticky_grenade.sounds.impact = "grenade_sticky_impact"
 	self.projectiles.sticky_grenade.warning_data = {
 		play_when_attached = true,
@@ -2928,24 +2879,24 @@ Play the full version soon to get your full PAYDAY!]],
 			event_stop_name = "grenade_sticky_beep_stop"
 		},
 		light_data = {
-			type_str = "omni|specular",
-			range = 300,
+			beep_fade_speed = 4,
 			beep_mul = 0.3,
 			falloff_exp = 0.5,
-			beep_fade_speed = 4,
-			specular_mul = 0.5,
 			link_to_unit = true,
+			range = 300,
+			specular_mul = 0.5,
+			type_str = "omni|specular",
 			color = Vector3(0, 0, 255)
 		}
 	}
 	self.projectiles.dart_poison = {
-		mass_look_up_modifier = 1.25,
-		push_at_body_index = 0,
-		damage = 30,
-		projectile_trail = true,
 		adjust_z = -100,
 		bullet_class = "PoisonBulletBase",
-		launch_speed = 2500
+		damage = 30,
+		launch_speed = 2500,
+		mass_look_up_modifier = 1.25,
+		projectile_trail = true,
+		push_at_body_index = 0
 	}
 	self.projectiles.dart_daze = deep_clone(self.projectiles.dart_poison)
 	self.projectiles.dart_daze.damage = 1.2
@@ -2955,132 +2906,125 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.dart_revive.sweep_radius = 72
 	self.projectiles.dart_revive.bullet_class = "ReviveInstantBulletBase"
 	self.projectiles.laser_watch = {
+		damage = 12,
 		name_id = "bm_prj_laser_watch",
-		range = 68,
-		damage = 12
+		range = 68
 	}
 	self.projectiles.flun_flare = {
-		sound_event = "white_explosion",
-		range = 350,
-		curve_pow = 0.1,
-		player_damage = 5,
-		damage = 3,
 		adjust_z = 0,
-		effect_name = "effects/payday2/particles/explosions/flare_incendiary_explosion_with_flare",
 		airdrop_unit = "units/pd2_dlc_unk/weapons/wpn_prj_flun_flare_airdrop/wpn_prj_flun_flare_airdrop",
 		alert_radius = 5000,
-		impact_effect_name = "effects/payday2/particles/explosions/flare_incendiary_explosion",
-		name_id = "bm_grenade_flun_flare",
+		curve_pow = 0.1,
+		damage = 3,
 		dot_data_name = "proj_fire_com",
+		effect_name = "effects/payday2/particles/explosions/flare_incendiary_explosion_with_flare",
+		impact_effect_name = "effects/payday2/particles/explosions/flare_incendiary_explosion",
 		launch_speed = 75,
+		name_id = "bm_grenade_flun_flare",
+		player_damage = 5,
+		range = 350,
+		sound_event = "white_explosion",
 		sounds = {
 			flyby = "flare_flyby",
 			flyby_stop = "flare_flyby_stop"
 		}
 	}
-	self.voting = {
-		timeout = 30,
-		cooldown = 50,
-		restart_delay = 5
+	self.voting = {}
+	self.voting.timeout = 30
+	self.voting.cooldown = 50
+	self.voting.restart_delay = 5
+	self.tase_data = {}
+	self.tase_data.light = {}
+	self.tase_data.heavy = {
+		duration = 3
 	}
-	self.tase_data = {
-		light = {},
-		heavy = {
-			duration = 3
-		}
+	self.quickplay = {}
+	self.quickplay.default_level_diff = {
+		15,
+		15
 	}
-	self.quickplay = {
-		default_level_diff = {
-			15,
-			15
-		},
-		max_level_diff = {
-			40,
-			40
-		},
-		stealth_levels = {}
+	self.quickplay.max_level_diff = {
+		40,
+		40
 	}
+	self.quickplay.stealth_levels = {}
 	self.quickplay.stealth_levels.dark = true
 	self.quickplay.stealth_levels.kosugi = true
 	self.quickplay.stealth_levels.cage = true
 	self.quickplay.stealth_levels.fish = true
 	self.quickplay.stealth_levels.tag = true
-	self.team_ai = {
-		stop_action = {}
-	}
+	self.team_ai = {}
+	self.team_ai.stop_action = {}
 	self.team_ai.stop_action.delay = 0.8
 	self.team_ai.stop_action.distance = 3000
 	self.team_ai.stop_action.teleport_distance = 5000
-	self.medic = {
-		radius = 400,
-		cooldown = 3
-	}
-	self.spotlights = {
-		helicopter_1 = {
-			tracking_speed = 1.2,
-			objects = {
-				"g_light_cone",
-				"g_spotlight",
-				"align_spotlight_effect",
-				"ls_spotlight"
+	self.medic = {}
+	self.medic.radius = 400
+	self.medic.cooldown = 3
+	self.spotlights = {}
+	self.spotlights.helicopter_1 = {
+		tracking_speed = 1.2,
+		objects = {
+			"g_light_cone",
+			"g_spotlight",
+			"align_spotlight_effect",
+			"ls_spotlight"
+		},
+		wiggle = {
+			ang = {
+				2,
+				6
 			},
-			wiggle = {
-				ang = {
-					2,
-					6
-				},
-				speed = {
-					50,
-					80
-				}
-			},
-			neutral_direction = Vector3(0, 1, -0.7),
-			targetting = {
-				search_t = 3,
-				slot = 12,
-				body = "a_body",
-				max_distance = math.pow(4000, 2)
+			speed = {
+				50,
+				80
 			}
+		},
+		neutral_direction = Vector3(0, 1, -0.7),
+		targetting = {
+			body = "a_body",
+			search_t = 3,
+			slot = 12,
+			max_distance = math.pow(4000, 2)
 		}
 	}
-	self.player_turrets = {
-		ranc_heavy_machine_gun = {
-			interact_deactivate = "ranc_hold_disassemble_turret",
-			interact_enter = "ranc_hold_enter_turret",
-			disassemble_point = "disassemble",
-			enter_point = "enter",
-			assemble_point = "assemble",
-			interact_assemble = "ranc_hold_assemble_turret",
-			disassemble_into_inactive = true,
-			interact_disassemble = "ranc_hold_disassemble_turret",
-			bullet_objects = {
-				prefix = "g_bullet_",
-				amount = 12,
-				extra_objects = {
-					{
-						object = "g_bullets_box_1",
-						ammo = 170
-					},
-					{
-						object = "g_bullets_box_2",
-						ammo = 140
-					},
-					{
-						object = "g_bullets_box_3",
-						ammo = 110
-					},
-					{
-						object = "g_bullets_box_4",
-						ammo = 80
-					},
-					{
-						object = "g_bullets_box_5",
-						ammo = 50
-					},
-					{
-						object = "g_bullets_box_6",
-						ammo = 20
-					}
+	self.player_turrets = {}
+	self.player_turrets.ranc_heavy_machine_gun = {
+		assemble_point = "assemble",
+		disassemble_into_inactive = true,
+		disassemble_point = "disassemble",
+		enter_point = "enter",
+		interact_assemble = "ranc_hold_assemble_turret",
+		interact_deactivate = "ranc_hold_disassemble_turret",
+		interact_disassemble = "ranc_hold_disassemble_turret",
+		interact_enter = "ranc_hold_enter_turret",
+		bullet_objects = {
+			amount = 12,
+			prefix = "g_bullet_",
+			extra_objects = {
+				{
+					ammo = 170,
+					object = "g_bullets_box_1"
+				},
+				{
+					ammo = 140,
+					object = "g_bullets_box_2"
+				},
+				{
+					ammo = 110,
+					object = "g_bullets_box_3"
+				},
+				{
+					ammo = 80,
+					object = "g_bullets_box_4"
+				},
+				{
+					ammo = 50,
+					object = "g_bullets_box_5"
+				},
+				{
+					ammo = 20,
+					object = "g_bullets_box_6"
 				}
 			}
 		}
@@ -3107,68 +3051,68 @@ end
 function TweakData:load_movie_list()
 	self.movies = {
 		{
-			type = "movie_theater_type_cinematic",
-			title = "Somewhere in Mexico",
 			duration = "02:15",
-			file = "movies/the_end"
+			file = "movies/the_end",
+			title = "Somewhere in Mexico",
+			type = "movie_theater_type_cinematic"
 		}
 	}
+
 	local has_all_movies = MenuCallbackHandler:has_all_movies()
 
 	if has_all_movies then
 		table.insert(self.movies, {
-			type = "movie_theater_type_cinematic",
-			title = "Offshore Payday",
 			duration = "07:32",
-			file = "movies/offshore1"
+			file = "movies/offshore1",
+			title = "Offshore Payday",
+			type = "movie_theater_type_cinematic"
 		})
 		table.insert(self.movies, {
-			type = "movie_theater_type_cinematic",
-			title = "Rumors and Stories",
 			duration = "05:20",
-			file = "movies/offshore2"
+			file = "movies/offshore2",
+			title = "Rumors and Stories",
+			type = "movie_theater_type_cinematic"
 		})
 	end
 end
 
 function TweakData:init_screen_colors()
-	self.screen_colors = {
-		text = Color(255, 255, 255, 255) / 255,
-		resource = Color(255, 77, 198, 255) / 255,
-		important_1 = Color(255, 255, 51, 51) / 255,
-		important_2 = Color(125, 255, 51, 51) / 255,
-		item_stage_1 = Color(255, 255, 255, 255) / 255,
-		item_stage_2 = Color(255, 89, 115, 128) / 255,
-		item_stage_3 = Color(255, 23, 33, 38) / 255,
-		button_stage_1 = Color(255, 0, 0, 0) / 255,
-		button_stage_2 = Color(255, 77, 198, 255) / 255,
-		button_stage_3 = Color(127, 0, 170, 255) / 255,
-		crimenet_lines = Color(255, 127, 157, 182) / 255,
-		risk = Color(255, 255, 204, 0) / 255,
-		friend_color = Color(255, 41, 204, 122) / 255,
-		regular_color = Color(255, 41, 150, 240) / 255,
-		pro_color = Color(255, 255, 51, 51) / 255,
-		dlc_color = Color(255, 255, 212, 0) / 255,
-		skill_color = Color(255, 77, 198, 255) / 255,
-		ghost_color = Color("4ca6ff"),
-		extra_bonus_color = Color(255, 255, 255, 255) / 255,
-		community_color = Color(255, 59, 174, 254) / 255,
-		challenge_completed_color = Color(255, 255, 168, 0) / 255,
-		stat_maxed = Color("FF00FF"),
-		competitive_color = Color(255, 41, 204, 122) / 255,
-		event_color = Color(255, 255, 145, 0) / 255,
-		infamous_color = Color(1, 0.1, 1),
-		infamy_color = Color("C864C8"),
-		mutators_color = Color(255, 211, 133, 255) / 255,
-		mutators_color_text = Color(255, 211, 133, 255) / 255,
-		crime_spree_risk = Color(255, 255, 255, 0) / 255,
-		achievement_grey = Color(255, 145, 145, 145) / 255,
-		skirmish_color = Color(255, 255, 85, 30) / 255,
-		dlc_buy_color = Color(255, 255, 168, 0) / 255,
-		heat_cold_color = Color(255, 255, 51, 51) / 255,
-		heat_warm_color = Color("ff7f00"),
-		heat_standard_color = Color(255, 255, 255, 255) / 255
-	}
+	self.screen_colors = {}
+	self.screen_colors.text = Color(255, 255, 255, 255) / 255
+	self.screen_colors.resource = Color(255, 77, 198, 255) / 255
+	self.screen_colors.important_1 = Color(255, 255, 51, 51) / 255
+	self.screen_colors.important_2 = Color(125, 255, 51, 51) / 255
+	self.screen_colors.item_stage_1 = Color(255, 255, 255, 255) / 255
+	self.screen_colors.item_stage_2 = Color(255, 89, 115, 128) / 255
+	self.screen_colors.item_stage_3 = Color(255, 23, 33, 38) / 255
+	self.screen_colors.button_stage_1 = Color(255, 0, 0, 0) / 255
+	self.screen_colors.button_stage_2 = Color(255, 77, 198, 255) / 255
+	self.screen_colors.button_stage_3 = Color(127, 0, 170, 255) / 255
+	self.screen_colors.crimenet_lines = Color(255, 127, 157, 182) / 255
+	self.screen_colors.risk = Color(255, 255, 204, 0) / 255
+	self.screen_colors.friend_color = Color(255, 41, 204, 122) / 255
+	self.screen_colors.regular_color = Color(255, 41, 150, 240) / 255
+	self.screen_colors.pro_color = Color(255, 255, 51, 51) / 255
+	self.screen_colors.dlc_color = Color(255, 255, 212, 0) / 255
+	self.screen_colors.skill_color = Color(255, 77, 198, 255) / 255
+	self.screen_colors.ghost_color = Color("4ca6ff")
+	self.screen_colors.extra_bonus_color = Color(255, 255, 255, 255) / 255
+	self.screen_colors.community_color = Color(255, 59, 174, 254) / 255
+	self.screen_colors.challenge_completed_color = Color(255, 255, 168, 0) / 255
+	self.screen_colors.stat_maxed = Color("FF00FF")
+	self.screen_colors.competitive_color = Color(255, 41, 204, 122) / 255
+	self.screen_colors.event_color = Color(255, 255, 145, 0) / 255
+	self.screen_colors.infamous_color = Color(1, 0.1, 1)
+	self.screen_colors.infamy_color = Color("C864C8")
+	self.screen_colors.mutators_color = Color(255, 211, 133, 255) / 255
+	self.screen_colors.mutators_color_text = Color(255, 211, 133, 255) / 255
+	self.screen_colors.crime_spree_risk = Color(255, 255, 255, 0) / 255
+	self.screen_colors.achievement_grey = Color(255, 145, 145, 145) / 255
+	self.screen_colors.skirmish_color = Color(255, 255, 85, 30) / 255
+	self.screen_colors.dlc_buy_color = Color(255, 255, 168, 0) / 255
+	self.screen_colors.heat_cold_color = Color(255, 255, 51, 51) / 255
+	self.screen_colors.heat_warm_color = Color("ff7f00")
+	self.screen_colors.heat_standard_color = Color(255, 255, 255, 255) / 255
 	self.screen_colors.heat_color = self.screen_colors.heat_standard_color
 	self.screen_colors.one_down = Color(255, 250, 30, 0) / 255
 	self.screen_colors.challenge_title = Color(255, 255, 168, 0) / 255
@@ -3217,18 +3161,16 @@ function TweakData:init_screen_colors()
 end
 
 function TweakData:init_accessibility_colors()
-	self.accessibility_colors = {
-		dot = {}
-	}
+	self.accessibility_colors = {}
+	self.accessibility_colors.dot = {}
 	self.accessibility_colors.dot.white = Color.white
 	self.accessibility_colors.dot.yellow = Color(255, 255, 201, 7) / 255
 	self.accessibility_colors.dot.blue = Color(255, 77, 198, 255) / 255
 	self.accessibility_colors.dot.green = Color.green
-	self.accessibility_colors.screenflash = {
-		flashbang = {},
-		hit_flash = {},
-		blurzone = {}
-	}
+	self.accessibility_colors.screenflash = {}
+	self.accessibility_colors.screenflash.flashbang = {}
+	self.accessibility_colors.screenflash.hit_flash = {}
+	self.accessibility_colors.screenflash.blurzone = {}
 	self.accessibility_colors.screenflash.flashbang.default = Color.white
 	self.accessibility_colors.screenflash.flashbang.black = Color.black
 	self.accessibility_colors.screenflash.flashbang.gray = Color(0.39215686274509803, 0.39215686274509803, 0.39215686274509803)
@@ -3288,64 +3230,66 @@ function TweakData:set_scale()
 	local lang_key = SystemInfo:language():key()
 	local lang_mods = {
 		[Idstring("german"):key()] = {
-			small = 1,
+			kit_desc_large = 0.9,
+			large = 0.9,
 			level_up_text_kern = -1.5,
+			menu_logo_multiplier = 0.9,
 			objectives_text_kern = -1,
+			sd_large = 0.9,
 			sd_menu_border_multiplier = 0.9,
-			kit_desc_large = 0.9,
+			sd_small = 0.9,
 			sd_w_interact_multiplier = 1.55,
-			menu_logo_multiplier = 0.9,
-			large = 0.9,
-			sd_large = 0.9,
-			sd_small = 0.9,
-			w_interact_multiplier = 1.65,
-			stats_upgrade_kern = -1
-		},
-		[Idstring("french"):key()] = {
 			small = 1,
-			sd_large = 0.9,
-			level_up_text_kern = -1.5,
-			sd_level_up_font_multiplier = 0.9,
 			stats_upgrade_kern = -1,
-			sd_w_interact_multiplier = 1.3,
-			kit_desc_large = 0.9,
-			subtitle_multiplier = 0.85,
-			large = 0.9,
-			victory_screen_kern = -0.5,
-			sd_small = 0.95,
-			w_interact_multiplier = 1.4,
-			objectives_text_kern = -0.8
-		},
-		[Idstring("italian"):key()] = {
-			small = 1,
-			large = 1,
-			sd_large = 1,
-			kit_desc_large = 0.9,
-			sd_small = 1,
-			sd_w_interact_multiplier = 1.5,
-			w_interact_multiplier = 1.35,
-			objectives_text_kern = -0.8
-		},
-		[Idstring("spanish"):key()] = {
-			level_up_text_kern = -1.5,
-			victory_title_multiplier = 0.9,
-			objectives_text_kern = -0.8,
-			sd_level_up_font_multiplier = 0.9,
-			kit_desc_large = 0.9,
-			server_list_font_multiplier = 0.9,
-			sd_large = 1,
-			small = 1,
-			objectives_desc_text_kern = 0,
-			sd_menu_border_multiplier = 0.85,
-			sd_w_interact_multiplier = 1.5,
-			menu_logo_multiplier = 0.9,
-			large = 1,
-			upgrade_menu_kern = -1.25,
-			sd_small = 0.9,
-			w_interact_multiplier = 1.6,
-			stats_upgrade_kern = -1
+			w_interact_multiplier = 1.65
 		}
 	}
+
+	lang_mods[Idstring("french"):key()] = {
+		kit_desc_large = 0.9,
+		large = 0.9,
+		level_up_text_kern = -1.5,
+		objectives_text_kern = -0.8,
+		sd_large = 0.9,
+		sd_level_up_font_multiplier = 0.9,
+		sd_small = 0.95,
+		sd_w_interact_multiplier = 1.3,
+		small = 1,
+		stats_upgrade_kern = -1,
+		subtitle_multiplier = 0.85,
+		victory_screen_kern = -0.5,
+		w_interact_multiplier = 1.4
+	}
+	lang_mods[Idstring("italian"):key()] = {
+		kit_desc_large = 0.9,
+		large = 1,
+		objectives_text_kern = -0.8,
+		sd_large = 1,
+		sd_small = 1,
+		sd_w_interact_multiplier = 1.5,
+		small = 1,
+		w_interact_multiplier = 1.35
+	}
+	lang_mods[Idstring("spanish"):key()] = {
+		kit_desc_large = 0.9,
+		large = 1,
+		level_up_text_kern = -1.5,
+		menu_logo_multiplier = 0.9,
+		objectives_desc_text_kern = 0,
+		objectives_text_kern = -0.8,
+		sd_large = 1,
+		sd_level_up_font_multiplier = 0.9,
+		sd_menu_border_multiplier = 0.85,
+		sd_small = 0.9,
+		sd_w_interact_multiplier = 1.5,
+		server_list_font_multiplier = 0.9,
+		small = 1,
+		stats_upgrade_kern = -1,
+		upgrade_menu_kern = -1.25,
+		victory_title_multiplier = 0.9,
+		w_interact_multiplier = 1.6
+	}
+
 	local lang_l_mod = lang_mods[lang_key] and lang_mods[lang_key].large or 1
 	local lang_s_mod = lang_mods[lang_key] and lang_mods[lang_key].small or 1
 	local lang_lsd_mod = lang_mods[lang_key] and lang_mods[lang_key].sd_large or 1
@@ -3367,146 +3311,146 @@ function TweakData:set_scale()
 	local victory_title_multiplier = lang_mods[lang_key] and lang_mods[lang_key].victory_title_multiplier
 	local subtitle_multiplier = lang_mods[lang_key] and lang_mods[lang_key].subtitle_multiplier or 1
 	local res = RenderSettings.resolution
-	self.sd_scale = {
-		is_sd = true,
-		title_image_multiplier = 0.6,
-		menu_logo_multiplier = 0.575 * menu_logo_multiplier,
-		menu_border_multiplier = 0.6 * sd_menu_border_multiplier,
-		default_font_multiplier = 0.6 * lang_lsd_mod,
-		small_font_multiplier = 0.8 * lang_ssd_mod,
-		lobby_info_font_size_scale_multiplier = 0.65,
-		lobby_name_font_size_scale_multiplier = 0.6,
-		server_list_font_size_multiplier = 0.55,
-		multichoice_arrow_multiplier = 0.7,
-		align_line_padding_multiplier = 0.4,
-		menu_arrow_padding_multiplier = 0.5,
-		briefing_text_h_multiplier = 0.5,
-		experience_bar_multiplier = 0.825,
-		hud_equipment_icon_multiplier = 0.65,
-		hud_default_font_multiplier = 0.7,
-		hud_ammo_clip_multiplier = 0.75,
-		hud_ammo_clip_large_multiplier = 0.5,
-		hud_health_multiplier = 0.75,
-		hud_mugshot_multiplier = 0.75,
-		hud_assault_image_multiplier = 0.5,
-		hud_crosshair_offset_multiplier = 0.75,
-		hud_objectives_pad_multiplier = 0.65,
-		experience_upgrade_multiplier = 0.75,
-		level_up_multiplier = 0.7,
-		next_upgrade_font_multiplier = 0.75,
-		level_up_font_multiplier = 0.51 * sd_level_up_font_multiplier,
-		present_multiplier = 0.75,
-		lobby_info_offset_multiplier = 0.7,
-		info_padding_multiplier = 0.4,
-		loading_challenge_bar_scale = 0.8,
-		kit_menu_bar_scale = 0.65,
-		kit_menu_description_h_scale = 1.22,
-		button_layout_multiplier = 0.7,
-		subtitle_pos_multiplier = 0.7,
-		subtitle_font_multiplier = 0.65,
-		subtitle_lang_multiplier = subtitle_multiplier,
-		default_font_kern = 0,
-		stats_upgrade_kern = stats_upgrade_kern or 0,
-		level_up_text_kern = level_up_text_kern or 0,
-		victory_screen_kern = victory_screen_kern or -0.5,
-		upgrade_menu_kern = upgrade_menu_kern or 0,
-		mugshot_name_kern = mugshot_name_kern or -1,
-		objectives_text_kern = objectives_text_kern or 0,
-		objectives_desc_text_kern = objectives_desc_text_kern or 0,
-		kit_description_multiplier = 0.8 * lang_ssd_mod,
-		chat_multiplier = 0.68,
-		chat_menu_h_multiplier = 0.34,
-		w_interact_multiplier = 0.8 * sd_w_interact_multiplier,
-		victory_title_multiplier = victory_title_multiplier and victory_title_multiplier * 0.95 or 1
-	}
-	self.scale = {
-		is_sd = false,
-		title_image_multiplier = 1,
-		menu_logo_multiplier = 1,
-		menu_border_multiplier = 1,
-		default_font_multiplier = 1 * lang_l_mod,
-		small_font_multiplier = 1 * lang_s_mod,
-		lobby_info_font_size_scale_multiplier = 1 * lang_l_mod,
-		lobby_name_font_size_scale_multiplier = 1 * lang_l_mod,
-		server_list_font_size_multiplier = 1 * lang_l_mod * server_list_font_multiplier,
-		multichoice_arrow_multiplier = 1,
-		align_line_padding_multiplier = 1,
-		menu_arrow_padding_multiplier = 1,
-		briefing_text_h_multiplier = 1 * lang_s_mod,
-		experience_bar_multiplier = 1,
-		hud_equipment_icon_multiplier = 1,
-		hud_default_font_multiplier = 1 * lang_l_mod,
-		hud_ammo_clip_multiplier = 1,
-		hud_health_multiplier = 1,
-		hud_mugshot_multiplier = 1,
-		hud_assault_image_multiplier = 1,
-		hud_crosshair_offset_multiplier = 1,
-		hud_objectives_pad_multiplier = 1,
-		experience_upgrade_multiplier = 1,
-		level_up_multiplier = 1,
-		next_upgrade_font_multiplier = 1 * lang_l_mod,
-		level_up_font_multiplier = 1 * lang_l_mod,
-		present_multiplier = 1,
-		lobby_info_offset_multiplier = 1,
-		info_padding_multiplier = 1,
-		loading_challenge_bar_scale = 1,
-		kit_menu_bar_scale = 1,
-		kit_menu_description_h_scale = 1,
-		button_layout_multiplier = 1,
-		subtitle_pos_multiplier = 1,
-		subtitle_font_multiplier = 1 * lang_l_mod,
-		subtitle_lang_multiplier = subtitle_multiplier,
-		default_font_kern = 0,
-		stats_upgrade_kern = stats_upgrade_kern or 0,
-		level_up_text_kern = 0,
-		victory_screen_kern = victory_screen_kern or 0,
-		upgrade_menu_kern = 0,
-		mugshot_name_kern = 0,
-		objectives_text_kern = objectives_text_kern or 0,
-		objectives_desc_text_kern = objectives_desc_text_kern or 0,
-		kit_description_multiplier = 1 * kit_desc_large,
-		chat_multiplier = 1,
-		chat_menu_h_multiplier = 1,
-		w_interact_multiplier = 1 * w_interact_multiplier,
-		victory_title_multiplier = victory_title_multiplier or 1
-	}
+
+	self.sd_scale = {}
+	self.sd_scale.is_sd = true
+	self.sd_scale.title_image_multiplier = 0.6
+	self.sd_scale.menu_logo_multiplier = 0.575 * menu_logo_multiplier
+	self.sd_scale.menu_border_multiplier = 0.6 * sd_menu_border_multiplier
+	self.sd_scale.default_font_multiplier = 0.6 * lang_lsd_mod
+	self.sd_scale.small_font_multiplier = 0.8 * lang_ssd_mod
+	self.sd_scale.lobby_info_font_size_scale_multiplier = 0.65
+	self.sd_scale.lobby_name_font_size_scale_multiplier = 0.6
+	self.sd_scale.server_list_font_size_multiplier = 0.55
+	self.sd_scale.multichoice_arrow_multiplier = 0.7
+	self.sd_scale.align_line_padding_multiplier = 0.4
+	self.sd_scale.menu_arrow_padding_multiplier = 0.5
+	self.sd_scale.briefing_text_h_multiplier = 0.5
+	self.sd_scale.experience_bar_multiplier = 0.825
+	self.sd_scale.hud_equipment_icon_multiplier = 0.65
+	self.sd_scale.hud_default_font_multiplier = 0.7
+	self.sd_scale.hud_ammo_clip_multiplier = 0.75
+	self.sd_scale.hud_ammo_clip_large_multiplier = 0.5
+	self.sd_scale.hud_health_multiplier = 0.75
+	self.sd_scale.hud_mugshot_multiplier = 0.75
+	self.sd_scale.hud_assault_image_multiplier = 0.5
+	self.sd_scale.hud_crosshair_offset_multiplier = 0.75
+	self.sd_scale.hud_objectives_pad_multiplier = 0.65
+	self.sd_scale.experience_upgrade_multiplier = 0.75
+	self.sd_scale.level_up_multiplier = 0.7
+	self.sd_scale.next_upgrade_font_multiplier = 0.75
+	self.sd_scale.level_up_font_multiplier = 0.51 * sd_level_up_font_multiplier
+	self.sd_scale.present_multiplier = 0.75
+	self.sd_scale.lobby_info_offset_multiplier = 0.7
+	self.sd_scale.info_padding_multiplier = 0.4
+	self.sd_scale.loading_challenge_bar_scale = 0.8
+	self.sd_scale.kit_menu_bar_scale = 0.65
+	self.sd_scale.kit_menu_description_h_scale = 1.22
+	self.sd_scale.button_layout_multiplier = 0.7
+	self.sd_scale.subtitle_pos_multiplier = 0.7
+	self.sd_scale.subtitle_font_multiplier = 0.65
+	self.sd_scale.subtitle_lang_multiplier = subtitle_multiplier
+	self.sd_scale.default_font_kern = 0
+	self.sd_scale.stats_upgrade_kern = stats_upgrade_kern or 0
+	self.sd_scale.level_up_text_kern = level_up_text_kern or 0
+	self.sd_scale.victory_screen_kern = victory_screen_kern or -0.5
+	self.sd_scale.upgrade_menu_kern = upgrade_menu_kern or 0
+	self.sd_scale.mugshot_name_kern = mugshot_name_kern or -1
+	self.sd_scale.objectives_text_kern = objectives_text_kern or 0
+	self.sd_scale.objectives_desc_text_kern = objectives_desc_text_kern or 0
+	self.sd_scale.kit_description_multiplier = 0.8 * lang_ssd_mod
+	self.sd_scale.chat_multiplier = 0.68
+	self.sd_scale.chat_menu_h_multiplier = 0.34
+	self.sd_scale.w_interact_multiplier = 0.8 * sd_w_interact_multiplier
+	self.sd_scale.victory_title_multiplier = victory_title_multiplier and victory_title_multiplier * 0.95 or 1
+	self.scale = {}
+	self.scale.is_sd = false
+	self.scale.title_image_multiplier = 1
+	self.scale.menu_logo_multiplier = 1
+	self.scale.menu_border_multiplier = 1
+	self.scale.default_font_multiplier = 1 * lang_l_mod
+	self.scale.small_font_multiplier = 1 * lang_s_mod
+	self.scale.lobby_info_font_size_scale_multiplier = 1 * lang_l_mod
+	self.scale.lobby_name_font_size_scale_multiplier = 1 * lang_l_mod
+	self.scale.server_list_font_size_multiplier = 1 * lang_l_mod * server_list_font_multiplier
+	self.scale.multichoice_arrow_multiplier = 1
+	self.scale.align_line_padding_multiplier = 1
+	self.scale.menu_arrow_padding_multiplier = 1
+	self.scale.briefing_text_h_multiplier = 1 * lang_s_mod
+	self.scale.experience_bar_multiplier = 1
+	self.scale.hud_equipment_icon_multiplier = 1
+	self.scale.hud_default_font_multiplier = 1 * lang_l_mod
+	self.scale.hud_ammo_clip_multiplier = 1
+	self.scale.hud_health_multiplier = 1
+	self.scale.hud_mugshot_multiplier = 1
+	self.scale.hud_assault_image_multiplier = 1
+	self.scale.hud_crosshair_offset_multiplier = 1
+	self.scale.hud_objectives_pad_multiplier = 1
+	self.scale.experience_upgrade_multiplier = 1
+	self.scale.level_up_multiplier = 1
+	self.scale.next_upgrade_font_multiplier = 1 * lang_l_mod
+	self.scale.level_up_font_multiplier = 1 * lang_l_mod
+	self.scale.present_multiplier = 1
+	self.scale.lobby_info_offset_multiplier = 1
+	self.scale.info_padding_multiplier = 1
+	self.scale.loading_challenge_bar_scale = 1
+	self.scale.kit_menu_bar_scale = 1
+	self.scale.kit_menu_description_h_scale = 1
+	self.scale.button_layout_multiplier = 1
+	self.scale.subtitle_pos_multiplier = 1
+	self.scale.subtitle_font_multiplier = 1 * lang_l_mod
+	self.scale.subtitle_lang_multiplier = subtitle_multiplier
+	self.scale.default_font_kern = 0
+	self.scale.stats_upgrade_kern = stats_upgrade_kern or 0
+	self.scale.level_up_text_kern = 0
+	self.scale.victory_screen_kern = victory_screen_kern or 0
+	self.scale.upgrade_menu_kern = 0
+	self.scale.mugshot_name_kern = 0
+	self.scale.objectives_text_kern = objectives_text_kern or 0
+	self.scale.objectives_desc_text_kern = objectives_desc_text_kern or 0
+	self.scale.kit_description_multiplier = 1 * kit_desc_large
+	self.scale.chat_multiplier = 1
+	self.scale.chat_menu_h_multiplier = 1
+	self.scale.w_interact_multiplier = 1 * w_interact_multiplier
+	self.scale.victory_title_multiplier = victory_title_multiplier or 1
 end
 
 function TweakData:set_menu_scale()
 	local lang_mods_def = {
 		[Idstring("german"):key()] = {
 			challenges_font_size = 1,
+			mission_end_font_size = 1,
 			topic_font_size = 0.8,
-			upgrades_font_size = 1,
-			mission_end_font_size = 1
+			upgrades_font_size = 1
 		},
 		[Idstring("french"):key()] = {
 			challenges_font_size = 1,
+			mission_end_font_size = 1,
 			topic_font_size = 1,
-			upgrades_font_size = 1,
-			mission_end_font_size = 1
+			upgrades_font_size = 1
 		},
 		[Idstring("italian"):key()] = {
 			challenges_font_size = 1,
+			mission_end_font_size = 0.95,
 			topic_font_size = 1,
-			upgrades_font_size = 1,
-			mission_end_font_size = 0.95
+			upgrades_font_size = 1
 		},
 		[Idstring("spanish"):key()] = {
 			challenges_font_size = 0.95,
+			mission_end_font_size = 1,
 			topic_font_size = 0.95,
-			upgrades_font_size = 1,
-			mission_end_font_size = 1
+			upgrades_font_size = 1
 		}
 	}
 	local lang_mods = lang_mods_def[SystemInfo:language():key()] or {
 		challenges_font_size = 1,
+		mission_end_font_size = 1,
 		topic_font_size = 1,
-		upgrades_font_size = 1,
-		mission_end_font_size = 1
+		upgrades_font_size = 1
 	}
 	local scale_multiplier = self.scale.default_font_multiplier
 	local small_scale_multiplier = self.scale.small_font_multiplier
+
 	self.menu.default_font = "fonts/font_medium_shadow_mf"
 	self.menu.default_font_no_outline = "fonts/font_medium_noshadow_mf"
 	self.menu.default_font_id = Idstring(self.menu.default_font)
@@ -3575,59 +3519,59 @@ function TweakData:set_menu_scale()
 	self.menu.upper_saferect_border = 64 * self.scale.menu_border_multiplier
 	self.menu.border_pad = 8 * self.scale.menu_border_multiplier
 	self.menu.kit_description_font_size = 14 * self.scale.kit_description_multiplier
-	self.load_level = {
-		briefing_text = {
-			h = 192 * self.scale.briefing_text_h_multiplier
-		},
-		upper_saferect_border = self.menu.upper_saferect_border,
-		border_pad = self.menu.border_pad,
-		stonecold_small_logo = "guis/textures/game_small_logo"
+	self.load_level = {}
+	self.load_level.briefing_text = {
+		h = 192 * self.scale.briefing_text_h_multiplier
 	}
+	self.load_level.upper_saferect_border = self.menu.upper_saferect_border
+	self.load_level.border_pad = self.menu.border_pad
+	self.load_level.stonecold_small_logo = "guis/textures/game_small_logo"
 end
 
 function TweakData:set_hud_values()
 	local lang_mods_def = {
 		[Idstring("german"):key()] = {
 			active_objective_title_font_size = 0.9,
+			hint_font_size = 0.9,
+			location_font_size = 1,
 			next_player_font_size = 0.85,
 			present_mid_text_font_size = 0.8,
-			location_font_size = 1,
-			stats_challenges_font_size = 0.7,
-			hint_font_size = 0.9
+			stats_challenges_font_size = 0.7
 		},
 		[Idstring("french"):key()] = {
 			active_objective_title_font_size = 1,
+			hint_font_size = 0.825,
+			location_font_size = 1,
 			next_player_font_size = 0.85,
 			present_mid_text_font_size = 1,
-			location_font_size = 1,
-			stats_challenges_font_size = 1,
-			hint_font_size = 0.825
+			stats_challenges_font_size = 1
 		},
 		[Idstring("italian"):key()] = {
 			active_objective_title_font_size = 1,
+			hint_font_size = 1,
+			location_font_size = 1,
 			next_player_font_size = 0.85,
 			present_mid_text_font_size = 1,
-			location_font_size = 1,
-			stats_challenges_font_size = 1,
-			hint_font_size = 1
+			stats_challenges_font_size = 1
 		},
 		[Idstring("spanish"):key()] = {
 			active_objective_title_font_size = 1,
+			hint_font_size = 1,
+			location_font_size = 0.7,
 			next_player_font_size = 0.85,
 			present_mid_text_font_size = 1,
-			location_font_size = 0.7,
-			stats_challenges_font_size = 1,
-			hint_font_size = 1
+			stats_challenges_font_size = 1
 		}
 	}
 	local lang_mods = lang_mods_def[SystemInfo:language():key()] or {
 		active_objective_title_font_size = 1,
+		hint_font_size = 1,
+		location_font_size = 1,
 		next_player_font_size = 1,
 		present_mid_text_font_size = 1,
-		location_font_size = 1,
-		stats_challenges_font_size = 1,
-		hint_font_size = 1
+		stats_challenges_font_size = 1
 	}
+
 	self.hud.medium_font = "fonts/font_medium_mf"
 	self.hud.medium_font_noshadow = "fonts/font_medium_mf"
 	self.hud.small_font = "fonts/font_small_mf"
@@ -3655,44 +3599,43 @@ function TweakData:set_hud_values()
 	self.hud.prime_color = Color(1, 1, 0.6588235294117647, 0)
 	self.hud.suspicion_color = Color(1, 0, 0.4666666666666667, 0.6980392156862745)
 	self.hud.detected_color = Color(1, 1, 0.2, 0)
-	self.hud.revive_colors = {
-		Color(255, 223, 15, 15) / 255,
-		Color(255, 98, 35, 35) / 255,
-		Color(255, 91, 87, 87) / 255,
-		Color(255, 91, 87, 87) / 255
-	}
+	self.hud.revive_colors = {}
+	self.hud.revive_colors[1] = Color(255, 223, 15, 15) / 255
+	self.hud.revive_colors[2] = Color(255, 98, 35, 35) / 255
+	self.hud.revive_colors[3] = Color(255, 91, 87, 87) / 255
+	self.hud.revive_colors[4] = Color(255, 91, 87, 87) / 255
 end
 
 function TweakData:_setup_access_cameras()
 	self.camera_channels = {
+		alpha = true,
 		bravo = true,
 		charlie = true,
-		alpha = true,
 		delta = true,
 		default = {
-			enter_event = "camera_monitor_engage",
-			leave_on_hurt = true,
-			leave_event = "camera_monitor_leave",
 			change_event = "camera_monitor_change",
-			id = "default"
+			enter_event = "camera_monitor_engage",
+			id = "default",
+			leave_event = "camera_monitor_leave",
+			leave_on_hurt = true
 		},
 		spy_cameras = {
+			camera_near_range = 1,
 			id = "spy_cameras",
-			leave_on_hurt = false,
-			camera_near_range = 1
+			leave_on_hurt = false
 		}
 	}
 	self.camera_themes = {
 		default = {
-			noise_texture = "core/textures/noise",
 			noise2_texture = "core/textures/noise",
+			noise_texture = "core/textures/noise",
 			noise_color = Color.black:with_alpha(0.2),
 			noise2_color = Color.black:with_alpha(0.2),
 			tint_color = Color.transparent
 		},
 		spy_camera = {
-			noise_texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
 			noise2_texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
+			noise_texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
 			noise_color = Color.black,
 			noise2_color = Color.black:with_alpha(0.5),
 			tint_color = self.chat_colors[#self.chat_colors]
@@ -3701,6 +3644,7 @@ function TweakData:_setup_access_cameras()
 
 	for i = 1, #self.chat_colors - 1 do
 		local theme_id = "spy_camera_peer_" .. i
+
 		self.camera_themes[theme_id] = clone(self.camera_themes.spy_camera)
 		self.camera_themes[theme_id].tint_color = self.chat_colors[i]:with_alpha(0.2)
 	end
@@ -3715,6 +3659,7 @@ end
 if (not tweak_data or tweak_data.RELOAD) and managers.dlc then
 	local reload = tweak_data and tweak_data.RELOAD
 	local reload_clbks = tweak_data and tweak_data._reload_clbks
+
 	tweak_data = TweakData:new()
 	tweak_data._reload_clbks = reload_clbks
 
@@ -3735,921 +3680,922 @@ function TweakData:get_controller_help_coords()
 
 	if SystemInfo:platform() == Idstring("PS3") then
 		coords.normal.left_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_sprint",
 			align = "right",
-			x = 195
+			id = "menu_button_sprint",
+			vertical = "top",
+			x = 195,
+			y = 255
 		}
 		coords.normal.left = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_move",
 			align = "right",
-			x = 195
+			id = "menu_button_move",
+			vertical = "top",
+			x = 195,
+			y = 280
 		}
 		coords.normal.right_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_melee",
 			align = "left",
-			x = 319
+			id = "menu_button_melee",
+			vertical = "top",
+			x = 319,
+			y = 255
 		}
 		coords.normal.right = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_look",
 			align = "left",
-			x = 319
+			id = "menu_button_look",
+			vertical = "top",
+			x = 319,
+			y = 280
 		}
 		coords.normal.triangle = {
-			id = "menu_button_switch_weapon",
 			align = "left",
+			id = "menu_button_switch_weapon",
 			x = 511,
 			y = 112
 		}
 		coords.normal.square = {
-			id = "menu_button_reload",
 			align = "left",
+			id = "menu_button_reload",
 			x = 511,
 			y = 214
 		}
 		coords.normal.circle = {
-			id = "menu_button_crouch",
 			align = "left",
+			id = "menu_button_crouch",
 			x = 511,
 			y = 146
 		}
 		coords.normal.cross = {
-			id = "menu_button_jump",
 			align = "left",
+			id = "menu_button_jump",
 			x = 511,
 			y = 178
 		}
 		coords.normal.r2_trigger = {
-			id = "menu_button_shout",
 			align = "left",
+			id = "menu_button_shout",
 			x = 511,
 			y = 8
 		}
 		coords.normal.r1_trigger = {
-			id = "menu_button_fire_weapon",
 			align = "left",
+			id = "menu_button_fire_weapon",
 			x = 511,
 			y = 36
 		}
 		coords.normal.l2_trigger = {
-			id = "menu_button_deploy",
 			align = "right",
+			id = "menu_button_deploy",
 			x = 0,
 			y = 8
 		}
 		coords.normal.l1_trigger = {
-			id = "menu_button_aim_down_sight",
 			align = "right",
+			id = "menu_button_aim_down_sight",
 			x = 0,
 			y = 36
 		}
 		coords.normal.start = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_ingame_menu",
 			align = "left",
-			x = 280
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 280,
+			y = 0
 		}
 		coords.normal.back = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_stats_screen",
 			align = "right",
-			x = 230
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 230,
+			y = 0
 		}
 		coords.normal.d_down = {
-			vertical = "center",
-			y = 171,
-			id = "menu_button_weapon_gadget_bipod",
 			align = "right",
-			x = 0
+			id = "menu_button_weapon_gadget_bipod",
+			vertical = "center",
+			x = 0,
+			y = 171
 		}
 		coords.normal.d_left = {
-			vertical = "center",
-			y = 145,
-			id = "menu_button_throw_grenade",
 			align = "right",
-			x = 0
+			id = "menu_button_throw_grenade",
+			vertical = "center",
+			x = 0,
+			y = 145
 		}
 		coords.normal.d_right = {
-			vertical = "center",
-			y = 87,
-			id = "menu_button_weapon_firemode",
 			align = "right",
-			x = 0
+			id = "menu_button_weapon_firemode",
+			vertical = "center",
+			x = 0,
+			y = 87
 		}
 		coords.vehicle.left_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 195
+			id = "menu_button_unassigned",
+			vertical = "top",
+			x = 195,
+			y = 255
 		}
 		coords.vehicle.left = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_steering",
 			align = "right",
-			x = 195
+			id = "menu_button_steering",
+			vertical = "top",
+			x = 195,
+			y = 280
 		}
 		coords.vehicle.right_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_vehicle_rear_camera",
 			align = "left",
-			x = 319
+			id = "menu_button_vehicle_rear_camera",
+			vertical = "top",
+			x = 319,
+			y = 255
 		}
 		coords.vehicle.right = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_unassigned",
 			align = "left",
-			x = 319
+			id = "menu_button_unassigned",
+			vertical = "top",
+			x = 319,
+			y = 280
 		}
 		coords.vehicle.triangle = {
-			id = "menu_button_unassigned",
 			align = "left",
+			id = "menu_button_unassigned",
 			x = 511,
 			y = 112
 		}
 		coords.vehicle.square = {
-			id = "menu_button_vehicle_change_camera",
 			align = "left",
+			id = "menu_button_vehicle_change_camera",
 			x = 511,
 			y = 214
 		}
 		coords.vehicle.circle = {
-			id = "menu_button_vehicle_shooting_stance",
 			align = "left",
+			id = "menu_button_vehicle_shooting_stance",
 			x = 511,
 			y = 146
 		}
 		coords.vehicle.cross = {
-			id = "menu_button_handbrake",
 			align = "left",
+			id = "menu_button_handbrake",
 			x = 511,
 			y = 178
 		}
 		coords.vehicle.r2_trigger = {
-			id = "menu_button_vehicle_exit",
 			align = "left",
+			id = "menu_button_vehicle_exit",
 			x = 511,
 			y = 8
 		}
 		coords.vehicle.r1_trigger = {
-			id = "menu_button_accelerate",
 			align = "left",
+			id = "menu_button_accelerate",
 			x = 511,
 			y = 36
 		}
 		coords.vehicle.l2_trigger = {
-			id = "menu_button_unassigned",
 			align = "right",
+			id = "menu_button_unassigned",
 			x = 0,
 			y = 8
 		}
 		coords.vehicle.l1_trigger = {
-			id = "menu_button_brake",
 			align = "right",
+			id = "menu_button_brake",
 			x = 0,
 			y = 36
 		}
 		coords.vehicle.start = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_ingame_menu",
 			align = "left",
-			x = 280
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 280,
+			y = 0
 		}
 		coords.vehicle.back = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_stats_screen",
 			align = "right",
-			x = 230
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 230,
+			y = 0
 		}
 		coords.vehicle.d_down = {
-			vertical = "center",
-			y = 171,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 171
 		}
 		coords.vehicle.d_left = {
-			vertical = "center",
-			y = 145,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 145
 		}
 		coords.vehicle.d_right = {
-			vertical = "center",
-			y = 87,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 87
 		}
 	elseif SystemInfo:platform() == Idstring("PS4") then
 		coords.normal.left_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_sprint",
 			align = "right",
-			x = 199
+			id = "menu_button_sprint",
+			vertical = "top",
+			x = 199,
+			y = 255
 		}
 		coords.normal.left = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_move",
 			align = "right",
-			x = 199
+			id = "menu_button_move",
+			vertical = "top",
+			x = 199,
+			y = 280
 		}
 		coords.normal.right_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_melee",
 			align = "left",
-			x = 313
+			id = "menu_button_melee",
+			vertical = "top",
+			x = 313,
+			y = 255
 		}
 		coords.normal.right = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_look",
 			align = "left",
-			x = 313
+			id = "menu_button_look",
+			vertical = "top",
+			x = 313,
+			y = 280
 		}
 		coords.normal.triangle = {
-			id = "menu_button_switch_weapon",
 			align = "left",
+			id = "menu_button_switch_weapon",
 			x = 511,
 			y = 104
 		}
 		coords.normal.circle = {
-			id = "menu_button_crouch",
 			align = "left",
+			id = "menu_button_crouch",
 			x = 511,
 			y = 128
 		}
 		coords.normal.cross = {
-			id = "menu_button_jump",
 			align = "left",
+			id = "menu_button_jump",
 			x = 511,
 			y = 153
 		}
 		coords.normal.square = {
-			id = "menu_button_reload",
 			align = "left",
+			id = "menu_button_reload",
 			x = 511,
 			y = 181
 		}
 		coords.normal.r1_trigger = {
-			id = "menu_button_fire_weapon",
 			align = "left",
+			id = "menu_button_fire_weapon",
 			x = 511,
 			y = 10
 		}
 		coords.normal.r2_trigger = {
-			id = "menu_button_shout_and_stop",
 			align = "left",
+			id = "menu_button_shout_and_stop",
 			x = 511,
 			y = 55
 		}
 		coords.normal.l1_trigger = {
-			id = "menu_button_aim_down_sight",
 			align = "right",
+			id = "menu_button_aim_down_sight",
 			x = 0,
 			y = 10
 		}
 		coords.normal.l2_trigger = {
-			id = "menu_button_deploy",
 			align = "right",
+			id = "menu_button_deploy",
 			x = 0,
 			y = 55
 		}
 		coords.normal.start = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_ingame_menu",
 			align = "right",
-			x = 219
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 219,
+			y = 0
 		}
 		coords.normal.back = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_stats_screen",
 			align = "left",
-			x = 328
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 328,
+			y = 0
 		}
 		coords.normal.d_left = {
-			vertical = "center",
-			y = 128,
-			id = "menu_button_throw_grenade",
 			align = "right",
-			x = 0
+			id = "menu_button_throw_grenade",
+			vertical = "center",
+			x = 0,
+			y = 128
 		}
 		coords.normal.d_down = {
-			vertical = "center",
-			y = 153,
-			id = "menu_button_weapon_gadget_bipod",
 			align = "right",
-			x = 0
+			id = "menu_button_weapon_gadget_bipod",
+			vertical = "center",
+			x = 0,
+			y = 153
 		}
 		coords.normal.d_right = {
-			vertical = "center",
-			y = 181,
-			id = "menu_button_weapon_firemode",
 			align = "right",
-			x = 0
+			id = "menu_button_weapon_firemode",
+			vertical = "center",
+			x = 0,
+			y = 181
 		}
 		coords.vehicle.left_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 199
+			id = "menu_button_unassigned",
+			vertical = "top",
+			x = 199,
+			y = 255
 		}
 		coords.vehicle.left = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_steering",
 			align = "right",
-			x = 199
+			id = "menu_button_steering",
+			vertical = "top",
+			x = 199,
+			y = 280
 		}
 		coords.vehicle.right_thumb = {
-			vertical = "top",
-			y = 255,
-			id = "menu_button_vehicle_rear_camera",
 			align = "left",
-			x = 313
+			id = "menu_button_vehicle_rear_camera",
+			vertical = "top",
+			x = 313,
+			y = 255
 		}
 		coords.vehicle.right = {
-			vertical = "top",
-			y = 280,
-			id = "menu_button_unassigned",
 			align = "left",
-			x = 313
+			id = "menu_button_unassigned",
+			vertical = "top",
+			x = 313,
+			y = 280
 		}
 		coords.vehicle.triangle = {
-			id = "menu_button_unassigned",
 			align = "left",
+			id = "menu_button_unassigned",
 			x = 511,
 			y = 104
 		}
 		coords.vehicle.circle = {
-			id = "menu_button_vehicle_shooting_stance",
 			align = "left",
+			id = "menu_button_vehicle_shooting_stance",
 			x = 511,
 			y = 128
 		}
 		coords.vehicle.cross = {
-			id = "menu_button_handbrake",
 			align = "left",
+			id = "menu_button_handbrake",
 			x = 511,
 			y = 153
 		}
 		coords.vehicle.square = {
-			id = "menu_button_vehicle_change_camera",
 			align = "left",
+			id = "menu_button_vehicle_change_camera",
 			x = 511,
 			y = 181
 		}
 		coords.vehicle.r1_trigger = {
-			id = "menu_button_accelerate",
 			align = "left",
+			id = "menu_button_accelerate",
 			x = 511,
 			y = 10
 		}
 		coords.vehicle.r2_trigger = {
-			id = "menu_button_vehicle_exit",
 			align = "left",
+			id = "menu_button_vehicle_exit",
 			x = 511,
 			y = 55
 		}
 		coords.vehicle.l1_trigger = {
-			id = "menu_button_brake",
 			align = "right",
+			id = "menu_button_brake",
 			x = 0,
 			y = 10
 		}
 		coords.vehicle.l2_trigger = {
-			id = "menu_button_unassigned",
 			align = "right",
+			id = "menu_button_unassigned",
 			x = 0,
 			y = 55
 		}
 		coords.vehicle.start = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_ingame_menu",
 			align = "right",
-			x = 219
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 219,
+			y = 0
 		}
 		coords.vehicle.back = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_stats_screen",
 			align = "left",
-			x = 328
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 328,
+			y = 0
 		}
 		coords.vehicle.d_left = {
-			vertical = "center",
-			y = 128,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 128
 		}
 		coords.vehicle.d_down = {
-			vertical = "center",
-			y = 153,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 153
 		}
 		coords.vehicle.d_right = {
-			vertical = "center",
-			y = 181,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 181
 		}
 	elseif SystemInfo:platform() == Idstring("XB1") then
 		coords.normal.left_thumb = {
-			vertical = "bottom",
-			y = 78,
-			id = "menu_button_sprint",
 			align = "right",
-			x = 0
+			id = "menu_button_sprint",
+			vertical = "bottom",
+			x = 0,
+			y = 78
 		}
 		coords.normal.left = {
-			vertical = "top",
-			y = 78,
-			id = "menu_button_move",
 			align = "right",
-			x = 0
+			id = "menu_button_move",
+			vertical = "top",
+			x = 0,
+			y = 78
 		}
 		coords.normal.right_thumb = {
-			vertical = "top",
-			y = 276,
-			id = "menu_button_melee",
 			align = "center",
-			x = 302
+			id = "menu_button_melee",
+			vertical = "top",
+			x = 302,
+			y = 276
 		}
 		coords.normal.right = {
-			vertical = "top",
-			y = 301,
-			id = "menu_button_look",
 			align = "center",
-			x = 302
+			id = "menu_button_look",
+			vertical = "top",
+			x = 302,
+			y = 301
 		}
 		coords.normal.y = {
-			id = "menu_button_switch_weapon",
 			align = "left",
+			id = "menu_button_switch_weapon",
 			x = 512,
 			y = 57
 		}
 		coords.normal.x = {
-			id = "menu_button_reload",
 			align = "left",
+			id = "menu_button_reload",
 			x = 512,
 			y = 140
 		}
 		coords.normal.b = {
-			id = "menu_button_crouch",
 			align = "left",
+			id = "menu_button_crouch",
 			x = 512,
 			y = 85
 		}
 		coords.normal.a = {
-			id = "menu_button_jump",
 			align = "left",
+			id = "menu_button_jump",
 			x = 512,
 			y = 113
 		}
 		coords.normal.right_shoulder = {
-			id = "menu_button_shout_and_stop",
 			align = "center",
+			id = "menu_button_shout_and_stop",
 			x = 390,
 			y = -10
 		}
 		coords.normal.right_trigger = {
-			id = "menu_button_fire_weapon",
 			align = "left",
+			id = "menu_button_fire_weapon",
 			x = 512,
 			y = 18
 		}
 		coords.normal.left_shoulder = {
-			id = "menu_button_deploy",
 			align = "right",
+			id = "menu_button_deploy",
 			x = 180,
 			y = -10
 		}
 		coords.normal.left_trigger = {
-			id = "menu_button_aim_down_sight",
 			align = "right",
+			id = "menu_button_aim_down_sight",
 			x = 0,
 			y = 18
 		}
 		coords.normal.start = {
-			vertical = "bottom",
-			y = -25,
-			id = "menu_button_ingame_menu",
 			align = "left",
-			x = 288
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 288,
+			y = -25
 		}
 		coords.normal.back = {
-			vertical = "bottom",
-			y = -25,
-			id = "menu_button_stats_screen",
 			align = "right",
-			x = 235
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 235,
+			y = -25
 		}
 		coords.normal.d_down = {
-			vertical = "center",
-			y = 193,
-			id = "menu_button_weapon_gadget_bipod",
 			align = "right",
-			x = 0
+			id = "menu_button_weapon_gadget_bipod",
+			vertical = "center",
+			x = 0,
+			y = 193
 		}
 		coords.normal.d_left = {
-			vertical = "center",
-			y = 158,
-			id = "menu_button_throw_grenade",
 			align = "right",
-			x = 0
+			id = "menu_button_throw_grenade",
+			vertical = "center",
+			x = 0,
+			y = 158
 		}
 		coords.normal.d_right = {
-			vertical = "center",
-			y = 266,
-			id = "menu_button_weapon_firemode",
 			align = "right",
-			x = 270
+			id = "menu_button_weapon_firemode",
+			vertical = "center",
+			x = 270,
+			y = 266
 		}
 		coords.vehicle.left_thumb = {
-			vertical = "bottom",
-			y = 78,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "bottom",
+			x = 0,
+			y = 78
 		}
 		coords.vehicle.left = {
-			vertical = "top",
-			y = 78,
-			id = "menu_button_steering",
 			align = "right",
-			x = 0
+			id = "menu_button_steering",
+			vertical = "top",
+			x = 0,
+			y = 78
 		}
 		coords.vehicle.right_thumb = {
-			vertical = "top",
-			y = 276,
-			id = "menu_button_vehicle_rear_camera",
 			align = "center",
-			x = 302
+			id = "menu_button_vehicle_rear_camera",
+			vertical = "top",
+			x = 302,
+			y = 276
 		}
 		coords.vehicle.right = {
-			vertical = "top",
-			y = 301,
-			id = "menu_button_unassigned",
 			align = "center",
-			x = 302
+			id = "menu_button_unassigned",
+			vertical = "top",
+			x = 302,
+			y = 301
 		}
 		coords.vehicle.y = {
-			id = "menu_button_unassigned",
 			align = "left",
+			id = "menu_button_unassigned",
 			x = 512,
 			y = 57
 		}
 		coords.vehicle.x = {
-			id = "menu_button_vehicle_change_camera",
 			align = "left",
+			id = "menu_button_vehicle_change_camera",
 			x = 512,
 			y = 140
 		}
 		coords.vehicle.b = {
-			id = "menu_button_vehicle_shooting_stance",
 			align = "left",
+			id = "menu_button_vehicle_shooting_stance",
 			x = 512,
 			y = 85
 		}
 		coords.vehicle.a = {
-			id = "menu_button_handbrake",
 			align = "left",
+			id = "menu_button_handbrake",
 			x = 512,
 			y = 113
 		}
 		coords.vehicle.right_shoulder = {
-			id = "menu_button_vehicle_exit",
 			align = "center",
+			id = "menu_button_vehicle_exit",
 			x = 390,
 			y = -10
 		}
 		coords.vehicle.right_trigger = {
-			id = "menu_button_accelerate",
 			align = "left",
+			id = "menu_button_accelerate",
 			x = 512,
 			y = 18
 		}
 		coords.vehicle.left_shoulder = {
-			id = "menu_button_unassigned",
 			align = "right",
+			id = "menu_button_unassigned",
 			x = 180,
 			y = -10
 		}
 		coords.vehicle.left_trigger = {
-			id = "menu_button_brake",
 			align = "right",
+			id = "menu_button_brake",
 			x = 0,
 			y = 18
 		}
 		coords.vehicle.start = {
-			vertical = "bottom",
-			y = -25,
-			id = "menu_button_ingame_menu",
 			align = "left",
-			x = 288
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 288,
+			y = -25
 		}
 		coords.vehicle.back = {
-			vertical = "bottom",
-			y = -25,
-			id = "menu_button_stats_screen",
 			align = "right",
-			x = 235
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 235,
+			y = -25
 		}
 		coords.vehicle.d_down = {
-			vertical = "center",
-			y = 193,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 193
 		}
 		coords.vehicle.d_left = {
-			vertical = "center",
-			y = 158,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 158
 		}
 		coords.vehicle.d_right = {
-			vertical = "center",
-			y = 266,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 270
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 270,
+			y = 266
 		}
 	else
 		coords.normal.left_thumb = {
-			vertical = "bottom",
-			y = 138,
-			id = "menu_button_sprint",
 			align = "right",
-			x = 0
+			id = "menu_button_sprint",
+			vertical = "bottom",
+			x = 0,
+			y = 138
 		}
 		coords.normal.left = {
-			vertical = "top",
-			y = 138,
-			id = "menu_button_move",
 			align = "right",
-			x = 0
+			id = "menu_button_move",
+			vertical = "top",
+			x = 0,
+			y = 138
 		}
 		coords.normal.right_thumb = {
-			vertical = "top",
-			y = 256,
-			id = "menu_button_melee",
 			align = "left",
-			x = 302
+			id = "menu_button_melee",
+			vertical = "top",
+			x = 302,
+			y = 256
 		}
 		coords.normal.right = {
-			vertical = "top",
-			y = 281,
-			id = "menu_button_look",
 			align = "left",
-			x = 302
+			id = "menu_button_look",
+			vertical = "top",
+			x = 302,
+			y = 281
 		}
 		coords.normal.y = {
-			id = "menu_button_switch_weapon",
 			align = "left",
+			id = "menu_button_switch_weapon",
 			x = 512,
 			y = 97
 		}
 		coords.normal.x = {
-			id = "menu_button_reload",
 			align = "left",
+			id = "menu_button_reload",
 			x = 512,
 			y = 180
 		}
 		coords.normal.b = {
-			id = "menu_button_crouch",
 			align = "left",
+			id = "menu_button_crouch",
 			x = 512,
 			y = 125
 		}
 		coords.normal.a = {
-			id = "menu_button_jump",
 			align = "left",
+			id = "menu_button_jump",
 			x = 512,
 			y = 153
 		}
 		coords.normal.right_shoulder = {
-			id = "menu_button_shout_and_stop",
 			align = "left",
+			id = "menu_button_shout_and_stop",
 			x = 512,
 			y = 49
 		}
 		coords.normal.right_trigger = {
-			id = "menu_button_fire_weapon",
 			align = "left",
+			id = "menu_button_fire_weapon",
 			x = 512,
 			y = 19
 		}
 		coords.normal.left_shoulder = {
-			id = "menu_button_deploy",
 			align = "right",
+			id = "menu_button_deploy",
 			x = 0,
 			y = 49
 		}
 		coords.normal.left_trigger = {
-			id = "menu_button_aim_down_sight",
 			align = "right",
+			id = "menu_button_aim_down_sight",
 			x = 0,
 			y = 19
 		}
 		coords.normal.start = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_ingame_menu",
 			align = "left",
-			x = 288
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 288,
+			y = 0
 		}
 		coords.normal.back = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_stats_screen",
 			align = "right",
-			x = 223
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 223,
+			y = 0
 		}
 		coords.normal.d_down = {
-			vertical = "center",
-			y = 243,
-			id = "menu_button_weapon_gadget_bipod",
 			align = "right",
-			x = 0
+			id = "menu_button_weapon_gadget_bipod",
+			vertical = "center",
+			x = 0,
+			y = 243
 		}
 		coords.normal.d_left = {
-			vertical = "center",
-			y = 208,
-			id = "menu_button_throw_grenade",
 			align = "right",
-			x = 0
+			id = "menu_button_throw_grenade",
+			vertical = "center",
+			x = 0,
+			y = 208
 		}
 		coords.normal.d_right = {
-			vertical = "top",
-			y = 256,
-			id = "menu_button_weapon_firemode",
 			align = "right",
-			x = 226
+			id = "menu_button_weapon_firemode",
+			vertical = "top",
+			x = 226,
+			y = 256
 		}
 
 		if SystemInfo:platform() == Idstring("WIN32") then
 			coords.normal.d_up = {
-				vertical = "center",
-				y = 174,
-				id = "menu_button_push_to_talk",
 				align = "right",
-				x = 0
+				id = "menu_button_push_to_talk",
+				vertical = "center",
+				x = 0,
+				y = 174
 			}
 		end
 
 		coords.vehicle.left_thumb = {
-			vertical = "bottom",
-			y = 138,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "bottom",
+			x = 0,
+			y = 138
 		}
 		coords.vehicle.left = {
-			vertical = "top",
-			y = 138,
-			id = "menu_button_steering",
 			align = "right",
-			x = 0
+			id = "menu_button_steering",
+			vertical = "top",
+			x = 0,
+			y = 138
 		}
 		coords.vehicle.right_thumb = {
-			vertical = "top",
-			y = 256,
-			id = "menu_button_vehicle_rear_camera",
 			align = "left",
-			x = 302
+			id = "menu_button_vehicle_rear_camera",
+			vertical = "top",
+			x = 302,
+			y = 256
 		}
 		coords.vehicle.right = {
-			vertical = "top",
-			y = 281,
-			id = "menu_button_unassigned",
 			align = "left",
-			x = 302
+			id = "menu_button_unassigned",
+			vertical = "top",
+			x = 302,
+			y = 281
 		}
 		coords.vehicle.y = {
-			id = "menu_button_unassigned",
 			align = "left",
+			id = "menu_button_unassigned",
 			x = 512,
 			y = 97
 		}
 		coords.vehicle.x = {
-			id = "menu_button_vehicle_change_camera",
 			align = "left",
+			id = "menu_button_vehicle_change_camera",
 			x = 512,
 			y = 180
 		}
 		coords.vehicle.b = {
-			id = "menu_button_vehicle_shooting_stance",
 			align = "left",
+			id = "menu_button_vehicle_shooting_stance",
 			x = 512,
 			y = 125
 		}
 		coords.vehicle.a = {
-			id = "menu_button_handbrake",
 			align = "left",
+			id = "menu_button_handbrake",
 			x = 512,
 			y = 153
 		}
 		coords.vehicle.right_shoulder = {
-			id = "menu_button_vehicle_exit",
 			align = "left",
+			id = "menu_button_vehicle_exit",
 			x = 512,
 			y = 49
 		}
 		coords.vehicle.right_trigger = {
-			id = "menu_button_accelerate",
 			align = "left",
+			id = "menu_button_accelerate",
 			x = 512,
 			y = 19
 		}
 		coords.vehicle.left_shoulder = {
-			id = "menu_button_unassigned",
 			align = "right",
+			id = "menu_button_unassigned",
 			x = 0,
 			y = 49
 		}
 		coords.vehicle.left_trigger = {
-			id = "menu_button_brake",
 			align = "right",
+			id = "menu_button_brake",
 			x = 0,
 			y = 19
 		}
 		coords.vehicle.start = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_ingame_menu",
 			align = "left",
-			x = 288
+			id = "menu_button_ingame_menu",
+			vertical = "bottom",
+			x = 288,
+			y = 0
 		}
 		coords.vehicle.back = {
-			vertical = "bottom",
-			y = 0,
-			id = "menu_button_stats_screen",
 			align = "right",
-			x = 223
+			id = "menu_button_stats_screen",
+			vertical = "bottom",
+			x = 223,
+			y = 0
 		}
 		coords.vehicle.d_down = {
-			vertical = "center",
-			y = 243,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 243
 		}
 		coords.vehicle.d_left = {
-			vertical = "center",
-			y = 208,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 0
+			id = "menu_button_unassigned",
+			vertical = "center",
+			x = 0,
+			y = 208
 		}
 		coords.vehicle.d_right = {
-			vertical = "top",
-			y = 256,
-			id = "menu_button_unassigned",
 			align = "right",
-			x = 226
+			id = "menu_button_unassigned",
+			vertical = "top",
+			x = 226,
+			y = 256
 		}
 
 		if SystemInfo:platform() == Idstring("WIN32") then
 			coords.vehicle.d_up = {
-				vertical = "center",
-				y = 174,
-				id = "menu_button_unassigned",
 				align = "right",
-				x = 0
+				id = "menu_button_unassigned",
+				vertical = "center",
+				x = 0,
+				y = 174
 			}
 		end
 	end
 
 	if managers.user and managers.user:get_setting("southpaw") then
 		local tmp = coords.normal.left.id
+
 		coords.normal.left.id = coords.normal.right.id
 		coords.normal.right.id = tmp
 	end

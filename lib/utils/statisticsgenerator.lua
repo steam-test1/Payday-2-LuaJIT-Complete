@@ -2,6 +2,7 @@ StatisticsGenerator = StatisticsGenerator or class()
 
 function StatisticsGenerator.generate(dataXML)
 	dataXML = dataXML or false
+
 	local level_list, job_list, mask_list, weapon_list, melee_list, grenade_list, enemy_list, armor_list, character_list, deployable_list, suit_list, weapon_color_list, glove_list = tweak_data.statistics:statistics_table()
 	local join_stinger_list = {}
 
@@ -48,8 +49,10 @@ end
 
 function StatisticsGenerator._root_path()
 	local path = Application:base_path() .. (CoreApp.arg_value("-assetslocation") or "..\\..\\")
+
 	path = Application:nice_path(path, true)
-	local f = nil
+
+	local f
 
 	function f(s)
 		local str, i = string.gsub(s, "\\[%w_%.%s]+\\%.%.", "")

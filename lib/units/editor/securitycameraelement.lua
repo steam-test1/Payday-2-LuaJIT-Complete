@@ -3,10 +3,10 @@ SecurityCameraUnitElement.SAVE_UNIT_POSITION = false
 SecurityCameraUnitElement.SAVE_UNIT_ROTATION = false
 SecurityCameraUnitElement.LINK_VALUES = {
 	{
-		value = "camera_u_id",
-		output = true,
 		layer = "Statics",
-		type = "operator"
+		output = true,
+		type = "operator",
+		value = "camera_u_id"
 	}
 }
 SecurityCameraUnitElement._object_original_rotations = {}
@@ -92,14 +92,14 @@ function SecurityCameraUnitElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(apply_settings, 0, 0, "EXPAND")
 
 	local yaw_params = {
-		name_proportions = 1,
-		name = "Yaw:",
 		ctrlr_proportions = 2,
-		tooltip = "Specify camera yaw (degrees).",
-		sorted = false,
-		min = -180,
 		floats = 0,
 		max = 180,
+		min = -180,
+		name = "Yaw:",
+		name_proportions = 1,
+		sorted = false,
+		tooltip = "Specify camera yaw (degrees).",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.yaw
@@ -116,14 +116,14 @@ function SecurityCameraUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local pitch_params = {
-		name_proportions = 1,
-		name = "Pitch:",
 		ctrlr_proportions = 2,
-		tooltip = "Specify camera pitch (degrees).",
-		sorted = false,
-		min = -90,
 		floats = 0,
 		max = 90,
+		min = -90,
+		name = "Pitch:",
+		name_proportions = 1,
+		sorted = false,
+		tooltip = "Specify camera pitch (degrees).",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.pitch
@@ -140,14 +140,14 @@ function SecurityCameraUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local fov_params = {
-		name_proportions = 1,
-		name = "FOV:",
 		ctrlr_proportions = 2,
-		tooltip = "Specify camera FOV (degrees).",
-		sorted = false,
-		min = 0,
 		floats = 0,
 		max = 180,
+		min = 0,
+		name = "FOV:",
+		name_proportions = 1,
+		sorted = false,
+		tooltip = "Specify camera FOV (degrees).",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.fov
@@ -164,13 +164,13 @@ function SecurityCameraUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local detection_range_params = {
-		name = "Detection range:",
 		ctrlr_proportions = 2,
-		name_proportions = 1,
-		tooltip = "Specify camera detection_range (meters).",
-		sorted = false,
-		min = 0,
 		floats = 0,
+		min = 0,
+		name = "Detection range:",
+		name_proportions = 1,
+		sorted = false,
+		tooltip = "Specify camera detection_range (meters).",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.detection_range
@@ -187,13 +187,13 @@ function SecurityCameraUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local suspicion_range_params = {
-		name = "Suspicion range:",
 		ctrlr_proportions = 2,
-		name_proportions = 1,
-		tooltip = "Specify camera suspicion_range.",
-		sorted = false,
-		min = 0,
 		floats = 0,
+		min = 0,
+		name = "Suspicion range:",
+		name_proportions = 1,
+		sorted = false,
+		tooltip = "Specify camera suspicion_range.",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.suspicion_range
@@ -210,13 +210,13 @@ function SecurityCameraUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local detection_delay_min_params = {
-		name = "Detection delay min:",
 		ctrlr_proportions = 2,
-		name_proportions = 1,
-		tooltip = "Detection delay at zero distance.",
-		sorted = false,
-		min = 0,
 		floats = 0,
+		min = 0,
+		name = "Detection delay min:",
+		name_proportions = 1,
+		sorted = false,
+		tooltip = "Detection delay at zero distance.",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.detection_delay_min
@@ -233,13 +233,13 @@ function SecurityCameraUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local detection_delay_max_params = {
-		name = "Detection delay max:",
 		ctrlr_proportions = 2,
-		name_proportions = 1,
-		tooltip = "Detection delay at max distance.",
-		sorted = false,
-		min = 0,
 		floats = 0,
+		min = 0,
+		name = "Detection delay max:",
+		name_proportions = 1,
+		sorted = false,
+		tooltip = "Detection delay at max distance.",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.detection_delay_max
@@ -318,8 +318,8 @@ function SecurityCameraUnitElement:update_selected(t, dt, selected_unit, all_uni
 
 	if self._camera_u_data then
 		self:_draw_link({
-			g = 0.75,
 			b = 0,
+			g = 0.75,
 			r = 0,
 			from_unit = self._unit,
 			to_unit = self._camera_u_data.unit
@@ -347,8 +347,8 @@ function SecurityCameraUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 	if self._camera_u_data then
 		self:_draw_link({
-			g = 0.75,
 			b = 0,
+			g = 0.75,
 			r = 0,
 			from_unit = self._unit,
 			to_unit = self._camera_u_data.unit
@@ -406,6 +406,7 @@ function SecurityCameraUnitElement:_set_camera_unit(unit)
 			local obj_pitch = unit:get_object(Idstring("CameraPitch"))
 			local original_rot_yaw = obj_yaw:local_rotation()
 			local original_rot_pitch = obj_pitch:local_rotation()
+
 			self._object_original_rotations[unit:name():key()] = {
 				yaw = original_rot_yaw,
 				pitch = original_rot_pitch

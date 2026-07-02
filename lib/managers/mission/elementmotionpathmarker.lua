@@ -25,6 +25,7 @@ function ElementMotionpathMarker:on_executed(instigator)
 end
 
 function ElementMotionpathMarker:operation_remove()
+	return
 end
 
 function ElementMotionpathMarker:save(data)

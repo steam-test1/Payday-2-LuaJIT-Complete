@@ -23,8 +23,8 @@ function InventoryDummyUnitElement:_build_panel(panel, panel_sizer)
 		"masks"
 	}, "Select a crafted category.")
 	self:_build_value_number(panel, panel_sizer, "slot", {
-		min = 1,
 		floats = 0,
-		max = 9
+		max = 9,
+		min = 1
 	}, "Set inventory slot to spawn")
 end

@@ -1,4 +1,5 @@
 MenuSceneManagerVR = MenuSceneManager or Application:error("MenuSceneManagerVR requires MenuSceneManager!")
+
 local __init = MenuSceneManager.init
 local __update = MenuSceneManager.update
 local __destroy = MenuSceneManager.destroy
@@ -15,15 +16,19 @@ function MenuSceneManagerVR:destroy()
 end
 
 function MenuSceneManagerVR:_set_dimensions()
+	return
 end
 
 function MenuSceneManagerVR:_set_camera_position()
+	return
 end
 
 function MenuSceneManagerVR:_set_target_position()
+	return
 end
 
 function MenuSceneManagerVR:mouse_pressed()
+	return
 end
 
 function MenuSceneManagerVR:character_screen_position()
@@ -31,14 +36,13 @@ function MenuSceneManagerVR:character_screen_position()
 end
 
 function MenuSceneManagerVR:setup_camera()
-	self._camera_values = {
-		camera_pos_current = Vector3(0, 0, 0),
-		camera_pos_target = Vector3(0, 0, 0),
-		target_pos_current = Vector3(0, 0, 0),
-		target_pos_target = Vector3(0, 0, 0),
-		fov_current = 0,
-		fov_target = 0
-	}
+	self._camera_values = {}
+	self._camera_values.camera_pos_current = Vector3(0, 0, 0)
+	self._camera_values.camera_pos_target = Vector3(0, 0, 0)
+	self._camera_values.target_pos_current = Vector3(0, 0, 0)
+	self._camera_values.target_pos_target = Vector3(0, 0, 0)
+	self._camera_values.fov_current = 0
+	self._camera_values.fov_target = 0
 	self._camera_object = managers.menu:player():camera()
 
 	self:_use_environment("standard")
@@ -50,6 +54,7 @@ function MenuSceneManagerVR:update(t, dt)
 end
 
 function MenuSceneManagerVR:_update_vr(t, dt)
+	return
 end
 
 function MenuSceneManagerVR:_setup_bg()
@@ -66,22 +71,19 @@ function MenuSceneManagerVR:_setup_bg()
 end
 
 function MenuSceneManagerVR:_set_up_environments()
-	self._environments = {
-		standard = {}
-	}
+	self._environments = {}
+	self._environments.standard = {}
 	self._environments.standard.environment = "environments/pd2_menu_vr/pd2_menu_vr"
 	self._environments.standard.color_grading = "color_off"
 	self._environments.standard.angle = 0
-	self._environments.safe = {
-		environment = "environments/pd2_menu_vr/pd2_menu_vr",
-		color_grading = "color_off",
-		angle = 0
-	}
-	self._environments.crafting = {
-		environment = "environments/pd2_menu_vr/pd2_menu_vr",
-		color_grading = "color_off",
-		angle = 0
-	}
+	self._environments.safe = {}
+	self._environments.safe.environment = "environments/pd2_menu_vr/pd2_menu_vr"
+	self._environments.safe.color_grading = "color_off"
+	self._environments.safe.angle = 0
+	self._environments.crafting = {}
+	self._environments.crafting.environment = "environments/pd2_menu_vr/pd2_menu_vr"
+	self._environments.crafting.color_grading = "color_off"
+	self._environments.crafting.angle = 0
 end
 
 function MenuSceneManagerVR:_set_up_templates()
@@ -89,23 +91,23 @@ function MenuSceneManagerVR:_set_up_templates()
 	local c_ref = self._bg_unit:get_object(Idstring("a_reference"))
 	local target_pos = Vector3(0, 0, ref:position().z)
 	local offset = Vector3(ref:position().x, ref:position().y, 0)
-	self._scene_templates = {
-		standard = {}
-	}
+
+	self._scene_templates = {}
+	self._scene_templates.standard = {}
 	self._scene_templates.standard.use_character_grab = false
 	self._scene_templates.standard.character_visible = true
 	self._scene_templates.standard.camera_pos = ref:position()
 	self._scene_templates.standard.target_pos = target_pos
 	self._scene_templates.standard.character_pos = c_ref:position()
 	self._scene_templates.standard.disable_item_updates = true
-	self._scene_templates.title = {
-		use_character_grab = false,
-		character_visible = false,
-		camera_pos = ref:position(),
-		target_pos = target_pos,
-		character_pos = Vector3(0, 0, -500),
-		disable_item_updates = true
-	}
+	self._scene_templates.title = {}
+	self._scene_templates.title.use_character_grab = false
+	self._scene_templates.title.character_visible = false
+	self._scene_templates.title.camera_pos = ref:position()
+	self._scene_templates.title.target_pos = target_pos
+	self._scene_templates.title.character_pos = Vector3(0, 0, -500)
+	self._scene_templates.title.disable_item_updates = true
+
 	local cloned_templates = {
 		"blackmarket",
 		"blackmarket_mask",
@@ -147,6 +149,7 @@ function MenuSceneManagerVR:_set_up_templates()
 	self._scene_templates.calibrate.character_pos = Vector3(-350, 0, 0)
 	self._scene_templates.calibrate.character_rot = Rotation(-90, 0, 0)
 	self._scene_templates.allow_item = false
+
 	local item_templates = {
 		"blackmarket_item",
 		"blackmarket_mask",
@@ -226,6 +229,7 @@ function MenuSceneManagerVR:set_scene_template(template, data, custom_name, skip
 end
 
 function MenuSceneManagerVR:spawn_workbench_room()
+	return
 end
 
 function MenuSceneManagerVR:get_henchmen_positioning(index)
@@ -237,6 +241,7 @@ end
 
 function MenuSceneManagerVR:create_character_text_panel(peer_id)
 	self._character_text_ws = self._character_text_ws or {}
+
 	local character = self._lobby_characters[peer_id]
 
 	if not alive(character) then
@@ -244,8 +249,7 @@ function MenuSceneManagerVR:create_character_text_panel(peer_id)
 	end
 
 	local ws = self._character_text_ws[peer_id]
-	local w = 300
-	local h = 100
+	local w, h = 300, 100
 
 	if not ws then
 		ws = managers.gui_data:get_scene_gui():create_world_workspace(w, h, Vector3(), Vector3(1, 0, 0), Vector3(0, 0, 1))
@@ -274,6 +278,7 @@ end
 function MenuSceneManagerVR:_create_economy_safe_scene()
 	local pos = self._scene_templates.safe.character_pos + Vector3(50, 100, 0)
 	local rot = Rotation(30)
+
 	self._economy_safe = World:spawn_unit(self._safe_scene_data.safe_data.safe_name, pos, rot)
 	self._economy_drill = World:spawn_unit(self._safe_scene_data.drill_data.drill_name, self._economy_safe:get_object(Idstring("spawn_drill")):position(), rot)
 

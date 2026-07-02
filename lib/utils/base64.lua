@@ -3,9 +3,7 @@ local extract = _G.bit32 and _G.bit32.extract
 
 if not extract then
 	if _G.bit then
-		local shl = _G.bit.lshift
-		local shr = _G.bit.rshift
-		local band = _G.bit.band
+		local shl, shr, band = _G.bit.lshift, _G.bit.rshift, _G.bit.band
 
 		function extract(v, from, width)
 			return band(shr(v, from), shl(1, width) - 1)
@@ -120,21 +118,19 @@ end
 
 local DEFAULT_ENCODER = base64.makeencoder()
 local DEFAULT_DECODER = base64.makedecoder()
-local char = string.char
-local concat = table.concat
+local char, concat = string.char, table.concat
 
 function base64.encode(str, encoder, usecaching)
 	encoder = encoder or DEFAULT_ENCODER
-	local t = {}
-	local k = 1
-	local n = #str
+
+	local t, k, n = {}, 1, #str
 	local lastn = n % 3
 	local cache = {}
 
 	for i = 1, n - lastn, 3 do
 		local a, b, c = str:byte(i, i + 2)
 		local v = a * 65536 + b * 256 + c
-		local s = nil
+		local s
 
 		if usecaching then
 			s = cache[v]
@@ -154,9 +150,11 @@ function base64.encode(str, encoder, usecaching)
 	if lastn == 2 then
 		local a, b = str:byte(n - 1, n)
 		local v = a * 65536 + b * 256
+
 		t[k] = char(encoder[extract(v, 18, 6)], encoder[extract(v, 12, 6)], encoder[extract(v, 6, 6)], encoder[64])
 	elseif lastn == 1 then
 		local v = str:byte(n) * 65536
+
 		t[k] = char(encoder[extract(v, 18, 6)], encoder[extract(v, 12, 6)], encoder[64], encoder[64])
 	end
 
@@ -165,10 +163,11 @@ end
 
 function base64.decode(b64, decoder, usecaching)
 	decoder = decoder or DEFAULT_DECODER
+
 	local pattern = "[^%w%+%/%=]"
 
 	if decoder then
-		local s62, s63 = nil
+		local s62, s63
 
 		for charcode, b64code in pairs(decoder) do
 			if b64code == 62 then
@@ -182,27 +181,30 @@ function base64.decode(b64, decoder, usecaching)
 	end
 
 	b64 = b64:gsub(pattern, "")
+
 	local cache = usecaching and {}
-	local t = {}
-	local k = 1
+	local t, k = {}, 1
 	local n = #b64
 	local padding = b64:sub(-2) == "==" and 2 or b64:sub(-1) == "=" and 1 or 0
 
 	for i = 1, padding > 0 and n - 4 or n, 4 do
 		local a, b, c, d = b64:byte(i, i + 3)
-		local s = nil
+		local s
 
 		if usecaching then
 			local v0 = a * 16777216 + b * 65536 + c * 256 + d
+
 			s = cache[v0]
 
 			if not s then
 				local v = decoder[a] * 262144 + decoder[b] * 4096 + decoder[c] * 64 + decoder[d]
+
 				s = char(extract(v, 16, 8), extract(v, 8, 8), extract(v, 0, 8))
 				cache[v0] = s
 			end
 		else
 			local v = decoder[a] * 262144 + decoder[b] * 4096 + decoder[c] * 64 + decoder[d]
+
 			s = char(extract(v, 16, 8), extract(v, 8, 8), extract(v, 0, 8))
 		end
 
@@ -213,10 +215,12 @@ function base64.decode(b64, decoder, usecaching)
 	if padding == 1 then
 		local a, b, c = b64:byte(n - 3, n - 1)
 		local v = decoder[a] * 262144 + decoder[b] * 4096 + decoder[c] * 64
+
 		t[k] = char(extract(v, 16, 8), extract(v, 8, 8))
 	elseif padding == 2 then
 		local a, b = b64:byte(n - 3, n - 2)
 		local v = decoder[a] * 262144 + decoder[b] * 4096
+
 		t[k] = char(extract(v, 16, 8))
 	end
 

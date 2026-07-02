@@ -3,6 +3,7 @@ PlayerIncapacitatedVR._update_movement = PlayerBleedOutVR._update_movement
 PlayerIncapacitatedVR._start_action_incapacitated = PlayerFatalVR._start_action_dead
 PlayerIncapacitatedVR._end_action_incapacitated = PlayerFatalVR._end_action_dead
 PlayerIncapacitatedVR.set_belt_and_hands_enabled = PlayerFatalVR.set_belt_and_hands_enabled
+
 local __enter = PlayerIncapacitated.enter
 local __exit = PlayerIncapacitated.exit
 local __destroy = PlayerIncapacitated.destroy

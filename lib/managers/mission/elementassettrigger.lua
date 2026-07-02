@@ -7,6 +7,7 @@ function ElementAssetTrigger:init(...)
 end
 
 function ElementAssetTrigger:client_on_executed(...)
+	return
 end
 
 function ElementAssetTrigger:on_script_activated()

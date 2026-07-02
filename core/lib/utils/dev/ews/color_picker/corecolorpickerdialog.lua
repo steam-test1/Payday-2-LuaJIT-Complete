@@ -13,7 +13,9 @@ function ColorPickerDialog:init(parent_frame, enable_alpha, orientation, enable_
 	assert(orientation == "HORIZONTAL" or orientation == "VERTICAL", "Invalid orientation.")
 
 	local frame_size = orientation == "HORIZONTAL" and Vector3(366, 166) or Vector3(186, 300, 0)
+
 	self._window = EWS:Frame(ColorPickerDialog.EDITOR_TITLE, Vector3(-1, -1, 0), frame_size, "SYSTEM_MENU,CAPTION,CLOSE_BOX,CLIP_CHILDREN", parent_frame)
+
 	local sizer = EWS:BoxSizer("HORIZONTAL")
 
 	self._window:set_sizer(sizer)

@@ -1,9 +1,9 @@
 CorePlaySoundUnitElement = CorePlaySoundUnitElement or class(MissionElement)
 CorePlaySoundUnitElement.LINK_VALUES = {
 	{
+		layer = "target",
 		output = true,
-		table_value = "elements",
-		layer = "target"
+		table_value = "elements"
 	}
 }
 PlaySoundUnitElement = PlaySoundUnitElement or class(CorePlaySoundUnitElement)
@@ -34,6 +34,7 @@ function CorePlaySoundUnitElement:draw_links(t, dt, selected_unit, all_units)
 end
 
 function CorePlaySoundUnitElement:update_editing()
+	return
 end
 
 function CorePlaySoundUnitElement:update_selected(t, dt, selected_unit, all_units)
@@ -43,8 +44,8 @@ function CorePlaySoundUnitElement:update_selected(t, dt, selected_unit, all_unit
 
 		if draw then
 			self:_draw_link({
-				g = 0,
 				b = 0,
+				g = 0,
 				r = 0.75,
 				from_unit = self._unit,
 				to_unit = unit
@@ -55,8 +56,8 @@ end
 
 function CorePlaySoundUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and (string.find(ray.unit:name():s(), "ai_spawn_enemy", 1, true) or string.find(ray.unit:name():s(), "ai_spawn_civilian", 1, true)) then
@@ -134,6 +135,7 @@ function CorePlaySoundUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"ai_spawn_enemy",
 		"ai_spawn_civilian"
@@ -146,9 +148,10 @@ function CorePlaySoundUnitElement:_build_panel(panel, panel_sizer)
 	if #paths <= 0 then
 		local help = {
 			panel = panel,
-			sizer = panel_sizer,
-			text = "No scene sounds available in project!"
+			sizer = panel_sizer
 		}
+
+		help.text = "No scene sounds available in project!"
 
 		self:add_help_text(help)
 
@@ -169,6 +172,7 @@ function CorePlaySoundUnitElement:_build_panel(panel, panel_sizer)
 		value_changed_cb = callback(self, self, "set_category")
 	})
 	local _, sound_params = self:_build_value_combobox(panel, panel_sizer, "sound_event", managers.sound_environment:scene_events(path_value), "Select a sound event")
+
 	self._sound_params = sound_params
 
 	self:_build_value_checkbox(panel, panel_sizer, "append_prefix", "Append unit prefix")

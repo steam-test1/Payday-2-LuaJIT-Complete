@@ -30,16 +30,15 @@ CoreMaterialEditor.SHADER_LIB_PATH = "settings/shader_libs"
 function CoreMaterialEditor:init()
 	self:_read_config()
 
-	self._parameter_widgets = {
-		scalar = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorScalar"),
-		vector3 = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorVector3"),
-		color3 = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorColor3"),
-		vector2 = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorVector2"),
-		texture = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorTexture"),
-		intensity = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorDBValue"),
-		decal = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorDecal"),
-		separator = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorSeparator")
-	}
+	self._parameter_widgets = {}
+	self._parameter_widgets.scalar = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorScalar")
+	self._parameter_widgets.vector3 = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorVector3")
+	self._parameter_widgets.color3 = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorColor3")
+	self._parameter_widgets.vector2 = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorVector2")
+	self._parameter_widgets.texture = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorTexture")
+	self._parameter_widgets.intensity = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorDBValue")
+	self._parameter_widgets.decal = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorDecal")
+	self._parameter_widgets.separator = require("core/lib/utils/dev/tools/material_editor/parameter_widgets/CoreMaterialEditorSeparator")
 
 	self:_load_shader_sources()
 	self:_create_main_frame()
@@ -115,6 +114,7 @@ end
 
 function CoreMaterialEditor:_on_change_remote_server()
 	local host = EWS:get_text_from_user(self._main_frame, "Host:", "Remote Compiler", self._remote_host or "", Vector3(-1, -1, -1), true)
+
 	self._remote_host = host ~= "" and host or self._remote_host
 
 	self._remote_compile_checkbox:set_enabled(self._remote_host)
@@ -150,7 +150,7 @@ function CoreMaterialEditor:_on_new()
 end
 
 function CoreMaterialEditor:_on_open()
-	local current_path = nil
+	local current_path
 
 	if self._material_config_path then
 		current_path = string.match(self._material_config_path, ".*\\")
@@ -171,7 +171,7 @@ function CoreMaterialEditor:_on_save()
 end
 
 function CoreMaterialEditor:_on_save_as()
-	local current_path = nil
+	local current_path
 
 	if self._material_config_path then
 		current_path = string.match(self._material_config_path, ".*\\")
@@ -419,6 +419,7 @@ end
 function CoreMaterialEditor:_on_shader_option_chaged(define_struct, data)
 	if define_struct._check_box:id() == data._id then
 		define_struct._checked = data._state == 1
+
 		local ok, msg = self:_is_options_valid_by_law()
 
 		if not ok then
@@ -483,9 +484,9 @@ function CoreMaterialEditor:_save_to_disk(path)
 	local global_file = self:_save_global_to_disk(false)
 
 	Application:data_compile({
-		target_db_name = "all",
-		send_idstrings = false,
 		preprocessor_definitions = "preprocessor_definitions",
+		send_idstrings = false,
+		target_db_name = "all",
 		verbose = false,
 		platform = string.lower(SystemInfo:platform():s()),
 		source_root = managers.database:base_path(),
@@ -514,9 +515,9 @@ function CoreMaterialEditor:_save_global_to_disk(recompile)
 
 	if recompile then
 		Application:data_compile({
-			target_db_name = "all",
-			send_idstrings = false,
 			preprocessor_definitions = "preprocessor_definitions",
+			send_idstrings = false,
+			target_db_name = "all",
 			verbose = false,
 			platform = string.lower(SystemInfo:platform():s()),
 			source_root = managers.database:base_path(),
@@ -590,6 +591,7 @@ function CoreMaterialEditor:_find_render_template()
 
 	self._current_render_template_name = RenderTemplateDatabase:render_template_name_from_defines(self._compilable_shader_combo_box:get_value(), t)
 	self._current_render_template = RenderTemplateDatabase:render_template(self._current_render_template_name:id())
+
 	local msg = ""
 
 	if not self._current_render_template then
@@ -618,7 +620,7 @@ function CoreMaterialEditor:_clean_parameters()
 		local variables = self._current_render_template:variables()
 
 		for param in self._current_material_node:children() do
-			local found = nil
+			local found
 
 			for _, var in ipairs(variables) do
 				if param:parameter("type") ~= "texture" and param:parameter("name") == var.name:s() or param:name() == var.name:s() then
@@ -662,6 +664,7 @@ function CoreMaterialEditor:_load_node(path, node)
 	local prev_node = self._material_config_node
 	local prev_entry = self._material_config_path
 	local new_node = node or managers.database:load_node(path)
+
 	self._material_config_path = path
 	self._material_config_node = CoreSmartNode:new(new_node)
 
@@ -727,7 +730,9 @@ function CoreMaterialEditor:_load_material_list(listbox_select_material)
 		for material in self._material_config_node:children() do
 			if material:name() == "material" then
 				local name = material:parameter("name")
+
 				self._material_nodes[name] = material
+
 				local index = self._material_list_box:append(name)
 
 				if listbox_select_material == name then
@@ -792,6 +797,7 @@ function CoreMaterialEditor:_load_shader_dropdown()
 
 				if editor_node then
 					local name = shader:parameter("name")
+
 					self._compilable_shaders[name] = {
 						_entry = source._entry,
 						_node = shader
@@ -817,6 +823,7 @@ function CoreMaterialEditor:_load_parent_dropdown()
 	if self._global_material_config_node then
 		for material in self._global_material_config_node:children() do
 			local name = material:parameter("name")
+
 			self._parent_materials[name] = material
 
 			self._parent_combo_box:append(name)

@@ -67,8 +67,7 @@ local function get_icon(icon_type)
 end
 
 local function scale_by_aspect(gui_obj, max_size)
-	local w = gui_obj:texture_width()
-	local h = gui_obj:texture_height()
+	local w, h = gui_obj:texture_width(), gui_obj:texture_height()
 
 	if h < w then
 		gui_obj:set_size(max_size, max_size / w * h)
@@ -136,7 +135,9 @@ function HUDBeltInteraction:init(ws, id, custom_icon_id)
 	self._panel = ws:panel():panel({
 		name = "belt_" .. id
 	})
-	local custom_state = nil
+
+	local custom_state
+
 	self._texture, custom_state = get_icon(custom_icon_id or id)
 
 	if not DB:has(Idstring("texture"), Idstring(self._texture)) then
@@ -145,8 +146,8 @@ function HUDBeltInteraction:init(ws, id, custom_icon_id)
 
 	self._icon = self._panel:bitmap({
 		blend_mode = "add",
-		valign = "scale",
 		halign = "scale",
+		valign = "scale",
 		texture = self._texture
 	})
 	self._w = self.size
@@ -160,27 +161,27 @@ function HUDBeltInteraction:init(ws, id, custom_icon_id)
 	self._icon:set_center(self._panel:w() / 2, self._panel:h() / 2)
 
 	self._bg = self._panel:rect({
-		valign = "scale",
 		halign = "scale",
-		rotation = 360,
 		layer = -1,
+		rotation = 360,
+		valign = "scale",
 		color = Color.black
 	})
 	self._bg_tint = self._panel:bitmap({
 		blend_mode = "add",
-		texture = "guis/dlcs/vr/textures/pd2/belt_active_fill",
 		halign = "scale",
-		visible = false,
 		rotation = 360,
+		texture = "guis/dlcs/vr/textures/pd2/belt_active_fill",
 		valign = "scale",
+		visible = false,
 		w = self._panel:w(),
 		h = self._panel:h()
 	})
 	self._grip_text = self._panel:text({
-		y = 10,
 		halign = "center",
-		visible = false,
 		valign = "top",
+		visible = false,
+		y = 10,
 		font = tweak_data.hud.medium_font_noshadow,
 		font_size = tweak_data.hud.medium_default_font_size,
 		text = managers.localization:to_upper_text("vr_belt_grip")
@@ -222,8 +223,8 @@ end
 function HUDBeltInteraction:set_amount(amount)
 	if not self._amount_text then
 		self._amount_text = self._panel:text({
-			valign = "bottom",
 			halign = "right",
+			valign = "bottom",
 			font = tweak_data.hud.medium_font_noshadow,
 			font_size = tweak_data.hud.default_font_size
 		})
@@ -296,11 +297,12 @@ function HUDBeltInteraction:_animate_size_alpha(o, size_ratio, alpha)
 	local current_ratio = panel:h() / self._h
 	local cx, cy = panel:center()
 	local flip = current_ratio < size_ratio and 1 or -1
-	local alpha_comp_func = self._alpha_diff < alpha and math.min or math.max
+	local alpha_comp_func = alpha > self._alpha_diff and math.min or math.max
 	local new_ratio = current_ratio
 
 	while flip > 0 and new_ratio < size_ratio or flip <= 0 and size_ratio < new_ratio do
 		local dt = coroutine.yield()
+
 		new_ratio = new_ratio + dt * anim_speed * flip
 
 		panel:set_size(self._w * new_ratio, self._h * new_ratio)
@@ -347,13 +349,13 @@ function HUDBeltInteraction:start_timer(time, start_time)
 	local w, h = self._panel:size()
 	local size = math.min(w, h)
 	local timer_circle = CircleBitmapGuiObject:new(self._panel, {
-		image = "guis/textures/pd2/progress_reload",
-		current = 1,
-		total = 1,
 		bg = "guis/textures/pd2/progress_reload_black",
-		use_bg = true,
 		blend_mode = "normal",
+		current = 1,
+		image = "guis/textures/pd2/progress_reload",
 		layer = 2,
+		total = 1,
+		use_bg = true,
 		radius = size / 2,
 		sides = size / 2,
 		color = Color.white
@@ -361,7 +363,7 @@ function HUDBeltInteraction:start_timer(time, start_time)
 
 	timer_circle:set_position(w / 2 - size / 2, h / 2 - size / 2)
 	timer_circle:set_align("scale")
-	self._panel:animate(function (o)
+	self._panel:animate(function(o)
 		if not alive(o) or not alive(timer_circle._circle) then
 			return
 		end
@@ -370,6 +372,7 @@ function HUDBeltInteraction:start_timer(time, start_time)
 
 		while current < time do
 			current = math.min(current + coroutine.yield(), time)
+
 			local p = current / time
 
 			timer_circle:set_current(p)
@@ -404,23 +407,23 @@ function HUDBeltInteraction:set_invalid_overlay(visible)
 
 		self._invalid_overlay = self._panel:panel({
 			halign = "scale",
+			layer = 2,
 			name = "invalid_overlay",
-			valign = "scale",
-			layer = 2
+			valign = "scale"
 		})
 
 		self._invalid_overlay:rect({
+			halign = "scale",
 			name = "bg",
 			valign = "scale",
-			halign = "scale",
 			color = tweak_data.screen_colors.important_1:with_alpha(0.3)
 		})
 
 		local text = self._invalid_overlay:text({
-			y = 20,
-			name = "text",
 			halign = "center",
+			name = "text",
 			valign = "top",
+			y = 20,
 			color = tweak_data.screen_colors.important_1,
 			font = tweak_data.hud.medium_font,
 			font_size = tweak_data.hud.medium_default_font_size,
@@ -492,13 +495,9 @@ function HUDBeltInteraction:clear_help_texts()
 end
 
 function HUDBeltInteraction:set_edit_mode(enabled)
-	local align = nil
+	local align
 
-	if enabled then
-		align = "center"
-	else
-		align = "scale"
-	end
+	align = enabled and "center" or "scale"
 
 	self._icon:set_halign(align)
 	self._icon:set_valign(align)
@@ -607,10 +606,10 @@ function HUDBeltInteractionReload:init(ws, id)
 	HUDBeltInteractionReload.super.init(self, ws, id)
 
 	self._ammo_text = self._panel:text({
-		text = "0/0",
-		visible = false,
 		halign = "center",
+		text = "0/0",
 		valign = "bottom",
+		visible = false,
 		font = tweak_data.hud.medium_font,
 		font_size = tweak_data.hud.default_font_size
 	})
@@ -638,7 +637,7 @@ function HUDBeltInteractionReload:_reload_animate(o, time, clip_start, clip_full
 
 	local inc = clip_full - clip_start
 
-	over(time, function (p)
+	over(time, function(p)
 		ammo_text:set_text(tostring(math.floor(clip_start + inc * p)) .. "/" .. tostring(clip_full))
 		make_fine_text(ammo_text)
 		ammo_text:set_center_x(self._panel:w() / 2)
@@ -646,11 +645,14 @@ function HUDBeltInteractionReload:_reload_animate(o, time, clip_start, clip_full
 	ammo_text:set_text(tostring(clip_full) .. "/" .. tostring(clip_full))
 
 	self._waiting_for_trigger = true
+
 	local bg_val = 0
 
 	while self._waiting_for_trigger do
 		local dt = coroutine.yield()
+
 		bg_val = bg_val + dt * 360
+
 		local val = math.abs(math.sin(bg_val))
 
 		self._bg:set_color(Color(val, val, val))
@@ -696,16 +698,23 @@ function HUDBelt:init(ws)
 	self._ws = ws
 	self._panel = ws:panel()
 	self._interactions = {}
+
 	local bag = HUDBeltInteraction:new(ws, "bag")
 
 	bag:set_state("inactive")
 
 	self._interactions.bag = bag
+
 	local melee = HUDBeltInteraction:new(ws, "melee")
+
 	self._interactions.melee = melee
+
 	local deployable = HUDBeltInteraction:new(ws, "deployable")
+
 	self._interactions.deployable = deployable
+
 	local deployable_secondary = HUDBeltInteraction:new(ws, "deployable_secondary")
+
 	self._interactions.deployable_secondary = deployable_secondary
 
 	if not managers.player:equipment_in_slot(2) then
@@ -713,10 +722,15 @@ function HUDBelt:init(ws)
 	end
 
 	local weapon = HUDBeltInteraction:new(ws, "weapon", "primary")
+
 	self._interactions.weapon = weapon
+
 	local throwable = HUDBeltInteraction:new(ws, "throwable")
+
 	self._interactions.throwable = throwable
+
 	local reload = HUDBeltInteractionReload:new(ws, "reload")
+
 	self._interactions.reload = reload
 
 	if managers.vr:get_setting("auto_reload") then
@@ -816,6 +830,7 @@ function HUDBelt:_reload_setting_changed(setting, old_value, new_value)
 end
 
 function HUDBelt:_primary_hand_changed(setting, old_value, new_value)
+	return
 end
 
 function HUDBelt:_grid_layout_changed(setting, old_value, new_value)
@@ -862,7 +877,7 @@ function HUDBelt:get_interaction_point(id)
 end
 
 function HUDBelt:get_closest_interaction(pos, limit, allow_invalid)
-	local closest_id, closest_dis, interactions = nil
+	local closest_id, closest_dis, interactions
 
 	if allow_invalid then
 		interactions = {}
@@ -945,6 +960,7 @@ function HUDBelt:pos_on_grid(id)
 	end
 
 	local x, y = interaction:center()
+
 	x = math.round(x / GRID_BOX)
 	y = math.round(y / GRID_BOX)
 

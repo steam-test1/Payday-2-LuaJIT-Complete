@@ -180,6 +180,7 @@ function ElementCounterOperator:init(...)
 end
 
 function ElementCounterOperator:client_on_executed(...)
+	return
 end
 
 function ElementCounterOperator:on_executed(instigator)
@@ -223,6 +224,7 @@ function ElementCounterTrigger:on_script_activated()
 end
 
 function ElementCounterTrigger:client_on_executed(...)
+	return
 end
 
 function ElementCounterTrigger:on_executed(instigator)
@@ -240,9 +242,11 @@ function ElementCounterFilter:init(...)
 end
 
 function ElementCounterFilter:on_script_activated()
+	return
 end
 
 function ElementCounterFilter:client_on_executed(...)
+	return
 end
 
 function ElementCounterFilter:on_executed(instigator)
@@ -276,10 +280,11 @@ function ElementCounterFilter:_values_ok()
 end
 
 function ElementCounterFilter:_all_counter_values_equal()
-	local test_value = nil
+	local test_value
 
 	for _, id in ipairs(self._values.elements) do
 		local element = self:get_mission_element(id)
+
 		test_value = test_value or element:counter_value()
 
 		if test_value ~= element:counter_value() then
@@ -320,7 +325,7 @@ function ElementCounterFilter:_check_type(element)
 	end
 
 	if self._values.check_type == "greater_or_equal" then
-		return self._values.value <= element:counter_value()
+		return element:counter_value() >= self._values.value
 	end
 
 	if self._values.check_type == "less_than" then
@@ -328,6 +333,6 @@ function ElementCounterFilter:_check_type(element)
 	end
 
 	if self._values.check_type == "greater_than" then
-		return self._values.value < element:counter_value()
+		return element:counter_value() > self._values.value
 	end
 end

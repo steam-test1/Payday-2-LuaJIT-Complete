@@ -25,9 +25,11 @@ function IngameDriving:_update_driving_hud()
 end
 
 function IngameDriving:update(t, dt)
+	return
 end
 
 function IngameDriving:update_player_stamina(t, dt)
+	return
 end
 
 function IngameDriving:_player_damage(info)
@@ -58,6 +60,7 @@ function IngameDriving:at_enter(old_state, ...)
 	SoundDevice:set_rtpc("stamina", 100)
 
 	self._old_state = old_state:name()
+
 	local vehicle_ext = managers.player:get_vehicle().vehicle_unit:vehicle_driving()
 	local seat = vehicle_ext:find_seat_for_player(player)
 

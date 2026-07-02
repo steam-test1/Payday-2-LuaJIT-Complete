@@ -30,7 +30,7 @@ end
 function SubtitleSequence:add_subtitle(subtitle)
 	self.__subtitles = self.__subtitles or {}
 
-	table.insert_sorted(self.__subtitles, subtitle, function (a, b)
+	table.insert_sorted(self.__subtitles, subtitle, function(a, b)
 		return a:start_time() < b:start_time()
 	end)
 end
@@ -90,7 +90,7 @@ function Subtitle:duration()
 end
 
 function Subtitle:is_active_at_time(time)
-	return self:start_time() < time and time < self:end_time()
+	return time > self:start_time() and time < self:end_time()
 end
 
 function StringIDSubtitle:string()

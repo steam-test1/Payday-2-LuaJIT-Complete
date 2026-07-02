@@ -24,6 +24,7 @@ end
 
 function DialogueUnitElement:new_save_values(...)
 	local t = DialogueUnitElement.super.new_save_values(self, ...)
+
 	t.position = self._hed.use_position and self._unit:position() or nil
 
 	return t
@@ -36,8 +37,8 @@ function DialogueUnitElement:test_element()
 
 	managers.dialog:quit_dialog()
 	managers.dialog:queue_dialog(self._hed.dialogue, {
-		skip_idle_check = true,
 		case = "russian",
+		skip_idle_check = true,
 		on_unit = self._unit
 	})
 	managers.editor:set_wanted_mute(false)

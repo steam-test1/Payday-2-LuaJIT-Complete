@@ -26,6 +26,7 @@ function InfamyCardGui:add_workspace(gui_object)
 	local gui_width = gui_size
 	local suit_height = gui_size * 1.5
 	local text_height = gui_size * 1.25
+
 	self._icon_ws = self._new_gui:create_linked_workspace(gui_width, suit_height, gui_object, Vector3(x_offset, depth_offset, y_offset), Vector3(-x_size, 0, 0), Vector3(0, 0, -y_size))
 	self._icon_gui = ExtendedPanel:new(self._icon_ws:panel())
 	self._text_ws = self._new_gui:create_linked_workspace(gui_width, text_height, gui_object, Vector3(x_offset, depth_offset, y_offset), Vector3(-x_size, 0, 0), Vector3(0, 0, -y_size))
@@ -49,9 +50,9 @@ function InfamyCardGui:show_rank(rank)
 	local icon_w = 30
 	local icon_h = 30
 	local left_top_icon = self._icon_gui:bitmap({
-		y = 9,
 		blend_mode = "sub",
 		x = 4,
+		y = 9,
 		texture = rank_icon,
 		texture_rect = {
 			tx,
@@ -88,10 +89,10 @@ function InfamyCardGui:show_rank(rank)
 	local font_size = tweak_data.menu.pd2_massive_font_size * 1.5
 	local rank_string = managers.experience:rank_string(rank, managers.user:get_setting("infamy_roman_card")) or ""
 	local rank_text = self._text_gui:text({
-		vertical = "center",
 		align = "center",
 		blend_mode = "sub",
 		layer = 1,
+		vertical = "center",
 		font = font,
 		font_size = font_size,
 		text = rank_string,
@@ -125,8 +126,8 @@ function InfamyCardGui:show_texture(texture, texture_rect)
 	end
 
 	local icon = self._icon_gui:bitmap({
-		h = 128,
 		blend_mode = "sub",
+		h = 128,
 		w = 128,
 		texture = texture,
 		texture_rect = texture_rect,
@@ -162,6 +163,7 @@ function InfamyCardGui:is_visible()
 end
 
 function InfamyCardGui:update()
+	return
 end
 
 function InfamyCardGui:hide()

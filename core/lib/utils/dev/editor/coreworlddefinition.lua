@@ -5,6 +5,7 @@ core:import("CoreEditorUtils")
 core:import("CoreEngineAccess")
 
 local sky_orientation_data_key = Idstring("sky_orientation/rotation"):key()
+
 WorldDefinition = WorldDefinition or class()
 
 function WorldDefinition:init(params)
@@ -70,6 +71,7 @@ function WorldDefinition:_parse_replace_unit()
 		for unit in node:children() do
 			local old_name = unit:name()
 			local replace_with = unit:parameter("replace_with")
+
 			self._replace_names[old_name] = replace_with
 
 			if is_editor then
@@ -347,6 +349,7 @@ function WorldDefinition:create(layer, offset)
 	Application:check_termination()
 
 	offset = offset or Vector3()
+
 	local return_data = {}
 
 	if (layer == "level_settings" or layer == "all") and self._definition.level_settings then
@@ -564,6 +567,7 @@ function WorldDefinition:create(layer, offset)
 end
 
 function WorldDefinition:_load_level_settings(data, offset)
+	return
 end
 
 function WorldDefinition:_load_ai_nav_graphs(data, offset)
@@ -620,7 +624,8 @@ function WorldDefinition:_create_portal(data, offset)
 			local bottom = portal.bottom
 
 			if top == 0 and bottom == 0 then
-				top, bottom = nil
+				top = nil
+				bottom = nil
 			end
 
 			managers.portal:add_portal(t, bottom, top)
@@ -717,6 +722,7 @@ function WorldDefinition:_create_massunit(data, offset)
 				managers.editor:output("Unit " .. name:s() .. " does not exist")
 
 				local old_name = name:s()
+
 				name = managers.editor:show_replace_massunit()
 
 				if name and DB:has(Idstring("unit"), name:id()) then
@@ -742,9 +748,7 @@ function WorldDefinition:_set_environment(environment_name)
 	if Global.game_settings.level_id then
 		local env_params = _G.tweak_data.levels[Global.game_settings.level_id].env_params
 
-		if env_params then
-			environment_name = env_params.environment or environment_name
-		end
+		environment_name = env_params and env_params.environment or environment_name
 	end
 
 	if environment_name ~= "none" then
@@ -757,9 +761,7 @@ function WorldDefinition:_set_default_color_grading(color_grading_name)
 	if Global.game_settings.level_id then
 		local env_params = _G.tweak_data.levels[Global.game_settings.level_id].env_params
 
-		if env_params then
-			color_grading_name = env_params.color_grading or color_grading_name
-		end
+		color_grading_name = env_params and env_params.color_grading or color_grading_name
 	end
 
 	managers.environment_controller:set_default_color_grading(color_grading_name)
@@ -771,7 +773,7 @@ function WorldDefinition:_create_environment(data, offset)
 	self:_set_default_color_grading(data.environment_values.color_grading)
 
 	if not self._environment_modifier_id and not Application:editor() then
-		self._environment_modifier_id = managers.viewport:create_global_environment_modifier(sky_orientation_data_key, true, function ()
+		self._environment_modifier_id = managers.viewport:create_global_environment_modifier(sky_orientation_data_key, true, function()
 			return self:sky_rotation_modifier()
 		end)
 	end
@@ -779,6 +781,7 @@ function WorldDefinition:_create_environment(data, offset)
 	self._environment = {
 		sky_rot = data.environment_values.sky_rot
 	}
+
 	local wind = data.wind
 
 	Wind:set_direction(wind.angle, wind.angle_var, 5)
@@ -875,6 +878,7 @@ function WorldDefinition:_create_wires_unit(data, offset)
 
 	if unit then
 		unit:wire_data().slack = data.wire_data.slack
+
 		local target = unit:get_object(Idstring("a_target"))
 
 		target:set_position(data.wire_data.target_pos)
@@ -941,6 +945,7 @@ function WorldDefinition:preload_unit(name)
 		end
 
 		local old_name = name
+
 		name = managers.editor:show_replace_unit()
 		self._replace_names[old_name] = name
 
@@ -977,7 +982,7 @@ function WorldDefinition:make_unit(data, offset)
 		end
 	end
 
-	local unit = nil
+	local unit
 
 	if MassUnitManager:can_spawn_unit(Idstring(name)) and not is_editor then
 		unit = MassUnitManager:spawn_unit(Idstring(name), data.position + offset, data.rotation)
@@ -1126,7 +1131,8 @@ function WorldDefinition:_setup_variations(unit, data)
 	if data.material_variation and data.material_variation ~= "default" then
 		unit:unit_data().material = data.material_variation
 
-		unit:set_material_config(Idstring(unit:unit_data().material), true, function ()
+		unit:set_material_config(Idstring(unit:unit_data().material), true, function()
+			return
 		end)
 	end
 end
@@ -1300,8 +1306,9 @@ function WorldDefinition:_setup_projection_light(unit, data)
 
 	unit:unit_data().projection_textures = data.projection_textures
 	unit:unit_data().projection_light = data.projection_light
+
 	local light = unit:get_object(Idstring(data.projection_light))
-	local texture_name = nil
+	local texture_name
 
 	if unit:unit_data().projection_textures then
 		texture_name = unit:unit_data().projection_textures[data.projection_light]
@@ -1331,6 +1338,7 @@ function WorldDefinition:setup_projection_light(...)
 end
 
 function WorldDefinition:_project_assign_unit_data(...)
+	return
 end
 
 function WorldDefinition:add_trigger_sequence(unit, triggers)
@@ -1365,6 +1373,7 @@ end
 
 function WorldDefinition:use_me(unit, is_editor)
 	local id = unit:unit_data().unit_id
+
 	id = id ~= 0 and id or unit:editor_id()
 	self._all_units[id] = self._all_units[id] or unit
 

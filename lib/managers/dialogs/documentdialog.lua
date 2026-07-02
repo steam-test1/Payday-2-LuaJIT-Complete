@@ -39,10 +39,11 @@ end
 
 function DocumentDialog:_create_text_data(data)
 	local tweak_data = _G.tweak_data
-	local text_data = {
-		title = data.title and utf8.to_upper(data.title) or "",
-		text = {}
-	}
+	local text_data = {}
+
+	text_data.title = data.title and utf8.to_upper(data.title) or ""
+	text_data.text = {}
+
 	local lang_key = SystemInfo:language():key()
 	local languages = {
 		[Idstring("english"):key()] = "english",
@@ -63,14 +64,15 @@ function DocumentDialog:_create_text_data(data)
 	end
 
 	local list = PackageManager:script_data(self.FILE_EXTENSION:id(), (self.PATH .. file_name):id())
-	local font, font_size, color, link, bullet = nil
+	local font, font_size, color, link, bullet
 
 	for _, data in ipairs(list) do
 		if data._meta == "text" then
 			font = tweak_data.menu.pd2_small_font
 			font_size = tweak_data.menu.pd2_small_font_size
 			color = Color(1, 0.9, 0.9, 0.9)
-			link, bullet = nil
+			link = nil
+			bullet = nil
 
 			if data.type == "topic" then
 				font = tweak_data.menu.pd2_medium_font
@@ -84,8 +86,8 @@ function DocumentDialog:_create_text_data(data)
 			end
 
 			table.insert(text_data.text, {
-				wrap = true,
 				word_wrap = true,
+				wrap = true,
 				text = data.text,
 				font = font,
 				font_size = font_size,
@@ -206,12 +208,12 @@ function DocumentDialog:update_input(t, dt)
 		return
 	end
 
-	local dir, move_time = nil
+	local dir, move_time
 	local move = self._controller:get_input_axis("menu_move")
 
 	if self._controller:get_input_bool("menu_down") or move.y < -self.MOVE_AXIS_LIMIT then
 		dir = 1
-	elseif self._controller:get_input_bool("menu_up") or self.MOVE_AXIS_LIMIT < move.y then
+	elseif self._controller:get_input_bool("menu_up") or move.y > self.MOVE_AXIS_LIMIT then
 		dir = -1
 	end
 
@@ -228,17 +230,15 @@ function DocumentDialog:update_input(t, dt)
 	self._move_button_dir = dir
 	self._move_button_time = move_time
 
-	if managers.controller:get_default_wrapper_type() ~= "pc" and managers.controller:get_default_wrapper_type() ~= "steam" then
-		if managers.controller:get_default_wrapper_type() == "vr" then
-			-- Nothing
-		else
-			local scroll = self._controller:get_input_axis("look")
+	if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" or managers.controller:get_default_wrapper_type() == "vr" then
+		-- Nothing
+	else
+		local scroll = self._controller:get_input_axis("look")
 
-			if self.MOVE_AXIS_LIMIT < scroll.y then
-				self._panel_script:scroll_up(-scroll.y * 250 * dt)
-			elseif scroll.y < -self.MOVE_AXIS_LIMIT then
-				self._panel_script:scroll_down(-math.abs(scroll.y) * 250 * dt)
-			end
+		if scroll.y > self.MOVE_AXIS_LIMIT then
+			self._panel_script:scroll_up(-scroll.y * 250 * dt)
+		elseif scroll.y < -self.MOVE_AXIS_LIMIT then
+			self._panel_script:scroll_down(-math.abs(scroll.y) * 250 * dt)
 		end
 	end
 end
@@ -253,13 +253,14 @@ function DocumentDialog:set_input_enabled(enabled)
 
 				self._mouse_id = managers.mouse_pointer:get_id()
 				self._removed_mouse = nil
-				local data = {
-					mouse_move = callback(self, self, "mouse_moved"),
-					mouse_press = callback(self, self, "mouse_pressed"),
-					mouse_release = callback(self, self, "mouse_released"),
-					mouse_click = callback(self, self, "mouse_clicked"),
-					id = self._mouse_id
-				}
+
+				local data = {}
+
+				data.mouse_move = callback(self, self, "mouse_moved")
+				data.mouse_press = callback(self, self, "mouse_pressed")
+				data.mouse_release = callback(self, self, "mouse_released")
+				data.mouse_click = callback(self, self, "mouse_clicked")
+				data.id = self._mouse_id
 
 				managers.mouse_pointer:use_mouse(data)
 			else
@@ -345,6 +346,7 @@ function DocumentDialog:force_close()
 end
 
 function DocumentDialog:resolution_changed_callback()
+	return
 end
 
 function DocumentDialog:remove_mouse()
@@ -389,6 +391,7 @@ function DocumentBoxGui:init(dialog, ws, data, text_data)
 	self._data = data
 	self._dialog = dialog
 	self._text_data = text_data
+
 	local ws_width = self._ws:panel():width()
 	local ws_height = self._ws:panel():height()
 	local gui_width = ws_width - 660
@@ -396,9 +399,9 @@ function DocumentBoxGui:init(dialog, ws, data, text_data)
 
 	DocumentBoxGui.super.init(self, self._ws:panel(), {
 		border_x = 20,
-		padding_y = 0,
-		padding_x = 0,
 		border_y = 10,
+		padding_x = 0,
+		padding_y = 0,
 		fixed_w = self._data.width or gui_width,
 		fixed_h = self._data.height or gui_height
 	})
@@ -419,23 +422,23 @@ function DocumentBoxGui:add_background()
 
 	self._fullscreen_ws = managers.gui_data:create_fullscreen_workspace()
 	self._background = self._fullscreen_ws:panel():bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "bg",
 		alpha = 0,
-		valign = "grow",
-		render_template = "VertexColorTexturedBlur3D",
 		layer = 0,
+		name = "bg",
+		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
+		valign = "grow",
 		color = Color.white,
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
 	self._background2 = self._fullscreen_ws:panel():rect({
-		blend_mode = "normal",
-		name = "bg2",
-		halign = "grow",
 		alpha = 0,
-		valign = "grow",
+		blend_mode = "normal",
+		halign = "grow",
 		layer = 0,
+		name = "bg2",
+		valign = "grow",
 		color = Color.black
 	})
 end
@@ -475,13 +478,13 @@ function DocumentBoxGui:_create_boxgui()
 		font_size = tweak_data.menu.pd2_large_font_size,
 		color = tweak_data.screen_colors.text
 	}), 0, 26)
-	local button_sub_title_text = nil
+	local button_sub_title_text
 
 	if self._data.button_sub_title then
 		button_sub_title_text = FineText:new(self._panel, {
-			wrap = true,
 			align = "right",
 			word_wrap = true,
+			wrap = true,
 			text = self._data.button_sub_title,
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -491,26 +494,28 @@ function DocumentBoxGui:_create_boxgui()
 
 	local text_height = self._panel:h() - self._placer:current_bottom() - 26 - 14 - 35 - (menu_manager:is_pc_controller() and 21 * #self._data.button_list or 21) - (button_sub_title_text and button_sub_title_text:h() + 5 or 0)
 	local scroll_config = {
-		input_focus = true,
-		scrollbar_padding = 10,
-		scroll_w = 4,
-		x_padding = 0,
 		input = true,
+		input_focus = true,
+		scroll_w = 4,
+		scrollbar_padding = 10,
+		x_padding = 0,
 		update = self._scroll_update,
 		h = text_height,
 		w = self._panel:width() - 40
 	}
 	local canvas_config = {
-		border_y = 0,
 		border_x = 0,
-		padding_y = 5,
+		border_y = 0,
+		padding = 5,
 		padding_x = 0,
-		padding = 5
+		padding_y = 5
 	}
 	local text_panel = self._placer:add_row(ScrollableList:new(self, scroll_config, canvas_config), 0, 26)
+
 	self._text_panel = text_panel
+
 	local bullet_texture, bullet_rect = tweak_data.hud_icons:get_icon_data("icon_equipped")
-	local text_config = nil
+	local text_config
 	local text_canvas = text_panel:canvas()
 	local text_placer = text_canvas:placer()
 
@@ -606,7 +611,7 @@ function DocumentBoxGui:_create_boxgui()
 end
 
 function DocumentBoxGui:_scroll_update(dt)
-	local element, step = nil
+	local element, step
 
 	for element_name, data in pairs(self._alphas) do
 		step = dt == -1 and 1 or dt * data.speed
@@ -656,9 +661,11 @@ function DocumentBoxGui:release_scroll_bar()
 end
 
 function DocumentBoxGui:set_focus_button(button)
+	return
 end
 
 function DocumentBoxGui:change_focus_button(dir)
+	return
 end
 
 function DocumentBoxGui:get_focus_button()

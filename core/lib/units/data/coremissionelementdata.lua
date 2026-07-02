@@ -6,4 +6,5 @@ function MissionElementData:init(...)
 end
 
 function CoreMissionElementData:init(unit)
+	return
 end

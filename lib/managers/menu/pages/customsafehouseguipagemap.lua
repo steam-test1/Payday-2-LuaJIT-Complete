@@ -24,7 +24,7 @@ local function anim_select(o, w, h, instant)
 		o:set_size(math.lerp(current_width, end_width, p), math.lerp(current_height, end_height, p))
 		o:set_center(cx, cy)
 	else
-		over(0.2, function (p)
+		over(0.2, function(p)
 			o:set_size(math.lerp(current_width, end_width, p), math.lerp(current_height, end_height, p))
 			o:set_center(cx, cy)
 		end)
@@ -42,7 +42,7 @@ local function anim_deselect(o, w, h, instant)
 		o:set_size(math.lerp(current_width, end_width, p), math.lerp(current_height, end_height, p))
 		o:set_center(cx, cy)
 	else
-		over(0.2, function (p)
+		over(0.2, function(p)
 			o:set_size(math.lerp(current_width, end_width, p), math.lerp(current_height, end_height, p))
 			o:set_center(cx, cy)
 		end)
@@ -54,9 +54,9 @@ local function anim_invalid(o)
 
 	o:set_color(color)
 
-	local lerp_color = nil
+	local lerp_color
 
-	over(0.4, function (t)
+	over(0.4, function(t)
 		lerp_color = math.lerp(color, tweak_data.screen_colors.important_1, 1 - t)
 
 		o:set_color(lerp_color)
@@ -82,12 +82,12 @@ end
 
 function CustomSafehouseGuiPageMap:_setup_map()
 	self._scanline = self:panel():bitmap({
-		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/scanline",
-		name = "scanline",
-		h = 128,
-		wrap_mode = "wrap",
-		layer = 7,
 		blend_mode = "add",
+		h = 128,
+		layer = 7,
+		name = "scanline",
+		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/scanline",
+		wrap_mode = "wrap",
 		texture_rect = {
 			0,
 			0,
@@ -101,8 +101,8 @@ function CustomSafehouseGuiPageMap:_setup_map()
 	self._map_size = tweak_data.safehouse.map.size
 	self._map_panel = self:panel():panel({
 		alpha = 0.9,
-		name = "map",
 		layer = 0,
+		name = "map",
 		w = self._map_size,
 		h = self._map_size
 	})
@@ -117,12 +117,12 @@ function CustomSafehouseGuiPageMap:_setup_map()
 		h = self._map_size
 	})
 	self._map_grid = self._grid_panel:bitmap({
-		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/bg_grid",
-		layer = -1,
-		valign = "scale",
-		wrap_mode = "wrap",
 		blend_mode = "add",
 		halign = "scale",
+		layer = -1,
+		texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/bg_grid",
+		valign = "scale",
+		wrap_mode = "wrap",
 		w = self._grid_panel:w(),
 		h = self._grid_panel:h(),
 		texture_rect = {
@@ -149,7 +149,7 @@ function CustomSafehouseGuiPageMap:_setup_map()
 		floor_map:hide()
 
 		for _, id in pairs(floor.rooms) do
-			local data = table.find_value(tweak_data.safehouse.rooms, function (v)
+			local data = table.find_value(tweak_data.safehouse.rooms, function(v)
 				return v.room_id == id
 			end)
 			local should_hide_unavailable = data.dlc and not managers.dlc:is_dlc_unlocked(data.dlc) and managers.dlc:should_hide_unavailable(data.dlc)
@@ -168,12 +168,12 @@ function CustomSafehouseGuiPageMap:_setup_map()
 
 	if not managers.menu:is_pc_controller() then
 		self._mouse_pointer = self._panel:bitmap({
-			texture = "guis/textures/mouse_pointer",
-			name = "pointer",
 			h = 23,
-			rotation = 360,
-			w = 19,
 			layer = 1000,
+			name = "pointer",
+			rotation = 360,
+			texture = "guis/textures/mouse_pointer",
+			w = 19,
 			texture_rect = {
 				0,
 				0,
@@ -199,14 +199,14 @@ function CustomSafehouseGuiPageMap:_setup_map()
 	})
 
 	self._floor_control_panel:rect({
-		valign = "scale",
 		halign = "scale",
+		valign = "scale",
 		color = Color.black:with_alpha(0.5)
 	})
 
 	local title = self._floor_control_panel:text({
-		name = "FloorControlTitle",
 		layer = 21,
+		name = "FloorControlTitle",
 		text = managers.localization:to_upper_text("menu_cs_change_floor"),
 		x = PANEL_PADDING,
 		y = PANEL_PADDING,
@@ -222,7 +222,9 @@ function CustomSafehouseGuiPageMap:_setup_map()
 		name = "FloorContolButtonPanel",
 		y = title:bottom()
 	})
+
 	self._floor_control_buttons = {}
+
 	local h = 0
 
 	for i, floor in ipairs(self._floors) do
@@ -258,6 +260,7 @@ function CustomSafehouseGuiPageMap:_setup_map()
 	if self:is_being_raided() then
 		local raid_panel = self:panel():panel({})
 		local raid_layer = 50
+
 		self._raid_colour_panel = raid_panel:rect({
 			alpha = 0.4,
 			color = Color(255, 196, 0, 0) / 255,
@@ -272,8 +275,8 @@ function CustomSafehouseGuiPageMap:_setup_map()
 
 		local title_size = large_font_size * 0.8
 		local title = raid_panel:text({
-			name = "raid_title",
 			align = "center",
+			name = "raid_title",
 			text = managers.localization:to_upper_text("menu_chill_combat_under_attack"),
 			y = self:panel():h() * 0.4 - title_size,
 			w = self:panel():w(),
@@ -292,8 +295,8 @@ function CustomSafehouseGuiPageMap:_setup_map()
 		})
 
 		local text = raid_panel:text({
-			name = "raid_desc",
 			align = "center",
+			name = "raid_desc",
 			text = managers.localization:text("menu_chill_combat_under_attack_desc"),
 			y = self:panel():h() * 0.4 + PANEL_PADDING,
 			w = self:panel():w(),
@@ -374,6 +377,7 @@ function CustomSafehouseGuiPageMap:select_floor(floor)
 
 	floor = math.clamp(floor, 1, #self._floors)
 	self._selected_floor = floor
+
 	local wanted_zoom = self:current_floor():start_zoom() and self:convert_zoom_to_map(self:current_floor():start_zoom()) or self._map_zoom
 
 	self:_set_zoom(wanted_zoom, self._map_panel:w() / 2, self._map_panel:h() / 2)
@@ -485,6 +489,7 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 	self._buttons_panel = new_info_panel(self:info_panel(), "ButtonsPanel", small_font_size * #buttons + PANEL_PADDING * 2 + LINE_PADDING)
 	self._coins_panel = new_info_panel(self:info_panel(), "CoinsInfoPanel", small_font_size * 2 + PANEL_PADDING * 2 + LINE_PADDING)
 	self._text_info_panel = new_info_panel(self:info_panel(), "TextInfoPanel", remaining_height)
+
 	local panels = {
 		self._text_info_panel,
 		self._coins_panel,
@@ -496,10 +501,12 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 	self._buttons = {}
 	self._controllers_pc_mapping = {}
 	self._controllers_mapping = {}
+
 	local btn_x = 10
 
 	for btn, btn_data in pairs(buttons) do
 		local new_button = CustomSafehouseGuiButtonItem:new(self._buttons_panel, btn_data, btn_x, btn)
+
 		self._buttons[btn] = new_button
 
 		if btn_data.pc_btn then
@@ -509,8 +516,8 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 
 	local coins_text = self._coins_panel:text({
 		blend_mode = "add",
-		name = "CoinsText",
 		layer = 1,
+		name = "CoinsText",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.text,
@@ -522,8 +529,8 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 
 	local coins_value = self._coins_panel:text({
 		blend_mode = "add",
-		name = "CoinsValue",
 		layer = 1,
+		name = "CoinsValue",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.text
@@ -534,8 +541,8 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 
 	local total_upgrades_text = self._coins_panel:text({
 		blend_mode = "add",
-		name = "TotalUpgradesText",
 		layer = 1,
+		name = "TotalUpgradesText",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.text,
@@ -547,8 +554,8 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 
 	local total_upgrades_value = self._coins_panel:text({
 		blend_mode = "add",
-		name = "TotalUpgradesValue",
 		layer = 1,
+		name = "TotalUpgradesValue",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.text,
@@ -559,14 +566,14 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 	self:update_upgrades_purchased()
 
 	local text_title = self._text_info_panel:text({
-		name = "TitleText",
-		blend_mode = "add",
 		align = "left",
-		vertical = "top",
-		valign = "scale",
-		text = "",
+		blend_mode = "add",
 		halign = "scale",
 		layer = 1,
+		name = "TitleText",
+		text = "",
+		valign = "scale",
+		vertical = "top",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.title,
@@ -578,8 +585,8 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 	text_title:set_top(PANEL_PADDING)
 
 	local image_panel = self._text_info_panel:panel({
-		name = "RoomImagePanel",
 		layer = 10,
+		name = "RoomImagePanel",
 		x = PANEL_PADDING,
 		w = self._text_info_panel:w() - PANEL_PADDING * 2
 	})
@@ -601,10 +608,10 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 		h = image_panel:h()
 	})
 	local image_scanlines = image_panel:bitmap({
-		texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
-		name = "RoomImageScanlines",
-		wrap_mode = "wrap",
 		layer = 50,
+		name = "RoomImageScanlines",
+		texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
+		wrap_mode = "wrap",
 		texture_rect = {
 			0,
 			0,
@@ -615,18 +622,20 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 		h = image_panel:h() * 4,
 		y = image_panel:h() * 2 * -1
 	})
+
 	self._scanline_effect = image_scanlines
+
 	local text_warning = self._text_info_panel:text({
-		blend_mode = "add",
-		name = "WarningText",
-		wrap = true,
 		align = "left",
-		word_wrap = true,
-		text = "",
-		vertical = "top",
+		blend_mode = "add",
 		halign = "scale",
-		valign = "scale",
 		layer = 1,
+		name = "WarningText",
+		text = "",
+		valign = "scale",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.important_1,
@@ -638,16 +647,16 @@ function CustomSafehouseGuiPageMap:_setup_info_panel()
 	text_warning:set_top(image_panel:bottom() + 10)
 
 	local text_help = self._text_info_panel:text({
-		blend_mode = "add",
-		name = "HelpText",
-		wrap = true,
 		align = "left",
-		word_wrap = true,
-		text = "",
-		vertical = "top",
+		blend_mode = "add",
 		halign = "scale",
-		valign = "scale",
 		layer = 1,
+		name = "HelpText",
+		text = "",
+		valign = "scale",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.text,
@@ -704,19 +713,21 @@ function CustomSafehouseGuiPageMap:go_to_safehouse(params)
 		return
 	end
 
-	local dialog_data = {
-		focus_button = 1,
-		title = managers.localization:text("dialog_safehouse_title"),
-		text = managers.localization:text("dialog_safehouse_goto_text")
-	}
-	local yes_button = {
-		text = managers.localization:text("dialog_yes"),
-		callback_func = callback(self, self, "_go_to_safehouse")
-	}
-	local no_button = {
-		cancel_button = true,
-		text = managers.localization:text("dialog_no")
-	}
+	local dialog_data = {}
+
+	dialog_data.focus_button = 1
+	dialog_data.title = managers.localization:text("dialog_safehouse_title")
+	dialog_data.text = managers.localization:text("dialog_safehouse_goto_text")
+
+	local yes_button = {}
+
+	yes_button.text = managers.localization:text("dialog_yes")
+	yes_button.callback_func = callback(self, self, "_go_to_safehouse")
+
+	local no_button = {}
+
+	no_button.cancel_button = true
+	no_button.text = managers.localization:text("dialog_no")
 	dialog_data.button_list = {
 		yes_button,
 		no_button
@@ -924,12 +935,12 @@ function CustomSafehouseGuiPageMap:set_lerp_zoom(zoom)
 end
 
 function CustomSafehouseGuiPageMap:floor_offset()
-	local floor_offset = {
-		x = (self:current_floor():x() or 0) * self._map_size * self:current_zoom(),
-		y = (self:current_floor():y() or 0) * self._map_size * self:current_zoom(),
-		w = (1 - (self:current_floor():w() or 1)) * self._map_size * self:current_zoom(),
-		h = (1 - (self:current_floor():h() or 1)) * self._map_size * self:current_zoom()
-	}
+	local floor_offset = {}
+
+	floor_offset.x = (self:current_floor():x() or 0) * self._map_size * self:current_zoom()
+	floor_offset.y = (self:current_floor():y() or 0) * self._map_size * self:current_zoom()
+	floor_offset.w = (1 - (self:current_floor():w() or 1)) * self._map_size * self:current_zoom()
+	floor_offset.h = (1 - (self:current_floor():h() or 1)) * self._map_size * self:current_zoom()
 
 	return floor_offset
 end
@@ -940,8 +951,7 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 			local axis_x, axis_y = managers.menu_component:get_left_controller_axis()
 
 			if self:is_being_raided() then
-				axis_y = 0
-				axis_x = 0
+				axis_x, axis_y = 0, 0
 			end
 
 			if axis_x ~= 0 or axis_y ~= 0 then
@@ -956,16 +966,16 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 			axis_x, axis_y = managers.menu_component:get_right_controller_axis()
 
 			if self:is_being_raided() then
-				axis_y = 0
-				axis_x = 0
+				axis_x, axis_y = 0, 0
 			end
 
 			if axis_y ~= 0 then
 				local zoomed = self:_change_zoom(axis_y * dt, self._mouse_pointer:x(), self._mouse_pointer:y())
+
 				self._lerp_map = nil
 				self._lerp_zoom = nil
 
-				if zoomed and (not self._next_zoom or self._next_zoom < t) then
+				if zoomed and (not self._next_zoom or t > self._next_zoom) then
 					self._next_zoom = t + math.lerp(0.2, 0.1, math.abs(axis_y))
 
 					if axis_y > 0 then
@@ -982,7 +992,7 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 		local x, y = self._mouse_pointer:world_position()
 		local mouse_vec = Vector3(x, y, 0)
 		local dist = 10000000
-		local closest_point = nil
+		local closest_point
 		local point_selected = false
 
 		for _, point in ipairs(self:current_floor():points()) do
@@ -1014,10 +1024,8 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 		end
 
 		if dist < max_dist then
-			local px = closest_point._panel:world_center_x()
-			local py = closest_point._panel:world_center_y()
-			local dx = math.abs(self._wanted_pointer.x - px)
-			local dy = math.abs(self._wanted_pointer.y - py)
+			local px, py = closest_point._panel:world_center_x(), closest_point._panel:world_center_y()
+			local dx, dy = math.abs(self._wanted_pointer.x - px), math.abs(self._wanted_pointer.y - py)
 
 			if dx < max_dist and dy < max_dist then
 				self._pointer_lerp = {
@@ -1060,7 +1068,7 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 		end
 	end
 
-	local size_min, width_padding, height_padding, left, right, top, bottom, mleft, mright, mtop, mbottom = nil
+	local size_min, width_padding, height_padding, left, right, top, bottom, mleft, mright, mtop, mbottom
 
 	if self._released_map or not self._grabbed_map then
 		size_min = math.min(self._panel:w(), self._panel:h())
@@ -1070,7 +1078,9 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 		right = self._panel:w() * 1
 		top = self._panel:h() * 0
 		bottom = self._panel:h() * 1
+
 		local floor_offset = self:floor_offset()
+
 		mleft = -(left - self._grid_panel:left()) + floor_offset.x
 		mright = -(right - self._grid_panel:right()) - floor_offset.w
 		mtop = -(top - self._grid_panel:top()) + floor_offset.y
@@ -1091,8 +1101,8 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 			local dy = self._lerp_map.y - self._map_y
 
 			if dx ~= 0 or dy ~= 0 then
-				local mx = math.abs(dx) <= step and dx or math.lerp(0, dx, step)
-				local my = math.abs(dy) <= step and dy or math.lerp(0, dy, step)
+				local mx = step >= math.abs(dx) and dx or math.lerp(0, dx, step)
+				local my = step >= math.abs(dy) and dy or math.lerp(0, dy, step)
 
 				self:_move_map_position(mx, my)
 
@@ -1115,7 +1125,7 @@ function CustomSafehouseGuiPageMap:update(t, dt)
 			local dz = self._lerp_zoom - self._map_zoom
 
 			if dz ~= 0 then
-				local mz = math.abs(dz) <= step and self._lerp_zoom or math.lerp(self._map_zoom, self._lerp_zoom, step)
+				local mz = step >= math.abs(dz) and self._lerp_zoom or math.lerp(self._map_zoom, self._lerp_zoom, step)
 
 				self:_set_zoom(mz, self._panel:w() / 2, self._panel:h() / 2)
 			else
@@ -1232,8 +1242,8 @@ function CustomSafehouseGuiPageMap:mouse_moved(o, x, y)
 	end
 
 	local inside_panel = self:panel():inside(x, y)
-	local used = false
-	local pointer = "arrow"
+	local used, pointer = false, "arrow"
+
 	self._mouse_moved = not self._last_x or not self._last_y or self._last_x ~= x or self._last_y ~= y
 	self._last_x = x
 	self._last_y = y
@@ -1242,8 +1252,7 @@ function CustomSafehouseGuiPageMap:mouse_moved(o, x, y)
 		if button:inside(x, y) then
 			button:set_selected(true)
 
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		else
 			button:set_selected(false)
 		end
@@ -1261,8 +1270,7 @@ function CustomSafehouseGuiPageMap:mouse_moved(o, x, y)
 		if not used and button:inside(x, y) and inside_panel then
 			button:set_selected(true)
 
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 		elseif i ~= self._selected_floor then
 			button:set_selected(false)
 		end
@@ -1276,15 +1284,14 @@ function CustomSafehouseGuiPageMap:mouse_moved(o, x, y)
 		local u, p = self:current_floor():mouse_moved(o, x, y)
 
 		if u then
-			pointer = p
-			used = u
+			used, pointer = u, p
 		end
 	end
 
 	if not used and self._grabbed_map then
-		local left = self._grabbed_map.x < x
+		local left = x > self._grabbed_map.x
 		local right = not left
-		local up = self._grabbed_map.y < y
+		local up = y > self._grabbed_map.y
 		local down = not up
 		local mx = x - self._grabbed_map.x
 		local my = y - self._grabbed_map.y
@@ -1305,8 +1312,7 @@ function CustomSafehouseGuiPageMap:mouse_moved(o, x, y)
 	end
 
 	if not used and self._panel:inside(x, y) then
-		pointer = "hand"
-		used = true
+		used, pointer = true, "hand"
 	end
 
 	return used, pointer
@@ -1317,7 +1323,7 @@ function CustomSafehouseGuiPageMap:mouse_pressed(button, x, y)
 		return
 	end
 
-	local ret = nil
+	local ret
 
 	for _, button in ipairs(self._buttons) do
 		if button:inside(x, y) then
@@ -1370,8 +1376,7 @@ function CustomSafehouseGuiPageMap:mouse_released(o, button, x, y)
 	end
 
 	if self._grabbed_map and #self._grabbed_map.dirs > 0 then
-		local dx = 0
-		local dy = 0
+		local dx, dy = 0, 0
 
 		for _, values in ipairs(self._grabbed_map.dirs) do
 			dx = dx + values[1]
@@ -1395,12 +1400,14 @@ end
 
 function CustomSafehouseGuiPageMap:_set_zoom(zoom, x, y, ignore_update)
 	self._lerp_map = nil
+
 	local new_zoom = math.clamp(zoom, 0, 1)
 
 	if self:current_zoom(new_zoom) ~= self._last_zoom then
 		local w1, h1 = self._map_panel:size()
 		local wx1 = (x - self._map_x) / w1
 		local wy1 = (y - self._map_y) / h1
+
 		self._map_zoom = new_zoom
 
 		self._map_panel:set_size(self._map_size * self:current_zoom(), self._map_size * self:current_zoom())
@@ -1498,8 +1505,8 @@ function CustomSafehouseMapFloor:init(panel, map_panel, tweak)
 	if tweak.static_overlay then
 		if tweak.video then
 			self._bg = panel:video({
-				loop = true,
 				layer = 10,
+				loop = true,
 				video = tweak.static_overlay
 			})
 		else
@@ -1512,7 +1519,7 @@ function CustomSafehouseMapFloor:init(panel, map_panel, tweak)
 		local aspect = self._bg:w() / self._bg:h()
 		local panel_aspect = panel:w() / panel:h()
 
-		if aspect > panel_aspect then
+		if panel_aspect < aspect then
 			self._bg:set_h(panel:h())
 			self._bg:set_w(panel:h() * aspect)
 		else
@@ -1526,9 +1533,9 @@ function CustomSafehouseMapFloor:init(panel, map_panel, tweak)
 	else
 		self._bg = map_panel:bitmap({
 			alpha = 0.5,
+			blend_mode = "add",
 			halign = "scale",
 			layer = -1,
-			blend_mode = "add",
 			valign = "scale",
 			texture = tweak.texture,
 			w = map_panel:w() / 2,
@@ -1646,14 +1653,13 @@ function CustomSafehouseMapFloor:confirm_pressed()
 end
 
 function CustomSafehouseMapFloor:mouse_moved(o, x, y)
-	local used, pointer = nil
+	local used, pointer
 
 	for _, point in ipairs(self._points) do
 		local u, p = point:mouse_moved(o, x, y)
 
 		if u then
-			pointer = p
-			used = u
+			used, pointer = u, p
 		end
 	end
 
@@ -1661,7 +1667,7 @@ function CustomSafehouseMapFloor:mouse_moved(o, x, y)
 end
 
 function CustomSafehouseMapFloor:mouse_pressed(button, x, y)
-	local ret = nil
+	local ret
 
 	for _, point in ipairs(self._points) do
 		ret = point:mouse_pressed(button, x, y) or ret
@@ -1682,19 +1688,18 @@ CustomSafehouseMapPoint.HEIGHT = 64
 CustomSafehouseMapPoint.FRAME_WIDTH = 96
 CustomSafehouseMapPoint.FRAME_HEIGHT = 96
 CustomSafehouseMapPoint.PADDING = 2
-CustomSafehouseMapPoint.colors = {
-	selected = tweak_data.screen_colors.button_stage_2:with_alpha(1),
-	locked = Color.white:with_alpha(0.25),
-	unlocked = Color.white,
-	unavailable = tweak_data.screen_colors.important_1,
-	current = tweak_data.screen_colors.button_stage_3:with_alpha(1)
-}
+CustomSafehouseMapPoint.colors = {}
+CustomSafehouseMapPoint.colors.selected = tweak_data.screen_colors.button_stage_2:with_alpha(1)
+CustomSafehouseMapPoint.colors.locked = Color.white:with_alpha(0.25)
+CustomSafehouseMapPoint.colors.unlocked = Color.white
+CustomSafehouseMapPoint.colors.unavailable = tweak_data.screen_colors.important_1
+CustomSafehouseMapPoint.colors.current = tweak_data.screen_colors.button_stage_3:with_alpha(1)
 
 function CustomSafehouseMapPoint:init(parent, map_panel, id)
 	self.make_fine_text = BlackMarketGui.make_fine_text
 	self._parent = parent
 	self._id = id
-	self._room_data = table.find_value(tweak_data.safehouse.rooms, function (v)
+	self._room_data = table.find_value(tweak_data.safehouse.rooms, function(v)
 		return v.room_id == id
 	end)
 	self._name_id = self._room_data.name_id
@@ -1704,14 +1709,18 @@ function CustomSafehouseMapPoint:init(parent, map_panel, id)
 	self._current_size_mod = 1
 	self._alpha = 1
 	self._current_tier = managers.custom_safehouse:get_room_current_tier(self._id)
+
 	local tweak_table = tweak_data.safehouse.map.rooms[id]
+
 	self._x = tweak_table.x / self._map_width
 	self._y = tweak_table.y / self._map_height
 	self._panel = map_panel:panel({
-		valign = "scale",
-		halign = "scale"
+		halign = "scale",
+		valign = "scale"
 	})
+
 	local title_text = managers.localization:to_upper_text(self._name_id)
+
 	self._title = self._panel:text({
 		name = "title",
 		text = title_text,
@@ -1804,12 +1813,11 @@ function CustomSafehouseMapPoint:_update_position()
 end
 
 function CustomSafehouseMapPoint:mouse_moved(o, x, y)
-	local used, pointer, new_selected = nil
+	local used, pointer, new_selected
 
 	if self._image:inside(x, y) then
 		new_selected = self._image
-		pointer = "link"
-		used = true
+		used, pointer = true, "link"
 	end
 
 	if self._selected ~= new_selected then
@@ -1831,7 +1839,7 @@ function CustomSafehouseMapPoint:mouse_pressed(button, x, y)
 		return
 	end
 
-	local ret = nil
+	local ret
 
 	if self._selected == self._image then
 		self:attempt_purchase()
@@ -1872,6 +1880,7 @@ end
 
 function CustomSafehouseMapPoint:attempt_purchase(step)
 	step = step or 0
+
 	local next_tier = managers.custom_safehouse:get_next_tier_unlocked(self._id) + step
 
 	if next_tier <= managers.custom_safehouse:get_room_max_tier(self._id) then
@@ -1882,14 +1891,16 @@ function CustomSafehouseMapPoint:attempt_purchase(step)
 				character = managers.localization:text(self._name_id),
 				cost = managers.custom_safehouse:get_upgrade_cost(self._id, next_tier)
 			}
-			local dialog_data = {
-				title = managers.localization:text("dialog_bm_weapon_buy_title"),
-				text = managers.localization:text("dialog_upgrade_safehouse", dialog_macros),
-				focus_button = 2
-			}
-			local room_data = table.find_value(tweak_data.safehouse.rooms, function (v)
+			local dialog_data = {}
+
+			dialog_data.title = managers.localization:text("dialog_bm_weapon_buy_title")
+			dialog_data.text = managers.localization:text("dialog_upgrade_safehouse", dialog_macros)
+			dialog_data.focus_button = 2
+
+			local room_data = table.find_value(tweak_data.safehouse.rooms, function(v)
 				return v.room_id == self._id
 			end)
+
 			dialog_data.texture = room_data and room_data.images[next_tier]
 
 			if dialog_data.texture then
@@ -1902,35 +1913,37 @@ function CustomSafehouseMapPoint:attempt_purchase(step)
 			end
 
 			dialog_data.text = managers.localization:text(room_data.help_id .. "_" .. next_tier) .. "\n\n" .. dialog_data.text
-			local yes_button = {
-				text = managers.localization:text("dialog_yes"),
-				callback_func = callback(self, self, "_confirm_purchase", {
-					tier = next_tier
-				})
-			}
-			local no_button = {
-				text = managers.localization:text("dialog_no"),
-				cancel_button = true
-			}
+
+			local yes_button = {}
+
+			yes_button.text = managers.localization:text("dialog_yes")
+			yes_button.callback_func = callback(self, self, "_confirm_purchase", {
+				tier = next_tier
+			})
+
+			local no_button = {}
+
+			no_button.text = managers.localization:text("dialog_no")
+			no_button.cancel_button = true
 			dialog_data.button_list = {
 				yes_button,
 				no_button
 			}
 
 			if next_tier ~= managers.custom_safehouse:get_room_max_tier(self._id) then
-				local next_button = {
-					text = managers.localization:text("dialog_next_tier"),
-					callback_func = callback(self, self, "attempt_purchase", step + 1)
-				}
+				local next_button = {}
+
+				next_button.text = managers.localization:text("dialog_next_tier")
+				next_button.callback_func = callback(self, self, "attempt_purchase", step + 1)
 
 				table.insert(dialog_data.button_list, next_button)
 			end
 
 			if step > 0 then
-				local previous_button = {
-					text = managers.localization:text("dialog_previous_tier"),
-					callback_func = callback(self, self, "attempt_purchase", step - 1)
-				}
+				local previous_button = {}
+
+				previous_button.text = managers.localization:text("dialog_previous_tier")
+				previous_button.callback_func = callback(self, self, "attempt_purchase", step - 1)
 
 				table.insert(dialog_data.button_list, previous_button)
 			end
@@ -1989,12 +2002,13 @@ function CustomSafehouseMapPoint:update_help_text(tier_id)
 		local macros = {
 			cost = tweak_data.safehouse.prices.rooms[next_tier]
 		}
+
 		help_text = help_text .. "\n\n" .. managers.localization:text("menu_cs_upgrade_cost", macros)
 
 		self._parent:set_help_text(help_text)
 		self._parent:set_warning_text(nil)
 
-		if managers.custom_safehouse:get_next_tier_unlocked(self._id) < next_tier then
+		if next_tier > managers.custom_safehouse:get_next_tier_unlocked(self._id) then
 			self._parent:set_warning_text(utf8.to_upper(managers.localization:text("menu_cs_unlock_prev_tier")))
 		elseif not managers.custom_safehouse:can_afford_tier(next_tier) then
 			self._parent:set_warning_text(utf8.to_upper(managers.localization:text("menu_cs_cant_afford")))
@@ -2026,10 +2040,10 @@ function CustomSafehouseGuiRaidButton:init(panel, layer, y, callback, text_id)
 		color = Color.black
 	})
 	self._text = self._panel:text({
-		name = "defend_text",
 		align = "center",
-		y = 4,
 		layer = 10,
+		name = "defend_text",
+		y = 4,
 		text = managers.localization:to_upper_text(text_id or "menu_cn_chill_combat_defend"),
 		w = panel:w(),
 		h = medium_font_size,

@@ -13,9 +13,11 @@ function BaseVehicleState:update(t, dt)
 end
 
 function BaseVehicleState:enter(state_data, enter_data)
+	return
 end
 
 function BaseVehicleState:exit(state_data)
+	return
 end
 
 function BaseVehicleState:get_action_for_interaction(pos, locator, tweak_data)
@@ -88,6 +90,7 @@ function BaseVehicleState:create_name_hud()
 			name = utf8.to_upper(managers.localization:text(name_id)),
 			unit = self._unit
 		})
+
 		self._unit:unit_data().name_label_id = id
 	end
 end

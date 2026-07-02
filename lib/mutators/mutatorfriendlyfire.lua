@@ -4,8 +4,8 @@ MutatorFriendlyFire.name_id = "mutator_friendly_fire"
 MutatorFriendlyFire.desc_id = "mutator_friendly_fire_desc"
 MutatorFriendlyFire.has_options = true
 MutatorFriendlyFire.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 MutatorFriendlyFire.disables_achievements = true
 MutatorFriendlyFire.categories = {
@@ -60,16 +60,16 @@ end
 
 function MutatorFriendlyFire:setup_options_gui(node)
 	local params = {
-		name = "ff_damage_slider",
 		callback = "_update_mutator_value",
+		name = "ff_damage_slider",
 		text_id = "menu_mutator_ff_damage",
 		update_callback = callback(self, self, "_update_damage_multiplier")
 	}
 	local data_node = {
+		decimal_count = 2,
 		show_value = true,
 		step = 0.05,
 		type = "CoreMenuItemSlider.ItemSlider",
-		decimal_count = 2,
 		min = self:_min_damage(),
 		max = self:_max_damage()
 	}

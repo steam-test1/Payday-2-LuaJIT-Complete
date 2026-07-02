@@ -13,9 +13,11 @@ function User:init(local_user_handler, input_input_provider, user_index, profile
 end
 
 function User.default_data(data)
+	return
 end
 
 function User:save(data)
+	return
 end
 
 function User:transition()

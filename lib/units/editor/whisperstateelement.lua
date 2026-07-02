@@ -15,6 +15,7 @@ function WhisperStateUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local state = EWS:CheckBox(panel, "Whisper state", "")
 
 	state:set_value(self._hed.state)
@@ -33,11 +34,11 @@ function WhisperStateUnitElement:_build_panel(panel, panel_sizer)
 	})
 	panel_sizer:add(disable_hud, 0, 0, "EXPAND")
 
-	local help = {
-		text = "Sets if whisper state should be turned on or off. If \"Disable HUD\" is checked the stealth HUD will be disabled regardless of the whisper state.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Sets if whisper state should be turned on or off. If \"Disable HUD\" is checked the stealth HUD will be disabled regardless of the whisper state."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

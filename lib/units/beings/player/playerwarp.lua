@@ -1,11 +1,13 @@
 WarpTargetMarker = WarpTargetMarker or class()
+
 local bezier3 = require("lib/utils/Bezier3")
 local MARKER_UNIT_ID = Idstring("units/pd2_dlc_vr/player/vr_warper")
 local LADDER_UNIT_ID = Idstring("units/pd2_dlc_vr/player/vr_ladder")
+
 WarpTargetMarker.SEQUENCES = {
 	jump = "warp_jump",
-	ladder = "warp_ladder",
 	jump_start = "warp_orange",
+	ladder = "warp_ladder",
 	move = "warp_blue"
 }
 
@@ -56,12 +58,14 @@ function WarpTargetMarker:set_orientation(position, rotation)
 end
 
 PlayerWarp = PlayerWarp or class()
+
 local MAX_MOVEMENT_DISTANCE = 500
 local MAX_JUMP_DISTANCE = 450
 local MAX_TARGET_TO_RAY_DISTANCE = 600
 local MAX_JUMP_HEIGHT_THRESHOLD = 120
 local MIN_JUMP_TARGET_TO_WARP_THRESHOLD = 25
 local MAX_JUMP_HEIGHT = tweak_data.player.movement_state.standard.movement.jump_velocity.z * tweak_data.player.movement_state.standard.movement.jump_velocity.z / 1964
+
 PlayerWarp.TARGET_TYPE = 0
 
 function PlayerWarp:init(hand_unit)
@@ -101,10 +105,9 @@ function PlayerWarp:init(hand_unit)
 	self._max_jump_distance = MAX_JUMP_DISTANCE
 	self._jump_move_speed = MAX_JUMP_DISTANCE / (2 * tweak_data.player.movement_state.standard.movement.jump_velocity.z / 982)
 	self._enable_jump = false
-	self._dynamic_geometries = {
-		move = hand_unit:get_object(Idstring("g_dyn_move")),
-		jump = hand_unit:get_object(Idstring("g_dyn_jump"))
-	}
+	self._dynamic_geometries = {}
+	self._dynamic_geometries.move = hand_unit:get_object(Idstring("g_dyn_move"))
+	self._dynamic_geometries.jump = hand_unit:get_object(Idstring("g_dyn_jump"))
 	self._prev_geo = nil
 	self._warp_markers = {}
 
@@ -123,6 +126,7 @@ function PlayerWarp:show_ladder_marker(key, active)
 	end
 
 	local ladder = ladder_data.ladder
+
 	ladder_data.active = true
 
 	if active then
@@ -132,6 +136,7 @@ function PlayerWarp:show_ladder_marker(key, active)
 	end
 
 	self._ladder_markers[key] = self._ladder_markers[key] or World:spawn_unit(LADDER_UNIT_ID, Vector3(), Rotation())
+
 	local ladder_marker = self._ladder_markers[key]
 
 	ladder_marker:set_position(ladder_data.going_down and ladder:ladder():top() or ladder:ladder():bottom())
@@ -195,15 +200,18 @@ function PlayerWarp:update_ladder_targeting()
 		for _, ladder in ipairs(Ladder.active_ladders) do
 			ladder:ladder():check_ground_clipping()
 
-			local can_access = nil
+			local can_access
 
 			if ladder:ladder():can_access(self._player_unit:position()) then
 				local relative_height = self._player_unit:position().z - ladder:ladder():bottom().z
+
 				relative_height = math.clamp(relative_height / ladder:ladder():height(), 0, 1)
+
 				local going_down = relative_height > 0.8
 				local ladder_pos = going_down and ladder:ladder():top() or ladder:ladder():bottom()
 				local dis = mvector3.distance_sq(self._unit:position(), ladder_pos)
 				local ray = self._unit:raycast("ray", self._unit:position(), ladder_pos, "slot_mask", self._slotmask, "ray_type", "body walk")
+
 				self._ladders[ladder:key()] = self._ladders[ladder:key()] or {
 					ladder = ladder
 				}
@@ -293,6 +301,7 @@ function PlayerWarp:update(unit, t, dt)
 	if self._targeting then
 		self._target.position = nil
 		self._aim_position = nil
+
 		local pos = unit:position()
 		local ppos = self._player_unit:position()
 		local forward = unit:rotation():y()
@@ -310,7 +319,7 @@ function PlayerWarp:update(unit, t, dt)
 			end
 		end
 
-		local closest_ladder_data = nil
+		local closest_ladder_data
 
 		for key, ladder_data in pairs(self._ladders) do
 			if ladder_data.active then
@@ -431,7 +440,7 @@ function PlayerWarp:_draw_bezier(brush, source, target, tangent)
 	mvector3.set_z(v, 0)
 
 	local xmax = mvector3.normalize(v)
-	local p = source + tangent * xmax / 2
+	local p = source + tangent * (xmax / 2)
 	local x1 = 0
 	local y1 = source.z
 	local x2 = xmax / 2
@@ -448,7 +457,7 @@ function PlayerWarp:_draw_bezier(brush, source, target, tangent)
 		0,
 		source.z
 	})
-	bezier3.interpolate(function (s, x, y)
+	bezier3.interpolate(function(s, x, y)
 		table.insert(line_segments, {
 			x,
 			y
@@ -477,6 +486,7 @@ function PlayerWarp:_draw(brush, geo, unit_pos)
 	if PlayerWarp.TARGET_TYPE == 0 then
 		local dir = self._aim_position - unit_pos
 		local length = dir:length()
+
 		dir = dir:rotate_with(self._unit:base():rotation():inverse())
 
 		geo:set_local_rotation(Rotation(dir, Vector3(0, 0, 1)))
@@ -499,7 +509,7 @@ function PlayerWarp:_draw(brush, geo, unit_pos)
 			position = self._target.position,
 			rotation = Rotation(yaw, 0, 0)
 		}
-		local secondary_target = nil
+		local secondary_target
 
 		if self._target.type == "jump" then
 			secondary_target = {
@@ -507,6 +517,7 @@ function PlayerWarp:_draw(brush, geo, unit_pos)
 				position = self._jump_start_position,
 				rotation = Rotation(yaw, 0, 0)
 			}
+
 			local pos = self._jump_start_position
 			local dir = self._target.position - pos
 			local target_rel_height = dir.z
@@ -526,9 +537,11 @@ end
 
 function PlayerWarp:_find_warp_position(player_position, pos, forward)
 	local warp_target, jump_target = self:_find_target(player_position, pos, forward)
+
 	self._target.type = "move"
 	self._target.data = nil
 	self._aim_position = pos + forward * self._max_range
+
 	local warp_pos = player_position
 	local good_warp_pos = false
 
@@ -551,7 +564,7 @@ function PlayerWarp:_find_warp_position(player_position, pos, forward)
 			local height_diff = math.abs(v.z)
 			local d = math.sqrt(v.x * v.x + v.y * v.y)
 
-			if height_diff < 20 and d < 50 and MIN_JUMP_TARGET_TO_WARP_THRESHOLD < mvector3.distance(warp_pos, best_jump_position) then
+			if height_diff < 20 and d < 50 and mvector3.distance(warp_pos, best_jump_position) > MIN_JUMP_TARGET_TO_WARP_THRESHOLD then
 				self._target.position = best_jump_position
 				self._target.type = "jump"
 				self._jump_start_position = player_position
@@ -565,7 +578,7 @@ function PlayerWarp:_is_jump_candidate(player_position, warp_position, warp_targ
 		return false
 	end
 
-	if self._max_jump_distance < mvector3.distance(player_position, jump_target) then
+	if mvector3.distance(player_position, jump_target) > self._max_jump_distance then
 		return false
 	end
 
@@ -577,11 +590,11 @@ function PlayerWarp:_is_jump_candidate(player_position, warp_position, warp_targ
 		return false
 	end
 
-	if MAX_JUMP_HEIGHT_THRESHOLD < math.abs(jump_target.z - player_position.z) then
+	if math.abs(jump_target.z - player_position.z) > MAX_JUMP_HEIGHT_THRESHOLD then
 		return false
 	end
 
-	if player_position.z < jump_target.z then
+	if jump_target.z > player_position.z then
 		local v = player_position - jump_target
 		local jump_time = math.max(math.sqrt(v.x * v.x + v.y * v.y) / self._jump_move_speed, tweak_data.player.movement_state.standard.movement.jump_velocity.z / 982)
 		local height = tweak_data.player.movement_state.standard.movement.jump_velocity.z * jump_time - 491 * jump_time * jump_time
@@ -609,17 +622,19 @@ function PlayerWarp:_find_target(player_position, position, forward)
 	end
 
 	local wall_mover_fit = 5
-	local to, ray, warp_target, jump_target = nil
+	local to, ray, warp_target, jump_target
+
 	to = position + forward * clip_line_to_sphere(player_position, self._range, position, forward)
 
 	if self._max_range < self._max_jump_distance then
 		local to_max = position + forward * clip_line_to_sphere(player_position, self._max_jump_distance, position, forward)
+
 		ray = self._unit:raycast("ray", position, to_max, "slot_mask", self._slotmask, "sphere_cast_radius", 7.5, "ray_type", "body walk")
 
 		if ray then
 			jump_target = ray.position
 
-			if self._range < mvector3.distance(ray.position, position) then
+			if mvector3.distance(ray.position, position) > self._range then
 				ray = nil
 			end
 		else
@@ -636,17 +651,21 @@ function PlayerWarp:_find_target(player_position, position, forward)
 	if ray then
 		warp_target = ray.position
 		jump_target = jump_target or warp_target
+
 		local d = mvector3.dot(ray.normal, math.UP)
 
 		if d < 0.49 then
 			local v = ray.normal - d * math.UP
+
 			warp_target = warp_target + v * math.min(wall_mover_fit, mvector3.distance(warp_target, position))
 			v = position - warp_target
+
 			local a = mvector3.normalize(v)
 			local angle = mvector3.dot(v, math.DOWN)
 			local b = self._range
 			local a_angle = a * angle
 			local c = a_angle + math.sqrt(a_angle * a_angle - (a * a - b * b))
+
 			ray = self._unit:raycast("ray", warp_target, warp_target + math.DOWN * c, "slot_mask", self._slotmask, "ray_type", "body walk")
 
 			if ray then
@@ -674,12 +693,13 @@ function PlayerWarp:_check_snap_point(position, forward, sp)
 
 	local length = mvector3.normalize(dir)
 
-	if sp.tolerance < length or self._range < length then
+	if length > sp.tolerance or length > self._range then
 		return false
 	end
 
 	local d = length / math.dot(dir, forward)
 	local p = position + forward * d
+
 	length = mvector3.length(p - sp.position)
 
 	if length <= sp.tolerance then

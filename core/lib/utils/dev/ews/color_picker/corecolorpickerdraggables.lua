@@ -12,6 +12,7 @@ end
 
 function ColorPickerDraggables:update(time, delta_time)
 	local current_mouse_event = EWS:MouseEvent("EVT_MOTION")
+
 	self._previous_mouse_event = self._previous_mouse_event or current_mouse_event
 
 	if self._dragged_control and current_mouse_event:get_position() ~= self._previous_mouse_event:get_position() then
@@ -52,14 +53,8 @@ function ColorPickerDraggables:set_color(color)
 end
 
 function ColorPickerDraggables:_create_panel(parent_frame, enable_alpha, enable_value)
-	if enable_alpha == nil then
-		enable_alpha = true
-	end
-
-	if enable_value == nil then
-		enable_value = true
-	end
-
+	enable_alpha = enable_alpha == nil and true or enable_alpha
+	enable_value = enable_value == nil and true or enable_value
 	self._panel = EWS:Panel(parent_frame)
 
 	self._panel:set_min_size(Vector3(180, 134, 0))
@@ -70,6 +65,7 @@ function ColorPickerDraggables:_create_panel(parent_frame, enable_alpha, enable_
 
 	local slider_width = 20
 	local slider_margin = 3
+
 	self._spectrum = EWS:ColorSpectrum(self._panel, "")
 
 	panel_sizer:add(self._spectrum, 0, slider_margin, "ALL")

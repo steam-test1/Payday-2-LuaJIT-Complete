@@ -53,6 +53,7 @@ function Player:enter_level(level_handler)
 	self._player_handler:enter_level(level_handler)
 
 	local avatar_handler = self._player_handler:spawn_avatar()
+
 	self._avatar = CoreAvatar.Avatar:new(avatar_handler)
 	avatar_handler._core_avatar = self._avatar
 

@@ -50,6 +50,7 @@ function MutatorsManager:init()
 		MutatorPiggyRevenge:new(self)
 	}
 	self._active_mutators = {}
+
 	local activate = Global.mutators and Global.mutators.active_on_load
 
 	if not self:can_mutators_be_active() then
@@ -85,8 +86,8 @@ function MutatorsManager:init()
 		table.insert(setup_mutators, active_mutator.mutator)
 	end
 
-	table.sort(setup_mutators, function (a, b)
-		return b.load_priority < a.load_priority
+	table.sort(setup_mutators, function(a, b)
+		return a.load_priority > b.load_priority
 	end)
 
 	for _, mutator in pairs(setup_mutators) do
@@ -137,6 +138,7 @@ function MutatorsManager:save(data)
 	local state = {
 		save_values = values
 	}
+
 	data.Mutators = state
 end
 
@@ -532,6 +534,7 @@ function MutatorsManager:matchmake_pack_string(num_strings)
 	for j, mutator in ipairs(self:mutators()) do
 		if mutator:is_enabled() then
 			local index = k % num_strings + 1
+
 			ret[index] = ret[index] .. mutator:build_compressed_data(j)
 			k = k + 1
 		end
@@ -713,7 +716,7 @@ function MutatorsManager:get_enabled_active_mutator_category()
 		return "mutator"
 	end
 
-	local mutators_to_check = nil
+	local mutators_to_check
 
 	if Network:is_client() then
 		for mutator_id, content in pairs(self:get_mutators_from_lobby_data() or {}) do
@@ -818,20 +821,22 @@ function MutatorsManager:show_mutators_launch_countdown(countdown)
 	end
 
 	if countdown ~= nil and countdown > 0 then
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("dialog_mutators_active_text"),
-			id = "mutators_warning"
-		}
-		local yes_button = {
-			text = managers.localization:text("dialog_yes"),
-			callback_func = callback(self, self, "_dialog_mutators_accept")
-		}
-		local no_button = {
-			text = managers.localization:text("dialog_leave_lobby"),
-			callback_func = callback(self, self, "_dialog_mutators_decline"),
-			cancel_button = true
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("dialog_mutators_active_text")
+		dialog_data.id = "mutators_warning"
+
+		local yes_button = {}
+
+		yes_button.text = managers.localization:text("dialog_yes")
+		yes_button.callback_func = callback(self, self, "_dialog_mutators_accept")
+
+		local no_button = {}
+
+		no_button.text = managers.localization:text("dialog_leave_lobby")
+		no_button.callback_func = callback(self, self, "_dialog_mutators_decline")
+		no_button.cancel_button = true
 		dialog_data.button_list = {
 			yes_button,
 			no_button
@@ -839,20 +844,22 @@ function MutatorsManager:show_mutators_launch_countdown(countdown)
 
 		managers.system_menu:show(dialog_data)
 	else
-		local dialog_data = {
-			title = managers.localization:text("dialog_warning_title"),
-			text = managers.localization:text("dialog_mutators_active_text"),
-			id = "mutators_warning"
-		}
-		local yes_button = {
-			text = managers.localization:text("dialog_yes"),
-			callback_func = callback(self, self, "_dialog_mutators_accept")
-		}
-		local no_button = {
-			text = managers.localization:text("dialog_leave_lobby"),
-			callback_func = callback(self, self, "_dialog_mutators_decline"),
-			cancel_button = true
-		}
+		local dialog_data = {}
+
+		dialog_data.title = managers.localization:text("dialog_warning_title")
+		dialog_data.text = managers.localization:text("dialog_mutators_active_text")
+		dialog_data.id = "mutators_warning"
+
+		local yes_button = {}
+
+		yes_button.text = managers.localization:text("dialog_yes")
+		yes_button.callback_func = callback(self, self, "_dialog_mutators_accept")
+
+		local no_button = {}
+
+		no_button.text = managers.localization:text("dialog_leave_lobby")
+		no_button.callback_func = callback(self, self, "_dialog_mutators_decline")
+		no_button.cancel_button = true
 		dialog_data.button_list = {
 			yes_button,
 			no_button
@@ -951,7 +958,7 @@ function MutatorsManager:check_achievements(achievement_data)
 	if achievement_data.mutators == true then
 		return managers.mutators:are_mutators_active()
 	elseif type(achievement_data.mutators) == "number" then
-		return achievement_data.mutators <= table.size(managers.mutators:active_mutators())
+		return table.size(managers.mutators:active_mutators()) >= achievement_data.mutators
 	elseif #achievement_data.mutators == table.size(managers.mutators:active_mutators()) then
 		local required_mutators = deep_clone(achievement_data.mutators)
 

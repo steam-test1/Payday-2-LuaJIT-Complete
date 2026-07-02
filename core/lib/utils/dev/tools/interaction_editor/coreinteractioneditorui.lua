@@ -8,7 +8,9 @@ InteractionEditorUI = InteractionEditorUI or CoreClass.class()
 
 function InteractionEditorUI:init(owner)
 	self._main_frame = EWS:Frame(CoreInteractionEditorConfig.EDITOR_TITLE, Vector3(-1, -1, -1), Vector3(1000, 800, 0), "", Global.frame)
+
 	local menu_bar = EWS:MenuBar()
+
 	self._file_menu = EWS:Menu("")
 
 	self._file_menu:append_item("NEW", "New\tCtrl-N", "")
@@ -56,6 +58,7 @@ function InteractionEditorUI:init(owner)
 	self._main_frame:set_status_bar(self._status_bar)
 
 	local main_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._main_splitter = EWS:SplitterWindow(self._main_frame, "", "")
 	self._main_notebook = EWS:Notebook(self._main_splitter, "", "")
 	self._prop_panel = CoreInteractionEditorPropUI.InteractionEditorPropUI:new(self._main_splitter, owner)
@@ -106,7 +109,7 @@ function InteractionEditorUI:create_graph_context_menu(system)
 
 	for _, v in ipairs(InteractionDescription:node_types()) do
 		add_menu:append_item("ADD_NODE_" .. string.upper(v), string.upper(v), "")
-		system:graph():window():connect("ADD_NODE_" .. string.upper(v), "EVT_COMMAND_MENU_SELECTED", callback(self._owner, self._owner, "on_add_node"), function ()
+		system:graph():window():connect("ADD_NODE_" .. string.upper(v), "EVT_COMMAND_MENU_SELECTED", callback(self._owner, self._owner, "on_add_node"), function()
 			system:add_node(v)
 		end)
 	end
@@ -116,7 +119,7 @@ function InteractionEditorUI:create_graph_context_menu(system)
 	menu:append_menu("ADD_NODE", "Add Node", add_menu, "")
 	menu:append_separator()
 	menu:append_item("DELETE_NODE", "Delete Node", "")
-	system:graph():window():connect("DELETE_NODE", "EVT_COMMAND_MENU_SELECTED", callback(self._owner, self._owner, "on_remove_node"), function ()
+	system:graph():window():connect("DELETE_NODE", "EVT_COMMAND_MENU_SELECTED", callback(self._owner, self._owner, "on_remove_node"), function()
 		for _, n in ipairs(system:selected_nodes()) do
 			system:remove_node(n)
 		end

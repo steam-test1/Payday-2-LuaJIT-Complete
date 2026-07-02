@@ -261,13 +261,12 @@ function MissionManager:init(...)
 	self._mission_filter = {}
 
 	if not Global.mission_manager then
-		Global.mission_manager = {
-			stage_job_values = {},
-			job_values = {},
-			saved_job_values = {},
-			has_played_tutorial = false,
-			safehouse_ask_amount = 0
-		}
+		Global.mission_manager = {}
+		Global.mission_manager.stage_job_values = {}
+		Global.mission_manager.job_values = {}
+		Global.mission_manager.saved_job_values = {}
+		Global.mission_manager.has_played_tutorial = false
+		Global.mission_manager.safehouse_ask_amount = 0
 	end
 end
 
@@ -425,6 +424,7 @@ function MissionManager:save_job_values(data)
 		has_played_tutorial = Global.mission_manager.has_played_tutorial,
 		safehouse_ask_amount = Global.mission_manager.safehouse_ask_amount
 	}
+
 	data.ProductMissionManager = state
 end
 

@@ -7,11 +7,11 @@ core:import("CoreDebug")
 core:import("CoreKeywordArguments")
 
 TOOLHUB_NAME = "Lua Profiler II"
-local PERCENT = 0
-local SECONDS = 1
-local CUSTOM = 2
+
+local PERCENT, SECONDS, CUSTOM = 0, 1, 2
 local DEFAULT_FORMAT = PERCENT
 local DEFAULT_INFOKEY = "total_time"
+
 LuaProfilerViewer = LuaProfilerViewer or CoreClass.class()
 
 function LuaProfilerViewer:init()
@@ -22,6 +22,7 @@ end
 
 function LuaProfilerViewer:_create_main_frame()
 	self._frame = EWS:Frame(TOOLHUB_NAME, Vector3(100, 400, 0), Vector3(1500, 800, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
+
 	local frame_sizer = EWS:BoxSizer("VERTICAL")
 	local splitter1 = EWS:SplitterWindow(self._frame, "", "")
 
@@ -66,9 +67,11 @@ function LuaProfilerViewer:_create_menu()
 	file_menu:append_item("EXIT", "Exit", "")
 
 	local view_menu = EWS:Menu("")
+
 	self._view_menu = view_menu
 	self._view_menu_filled = false
 	self._view_menu_connects = {}
+
 	local capt_menu = EWS:Menu("")
 
 	capt_menu:append_item("CAPTURE", "Capture Frame\tCtrl+F", "")
@@ -87,6 +90,7 @@ end
 
 function LuaProfilerViewer:_redraw_menu()
 	local lpd = self._lpd
+
 	self._displayformat = PERCENT
 
 	if self._view_menu_filled then
@@ -256,6 +260,7 @@ end
 
 function LuaProfilerViewer:_on_custom(diffpeak)
 	self._displayformat = CUSTOM
+
 	local diff = tonumber(string.split(diffpeak, ":")[1])
 	local peak = tonumber(string.split(diffpeak, ":")[2])
 

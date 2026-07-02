@@ -1,6 +1,7 @@
 PlayerTurret = PlayerTurret or class(PlayerStandard)
 PlayerTurret.camera_spin_limit = nil
 PlayerTurret.camera_pitch_limit = 25
+
 local tmp_vec1 = Vector3()
 local tmp_rot1 = Rotation()
 
@@ -18,6 +19,7 @@ end
 
 function PlayerTurret:_enter(enter_data)
 	self._turret_unit = managers.player:get_local_player_turret()
+
 	local tweak_data = self._turret_unit:base():weapon_tweak_data()
 	local speed_multiplier = 1
 
@@ -146,6 +148,7 @@ function PlayerTurret:_postion_player_exiting_turret()
 end
 
 function PlayerTurret:push(vel)
+	return
 end
 
 function PlayerTurret:unmount_turret()
@@ -159,17 +162,14 @@ end
 function PlayerTurret:_stance_entered(unequipped)
 	local stance_standard = tweak_data.player.stances.default.player_turret or tweak_data.player.stances.default.standard
 	local head_stance = self._state_data.ducking and tweak_data.player.stances.default.crouched.head or stance_standard.head
-	local stance_id = nil
+	local stance_id
 	local stance_mod = {
 		translation = Vector3(0, 0, 0)
 	}
 
 	if not unequipped then
 		stance_id = self._equipped_unit:base():get_stance_id()
-
-		if self._state_data.in_steelsight and self._equipped_unit:base().stance_mod then
-			stance_mod = self._equipped_unit:base():stance_mod() or stance_mod
-		end
+		stance_mod = self._state_data.in_steelsight and self._equipped_unit:base().stance_mod and self._equipped_unit:base():stance_mod() or stance_mod
 	end
 
 	local stances = tweak_data.player.stances[stance_id] or tweak_data.player.stances.default
@@ -280,21 +280,27 @@ function PlayerTurret:_check_action_unmount_turret(t, input)
 end
 
 function PlayerTurret:_check_action_reload(t, dt)
+	return
 end
 
 function PlayerTurret:_check_action_steelsight(t, dt)
+	return
 end
 
 function PlayerTurret:_update_movement(t, dt)
+	return
 end
 
 function PlayerTurret:_start_action_jump(...)
+	return
 end
 
 function PlayerTurret:_perform_jump(jump_vec)
+	return
 end
 
 function PlayerTurret:_get_max_walk_speed(...)
+	return
 end
 
 function PlayerTurret:_get_walk_headbob(...)
@@ -302,7 +308,7 @@ function PlayerTurret:_get_walk_headbob(...)
 end
 
 function PlayerTurret:_check_action_primary_attack(t, input)
-	local new_action = nil
+	local new_action
 	local weap_base = self._turret_unit:base()
 	local weapon_tweak_data = weap_base:weapon_tweak_data()
 
@@ -347,6 +353,7 @@ function PlayerTurret:_check_action_primary_attack(t, input)
 			if damage_health_ratio > 0 then
 				local upgrade_name = weap_base:is_category("saw") and "melee_damage_health_ratio_multiplier" or "damage_health_ratio_multiplier"
 				local damage_ratio = damage_health_ratio
+
 				dmg_mul = dmg_mul * (1 + managers.player:upgrade_value("player", upgrade_name, 0) * damage_ratio)
 			end
 
@@ -355,6 +362,7 @@ function PlayerTurret:_check_action_primary_attack(t, input)
 		end
 
 		local fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+
 		new_action = true
 
 		if fired then

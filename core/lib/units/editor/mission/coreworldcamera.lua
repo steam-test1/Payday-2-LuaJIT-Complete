@@ -121,6 +121,7 @@ function CoreWorldCameraUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local sequence_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	sequence_sizer:add(EWS:StaticText(self._panel, "Sequence:", 0, ""), 1, 0, "ALIGN_CENTER_VERTICAL")

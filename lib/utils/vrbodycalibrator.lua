@@ -48,10 +48,10 @@ function VRBodyCalibrator:start_calibration(clbk)
 	self._max_length = -1000
 	self._max_height = -1000
 	self._calibration_data = {
+		arm_length = 0,
 		head_to_shoulder = 0,
-		shoulder_width = 0,
 		passed = 0,
-		arm_length = 0
+		shoulder_width = 0
 	}
 end
 
@@ -127,7 +127,7 @@ function VRBodyCalibrator:_calibrate(hmd_position, hmd_rotation, rc, lc)
 	local rot = hmd_rotation
 	local side_to_side = mvector3.distance(rc:with_z(0), lc:with_z(0))
 
-	if not self._side_to_side or self._side_to_side < side_to_side then
+	if not self._side_to_side or side_to_side > self._side_to_side then
 		self._side_to_side = side_to_side
 	end
 
@@ -137,17 +137,18 @@ function VRBodyCalibrator:_calibrate(hmd_position, hmd_rotation, rc, lc)
 		self._min_length = len
 	end
 
-	if self._max_length < len then
+	if len > self._max_length then
 		self._max_length = len
 	end
 
-	if self._max_height < hmd.z and math.abs(mvector3.dot(hmd_rotation:z(), math.Z)) > 0.9 then
+	if hmd.z > self._max_height and math.abs(mvector3.dot(hmd_rotation:z(), math.Z)) > 0.9 then
 		self._max_height = hmd.z
 	end
 
 	local arm_length = (self._max_length - self._min_length) * 0.5
 	local neck_length = self._max_height - self._min_length - arm_length
 	local shoulder_length = self._max_height - self._min_length - self._side_to_side * 0.5 + neck_length
+
 	self._arm_length = math.round(arm_length + 5)
 	self._shoulder_width = math.round(shoulder_length + 10)
 	self._head_to_shoulder = math.round(neck_length)
@@ -156,11 +157,12 @@ end
 function VRBodyCalibrator:_update_calibration_state(t)
 	self._calibration_t = self._calibration_t or t + 0.1
 
-	if self._calibration_t < t then
+	if t > self._calibration_t then
 		local d1 = self._calibration_data.arm_length - self._arm_length
 		local d2 = self._calibration_data.shoulder_width - self._shoulder_width
 		local d3 = self._calibration_data.head_to_shoulder - self._head_to_shoulder
 		local error_value = (d1 * d1 + d2 * d2 + d3 * d3) / 3
+
 		self._calibration_data.arm_length = self._arm_length
 		self._calibration_data.shoulder_width = self._shoulder_width
 		self._calibration_data.head_to_shoulder = self._head_to_shoulder

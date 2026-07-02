@@ -8,6 +8,7 @@ function TaserLogicAttack.enter(data, new_logic_name, enter_params)
 	local my_data = {
 		unit = data.unit
 	}
+
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.combat
 	my_data.tase_distance = data.char_tweak.weapon.is_rifle.tase_distance
@@ -23,6 +24,7 @@ function TaserLogicAttack.enter(data, new_logic_name, enter_params)
 	end
 
 	local key_str = tostring(data.key)
+
 	my_data.update_task_key = "TaserLogicAttack.queued_update" .. key_str
 
 	CopLogicBase.queue_task(my_data, my_data.update_task_key, TaserLogicAttack.queued_update, data, data.t, data.important)
@@ -102,7 +104,9 @@ function TaserLogicAttack.queued_update(data)
 	CopLogicAttack._update_cover(data)
 
 	local t = TimerManager:game():time()
+
 	data.t = t
+
 	local unit = data.unit
 	local objective = data.objective
 	local focus_enemy = data.attention_obj
@@ -119,7 +123,7 @@ function TaserLogicAttack.queued_update(data)
 
 	CopLogicAttack._process_pathing_results(data, my_data)
 
-	if AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+	if data.attention_obj.reaction >= AIAttentionObject.REACT_COMBAT then
 		CopLogicAttack._update_cover(data)
 		CopLogicAttack._upd_combat_movement(data)
 	end
@@ -132,6 +136,7 @@ function TaserLogicAttack._upd_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()
+
 	local my_data = data.internal_data
 	local min_reaction = AIAttentionObject.REACT_AIM
 
@@ -140,7 +145,7 @@ function TaserLogicAttack._upd_enemy_detection(data)
 	local tasing = my_data.tasing
 	local tased_u_key = tasing and tasing.target_u_key
 	local under_fire_nr = 0
-	local under_multiple_fire = nil
+	local under_multiple_fire
 	local alert_chk_t = data.t - 1.2
 
 	for key, enemy_data in pairs(data.detected_attention_objects) do
@@ -155,7 +160,7 @@ function TaserLogicAttack._upd_enemy_detection(data)
 		end
 	end
 
-	local find_new_focus_enemy = nil
+	local find_new_focus_enemy
 	local tase_in_effect = tasing and tasing.target_u_data.unit:movement():tased()
 
 	if tase_in_effect or tasing and data.t - tasing.start_t < math.max(1, data.char_tweak.weapon.is_rifle.aim_delay_tase[2] * 1.5) then
@@ -203,7 +208,7 @@ function TaserLogicAttack._upd_enemy_detection(data)
 end
 
 function TaserLogicAttack._upd_aim(data, my_data, reaction)
-	local shoot, aim = nil
+	local shoot, aim
 	local focus_enemy = data.attention_obj
 	local tase = reaction == AIAttentionObject.REACT_SPECIAL_ATTACK
 
@@ -294,10 +299,10 @@ function TaserLogicAttack._upd_aim(data, my_data, reaction)
 					end
 				end
 			elseif shoot and not my_data.shooting then
-				local shoot_action = {
-					type = "shoot",
-					body_part = 3
-				}
+				local shoot_action = {}
+
+				shoot_action.type = "shoot"
+				shoot_action.body_part = 3
 
 				if data.unit:brain():action_request(shoot_action) then
 					my_data.shooting = true
@@ -306,7 +311,7 @@ function TaserLogicAttack._upd_aim(data, my_data, reaction)
 		end
 	else
 		if my_data.shooting or my_data.tasing then
-			local new_action = nil
+			local new_action
 
 			if data.unit:anim_data().reload then
 				new_action = {
@@ -434,7 +439,7 @@ function TaserLogicAttack._chk_reaction_to_attention_object(data, attention_data
 	end
 
 	if (attention_data.is_human_player or not attention_data.unit:movement():chk_action_forbidden("hurt")) and attention_data.verified and attention_data.verified_dis < data.internal_data.tase_distance * 0.9 then
-		if data.tase_delay_t < data.t then
+		if data.t > data.tase_delay_t then
 			return AIAttentionObject.REACT_SPECIAL_ATTACK
 		else
 			return AIAttentionObject.REACT_COMBAT

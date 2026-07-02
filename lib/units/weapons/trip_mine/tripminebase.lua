@@ -1,8 +1,7 @@
 TripMineBase = TripMineBase or class(UnitBase)
-TripMineBase.EVENT_IDS = {
-	sensor_beep = 1,
-	explosion_beep = 2
-}
+TripMineBase.EVENT_IDS = {}
+TripMineBase.EVENT_IDS.sensor_beep = 1
+TripMineBase.EVENT_IDS.explosion_beep = 2
 
 function TripMineBase.spawn(pos, rot, sensor_upgrade, peer_id)
 	local unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_tripmine/gen_equipment_tripmine"), pos, rot)
@@ -127,9 +126,11 @@ function TripMineBase:set_active(active, owner)
 	if self._active then
 		self._owner = owner
 		self._owner_peer_id = managers.network:session():local_peer():id()
+
 		local from_pos = self._unit:position() + self._unit:rotation():y() * 10
 		local to_pos = from_pos + self._unit:rotation():y() * self._init_length
 		local ray = self._unit:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("world_geometry"))
+
 		self._length = math.clamp(ray and ray.distance + 10 or self._init_length, 0, self._init_length)
 
 		self._unit:anim_set_time(self._ids_laser, self._length / self._init_length)
@@ -146,13 +147,12 @@ function TripMineBase:set_active(active, owner)
 		local ray = self._unit:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("world_geometry"))
 
 		if ray then
-			self._attached_data = {
-				body = ray.body,
-				position = ray.body:position(),
-				rotation = ray.body:rotation(),
-				index = 1,
-				max_index = 3
-			}
+			self._attached_data = {}
+			self._attached_data.body = ray.body
+			self._attached_data.position = ray.body:position()
+			self._attached_data.rotation = ray.body:rotation()
+			self._attached_data.index = 1
+			self._attached_data.max_index = 3
 		end
 
 		self._alert_filter = owner:movement():SO_access()
@@ -160,6 +160,7 @@ function TripMineBase:set_active(active, owner)
 		local from_pos = self._unit:position() + self._unit:rotation():y() * 10
 		local to_pos = from_pos + self._unit:rotation():y() * self._init_length
 		local ray = self._unit:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("world_geometry"))
+
 		self._length = math.clamp(ray and ray.distance + 10 or self._init_length, 0, self._init_length)
 
 		mvector3.set(self._ray_from_pos, self._position)
@@ -279,7 +280,7 @@ function TripMineBase:update(unit, t, dt)
 		if self._sensor_upgrade then
 			self:_sensor(t)
 
-			if self._sensor_units_detected and self._sensor_last_unit_time and self._sensor_last_unit_time < t then
+			if self._sensor_units_detected and self._sensor_last_unit_time and t > self._sensor_last_unit_time then
 				self._sensor_units_detected = nil
 				self._sensor_last_unit_time = nil
 			end
@@ -382,10 +383,11 @@ function TripMineBase:explode()
 	end
 
 	self._active = false
-	local col_ray = {
-		ray = self._forward,
-		position = self._position
-	}
+
+	local col_ray = {}
+
+	col_ray.ray = self._forward
+	col_ray.position = self._position
 
 	self:_explode(col_ray)
 end
@@ -396,6 +398,7 @@ function TripMineBase:_explode(col_ray)
 	end
 
 	self._detonated = true
+
 	local damage_size = tweak_data.weapon.trip_mines.damage_size * managers.player:upgrade_value("trip_mine", "explosion_size_multiplier_1", 1) * managers.player:upgrade_value("trip_mine", "damage_multiplier", 1)
 	local player = managers.player:player_unit()
 
@@ -412,11 +415,12 @@ function TripMineBase:_explode(col_ray)
 		if alive(hit_body) then
 			local character = hit_body:unit():character_damage() and hit_body:unit():character_damage().damage_explosion
 			local apply_dmg = hit_body:extension() and hit_body:extension().damage
-			local dir, ray_hit = nil
+			local dir, ray_hit
 
 			if character and not characters_hit[hit_body:unit():key()] then
 				local com = hit_body:center_of_mass()
 				local ray_from = math.point_on_line(self._ray_from_pos, self._ray_to_pos, com)
+
 				ray_hit = not World:raycast("ray", ray_from, com, "slot_mask", slotmask, "ignore_unit", {
 					hit_body:unit()
 				}, "report")
@@ -437,6 +441,7 @@ function TripMineBase:_explode(col_ray)
 					local normal = dir
 					local prop_damage = math.min(damage, 200)
 					local network_damage = math.ceil(prop_damage * 163.84)
+
 					prop_damage = network_damage / 163.84
 
 					hit_body:extension().damage:damage_explosion(player, normal, hit_body:position(), dir, prop_damage)
@@ -462,7 +467,7 @@ function TripMineBase:_explode(col_ray)
 		end
 	end
 
-	local destruction_delay = nil
+	local destruction_delay
 
 	if managers.network:session() then
 		if managers.player:has_category_upgrade("trip_mine", "fire_trap") then
@@ -521,7 +526,7 @@ function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage
 
 	for _, hit_body in ipairs(bodies) do
 		local apply_dmg = hit_body:extension() and hit_body:extension().damage
-		local dir = nil
+		local dir
 
 		if apply_dmg or hit_body:dynamic() then
 			dir = hit_body:center_of_mass()
@@ -619,6 +624,7 @@ function TripMineBase:_emit_sensor_sound_and_effect()
 end
 
 function TripMineBase._dispose_of_sound(...)
+	return
 end
 
 function TripMineBase:sync_net_event(event_id)
@@ -630,35 +636,37 @@ function TripMineBase:sync_net_event(event_id)
 end
 
 function TripMineBase:_give_explosion_damage(col_ray, unit, damage)
-	local action_data = {
-		variant = "explosion",
-		damage = damage,
-		weapon_unit = self._unit,
-		attacker_unit = managers.player:player_unit(),
-		col_ray = col_ray,
-		owner = managers.player:player_unit(),
-		owner_peer_id = self._owner_peer_id
-	}
+	local action_data = {}
+
+	action_data.variant = "explosion"
+	action_data.damage = damage
+	action_data.weapon_unit = self._unit
+	action_data.attacker_unit = managers.player:player_unit()
+	action_data.col_ray = col_ray
+	action_data.owner = managers.player:player_unit()
+	action_data.owner_peer_id = self._owner_peer_id
+
 	local defense_data = unit:character_damage():damage_explosion(action_data)
 
 	return defense_data
 end
 
 function TripMineBase:save(data)
-	local state = {
-		armed = self._armed,
-		length = self._length,
-		first_armed = self._first_armed,
-		sensor_upgrade = self._sensor_upgrade,
-		ray_from_pos = self._ray_from_pos,
-		ray_to_pos = self._ray_to_pos,
-		destroy_hide_t = self._destroy_clbk_id and managers.enemy:get_delayed_clbk_exec_t(self._destroy_clbk_id) - TimerManager:game():time() or nil
-	}
+	local state = {}
+
+	state.armed = self._armed
+	state.length = self._length
+	state.first_armed = self._first_armed
+	state.sensor_upgrade = self._sensor_upgrade
+	state.ray_from_pos = self._ray_from_pos
+	state.ray_to_pos = self._ray_to_pos
+	state.destroy_hide_t = self._destroy_clbk_id and managers.enemy:get_delayed_clbk_exec_t(self._destroy_clbk_id) - TimerManager:game():time() or nil
 	data.TripMineBase = state
 end
 
 function TripMineBase:load(data)
 	local state = data.TripMineBase
+
 	self._init_length = 500
 	self._first_armed = state.first_armed
 	self._sensor_upgrade = state.sensor_upgrade

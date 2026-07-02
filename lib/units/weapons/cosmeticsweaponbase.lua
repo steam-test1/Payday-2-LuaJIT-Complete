@@ -8,17 +8,17 @@ local material_defaults = {
 	diffuse_layer3_texture = Idstring("units/payday2_cash/safes/default/sticker/sticker_default_df")
 }
 local material_textures = {
+	base_gradient = "diffuse_layer1_texture",
 	pattern = "diffuse_layer0_texture",
-	sticker = "diffuse_layer3_texture",
 	pattern_gradient = "diffuse_layer2_texture",
-	base_gradient = "diffuse_layer1_texture"
+	sticker = "diffuse_layer3_texture"
 }
 local material_variables = {
 	cubemap_pattern_control = "cubemap_pattern_control",
 	pattern_pos = "pattern_pos",
-	uv_scale = "uv_scale",
-	uv_offset_rot = "uv_offset_rot",
 	pattern_tweak = "pattern_tweak",
+	uv_offset_rot = "uv_offset_rot",
+	uv_scale = "uv_scale",
 	wear_and_tear = (managers.blackmarket and managers.blackmarket:skin_editor() and managers.blackmarket:skin_editor():active() or Application:production_build()) and "wear_tear_value" or nil
 }
 local IDS_MATERIAL_CONFIG = Idstring("material_config")
@@ -31,7 +31,8 @@ local IDS_WEAR_TEAR_VALUE = Idstring("wear_tear_value")
 
 function NewRaycastWeaponBase:change_cosmetics(cosmetics, async_clbk)
 	self:set_cosmetics_data(cosmetics)
-	self:_apply_cosmetics(async_clbk or function ()
+	self:_apply_cosmetics(async_clbk or function()
+		return
 	end)
 end
 
@@ -123,6 +124,7 @@ end
 
 function NewRaycastWeaponBase:_material_config_name(part_id, part_data, use_cc_material_config, force_third_person)
 	local unit_name = part_data.unit
+
 	force_third_person = force_third_person or _G.IS_VR
 
 	if self:is_npc() or force_third_person then
@@ -155,6 +157,7 @@ function NewRaycastWeaponBase:_update_materials()
 	local use = not self:is_npc() or self:use_thq()
 	local use_cc_material_config = use and self._cosmetics_data and true or false
 	local is_thq = self:is_npc() and self:use_thq()
+
 	is_thq = is_thq or not self:is_npc() and _G.IS_VR
 
 	if is_thq or use_cc_material_config then
@@ -233,7 +236,7 @@ function NewRaycastWeaponBase:_apply_cosmetics(async_clbk)
 
 	local texture_load_result_clbk = async_clbk and callback(self, self, "clbk_texture_loaded", async_clbk)
 	local textures = {}
-	local texture_key, p_type, value = nil
+	local texture_key, p_type, value
 	local wear_tear_value = self._cosmetics_quality and tweak_data.economy.qualities[self._cosmetics_quality] and tweak_data.economy.qualities[self._cosmetics_quality].wear_tear_value or 1
 	local pattern_scale_value = self._cosmetics_pattern_scale and tweak_data.blackmarket.weapon_color_pattern_scales[self._cosmetics_pattern_scale] and tweak_data.blackmarket.weapon_color_pattern_scales[self._cosmetics_pattern_scale].value or 1
 	local pattern_tweak_value = Vector3(pattern_scale_value, 0, 1)
@@ -346,7 +349,7 @@ function NewRaycastWeaponBase:_set_material_textures()
 		return
 	end
 
-	local p_type, value = nil
+	local p_type, value
 
 	for part_id, materials in pairs(self._materials) do
 		p_type = managers.weapon_factory:get_type_from_part_id(part_id)
@@ -377,7 +380,8 @@ end
 
 function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets, part_type)
 	part_type = part_type or "magazine"
-	local mag_data = nil
+
+	local mag_data
 	local mag_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk(part_type, self._factory_id, self._blueprint)
 	local mag_id = mag_list and mag_list[1]
 
@@ -386,6 +390,7 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets, part_t
 	end
 
 	mag_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(mag_id, self._factory_id, self._blueprint)
+
 	local part_data = self._parts[mag_id]
 
 	if not mag_data or not part_data then
@@ -394,6 +399,7 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets, part_t
 
 	pos = pos or Vector3()
 	rot = rot or Rotation()
+
 	local is_thq = managers.weapon_factory:use_thq_weapon_parts()
 	local use_cc_material_config = is_thq and self:get_cosmetics_data() and true or false
 	local mag_unit = World:spawn_unit(part_data.name, pos, rot)
@@ -430,7 +436,7 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets, part_t
 	end
 
 	local textures = {}
-	local texture_key, p_type, value = nil
+	local texture_key, p_type, value
 	local cosmetics_quality = self._cosmetics_quality
 	local wear_tear_value = cosmetics_quality and tweak_data.economy.qualities[cosmetics_quality] and tweak_data.economy.qualities[cosmetics_quality].wear_tear_value or 1
 	local uv_scale_value = self._cosmetics_pattern_scale and tweak_data.blackmarket.weapon_color_pattern_scales[self._cosmetics_pattern_scale] and tweak_data.blackmarket.weapon_color_pattern_scales[self._cosmetics_pattern_scale].uv_scale or Vector3(1, 1, 1)
@@ -499,6 +505,7 @@ NewRaycastWeaponBase.magazine_collisions = {
 		Idstring("rp_box_collision_large")
 	}
 }
+
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 local tmp_vec3 = Vector3()

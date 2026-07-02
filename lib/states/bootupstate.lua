@@ -15,20 +15,20 @@ end
 function BootupState:old()
 	self._play_data_list = {
 		{
-			height = 200,
 			can_skip = false,
 			fade_in = 1.25,
-			width = 600,
 			fade_out = 1.25,
+			height = 200,
+			width = 600,
 			visible = not is_win32,
 			gui = Idstring("guis/autosave_warning"),
 			duration = is_win32 and 0 or 6
 		},
 		{
-			texture = "guis/textures/esrb_rating",
-			fade_out = 1.25,
 			fade_in = 1.25,
+			fade_out = 1.25,
 			layer = 1,
+			texture = "guis/textures/esrb_rating",
 			visible = show_esrb,
 			width = esrb_y * 2,
 			height = esrb_y,
@@ -36,26 +36,26 @@ function BootupState:old()
 			duration = show_esrb and 6.5 or 0
 		},
 		{
-			texture = "guis/textures/soe_logo",
-			height = 256,
-			padding = 200,
-			fade_out = 1.25,
-			fade_in = 1.25,
 			duration = 6,
-			width = 256,
+			fade_in = 1.25,
+			fade_out = 1.25,
+			height = 256,
 			layer = 1,
+			padding = 200,
+			texture = "guis/textures/soe_logo",
+			width = 256,
 			can_skip = can_skip
 		},
 		{
-			word_wrap = true,
-			vertical = "center",
-			wrap = true,
-			font_size = 24,
-			padding = 200,
+			duration = 6,
 			fade_in = 1.25,
 			fade_out = 1.25,
-			duration = 6,
+			font_size = 24,
 			layer = 1,
+			padding = 200,
+			vertical = "center",
+			word_wrap = true,
+			wrap = true,
 			text = legal_text,
 			font = tweak_data.menu.default_font,
 			width = safe_rect_pixels.width,
@@ -63,18 +63,18 @@ function BootupState:old()
 			can_skip = can_skip
 		},
 		{
-			video = "movies/company_logo",
 			can_skip = true,
-			padding = 200,
 			layer = 1,
+			padding = 200,
+			video = "movies/company_logo",
 			width = res.x,
 			height = res.y
 		},
 		{
-			video = "movies/game_logo",
 			can_skip = true,
-			padding = 200,
 			layer = 1,
+			padding = 200,
+			video = "movies/game_logo",
 			width = res.x,
 			height = res.y
 		}
@@ -124,10 +124,10 @@ function BootupState:setup()
 	self._play_data_list = {}
 
 	table.insert(self._play_data_list, {
+		can_skip = false,
+		fade_in = 1.25,
 		fade_out = 1.25,
 		height = 200,
-		fade_in = 1.25,
-		can_skip = false,
 		width = 600,
 		visible = not is_win32,
 		layer = item_layer,
@@ -135,9 +135,9 @@ function BootupState:setup()
 		duration = is_win32 and 0 or 6
 	})
 	table.insert(self._play_data_list, {
-		texture = "guis/textures/esrb_rating",
-		fade_out = 1.25,
 		fade_in = 1.25,
+		fade_out = 1.25,
+		texture = "guis/textures/esrb_rating",
 		visible = show_esrb,
 		layer = item_layer,
 		width = esrb_y * 2,
@@ -184,24 +184,24 @@ function BootupState:setup_intro_videos()
 	local intro_trailer_layer = self._back_drop_gui:foreground_layers()
 
 	table.insert(self._play_data_list, {
-		video = "movies/intro_trailer",
 		can_skip = true,
-		padding = 200,
 		limit_file_streamer = true,
+		padding = 200,
+		video = "movies/intro_trailer",
 		layer = intro_trailer_layer,
 		width = res.x,
 		height = res.y
 	})
 	table.insert(self._play_data_list, {
-		word_wrap = true,
-		vertical = "center",
-		wrap = true,
-		font_size = 24,
-		padding = 200,
-		fade_in = 1.25,
-		fade_out = 1.25,
 		can_skip = true,
 		duration = 6,
+		fade_in = 1.25,
+		fade_out = 1.25,
+		font_size = 24,
+		padding = 200,
+		vertical = "center",
+		word_wrap = true,
+		wrap = true,
 		layer = item_layer,
 		text = legal_text,
 		font = tweak_data.menu.pd2_medium_font,
@@ -209,9 +209,9 @@ function BootupState:setup_intro_videos()
 		height = safe_rect_pixels.height
 	})
 	table.insert(self._play_data_list, {
-		video = "movies/game_intro",
 		can_skip = true,
 		padding = 200,
+		video = "movies/game_intro",
 		layer = item_layer,
 		width = res.x,
 		height = res.y
@@ -296,13 +296,15 @@ function BootupState:check_confirm_pressed()
 end
 
 function BootupState:update_fades()
-	local time, duration = nil
+	local time, duration
 	local old_fade = self._fade
+
 	self._fade = 1
 
 	if self._play_data then
 		if self._play_data.video then
 			duration = self._gui_obj:length()
+
 			local frames = self._gui_obj:frames()
 
 			if frames > 0 then
@@ -412,7 +414,7 @@ function BootupState:play_next(is_skipped)
 			res = Vector3(1280, 720, 0)
 		end
 
-		local width, height = nil
+		local width, height
 		local padding = self._play_data.padding or 0
 
 		if self._play_data.gui then

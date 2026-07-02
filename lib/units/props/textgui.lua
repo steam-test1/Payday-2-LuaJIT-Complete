@@ -1,28 +1,26 @@
 TextGui = TextGui or class()
 TextGui.COLORS = {}
-TextGui.COLORS = {
-	black = Color(0, 0, 0),
-	white = Color(1, 1, 1),
-	red = Color(0.8, 0, 0),
-	green = Color(0, 0.8, 0),
-	blue = Color(0, 0, 0.8),
-	yellow = Color(0.8, 0.8, 0),
-	orange = Color(0.8, 0.4, 0),
-	light_red = Color(0.8, 0.4, 0.4),
-	light_blue = Color(0.4, 0.6, 0.8),
-	light_green = Color(0.6, 0.8, 0.4),
-	light_yellow = Color(0.8, 0.8, 0.4),
-	light_orange = Color(0.8, 0.6, 0.4)
-}
-TextGui.GUI_EVENT_IDS = {
-	syncronize = 1,
-	timer_set = 2,
-	timer_start_count_up = 3,
-	timer_start_count_down = 4,
-	timer_pause = 5,
-	timer_resume = 6,
-	number_set = 7
-}
+TextGui.COLORS = {}
+TextGui.COLORS.black = Color(0, 0, 0)
+TextGui.COLORS.white = Color(1, 1, 1)
+TextGui.COLORS.red = Color(0.8, 0, 0)
+TextGui.COLORS.green = Color(0, 0.8, 0)
+TextGui.COLORS.blue = Color(0, 0, 0.8)
+TextGui.COLORS.yellow = Color(0.8, 0.8, 0)
+TextGui.COLORS.orange = Color(0.8, 0.4, 0)
+TextGui.COLORS.light_red = Color(0.8, 0.4, 0.4)
+TextGui.COLORS.light_blue = Color(0.4, 0.6, 0.8)
+TextGui.COLORS.light_green = Color(0.6, 0.8, 0.4)
+TextGui.COLORS.light_yellow = Color(0.8, 0.8, 0.4)
+TextGui.COLORS.light_orange = Color(0.8, 0.6, 0.4)
+TextGui.GUI_EVENT_IDS = {}
+TextGui.GUI_EVENT_IDS.syncronize = 1
+TextGui.GUI_EVENT_IDS.timer_set = 2
+TextGui.GUI_EVENT_IDS.timer_start_count_up = 3
+TextGui.GUI_EVENT_IDS.timer_start_count_down = 4
+TextGui.GUI_EVENT_IDS.timer_pause = 5
+TextGui.GUI_EVENT_IDS.timer_resume = 6
+TextGui.GUI_EVENT_IDS.number_set = 7
 
 function TextGui:init(unit)
 	self._unit = unit
@@ -43,13 +41,12 @@ function TextGui:init(unit)
 	self._texts_data = {}
 
 	for i = 1, self.ROWS do
-		self._texts_data[i] = {
-			speed = 120 + 240 * math.rand(1),
-			gap = 20,
-			texts_data = {},
-			iterator = 1,
-			guis = {}
-		}
+		self._texts_data[i] = {}
+		self._texts_data[i].speed = 120 + 240 * math.rand(1)
+		self._texts_data[i].gap = 20
+		self._texts_data[i].texts_data = {}
+		self._texts_data[i].iterator = 1
+		self._texts_data[i].guis = {}
 	end
 
 	self._text = "HELLO WORLD!"
@@ -91,11 +88,11 @@ function TextGui:_create_text_gui(row)
 	local font_size = text_data.font_size or self.FONT_SIZE
 	local font = text_data.font or self.FONT
 	local gui = self._panel:text({
-		y = 0,
-		vertical = "center",
 		align = "center",
-		visible = true,
 		layer = 0,
+		vertical = "center",
+		visible = true,
+		y = 0,
 		text = text_data.text,
 		font = font,
 		font_size = font_size,
@@ -118,9 +115,9 @@ function TextGui:_create_text_gui(row)
 	local y = self._panel:h()
 
 	if text_data.align_h and text_data.align_h == "bottom" then
-		gui:set_bottom((row - 1) * y / self.ROWS + y / self.ROWS)
+		gui:set_bottom((row - 1) * (y / self.ROWS) + y / self.ROWS)
 	else
-		gui:set_center_y((row - 1) * y / self.ROWS + y / self.ROWS / 2)
+		gui:set_center_y((row - 1) * (y / self.ROWS) + y / self.ROWS / 2)
 	end
 
 	local x = self._panel:w()
@@ -128,6 +125,7 @@ function TextGui:_create_text_gui(row)
 	if not self.START_RIGHT then
 		if #data.guis > 0 then
 			local last_gui = data.guis[#data.guis]
+
 			x = last_gui.x + last_gui.gui:w() + data.gap
 		else
 			x = 0
@@ -209,6 +207,7 @@ end
 
 function TextGui:add_once_text(...)
 	local t = self:add_text(...)
+
 	t.once = true
 end
 
@@ -228,11 +227,13 @@ end
 
 function TextGui:set_row_speed(row, speed)
 	local data = self._texts_data[row]
+
 	data.speed = speed
 end
 
 function TextGui:set_row_gap(row, gap)
 	local data = self._texts_data[row]
+
 	data.gap = gap
 end
 
@@ -250,6 +251,7 @@ end
 
 function TextGui:clear_row(row)
 	local data = self._texts_data[row]
+
 	data.texts_data = {}
 	data.iterator = 1
 end
@@ -379,11 +381,11 @@ function TextGui:destroy()
 end
 
 function TextGui:save(data)
-	local state = {
-		COLOR_TYPE = self.COLOR_TYPE,
-		BG_COLOR_TYPE = self.BG_COLOR_TYPE,
-		visible = self._visible
-	}
+	local state = {}
+
+	state.COLOR_TYPE = self.COLOR_TYPE
+	state.BG_COLOR_TYPE = self.BG_COLOR_TYPE
+	state.visible = self._visible
 	data.TextGui = state
 end
 

@@ -3,15 +3,18 @@ CoreMaterialEditorGlobalDialog = CoreMaterialEditorGlobalDialog or class()
 function CoreMaterialEditorGlobalDialog:init(parent, editor)
 	self._editor = editor
 	self._dialog = EWS:Dialog(parent, "Global Configuration", "", Vector3(-1, -1, 0), Vector3(400, 500, 0), "CAPTION,SYSTEM_MENU,CLOSE_BOX,STAY_ON_TOP")
+
 	local main_frame_box = EWS:BoxSizer("VERTICAL")
 	local main_panel = EWS:Panel(self._dialog, "", "")
 	local panel_box = EWS:BoxSizer("VERTICAL")
+
 	self._tree_ctrl = EWS:TreeCtrl(main_panel, "", "TR_HAS_BUTTONS,TR_LINES_AT_ROOT,TR_HIDE_ROOT,TR_DEFAULT_STYLE")
 
 	self._tree_ctrl:connect("", "EVT_COMMAND_TREE_ITEM_RIGHT_CLICK", self._editor._on_edit_global_popup, self)
 	panel_box:add(self._tree_ctrl, 1, 0, "EXPAND")
 
 	local btn_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._ok_btn = EWS:Button(main_panel, "OK", "", "")
 
 	self._ok_btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "destroy"), true)
@@ -60,9 +63,11 @@ function CoreMaterialEditorGlobalDialog:on_remove(custom_data)
 end
 
 function CoreMaterialEditorGlobalDialog:_on_ok()
+	return
 end
 
 function CoreMaterialEditorGlobalDialog:_on_cancel()
+	return
 end
 
 function CoreMaterialEditorGlobalDialog:_fill_tree(id, parent, node)
@@ -83,6 +88,7 @@ function CoreMaterialEditorGlobalDialog:_fill_tree(id, parent, node)
 	end
 
 	local new_id = self._tree_ctrl:append(id, text)
+
 	self._item_map[tostring(new_id)] = {
 		_node = node,
 		_parent = parent
@@ -102,9 +108,11 @@ function CoreMaterialEditorStartDialog:init(parent, editor)
 	self._parent = parent
 	self._frame_size = Vector3(150, 200, 0)
 	self._frame = EWS:Frame("Getting Started", Vector3(0, 0, 0), self._frame_size, "FRAME_FLOAT_ON_PARENT,FRAME_TOOL_WINDOW,CAPTION", parent)
+
 	local main_frame_box = EWS:BoxSizer("VERTICAL")
 	local main_panel = EWS:Panel(self._frame, "", "")
 	local panel_box = EWS:BoxSizer("VERTICAL")
+
 	self._new_btn = EWS:Button(main_panel, "New", "", "")
 
 	self._new_btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_new"), false)
@@ -184,17 +192,22 @@ CoreMaterialEditorCompileWarningDialog = CoreMaterialEditorCompileWarningDialog 
 
 function CoreMaterialEditorCompileWarningDialog:init(parent)
 	self._parent = parent
+
 	local frame_size = Vector3(540, 340, 0)
 	local frame_pos = self._parent:get_position() + self._parent:get_size() * 0.5 - frame_size * 0.5
+
 	self._dialog = EWS:Dialog(parent, "Warning!", "", frame_pos, frame_size, "")
+
 	local main_frame_box = EWS:BoxSizer("VERTICAL")
 	local main_panel = EWS:Panel(self._dialog, "", "")
 	local panel_box = EWS:BoxSizer("VERTICAL")
+
 	self._inmage_btn = EWS:BitmapButton(main_panel, CoreEWS.image_path("material_editor/compile_warning.png"), "", "NO_BORDER")
 
 	panel_box:add(self._inmage_btn, 1, 0, "EXPAND")
 
 	local btn_box = EWS:BoxSizer("HORIZONTAL")
+
 	self._ok_btn = EWS:Button(main_panel, "OK", "", "")
 
 	self._ok_btn:connect("", "EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "end_modal"), "OK")

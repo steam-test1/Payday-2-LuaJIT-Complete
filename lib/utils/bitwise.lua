@@ -1,6 +1,7 @@
 Bitwise = Bitwise or class()
 
 function Bitwise:init()
+	return
 end
 
 function Bitwise:lshift(x, by)

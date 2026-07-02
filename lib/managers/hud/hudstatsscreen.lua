@@ -1,4 +1,5 @@
 HUDStatsScreen = HUDStatsScreen or class()
+
 local padding = 10
 
 function HUDStatsScreen:init()
@@ -17,10 +18,10 @@ function HUDStatsScreen:init()
 	left_panel:set_x(-left_panel:w())
 
 	local blur_bg = left_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur_bg",
 		layer = -1,
+		name = "blur_bg",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = left_panel:w(),
 		h = left_panel:h(),
@@ -44,12 +45,12 @@ function HUDStatsScreen:init()
 	leftbox:child("bg"):set_alpha(1)
 
 	local objectives_title = left_panel:text({
+		align = "left",
+		h = 32,
+		layer = 1,
 		name = "objectives_title",
 		vertical = "top",
-		h = 32,
 		w = 512,
-		align = "left",
-		layer = 1,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.objectives_title_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -66,8 +67,8 @@ function HUDStatsScreen:init()
 
 	local pad = 8
 	local objectives_panel = left_panel:panel({
-		name = "objectives_panel",
 		layer = 1,
+		name = "objectives_panel",
 		x = math.round(objectives_title:x() + pad),
 		y = math.round(objectives_title:bottom()),
 		w = left_panel:w() - (objectives_title:x() + pad)
@@ -79,10 +80,10 @@ function HUDStatsScreen:init()
 	})
 
 	local loot_wrapper_panel = left_panel:panel({
+		layer = 1,
 		name = "loot_wrapper_panel",
 		visible = true,
 		x = 0,
-		layer = 1,
 		y = 0 + math.round(managers.gui_data:full_scaled_size().height / 2),
 		h = math.round(managers.gui_data:full_scaled_size().height / 2),
 		w = left_panel:w()
@@ -91,13 +92,13 @@ function HUDStatsScreen:init()
 	loot_wrapper_panel:set_valign("center")
 
 	local secured_loot_title = loot_wrapper_panel:text({
-		valign = "center",
-		name = "secured_loot_title",
-		h = 32,
-		w = 512,
 		align = "left",
-		vertical = "top",
+		h = 32,
 		layer = 1,
+		name = "secured_loot_title",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_title_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -108,13 +109,13 @@ function HUDStatsScreen:init()
 	managers.hud:make_fine_text(secured_loot_title)
 
 	local mission_bags_title = loot_wrapper_panel:text({
-		valign = "center",
-		name = "mission_bags_title",
-		h = 32,
-		w = 512,
 		align = "left",
-		vertical = "top",
+		h = 32,
 		layer = 1,
+		name = "mission_bags_title",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -125,11 +126,11 @@ function HUDStatsScreen:init()
 	managers.hud:make_fine_text(mission_bags_title)
 
 	local mission_bags_panel = loot_wrapper_panel:panel({
-		y = 0,
-		name = "mission_bags_panel",
 		h = 44,
+		name = "mission_bags_panel",
 		visible = true,
 		x = 0,
+		y = 0,
 		w = left_panel:w()
 	})
 
@@ -137,14 +138,14 @@ function HUDStatsScreen:init()
 	mission_bags_panel:set_position(mission_bags_panel:x(), mission_bags_panel:y())
 
 	local mission_bags_payout = loot_wrapper_panel:text({
-		valign = "center",
-		name = "mission_bags_payout",
-		h = 32,
-		w = 512,
 		align = "left",
-		vertical = "top",
-		text = "",
+		h = 32,
 		layer = 1,
+		name = "mission_bags_payout",
+		text = "",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
 		font = tweak_data.hud_stats.objectives_font
@@ -158,13 +159,13 @@ function HUDStatsScreen:init()
 	mission_bags_payout:set_w(loot_wrapper_panel:w())
 
 	local bonus_bags_title = loot_wrapper_panel:text({
-		valign = "center",
-		name = "bonus_bags_title",
-		h = 32,
-		w = 512,
 		align = "left",
-		vertical = "top",
+		h = 32,
 		layer = 1,
+		name = "bonus_bags_title",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -175,11 +176,11 @@ function HUDStatsScreen:init()
 	managers.hud:make_fine_text(bonus_bags_title)
 
 	local bonus_bags_panel = loot_wrapper_panel:panel({
-		y = 0,
-		name = "bonus_bags_panel",
 		h = 44,
+		name = "bonus_bags_panel",
 		visible = true,
 		x = 0,
+		y = 0,
 		w = left_panel:w()
 	})
 
@@ -188,14 +189,14 @@ function HUDStatsScreen:init()
 	bonus_bags_panel:grow(-bonus_bags_panel:x(), 0)
 
 	local bonus_bags_payout = loot_wrapper_panel:text({
-		valign = "center",
-		name = "bonus_bags_payout",
-		h = 32,
-		w = 512,
 		align = "left",
-		vertical = "top",
-		text = "",
+		h = 32,
 		layer = 1,
+		name = "bonus_bags_payout",
+		text = "",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
 		font = tweak_data.hud_stats.objectives_font
@@ -209,13 +210,13 @@ function HUDStatsScreen:init()
 	bonus_bags_payout:set_w(loot_wrapper_panel:w())
 
 	local instant_cash_title = loot_wrapper_panel:text({
-		valign = "center",
-		name = "instant_cash_title",
-		h = 32,
-		w = 512,
 		align = "left",
-		vertical = "top",
+		h = 32,
 		layer = 1,
+		name = "instant_cash_title",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -226,13 +227,13 @@ function HUDStatsScreen:init()
 	managers.hud:make_fine_text(instant_cash_title)
 
 	local instant_cash_text = loot_wrapper_panel:text({
-		valign = "center",
-		name = "instant_cash_text",
-		h = 32,
-		w = 512,
 		align = "left",
-		vertical = "top",
+		h = 32,
 		layer = 1,
+		name = "instant_cash_text",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -265,14 +266,14 @@ function HUDStatsScreen:init()
 	})
 
 	local last_completed_challenge_title = challenges_wrapper_panel:text({
-		valign = "center",
-		name = "last_completed_challenge_title",
-		h = 32,
-		text_id = "victory_last_completed_challenge",
 		align = "left",
-		w = 512,
-		vertical = "top",
+		h = 32,
 		layer = 1,
+		name = "last_completed_challenge_title",
+		text_id = "victory_last_completed_challenge",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.objectives_title_size,
 		font = tweak_data.hud_stats.objectives_font
@@ -282,22 +283,22 @@ function HUDStatsScreen:init()
 	managers.hud:make_fine_text(last_completed_challenge_title)
 
 	local challenges_panel = challenges_wrapper_panel:panel({
-		valign = "center",
-		name = "challenges_panel",
 		layer = 1,
+		name = "challenges_panel",
+		valign = "center",
 		x = math.round(objectives_title:x() + pad),
 		y = last_completed_challenge_title:bottom(),
 		w = left_panel:w() - (last_completed_challenge_title:x() + pad)
 	})
 	local near_completion_title = challenges_wrapper_panel:text({
-		valign = "center",
-		name = "near_completion_title",
-		h = 32,
-		text_id = "menu_near_completion_challenges",
 		align = "left",
-		w = 512,
-		vertical = "top",
+		h = 32,
 		layer = 1,
+		name = "near_completion_title",
+		text_id = "menu_near_completion_challenges",
+		valign = "center",
+		vertical = "top",
+		w = 512,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.objectives_title_size,
 		font = tweak_data.hud_stats.objectives_font
@@ -307,9 +308,9 @@ function HUDStatsScreen:init()
 	managers.hud:make_fine_text(near_completion_title)
 
 	local near_completion_panel = challenges_wrapper_panel:panel({
-		valign = "center",
-		name = "near_completion_panel",
 		layer = 1,
+		name = "near_completion_panel",
+		valign = "center",
 		x = math.round(objectives_title:x() + pad),
 		y = near_completion_title:bottom(),
 		w = left_panel:w() - (near_completion_title:x() + pad)
@@ -324,10 +325,10 @@ function HUDStatsScreen:init()
 	bottom_panel:set_x(self._full_hud_panel:w() / 3 + x_margine)
 
 	local blur_bg = bottom_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur_bg",
 		layer = -1,
+		name = "blur_bg",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = bottom_panel:w(),
 		h = bottom_panel:h(),
@@ -353,10 +354,10 @@ function HUDStatsScreen:init()
 	right_panel:set_x(self._full_hud_panel:w())
 
 	local blur_bg = right_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur_bg",
 		layer = -1,
+		name = "blur_bg",
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = right_panel:w(),
 		h = right_panel:h(),
@@ -378,14 +379,14 @@ function HUDStatsScreen:init()
 	rightbox:child("bg"):set_alpha(1)
 
 	local days_title = right_panel:text({
-		vertical = "top",
-		name = "days_title",
-		h = 32,
-		w = 512,
 		align = "left",
-		text = "DAY 1 OF 3",
-		x = 20,
+		h = 32,
 		layer = 1,
+		name = "days_title",
+		text = "DAY 1 OF 3",
+		vertical = "top",
+		w = 512,
+		x = 20,
 		y = y,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
@@ -396,10 +397,10 @@ function HUDStatsScreen:init()
 	days_title:set_w(right_panel:w())
 
 	local day_wrapper_panel = right_panel:panel({
+		layer = 1,
 		name = "day_wrapper_panel",
 		visible = true,
 		x = 0,
-		layer = 1,
 		y = y + math.round(managers.gui_data:scaled_size().height / 2),
 		h = math.round(managers.gui_data:scaled_size().height),
 		w = right_panel:w()
@@ -409,15 +410,15 @@ function HUDStatsScreen:init()
 	day_wrapper_panel:set_w(right_panel:w() - x - day_wrapper_panel:x())
 
 	local day_title = day_wrapper_panel:text({
-		vertical = "top",
-		name = "day_title",
-		h = 32,
-		w = 512,
 		align = "left",
-		text = "BLUH!",
-		y = 0,
-		x = 0,
+		h = 32,
 		layer = 0,
+		name = "day_title",
+		text = "BLUH!",
+		vertical = "top",
+		w = 512,
+		x = 0,
+		y = 0,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.objectives_title_size,
 		font = tweak_data.hud_stats.objectives_font
@@ -473,15 +474,15 @@ function HUDStatsScreen:init()
 	end
 
 	local day_payout = day_wrapper_panel:text({
-		vertical = "top",
-		name = "day_payout",
-		h = 32,
-		w = 512,
 		align = "left",
-		text = "BLUH!",
-		y = 0,
-		x = 0,
+		h = 32,
 		layer = 0,
+		name = "day_payout",
+		text = "BLUH!",
+		vertical = "top",
+		w = 512,
+		x = 0,
+		y = 0,
 		color = Color.white,
 		font_size = tweak_data.hud_stats.loot_size,
 		font = tweak_data.hud_stats.objectives_font
@@ -495,12 +496,12 @@ function HUDStatsScreen:init()
 	day_payout:set_y(math.round(paygrade_title:bottom()))
 
 	local bains_plan = day_wrapper_panel:text({
+		align = "left",
+		h = 128,
 		name = "bains_plan",
 		vertical = "top",
-		h = 128,
-		wrap = true,
-		align = "left",
 		word_wrap = true,
+		wrap = true,
 		text = managers.localization:to_upper_text("menu_description"),
 		font = tweak_data.hud_stats.objective_desc_font,
 		font_size = tweak_data.hud_stats.day_description_size + 2,
@@ -511,13 +512,13 @@ function HUDStatsScreen:init()
 	bains_plan:set_y(math.round(day_payout:bottom() + 20))
 
 	local day_description = day_wrapper_panel:text({
-		name = "day_description",
-		vertical = "top",
-		h = 128,
-		wrap = true,
 		align = "left",
-		word_wrap = true,
+		h = 128,
+		name = "day_description",
 		text = "sdsd",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font = tweak_data.hud_stats.objective_desc_font,
 		font_size = tweak_data.hud_stats.day_description_size,
 		color = Color(1, 1, 1, 1)
@@ -526,46 +527,48 @@ function HUDStatsScreen:init()
 	day_description:set_y(math.round(bains_plan:bottom()))
 	day_description:set_h(day_wrapper_panel:h())
 
-	local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
-	local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
-	local ghost_icon = right_panel:bitmap({
-		texture = "guis/textures/pd2/cn_minighost",
-		name = "ghost_icon",
-		h = 16,
-		blend_mode = "add",
-		w = 16
-	})
-	local ghost_string = managers.localization:text("menu_ghostable_stage")
+	do
+		local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
+		local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
+		local ghost_icon = right_panel:bitmap({
+			blend_mode = "add",
+			h = 16,
+			name = "ghost_icon",
+			texture = "guis/textures/pd2/cn_minighost",
+			w = 16
+		})
+		local ghost_string = managers.localization:text("menu_ghostable_stage")
 
-	if managers.job:is_level_ghostable_required(managers.job:current_level_id()) then
-		ghost_string = managers.localization:text("menu_ghostable_stage_required")
+		if managers.job:is_level_ghostable_required(managers.job:current_level_id()) then
+			ghost_string = managers.localization:text("menu_ghostable_stage_required")
+		end
+
+		local ghostable_text = day_wrapper_panel:text({
+			align = "left",
+			blend_mode = "add",
+			name = "ghostable_text",
+			vertical = "top",
+			text = ghost_string,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			font = tweak_data.menu.pd2_small_font,
+			color = tweak_data.screen_colors.text
+		})
+		local x, y, w, h = ghostable_text:text_rect()
+
+		ghostable_text:set_size(w, h)
+		ghost_icon:set_left(days_title:right())
+		ghost_icon:set_center_y(days_title:center_y())
+		ghostable_text:set_y(day_description:top() + 10)
+		ghostable_text:set_left(day_description:left())
+		ghost_icon:set_visible(is_level_ghostable)
+		ghost_icon:set_color(is_whisper_mode and Color.white or tweak_data.screen_colors.important_1)
+		ghostable_text:set_visible(is_level_ghostable and is_whisper_mode)
 	end
 
-	local ghostable_text = day_wrapper_panel:text({
-		vertical = "top",
-		name = "ghostable_text",
-		blend_mode = "add",
-		align = "left",
-		text = ghost_string,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		font = tweak_data.menu.pd2_small_font,
-		color = tweak_data.screen_colors.text
-	})
-	local x, y, w, h = ghostable_text:text_rect()
-
-	ghostable_text:set_size(w, h)
-	ghost_icon:set_left(days_title:right())
-	ghost_icon:set_center_y(days_title:center_y())
-	ghostable_text:set_y(day_description:top() + 10)
-	ghostable_text:set_left(day_description:left())
-	ghost_icon:set_visible(is_level_ghostable)
-	ghost_icon:set_color(is_whisper_mode and Color.white or tweak_data.screen_colors.important_1)
-	ghostable_text:set_visible(is_level_ghostable and is_whisper_mode)
-
 	local ext_inventory_panel = right_panel:panel({
+		layer = 1,
 		name = "ext_inventory_panel",
 		x = 20,
-		layer = 1,
 		valign = {
 			0.5,
 			0.5
@@ -586,10 +589,10 @@ function HUDStatsScreen:init()
 	})
 
 	local mutators_panel = right_panel:panel({
-		name = "mutators_panel",
 		h = 0,
-		x = 20,
 		layer = 1,
+		name = "mutators_panel",
+		x = 20,
 		valign = {
 			0.5,
 			0.5
@@ -606,8 +609,8 @@ function HUDStatsScreen:init()
 	})
 
 	local profile_wrapper_panel = bottom_panel:panel({
-		name = "profile_wrapper_panel",
 		layer = 1,
+		name = "profile_wrapper_panel",
 		valign = {
 			0.5,
 			0.5
@@ -672,6 +675,7 @@ end
 
 function HUDStatsScreen:hide()
 	self._showing_stats_screen = false
+
 	local safe = managers.hud.STATS_SCREEN_SAFERECT
 	local full = managers.hud.STATS_SCREEN_FULLSCREEN
 
@@ -703,8 +707,7 @@ end
 function HUDStatsScreen:_create_stats_screen_objectives(panel)
 	panel:clear()
 
-	local x = 0
-	local y = 0
+	local x, y = 0, 0
 	local panel_w = panel:w() - x
 
 	for i, data in pairs(managers.objectives:get_active_objectives()) do
@@ -715,11 +718,11 @@ function HUDStatsScreen:_create_stats_screen_objectives(panel)
 			w = panel_w
 		})
 		local obj_title = obj_panel:text({
+			align = "left",
 			name = "title",
 			vertical = "top",
-			wrap = true,
-			align = "left",
 			word_wrap = true,
+			wrap = true,
 			text = utf8.to_upper(data.text),
 			font = tweak_data.hud.medium_font,
 			font_size = tweak_data.hud.active_objective_title_font_size,
@@ -731,13 +734,13 @@ function HUDStatsScreen:_create_stats_screen_objectives(panel)
 		obj_title:set_w(obj_title:w() + 1)
 
 		local obj_description = obj_panel:text({
+			align = "left",
+			font_size = 24,
+			h = 128,
 			name = "description",
 			vertical = "top",
-			h = 128,
-			wrap = true,
-			font_size = 24,
-			align = "left",
 			word_wrap = true,
+			wrap = true,
 			text = data.description,
 			font = tweak_data.hud_stats.objective_desc_font,
 			color = Color(1, 1, 1, 1)
@@ -758,20 +761,20 @@ function HUDStatsScreen:_create_stats_screen_profile(profile_wrapper_panel)
 
 	local next_level_data = managers.experience:next_level_data() or {}
 	local bg_ring = profile_wrapper_panel:bitmap({
+		alpha = 0.4,
+		h = 64,
 		texture = "guis/textures/pd2/level_ring_small",
 		w = 64,
-		h = 64,
-		alpha = 0.4,
 		color = Color.black
 	})
 	local exp_ring = profile_wrapper_panel:bitmap({
-		texture = "guis/textures/pd2/level_ring_small",
-		h = 64,
-		render_template = "VertexColorTexturedRadial",
-		w = 64,
 		blend_mode = "add",
-		rotation = 360,
+		h = 64,
 		layer = 1,
+		render_template = "VertexColorTexturedRadial",
+		rotation = 360,
+		texture = "guis/textures/pd2/level_ring_small",
+		w = 64,
 		color = Color((next_level_data.current_points or 1) / (next_level_data.points or 1), 1, 1)
 	})
 
@@ -784,13 +787,13 @@ function HUDStatsScreen:_create_stats_screen_profile(profile_wrapper_panel)
 	local progress = (next_level_data.current_points or 1) / (next_level_data.points or 1)
 	local gain_progress = (gain_xp or 1) / (next_level_data.points or 1)
 	local exp_gain_ring = profile_wrapper_panel:bitmap({
-		texture = "guis/textures/pd2/level_ring_potential_small",
-		h = 64,
-		render_template = "VertexColorTexturedRadial",
-		w = 64,
 		blend_mode = "normal",
-		rotation = 360,
+		h = 64,
 		layer = 2,
+		render_template = "VertexColorTexturedRadial",
+		rotation = 360,
+		texture = "guis/textures/pd2/level_ring_potential_small",
+		w = 64,
 		color = Color(gain_progress, 1, 0)
 	})
 
@@ -823,8 +826,8 @@ function HUDStatsScreen:_create_stats_screen_profile(profile_wrapper_panel)
 		at_max_level_text:set_center_y(math.round(exp_ring:center_y()) + 0)
 	else
 		local next_level_in = profile_wrapper_panel:text({
-			text = "",
 			name = "next_level_in",
+			text = "",
 			font_size = tweak_data.menu.pd2_small_font_size,
 			font = tweak_data.menu.pd2_small_font,
 			color = tweak_data.screen_colors.text
@@ -854,11 +857,11 @@ function HUDStatsScreen:_create_stats_screen_profile(profile_wrapper_panel)
 		if can_lvl_up then
 			local text = managers.localization:to_upper_text("hud_potential_level_up")
 			local potential_level_up_text = profile_wrapper_panel:text({
-				vertical = "center",
-				name = "potential_level_up_text",
-				blend_mode = "normal",
 				align = "left",
+				blend_mode = "normal",
 				layer = 3,
+				name = "potential_level_up_text",
+				vertical = "center",
 				visible = can_lvl_up,
 				text = text,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -875,8 +878,8 @@ function HUDStatsScreen:_create_stats_screen_profile(profile_wrapper_panel)
 
 	local track_text = profile_wrapper_panel:text({
 		name = "track_text",
-		y = 4,
 		x = 4,
+		y = 4,
 		text = utf8.to_upper(managers.localization:text("menu_es_playing_track")) .. " " .. managers.music:current_track_string(),
 		font_size = tweak_data.menu.pd2_small_font_size,
 		font = tweak_data.menu.pd2_small_font,
@@ -930,10 +933,11 @@ function HUDStatsScreen:_create_stats_ext_inventory(ext_inventory_panel)
 
 	ext_inventory_panel:set_h(#equipment * eq_h + tweak_data.hud_stats.loot_title_size + 4)
 
-	local y = nil
+	local y
 
 	for i, eq in ipairs(equipment) do
 		y = ext_inventory_panel:h() - eq_h * i - 2 * (i - 1)
+
 		local panel = ext_inventory_panel:panel({
 			layer = 1,
 			name = "panel" .. i,
@@ -944,8 +948,8 @@ function HUDStatsScreen:_create_stats_ext_inventory(ext_inventory_panel)
 		})
 		local icon, texture_rect = tweak_data.hud_icons:get_icon_data(eq.icon)
 		local image = panel:bitmap({
-			name = "image",
 			layer = 1,
+			name = "image",
 			visible = true,
 			texture = icon,
 			texture_rect = texture_rect,
@@ -956,15 +960,15 @@ function HUDStatsScreen:_create_stats_ext_inventory(ext_inventory_panel)
 			y = -(panel:h() - panel:h()) / 2
 		})
 		local amount = panel:text({
+			align = "right",
+			font = "fonts/font_medium_mf",
+			font_size = 22,
+			layer = 2,
 			name = "amount",
 			vertical = "center",
-			font_size = 22,
-			align = "right",
-			y = 2,
-			font = "fonts/font_medium_mf",
 			visible = true,
 			x = -2,
-			layer = 2,
+			y = 2,
 			text = tostring(13),
 			color = Color.white,
 			w = panel:w(),
@@ -974,14 +978,14 @@ function HUDStatsScreen:_create_stats_ext_inventory(ext_inventory_panel)
 		self:_set_amount_string(amount, eq.amount)
 
 		local text = ext_inventory_panel:text({
-			vertical = "center",
-			font_size = 22,
 			align = "right",
-			y = 2,
 			font = "fonts/font_medium_mf",
+			font_size = 22,
+			layer = 2,
+			vertical = "center",
 			visible = true,
 			x = -2,
-			layer = 2,
+			y = 2,
 			name = "text" .. i,
 			text = eq.text,
 			color = Color.white,
@@ -995,13 +999,13 @@ function HUDStatsScreen:_create_stats_ext_inventory(ext_inventory_panel)
 	end
 
 	local title = ext_inventory_panel:text({
+		align = "right",
+		layer = 2,
 		name = "title",
 		vertical = "center",
-		align = "right",
-		y = 2,
 		visible = true,
 		x = -2,
-		layer = 2,
+		y = 2,
 		text = managers.localization:to_upper_text("hud_extended_inventory"),
 		font_size = tweak_data.hud_stats.loot_title_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -1040,12 +1044,12 @@ function HUDStatsScreen:_create_mutators_list(mutators_panel)
 	local y = 2
 	local mutator_text = "menu_" .. managers.mutators:get_enabled_active_mutator_category() .. "s"
 	local title = mutators_panel:text({
+		align = "right",
+		layer = 2,
 		name = "title",
 		vertical = "center",
-		align = "right",
 		visible = true,
 		x = -2,
-		layer = 2,
 		text = managers.localization:to_upper_text(mutator_text),
 		font_size = tweak_data.hud_stats.loot_title_size,
 		font = tweak_data.hud_stats.objectives_font,
@@ -1062,10 +1066,10 @@ function HUDStatsScreen:_create_mutators_list(mutators_panel)
 
 	for i, active_mutator in ipairs(managers.mutators:active_mutators()) do
 		local mutator_text = mutators_panel:text({
-			vertical = "top",
 			align = "right",
-			x = 0,
 			layer = 1,
+			vertical = "top",
+			x = 0,
 			name = "mutator_" .. tostring(i),
 			color = Color.white,
 			font_size = tweak_data.hud_stats.day_description_size,
@@ -1075,6 +1079,7 @@ function HUDStatsScreen:_create_mutators_list(mutators_panel)
 			h = tweak_data.hud_stats.day_description_size,
 			y = y
 		})
+
 		y = y + mutator_text:h() + 2
 	end
 
@@ -1100,8 +1105,10 @@ function HUDStatsScreen:_animate_text_pulse(text, exp_gain_ring, exp_ring)
 
 	while true do
 		local dt = coroutine.yield()
+
 		t = t + dt
-		local alpha = math.abs(math.sin(t * 180 * 1))
+
+		local alpha = math.abs((math.sin(t * 180 * 1)))
 
 		text:set_size(math.lerp(w * 2, w, alpha), math.lerp(h * 2, h, alpha))
 		text:set_font_size(math.lerp(25, tweak_data.menu.pd2_small_font_size, alpha * alpha))
@@ -1116,7 +1123,7 @@ end
 function HUDStatsScreen:_update_stats_screen_loot(loot_wrapper_panel)
 	local mandatory_bags_data = managers.loot:get_mandatory_bags_data()
 	local secured_amount = managers.loot:get_secured_mandatory_bags_amount()
-	local x = nil
+	local x
 	local bag_texture, bag_rect = tweak_data.hud_icons:get_icon_data("bag_icon")
 	local mission_amount = managers.loot:get_secured_mandatory_bags_amount()
 	local mission_vis = mission_amount > 0 or secured_amount > 0
@@ -1128,8 +1135,8 @@ function HUDStatsScreen:_update_stats_screen_loot(loot_wrapper_panel)
 		if mandatory_bags_data.amount > 18 then
 			local x = 0
 			local bag = mission_bags_panel:bitmap({
-				name = "bag1",
 				alpha = 0.25,
+				name = "bag1",
 				texture = bag_texture,
 				texture_rect = bag_rect,
 				x = x
@@ -1381,12 +1388,14 @@ end
 function HUDStatsScreen:_animate_show_stats_left_panel(left_panel, right_panel, bottom_panel, teammates_panel, objectives_panel, chat_panel)
 	local start_x = left_panel:x()
 	local start_a = 1 - start_x / -left_panel:w()
-	local TOTAL_T = 0.33 * start_x / -left_panel:w()
+	local TOTAL_T = 0.33 * (start_x / -left_panel:w())
 	local t = 0
 
-	while TOTAL_T > t do
-		local dt = coroutine.yield() * 1 / TimerManager:game():multiplier()
+	while t < TOTAL_T do
+		local dt = coroutine.yield() * (1 / TimerManager:game():multiplier())
+
 		t = t + dt
+
 		local a = math.lerp(start_a, 1, t / TOTAL_T)
 
 		left_panel:set_alpha(a)
@@ -1423,9 +1432,11 @@ function HUDStatsScreen:_animate_hide_stats_left_panel(left_panel, right_panel, 
 	local TOTAL_T = 0.33 * (1 - start_x / -left_panel:w())
 	local t = 0
 
-	while TOTAL_T > t do
-		local dt = coroutine.yield() * 1 / TimerManager:game():multiplier()
+	while t < TOTAL_T do
+		local dt = coroutine.yield() * (1 / TimerManager:game():multiplier())
+
 		t = t + dt
+
 		local a = math.lerp(start_a, 0, t / TOTAL_T)
 
 		left_panel:set_alpha(a)

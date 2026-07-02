@@ -6,12 +6,15 @@ StoryMissionsManager._version = 2
 function StoryMissionsManager:init()
 	if not Global.story_mission_manager then
 		Global.story_mission_manager = {}
+
 		local gm = Global.story_mission_manager
+
 		gm.missions = {}
 		gm.mission_order = {}
 
 		for idx, mission in ipairs(tweak_data.story.missions) do
 			local m = deep_clone(mission)
+
 			m.order = idx
 			gm.missions[m.id] = m
 
@@ -22,7 +25,8 @@ function StoryMissionsManager:init()
 			for _, t in pairs(m.objectives) do
 				for _, o in pairs(t) do
 					m.objectives_flat[o.progress_id] = o
-					local dlc = nil
+
+					local dlc
 
 					for _, id in pairs(o.levels or {}) do
 						local found = tweak_data.narrative.jobs[id].dlc
@@ -41,7 +45,7 @@ function StoryMissionsManager:init()
 	self._global = Global.story_mission_manager
 	self._global.current_mission = self._global.mission_order[2]
 
-	call_on_next_update(function ()
+	call_on_next_update(function()
 		managers.story:_find_next_mission()
 
 		local id = managers.job:current_job_id()
@@ -99,6 +103,7 @@ end
 
 function StoryMissionsManager:award(id, steps)
 	steps = steps or 1
+
 	local m = self:current_mission() or {}
 	local o = m.objectives_flat and m.objectives_flat[id]
 
@@ -110,7 +115,7 @@ function StoryMissionsManager:award(id, steps)
 
 	print("[Story]", "progress", id, o.progress)
 
-	if o.max_progress <= o.progress then
+	if o.progress >= o.max_progress then
 		print("[Story]", "objective complete", id, o.progress, o.max_progress)
 
 		o.completed = true
@@ -201,7 +206,7 @@ function StoryMissionsManager:_check_complete(mission)
 end
 
 function StoryMissionsManager:_find_next_mission(dont_set)
-	local last = nil
+	local last
 
 	for _, m in pairs(self._global.mission_order) do
 		if not m.is_header then
@@ -272,10 +277,11 @@ function StoryMissionsManager:save(cache)
 		end
 	end
 
-	local current_mission = nil
+	local current_mission
 
 	if self._global.current_mission then
 		local m = self._global.current_mission
+
 		current_mission = {
 			id = m.id,
 			objectives = self:_save_objectives(m),
@@ -288,6 +294,7 @@ function StoryMissionsManager:save(cache)
 		completed_missions = completed_missions,
 		current_mission = current_mission
 	}
+
 	cache.story_missions_manager = state
 end
 
@@ -296,6 +303,7 @@ function StoryMissionsManager:_save_objectives(mission)
 
 	for id, o in pairs(mission.objectives_flat) do
 		local state = {}
+
 		res[id] = state
 		state.progress_id = o.progress_id
 		state.completed = o.completed
@@ -323,6 +331,7 @@ function StoryMissionsManager:_migrate_save_data(version_from, version_to, state
 						progress_id = sub_obj.progress_id,
 						progress = sub_obj.max_progress
 					}
+
 					saved_mission.objectives[sub_obj.progress_id] = objective_data
 				end
 			end
@@ -363,6 +372,7 @@ function StoryMissionsManager:load(cache, version)
 
 	if curr then
 		local m = self:get_mission(curr.id)
+
 		self._global.current_mission = m
 
 		if m then
@@ -392,12 +402,13 @@ function StoryMissionsManager:start_mission(mission, objective_id)
 	local m = self:_get_or_current(mission) or {
 		objectives_flat = {}
 	}
-	local o = nil
+	local o
 
 	if not objective_id then
-		local left_to_do = table.filter_list(m.objectives_flat, function (o)
+		local left_to_do = table.filter_list(m.objectives_flat, function(o)
 			return not o.completed
 		end)
+
 		o = table.random(left_to_do)
 	else
 		o = objective_id and m.objectives_flat[objective_id]
@@ -449,6 +460,7 @@ function StoryMissionsManager:start_mission(mission, objective_id)
 		job_id = level,
 		contract_visuals = job_data and job_data.contract_visuals
 	}
+
 	self._global.story_level_opened = level
 
 	managers.menu:open_node(Global.game_settings.single_player and "crimenet_contract_singleplayer" or "crimenet_contract_host", {
@@ -490,6 +502,7 @@ end
 
 function StoryMissionsManager:is_heist_story_started(heist_id)
 	local mission = self:current_mission()
+
 	heist_id = heist_id or ""
 
 	for i, objective_row in ipairs(mission.objectives) do

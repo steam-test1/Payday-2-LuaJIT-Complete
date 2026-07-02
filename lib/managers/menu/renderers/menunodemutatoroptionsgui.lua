@@ -15,6 +15,7 @@ function MenuNodeMutatorOptionsGui:init(node, layer, parameters)
 end
 
 function MenuNodeMutatorOptionsGui:setup(node)
+	return
 end
 
 function MenuNodeMutatorOptionsGui:make_fine_text(text)
@@ -51,7 +52,7 @@ function MenuNodeMutatorOptionsGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_x(self.item_panel:x())
 	self.box_panel:set_w(self.item_panel:w())
 
-	if self._align_data.panel:h() < self.item_panel:h() then
+	if self.item_panel:h() > self._align_data.panel:h() then
 		self.box_panel:set_y(0)
 		self.box_panel:set_h(self.item_panel:parent():h())
 	else
@@ -64,9 +65,9 @@ function MenuNodeMutatorOptionsGui:_setup_item_panel(safe_rect, res)
 	self.box_panel:set_layer(151)
 
 	self._texture_panel = self.box_panel:panel({
-		w = 128,
 		h = 128,
-		layer = 10
+		layer = 10,
+		w = 128
 	})
 
 	self._texture_panel:set_center(self.box_panel:w() / 2, self.box_panel:h() / 2)

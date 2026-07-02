@@ -167,6 +167,7 @@ end
 function CoreHub:set_action_delay(action_delay)
 	if self._selected_action then
 		local value = tonumber(action_delay:get_value()) or 0
+
 		self._selected_action.action_delay = value
 
 		action_delay:change_value(string.format("%.4f", self._selected_action.action_delay))
@@ -204,6 +205,7 @@ end
 function CoreHub:select_action(s, actions, action_types, action_delay)
 	local action_id = self:combobox_id(s)
 	local a = self._hed.actions_data[action_id]
+
 	self._selected_action = a
 
 	actions:set_enabled(true)
@@ -234,6 +236,7 @@ end
 function CoreHub:select_trigger(s, triggers, trigger_types)
 	local trigger_id = self:combobox_id(s)
 	local t = self._hed.triggers_data[trigger_id]
+
 	self._selected_trigger = t
 
 	triggers:set_enabled(true)
@@ -282,29 +285,21 @@ end
 
 function CoreHub:draw_triggers(t, dt)
 	for _, trigger in ipairs(self._hed.triggers) do
-		local r = 1
-		local g = 1
-		local b = 0
+		local r, g, b = 1, 1, 0
 
 		if trigger:name() == "hub" then
-			b = 1
-			g = 0
-			r = 0
+			r, g, b = 0, 0, 1
 		end
 
 		self:draw_arrow(trigger, self._unit, r * 0.5, g * 0.5, b * 0.5, true)
 	end
 
 	if self._selected_trigger and alive(self:trigger_unit(self._selected_trigger.unit_id)) then
-		local r = 1
-		local g = 1
-		local b = 0
+		local r, g, b = 1, 1, 0
 		local trigger = self:trigger_unit(self._selected_trigger.unit_id)
 
 		if trigger:name() == "hub" then
-			b = 1
-			g = 0
-			r = 0
+			r, g, b = 0, 0, 1
 		end
 
 		local s = 0.75 + (1 + math.sin(t * 100)) * 0.25 * 0.5
@@ -315,20 +310,17 @@ function CoreHub:draw_triggers(t, dt)
 end
 
 function CoreHub:update_unselected()
+	return
 end
 
 function CoreHub:draw_connections_unselected()
 	Application:draw_circle(self._unit:position(), 50, 1, 1, 0)
 
 	for _, trigger in ipairs(self._hed.triggers) do
-		local r = 1
-		local g = 1
-		local b = 0
+		local r, g, b = 1, 1, 0
 
 		if trigger:name() == "hub" then
-			b = 0.75
-			g = 0.1
-			r = 0.1
+			r, g, b = 0.1, 0.1, 0.75
 		end
 
 		Application:draw_circle(trigger:position(), 50, r, g, b)
@@ -348,7 +340,7 @@ function CoreHub:combobox_name(unit)
 end
 
 function CoreHub:combobox_id(name)
-	local s = nil
+	local s
 	local e = string.len(name) - 1
 
 	for i = string.len(name), 0, -1 do
@@ -384,6 +376,7 @@ function CoreHub:layer_finished()
 
 	for key, value in pairs(hed.actions_data) do
 		local unit = managers.worlddefinition:get_hub_element_unit(value.unit_id)
+
 		t[self:id_string(unit)] = value
 	end
 
@@ -409,6 +402,7 @@ function CoreHub:layer_finished()
 		end
 
 		local unit = managers.worlddefinition:get_hub_element_unit(v.unit_id)
+
 		tt[self:id_string(unit)] = v
 	end
 
@@ -447,9 +441,10 @@ function CoreHub:add_action(a)
 	table.insert(a:hub_element_data().hubs, self._unit)
 
 	local s = self:id_string(a)
+
 	self._hed.actions_data[s] = {
-		type = "",
 		action_delay = 0,
+		type = "",
 		unit_id = a:unit_data().unit_id
 	}
 
@@ -475,6 +470,7 @@ function CoreHub:add_trigger(t)
 	table.insert(t:hub_element_data().hubs, self._unit)
 
 	local s = self:id_string(t)
+
 	self._hed.triggers_data[s] = {
 		type = "",
 		unit_id = t:unit_data().unit_id
@@ -650,6 +646,7 @@ function CoreHub:_build_panel()
 		action_delay = action_delay,
 		action_types = action_types
 	}
+
 	local triggers_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Triggers")
 	local required_trigger_sizer = EWS:BoxSizer("HORIZONTAL")
 

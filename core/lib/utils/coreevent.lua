@@ -7,20 +7,20 @@ function callback(o, base_callback_class, base_callback_func_name, base_callback
 	if base_callback_class and base_callback_func_name and base_callback_class[base_callback_func_name] then
 		if base_callback_param ~= nil then
 			if o then
-				return function (...)
+				return function(...)
 					return base_callback_class[base_callback_func_name](o, base_callback_param, ...)
 				end
 			else
-				return function (...)
+				return function(...)
 					return base_callback_class[base_callback_func_name](base_callback_param, ...)
 				end
 			end
 		elseif o then
-			return function (...)
+			return function(...)
 				return base_callback_class[base_callback_func_name](o, ...)
 			end
 		else
-			return function (...)
+			return function(...)
 				return base_callback_class[base_callback_func_name](...)
 			end
 		end
@@ -56,43 +56,47 @@ function update_tickets()
 	end
 end
 
-BasicEventHandling = {
-	connect = function (self, event_name, callback_func, data)
-		self._event_callbacks = self._event_callbacks or {}
-		self._event_callbacks[event_name] = self._event_callbacks[event_name] or {}
+BasicEventHandling = {}
 
-		local function wrapped_func(...)
-			callback_func(data, ...)
-		end
+function BasicEventHandling:connect(event_name, callback_func, data)
+	self._event_callbacks = self._event_callbacks or {}
+	self._event_callbacks[event_name] = self._event_callbacks[event_name] or {}
 
-		table.insert(self._event_callbacks[event_name], wrapped_func)
+	local function wrapped_func(...)
+		callback_func(data, ...)
+	end
 
-		return wrapped_func
-	end,
-	disconnect = function (self, event_name, wrapped_func)
-		if self._event_callbacks and self._event_callbacks[event_name] then
-			table.delete(self._event_callbacks[event_name], wrapped_func)
+	table.insert(self._event_callbacks[event_name], wrapped_func)
 
-			if table.empty(self._event_callbacks[event_name]) then
-				self._event_callbacks[event_name] = nil
+	return wrapped_func
+end
 
-				if table.empty(self._event_callbacks) then
-					self._event_callbacks = nil
-				end
-			end
-		end
-	end,
-	_has_callbacks_for_event = function (self, event_name)
-		return self._event_callbacks ~= nil and self._event_callbacks[event_name] ~= nil
-	end,
-	_send_event = function (self, event_name, ...)
-		if self._event_callbacks then
-			for _, wrapped_func in ipairs(self._event_callbacks[event_name] or {}) do
-				wrapped_func(...)
+function BasicEventHandling:disconnect(event_name, wrapped_func)
+	if self._event_callbacks and self._event_callbacks[event_name] then
+		table.delete(self._event_callbacks[event_name], wrapped_func)
+
+		if table.empty(self._event_callbacks[event_name]) then
+			self._event_callbacks[event_name] = nil
+
+			if table.empty(self._event_callbacks) then
+				self._event_callbacks = nil
 			end
 		end
 	end
-}
+end
+
+function BasicEventHandling:_has_callbacks_for_event(event_name)
+	return self._event_callbacks ~= nil and self._event_callbacks[event_name] ~= nil
+end
+
+function BasicEventHandling:_send_event(event_name, ...)
+	if self._event_callbacks then
+		for _, wrapped_func in ipairs(self._event_callbacks[event_name] or {}) do
+			wrapped_func(...)
+		end
+	end
+end
+
 CallbackHandler = CallbackHandler or class()
 
 function CallbackHandler:init()
@@ -107,7 +111,7 @@ end
 function CallbackHandler:__insert_sorted(cb)
 	local i = 1
 
-	while self._sorted[i] and (self._sorted[i].next == nil or self._sorted[i].next < cb.next) do
+	while self._sorted[i] and (self._sorted[i].next == nil or cb.next > self._sorted[i].next) do
 		i = i + 1
 	end
 
@@ -116,6 +120,7 @@ end
 
 function CallbackHandler:add(f, interval, times)
 	times = times or -1
+
 	local cb = {
 		f = f,
 		interval = interval,
@@ -144,11 +149,11 @@ function CallbackHandler:update(dt)
 			return
 		elseif cb.next == nil then
 			table.remove(self._sorted, 1)
-		elseif self._t < cb.next then
+		elseif cb.next > self._t then
 			return
 		else
 			table.remove(self._sorted, 1)
-			cb:f(self._t)
+			cb.f(cb, self._t)
 
 			if cb.times >= 0 then
 				cb.times = cb.times - 1
@@ -170,6 +175,7 @@ end
 CallbackEventHandler = CallbackEventHandler or class()
 
 function CallbackEventHandler:init()
+	return
 end
 
 function CallbackEventHandler:clear()
@@ -224,6 +230,7 @@ function over(seconds, f, fixed_dt)
 
 	while true do
 		local dt = coroutine.yield()
+
 		t = t + (fixed_dt and 0.03333333333333333 or dt)
 
 		if seconds <= t then
@@ -246,6 +253,7 @@ function seconds(s, t)
 	end
 
 	local dt = coroutine.yield()
+
 	t = t + dt
 
 	if s and s < t then
@@ -262,8 +270,9 @@ end
 function wait(seconds, fixed_dt)
 	local t = 0
 
-	while seconds > t do
+	while t < seconds do
 		local dt = coroutine.yield()
+
 		t = t + (fixed_dt and 0.03333333333333333 or dt)
 	end
 end

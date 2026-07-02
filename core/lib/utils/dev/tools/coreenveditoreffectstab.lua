@@ -45,6 +45,7 @@ function CoreEnvEditor:create_effects_tab()
 	local environment_active_effect_sizer = EWS:StaticBoxSizer(panel, "HORIZONTAL", "Active effects")
 	local environment_effect_list_sizer = EWS:StaticBoxSizer(panel, "HORIZONTAL", "Effects")
 	local environment_effect_control_sizer = EWS:BoxSizer("VERTICAL")
+
 	self._active_effect_list = EWS:ListCtrl(panel, "", "LB_SINGLE,LB_HSCROLL,LB_NEEDED_SB,LB_SORT")
 
 	self._active_effect_list:clear_all()
@@ -94,7 +95,7 @@ function CoreEnvEditor:_move_selected_items(src, dst, valid_items)
 		src:delete_item(src_index)
 	end
 
-	dst:sort(function (a, b)
+	dst:sort(function(a, b)
 		return b < a and 1 or 0
 	end)
 	self:_refresh_effect_list()
@@ -118,7 +119,7 @@ function CoreEnvEditor:set_effect_data(active_effects)
 	local all_effects = managers.environment_effects:effects_names()
 
 	table.sort(all_effects)
-	table.remove_condition(all_effects, function (effect)
+	table.remove_condition(all_effects, function(effect)
 		return table.contains(active_effects, effect)
 	end)
 	popuplate_list(self._effect_list, all_effects)

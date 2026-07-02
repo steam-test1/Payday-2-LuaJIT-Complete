@@ -8,6 +8,7 @@ function CopActionReload:init(action_desc, common_data)
 	self._body_part = action_desc.body_part
 	self._common_data = common_data
 	self._machine = common_data.machine
+
 	local weapon_unit = self._ext_inventory:equipped_unit()
 
 	if not weapon_unit then
@@ -15,6 +16,7 @@ function CopActionReload:init(action_desc, common_data)
 	end
 
 	self._reload_speed = self._ext_movement:get_reload_speed_multiplier()
+
 	local loop_time = self._ext_movement:get_looped_reload_time()
 
 	if loop_time then
@@ -44,8 +46,9 @@ function CopActionReload:update(t)
 	if not self._ext_anim.reload then
 		self._expired = true
 	else
-		if self._looped_expire_t and self._looped_expire_t < t then
+		if self._looped_expire_t and t > self._looped_expire_t then
 			self._looped_expire_t = nil
+
 			local redir_res = self._ext_movement:play_redirect("reload_looped_exit")
 
 			if redir_res and self._reload_speed then

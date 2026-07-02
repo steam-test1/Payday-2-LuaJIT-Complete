@@ -21,6 +21,7 @@ function DateTime:init(date)
 	self._value = self._value + self._date_table.year * DateTime.days_per_month * DateTime.months_per_year
 	self._value = self._value + self._date_table.month * DateTime.days_per_month
 	self._value = self._value + self._date_table.day
+
 	local mt = getmetatable(self)
 
 	function mt.__eq(a, b)
@@ -36,21 +37,21 @@ function DateTime:init(date)
 	end
 
 	function mt.__add(a, b)
-		local f = {
-			year = (a._date_table.year or 0) + (b._date_table.year or 0),
-			month = (a._date_table.month or 0) + (b._date_table.month or 0),
-			day = (a._date_table.day or 0) + (b._date_table.day or 0)
-		}
+		local f = {}
+
+		f.year = (a._date_table.year or 0) + (b._date_table.year or 0)
+		f.month = (a._date_table.month or 0) + (b._date_table.month or 0)
+		f.day = (a._date_table.day or 0) + (b._date_table.day or 0)
 
 		return DateTime:new(f)
 	end
 
 	function mt.__sub(a, b)
-		local f = {
-			year = (a._date_table.year or 0) - (b._date_table.year or 0),
-			month = (a._date_table.month or 0) - (b._date_table.month or 0),
-			day = (a._date_table.day or 0) - (b._date_table.day or 0)
-		}
+		local f = {}
+
+		f.year = (a._date_table.year or 0) - (b._date_table.year or 0)
+		f.month = (a._date_table.month or 0) - (b._date_table.month or 0)
+		f.day = (a._date_table.day or 0) - (b._date_table.day or 0)
 
 		return DateTime:new(f)
 	end

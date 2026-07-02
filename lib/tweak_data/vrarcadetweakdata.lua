@@ -1,7 +1,8 @@
 local SELECTION = {
-	SECONDARY = 1,
-	PRIMARY = 2
+	PRIMARY = 2,
+	SECONDARY = 1
 }
+
 VRArcadeTweakData = VRArcadeTweakData or class()
 
 function VRArcadeTweakData:init(tweak_data)
@@ -13,12 +14,12 @@ function VRArcadeTweakData:init(tweak_data)
 			name_id = "bm_loadout_rifle_american",
 			loadout = {
 				secondaries = {
-					factory_id = "wpn_fps_pis_1911",
 					equipped = true,
+					factory_id = "wpn_fps_pis_1911",
 					weapon_id = "colt_1911",
 					global_values = {
-						wpn_fps_upg_fl_pis_crimson = "pd2_clan",
-						wpn_fps_pis_1911_co_2 = "normal"
+						wpn_fps_pis_1911_co_2 = "normal",
+						wpn_fps_upg_fl_pis_crimson = "pd2_clan"
 					},
 					blueprint = {
 						"wpn_fps_pis_1911_body_standard",
@@ -30,16 +31,16 @@ function VRArcadeTweakData:init(tweak_data)
 					}
 				},
 				primaries = {
-					factory_id = "wpn_fps_ass_amcar",
 					equipped = true,
+					factory_id = "wpn_fps_ass_amcar",
 					weapon_id = "amcar",
 					texture_switches = {
 						wpn_fps_upg_o_45rds = "1 3"
 					},
 					global_values = {
 						wpn_fps_m4_uupg_m_std = "normal",
-						wpn_fps_upg_o_45rds = "tango",
-						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs"
+						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs",
+						wpn_fps_upg_o_45rds = "tango"
 					},
 					blueprint = {
 						"wpn_fps_m4_uupg_b_medium_vanilla",
@@ -59,8 +60,8 @@ function VRArcadeTweakData:init(tweak_data)
 			name_id = "bm_loadout_rifle_russian",
 			loadout = {
 				secondaries = {
-					factory_id = "wpn_fps_pis_g17",
 					equipped = true,
+					factory_id = "wpn_fps_pis_g17",
 					weapon_id = "glock_17",
 					global_values = {
 						wpn_fps_upg_fl_pis_crimson = "pd2_clan"
@@ -73,18 +74,18 @@ function VRArcadeTweakData:init(tweak_data)
 					}
 				},
 				primaries = {
-					factory_id = "wpn_fps_ass_akm",
 					equipped = true,
+					factory_id = "wpn_fps_ass_akm",
 					weapon_id = "akm",
 					texture_switches = {
-						wpn_fps_upg_o_docter = "1 3",
-						wpn_fps_upg_o_45rds = "1 3"
+						wpn_fps_upg_o_45rds = "1 3",
+						wpn_fps_upg_o_docter = "1 3"
 					},
 					global_values = {
 						wpn_fps_upg_ak_s_solidstock = "akm4_pack",
+						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs",
 						wpn_fps_upg_o_45rds = "tango",
 						wpn_fps_upg_o_ak_scopemount = "akm4_pack",
-						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs",
 						wpn_fps_upg_o_docter = "normal"
 					},
 					blueprint = {
@@ -107,8 +108,8 @@ function VRArcadeTweakData:init(tweak_data)
 			name_id = "bm_loadout_sniper",
 			loadout = {
 				secondaries = {
-					factory_id = "wpn_fps_smg_mp5",
 					equipped = true,
+					factory_id = "wpn_fps_smg_mp5",
 					weapon_id = "new_mp5",
 					global_values = {
 						wpn_fps_smg_mp5_fg_m5k = "normal",
@@ -124,16 +125,16 @@ function VRArcadeTweakData:init(tweak_data)
 					}
 				},
 				primaries = {
-					factory_id = "wpn_fps_snp_tti",
 					equipped = true,
+					factory_id = "wpn_fps_snp_tti",
 					weapon_id = "tti",
 					texture_switches = {
 						wpn_fps_upg_o_acog = "1 3"
 					},
 					global_values = {
+						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs",
 						wpn_fps_upg_o_45iron = "gage_pack_snp",
-						wpn_fps_upg_o_acog = "normal",
-						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs"
+						wpn_fps_upg_o_acog = "normal"
 					},
 					blueprint = {
 						"wpn_fps_snp_tti_vg_standard",
@@ -159,16 +160,16 @@ function VRArcadeTweakData:init(tweak_data)
 			name_id = "bm_loadout_shotgun",
 			loadout = {
 				secondaries = {
-					factory_id = "wpn_fps_smg_schakal",
 					equipped = true,
+					factory_id = "wpn_fps_smg_schakal",
 					weapon_id = "schakal",
 					texture_switches = {
 						wpn_fps_upg_o_reflex = "1 3"
 					},
 					global_values = {
-						wpn_fps_upg_o_reflex = "gage_pack_jobs",
 						wpn_fps_smg_schakal_s_folded = "pim",
-						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs"
+						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs",
+						wpn_fps_upg_o_reflex = "gage_pack_jobs"
 					},
 					blueprint = {
 						"wpn_fps_smg_schakal_b_standard",
@@ -185,16 +186,16 @@ function VRArcadeTweakData:init(tweak_data)
 					}
 				},
 				primaries = {
-					factory_id = "wpn_fps_sho_aa12",
 					equipped = true,
+					factory_id = "wpn_fps_sho_aa12",
 					weapon_id = "aa12",
 					texture_switches = {
 						wpn_fps_upg_o_docter = "1 3"
 					},
 					global_values = {
 						wpn_fps_sho_aa12_mag_drum = "bbq",
-						wpn_fps_upg_o_docter = "normal",
-						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs"
+						wpn_fps_upg_fl_ass_laser = "gage_pack_jobs",
+						wpn_fps_upg_o_docter = "normal"
 					},
 					blueprint = {
 						"wpn_fps_sho_aa12_dh",
@@ -245,61 +246,61 @@ end
 
 function VRArcadeTweakData:init_upgrades_tweak_data(tweak_data)
 	local default_armor_amount = 1
-	tweak_data.upgrades.values.player.body_armor = {
-		armor = {
-			default_armor_amount,
-			default_armor_amount,
-			default_armor_amount,
-			default_armor_amount,
-			default_armor_amount,
-			default_armor_amount,
-			default_armor_amount
-		},
-		movement = {
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1
-		},
-		concealment = {
-			30,
-			30,
-			30,
-			30,
-			30,
-			30,
-			30
-		},
-		dodge = {
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0
-		},
-		damage_shake = {
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1
-		},
-		stamina = {
-			99,
-			99,
-			99,
-			99,
-			99,
-			99,
-			99
-		}
+
+	tweak_data.upgrades.values.player.body_armor = {}
+	tweak_data.upgrades.values.player.body_armor.armor = {
+		default_armor_amount,
+		default_armor_amount,
+		default_armor_amount,
+		default_armor_amount,
+		default_armor_amount,
+		default_armor_amount,
+		default_armor_amount
+	}
+	tweak_data.upgrades.values.player.body_armor.movement = {
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1
+	}
+	tweak_data.upgrades.values.player.body_armor.concealment = {
+		30,
+		30,
+		30,
+		30,
+		30,
+		30,
+		30
+	}
+	tweak_data.upgrades.values.player.body_armor.dodge = {
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	}
+	tweak_data.upgrades.values.player.body_armor.damage_shake = {
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1
+	}
+	tweak_data.upgrades.values.player.body_armor.stamina = {
+		99,
+		99,
+		99,
+		99,
+		99,
+		99,
+		99
 	}
 end
 
@@ -338,8 +339,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.amcar = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_rifle_mag_out"
+				sound = "wp_bbv_rifle_mag_out",
+				time = 0
 			},
 			{
 				time = 0.05,
@@ -350,8 +351,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_rifle_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, 0, -20)
 			},
@@ -364,8 +365,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				pos = Vector3(0, 0, -4)
 			},
 			{
-				time = 0.6,
 				sound = "wp_m4_lever_release",
+				time = 0.6,
 				pos = Vector3()
 			}
 		}
@@ -373,8 +374,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.glock_17 = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_pistol_mag_out"
+				sound = "wp_bbv_pistol_mag_out",
+				time = 0
 			},
 			{
 				time = 0.05,
@@ -384,8 +385,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_pistol_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, -7, -20)
 			},
@@ -398,8 +399,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				pos = Vector3(0, -4, -10)
 			},
 			{
-				time = 0.6,
 				sound = "wp_g17_lever_release",
+				time = 0.6,
 				pos = Vector3()
 			}
 		}
@@ -407,8 +408,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.aa12 = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_shotgun_mag_out"
+				sound = "wp_bbv_shotgun_mag_out",
+				time = 0
 			},
 			{
 				time = 0.01,
@@ -426,8 +427,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_shotgun_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, 2, -20)
 			},
@@ -440,8 +441,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				pos = Vector3(0, 0.1, -4.5)
 			},
 			{
-				time = 0.6,
 				sound = "wp_aa12_lever_pull",
+				time = 0.6,
 				pos = Vector3()
 			}
 		}
@@ -449,8 +450,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.schakal = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_smg_mag_out"
+				sound = "wp_bbv_smg_mag_out",
+				time = 0
 			},
 			{
 				time = 0.05,
@@ -460,8 +461,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_smg_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, 2.5, -10)
 			},
@@ -474,8 +475,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				pos = Vector3(0, 0.9, -3.5)
 			},
 			{
-				time = 0.6,
 				sound = "wp_schakal_bolt_slap",
+				time = 0.6,
 				pos = Vector3()
 			}
 		}
@@ -483,8 +484,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.akm = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_rifle_mag_out"
+				sound = "wp_bbv_rifle_mag_out",
+				time = 0
 			},
 			{
 				time = 0.02,
@@ -500,8 +501,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_rifle_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, 0, -20),
 				rot = Rotation()
@@ -512,8 +513,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				rot = Rotation(0, 30, 0)
 			},
 			{
-				time = 0.5,
 				sound = "wp_ak47_lever_release",
+				time = 0.5,
 				pos = Vector3(),
 				rot = Rotation()
 			}
@@ -522,8 +523,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.colt_1911 = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_pistol_mag_out"
+				sound = "wp_bbv_pistol_mag_out",
+				time = 0
 			},
 			{
 				time = 0.05,
@@ -533,8 +534,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_pistol_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, -5, -20)
 			},
@@ -547,8 +548,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				pos = Vector3(0, -4, -12)
 			},
 			{
-				time = 0.6,
 				sound = "wp_usp_mantel_back",
+				time = 0.6,
 				pos = Vector3()
 			}
 		}
@@ -556,8 +557,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.tti = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_rifle_mag_out"
+				sound = "wp_bbv_rifle_mag_out",
+				time = 0
 			},
 			{
 				time = 0.05,
@@ -568,8 +569,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_rifle_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, 0, -20)
 			},
@@ -582,8 +583,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				pos = Vector3(0, 0, -4)
 			},
 			{
-				time = 0.6,
 				sound = "wp_tti_release_lever",
+				time = 0.6,
 				pos = Vector3()
 			}
 		}
@@ -591,8 +592,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 	tweak_data.vr.reload_timelines.new_mp5 = {
 		start = {
 			{
-				time = 0,
-				sound = "wp_bbv_smg_mag_out"
+				sound = "wp_bbv_smg_mag_out",
+				time = 0
 			},
 			{
 				time = 0.02,
@@ -613,8 +614,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 		},
 		finish = {
 			{
-				time = 0,
 				sound = "wp_bbv_smg_mag_in",
+				time = 0,
 				visible = true,
 				pos = Vector3(0, 2, -10),
 				rot = Rotation()
@@ -630,8 +631,8 @@ function VRArcadeTweakData:init_weapon_tweak_data(tweak_data)
 				rot = Rotation(0, 30, 0)
 			},
 			{
-				time = 0.5,
 				sound = "wp_mp5_lever_release",
+				time = 0.5,
 				pos = Vector3(),
 				rot = Rotation()
 			}
@@ -1840,239 +1841,237 @@ function VRArcadeTweakData:init_character_tweak_data(tweak_data)
 			}
 		}
 	}
-	tweak_data.character.tank.weapon.is_shotgun_mag = {
-		aim_delay = {
-			0.1,
-			0.1
-		},
-		focus_delay = 4,
-		focus_dis = 200,
-		spread = 20,
-		miss_dis = 40,
-		RELOAD_SPEED = 0.5,
-		melee_speed = 1,
-		melee_dmg = 25,
-		melee_retry_delay = {
-			1,
-			2
-		},
-		range = {
-			optimal = 2000,
-			far = 5000,
-			close = 1000
-		},
-		autofire_rounds = {
-			5,
-			7
-		},
-		FALLOFF = {
-			{
-				dmg_mul = 7,
-				r = 100,
-				acc = {
-					0.4,
-					0.7
-				},
-				recoil = {
-					0.4,
-					0.7
-				},
-				mode = {
-					0,
-					3,
-					3,
-					1
-				}
+	tweak_data.character.tank.weapon.is_shotgun_mag = {}
+	tweak_data.character.tank.weapon.is_shotgun_mag.aim_delay = {
+		0.1,
+		0.1
+	}
+	tweak_data.character.tank.weapon.is_shotgun_mag.focus_delay = 4
+	tweak_data.character.tank.weapon.is_shotgun_mag.focus_dis = 200
+	tweak_data.character.tank.weapon.is_shotgun_mag.spread = 20
+	tweak_data.character.tank.weapon.is_shotgun_mag.miss_dis = 40
+	tweak_data.character.tank.weapon.is_shotgun_mag.RELOAD_SPEED = 0.5
+	tweak_data.character.tank.weapon.is_shotgun_mag.melee_speed = 1
+	tweak_data.character.tank.weapon.is_shotgun_mag.melee_dmg = 25
+	tweak_data.character.tank.weapon.is_shotgun_mag.melee_retry_delay = {
+		1,
+		2
+	}
+	tweak_data.character.tank.weapon.is_shotgun_mag.range = {
+		close = 1000,
+		far = 5000,
+		optimal = 2000
+	}
+	tweak_data.character.tank.weapon.is_shotgun_mag.autofire_rounds = {
+		5,
+		7
+	}
+	tweak_data.character.tank.weapon.is_shotgun_mag.FALLOFF = {
+		{
+			dmg_mul = 7,
+			r = 100,
+			acc = {
+				0.4,
+				0.7
 			},
-			{
-				dmg_mul = 4,
-				r = 500,
-				acc = {
-					0.4,
-					0.6
-				},
-				recoil = {
-					0.4,
-					0.7
-				},
-				mode = {
-					0,
-					3,
-					3,
-					1
-				}
+			recoil = {
+				0.4,
+				0.7
 			},
-			{
-				dmg_mul = 4,
-				r = 1000,
-				acc = {
-					0.4,
-					0.6
-				},
-				recoil = {
-					0.45,
-					0.8
-				},
-				mode = {
-					1,
-					2,
-					2,
-					1
-				}
+			mode = {
+				0,
+				3,
+				3,
+				1
+			}
+		},
+		{
+			dmg_mul = 4,
+			r = 500,
+			acc = {
+				0.4,
+				0.6
 			},
-			{
-				dmg_mul = 1,
-				r = 2000,
-				acc = {
-					0.2,
-					0.4
-				},
-				recoil = {
-					0.45,
-					0.8
-				},
-				mode = {
-					3,
-					2,
-					2,
-					0
-				}
+			recoil = {
+				0.4,
+				0.7
 			},
-			{
-				dmg_mul = 0.5,
-				r = 3000,
-				acc = {
-					0.1,
-					0.2
-				},
-				recoil = {
-					1,
-					1.2
-				},
-				mode = {
-					3,
-					1,
-					1,
-					0
-				}
+			mode = {
+				0,
+				3,
+				3,
+				1
+			}
+		},
+		{
+			dmg_mul = 4,
+			r = 1000,
+			acc = {
+				0.4,
+				0.6
+			},
+			recoil = {
+				0.45,
+				0.8
+			},
+			mode = {
+				1,
+				2,
+				2,
+				1
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 2000,
+			acc = {
+				0.2,
+				0.4
+			},
+			recoil = {
+				0.45,
+				0.8
+			},
+			mode = {
+				3,
+				2,
+				2,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 3000,
+			acc = {
+				0.1,
+				0.2
+			},
+			recoil = {
+				1,
+				1.2
+			},
+			mode = {
+				3,
+				1,
+				1,
+				0
 			}
 		}
 	}
-	tweak_data.character.tank.weapon.is_rifle = {
-		aim_delay = {
-			0.1,
-			0.2
-		},
-		focus_delay = 4,
-		focus_dis = 800,
-		spread = 20,
-		miss_dis = 40,
-		RELOAD_SPEED = 0.5,
-		melee_speed = 1,
-		melee_dmg = 25,
-		melee_retry_delay = {
-			1,
-			2
-		},
-		range = {
-			optimal = 2500,
-			far = 5000,
-			close = 1000
-		},
-		autofire_rounds = {
-			40,
-			80
-		},
-		FALLOFF = {
-			{
-				dmg_mul = 3,
-				r = 100,
-				acc = {
-					0.1,
-					0.2
-				},
-				recoil = {
-					1,
-					1.5
-				},
-				mode = {
-					0,
-					0,
-					0,
-					1
-				}
+	tweak_data.character.tank.weapon.is_rifle = {}
+	tweak_data.character.tank.weapon.is_rifle.aim_delay = {
+		0.1,
+		0.2
+	}
+	tweak_data.character.tank.weapon.is_rifle.focus_delay = 4
+	tweak_data.character.tank.weapon.is_rifle.focus_dis = 800
+	tweak_data.character.tank.weapon.is_rifle.spread = 20
+	tweak_data.character.tank.weapon.is_rifle.miss_dis = 40
+	tweak_data.character.tank.weapon.is_rifle.RELOAD_SPEED = 0.5
+	tweak_data.character.tank.weapon.is_rifle.melee_speed = 1
+	tweak_data.character.tank.weapon.is_rifle.melee_dmg = 25
+	tweak_data.character.tank.weapon.is_rifle.melee_retry_delay = {
+		1,
+		2
+	}
+	tweak_data.character.tank.weapon.is_rifle.range = {
+		close = 1000,
+		far = 5000,
+		optimal = 2500
+	}
+	tweak_data.character.tank.weapon.is_rifle.autofire_rounds = {
+		40,
+		80
+	}
+	tweak_data.character.tank.weapon.is_rifle.FALLOFF = {
+		{
+			dmg_mul = 3,
+			r = 100,
+			acc = {
+				0.1,
+				0.2
 			},
-			{
-				dmg_mul = 3,
-				r = 500,
-				acc = {
-					0.1,
-					0.2
-				},
-				recoil = {
-					1,
-					1.5
-				},
-				mode = {
-					0,
-					0,
-					0,
-					1
-				}
+			recoil = {
+				1,
+				1.5
 			},
-			{
-				dmg_mul = 2,
-				r = 1000,
-				acc = {
-					0.08,
-					0.12
-				},
-				recoil = {
-					1,
-					1.5
-				},
-				mode = {
-					0,
-					0,
-					0,
-					1
-				}
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 3,
+			r = 500,
+			acc = {
+				0.1,
+				0.2
 			},
-			{
-				dmg_mul = 1,
-				r = 2000,
-				acc = {
-					0.06,
-					0.08
-				},
-				recoil = {
-					1.5,
-					2
-				},
-				mode = {
-					0,
-					0,
-					0,
-					1
-				}
+			recoil = {
+				1,
+				1.5
 			},
-			{
-				dmg_mul = 0.5,
-				r = 3000,
-				acc = {
-					0.04,
-					0.06
-				},
-				recoil = {
-					2,
-					2.5
-				},
-				mode = {
-					0,
-					0,
-					0,
-					1
-				}
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 1000,
+			acc = {
+				0.08,
+				0.12
+			},
+			recoil = {
+				1,
+				1.5
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 2000,
+			acc = {
+				0.06,
+				0.08
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 3000,
+			acc = {
+				0.04,
+				0.06
+			},
+			recoil = {
+				2,
+				2.5
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
 			}
 		}
 	}
@@ -2092,6 +2091,7 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 	end
 
 	local group_ai = tweak_data.group_ai
+
 	group_ai.difficulty_curve_points = {
 		0.25,
 		0.5,
@@ -2412,16 +2412,16 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				freq = 1,
 				amount_min = 1,
+				freq = 1,
 				rank = 1,
 				unit = "CS_cop_C45_R870",
 				tactics = group_ai._tactics.CS_cop
 			},
 			{
-				unit = "CS_cop_stealth_MP5",
 				freq = 0.25,
 				rank = 2,
+				unit = "CS_cop_stealth_MP5",
 				tactics = group_ai._tactics.CS_cop_stealth
 			}
 		}
@@ -2433,21 +2433,21 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				unit = "CS_swat_MP5",
 				freq = 0.33,
 				rank = 3,
+				unit = "CS_swat_MP5",
 				tactics = group_ai._tactics.CS_swat_rifle_flank
 			},
 			{
-				unit = "CS_swat_MP5",
 				freq = 1,
 				rank = 2,
+				unit = "CS_swat_MP5",
 				tactics = group_ai._tactics.CS_swat_rifle
 			},
 			{
-				rank = 1,
-				freq = 0.5,
 				amount_max = 2,
+				freq = 0.5,
+				rank = 1,
 				unit = "CS_swat_R870",
 				tactics = group_ai._tactics.CS_swat_shotgun
 			}
@@ -2460,21 +2460,21 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				unit = "CS_heavy_M4",
 				freq = 1,
 				rank = 2,
+				unit = "CS_heavy_M4",
 				tactics = group_ai._tactics.CS_swat_rifle
 			},
 			{
-				unit = "CS_heavy_M4",
 				freq = 0.35,
 				rank = 3,
+				unit = "CS_heavy_M4",
 				tactics = group_ai._tactics.CS_swat_rifle_flank
 			},
 			{
-				rank = 2,
-				freq = 0.5,
 				amount_max = 2,
+				freq = 0.5,
+				rank = 2,
 				unit = "CS_heavy_R870",
 				tactics = group_ai._tactics.CS_swat_shotgun
 			}
@@ -2487,22 +2487,22 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				freq = 1,
 				amount_min = 1,
+				freq = 1,
 				rank = 2,
 				unit = "FBI_swat_M4",
 				tactics = group_ai._tactics.FBI_swat_rifle
 			},
 			{
-				unit = "FBI_swat_M4",
 				freq = 0.75,
 				rank = 3,
+				unit = "FBI_swat_M4",
 				tactics = group_ai._tactics.FBI_swat_rifle_flank
 			},
 			{
-				rank = 1,
-				freq = 0.5,
 				amount_max = 2,
+				freq = 0.5,
+				rank = 1,
 				unit = "FBI_swat_R870",
 				tactics = group_ai._tactics.FBI_swat_shotgun
 			}
@@ -2515,22 +2515,22 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				freq = 1,
 				amount_min = 1,
+				freq = 1,
 				rank = 1,
 				unit = "FBI_heavy_G36",
 				tactics = group_ai._tactics.FBI_swat_rifle
 			},
 			{
-				unit = "FBI_heavy_G36",
 				freq = 0.65,
 				rank = 2,
+				unit = "FBI_heavy_G36",
 				tactics = group_ai._tactics.FBI_swat_rifle_flank
 			},
 			{
-				rank = 3,
-				freq = 0.8,
 				amount_max = 1,
+				freq = 0.8,
+				rank = 3,
 				unit = "FBI_suit_M4_MP5",
 				tactics = group_ai._tactics.FBI_swat_rifle_flank
 			}
@@ -2543,27 +2543,27 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				unit = "CITY_swat_m4",
 				freq = 1,
 				rank = 1,
+				unit = "CITY_swat_m4",
 				tactics = group_ai._tactics.FBI_swat_rifle
 			},
 			{
-				unit = "CITY_swat_smg",
 				freq = 0.5,
 				rank = 1,
+				unit = "CITY_swat_smg",
 				tactics = group_ai._tactics.FBI_swat_rifle
 			},
 			{
-				unit = "CITY_swat_m4",
 				freq = 0.65,
 				rank = 2,
+				unit = "CITY_swat_m4",
 				tactics = group_ai._tactics.FBI_swat_rifle_flank
 			},
 			{
-				rank = 3,
-				freq = 0.25,
 				amount_max = 1,
+				freq = 0.25,
+				rank = 3,
 				unit = "CITY_swat_shotgun",
 				tactics = group_ai._tactics.FBI_swat_shotgun
 			}
@@ -2576,8 +2576,8 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				freq = 1,
 				amount_min = 1,
+				freq = 1,
 				rank = 1,
 				unit = "CS_cop_stealth_MP5",
 				tactics = group_ai._tactics.FBI_suit_stealth
@@ -2591,22 +2591,22 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				unit = "FBI_suit_C45_M4",
 				freq = 1,
 				rank = 1,
+				unit = "FBI_suit_C45_M4",
 				tactics = group_ai._tactics.FBI_suit_stealth
 			},
 			{
-				freq = 1,
 				amount_min = 1,
+				freq = 1,
 				rank = 1,
 				unit = "FBI_suit_stealth_MP5",
 				tactics = group_ai._tactics.FBI_suit_stealth
 			},
 			{
-				unit = "FBI_suit_M4_MP5",
 				freq = 0.75,
 				rank = 2,
+				unit = "FBI_suit_M4_MP5",
 				tactics = group_ai._tactics.FBI_suit
 			}
 		}
@@ -2618,28 +2618,28 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				freq = 1,
 				amount_min = 1,
+				freq = 1,
 				rank = 2,
 				unit = "FBI_suit_C45_M4",
 				tactics = group_ai._tactics.FBI_suit
 			},
 			{
-				unit = "CS_cop_C45_R870",
 				freq = 0.8,
 				rank = 1,
+				unit = "CS_cop_C45_R870",
 				tactics = group_ai._tactics.FBI_suit
 			},
 			{
+				freq = 0.4,
+				rank = 1,
 				unit = "FBI_swat_M4",
-				freq = 0.4,
-				rank = 1,
 				tactics = group_ai._tactics.FBI_suit
 			},
 			{
-				unit = "FBI_heavy_G36",
 				freq = 0.4,
 				rank = 1,
+				unit = "FBI_heavy_G36",
 				tactics = group_ai._tactics.FBI_suit
 			}
 		}
@@ -2651,22 +2651,22 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				freq = 1,
 				amount_min = 1,
+				freq = 1,
 				rank = 1,
 				unit = "CS_cop_C45_R870",
 				tactics = group_ai._tactics.CS_cop
 			},
 			{
-				unit = "CS_swat_MP5",
 				freq = 0.7,
 				rank = 1,
+				unit = "CS_swat_MP5",
 				tactics = group_ai._tactics.CS_cop
 			},
 			{
-				unit = "CS_heavy_M4",
 				freq = 0.7,
 				rank = 1,
+				unit = "CS_heavy_M4",
 				tactics = group_ai._tactics.CS_cop
 			}
 		}
@@ -2678,33 +2678,33 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 		},
 		spawn = {
 			{
-				unit = "FBI_swat_M4",
 				freq = 1,
 				rank = 2,
+				unit = "FBI_swat_M4",
 				tactics = group_ai._tactics.FBI_swat_rifle
 			},
 			{
-				unit = "FBI_swat_M4",
 				freq = 0.7,
 				rank = 3,
+				unit = "FBI_swat_M4",
 				tactics = group_ai._tactics.FBI_swat_rifle_flank
 			},
 			{
-				unit = "CS_heavy_M4",
 				freq = 1.2,
 				rank = 2,
+				unit = "CS_heavy_M4",
 				tactics = group_ai._tactics.CS_swat_rifle
 			},
 			{
-				unit = "FBI_suit_C45_M4",
 				freq = 1.4,
 				rank = 1,
+				unit = "FBI_suit_C45_M4",
 				tactics = group_ai._tactics.FBI_suit
 			},
 			{
-				unit = "FBI_suit_stealth_MP5",
 				freq = 1.4,
 				rank = 1,
+				unit = "FBI_suit_stealth_MP5",
 				tactics = group_ai._tactics.FBI_suit_stealth
 			}
 		}
@@ -2712,22 +2712,21 @@ function VRArcadeTweakData:init_group_ai_tweak_data(tweak_data)
 end
 
 function VRArcadeTweakData:init_scoring(tweak_data)
-	self.score_multipliers = {
-		bag = 20000,
-		small_loot = 500,
-		kill = 10,
-		hostages_remaining = 3000,
-		downed = -2500,
-		no_downs_bonus = 10000
-	}
-	self.cash_multipliers = {
-		bag = 20000,
-		small_loot = 500
-	}
+	self.score_multipliers = {}
+	self.score_multipliers.bag = 20000
+	self.score_multipliers.small_loot = 500
+	self.score_multipliers.kill = 10
+	self.score_multipliers.hostages_remaining = 3000
+	self.score_multipliers.downed = -2500
+	self.score_multipliers.no_downs_bonus = 10000
+	self.cash_multipliers = {}
+	self.cash_multipliers.bag = 20000
+	self.cash_multipliers.small_loot = 500
 end
 
 function VRArcadeTweakData:init_interaction_tweak_data(tweak_data)
 	tweak_data.interaction.intimidate.equipment_consume = false
+
 	local timer_exclude = {
 		hold_choose_handedness = true
 	}

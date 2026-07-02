@@ -29,8 +29,8 @@ function MenuNodePrePlanningGui:setup()
 
 	if managers.menu:is_pc_controller() then
 		self:create_text_button({
-			text_to_upper = true,
 			text_id = "menu_back",
+			text_to_upper = true,
 			right = self.safe_rect_panel:w() - 10,
 			bottom = self.safe_rect_panel:h() - 10,
 			font = self.large_font,
@@ -42,11 +42,13 @@ end
 
 function MenuNodePrePlanningGui:_setup_item_panel_parent(safe_rect, shape)
 	local res = RenderSettings.resolution
+
 	shape = shape or {}
 	shape.x = shape.x or safe_rect.x
 	shape.y = shape.y or safe_rect.y + 0
 	shape.w = shape.w or safe_rect.width
 	shape.h = shape.h or safe_rect.height - 0
+
 	local x = shape.x
 	local y = shape.y + 10
 	local w = shape.w
@@ -75,6 +77,7 @@ function MenuNodePrePlanningGui:_setup_item_panel(safe_rect, res)
 	end
 
 	local box_h = math.min(self._item_panel_parent:h(), self.item_panel:h())
+
 	self.box_panel = self.item_panel:parent():panel()
 
 	self.box_panel:set_x(self.item_panel:x())
@@ -98,16 +101,16 @@ function MenuNodePrePlanningGui:_setup_item_panel(safe_rect, res)
 	self.boxgui:set_layer(self.layers.last)
 	self.box_panel:rect({
 		alpha = 0.3,
-		rotation = 360,
 		layer = -1,
+		rotation = 360,
 		color = Color.black
 	})
 	self.box_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur",
-		rotation = 360,
-		render_template = "VertexColorTexturedBlur3D",
 		layer = -2,
+		name = "blur",
+		render_template = "VertexColorTexturedBlur3D",
+		rotation = 360,
+		texture = "guis/textures/test_blur_df",
 		w = self.box_panel:w(),
 		h = self.box_panel:h()
 	})
@@ -148,7 +151,7 @@ end
 function MenuNodePrePlanningGui:scroll_update(dt)
 	local scrolled = MenuNodePrePlanningGui.super.super.scroll_update(self, dt)
 	local scroll_top = self.item_panel:top() < 0
-	local scroll_bottom = self._item_panel_parent:h() < self.item_panel:bottom()
+	local scroll_bottom = self.item_panel:bottom() > self._item_panel_parent:h()
 
 	self._list_arrows.up:set_visible(scroll_top)
 	self._list_arrows.down:set_visible(scroll_bottom)
@@ -156,14 +159,14 @@ function MenuNodePrePlanningGui:scroll_update(dt)
 	if scroll_top or scroll_bottom then
 		local top = self._item_panel_parent:world_top()
 		local bottom = self._item_panel_parent:world_bottom()
-		local row_item_top, row_item_bottom = nil
+		local row_item_top, row_item_bottom
 
 		for i, row_item in ipairs(self.row_items) do
 			if row_item and row_item.gui_panel then
 				row_item_top = row_item.gui_panel:world_top()
 				row_item_bottom = row_item.gui_panel:world_bottom()
 
-				if (row_item_top >= top or top >= row_item_bottom) and row_item_top < bottom and bottom < row_item_bottom then
+				if (not (row_item_top < top) or not (top < row_item_bottom)) and row_item_top < bottom and bottom < row_item_bottom then
 					-- Nothing
 				end
 			end
@@ -189,10 +192,10 @@ function MenuNodePrePlanningGui:_create_tooltip()
 	self._tooltip:set_left(self.box_panel:left())
 
 	local title = self._tooltip:text({
-		text = " ",
 		name = "title",
-		y = 10,
+		text = " ",
 		x = 10,
+		y = 10,
 		font = self.font,
 		font_size = self.font_size,
 		color = tweak_data.screen_colors.text
@@ -201,8 +204,8 @@ function MenuNodePrePlanningGui:_create_tooltip()
 	self.make_fine_text(title)
 
 	local icon = self._tooltip:bitmap({
-		name = "icon",
 		h = 48,
+		name = "icon",
 		w = 48,
 		texture = tweak_data.preplanning.gui.type_icons_path,
 		texture_rect = {
@@ -217,13 +220,13 @@ function MenuNodePrePlanningGui:_create_tooltip()
 	icon:set_left(title:left() + 5)
 
 	local description = self._tooltip:text({
-		word_wrap = true,
-		name = "description",
 		blend_mode = "add",
-		wrap = true,
+		name = "description",
 		text = " ",
-		y = 10,
+		word_wrap = true,
+		wrap = true,
 		x = 10,
+		y = 10,
 		font = self.font,
 		font_size = self.font_size,
 		color = tweak_data.screen_colors.text
@@ -239,13 +242,13 @@ function MenuNodePrePlanningGui:_create_tooltip()
 	description:set_h(h)
 
 	local error_text = self._tooltip:text({
-		word_wrap = true,
-		name = "error",
 		blend_mode = "add",
-		wrap = true,
+		name = "error",
 		text = " ",
-		y = 10,
+		word_wrap = true,
+		wrap = true,
 		x = 10,
+		y = 10,
 		font = self.font,
 		font_size = self.font_size,
 		color = tweak_data.screen_colors.important_1
@@ -277,22 +280,23 @@ function MenuNodePrePlanningGui:_create_tooltip()
 	boxgui:set_layer(1000)
 
 	self._tooltip_boxgui = boxgui
+
 	local bg = self._tooltip:rect({
-		name = "bg",
-		valign = "grow",
-		halign = "grow",
 		alpha = 0.3,
-		rotation = 360,
+		halign = "grow",
 		layer = -1,
+		name = "bg",
+		rotation = 360,
+		valign = "grow",
 		color = Color.black
 	})
 	local blur = self._tooltip:bitmap({
-		texture = "guis/textures/test_blur_df",
-		name = "blur",
 		halign = "grow",
-		valign = "grow",
-		render_template = "VertexColorTexturedBlur3D",
 		layer = -2,
+		name = "blur",
+		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
+		valign = "grow",
 		w = self._tooltip:w(),
 		h = self._tooltip:h()
 	})
@@ -321,7 +325,7 @@ function MenuNodePrePlanningGui:_update_tooltip(item)
 			title:set_text(tooltip.name)
 			self.make_fine_text(title)
 
-			local tx, ty, tw, th = nil
+			local tx, ty, tw, th
 
 			if tooltip.texture_rect then
 				tx, ty, tw, th = unpack(tooltip.texture_rect)
@@ -455,7 +459,7 @@ function MenuNodePrePlanningGui:_set_item_positions()
 
 	local my_peer_id = managers.network:session():local_peer():id()
 	local node_params = self.node:parameters()
-	local item, icon, texture_rect, texture, texture_color, tooltip, reserved_data = nil
+	local item, icon, texture_rect, texture, texture_color, tooltip, reserved_data
 
 	for i, row_item in pairs(self.row_items) do
 		item = row_item.item
@@ -493,8 +497,8 @@ function MenuNodePrePlanningGui:_set_item_positions()
 						end
 
 						local peer_marker = self._icon_panel:rect({
-							blend_mode = "add",
 							alpha = 0.36,
+							blend_mode = "add",
 							color = tooltip.menu_color or Color.white,
 							layer = self.layers.marker
 						})
@@ -510,14 +514,14 @@ function MenuNodePrePlanningGui:_set_item_positions()
 			local votes = item:parameters().votes
 
 			if votes and row_item.gui_panel then
-				local new_icon, prev_icon = nil
+				local new_icon, prev_icon
 				local num_votes = 0
 
 				for peer_id, voted in pairs(votes.players) do
 					if voted then
 						new_icon = self._icon_panel:bitmap({
-							texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_voting",
 							blend_mode = "add",
+							texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_voting",
 							texture_rect = {
 								0,
 								0,
@@ -540,8 +544,8 @@ function MenuNodePrePlanningGui:_set_item_positions()
 
 				for i = 1, managers.criminals.MAX_NR_CRIMINALS - num_votes do
 					new_icon = self._icon_panel:bitmap({
-						texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_voting",
 						blend_mode = "add",
+						texture = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_voting",
 						texture_rect = {
 							32,
 							0,

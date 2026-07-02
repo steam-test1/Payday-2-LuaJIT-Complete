@@ -4,14 +4,15 @@ MutatorShotgunTweak.name_id = "mutator_shotgun_tweak"
 MutatorShotgunTweak.desc_id = "mutator_shotgun_tweak_desc"
 MutatorShotgunTweak.has_options = true
 MutatorShotgunTweak.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 MutatorShotgunTweak.disables_achievements = true
 MutatorShotgunTweak.icon_coords = {
 	7,
 	1
 }
+
 local tmp_vec = Vector3()
 local tmp_rot = Rotation()
 local shotgun_wat_effect = Idstring("physic_effects/shotgun_wat")
@@ -75,39 +76,41 @@ function MutatorShotgunTweak:_on_shotgun_push(unit, hit_pos, dir, distance, atta
 		return
 	end
 
-	local world = World
-	local play_physic_effect_f = world.play_physic_effect
-	local get_body_f = unit.body
+	do
+		local world = World
+		local play_physic_effect_f = world.play_physic_effect
+		local get_body_f = unit.body
 
-	if self:get_to_the_mothership() then
-		local body = nil
-		local valid_bodies = {}
+		if self:get_to_the_mothership() then
+			local body
+			local valid_bodies = {}
 
-		for i = 0, unit:num_bodies() - 1 do
-			body = get_body_f(unit, i)
+			for i = 0, unit:num_bodies() - 1 do
+				body = get_body_f(unit, i)
 
-			if body and body:enabled() and body:dynamic() then
-				valid_bodies[#valid_bodies + 1] = body
+				if body and body:enabled() and body:dynamic() then
+					valid_bodies[#valid_bodies + 1] = body
+				end
 			end
-		end
 
-		local nr_valid_bodies = #valid_bodies
+			local nr_valid_bodies = #valid_bodies
 
-		for i = 1, nr_valid_bodies do
-			body = valid_bodies[i]
+			for i = 1, nr_valid_bodies do
+				body = valid_bodies[i]
 
-			for idx = 1, nr_valid_bodies do
-				play_physic_effect_f(world, shotgun_wat_effect, body, attacker_body, str)
+				for idx = 1, nr_valid_bodies do
+					play_physic_effect_f(world, shotgun_wat_effect, body, attacker_body, str)
+				end
 			end
-		end
-	else
-		local body = nil
+		else
+			local body
 
-		for i = 0, unit:num_bodies() - 1 do
-			body = get_body_f(unit, i)
+			for i = 0, unit:num_bodies() - 1 do
+				body = get_body_f(unit, i)
 
-			if body and body:enabled() and body:dynamic() then
-				play_physic_effect_f(world, shotgun_wat_effect, body, attacker_body, str)
+				if body and body:enabled() and body:dynamic() then
+					play_physic_effect_f(world, shotgun_wat_effect, body, attacker_body, str)
+				end
 			end
 		end
 	end
@@ -160,16 +163,16 @@ end
 
 function MutatorShotgunTweak:setup_options_gui(node)
 	local params = {
-		name = "pull_strength_slider",
 		callback = "_update_mutator_value",
+		name = "pull_strength_slider",
 		text_id = "menu_shotgun_tweak",
 		update_callback = callback(self, self, "_update_pull_strength")
 	}
 	local data_node = {
+		decimal_count = 2,
 		show_value = true,
 		step = 0.1,
 		type = "CoreMenuItemSlider.ItemSlider",
-		decimal_count = 2,
 		min = self:_min_strength(),
 		max = self:_max_strength()
 	}
@@ -179,39 +182,39 @@ function MutatorShotgunTweak:setup_options_gui(node)
 	node:add_item(new_item)
 
 	local params = {
-		name = "mothership_toggle",
 		callback = "_update_mutator_value",
+		name = "mothership_toggle",
 		text_id = "menu_shotgun_tweak_mothership",
 		update_callback = callback(self, self, "_update_mothership_toggle")
 	}
 	local data = {
 		{
-			w = 24,
-			y = 0,
+			_meta = "option",
 			h = 24,
+			icon = "guis/textures/menu_tickbox",
+			s_h = 24,
+			s_icon = "guis/textures/menu_tickbox",
+			s_w = 24,
+			s_x = 24,
 			s_y = 24,
 			value = "on",
-			s_w = 24,
-			s_h = 24,
-			s_x = 24,
-			_meta = "option",
-			icon = "guis/textures/menu_tickbox",
+			w = 24,
 			x = 24,
-			s_icon = "guis/textures/menu_tickbox"
+			y = 0
 		},
 		{
-			w = 24,
-			y = 0,
+			_meta = "option",
 			h = 24,
+			icon = "guis/textures/menu_tickbox",
+			s_h = 24,
+			s_icon = "guis/textures/menu_tickbox",
+			s_w = 24,
+			s_x = 0,
 			s_y = 24,
 			value = "off",
-			s_w = 24,
-			s_h = 24,
-			s_x = 0,
-			_meta = "option",
-			icon = "guis/textures/menu_tickbox",
+			w = 24,
 			x = 0,
-			s_icon = "guis/textures/menu_tickbox"
+			y = 0
 		},
 		type = "CoreMenuItemToggle.ItemToggle"
 	}

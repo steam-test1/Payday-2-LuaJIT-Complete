@@ -79,6 +79,7 @@ function BrushLayer:reposition_all()
 
 	for name, unit in pairs(self._unit_map) do
 		name = self:get_real_name(name)
+
 		local unit = safe_spawn_unit(name, Vector3(0, 0, 20000), Rotation(Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1)))
 
 		if unit then
@@ -117,7 +118,9 @@ function BrushLayer:reposition_all()
 						if ray then
 							local brush_header = self:add_brush_header(name)
 							local correct_pos = brush_header:spawn_brush(ray.position, rotations[counter])
+
 							self._amount_dirty = true
+
 							local nudge_length = (ray.position - correct_pos):length()
 
 							if nudge_length > 0.05 then
@@ -200,6 +203,7 @@ function BrushLayer:set_visibility(cb)
 end
 
 function BrushLayer:select()
+	return
 end
 
 function BrushLayer:spray_units()
@@ -250,11 +254,11 @@ function BrushLayer:update(time, rel_time)
 	local to = self._owner:get_cursor_look_point(5000)
 	local ray_type = self._brush_on_editor_bodies and "body editor" or "body"
 	local ray = managers.editor:select_unit_by_raycast(self._place_slot_mask, ray_type)
-	local base, tip = nil
+	local base, tip
 
 	if ray then
 		Application:draw_circle(ray.position + ray.normal * 0.1, self._brush_size, 0, 0.7, 0, ray.normal)
-		Application:draw_circle(ray.position + ray.normal * 0.1 + ray.normal * self._offset, self._brush_size, 0, 1, 0, ray.normal)
+		Application:draw_circle(ray.position + (ray.normal * 0.1 + ray.normal * self._offset), self._brush_size, 0, 1, 0, ray.normal)
 
 		base = ray.position - ray.normal * 40 - ray.normal * self._offset
 		tip = ray.position + ray.normal * self._brush_height + ray.normal * self._offset
@@ -262,12 +266,14 @@ function BrushLayer:update(time, rel_time)
 		Application:draw_circle(tip, self._brush_size, 0, 0.7, 0, ray.normal)
 	else
 		local ray_normal = (to - from):normalized()
+
 		base = from + ray_normal * 1000
 		tip = from + ray_normal * 10000
+
 		local tunnel = 9000
 
 		while tunnel > 0 do
-			Application:draw_circle(base + ray_normal * tunnel, self._brush_size, 0.3 + 0.7 * tunnel / 9000, 0, 0, ray_normal)
+			Application:draw_circle(base + ray_normal * tunnel, self._brush_size, 0.3 + 0.7 * (tunnel / 9000), 0, 0, ray_normal)
 
 			tunnel = tunnel * 0.9 - 100
 		end
@@ -285,7 +291,7 @@ function BrushLayer:update(time, rel_time)
 
 			while created < self._brush_pressure and density <= self._brush_density do
 				local nudge_amount = 1 - math.rand(self._brush_size * self._brush_size) / (self._brush_size * self._brush_size)
-				local rand_nudge = ray.normal:random_orthogonal() * self._brush_size * nudge_amount
+				local rand_nudge = ray.normal:random_orthogonal() * (self._brush_size * nudge_amount)
 				local place_ray = managers.editor:select_unit_by_raycast(self._place_slot_mask, ray_type, tip + rand_nudge, base + rand_nudge)
 
 				self:create_brush(place_ray)
@@ -303,6 +309,7 @@ function BrushLayer:update(time, rel_time)
 
 				while removed < self._brush_pressure and removed < #units do
 					removed = removed + 1
+
 					local found = true
 
 					if self._erase_with_units then
@@ -383,7 +390,7 @@ function BrushLayer:create_brush(ray)
 			rand_rotator = Rotation(up, self._angle_override)
 		end
 
-		local right = nil
+		local right
 
 		if math.abs(up.z) > 0.7 then
 			local camera_rot = self._owner._vp:camera():rotation()
@@ -415,6 +422,7 @@ function BrushLayer:build_panel(notebook)
 	self._ews_panel:set_sizer(self._main_sizer)
 
 	self._sizer = EWS:BoxSizer("VERTICAL")
+
 	local ctrl_sizer = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL")
 
 	ctrl_sizer:add(self:create_slider("Random Roll [deg]", "_random_roll", 0, 360), 0, 0, "EXPAND")
@@ -653,8 +661,8 @@ function BrushLayer:create_slider(name, value, s_value, e_value, default_value)
 
 	local slider_params = {
 		floats = 0,
-		slider_ctrlr_proportions = 3,
 		number_ctrlr_proportions = 1,
+		slider_ctrlr_proportions = 3,
 		panel = self._ews_panel,
 		sizer = slider_sizer,
 		value = default_value or s_value,
@@ -685,6 +693,7 @@ end
 
 function BrushLayer:set_unit_name(units)
 	self._brush_names = {}
+
 	local selected = units:selected_items()
 
 	for _, i in ipairs(selected) do
@@ -702,6 +711,7 @@ end
 
 function BrushLayer:select_brush(data)
 	self._brush_names = {}
+
 	local i = data.brushes:selected_index()
 
 	if i < 0 then
@@ -724,8 +734,8 @@ end
 function BrushLayer:get_brush_stats()
 	local brush_stats = {}
 	local total = {
-		unique = 0,
-		amount = 0
+		amount = 0,
+		unique = 0
 	}
 
 	for _, unit_name in ipairs(MassUnitManager:list()) do
@@ -785,6 +795,7 @@ end
 function BrushLayer:get_help(text)
 	local t = "\t"
 	local n = "\n"
+
 	text = text .. "Spawn brush:   Point and hold down left mouse button" .. n
 	text = text .. "Remove brush:  Point and hold down right mouse button" .. n
 

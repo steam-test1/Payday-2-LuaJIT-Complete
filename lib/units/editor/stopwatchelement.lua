@@ -53,8 +53,8 @@ function StopwatchUnitElement:update_selected()
 			self:_remove_unit(managers.editor:unit_with_id(id))
 		else
 			local params = {
-				g = 1,
 				b = 0,
+				g = 1,
 				r = 0,
 				from_unit = self._unit,
 				to_unit = unit
@@ -85,8 +85,8 @@ function StopwatchUnitElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._digital_gui_units) do
 		local params = {
-			g = 0.5,
 			b = 0,
+			g = 0.5,
 			r = 0,
 			from_unit = self._unit,
 			to_unit = unit
@@ -216,8 +216,8 @@ function StopwatchOperatorUnitElement:draw_links(t, dt, selected_unit, all_units
 
 			if draw then
 				self:_draw_link({
-					g = 0.75,
 					b = 0.25,
+					g = 0.75,
 					r = 0.75,
 					from_unit = self._unit,
 					to_unit = unit
@@ -230,12 +230,13 @@ function StopwatchOperatorUnitElement:draw_links(t, dt, selected_unit, all_units
 end
 
 function StopwatchOperatorUnitElement:update_editing()
+	return
 end
 
 function StopwatchOperatorUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring(StopwatchUnitElement.ELEMENT_NAME) then
@@ -295,6 +296,7 @@ function StopwatchOperatorUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_stopwatch/logic_stopwatch"
 	}
@@ -316,6 +318,7 @@ function StopwatchOperatorUnitElement:_build_panel(panel, panel_sizer)
 		floats = 1,
 		min = 0
 	}, "Amount of time to add, subtract or set to the stopwatch. Used as the default time if can not load the stopwatch.")
+
 	local key_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	panel_sizer:add(key_sizer, 0, 0, "EXPAND")
@@ -379,8 +382,8 @@ function StopwatchTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 
 			if draw then
 				self:_draw_link({
-					g = 0.85,
 					b = 0.25,
+					g = 0.85,
 					r = 0.85,
 					from_unit = unit,
 					to_unit = self._unit
@@ -393,12 +396,13 @@ function StopwatchTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 end
 
 function StopwatchTriggerUnitElement:update_editing()
+	return
 end
 
 function StopwatchTriggerUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit then
@@ -425,6 +429,7 @@ function StopwatchTriggerUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_stopwatch/logic_stopwatch"
 	}
@@ -496,12 +501,13 @@ function StopwatchFilterUnitElement:draw_links(t, dt, selected_unit, all_units)
 end
 
 function StopwatchFilterUnitElement:update_editing()
+	return
 end
 
 function StopwatchFilterUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring(StopwatchUnitElement.ELEMENT_NAME) then
@@ -557,6 +563,7 @@ function StopwatchFilterUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local names = {
 		"logic_counter/logic_counter"
 	}
@@ -572,9 +579,9 @@ function StopwatchFilterUnitElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(horizontal_sizer, 0, 1, "EXPAND,LEFT")
 
 	local number_params = {
+		ctrlr_proportions = 2,
 		name = "Value:",
 		name_proportions = 1,
-		ctrlr_proportions = 2,
 		sizer_proportions = 1,
 		tooltip = "Specify value to trigger on.",
 		panel = panel,

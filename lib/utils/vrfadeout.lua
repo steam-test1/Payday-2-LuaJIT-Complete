@@ -1,20 +1,20 @@
 VRFadeout = VRFadeout or class()
 VRFadeout.FADEOUT_TYPES = {
+	fadeout_instant = 1,
 	fadeout_smooth = 2,
-	fadeout_stepped = 3,
-	fadeout_instant = 1
+	fadeout_stepped = 3
 }
 
 function VRFadeout:init()
 	self._slotmask = managers.slot:get_mask("statics")
 	self._fadeout = {
-		value = 0,
 		fadein_speed = 0,
+		value = 0,
 		effect = {
 			blend_mode = "normal",
+			fade_in = 0,
 			fade_out = 0,
 			play_paused = true,
-			fade_in = 0,
 			color = Color(0, 0, 0, 0),
 			timer = TimerManager:main()
 		}
@@ -62,7 +62,7 @@ local function raycast_multi_dir(position, forward, length, slotmask)
 
 	local ray = World:raycast("ray", p_behind, p_ahead, "slot_mask", slotmask, "ray_type", "body walk", "sphere_cast_radius", 10, "bundle", 5)
 	local hit = false
-	local distance = nil
+	local distance
 
 	if ray then
 		hit = true
@@ -73,7 +73,9 @@ local function raycast_multi_dir(position, forward, length, slotmask)
 
 	if ray then
 		hit = true
+
 		local d = mvector3.distance(position, ray.position)
+
 		distance = distance and math.min(distance, d) or d
 	end
 
@@ -193,13 +195,7 @@ local function fadeout_func_stepped(mover_position, head_position, rotation, slo
 	local separation = ghost_mover_separation(mover_position, head_position)
 
 	if separation < 1 then
-		if separation > 0.66 then
-			separation = 0.55
-		elseif separation > 0.33 then
-			separation = 0.35
-		else
-			separation = 0
-		end
+		separation = separation > 0.66 and 0.55 or separation > 0.33 and 0.35 or 0
 	end
 
 	fadeout = math.max(separation, fadeout)
@@ -294,7 +290,7 @@ function VRFadeout:update(mover_position, head_position, rotation, t, dt, ignore
 	local fadeout_data = self._fadeout
 	local fadeout = fadeout_func[self._fadeout_type](mover_position, head_position, rotation, self._slotmask, ignore_head_collisions, ignore_ghost_distance)
 
-	if fadeout_data.value < fadeout then
+	if fadeout > fadeout_data.value then
 		fadeout_data.value = math.step(fadeout_data.value, fadeout, fadeout < 0.99 and dt * 3 or dt * 10)
 		fadeout_data.fadein_speed = 0
 	elseif fadeout < fadeout_data.value then
@@ -303,6 +299,7 @@ function VRFadeout:update(mover_position, head_position, rotation, t, dt, ignore
 	end
 
 	local v = fadeout_data.value
+
 	fadeout_data.effect.color.alpha = v * v * (3 - 2 * v)
 
 	if fadeout > 0.95 then

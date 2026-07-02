@@ -60,6 +60,7 @@ function ElementSpotter:update_spotter()
 
 	if self._found_units then
 		local unit = table.remove(self._found_units, 1)
+
 		self._found_units = #self._found_units > 0 and self._found_units or nil
 
 		if not alive(unit) or unit:character_damage():dead() or not unit:base()._tweak_table then

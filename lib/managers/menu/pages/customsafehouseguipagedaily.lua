@@ -9,12 +9,11 @@ local small_font_size = tweak_data.menu.pd2_small_font_size
 local done_icon = "guis/textures/menu_singletick"
 local reward_icon = "guis/textures/pd2/icon_reward"
 local selected_icon = "guis/textures/scrollarrow"
-local done_rotation = 0
-local reward_rotation = 0
-local selected_rotation = 270
+local done_rotation, reward_rotation, selected_rotation = 0, 0, 270
 local PANEL_PADDING = 10
 local LINE_PADDING = 4
 local REWARD_SIZE = 128
+
 CustomSafehouseGuiPageDaily = CustomSafehouseGuiPageDaily or class(CustomSafehouseGuiPage)
 
 function CustomSafehouseGuiPageDaily:init(page_id, page_panel, fullscreen_panel, gui)
@@ -28,6 +27,7 @@ function CustomSafehouseGuiPageDaily:init(page_id, page_panel, fullscreen_panel,
 	self._buttons = {}
 	self._scrollable_panels = {}
 	self._reward_buttons = {}
+
 	local w = self:info_panel():w()
 
 	self:info_panel():grow(-w, 0)
@@ -98,15 +98,19 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 
 	self._side_panel_buttons = {}
 	self._side_panel_categories = {}
+
 	local challenges = {}
+
 	self._challenges = {}
 
 	for _, challenge in pairs(managers.challenge:get_all_active_challenges()) do
 		local category = challenge.category or "daily"
+
 		challenges[category] = challenges[category] or {}
-		local chall = {
-			data = deep_clone(challenge)
-		}
+
+		local chall = {}
+
+		chall.data = deep_clone(challenge)
 		chall.data.category = category
 		chall.id = challenge.id
 
@@ -121,27 +125,30 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 
 	local current_daily = managers.custom_safehouse:get_daily_challenge()
 	local daily_data = deep_clone(current_daily)
+
 	daily_data.name_id = daily_data.id
 	daily_data.category = "safehouse_daily"
-	challenges.safehouse_daily = {
-		{
-			id = current_daily.id,
-			data = daily_data
-		},
-		category_id = "menu_cs_div_safehouse_daily"
+	challenges.safehouse_daily = {}
+	challenges.safehouse_daily.category_id = "menu_cs_div_safehouse_daily"
+	challenges.safehouse_daily[1] = {
+		id = current_daily.id,
+		data = daily_data
 	}
 	self._challenges[current_daily.id] = challenges.safehouse_daily[1].data
-	challenges.event_jobs = {
-		category_id = "menu_event_jobs"
-	}
+	challenges.event_jobs = {}
+	challenges.event_jobs.category_id = "menu_event_jobs"
 
 	for _, event_jobs_data in ipairs(managers.event_jobs:challenges()) do
 		if event_jobs_data.is_active_func and not managers.event_jobs[event_jobs_data.is_active_func](managers.event_jobs) then
 			-- Nothing
-		elseif not event_jobs_data.temp_challenge then
+		elseif event_jobs_data.temp_challenge then
+			-- Nothing
+		else
 			local data = deep_clone(event_jobs_data)
+
 			data.name_id = event_jobs_data.name_id
 			data.category = "event_jobs"
+
 			local event_jobs_challenge = {
 				id = event_jobs_data.id,
 				data = data
@@ -154,14 +161,15 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 	end
 
 	if managers.dlc:has_dlc("tango") then
-		challenges.tango = {
-			category_id = "menu_tango"
-		}
+		challenges.tango = {}
+		challenges.tango.category_id = "menu_tango"
 
 		for _, tango_data in ipairs(managers.tango:challenges()) do
 			local data = deep_clone(tango_data)
+
 			data.name_id = tango_data.name_id
 			data.category = "tango"
+
 			local tango_challenge = {
 				id = tango_data.id,
 				data = data
@@ -175,14 +183,15 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 
 	for _, side_job_dlc in ipairs(managers.generic_side_jobs:side_jobs()) do
 		if side_job_dlc.manager:can_progress() then
-			challenges[side_job_dlc.manager.category] = {
-				category_id = side_job_dlc.manager.category_id
-			}
+			challenges[side_job_dlc.manager.category] = {}
+			challenges[side_job_dlc.manager.category].category_id = side_job_dlc.manager.category_id
 
 			for _, challenge_data in ipairs(side_job_dlc.manager:challenges()) do
 				local data = deep_clone(challenge_data)
+
 				data.name_id = challenge_data.name_id
 				data.category = side_job_dlc.manager.category
+
 				local challenge = {
 					id = challenge_data.id,
 					data = data
@@ -198,27 +207,28 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 	if managers.mutators:get_enabled_active_mutator_category() == "event" then
 		challenges = {}
 		self._challenges = {}
-		challenges.event_jobs = {
-			category_id = "menu_event_jobs"
-		}
+		challenges.event_jobs = {}
+		challenges.event_jobs.category_id = "menu_event_jobs"
 
 		for _, event_jobs_data in ipairs(managers.event_jobs:challenges()) do
 			if event_jobs_data.is_active_func and not managers.event_jobs[event_jobs_data.is_active_func](managers.event_jobs) then
 				-- Nothing
-			elseif event_jobs_data.temp_challenge then
-				if event_jobs_data.temp_challenge == tweak_data.event_jobs.current_event then
-					local data = deep_clone(event_jobs_data)
-					data.name_id = event_jobs_data.name_id
-					data.category = "event_jobs"
-					local event_jobs_challenge = {
-						id = event_jobs_data.id,
-						data = data
-					}
+			elseif not event_jobs_data.temp_challenge or event_jobs_data.temp_challenge ~= tweak_data.event_jobs.current_event then
+				-- Nothing
+			else
+				local data = deep_clone(event_jobs_data)
 
-					table.insert(challenges.event_jobs, event_jobs_challenge)
+				data.name_id = event_jobs_data.name_id
+				data.category = "event_jobs"
 
-					self._challenges[event_jobs_challenge.id] = event_jobs_challenge.data
-				end
+				local event_jobs_challenge = {
+					id = event_jobs_data.id,
+					data = data
+				}
+
+				table.insert(challenges.event_jobs, event_jobs_challenge)
+
+				self._challenges[event_jobs_challenge.id] = event_jobs_challenge.data
 			end
 		end
 	end
@@ -228,14 +238,14 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 
 	for _, category in ipairs(categories) do
 		if challenges[category] then
-			local category_item = {
-				text = self._side_panel:canvas():text({
-					y = current_y,
-					text = managers.localization:to_upper_text(challenges[category].category_id),
-					font = small_font,
-					font_size = small_font_size
-				})
-			}
+			local category_item = {}
+
+			category_item.text = self._side_panel:canvas():text({
+				y = current_y,
+				text = managers.localization:to_upper_text(challenges[category].category_id),
+				font = small_font,
+				font_size = small_font_size
+			})
 
 			self:make_fine_text(category_item.text)
 
@@ -285,13 +295,14 @@ function CustomSafehouseGuiPageDaily:_update_buttons()
 	for _, button in ipairs(self._side_panel_buttons) do
 		local id = button:get_custom_data()
 		local is_safehouse_daily = self:is_safehouse_daily(id)
-		local completed, rewarded = nil
+		local completed, rewarded
 
 		if is_safehouse_daily then
 			rewarded = managers.custom_safehouse:has_rewarded_daily()
 			completed = managers.custom_safehouse:has_completed_daily()
 		else
 			local challenge = managers.challenge:get_active_challenge(id)
+
 			challenge = challenge or managers.event_jobs:get_challenge(id)
 			challenge = challenge or managers.tango:get_challenge(id)
 
@@ -380,6 +391,7 @@ function CustomSafehouseGuiPageDaily:_setup_daily_info()
 
 		for btn, btn_data in pairs(buttons) do
 			local new_button = CustomSafehouseGuiButtonItem:new(self._buttons_container, btn_data, btn_x, btn)
+
 			self._buttons[btn] = new_button
 
 			if btn_data.pc_btn then
@@ -401,13 +413,13 @@ function CustomSafehouseGuiPageDaily:_setup_daily_info()
 	table.insert(self._scrollable_panels, scroll)
 
 	local text_title = scroll:canvas():text({
-		name = "TitleText",
-		blend_mode = "add",
 		align = "left",
-		vertical = "top",
-		valign = "scale",
+		blend_mode = "add",
 		halign = "scale",
 		layer = 1,
+		name = "TitleText",
+		valign = "scale",
+		vertical = "top",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.title,
@@ -416,15 +428,15 @@ function CustomSafehouseGuiPageDaily:_setup_daily_info()
 		h = medium_font_size
 	})
 	local text_desc = scroll:canvas():text({
-		name = "DescText",
-		wrap = true,
 		align = "left",
-		vertical = "top",
-		valign = "top",
 		blend_mode = "add",
 		halign = "left",
-		word_wrap = true,
 		layer = 1,
+		name = "DescText",
+		valign = "top",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.title,
@@ -453,6 +465,7 @@ function CustomSafehouseGuiPageDaily:challenge_panel()
 	if not self._challenge_panel then
 		local challenge_panel_w = self:daily_panel():w() - self._side_panel:panel():w()
 		local side_right = self._side_panel:panel():right()
+
 		self._challenge_panel = self:daily_panel():panel({
 			h = self:daily_panel():h() - PANEL_PADDING * 2,
 			w = challenge_panel_w - PANEL_PADDING * 2,
@@ -490,9 +503,11 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 	end
 
 	local daily_info = tweak_data.safehouse:get_daily_data(daily_challenge.id)
+
 	daily_info = daily_info or daily_challenge
+
 	local challenge_h = self:challenge_panel():h()
-	local rewards_container = nil
+	local rewards_container
 
 	if daily_challenge.rewards then
 		rewards_container = self:challenge_panel():panel({
@@ -540,15 +555,15 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 	local current_y = 0
 	local description_text = scroll:canvas():text({
-		blend_mode = "add",
-		name = "DescText",
-		word_wrap = true,
-		wrap = true,
 		align = "left",
-		vertical = "top",
-		valign = "scale",
+		blend_mode = "add",
 		halign = "scale",
 		layer = 1,
+		name = "DescText",
+		valign = "scale",
+		vertical = "top",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.title,
@@ -565,15 +580,15 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 	if daily_info.global_value then
 		local global_text = scroll:canvas():text({
-			blend_mode = "add",
-			name = "GlobalText",
-			word_wrap = true,
-			wrap = true,
 			align = "left",
-			vertical = "top",
-			valign = "scale",
+			blend_mode = "add",
 			halign = "scale",
 			layer = 1,
+			name = "GlobalText",
+			valign = "scale",
+			vertical = "top",
+			word_wrap = true,
+			wrap = true,
 			font_size = small_font_size,
 			font = small_font,
 			color = tweak_data.lootdrop.global_values[daily_info.global_value] and tweak_data.lootdrop.global_values[daily_info.global_value].color or tweak_data.screen_colors.title,
@@ -591,13 +606,13 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 	if daily_info.objective_id or daily_info.objectives then
 		local objective_title = scroll:canvas():text({
-			name = "ObjectiveHeader",
-			blend_mode = "add",
 			align = "left",
-			vertical = "top",
-			valign = "scale",
+			blend_mode = "add",
 			halign = "scale",
 			layer = 1,
+			name = "ObjectiveHeader",
+			valign = "scale",
+			vertical = "top",
 			font_size = small_font_size,
 			font = small_font,
 			color = tweak_data.screen_colors.challenge_title,
@@ -609,6 +624,7 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 		objective_title:set_top(current_y + PANEL_PADDING * 2)
 
 		current_y = objective_title:bottom()
+
 		local macros = {}
 
 		if daily_challenge.trophy and daily_challenge.trophy.objectives and #daily_challenge.trophy.objectives > 0 then
@@ -644,15 +660,15 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 			if objective_str ~= "" and objective_str ~= " " then
 				local objective_text = scroll:canvas():text({
-					name = "ObjectiveText",
-					blend_mode = "add",
-					wrap = true,
 					align = "left",
-					word_wrap = true,
-					vertical = "top",
-					valign = "scale",
+					blend_mode = "add",
 					halign = "scale",
 					layer = 1,
+					name = "ObjectiveText",
+					valign = "scale",
+					vertical = "top",
+					word_wrap = true,
+					wrap = true,
 					font_size = small_font_size,
 					font = small_font,
 					color = tweak_data.screen_colors.title,
@@ -673,13 +689,13 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 	if daily_info.show_progress then
 		local progress_title = scroll:canvas():text({
-			name = "ProgressHeader",
-			blend_mode = "add",
 			align = "left",
-			vertical = "top",
-			valign = "scale",
+			blend_mode = "add",
 			halign = "scale",
 			layer = 1,
+			name = "ProgressHeader",
+			valign = "scale",
+			vertical = "top",
 			font_size = small_font_size,
 			font = small_font,
 			color = tweak_data.screen_colors.challenge_title,
@@ -692,6 +708,7 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 		current_y = progress_title:bottom()
 		self._progress_items = {}
+
 		local objectives = daily_challenge.trophy and daily_challenge.trophy.objectives or daily_challenge.objectives
 
 		for idx, objective in ipairs(objectives) do
@@ -743,6 +760,7 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 	if daily_challenge.rewards then
 		local updated_challenge = self:is_safehouse_daily(id) and managers.custom_safehouse:get_daily_challenge() or managers.challenge:get_active_challenge(id)
+
 		updated_challenge = updated_challenge or managers.event_jobs:get_challenge(id)
 		updated_challenge = updated_challenge or managers.tango:get_challenge(id)
 
@@ -753,6 +771,7 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 		end
 
 		updated_challenge = updated_challenge or daily_challenge
+
 		local rewards_panel = rewards_container:panel({
 			w = REWARD_SIZE * #daily_challenge.rewards,
 			h = REWARD_SIZE
@@ -770,13 +789,13 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 		})
 
 		local reward_title = rewards_container:text({
-			name = "RewardHeader",
-			blend_mode = "add",
-			vertical = "top",
 			align = "left",
-			valign = "top",
+			blend_mode = "add",
 			halign = "left",
 			layer = 1,
+			name = "RewardHeader",
+			valign = "top",
+			vertical = "top",
 			font_size = small_font_size,
 			font = small_font,
 			color = tweak_data.screen_colors.challenge_title,
@@ -804,9 +823,9 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 		if daily_challenge.reward_s or daily_challenge.reward_id then
 			local reward_text = rewards_container:text({
 				blend_mode = "add",
+				layer = 1,
 				name = "RewardBody",
 				wrap = true,
-				layer = 1,
 				font_size = small_font_size,
 				font = small_font,
 				text = daily_challenge.reward_s or managers.localization:text(daily_challenge.reward_id),
@@ -835,9 +854,9 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 			local reward_text = rewards_container:text({
 				blend_mode = "add",
+				layer = 1,
 				name = "RewardBody",
 				wrap = true,
-				layer = 1,
 				font_size = small_font_size,
 				font = small_font,
 				text = managers.localization:text("menu_tango_reward", reward_macros),
@@ -860,19 +879,21 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 		})
 
 		self._expire_panel = expiry_panel
+
 		local expiry_time = expiry_panel:text({
-			blend_mode = "add",
-			name = "ExpiryTime",
-			vertical = "top",
-			valign = "top",
 			align = "center",
-			text = "",
+			blend_mode = "add",
 			halign = "center",
 			layer = 1,
+			name = "ExpiryTime",
+			text = "",
+			valign = "top",
+			vertical = "top",
 			font_size = small_font_size,
 			font = small_font,
 			color = tweak_data.screen_colors.important_2:with_alpha(0.3)
 		})
+
 		self._expire_timer = expiry_time
 	end
 
@@ -983,13 +1004,13 @@ function CustomSafehouseGuiPageDaily:_setup_safehouse_daily_complete()
 	table.insert(self._scrollable_panels, scroll)
 
 	local header = scroll:canvas():text({
-		name = "DailyCompleteTitle",
-		blend_mode = "add",
-		vertical = "top",
 		align = "center",
-		valign = "top",
+		blend_mode = "add",
 		halign = "center",
 		layer = 1,
+		name = "DailyCompleteTitle",
+		valign = "top",
+		vertical = "top",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.challenge_title,
@@ -1014,27 +1035,29 @@ function CustomSafehouseGuiPageDaily:_setup_safehouse_daily_complete()
 	})
 
 	local timer_text = timer_panel:text({
-		blend_mode = "add",
-		name = "TimerText",
-		vertical = "top",
-		valign = "top",
 		align = "center",
-		text = "",
+		blend_mode = "add",
 		halign = "center",
 		layer = 1,
+		name = "TimerText",
+		text = "",
+		valign = "top",
+		vertical = "top",
 		font_size = medium_font_size,
 		font = medium_font,
 		color = tweak_data.screen_colors.challenge_title:with_alpha(1)
 	})
+
 	self._renew_timer = timer_text
+
 	local text = scroll:canvas():text({
-		name = "DailyCompleteInfo",
-		blend_mode = "add",
-		vertical = "top",
 		align = "center",
-		valign = "top",
+		blend_mode = "add",
 		halign = "center",
 		layer = 1,
+		name = "DailyCompleteInfo",
+		valign = "top",
+		vertical = "top",
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.text,
@@ -1099,7 +1122,7 @@ function CustomSafehouseGuiPageDaily:update_renew_timer()
 end
 
 function CustomSafehouseGuiPageDaily:move_button(dir)
-	local current_button = nil
+	local current_button
 
 	for i, button in ipairs(self._side_panel_buttons) do
 		if button:is_selected() then
@@ -1135,7 +1158,7 @@ function CustomSafehouseGuiPageDaily:move_button(dir)
 end
 
 function CustomSafehouseGuiPageDaily:_scroll_to_show(top_or_item, bottom)
-	local top = nil
+	local top
 
 	if top_or_item.top and top_or_item.bottom then
 		top = top_or_item:top() - 24
@@ -1143,6 +1166,7 @@ function CustomSafehouseGuiPageDaily:_scroll_to_show(top_or_item, bottom)
 	end
 
 	bottom = bottom - self._side_panel:scroll_panel():h()
+
 	local cur = -self._side_panel:canvas():y()
 
 	if top < cur then
@@ -1157,7 +1181,7 @@ function CustomSafehouseGuiPageDaily:move_reward_button(dir)
 		return
 	end
 
-	local current_button = nil
+	local current_button
 
 	for i, button in ipairs(self._reward_buttons) do
 		if button:is_selected() then
@@ -1268,6 +1292,7 @@ function CustomSafehouseGuiPageDaily:update(t, dt)
 				local expire_timestamp = managers.custom_safehouse:daily_challenge_interval() + timestamp
 				local current_timestamp = managers.custom_safehouse:get_timestamp()
 				local expire_time = expire_timestamp - current_timestamp
+
 				expire_string = self:_create_timestamp_string_extended(expire_time)
 			else
 				local challenge = self._challenges[self._current_challenge]
@@ -1277,6 +1302,7 @@ function CustomSafehouseGuiPageDaily:update(t, dt)
 					local expire_timestamp = challenge.interval + timestamp
 					local current_timestamp = managers.challenge:get_timestamp()
 					local expire_time = expire_timestamp - current_timestamp
+
 					expire_string = self:_create_timestamp_string_extended(expire_time)
 				end
 			end
@@ -1303,6 +1329,7 @@ function CustomSafehouseGuiPageDaily:_update_hide_daily(t, dt)
 
 		if self._complete_t > 1 then
 			local h = self:challenge_panel():h()
+
 			h = h - h * 4 * dt
 
 			self:challenge_panel():set_h(h)
@@ -1347,6 +1374,7 @@ function CustomSafehouseGuiPageDaily:_update_show_complete(t, dt)
 	end
 
 	self._complete_t = (self._complete_t or 0) + dt
+
 	local base_time = 0.8
 	local step_time = 0.5
 
@@ -1574,7 +1602,8 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 	self._order = order or 0
 	self._id = id
 	self._is_safehouse_daily = is_safehouse_daily or false
-	local texture_path, texture_rect, reward_string = nil
+
+	local texture_path, texture_rect, reward_string
 	local is_pattern = false
 	local is_material = false
 	local is_weapon = false
@@ -1627,9 +1656,12 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 		end
 
 		local atlas_name = td.icon_atlas or "icons_atlas"
+
 		texture_path = guis_catalog .. "textures/pd2/specialization/" .. atlas_name
+
 		local texture_rect_x = td.icon_xy and td.icon_xy[1] or 0
 		local texture_rect_y = td.icon_xy and td.icon_xy[2] or 0
+
 		texture_rect = {
 			texture_rect_x * 64,
 			texture_rect_y * 64,
@@ -1668,6 +1700,7 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 				reward_string = managers.experience:cash_string(managers.money:get_loot_drop_cash_value(td.value_id))
 			elseif category == "xp" then
 				local amount = tweak_data:get_value("experience_manager", "loot_drop_value", reward_data.item_entry) or 0
+
 				texture_path = "guis/textures/pd2/blackmarket/xp_drop"
 				reward_string = amount .. " XP"
 			else
@@ -1703,15 +1736,15 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 	end
 
 	self._text = self._panel:text({
-		name = "text",
-		wrap = true,
 		align = "center",
-		vertical = "bottom",
-		valign = "scale",
 		blend_mode = "add",
 		halign = "scale",
-		word_wrap = true,
 		layer = 2,
+		name = "text",
+		valign = "scale",
+		vertical = "bottom",
+		word_wrap = true,
+		wrap = true,
 		font_size = small_font_size,
 		font = small_font,
 		color = tweak_data.screen_colors.title,
@@ -1730,10 +1763,11 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 		texture = texture_path,
 		texture_rect = texture_rect
 	})
+
 	local ratio_w = self._image:w() / self._image:h()
 	local ratio_h = self._image:h() / self._image:w()
 
-	if self._image:h() < self._image:w() then
+	if self._image:w() > self._image:h() then
 		ratio_w = 1
 		ratio_h = self._image:h() / self._image:w()
 	else
@@ -1759,6 +1793,7 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 	self._image:set_center_y(self._panel:h() * 0.5)
 
 	local completed = self._is_safehouse_daily and managers.custom_safehouse:has_completed_daily() or managers.challenge:get_active_challenge(id) and managers.challenge:get_active_challenge(id).completed
+
 	completed = completed or managers.event_jobs:get_challenge(self._id) and managers.event_jobs:get_challenge(self._id).completed
 	completed = completed or managers.tango:get_challenge(self._id) and managers.tango:get_challenge(self._id).completed
 
@@ -1771,19 +1806,20 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 	if completed and not reward_data.rewarded then
 		local function glow_anim(o)
 			while true do
-				over(5, function (p)
+				over(5, function(p)
 					o:set_alpha(math.abs(math.sin(p * 360)) * 0.6)
 				end)
 			end
 		end
 
 		local glow_size = math.min(self._panel:w(), self._panel:h()) * 1.5
+
 		self._glow = self._panel:bitmap({
-			texture = "guis/textures/pd2/hot_cold_glow",
-			blend_mode = "add",
 			alpha = 0,
-			rotation = 360,
+			blend_mode = "add",
 			layer = -1,
+			rotation = 360,
+			texture = "guis/textures/pd2/hot_cold_glow",
 			w = glow_size,
 			h = glow_size,
 			color = tweak_data.screen_colors.challenge_completed_color

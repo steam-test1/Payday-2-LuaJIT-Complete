@@ -1,4 +1,5 @@
 PlayerArrestedVR = PlayerArrested or Application:error("PlayerArrestedVR needs PlayerArrested!")
+
 local __enter = PlayerArrested.enter
 local __exit = PlayerArrested.exit
 local __destroy = PlayerArrested.destroy
@@ -61,7 +62,7 @@ function PlayerArrestedVR:_update_check_actions(t, dt)
 		PlayerStandard.say_line(self, "s21x_sin")
 	end
 
-	if self._equip_weapon_expire_t and self._equip_weapon_expire_t <= t then
+	if self._equip_weapon_expire_t and t >= self._equip_weapon_expire_t then
 		self._equip_weapon_expire_t = nil
 	end
 

@@ -40,6 +40,7 @@ function BaseNetworkSession:create_local_peer(load_outfit)
 	local my_user_id = managers.network.matchmake:userid()
 	local my_account_type_str = NetworkPeer:account_type_str_from_type(SystemInfo:distribution())
 	local my_account_id = managers.network.account:player_id()
+
 	self._local_peer = NetworkPeer:new(my_name, Network:self(SystemInfo:matchmaking_protocol()), 0, false, false, false, managers.blackmarket:get_preferred_character(), my_user_id, my_account_type_str, my_account_id)
 
 	if load_outfit then
@@ -107,10 +108,12 @@ function BaseNetworkSession:save(data)
 	end
 
 	local peers = {}
+
 	data.peers = peers
 
 	for peer_id, peer in pairs(self._peers) do
 		local peer_data = {}
+
 		peers[peer_id] = peer_data
 
 		peer:save(peer_data)
@@ -369,7 +372,7 @@ function BaseNetworkSession:_on_peer_removed(peer, peer_id, reason)
 	print("Someone left", peer:name(), peer_id)
 
 	local player_left = false
-	local player_character = nil
+	local player_character
 
 	if managers.criminals then
 		player_character = managers.criminals:character_name_by_peer_id(peer_id)
@@ -404,6 +407,7 @@ function BaseNetworkSession:_on_peer_removed(peer, peer_id, reason)
 	if player_left then
 		local mugshot_id = managers.criminals:character_data_by_peer_id(peer_id).mugshot_id
 		local mugshot_data = managers.hud:_get_mugshot_data(mugshot_id)
+
 		member_health = mugshot_data and mugshot_data.health_amount or 1
 	end
 
@@ -440,6 +444,7 @@ function BaseNetworkSession:_on_peer_removed(peer, peer_id, reason)
 				managers.criminals:remove_character_by_peer_id(peer_id)
 
 				local unit = managers.groupai:state():spawn_one_teamAI(true, player_character)
+
 				self._old_players[peer_ident] = {
 					t = Application:time(),
 					member_downed = member_downed,
@@ -451,6 +456,7 @@ function BaseNetworkSession:_on_peer_removed(peer, peer_id, reason)
 					hostages_killed = hostages_killed,
 					respawn_penalty = respawn_penalty
 				}
+
 				local trade_entry = managers.trade:replace_player_with_ai(player_character, player_character)
 
 				if unit then
@@ -562,6 +568,7 @@ function BaseNetworkSession:on_peer_kicked(peer, peer_id, message_id)
 	if peer ~= self._local_peer then
 		if message_id == 0 or message_id == 6 then
 			local ident = self._ids_WIN32 == SystemInfo:platform() and peer:user_id() or peer:name()
+
 			self._kicked_list[ident] = true
 		end
 
@@ -617,14 +624,16 @@ end
 
 function BaseNetworkSession:update_skip_one()
 	self.update = nil
+
 	local wall_time = TimerManager:wall():time()
+
 	self._timeout_chk_t = wall_time + self.TIMEOUT_CHK_INTERVAL
 end
 
 function BaseNetworkSession:update()
 	local wall_time = TimerManager:wall():time()
 
-	if self._timeout_chk_t < wall_time then
+	if wall_time > self._timeout_chk_t then
 		for peer_id, peer in pairs(self._peers) do
 			peer:chk_timeout(peer:loading() and self.LOADING_CONNECTION_TIMEOUT or self.CONNECTION_TIMEOUT)
 		end
@@ -643,6 +652,7 @@ function BaseNetworkSession:update()
 end
 
 function BaseNetworkSession:end_update()
+	return
 end
 
 function BaseNetworkSession:send_to_peers(...)
@@ -738,7 +748,7 @@ function BaseNetworkSession:clbk_network_send(target_rpc, post_send)
 			local ok_to_delete = true
 			local peer_remove_info = self._soft_remove_peers[target_ip]
 
-			if not peer_remove_info.expire_t or TimerManager:game():time() < peer_remove_info.expire_t then
+			if not peer_remove_info.expire_t or peer_remove_info.expire_t > TimerManager:game():time() then
 				local send_resume = Network:get_connection_send_status(target_rpc)
 
 				if send_resume then
@@ -763,7 +773,7 @@ function BaseNetworkSession:clbk_network_send(target_rpc, post_send)
 				end
 			end
 		else
-			local peer = nil
+			local peer
 
 			if target_rpc:protocol_at_index(0) == "TCP_IP" then
 				peer = self:peer_by_ip(target_ip)
@@ -840,7 +850,7 @@ end
 function BaseNetworkSession:upd_trash_connections(wall_t)
 	if self._trash_connections then
 		for ip, info in pairs(self._trash_connections) do
-			if info.expire_t < wall_t then
+			if wall_t > info.expire_t then
 				local reset = true
 
 				for peer_id, peer in pairs(self._peers) do
@@ -867,7 +877,7 @@ function BaseNetworkSession:upd_trash_connections(wall_t)
 
 	if self._soft_remove_peers then
 		for peer_ip, info in pairs(self._soft_remove_peers) do
-			if info.expire_t < wall_t then
+			if wall_t > info.expire_t then
 				info.peer:destroy()
 
 				self._soft_remove_peers[peer_ip] = nil
@@ -884,6 +894,7 @@ end
 
 function BaseNetworkSession:add_connection_to_trash(rpc)
 	local wanted_ip = rpc:ip_at_index(0)
+
 	self._trash_connections = self._trash_connections or {}
 
 	if not self._trash_connections[wanted_ip] then
@@ -1125,11 +1136,11 @@ function BaseNetworkSession:chk_send_connection_established(name, user_id, peer)
 		peer:set_rpc(rpc)
 		Network:add_co_client(rpc)
 
-		local player_info = {
-			name = peer:name(),
-			player_id = peer:xuid(),
-			external_address = peer:xnaddr()
-		}
+		local player_info = {}
+
+		player_info.name = peer:name()
+		player_info.player_id = peer:xuid()
+		player_info.external_address = peer:xnaddr()
 
 		managers.network.voice_chat:open_channel_to(player_info, "game")
 		self:remove_connection_from_trash(rpc)
@@ -1163,7 +1174,7 @@ function BaseNetworkSession:send_windistrib_p2p_msgs(wall_t)
 	end
 
 	for peer_id, peer in pairs(self._peers) do
-		if peer ~= self._server_peer and (not peer:next_windistrib_p2p_send_t() or peer:next_windistrib_p2p_send_t() < wall_t) then
+		if peer ~= self._server_peer and (not peer:next_windistrib_p2p_send_t() or wall_t > peer:next_windistrib_p2p_send_t()) then
 			peer:rpc():windistrib_p2p_ping()
 			peer:set_next_windistrib_p2p_send_t(wall_t + self._WINDISTRIB_P2P_SEND_INTERVAL)
 		end
@@ -1213,7 +1224,7 @@ end
 
 function BaseNetworkSession:peer_streaming_status()
 	local status = 100
-	local peer_name = nil
+	local peer_name
 
 	for peer_id, peer in pairs(self._peers) do
 		local peer_status = peer:streaming_status()
@@ -1247,7 +1258,7 @@ function BaseNetworkSession:_get_peer_outfit_versions_str()
 	local outfit_versions_str = ""
 
 	for peer_id = 1, tweak_data.max_players do
-		local peer = nil
+		local peer
 
 		if peer_id == self._local_peer:id() then
 			peer = self._local_peer
@@ -1343,18 +1354,20 @@ function BaseNetworkSession:check_peer_preferred_character(preferred_character)
 		end
 	end
 
-	local character, character_name, character_table, global_value, lootdrop_tweak, hide_unavailable = nil
+	do
+		local character, character_name, character_table, global_value, lootdrop_tweak, hide_unavailable
 
-	for i = #free_characters, 1, -1 do
-		character = free_characters[i]
-		character_name = CriminalsManager.convert_old_to_new_character_workname(character)
-		character_table = tweak_data.blackmarket.characters[character] or tweak_data.blackmarket.characters.locked[character_name]
-		global_value = character_table and character_table.dlc and managers.dlc:dlc_to_global_value(character_table.dlc)
-		lootdrop_tweak = global_value and tweak_data.lootdrop.global_values[global_value]
-		hide_unavailable = lootdrop_tweak and lootdrop_tweak.hide_unavailable
+		for i = #free_characters, 1, -1 do
+			character = free_characters[i]
+			character_name = CriminalsManager.convert_old_to_new_character_workname(character)
+			character_table = tweak_data.blackmarket.characters[character] or tweak_data.blackmarket.characters.locked[character_name]
+			global_value = character_table and character_table.dlc and managers.dlc:dlc_to_global_value(character_table.dlc)
+			lootdrop_tweak = global_value and tweak_data.lootdrop.global_values[global_value]
+			hide_unavailable = lootdrop_tweak and lootdrop_tweak.hide_unavailable
 
-		if hide_unavailable then
-			table.delete(free_characters, character)
+			if hide_unavailable then
+				table.delete(free_characters, character)
+			end
 		end
 	end
 
@@ -1479,6 +1492,7 @@ end
 function BaseNetworkSession:_create_spawn_point_beanbag()
 	local spawn_points = managers.network._spawn_points
 	local spawn_point_ids = {}
+
 	self._spawn_point_beanbag = {}
 
 	for sp_id, sp_data in pairs(spawn_points) do
@@ -1717,28 +1731,29 @@ function BaseNetworkSession:on_statistics_recieved(peer_id, peer_kills, peer_spe
 	for _, peer in pairs(self._peers_all) do
 		if peer:has_statistics() then
 			local stats = peer:statistics()
+
 			total_kills = total_kills + stats.total_kills
 			total_specials_kills = total_specials_kills + stats.total_specials_kills
 			total_head_shots = total_head_shots + stats.total_head_shots
 			group_accuracy = group_accuracy + stats.accuracy
 			group_downs = group_downs + stats.downs
 
-			if best_killer.score < stats.total_kills or not best_killer.peer_id then
+			if stats.total_kills > best_killer.score or not best_killer.peer_id then
 				best_killer.score = stats.total_kills
 				best_killer.peer_id = peer:id()
 			end
 
-			if best_special_killer.score < stats.total_specials_kills or not best_special_killer.peer_id then
+			if stats.total_specials_kills > best_special_killer.score or not best_special_killer.peer_id then
 				best_special_killer.score = stats.total_specials_kills
 				best_special_killer.peer_id = peer:id()
 			end
 
-			if best_accuracy.score < stats.accuracy or not best_accuracy.peer_id then
+			if stats.accuracy > best_accuracy.score or not best_accuracy.peer_id then
 				best_accuracy.score = stats.accuracy
 				best_accuracy.peer_id = peer:id()
 			end
 
-			if most_downs.score < stats.downs or not most_downs.peer_id then
+			if stats.downs > most_downs.score or not most_downs.peer_id then
 				most_downs.score = stats.downs
 				most_downs.peer_id = peer:id()
 			end

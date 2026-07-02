@@ -7,6 +7,7 @@ function InfamyTweakData:init()
 
 	local cost_old = digest(200000000)
 	local cost_new = digest(0)
+
 	self.ranks = 500
 	self.offshore_cost = {
 		cost_old,
@@ -34,8 +35,8 @@ function InfamyTweakData:init()
 	}
 	self.dlc_join_stingers = {
 		{
-			join_stinger = 36,
-			dlc = "a11th_stinger"
+			dlc = "a11th_stinger",
+			join_stinger = 36
 		}
 	}
 	self.icon_rank_step = 100
@@ -61,113 +62,113 @@ function InfamyTweakData:init()
 			color = Color("FFD700")
 		}
 	}
-	self.tree = {
-		"infamy_root",
-		"infamy_xp_medium_4",
-		"infamy_mastermind",
-		"infamy_xp_medium_5",
-		"infamy_enforcer",
-		"infamy_xp_medium_8",
-		"infamy_technician",
-		"infamy_xp_medium_9",
-		"infamy_ghost",
-		"infamy_xp_medium_2",
-		"infamy_maskpack_balaclava",
-		"infamy_xp_medium_6",
-		"infamy_maskpack_lurker",
-		"infamy_xp_medium_7",
-		"infamy_maskpack_daft",
-		"infamy_xp_medium_11",
-		"infamy_maskpack_punk",
-		"infamy_xp_medium_1",
-		"infamy_maskpack_pain",
-		"infamy_xp_medium_3",
-		"infamy_maskpack_ranger",
-		"infamy_xp_medium_10",
-		"infamy_maskpack_hood",
-		"infamy_xp_medium_12",
-		"infamy_maskpack_destroyer",
-		"infamy_stinger_002",
-		"infamy_color_inf_01",
-		"infamy_color_inf_02",
-		"infamy_stinger_003",
-		"infamy_suitpack_t800",
-		"infamy_stinger_004",
-		"infamy_color_inf_03",
-		"infamy_color_inf_04",
-		"infamy_stinger_005",
-		"infamy_glovepack_molten",
-		"infamy_stinger_006",
-		"infamy_color_inf_05",
-		"infamy_color_inf_06",
-		"infamy_stinger_007",
-		"infamy_suitpack_t800_toughboy",
-		"infamy_stinger_008",
-		"infamy_color_inf_07",
-		"infamy_color_inf_08",
-		"infamy_stinger_009",
-		"infamy_glovepack_tiger",
-		"infamy_stinger_010",
-		"infamy_color_inf_09",
-		"infamy_color_inf_10",
-		"infamy_stinger_011",
-		"infamy_suitpack_t800_red",
-		"infamy_stinger_012",
-		"infamy_color_inf_11",
-		"infamy_color_inf_12",
-		"infamy_stinger_013",
-		"infamy_glovepack_cosmos",
-		"infamy_stinger_014",
-		"infamy_color_inf_13",
-		"infamy_color_inf_14",
-		"infamy_stinger_015",
-		"infamy_suitpack_t800_cowboy",
-		"infamy_stinger_016",
-		"infamy_color_inf_15",
-		"infamy_color_inf_16",
-		"infamy_stinger_017",
-		"infamy_glovepack_neoncity",
-		"in31_suitpack_leather",
-		"in31_weapon_color_stinger_01",
-		"in31_glovepack_wool",
-		"in31_weapon_color_stinger_02",
-		"in31_suitpack_leather_black",
-		"in31_weapon_color_stinger_03",
-		"in31_maskpack_lastlaugh",
-		"in31_weapon_color_stinger_04",
-		"in31_suitpack_leather_red",
-		"in31_weapon_color_stinger_05",
-		"in31_maskpack_cyberpunk",
-		"in31_weapon_color_stinger_06",
-		"in31_suitpack_leather_white",
-		"in31_weapon_color_stinger_07",
-		"in31_glovepack_silver",
-		"in31_weapon_color_stinger_08",
-		"in32_glovepack_goldnet",
-		"in32_weapon_color_stinger_01",
-		"in32_suitpack_gangstercoat",
-		"in32_weapon_color_stinger_02",
-		"in32_suitpack_gangstercoat_british",
-		"in32_weapon_color_stinger_03",
-		"in32_maskpack_goldenbrute",
-		"in32_weapon_color_stinger_04",
-		"in32_suitpack_gangstercoat_french",
-		"in32_weapon_color_stinger_05",
-		"in32_suitpack_gangstercoat_irish",
-		"in32_weapon_color_stinger_06",
-		"in32_maskpack_ingoldnito",
-		"in32_weapon_color_stinger_07",
-		"in32_suitpack_general_default_blue",
-		"in32_weapon_color_stinger_08",
-		"in32_suitglovepack_general_postmoto",
-		"in32_weapon_color_stinger_09",
-		"in33_one_hundred"
-	}
+	self.tree = {}
+	self.tree[1] = "infamy_root"
+	self.tree[2] = "infamy_xp_medium_4"
+	self.tree[3] = "infamy_mastermind"
+	self.tree[4] = "infamy_xp_medium_5"
+	self.tree[5] = "infamy_enforcer"
+	self.tree[6] = "infamy_xp_medium_8"
+	self.tree[7] = "infamy_technician"
+	self.tree[8] = "infamy_xp_medium_9"
+	self.tree[9] = "infamy_ghost"
+	self.tree[10] = "infamy_xp_medium_2"
+	self.tree[11] = "infamy_maskpack_balaclava"
+	self.tree[12] = "infamy_xp_medium_6"
+	self.tree[13] = "infamy_maskpack_lurker"
+	self.tree[14] = "infamy_xp_medium_7"
+	self.tree[15] = "infamy_maskpack_daft"
+	self.tree[16] = "infamy_xp_medium_11"
+	self.tree[17] = "infamy_maskpack_punk"
+	self.tree[18] = "infamy_xp_medium_1"
+	self.tree[19] = "infamy_maskpack_pain"
+	self.tree[20] = "infamy_xp_medium_3"
+	self.tree[21] = "infamy_maskpack_ranger"
+	self.tree[22] = "infamy_xp_medium_10"
+	self.tree[23] = "infamy_maskpack_hood"
+	self.tree[24] = "infamy_xp_medium_12"
+	self.tree[25] = "infamy_maskpack_destroyer"
+	self.tree[26] = "infamy_stinger_002"
+	self.tree[27] = "infamy_color_inf_01"
+	self.tree[28] = "infamy_color_inf_02"
+	self.tree[29] = "infamy_stinger_003"
+	self.tree[30] = "infamy_suitpack_t800"
+	self.tree[31] = "infamy_stinger_004"
+	self.tree[32] = "infamy_color_inf_03"
+	self.tree[33] = "infamy_color_inf_04"
+	self.tree[34] = "infamy_stinger_005"
+	self.tree[35] = "infamy_glovepack_molten"
+	self.tree[36] = "infamy_stinger_006"
+	self.tree[37] = "infamy_color_inf_05"
+	self.tree[38] = "infamy_color_inf_06"
+	self.tree[39] = "infamy_stinger_007"
+	self.tree[40] = "infamy_suitpack_t800_toughboy"
+	self.tree[41] = "infamy_stinger_008"
+	self.tree[42] = "infamy_color_inf_07"
+	self.tree[43] = "infamy_color_inf_08"
+	self.tree[44] = "infamy_stinger_009"
+	self.tree[45] = "infamy_glovepack_tiger"
+	self.tree[46] = "infamy_stinger_010"
+	self.tree[47] = "infamy_color_inf_09"
+	self.tree[48] = "infamy_color_inf_10"
+	self.tree[49] = "infamy_stinger_011"
+	self.tree[50] = "infamy_suitpack_t800_red"
+	self.tree[51] = "infamy_stinger_012"
+	self.tree[52] = "infamy_color_inf_11"
+	self.tree[53] = "infamy_color_inf_12"
+	self.tree[54] = "infamy_stinger_013"
+	self.tree[55] = "infamy_glovepack_cosmos"
+	self.tree[56] = "infamy_stinger_014"
+	self.tree[57] = "infamy_color_inf_13"
+	self.tree[58] = "infamy_color_inf_14"
+	self.tree[59] = "infamy_stinger_015"
+	self.tree[60] = "infamy_suitpack_t800_cowboy"
+	self.tree[61] = "infamy_stinger_016"
+	self.tree[62] = "infamy_color_inf_15"
+	self.tree[63] = "infamy_color_inf_16"
+	self.tree[64] = "infamy_stinger_017"
+	self.tree[65] = "infamy_glovepack_neoncity"
+	self.tree[66] = "in31_suitpack_leather"
+	self.tree[67] = "in31_weapon_color_stinger_01"
+	self.tree[68] = "in31_glovepack_wool"
+	self.tree[69] = "in31_weapon_color_stinger_02"
+	self.tree[70] = "in31_suitpack_leather_black"
+	self.tree[71] = "in31_weapon_color_stinger_03"
+	self.tree[72] = "in31_maskpack_lastlaugh"
+	self.tree[73] = "in31_weapon_color_stinger_04"
+	self.tree[74] = "in31_suitpack_leather_red"
+	self.tree[75] = "in31_weapon_color_stinger_05"
+	self.tree[76] = "in31_maskpack_cyberpunk"
+	self.tree[77] = "in31_weapon_color_stinger_06"
+	self.tree[78] = "in31_suitpack_leather_white"
+	self.tree[79] = "in31_weapon_color_stinger_07"
+	self.tree[80] = "in31_glovepack_silver"
+	self.tree[81] = "in31_weapon_color_stinger_08"
+	self.tree[82] = "in32_glovepack_goldnet"
+	self.tree[83] = "in32_weapon_color_stinger_01"
+	self.tree[84] = "in32_suitpack_gangstercoat"
+	self.tree[85] = "in32_weapon_color_stinger_02"
+	self.tree[86] = "in32_suitpack_gangstercoat_british"
+	self.tree[87] = "in32_weapon_color_stinger_03"
+	self.tree[88] = "in32_maskpack_goldenbrute"
+	self.tree[89] = "in32_weapon_color_stinger_04"
+	self.tree[90] = "in32_suitpack_gangstercoat_french"
+	self.tree[91] = "in32_weapon_color_stinger_05"
+	self.tree[92] = "in32_suitpack_gangstercoat_irish"
+	self.tree[93] = "in32_weapon_color_stinger_06"
+	self.tree[94] = "in32_maskpack_ingoldnito"
+	self.tree[95] = "in32_weapon_color_stinger_07"
+	self.tree[96] = "in32_suitpack_general_default_blue"
+	self.tree[97] = "in32_weapon_color_stinger_08"
+	self.tree[98] = "in32_suitglovepack_general_postmoto"
+	self.tree[99] = "in32_weapon_color_stinger_09"
+	self.tree[100] = "in33_one_hundred"
 	self.cost = {
 		root = digest(0),
 		tier1 = digest(0)
 	}
 	self.items = {}
+
 	local skilltree_multiplier = 0.9
 	local skillcost_multiplier = 0.75
 	local skilltree_readable_multiplier = "10%"
@@ -182,10 +183,11 @@ function InfamyTweakData:init()
 	local infamous_readable_xp_multiplier_medium = "10%"
 	local infamous_xp_multiplier_large = 1.15
 	local infamous_readable_xp_multiplier_large = "15%"
+
 	self.items.infamy_root = {
 		add_tier = false,
-		name_id = "menu_infamy_name_root",
 		desc_id = "menu_infamy_desc_root_new",
+		name_id = "menu_infamy_name_root",
 		desc_params = {
 			cashcost = skillcost_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base,
@@ -224,8 +226,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_mastermind = {
 		add_tier = false,
-		name_id = "menu_infamy_name_mastermind",
 		desc_id = "menu_infamy_desc_mastermind_new",
+		name_id = "menu_infamy_name_mastermind",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -256,8 +258,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_enforcer = {
 		add_tier = false,
-		name_id = "menu_infamy_name_enforcer",
 		desc_id = "menu_infamy_desc_enforcer_new",
+		name_id = "menu_infamy_name_enforcer",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -288,8 +290,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_technician = {
 		add_tier = false,
-		name_id = "menu_infamy_name_technician",
 		desc_id = "menu_infamy_desc_technician_new",
+		name_id = "menu_infamy_name_technician",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -320,8 +322,8 @@ function InfamyTweakData:init()
 	}
 	self.items.infamy_ghost = {
 		add_tier = false,
-		name_id = "menu_infamy_name_ghost",
 		desc_id = "menu_infamy_desc_ghost_new",
+		name_id = "menu_infamy_name_ghost",
 		desc_params = {
 			multibasic = skilltree_readable_multiplier,
 			xpboost = infamous_readable_xp_multiplier_base
@@ -350,10 +352,11 @@ function InfamyTweakData:init()
 			infamous_xp = infamous_xp_multiplier_base
 		}
 	}
+
 	local generic_medium_xp_item = {
-		name_id = "menu_infamy_name_xp",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_xp",
+		name_id = "menu_infamy_name_xp",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_medium
 		},
@@ -372,9 +375,9 @@ function InfamyTweakData:init()
 	end
 
 	self.items.infamy_maskpack_balaclava = {
-		name_id = "menu_infamy_name_balaclava",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_balaclava",
+		name_id = "menu_infamy_name_balaclava",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -403,9 +406,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_lurker = {
-		name_id = "menu_infamy_name_lurker",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_lurker",
+		name_id = "menu_infamy_name_lurker",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -434,9 +437,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_hood = {
-		name_id = "menu_infamy_name_hood",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_hood",
+		name_id = "menu_infamy_name_hood",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -465,9 +468,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_pain = {
-		name_id = "menu_infamy_name_pain",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_pain",
+		name_id = "menu_infamy_name_pain",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -496,9 +499,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_ranger = {
-		name_id = "menu_infamy_name_ranger",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_ranger",
+		name_id = "menu_infamy_name_ranger",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -527,9 +530,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_punk = {
-		name_id = "menu_infamy_name_punk",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_punk",
+		name_id = "menu_infamy_name_punk",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -558,9 +561,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_daft = {
-		name_id = "menu_infamy_name_daft",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_daft",
+		name_id = "menu_infamy_name_daft",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -589,9 +592,9 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_maskpack_destroyer = {
-		name_id = "menu_infamy_name_destroyer",
 		add_tier = false,
 		desc_id = "menu_infamy_desc_destroyer",
+		name_id = "menu_infamy_name_destroyer",
 		desc_params = {
 			xpboost = infamous_readable_xp_multiplier_small
 		},
@@ -619,6 +622,7 @@ function InfamyTweakData:init()
 			infamous_xp = infamous_xp_multiplier_small
 		}
 	}
+
 	local generic_join_stinger_item = {
 		desc_id = "menu_infamy_join_stinger_desc",
 		name_id = "",
@@ -653,6 +657,7 @@ function InfamyTweakData:init()
 
 	for _, index in ipairs(single_pack_join_stingers) do
 		local item_id = string.format("infamy_stinger_%03d", index)
+
 		self.items[item_id] = deep_clone(generic_join_stinger_item)
 		self.items[item_id].name_id = "menu_" .. item_id .. "_name"
 
@@ -660,8 +665,8 @@ function InfamyTweakData:init()
 	end
 
 	self.items.infamy_suitpack_t800 = {
-		name_id = "menu_infamy_name_suitpack_t800",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_t800",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -673,8 +678,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_suitpack_t800_cowboy = {
-		name_id = "menu_infamy_name_suitpack_t800_cowboy",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_t800_cowboy",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -686,8 +691,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_suitpack_t800_toughboy = {
-		name_id = "menu_infamy_name_suitpack_t800_toughboy",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_t800_toughboy",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -699,8 +704,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_suitpack_t800_red = {
-		name_id = "menu_infamy_name_suitpack_t800_red",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_t800_red",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -712,8 +717,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_glovepack_tiger = {
-		name_id = "menu_infamy_name_glovepack_tiger",
 		desc_id = "menu_infamy_gloves_desc",
+		name_id = "menu_infamy_name_glovepack_tiger",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -724,8 +729,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_glovepack_neoncity = {
-		name_id = "menu_infamy_name_glovepack_neoncity",
 		desc_id = "menu_infamy_gloves_desc",
+		name_id = "menu_infamy_name_glovepack_neoncity",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -736,8 +741,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_glovepack_cosmos = {
-		name_id = "menu_infamy_name_glovepack_cosmos",
 		desc_id = "menu_infamy_gloves_desc",
+		name_id = "menu_infamy_name_glovepack_cosmos",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -748,8 +753,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.infamy_glovepack_molten = {
-		name_id = "menu_infamy_name_glovepack_molten",
 		desc_id = "menu_infamy_gloves_desc",
+		name_id = "menu_infamy_name_glovepack_molten",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -759,6 +764,7 @@ function InfamyTweakData:init()
 			}
 		}
 	}
+
 	local generic_weapon_color_item = {
 		desc_id = "menu_infamy_weapon_color_desc",
 		name_id = "",
@@ -792,6 +798,7 @@ function InfamyTweakData:init()
 	for _, id in ipairs(weapon_colors) do
 		local item_id = "infamy_" .. id
 		local color_id = id
+
 		self.items[item_id] = deep_clone(generic_weapon_color_item)
 		self.items[item_id].name_id = "menu_infamy_" .. id .. "_name"
 
@@ -803,9 +810,10 @@ function InfamyTweakData:init()
 	end
 
 	local infamy_color_and_stinger_packs = {}
+
 	self.items.in31_maskpack_cyberpunk = {
-		name_id = "menu_in31_maskpack_cyberpunk_name",
 		desc_id = "menu_in31_maskpack_cyberpunk_desc",
+		name_id = "menu_in31_maskpack_cyberpunk_name",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -816,8 +824,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in31_maskpack_lastlaugh = {
-		name_id = "menu_in31_maskpack_lastlaugh_name",
 		desc_id = "menu_in31_maskpack_lastlaugh_desc",
+		name_id = "menu_in31_maskpack_lastlaugh_name",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -828,8 +836,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in31_glovepack_wool = {
-		name_id = "menu_infamy_name_glovepack_wool",
 		desc_id = "menu_infamy_gloves_desc",
+		name_id = "menu_infamy_name_glovepack_wool",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -840,8 +848,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in31_glovepack_silver = {
-		name_id = "menu_infamy_name_glovepack_silver",
 		desc_id = "menu_infamy_gloves_desc",
+		name_id = "menu_infamy_name_glovepack_silver",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -852,8 +860,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in31_suitpack_leather = {
-		name_id = "menu_infamy_name_suitpack_leather",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_leather",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -865,8 +873,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in31_suitpack_leather_black = {
-		name_id = "menu_infamy_name_suitpack_leather_black",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_leather_black",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -878,8 +886,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in31_suitpack_leather_red = {
-		name_id = "menu_infamy_name_suitpack_leather_red",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_leather_red",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -891,8 +899,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in31_suitpack_leather_white = {
-		name_id = "menu_infamy_name_suitpack_leather_white",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_infamy_name_suitpack_leather_white",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -906,50 +914,50 @@ function InfamyTweakData:init()
 
 	table.list_append(infamy_color_and_stinger_packs, {
 		{
-			join_stinger = 19,
 			item_id = "in31_weapon_color_stinger_01",
+			join_stinger = 19,
 			weapon_color = "color_in31_06"
 		},
 		{
-			join_stinger = 20,
 			item_id = "in31_weapon_color_stinger_02",
+			join_stinger = 20,
 			weapon_color = "color_in31_04"
 		},
 		{
-			join_stinger = 21,
 			item_id = "in31_weapon_color_stinger_03",
+			join_stinger = 21,
 			weapon_color = "color_in31_05"
 		},
 		{
-			join_stinger = 22,
 			item_id = "in31_weapon_color_stinger_04",
+			join_stinger = 22,
 			weapon_color = "color_in31_02"
 		},
 		{
-			join_stinger = 23,
 			item_id = "in31_weapon_color_stinger_05",
+			join_stinger = 23,
 			weapon_color = "color_in31_01"
 		},
 		{
-			join_stinger = 24,
 			item_id = "in31_weapon_color_stinger_06",
+			join_stinger = 24,
 			weapon_color = "color_in31_08"
 		},
 		{
-			join_stinger = 25,
 			item_id = "in31_weapon_color_stinger_07",
+			join_stinger = 25,
 			weapon_color = "color_in31_03"
 		},
 		{
-			join_stinger = 26,
 			item_id = "in31_weapon_color_stinger_08",
+			join_stinger = 26,
 			weapon_color = "color_in31_07"
 		}
 	})
 
 	self.items.in32_maskpack_goldenbrute = {
-		name_id = "menu_in32_maskpack_goldenbrute_name",
 		desc_id = "menu_in32_maskpack_goldenbrute_desc",
+		name_id = "menu_in32_maskpack_goldenbrute_name",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -960,8 +968,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_maskpack_ingoldnito = {
-		name_id = "menu_in32_maskpack_ingoldnito_name",
 		desc_id = "menu_in32_maskpack_ingoldnito_desc",
+		name_id = "menu_in32_maskpack_ingoldnito_name",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -972,8 +980,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_suitpack_gangstercoat = {
-		name_id = "menu_in32_suitpack_gangstercoat",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_in32_suitpack_gangstercoat",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -985,8 +993,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_suitpack_gangstercoat_irish = {
-		name_id = "menu_in32_suitpack_gangstercoat_irish",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_in32_suitpack_gangstercoat_irish",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -998,8 +1006,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_suitpack_gangstercoat_british = {
-		name_id = "menu_in32_suitpack_gangstercoat_british",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_in32_suitpack_gangstercoat_british",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -1011,8 +1019,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_suitpack_gangstercoat_french = {
-		name_id = "menu_in32_suitpack_gangstercoat_french",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_in32_suitpack_gangstercoat_french",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -1024,8 +1032,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_suitpack_general_default_blue = {
-		name_id = "menu_in32_suitpack_general_default_blue",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_in32_suitpack_general_default_blue",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -1043,8 +1051,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_suitglovepack_general_postmoto = {
-		name_id = "menu_in32_suitglovepack_general_postmoto",
 		desc_id = "menu_infamy_suits_desc",
+		name_id = "menu_in32_suitglovepack_general_postmoto",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -1067,8 +1075,8 @@ function InfamyTweakData:init()
 		}
 	}
 	self.items.in32_glovepack_goldnet = {
-		name_id = "menu_in32_glovepack_goldnet",
 		desc_id = "menu_infamy_gloves_desc",
+		name_id = "menu_in32_glovepack_goldnet",
 		cost = self.cost.tier1,
 		upgrades = {
 			{
@@ -1081,55 +1089,55 @@ function InfamyTweakData:init()
 
 	table.list_append(infamy_color_and_stinger_packs, {
 		{
-			join_stinger = 27,
 			item_id = "in32_weapon_color_stinger_01",
+			join_stinger = 27,
 			weapon_color = "color_in32_01"
 		},
 		{
-			join_stinger = 28,
 			item_id = "in32_weapon_color_stinger_02",
+			join_stinger = 28,
 			weapon_color = "color_in32_02"
 		},
 		{
-			join_stinger = 29,
 			item_id = "in32_weapon_color_stinger_03",
+			join_stinger = 29,
 			weapon_color = "color_in32_03"
 		},
 		{
-			join_stinger = 30,
 			item_id = "in32_weapon_color_stinger_04",
+			join_stinger = 30,
 			weapon_color = "color_in32_04"
 		},
 		{
-			join_stinger = 31,
 			item_id = "in32_weapon_color_stinger_05",
+			join_stinger = 31,
 			weapon_color = "color_in32_05"
 		},
 		{
-			join_stinger = 32,
 			item_id = "in32_weapon_color_stinger_06",
+			join_stinger = 32,
 			weapon_color = "color_in32_06"
 		},
 		{
-			join_stinger = 33,
 			item_id = "in32_weapon_color_stinger_07",
+			join_stinger = 33,
 			weapon_color = "color_in32_07"
 		},
 		{
-			join_stinger = 34,
 			item_id = "in32_weapon_color_stinger_08",
+			join_stinger = 34,
 			weapon_color = "color_in32_08"
 		},
 		{
-			join_stinger = 35,
 			item_id = "in32_weapon_color_stinger_09",
+			join_stinger = 35,
 			weapon_color = "color_in32_09"
 		}
 	})
 
 	local generic_infamy_weapon_color_and_stinger_item = {
-		name_id = "menu_infamy_color_stinger_name",
 		desc_id = "menu_infamy_color_stinger_desc",
+		name_id = "menu_infamy_color_stinger_name",
 		desc_params = {},
 		desc_param_ids = {},
 		icon_xy = {
@@ -1147,6 +1155,7 @@ function InfamyTweakData:init()
 		local color_id = data.weapon_color
 		local join_stinger = data.join_stinger
 		local join_stinger_id = string.format("infamy_stinger_%03d", data.join_stinger)
+
 		self.items[item_id] = deep_clone(generic_infamy_weapon_color_and_stinger_item)
 		self.items[item_id].desc_param_ids.weapon_color = "bm_wskn_" .. color_id
 		self.items[item_id].desc_param_ids.join_stinger = "menu_" .. join_stinger_id .. "_name"
@@ -1222,8 +1231,8 @@ function InfamyTweakData:init()
 	self.items.in32_suitpack_general_default_blue.desc_id = "menu_in33_desc_suitpack_general_default_blue"
 	self.items.in32_suitglovepack_general_postmoto.desc_id = "menu_in33_desc_suitglovepack_general_postmoto"
 	self.items.in33_one_hundred = {
-		name_id = "menu_in33_one_hundred",
 		desc_id = "menu_in33_one_hundred_desc",
+		name_id = "menu_in33_one_hundred",
 		cost = self.cost.tier1,
 		upgrades = {
 			{

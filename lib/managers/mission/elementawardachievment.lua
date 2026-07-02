@@ -23,6 +23,7 @@ function ElementAwardAchievment:on_executed(instigator)
 
 	if self._values.award_instigator and type(instigator) == "userdata" and alive(instigator) then
 		local local_player = managers.player:local_player()
+
 		award_achievement = alive(local_player) and local_player == instigator
 
 		if not award_achievement then
@@ -32,8 +33,6 @@ function ElementAwardAchievment:on_executed(instigator)
 				if seat and seat.driving then
 					award_achievement = true
 				end
-			elseif false then
-				-- Nothing
 			end
 		end
 	end

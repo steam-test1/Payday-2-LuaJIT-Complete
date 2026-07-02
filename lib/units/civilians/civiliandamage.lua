@@ -7,12 +7,15 @@ function CivilianDamage:init(unit)
 end
 
 function CivilianDamage:check_medic_heal(...)
+	return
 end
 
 function CivilianDamage:do_medic_heal(...)
+	return
 end
 
 function CivilianDamage:do_medic_heal_and_action(...)
+	return
 end
 
 function CivilianDamage:healed(...)
@@ -117,7 +120,7 @@ function CivilianDamage:is_friendly_fire(unit)
 end
 
 function CivilianDamage:damage_bullet(attack_data)
-	if managers.player:has_category_upgrade("player", "civ_harmless_bullets") and self.no_intimidation_by_dmg and not self:no_intimidation_by_dmg() and (not self._survive_shot_t or self._survive_shot_t < TimerManager:game():time()) then
+	if managers.player:has_category_upgrade("player", "civ_harmless_bullets") and self.no_intimidation_by_dmg and not self:no_intimidation_by_dmg() and (not self._survive_shot_t or TimerManager:game():time() > self._survive_shot_t) then
 		self._survive_shot_t = TimerManager:game():time() + 2.5
 
 		self._unit:brain():on_intimidated(1, attack_data.attacker_unit)
@@ -153,6 +156,7 @@ function CivilianDamage:stun_hit(attack_data)
 
 	if not self._lie_down_clbk_id then
 		self._lie_down_clbk_id = "lie_down_" .. tostring(self._unit:key())
+
 		local rnd = math.random()
 		local t = TimerManager:game():time()
 
@@ -175,7 +179,7 @@ function CivilianDamage:_lie_down_clbk(attacker_unit)
 end
 
 function CivilianDamage:damage_melee(attack_data)
-	if managers.player:has_category_upgrade("player", "civ_harmless_melee") and self.no_intimidation_by_dmg and not self:no_intimidation_by_dmg() and (not self._survive_shot_t or self._survive_shot_t < TimerManager:game():time()) then
+	if managers.player:has_category_upgrade("player", "civ_harmless_melee") and self.no_intimidation_by_dmg and not self:no_intimidation_by_dmg() and (not self._survive_shot_t or TimerManager:game():time() > self._survive_shot_t) then
 		self._survive_shot_t = TimerManager:game():time() + 2.5
 
 		self._unit:brain():on_intimidated(1, attack_data.attacker_unit)
@@ -215,6 +219,7 @@ function CivilianDamage:_play_civilian_tase_effect()
 
 	if not self._tase_effect_clbk_id then
 		self._tase_effect_clbk_id = "tase_effect_" .. tostring(self._unit:key())
+
 		local t = TimerManager:game():time()
 
 		managers.enemy:add_delayed_clbk(self._tase_effect_clbk_id, callback(self, self, "_tase_effect_clbk"), t + 1.5)

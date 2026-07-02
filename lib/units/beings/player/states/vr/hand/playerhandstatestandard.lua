@@ -19,6 +19,7 @@ function PlayerHandStateStandard:update(t, dt)
 
 	if controller:get_input_pressed(interact_button) or self._check_first and controller:get_input_bool(interact_button) then
 		self._check_first = nil
+
 		local sequence = "grip"
 
 		if self._hand_unit:damage():has_sequence(sequence) then

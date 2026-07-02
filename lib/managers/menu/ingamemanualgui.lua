@@ -7,16 +7,17 @@ function IngameManualGui:init(ws, fullscreen_ws)
 	self._manual_panel = self._ws:panel():panel()
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel()
 	self._active = true
+
 	local black_bg = self._fullscreen_panel:rect({
-		valign = "scale",
 		alpha = 0,
 		halign = "scale",
 		layer = 0,
+		valign = "scale",
 		color = Color.black
 	})
 
 	local function fade_in_anim(o)
-		over(0.35, function (p)
+		over(0.35, function(p)
 			o:set_alpha(p)
 		end)
 	end
@@ -28,28 +29,28 @@ function IngameManualGui:init(ws, fullscreen_ws)
 
 	self._manual_panel:rect({
 		h = 1,
-		x = 0,
 		layer = 4,
+		x = 0,
 		w = width,
 		y = height
 	})
 	self._manual_panel:rect({
 		h = 1,
-		x = 0,
 		layer = 4,
+		x = 0,
 		w = width,
 		y = self._manual_panel:h() - height - 1
 	})
 	self._manual_panel:rect({
+		layer = 4,
 		w = 1,
 		x = 0,
-		layer = 4,
 		h = self._manual_panel:h() - height * 2 - 2,
 		y = height + 1
 	})
 	self._manual_panel:rect({
-		w = 1,
 		layer = 4,
+		w = 1,
 		h = self._manual_panel:h() - height * 2 - 2,
 		x = self._manual_panel:w() - 1,
 		y = height + 1
@@ -143,6 +144,7 @@ function IngameManualGui:controller_zoom(y)
 	end
 
 	self._zoom = math.clamp(self._zoom + y * 2, 1, 2)
+
 	local w, h = self._manual_panel:size()
 	local px, py = self._page:position()
 	local x = w / 2 - px
@@ -183,6 +185,7 @@ function IngameManualGui:open_manual_page(page)
 		[Idstring("french"):key()] = "_fr",
 		[Idstring("spanish"):key()] = "_es"
 	}
+
 	self._zoom = 1
 	self._current_page = new_page
 
@@ -216,6 +219,7 @@ function IngameManualGui:create_page(texture_path)
 	self:remove_page(true)
 
 	self._page = self._manual_panel:panel()
+
 	local loading_text = self._page:text({
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -226,9 +230,9 @@ function IngameManualGui:create_page(texture_path)
 	loading_text:set_size(w, h)
 
 	local spinning_item = self._page:bitmap({
-		w = 32,
+		h = 32,
 		texture = "guis/textures/icon_loading",
-		h = 32
+		w = 32
 	})
 
 	loading_text:set_position(10, self._manual_y + 10)
@@ -236,7 +240,7 @@ function IngameManualGui:create_page(texture_path)
 	spinning_item:set_center_y(loading_text:center_y())
 
 	local function spin_anim(o)
-		local dt = nil
+		local dt
 
 		while true do
 			dt = coroutine.yield()
@@ -255,6 +259,7 @@ function IngameManualGui:create_page(texture_path)
 
 	if DB:has(Idstring("texture"), texture_path) then
 		local texture_count = managers.menu_component:request_texture(texture_path, callback(self, self, "texture_done_clbk"))
+
 		self._requested_texture = {
 			texture_count = texture_count,
 			texture = texture_path
@@ -275,8 +280,8 @@ function IngameManualGui:texture_done_clbk(texture_ids)
 		visible = false
 	})
 	local texture = new_page_panel:bitmap({
-		name = "texture",
 		layer = 1,
+		name = "texture",
 		texture = texture_ids
 	})
 
@@ -285,6 +290,7 @@ function IngameManualGui:texture_done_clbk(texture_ids)
 
 	self._page_panel = new_page_panel
 	self._page = texture
+
 	local aspect = self._page:texture_height() / math.max(self._page:texture_width(), 1)
 	local width = self._manual_panel:w()
 	local height = self._manual_panel:h()
@@ -300,6 +306,7 @@ function IngameManualGui:texture_done_clbk(texture_ids)
 end
 
 function IngameManualGui:set_layer(layer)
+	return
 end
 
 function IngameManualGui:close()

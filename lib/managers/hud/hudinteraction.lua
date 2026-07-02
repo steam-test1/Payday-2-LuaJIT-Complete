@@ -16,25 +16,25 @@ function HUDInteraction:init(hud, child_name)
 	end
 
 	local interact_text = self._hud_panel:text({
-		layer = 1,
-		h = 64,
 		align = "center",
+		h = 64,
+		layer = 1,
 		text = "HELLO",
-		visible = false,
 		valign = "center",
+		visible = false,
 		name = self._child_name_text,
 		color = Color.white,
 		font = tweak_data.hud_present.text_font,
 		font_size = tweak_data.hud_present.text_size
 	})
 	local invalid_text = self._hud_panel:text({
-		layer = 3,
-		h = 64,
-		text = "HELLO",
 		align = "center",
 		blend_mode = "normal",
-		visible = false,
+		h = 64,
+		layer = 3,
+		text = "HELLO",
 		valign = "center",
+		visible = false,
 		name = self._child_ivalid_name_text,
 		color = Color(1, 0.3, 0.3),
 		font = tweak_data.hud_present.text_font,
@@ -71,9 +71,9 @@ function HUDInteraction:show_interaction_bar(current, total)
 	end
 
 	self._interact_circle = CircleBitmapGuiObject:new(self._hud_panel, {
-		use_bg = true,
 		blend_mode = "add",
 		layer = 2,
+		use_bg = true,
 		radius = self._circle_radius,
 		sides = self._sides,
 		current = self._sides,
@@ -95,10 +95,10 @@ end
 function HUDInteraction:hide_interaction_bar(complete)
 	if complete then
 		local bitmap = self._hud_panel:bitmap({
-			texture = "guis/textures/pd2/hud_progress_active",
+			align = "center",
 			blend_mode = "add",
 			layer = 2,
-			align = "center",
+			texture = "guis/textures/pd2/hud_progress_active",
 			valign = "center"
 		})
 
@@ -106,11 +106,11 @@ function HUDInteraction:hide_interaction_bar(complete)
 
 		local radius = 64
 		local circle = CircleBitmapGuiObject:new(self._hud_panel, {
-			sides = 64,
-			current = 64,
-			total = 64,
 			blend_mode = "normal",
+			current = 64,
 			layer = 3,
+			sides = 64,
+			total = 64,
 			radius = radius,
 			color = Color.white:with_alpha(1)
 		})
@@ -161,6 +161,7 @@ function HUDInteraction:_animate_interaction_complete(bitmap, circle)
 
 	while t > 0 do
 		local dt = coroutine.yield()
+
 		t = t - dt
 		mul = mul + dt * 0.75
 

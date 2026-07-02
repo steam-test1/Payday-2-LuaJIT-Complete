@@ -47,8 +47,8 @@ function InstigatorOperatorUnitElement:draw_links(t, dt, selected_unit, all_unit
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = self._unit,
 				to_unit = unit
@@ -58,12 +58,13 @@ function InstigatorOperatorUnitElement:draw_links(t, dt, selected_unit, all_unit
 end
 
 function InstigatorOperatorUnitElement:update_editing()
+	return
 end
 
 function InstigatorOperatorUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("units/dev_tools/mission_elements/logic_instigator/logic_instigator") then
@@ -86,6 +87,7 @@ function InstigatorOperatorUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local exact_names = {
 		"units/dev_tools/mission_elements/logic_instigator/logic_instigator"
 	}
@@ -135,8 +137,8 @@ function InstigatorTriggerUnitElement:draw_links(t, dt, selected_unit, all_units
 
 		if draw then
 			self:_draw_link({
-				g = 0.85,
 				b = 0.25,
+				g = 0.85,
 				r = 0.85,
 				from_unit = unit,
 				to_unit = self._unit
@@ -146,12 +148,13 @@ function InstigatorTriggerUnitElement:draw_links(t, dt, selected_unit, all_units
 end
 
 function InstigatorTriggerUnitElement:update_editing()
+	return
 end
 
 function InstigatorTriggerUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
-		ray_type = "editor",
-		mask = 10
+		mask = 10,
+		ray_type = "editor"
 	})
 
 	if ray and ray.unit and ray.unit:name() == Idstring("units/dev_tools/mission_elements/logic_instigator/logic_instigator") then
@@ -174,6 +177,7 @@ function InstigatorTriggerUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local exact_names = {
 		"units/dev_tools/mission_elements/logic_instigator/logic_instigator"
 	}

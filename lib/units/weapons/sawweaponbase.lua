@@ -11,6 +11,7 @@ local math_clamp = math.clamp
 local math_lerp = math.lerp
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
+
 SawWeaponBase = SawWeaponBase or class(NewRaycastWeaponBase)
 
 function SawWeaponBase:init(unit)
@@ -69,6 +70,7 @@ function SawWeaponBase:setup(setup_data)
 	SawWeaponBase.super.setup(self, setup_data)
 
 	self._no_hit_alert_size = self._alert_size
+
 	local hit_alert_size_increase = self:weapon_tweak_data().hit_alert_size_increase or 0
 	local alert_size_index = math.clamp(self:check_stats().alert_size - hit_alert_size_increase, 1, #tweak_data.weapon.stats.alert_size)
 
@@ -155,7 +157,7 @@ local mvec_spread_direction = Vector3()
 
 function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul)
 	local result = {}
-	local hit_unit = nil
+	local hit_unit
 
 	mvec3_add(from_pos, direction * -30)
 	mvector3.set(mvec_spread_direction, direction)
@@ -165,10 +167,11 @@ function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, sh
 
 	local damage = self:_get_current_damage(dmg_mul)
 	local valid_hit = false
-	local col_ray = nil
+	local col_ray
 
 	if self._saw_through_shields then
 		local hits = {}
+
 		col_ray = World:raycast_all("ray", from_pos, mvec_to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "ray_type", "body bullet lock")
 
 		for i, hit in ipairs(col_ray) do
@@ -223,16 +226,20 @@ SawHit.TAG_DAMAGE_MULTIPLIER_TANK = 1.5
 
 function SawHit:on_collision(col_ray, weapon_unit, user_unit, damage)
 	local hit_unit = col_ray.unit
-	local base_ext = hit_unit:base()
 
-	if base_ext and base_ext.has_tag and base_ext:has_tag("tank") then
-		damage = damage * SawHit.TAG_DAMAGE_MULTIPLIER_TANK
+	do
+		local base_ext = hit_unit:base()
+
+		if base_ext and base_ext.has_tag and base_ext:has_tag("tank") then
+			damage = damage * SawHit.TAG_DAMAGE_MULTIPLIER_TANK
+		end
 	end
 
 	local result = InstantBulletBase.on_collision(self, col_ray, weapon_unit, user_unit, damage)
 
 	if hit_unit:damage() and col_ray.body:extension() and col_ray.body:extension().damage then
 		local lock_damage = damage
+
 		lock_damage = damage * managers.player:upgrade_value("saw", "lock_damage_multiplier", 1)
 		lock_damage = math.clamp(lock_damage, 0, 200)
 

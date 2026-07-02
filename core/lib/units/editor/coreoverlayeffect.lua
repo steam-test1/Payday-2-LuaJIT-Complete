@@ -19,6 +19,7 @@ end
 function CoreOverlayEffectHubElement:test_element()
 	if self._hed.overlay_effect ~= "none" then
 		local effect = clone(managers.overlay_effect:presets()[self._hed.overlay_effect])
+
 		effect.sustain = self._hed.overlay_effect_sustain or effect.sustain
 		effect.fade_in = self._hed.overlay_effect_fade_in or effect.fade_in
 		effect.fade_out = self._hed.overlay_effect_fade_out or effect.fade_out
@@ -49,12 +50,7 @@ function CoreOverlayEffectHubElement:set_option_time(data)
 	local c = data.ctrlr
 	local value = c:get_value()
 
-	if c:get_value() == "" then
-		value = nil
-	else
-		value = tonumber(value)
-	end
-
+	value = (c:get_value() ~= "" or nil) and tonumber(value)
 	self._hed[data.value] = value
 end
 
@@ -63,6 +59,7 @@ function CoreOverlayEffectHubElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local effects_sizer = EWS:BoxSizer("HORIZONTAL")
 
 	effects_sizer:add(EWS:StaticText(panel, "Effect:", 0, ""), 1, 0, "ALIGN_CENTER_VERTICAL")

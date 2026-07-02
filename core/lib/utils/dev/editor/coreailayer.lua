@@ -15,9 +15,8 @@ function AiLayer:init(owner)
 	self._graph_types = {
 		surface = "surface"
 	}
-	self._unit_graph_types = {
-		surface = Idstring("core/units/nav_surface/nav_surface")
-	}
+	self._unit_graph_types = {}
+	self._unit_graph_types.surface = Idstring("core/units/nav_surface/nav_surface")
 	self._nav_surface_unit = Idstring("core/units/nav_surface/nav_surface")
 	self._patrol_point_unit = Idstring("core/units/patrol_point/patrol_point")
 
@@ -26,9 +25,8 @@ function AiLayer:init(owner)
 
 	self._patrol_path_brush = Draw:brush()
 	self._only_draw_selected_patrol_path = false
-	self._default_values = {
-		all_visible = true
-	}
+	self._default_values = {}
+	self._default_values.all_visible = true
 end
 
 function AiLayer:load(world_holder, offset)
@@ -57,8 +55,8 @@ function AiLayer:save(save_params)
 	SystemFS:close(file)
 
 	local t = {
-		single_data_block = true,
 		entry = "ai_nav_graphs",
+		single_data_block = true,
 		data = {
 			file = file_name
 		}
@@ -67,8 +65,8 @@ function AiLayer:save(save_params)
 	managers.editor:add_save_data(t)
 
 	local t = {
-		single_data_block = true,
 		entry = "ai_settings",
+		single_data_block = true,
 		data = {
 			ai_settings = self._ai_settings,
 			ai_data = managers.ai_data:save_data()
@@ -86,8 +84,8 @@ function AiLayer:save(save_params)
 		SystemFS:close(mop_file)
 
 		local t = {
-			single_data_block = true,
 			entry = "ai_mop_graphs",
+			single_data_block = true,
 			data = {
 				file = mop_filename
 			}
@@ -108,6 +106,7 @@ function AiLayer:update(t, dt)
 
 	if managers.navigation:is_data_ready() ~= self._graph_status then
 		self._graph_status = managers.navigation:is_data_ready()
+
 		local text = self._graph_status and "Graph is correct" or "Graph is incomplete"
 		local color = self._graph_status and Vector3(0, 200, 0) or Vector3(200, 0, 0)
 
@@ -141,8 +140,8 @@ function AiLayer:_draw(t, dt)
 					for _, to_unit in ipairs(self._created_units) do
 						if to_unit:unit_data().unit_id == id then
 							Application:draw_link({
-								g = 0,
 								b = 0,
+								g = 0,
 								r = 1,
 								from_unit = unit,
 								to_unit = to_unit
@@ -155,8 +154,8 @@ function AiLayer:_draw(t, dt)
 					for _, to_unit in ipairs(self._created_units) do
 						if to_unit:unit_data().unit_id == id then
 							Application:draw_link({
-								g = 1,
 								b = 0,
+								g = 1,
 								r = 0,
 								from_unit = unit,
 								to_unit = to_unit
@@ -199,7 +198,7 @@ function AiLayer:_draw_patrol_path(name, path, t, dt)
 
 	if #path.points > 0 then
 		for i, point in ipairs(path.points) do
-			local to_unit = nil
+			local to_unit
 
 			if i == #path.points then
 				to_unit = path.points[1].unit
@@ -209,11 +208,11 @@ function AiLayer:_draw_patrol_path(name, path, t, dt)
 
 			self._patrol_path_brush:set_color(Color.white:with_alpha(selected_path and 1 or 0.25))
 			Application:draw_link({
-				g = 1,
-				thick = true,
 				b = 1,
-				r = 1,
+				g = 1,
 				height_offset = 0,
+				r = 1,
+				thick = true,
 				from_unit = point.unit,
 				to_unit = to_unit,
 				circle_multiplier = selected_path and 0.5 or 0.25
@@ -222,6 +221,7 @@ function AiLayer:_draw_patrol_path(name, path, t, dt)
 
 			if point.unit == self._selected_unit then
 				local dir = to_unit:position() - point.unit:position()
+
 				self._mid_pos = point.unit:position() + dir / 2
 
 				Application:draw_sphere(self._mid_pos, 10, 0, 0, 1)
@@ -266,32 +266,32 @@ function AiLayer:build_panel(notebook)
 
 	button_sizer1:add(calc_btn, 0, 5, "RIGHT")
 	calc_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_calc_graphs"), {
-		vis_graph = true,
-		build_type = "all"
+		build_type = "all",
+		vis_graph = true
 	})
 
 	local calc_selected_btn = EWS:Button(self._ews_panel, "Selected", "", "BU_EXACTFIT,NO_BORDER")
 
 	button_sizer1:add(calc_selected_btn, 0, 5, "RIGHT")
 	calc_selected_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_calc_graphs"), {
-		vis_graph = true,
-		build_type = "selected"
+		build_type = "selected",
+		vis_graph = true
 	})
 
 	local calc_ground_btn = EWS:Button(self._ews_panel, "Ground All", "", "BU_EXACTFIT,NO_BORDER")
 
 	button_sizer1:add(calc_ground_btn, 0, 5, "RIGHT")
 	calc_ground_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_calc_graphs"), {
-		vis_graph = false,
-		build_type = "all"
+		build_type = "all",
+		vis_graph = false
 	})
 
 	local calc_ground_selected_btn = EWS:Button(self._ews_panel, "Ground Selected", "", "BU_EXACTFIT,NO_BORDER")
 
 	button_sizer1:add(calc_ground_selected_btn, 0, 5, "RIGHT")
 	calc_ground_selected_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_calc_graphs"), {
-		vis_graph = false,
-		build_type = "selected"
+		build_type = "selected",
+		vis_graph = false
 	})
 
 	local calc_vis_graph_btn = EWS:Button(self._ews_panel, "Visibility", "", "BU_EXACTFIT,NO_BORDER")
@@ -313,19 +313,20 @@ function AiLayer:build_panel(notebook)
 	graphs_sizer:add(button_sizer2, 0, 0, "EXPAND")
 
 	local build_settings = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL", "Build Settings")
+
 	self._all_visible = EWS:CheckBox(self._ews_panel, "All visible", "", "ALIGN_LEFT")
 
 	self._all_visible:set_value(self._default_values.all_visible)
 	build_settings:add(self._all_visible, 0, 0, "EXPAND")
 
 	self._ray_length_params = {
-		value = 150,
-		name = "Ray length [cm]:",
 		ctrlr_proportions = 1,
+		floats = 0,
+		min = 1,
+		name = "Ray length [cm]:",
 		name_proportions = 1,
 		tooltip = "Specifies the visible graph ray lenght in centimeter",
-		min = 1,
-		floats = 0,
+		value = 150,
 		panel = self._ews_panel,
 		sizer = build_settings
 	}
@@ -334,17 +335,17 @@ function AiLayer:build_panel(notebook)
 	graphs_sizer:add(build_settings, 0, 0, "EXPAND")
 
 	local visualize_sizer = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL", "Visualize")
+
 	self._debug_draw = EWS:CheckBox(self._ews_panel, "Debug draw", "", "ALIGN_LEFT")
 
 	visualize_sizer:add(self._debug_draw, 0, 0, "EXPAND")
 	self._debug_draw:connect("EVT_COMMAND_CHECKBOX_CLICKED", callback(self, self, "_toggle_debug_draw"), self._debug_draw)
 
-	self._debug_buttons = {
-		doors = EWS:RadioButton(self._ews_panel, "Doors", "draw_debug", ""),
-		vis_graph = EWS:RadioButton(self._ews_panel, "Vis graph", "draw_debug", ""),
-		coarse_graph = EWS:RadioButton(self._ews_panel, "Coarse graph", "draw_debug", ""),
-		blockers = EWS:RadioButton(self._ews_panel, "Blockers", "draw_debug", "")
-	}
+	self._debug_buttons = {}
+	self._debug_buttons.doors = EWS:RadioButton(self._ews_panel, "Doors", "draw_debug", "")
+	self._debug_buttons.vis_graph = EWS:RadioButton(self._ews_panel, "Vis graph", "draw_debug", "")
+	self._debug_buttons.coarse_graph = EWS:RadioButton(self._ews_panel, "Coarse graph", "draw_debug", "")
+	self._debug_buttons.blockers = EWS:RadioButton(self._ews_panel, "Blockers", "draw_debug", "")
 
 	self._debug_buttons.doors:set_value(true)
 
@@ -373,11 +374,11 @@ end
 function AiLayer:_build_ai_settings()
 	local graphs_sizer = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL", "Settings")
 	local group_state = {
+		ctrlr_proportions = 2,
 		name = "Group state:",
 		name_proportions = 1,
-		tooltip = "Select a group state from the combo box",
 		sorted = true,
-		ctrlr_proportions = 2,
+		tooltip = "Select a group state from the combo box",
 		panel = self._ews_panel,
 		sizer = graphs_sizer,
 		options = managers.groupai:state_names(),
@@ -387,9 +388,8 @@ function AiLayer:_build_ai_settings()
 
 	state:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "_set_group_state"), nil)
 
-	self._ai_settings_guis = {
-		group_state = group_state
-	}
+	self._ai_settings_guis = {}
+	self._ai_settings_guis.group_state = group_state
 
 	return graphs_sizer
 end
@@ -410,12 +410,12 @@ function AiLayer:_build_ai_unit_settings()
 
 	local sizer = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL", "Unit settings")
 	local locations = {
-		value = "location_unknown",
+		ctrlr_proportions = 2,
 		name = "Location id:",
 		name_proportions = 1,
-		tooltip = "Select a location id to be associated with this navigation point",
 		sorted = true,
-		ctrlr_proportions = 2,
+		tooltip = "Select a location id to be associated with this navigation point",
+		value = "location_unknown",
 		panel = self._ews_panel,
 		sizer = sizer,
 		options = options
@@ -434,13 +434,13 @@ function AiLayer:_build_ai_unit_settings()
 	sizer:add(text_sizer, 1, 0, "EXPAND")
 
 	local suspicion_multiplier = {
-		value = 1,
-		name = "Suspicion Multiplier:",
 		ctrlr_proportions = 2,
+		floats = 1,
+		min = 1,
+		name = "Suspicion Multiplier:",
 		name_proportions = 1,
 		tooltip = "multiplier applied to suspicion buildup rate",
-		min = 1,
-		floats = 1,
+		value = 1,
 		panel = self._ews_panel,
 		sizer = sizer
 	}
@@ -450,13 +450,13 @@ function AiLayer:_build_ai_unit_settings()
 	suspicion_multiplier_ctrlr:connect("EVT_KILL_FOCUS", callback(self, self, "_set_suspicion_mul"), nil)
 
 	local detection_multiplier = {
-		value = 1,
-		name = "Detection Multiplier:",
 		ctrlr_proportions = 2,
+		floats = 2,
+		min = 0.01,
+		name = "Detection Multiplier:",
 		name_proportions = 1,
 		tooltip = "multiplier applied to AI detection speed. min is 0.01",
-		min = 0.01,
-		floats = 2,
+		value = 1,
 		panel = self._ews_panel,
 		sizer = sizer
 	}
@@ -465,12 +465,11 @@ function AiLayer:_build_ai_unit_settings()
 	detection_multiplier_ctrlr:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "_set_detection_mul"), nil)
 	detection_multiplier_ctrlr:connect("EVT_KILL_FOCUS", callback(self, self, "_set_detection_mul"), nil)
 
-	self._ai_unit_settings_guis = {
-		locations = locations,
-		text = text,
-		suspicion_multiplier = suspicion_multiplier,
-		detection_multiplier = detection_multiplier
-	}
+	self._ai_unit_settings_guis = {}
+	self._ai_unit_settings_guis.locations = locations
+	self._ai_unit_settings_guis.text = text
+	self._ai_unit_settings_guis.suspicion_multiplier = suspicion_multiplier
+	self._ai_unit_settings_guis.detection_multiplier = detection_multiplier
 
 	return sizer
 end
@@ -533,11 +532,11 @@ function AiLayer:_build_motion_path_section()
 	end
 
 	local mop_type = {
+		ctrlr_proportions = 2,
 		name = "Selected path type:",
 		name_proportions = 1,
-		tooltip = "Path is used for either ground or airborne units.",
 		sorted = false,
-		ctrlr_proportions = 2,
+		tooltip = "Path is used for either ground or airborne units.",
 		panel = self._ews_panel,
 		sizer = motion_paths_sizer,
 		options = mop_path_types,
@@ -548,13 +547,13 @@ function AiLayer:_build_motion_path_section()
 	path_type_ctrlr:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "_set_mop_type"), nil)
 
 	local speed_limit = {
-		value = 50,
-		name = "Default Speed Limit [km/h]:",
 		ctrlr_proportions = 2,
+		floats = 1,
+		min = -1,
+		name = "Default Speed Limit [km/h]:",
 		name_proportions = 1,
 		tooltip = "Default speed limit for units moved along this path. -1 for no limit.",
-		min = -1,
-		floats = 1,
+		value = 50,
 		panel = self._ews_panel,
 		sizer = motion_paths_sizer
 	}
@@ -563,12 +562,11 @@ function AiLayer:_build_motion_path_section()
 	speed_limit_ctrlr:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "_set_mop_speed_limit"), nil)
 	speed_limit_ctrlr:connect("EVT_KILL_FOCUS", callback(self, self, "_set_mop_speed_limit"), nil)
 
-	self.motion_path_settings_guis = {
-		default_speed_limit = speed_limit,
-		default_speed_limit_ctrlr = speed_limit_ctrlr,
-		path_type = mop_type,
-		path_type_ctrlr = path_type_ctrlr
-	}
+	self.motion_path_settings_guis = {}
+	self.motion_path_settings_guis.default_speed_limit = speed_limit
+	self.motion_path_settings_guis.default_speed_limit_ctrlr = speed_limit_ctrlr
+	self.motion_path_settings_guis.path_type = mop_type
+	self.motion_path_settings_guis.path_type_ctrlr = path_type_ctrlr
 
 	return motion_paths_sizer
 end
@@ -582,6 +580,7 @@ function AiLayer:_set_mop_type()
 		end
 
 		local path_type = self.motion_path_settings_guis.path_type.value
+
 		self._motion_path_settings[selected_path].path_type = path_type
 
 		managers.motion_path:set_path_type(path_type)
@@ -747,7 +746,7 @@ end
 
 function AiLayer:_build_visibility_graph()
 	local all_visible = self._all_visible:get_value() and true
-	local exclude, include = nil
+	local exclude, include
 
 	if not all_visible then
 		exclude = {}
@@ -1103,9 +1102,8 @@ function AiLayer:update_unit_settings()
 end
 
 function AiLayer:_init_ai_settings()
-	self._ai_settings = {
-		group_state = "besiege"
-	}
+	self._ai_settings = {}
+	self._ai_settings.group_state = "besiege"
 
 	managers.groupai:set_state(self._ai_settings.group_state)
 end

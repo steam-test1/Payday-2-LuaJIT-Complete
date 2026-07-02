@@ -18,7 +18,7 @@ function ChangeVanSkinUnitElement:init(unit)
 		table.insert(self._van_skins, skin_id)
 	end
 
-	table.sort(self._van_skins, function (a, b)
+	table.sort(self._van_skins, function(a, b)
 		return a < b
 	end)
 
@@ -44,11 +44,11 @@ function ChangeVanSkinUnitElement:_build_panel(panel, panel_sizer)
 	panel_sizer:add(self._btn_toolbar, 0, 1, "EXPAND,LEFT")
 	self:_build_value_combobox(panel, panel_sizer, "target_skin", self._van_skins)
 
-	local help = {
-		text = "Changes the equipped skin for the escape van, if it is owned. Can be pointed at a van to change the skin immediately.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Changes the equipped skin for the escape van, if it is owned. Can be pointed at a van to change the skin immediately."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end
@@ -87,8 +87,8 @@ function ChangeVanSkinUnitElement:update_selected()
 			self._units[id] = nil
 		else
 			local params = {
-				g = 0,
 				b = 0,
+				g = 0,
 				r = 1,
 				from_unit = self._unit,
 				to_unit = unit
@@ -123,8 +123,8 @@ function ChangeVanSkinUnitElement:draw_links_unselected(...)
 
 	for id, unit in pairs(self._units) do
 		local params = {
-			g = 0,
 			b = 0,
+			g = 0,
 			r = 0.5,
 			from_unit = self._unit,
 			to_unit = unit

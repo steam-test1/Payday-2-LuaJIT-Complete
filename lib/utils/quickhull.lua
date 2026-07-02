@@ -1,4 +1,5 @@
 local TEST_DURATION = 5
+
 Quickhull = Quickhull or class()
 Quickhull._points = {}
 Quickhull._final_points = {}
@@ -43,16 +44,16 @@ function Quickhull:sort()
 
 	centre_point = centre_point / #self._final_points
 
-	table.sort(self._final_points, function (a, b)
+	table.sort(self._final_points, function(a, b)
 		if a.x - centre_point.x >= 0 and b.x - centre_point.x < 0 then
 			return true
 		elseif a.x - centre_point.x < 0 and b.x - centre_point.x >= 0 then
 			return false
 		elseif a.x - centre_point.x == 0 and b.x - centre_point.x == 0 then
 			if a.y - centre_point.y >= 0 or b.y - centre_point.y >= 0 then
-				return b.y < a.y
+				return a.y > b.y
 			else
-				return a.y < b.y
+				return b.y > a.y
 			end
 		end
 
@@ -73,7 +74,7 @@ function Quickhull:sort()
 		local bz = b.z - centre_point.z
 		local blen = bx * bx + by * by + bz * bz
 
-		return alen > blen
+		return blen < alen
 	end)
 end
 
@@ -81,7 +82,7 @@ function Quickhull:get_initial_line(points)
 	local line = {}
 
 	for _, point in ipairs(points) do
-		if not line[1] or point.x < line[1].x then
+		if not line[1] or line[1].x > point.x then
 			line[1] = point
 		end
 
@@ -96,7 +97,7 @@ end
 function Quickhull:divide_point_cloud(points, dividing_line)
 	local above = {}
 	local below = {}
-	local r = nil
+	local r
 
 	for _, point in ipairs(points) do
 		r = self:position_relative_to_line(dividing_line, point)
@@ -192,7 +193,7 @@ function Quickhull:position_relative_to_line(line, point)
 end
 
 function Quickhull:get_furthest_point(points, dividing_line)
-	local max_dist, max_point = nil
+	local max_dist, max_point
 
 	for _, point in pairs(points) do
 		local dist = self:distance_to_line(point, dividing_line)
@@ -237,7 +238,9 @@ function Quickhull:_distance_to_segment_sqr(point, a, b)
 	local ty = (point.y - a.y) * (b.y - a.y)
 	local tz = (point.z - a.z) * (b.z - a.z)
 	local t = (tx + ty + tz) / l
+
 	t = math.clamp(t, 0, 1)
+
 	local _x = a.x + t * (b.x - a.x)
 	local _y = a.y + t * (b.y - a.y)
 	local _z = a.z + t * (b.z - a.z)

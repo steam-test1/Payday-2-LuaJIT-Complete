@@ -15,9 +15,11 @@ function NetworkVoiceChatPSN:init()
 end
 
 function NetworkVoiceChatPSN:check_status_information()
+	return
 end
 
 function NetworkVoiceChatPSN:open()
+	return
 end
 
 function NetworkVoiceChatPSN:voice_type()
@@ -25,9 +27,11 @@ function NetworkVoiceChatPSN:voice_type()
 end
 
 function NetworkVoiceChatPSN:pause()
+	return
 end
 
 function NetworkVoiceChatPSN:resume()
+	return
 end
 
 function NetworkVoiceChatPSN:set_volume(volume)
@@ -38,7 +42,7 @@ function NetworkVoiceChatPSN:init_voice()
 	if self._started == false and not self._starting then
 		self._starting = true
 
-		PSNVoice:assign_callback(function (...)
+		PSNVoice:assign_callback(function(...)
 			self:_callback(...)
 		end)
 		PSNVoice:init(4, 4, 50, 16000)
@@ -157,6 +161,7 @@ function NetworkVoiceChatPSN:close_channel_to(player_info)
 end
 
 function NetworkVoiceChatPSN:lost_peer(peer)
+	return
 end
 
 function NetworkVoiceChatPSN:close_all()
@@ -198,7 +203,8 @@ function NetworkVoiceChatPSN:_load_globals()
 	end
 
 	if PSN:is_online() and Global.psn and Global.psn.voice then
-		PSNVoice:assign_callback(function (...)
+		PSNVoice:assign_callback(function(...)
+			return
 		end)
 
 		self._room_id = Global.psn.voice.room
@@ -212,7 +218,7 @@ function NetworkVoiceChatPSN:_load_globals()
 			self._restart_session = restart
 			self._delay_frame = TimerManager:wall():time() + 2
 		else
-			PSNVoice:assign_callback(function (...)
+			PSNVoice:assign_callback(function(...)
 				self:_callback(...)
 			end)
 
@@ -235,14 +241,14 @@ function NetworkVoiceChatPSN:_save_globals(disable_voice)
 	end
 
 	local function f(...)
+		return
 	end
 
 	PSNVoice:assign_callback(f)
 
-	Global.psn.voice = {
-		started = self._started,
-		drop_in = self._drop_in
-	}
+	Global.psn.voice = {}
+	Global.psn.voice.started = self._started
+	Global.psn.voice.drop_in = self._drop_in
 
 	if type(disable_voice) == "boolean" then
 		if disable_voice == true then
@@ -346,6 +352,7 @@ function NetworkVoiceChatPSN:_callback(info)
 
 		if info.unload_succeeded ~= nil then
 			local function f(...)
+				return
 			end
 
 			PSNVoice:assign_callback(f)
@@ -354,15 +361,16 @@ function NetworkVoiceChatPSN:_callback(info)
 end
 
 function NetworkVoiceChatPSN:update()
-	if self._delay_frame and self._delay_frame < TimerManager:wall():time() then
+	if self._delay_frame and TimerManager:wall():time() > self._delay_frame then
 		self._delay_frame = nil
 
 		if self._restart_session then
-			PSNVoice:assign_callback(function (...)
+			PSNVoice:assign_callback(function(...)
 				self:_callback(...)
 			end)
 
 			local r = self._restart_session
+
 			self._restart_session = nil
 
 			self:open_session(r)
@@ -371,6 +379,7 @@ function NetworkVoiceChatPSN:update()
 end
 
 function NetworkVoiceChatPSN:voice_ui_update_callback(user_info)
+	return
 end
 
 function NetworkVoiceChatPSN:psn_session_destroyed(roomid)

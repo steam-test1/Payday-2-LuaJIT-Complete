@@ -66,6 +66,7 @@ function PlayerHandStateWeapon:at_enter(prev_state)
 		player_unit:hand():sync_state()
 
 		local weapon_unit = player_unit:inventory():equipped_unit()
+
 		self._weapon_id = alive(weapon_unit) and weapon_unit:base().name_id
 
 		self:_link_weapon(weapon_unit)
@@ -82,8 +83,8 @@ function PlayerHandStateWeapon:at_enter(prev_state)
 	self:hsm():other_hand():enter_controller_state("empty")
 
 	self._default_assist_tweak = {
-		pistol_grip = true,
 		grip = "idle_wpn",
+		pistol_grip = true,
 		position = Vector3(0, 5, -5)
 	}
 	self._pistol_grip = false
@@ -173,7 +174,9 @@ function PlayerHandStateWeapon:link_arrow_unit(weap_base)
 	local arrow_id = managers.weapon_factory:get_part_id_from_weapon_by_type("ammo", weap_base._blueprint)
 	local arrow_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(arrow_id, weap_base._factory_id, weap_base._blueprint)
 	local unit_name = arrow_data.unit
+
 	self._arrow_unit = World:spawn_unit(Idstring(unit_name), self._hand_unit:position(), self._hand_unit:rotation())
+
 	local material_config_ids = weap_base:_material_config_name(arrow_id, arrow_data, weap_base._cosmetics_data and true)
 
 	if self._arrow_unit:material_config() ~= material_config_ids and DB:has(Idstring("material_config"), material_config_ids) then
@@ -252,6 +255,7 @@ function PlayerHandStateWeapon:update(t, dt)
 		end
 
 		local assist_tweak = tweak_data.vr.weapon_assist.weapons[self._weapon_id]
+
 		assist_tweak = assist_tweak or self._default_assist_tweak
 
 		if assist_tweak then
@@ -274,7 +278,7 @@ function PlayerHandStateWeapon:update(t, dt)
 			end
 
 			local interact_btn = self:hsm():hand_id() == PlayerHand.LEFT and "interact_right" or "interact_left"
-			local wants_assist = nil
+			local wants_assist
 
 			if self._grip_toggle_setting then
 				if controller:get_input_pressed(interact_btn) then
@@ -291,6 +295,7 @@ function PlayerHandStateWeapon:update(t, dt)
 
 				if not self._assist_position then
 					self._assist_position = Vector3()
+
 					local left_handed = self:hsm():hand_id() == PlayerHand.LEFT
 
 					if left_handed and assist_tweak.left_handed then
@@ -306,7 +311,7 @@ function PlayerHandStateWeapon:update(t, dt)
 
 						self._assist_grip = assist_tweak.grip or "grip_wpn"
 					elseif assist_tweak.points then
-						local closest_dis, closest = nil
+						local closest_dis, closest
 
 						for _, assist_data in ipairs(assist_tweak.points) do
 							local dis = mvector3.distance_sq(other_hand, weapon_pos + assist_data.position:rotate_with(self._weapon_unit:rotation()) + (tweak_data.vr.weapon_offsets.weapons[self._weapon_id] or tweak_data.vr.weapon_offsets.default).position:rotate_with(self._weapon_unit:rotation()))
@@ -349,7 +354,7 @@ function PlayerHandStateWeapon:update(t, dt)
 
 				local max_dis = math.max(self._pistol_grip and tweak_data.vr.weapon_assist.limits.pistol_max or tweak_data.vr.weapon_assist.limits.max, self._weapon_length)
 
-				if (tweak_data.vr.weapon_assist.limits.min < other_hand_dis or self._pistol_grip) and other_hand_dis < max_dis and (self._pistol_grip or mvector3.dot(hand_to_hand, self:hsm():rotation():y()) > (is_assisting and 0.35 or 0.9)) then
+				if (other_hand_dis > tweak_data.vr.weapon_assist.limits.min or self._pistol_grip) and other_hand_dis < max_dis and (self._pistol_grip or mvector3.dot(hand_to_hand, self:hsm():rotation():y()) > (is_assisting and 0.35 or 0.9)) then
 					if not is_assisting and self:hsm():other_hand():can_change_state_by_name("weapon_assist") then
 						self:hsm():other_hand():change_state_by_name("weapon_assist")
 					end

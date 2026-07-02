@@ -46,7 +46,9 @@ function ContractBrokerGui:init(ws, fullscreen_ws, node)
 		layer = tweak_data.gui.ATTRACT_SCREEN_LAYER
 	})
 	self.make_fine_text = BlackMarketGui.make_fine_text
+
 	local component_data = node:parameters().menu_component_data or {}
+
 	self._hide_title = component_data.hide_title or false
 	self._hide_filters = component_data.hide_filters or false
 	self._panel_align = component_data.align or "center"
@@ -129,6 +131,7 @@ function ContractBrokerGui:setup()
 	self:_setup_jobs()
 
 	local default_to_search = managers.menu:is_pc_controller()
+
 	default_to_search = default_to_search and not _G.IS_VR
 
 	if default_to_search then
@@ -170,8 +173,10 @@ function ContractBrokerGui:_create_job_data()
 		tonumber(os.date("%m")),
 		tonumber(os.date("%d"))
 	}
+
 	current_date_value = current_date_value[1] * 30 * 12 + current_date_value[2] * 30 + current_date_value[3]
-	local job_tweak, dlc, date_value, contact, contact_tweak, include_job = nil
+
+	local job_tweak, dlc, date_value, contact, contact_tweak, include_job
 
 	for index, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
 		job_tweak = tweak_data.narrative:job_data(job_id)
@@ -222,11 +227,11 @@ function ContractBrokerGui:_create_background()
 		color = Color.black
 	})
 	self._fullscreen_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
-		layer = -2,
-		halign = "scale",
 		alpha = 10,
+		halign = "scale",
+		layer = -2,
 		render_template = "VertexColorTexturedBlur3D",
+		texture = "guis/textures/test_blur_df",
 		valign = "scale",
 		w = self._fullscreen_panel:w(),
 		h = self._fullscreen_panel:h()
@@ -235,9 +240,9 @@ end
 
 function ContractBrokerGui:_create_title()
 	local title = self._panel:text({
-		vertical = "top",
 		align = "left",
 		layer = 100,
+		vertical = "top",
 		text = managers.localization:to_upper_text("menu_contract_broker"),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
@@ -276,9 +281,9 @@ function ContractBrokerGui:_create_panels()
 	})
 
 	local jobs_scroll = ScrollablePanel:new(main_panel, "jobs_scroll", {
+		ignore_down_indicator = true,
 		ignore_up_indicator = true,
-		y_padding = 0,
-		ignore_down_indicator = true
+		y_padding = 0
 	})
 	local filters_panel = self._panel:panel({
 		w = self._panel:w() * 0.15,
@@ -316,9 +321,9 @@ function ContractBrokerGui:_create_back_button()
 
 	if managers.menu:is_pc_controller() then
 		self._back_button = back_panel:text({
-			vertical = "top",
 			align = "right",
 			layer = 1,
+			vertical = "top",
 			text = managers.localization:to_upper_text("menu_back"),
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -381,6 +386,7 @@ function ContractBrokerGui:_create_legend()
 
 		for i, legend in ipairs(legends) do
 			local spacing = i > 1 and "  |  " or ""
+
 			legend_text = legend_text .. spacing .. managers.localization:to_upper_text(legend.string_id)
 		end
 
@@ -391,12 +397,12 @@ function ContractBrokerGui:_create_legend()
 
 		self._legends_panel:set_rightbottom(self._panel:w(), self._panel:h())
 		self._legends_panel:text({
-			name = "text",
-			vertical = "bottom",
 			align = "right",
 			blend_mode = "add",
 			halign = "right",
+			name = "text",
 			valign = "bottom",
+			vertical = "bottom",
 			text = legend_text,
 			font = tweak_data.menu.pd2_small_font,
 			font_size = tweak_data.menu.pd2_small_font_size,
@@ -410,10 +416,10 @@ function ContractBrokerGui:_setup_tabs()
 
 	if not managers.menu:is_pc_controller() and #self.tabs > 1 then
 		local icon_text = self._panels.tabs:text({
-			vertical = "top",
-			alpha = 1,
 			align = "center",
+			alpha = 1,
 			layer = 1,
+			vertical = "top",
 			text = managers.localization:get_default_macro("BTN_BOTTOM_L"),
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -431,10 +437,10 @@ function ContractBrokerGui:_setup_tabs()
 	for _, data in ipairs(self.tabs) do
 		local tab_panel = self._panels.tabs:panel({})
 		local text = tab_panel:text({
-			vertical = "top",
-			alpha = 0.8,
 			align = "left",
+			alpha = 0.8,
 			layer = 1,
+			vertical = "top",
 			text = managers.localization:to_upper_text(data[1]),
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -462,10 +468,10 @@ function ContractBrokerGui:_setup_tabs()
 
 	if not managers.menu:is_pc_controller() and #self.tabs > 1 then
 		local icon_text = self._panels.tabs:text({
-			vertical = "top",
-			alpha = 1,
 			align = "center",
+			alpha = 1,
 			layer = 1,
+			vertical = "top",
 			text = managers.localization:get_default_macro("BTN_BOTTOM_R"),
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
@@ -485,6 +491,7 @@ function ContractBrokerGui:_setup_filters()
 	end
 
 	self._filter_buttons = {}
+
 	local tab_data = self.tabs[self._current_tab]
 	local filters_clbk = callback(self, self, tab_data[2])
 
@@ -508,8 +515,8 @@ function ContractBrokerGui:_setup_filters()
 
 	if not alive(self._filter_selection_bg) then
 		self._filter_selection_bg = self._panels.filters:rect({
-			blend_mode = "add",
 			alpha = 0.4,
+			blend_mode = "add",
 			layer = 1,
 			color = tweak_data.screen_colors.button_stage_3,
 			w = self._panels.filters:w(),
@@ -525,10 +532,10 @@ function ContractBrokerGui:_setup_filters()
 
 			if not self._filter_up then
 				self._filter_up = self._panels.filters:text({
-					vertical = "top",
-					alpha = 1,
 					align = "right",
+					alpha = 1,
 					layer = 1,
+					vertical = "top",
 					text = managers.localization:get_default_macro("BTN_TOP_L"),
 					font = tweak_data.menu.pd2_small_font,
 					font_size = tweak_data.menu.pd2_small_font_size,
@@ -546,10 +553,10 @@ function ContractBrokerGui:_setup_filters()
 
 			if not self._filter_down then
 				self._filter_down = self._panels.filters:text({
-					vertical = "top",
-					alpha = 1,
 					align = "right",
+					alpha = 1,
 					layer = 1,
+					vertical = "top",
 					text = managers.localization:get_default_macro("BTN_TOP_R"),
 					font = tweak_data.menu.pd2_small_font,
 					font_size = tweak_data.menu.pd2_small_font_size,
@@ -587,33 +594,33 @@ function ContractBrokerGui:_setup_filters()
 		search_panel:set_left(self._panels.main:left())
 
 		local search_placeholder = search_panel:text({
-			vertical = "top",
 			align = "center",
 			alpha = 0.6,
 			layer = 2,
+			vertical = "top",
 			text = managers.localization:to_upper_text("menu_filter_search"),
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			color = tweak_data.screen_colors.text
 		})
 		local search_text = search_panel:text({
-			vertical = "top",
-			alpha = 1,
 			align = "center",
-			text = "",
+			alpha = 1,
 			layer = 2,
+			text = "",
+			vertical = "top",
 			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			color = tweak_data.screen_colors.text,
 			w = search_panel:w() - 3
 		})
 		local caret = search_panel:rect({
-			name = "caret",
 			h = 0,
-			y = 0,
+			layer = 200,
+			name = "caret",
 			w = 0,
 			x = 0,
-			layer = 200,
+			y = 0,
 			color = Color(0.05, 1, 1, 1)
 		})
 
@@ -645,9 +652,9 @@ function ContractBrokerGui:_add_filter_button(text_id, y, params)
 		h = tweak_data.menu.pd2_small_font_size + (params and params.extra_h or 0)
 	})
 	local text = filter_button_panel:text({
-		name = "text",
 		alpha = 1,
 		layer = 2,
+		name = "text",
 		text = managers.localization:to_upper_text(text_id, params and params.text_macros),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -675,10 +682,10 @@ function ContractBrokerGui:_add_filter_button(text_id, y, params)
 
 		if is_new then
 			local new_name = filter_button_panel:text({
-				name = "new_name",
-				visible = true,
 				alpha = 1,
 				layer = 1,
+				name = "new_name",
+				visible = true,
 				text = managers.localization:to_upper_text("menu_new"),
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,
@@ -702,6 +709,7 @@ function ContractBrokerGui:_add_filter_button(text_id, y, params)
 end
 
 function ContractBrokerGui:_setup_filter_none()
+	return
 end
 
 function ContractBrokerGui:_setup_filter_contact()
@@ -716,6 +724,7 @@ function ContractBrokerGui:_setup_filter_contact()
 
 		if contact then
 			local allow_contact = true
+
 			allow_contact = not table.contains(contacts, contact) and (not contact_tweak or not contact_tweak.hidden)
 
 			if allow_contact then
@@ -728,7 +737,7 @@ function ContractBrokerGui:_setup_filter_contact()
 		end
 	end
 
-	table.sort(filters, function (a, b)
+	table.sort(filters, function(a, b)
 		return managers.localization:to_upper_text(a.data.name_id) < managers.localization:to_upper_text(b.data.name_id)
 	end)
 
@@ -740,9 +749,11 @@ function ContractBrokerGui:_setup_filter_contact()
 
 	for filter_index, contact in ipairs(filters) do
 		check_new_job_data.filter_param = contact
+
 		local text = self:_add_filter_button(contact.data.name_id, last_y, {
 			check_new_job_data = check_new_job_data
 		})
+
 		last_y = text:bottom() + 1
 	end
 
@@ -772,10 +783,12 @@ function ContractBrokerGui:_setup_filter_time()
 
 	for index, filter in ipairs(times) do
 		check_new_job_data.filter_param = index
+
 		local text = self:_add_filter_button(filter[1], last_y, {
 			extra_h = 4,
 			check_new_job_data = check_new_job_data
 		})
+
 		last_y = text:bottom() + 1
 	end
 
@@ -806,10 +819,12 @@ function ContractBrokerGui:_setup_filter_tactic()
 
 	for index, filter in ipairs(tactics) do
 		check_new_job_data.filter_param = index
+
 		local text = self:_add_filter_button(filter[1], last_y, {
 			check_new_job_data = check_new_job_data,
 			text_macros = filter[2]
 		})
+
 		last_y = text:bottom() + 1
 	end
 
@@ -830,6 +845,7 @@ function ContractBrokerGui:_setup_filter_most_played()
 
 	for _, filter in ipairs(played) do
 		local text = self:_add_filter_button(filter[1], last_y)
+
 		last_y = text:bottom() + 1
 	end
 
@@ -987,7 +1003,7 @@ function ContractBrokerGui:filter_job_data(key, filter, optional_filter_param)
 		return jobs
 	end
 
-	local job_tweak, wrapped_tweak, filter_pass = nil
+	local job_tweak, wrapped_tweak, filter_pass
 
 	for _, job_data in ipairs(self._job_data) do
 		filter_pass = true
@@ -1054,7 +1070,7 @@ function ContractBrokerGui:_setup_jobs()
 	self._panels.scroll:scroll_to(0)
 
 	local jobs = {}
-	local job_tweak, wrapped_tweak, filter_pass = nil
+	local job_tweak, wrapped_tweak, filter_pass
 
 	for index, job_data in ipairs(self._job_data) do
 		filter_pass = true
@@ -1141,7 +1157,7 @@ function ContractBrokerGui:refresh()
 		self._filter_selection_bg:set_visible(false)
 	end
 
-	local btn = nil
+	local btn
 
 	for idx, panel in ipairs(self._filter_buttons) do
 		btn = panel:child("text")
@@ -1171,7 +1187,9 @@ end
 
 function ContractBrokerGui:_set_selection(idx)
 	local last_selection = self._current_selection
+
 	self._current_selection = math.clamp(idx, 1, #self._heist_items)
+
 	local last_heist = last_selection and self._heist_items[last_selection]
 
 	if last_heist then
@@ -1186,7 +1204,7 @@ function ContractBrokerGui:_set_selection(idx)
 		local scroll_panel = self._panels.scroll:scroll_panel()
 		local y = self._panels.scroll:canvas():y() + new_heist:bottom()
 
-		if scroll_panel:h() < y then
+		if y > scroll_panel:h() then
 			self._panels.scroll:perform_scroll(y - scroll_panel:h(), -1)
 		else
 			y = self._panels.scroll:canvas():y() + new_heist:top()
@@ -1199,7 +1217,7 @@ function ContractBrokerGui:_set_selection(idx)
 end
 
 function ContractBrokerGui:mouse_moved(button, x, y)
-	local used, pointer = nil
+	local used, pointer
 
 	if not used then
 		local u, p = self._panels.scroll:mouse_moved(button, x, y)
@@ -1218,14 +1236,13 @@ function ContractBrokerGui:mouse_moved(button, x, y)
 			self._filter_selection_bg:set_visible(false)
 		end
 
-		local btn = nil
+		local btn
 
 		for idx, panel in ipairs(self._filter_buttons) do
 			btn = panel:child("text")
 
 			if not used and self._current_filter ~= idx and panel:inside(x, y) then
-				pointer = "link"
-				used = true
+				used, pointer = true, "link"
 
 				btn:set_color(tweak_data.screen_colors.button_stage_2)
 				btn:set_blend_mode("add")
@@ -1248,8 +1265,7 @@ function ContractBrokerGui:mouse_moved(button, x, y)
 
 	for idx, btn in ipairs(self._tab_buttons) do
 		if not used and self._current_tab ~= idx and btn:inside(x, y) then
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 
 			btn:set_alpha(1)
 
@@ -1287,8 +1303,7 @@ function ContractBrokerGui:mouse_moved(button, x, y)
 
 	if alive(self._back_button) then
 		if not used and self._back_button:inside(x, y) then
-			pointer = "link"
-			used = true
+			used, pointer = true, "link"
 
 			if self._back_button:color() ~= tweak_data.screen_colors.button_stage_2 then
 				managers.menu:post_event("highlight")
@@ -1498,11 +1513,10 @@ function ContractBrokerGui:input_focus()
 end
 
 function ContractBrokerGui:save_temporary_data(job_id)
-	Global.contract_broker = {
-		filter = self._current_filter,
-		tab = self._current_tab,
-		job_id = job_id
-	}
+	Global.contract_broker = {}
+	Global.contract_broker.filter = self._current_filter
+	Global.contract_broker.tab = self._current_tab
+	Global.contract_broker.job_id = job_id
 end
 
 function ContractBrokerGui:connect_search_input()
@@ -1555,6 +1569,7 @@ function ContractBrokerGui:search_key_press(o, k)
 	local s, e = text:selection()
 	local n = utf8.len(text:text())
 	local d = math.abs(e - s)
+
 	self._key_pressed = k
 
 	text:stop()
@@ -1583,7 +1598,7 @@ function ContractBrokerGui:search_key_press(o, k)
 
 		local lbs = text:line_breaks()
 
-		if ContractBrokerGui.MAX_SEARCH_LENGTH < #text:text() then
+		if #text:text() > ContractBrokerGui.MAX_SEARCH_LENGTH then
 			text:set_text(string.sub(text:text(), 1, ContractBrokerGui.MAX_SEARCH_LENGTH))
 		end
 
@@ -1661,7 +1676,7 @@ function ContractBrokerGui:update_key_down(o, k)
 
 			text:replace_text(clipboard)
 
-			if ContractBrokerGui.MAX_SEARCH_LENGTH < #text:text() then
+			if #text:text() > ContractBrokerGui.MAX_SEARCH_LENGTH then
 				text:set_text(string.sub(text:text(), 1, ContractBrokerGui.MAX_SEARCH_LENGTH))
 			end
 

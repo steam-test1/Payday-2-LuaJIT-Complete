@@ -26,32 +26,32 @@ end
 function MenuInitiatorBase:create_toggle(node, params, index)
 	local data_node = {
 		{
-			w = 24,
-			y = 0,
+			_meta = "option",
 			h = 24,
+			icon = "guis/textures/menu_tickbox",
+			s_h = 24,
+			s_icon = "guis/textures/menu_tickbox",
+			s_w = 24,
+			s_x = 24,
 			s_y = 24,
 			value = "on",
-			s_w = 24,
-			s_h = 24,
-			s_x = 24,
-			_meta = "option",
-			icon = "guis/textures/menu_tickbox",
+			w = 24,
 			x = 24,
-			s_icon = "guis/textures/menu_tickbox"
+			y = 0
 		},
 		{
-			w = 24,
-			y = 0,
+			_meta = "option",
 			h = 24,
+			icon = "guis/textures/menu_tickbox",
+			s_h = 24,
+			s_icon = "guis/textures/menu_tickbox",
+			s_w = 24,
+			s_x = 0,
 			s_y = 24,
 			value = "off",
-			s_w = 24,
-			s_h = 24,
-			s_x = 0,
-			_meta = "option",
-			icon = "guis/textures/menu_tickbox",
+			w = 24,
 			x = 0,
-			s_icon = "guis/textures/menu_tickbox"
+			y = 0
 		},
 		type = "CoreMenuItemToggle.ItemToggle"
 	}
@@ -174,12 +174,12 @@ function MenuInitiatorBase:add_back_button(node)
 	node:delete_item("back")
 
 	local params = {
-		visible_callback = "is_pc_controller",
-		name = "back",
 		back = true,
-		text_id = "menu_back",
 		last_item = true,
-		previous_node = true
+		name = "back",
+		previous_node = true,
+		text_id = "menu_back",
+		visible_callback = "is_pc_controller"
 	}
 	local new_item = node:create_item(nil, params)
 

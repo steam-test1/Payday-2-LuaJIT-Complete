@@ -26,6 +26,7 @@ function CoreDebugUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local debug = EWS:TextCtrl(panel, self._hed.debug_string, "", "TE_PROCESS_ENTER")
 
 	panel_sizer:add(debug, 0, 0, "EXPAND")

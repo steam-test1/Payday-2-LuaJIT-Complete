@@ -72,16 +72,16 @@ function MenuNodeBaseGui:create_text_button(params)
 		visible = not disabled
 	})
 	local gui_blur = button_panel:bitmap({
-		texture = "guis/textures/test_blur_df",
+		layer = -1,
 		name = "button_blur",
 		render_template = "VertexColorTexturedBlur3D",
-		layer = -1,
+		texture = "guis/textures/test_blur_df",
 		visible = not hide_blur
 	})
 	local gui_text = button_panel:text({
-		name = "button_text",
 		blend_mode = "add",
 		layer = 0,
+		name = "button_text",
 		text = text,
 		font = font,
 		font_size = font_size,
@@ -140,11 +140,11 @@ function MenuNodeBaseGui:create_gui_box(panel, params)
 end
 
 function MenuNodeBaseGui:update_info(button)
+	return
 end
 
 function MenuNodeBaseGui:mouse_moved(o, x, y)
-	local used = false
-	local icon = "arrow"
+	local used, icon = false, "arrow"
 
 	for _, button in ipairs(self._text_buttons) do
 		if alive(button.panel) and button.panel:visible() then
@@ -165,8 +165,7 @@ function MenuNodeBaseGui:mouse_moved(o, x, y)
 
 				self:update_info(button)
 
-				icon = "link"
-				used = true
+				used, icon = true, "link"
 			elseif button.highlighted then
 				button.highlighted = false
 
@@ -207,27 +206,35 @@ function MenuNodeBaseGui:mouse_pressed(button, x, y)
 end
 
 function MenuNodeBaseGui:mouse_released(button, x, y)
+	return
 end
 
 function MenuNodeBaseGui:confirm_pressed()
+	return
 end
 
 function MenuNodeBaseGui:previous_page()
+	return
 end
 
 function MenuNodeBaseGui:next_page()
+	return
 end
 
 function MenuNodeBaseGui:move_up()
+	return
 end
 
 function MenuNodeBaseGui:move_down()
+	return
 end
 
 function MenuNodeBaseGui:move_left()
+	return
 end
 
 function MenuNodeBaseGui:move_right()
+	return
 end
 
 function MenuNodeBaseGui:request_texture(texture_path, panel, keep_aspect_ratio, blend_mode)
@@ -261,6 +268,7 @@ end
 
 function MenuNodeBaseGui:texture_done_clbk(params, texture_ids)
 	params = params or {}
+
 	local panel = params.panel or params[1]
 	local keep_aspect_ratio = params.keep_aspect_ratio
 	local blend_mode = params.blend_mode
@@ -295,7 +303,7 @@ function MenuNodeBaseGui:texture_done_clbk(params, texture_ids)
 			th = 1
 		end
 
-		local sw = math.min(pw, ph * tw / th)
+		local sw = math.min(pw, ph * (tw / th))
 		local sh = math.min(ph, pw / (tw / th))
 
 		image:set_size(math.round(sw), math.round(sh))

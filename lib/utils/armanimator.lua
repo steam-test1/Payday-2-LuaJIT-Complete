@@ -29,21 +29,22 @@ ArmAnimator.MOMENTUM = tweak_data.vr.arm_simulator.momentum
 ArmAnimator.MOMENTUM_DECAY = tweak_data.vr.arm_simulator.momentum_decay
 ArmAnimator.PAUSE = false
 ArmAnimator.DISALLOW_MIRROR_STATES = {
-	bow = true,
 	arrested = true,
+	bow = true,
 	driving = true
 }
 ArmAnimator.DISALLOW_HEAD_LOOK_STATES = {
-	bow = true,
-	fatal = true,
-	tased = true,
 	arrested = true,
 	bleed_out = true,
-	driving = true
+	bow = true,
+	driving = true,
+	fatal = true,
+	tased = true
 }
 ArmAnimator.DISALLOW_FACING_DIR = {
 	bow = true
 }
+
 local look_head_ids = Idstring("look_head_vr")
 
 local function slerp_pose(cur_pose, target_pose, t)
@@ -150,8 +151,8 @@ function ArmAnimator:init(state_machine, clbk)
 	self._blocked_states = {}
 	self._global_variables = {
 		vr = {
-			value = 0,
-			default = 0
+			default = 0,
+			value = 0
 		}
 	}
 	self._target_look_yaw = 0
@@ -162,6 +163,7 @@ end
 
 function ArmAnimator:_update_global_variables()
 	local blocked = self:is_blocked()
+
 	self._global_variables.vr.value = self._enabled and not blocked and 1 or 0
 
 	for var, entry in pairs(self._global_variables) do
@@ -351,6 +353,7 @@ function ArmAnimator:record_keyframe(frame_index, pose, r_correction, l_correcti
 	end
 
 	self._frame_index = frame_index
+
 	local next_time = self._anim_t + 1
 
 	if r_correction then
@@ -365,6 +368,7 @@ function ArmAnimator:record_keyframe(frame_index, pose, r_correction, l_correcti
 		t = next_time,
 		pose = pose
 	}
+
 	self._frame_queue[1] = new_frame
 end
 
@@ -385,6 +389,7 @@ function ArmAnimator:update_animation(t, dt)
 	end
 
 	self._anim_t = self._anim_t + ArmAnimator.SIMULATION_RATE * dt
+
 	local duration = 1 - (self._current_frame.t - self._anim_t)
 
 	if duration <= 1 then
@@ -414,10 +419,13 @@ function ArmAnimator:update(t, dt)
 
 	local rel_yaw = ConstraintHelper.normalize_angle(self._target_look_yaw - self._look_yaw)
 	local dy = math.sign(rel_yaw) * math.min(math.abs(rel_yaw), 360 * dt)
+
 	self._look_yaw = (self._look_yaw + dy) % 360
+
 	local yaw = self._look_yaw
 	local pitch = self._look_pitch
 	local facing_yaw = Rotation:look_at(self._facing, math.UP):yaw()
+
 	yaw = facing_yaw + ConstraintHelper.clamp_angle(yaw - facing_yaw, -90, 90)
 
 	self._look_head_modifier:set_target_rotation(Rotation(yaw + 180, -pitch + 90, 0))

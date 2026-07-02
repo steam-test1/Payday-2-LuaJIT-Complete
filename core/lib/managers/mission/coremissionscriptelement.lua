@@ -13,6 +13,7 @@ function MissionScriptElement:init(mission_script, data)
 end
 
 function MissionScriptElement:on_created()
+	return
 end
 
 function MissionScriptElement:on_script_activated()
@@ -218,9 +219,11 @@ function MissionScriptElement:set_enabled(enabled)
 end
 
 function MissionScriptElement:on_set_enabled()
+	return
 end
 
 function MissionScriptElement:on_toggle(value)
+	return
 end
 
 function MissionScriptElement:set_trigger_times(trigger_times)
@@ -232,6 +235,7 @@ function MissionScriptElement:is_debug()
 end
 
 function MissionScriptElement:stop_simulation(...)
+	return
 end
 
 function MissionScriptElement:operation_add()
@@ -310,6 +314,7 @@ function MissionScriptElement:get_orientation_index()
 
 		local use_i = alternatives[self._values.use_orientation_sequenced and 1 or math.random(#alternatives)]
 		local index = table.remove(self._unused_orientation_indices, use_i)
+
 		self._unused_orientation_indices = #self._unused_orientation_indices > 0 and self._unused_orientation_indices or nil
 
 		return index
@@ -320,18 +325,23 @@ end
 
 function MissionScriptElement:get_orientation(use_last_orientation_index)
 	local index = use_last_orientation_index and self._last_orientation_index
+
 	index = index or self._synced_orientation_element_index or self:get_orientation_index()
 	self._last_orientation_index = index
+
 	local pos, rot = self:get_orientation_by_index(index)
 
 	return pos, rot
 end
 
 function MissionScriptElement:debug_draw()
+	return
 end
 
 function MissionScriptElement:pre_destroy()
+	return
 end
 
 function MissionScriptElement:destroy()
+	return
 end

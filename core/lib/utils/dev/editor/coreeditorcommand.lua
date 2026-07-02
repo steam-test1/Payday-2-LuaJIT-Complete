@@ -27,6 +27,7 @@ end
 
 function EditorCommand:value(val, default)
 	self._values = self._values or {}
+
 	local v = self._values[val]
 
 	if v ~= nil then
@@ -399,7 +400,9 @@ MissionElementAddOnExecutedCommand.__type = MissionElementAddOnExecutedCommand
 function MissionElementAddOnExecutedCommand:execute(mission_element, unit, existing_params)
 	mission_element = mission_element or self:get_self_mission_element()
 	unit = unit or managers.editor:unit_with_id(self._values.params.id)
+
 	local params = existing_params or self._values.params or {}
+
 	params.id = unit:unit_data().unit_id
 	params.delay = params.delay or 0
 	params.alternative = params.alternative or mission_element.ON_EXECUTED_ALTERNATIVES and mission_element.ON_EXECUTED_ALTERNATIVES[1] or nil

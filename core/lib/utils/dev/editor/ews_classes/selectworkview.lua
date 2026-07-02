@@ -23,6 +23,7 @@ function SelectWorkView:init(...)
 
 	local list_ctrlrs = EWS:BoxSizer("VERTICAL")
 	local continents_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Continents")
+
 	self._continents_sizer = EWS:BoxSizer("VERTICAL")
 
 	self:build_cbs()
@@ -93,7 +94,9 @@ end
 
 function SelectWorkView:build_cbs()
 	self._continents_cbs = {}
+
 	local continents = managers.editor:continents()
+
 	self._continent_names = {}
 
 	for name, continent in pairs(continents) do
@@ -186,6 +189,7 @@ function SelectWorkView:on_set_info()
 
 	local j = self._list:get_item_data_ref(index)
 	local view = self._views[j].view
+
 	view.text = self._info_ctrlr:get_value()
 end
 
@@ -230,6 +234,7 @@ function SelectWorkView:fill_views_list()
 
 	local j = 1
 	local filter = self._filter:get_value()
+
 	self._views = {}
 
 	self._list:freeze()
@@ -244,6 +249,7 @@ function SelectWorkView:fill_views_list()
 				for v_name, view in pairs(c_values.workviews) do
 					if string.find(v_name, filter, 1, true) then
 						local i = self._list:append_item(v_name)
+
 						self._views[j] = {
 							view = view,
 							continent = c_name,

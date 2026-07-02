@@ -7,6 +7,7 @@ function ElementLootSecuredTrigger:init(...)
 end
 
 function ElementLootSecuredTrigger:client_on_executed(...)
+	return
 end
 
 function ElementLootSecuredTrigger:on_script_activated()

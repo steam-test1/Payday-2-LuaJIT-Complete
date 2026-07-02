@@ -12,82 +12,82 @@ end
 
 function RumbleManager:setup_preset_rumbles()
 	self:add_preset_rumbles("weapon_fire", {
-		sustain = 0.1,
+		cumulative = false,
+		engine = "both",
 		peak = 0.5,
 		release = 0.05,
-		cumulative = false,
-		engine = "both"
+		sustain = 0.1
 	})
 	self:add_preset_rumbles("land", {
-		sustain = 0.1,
+		cumulative = false,
+		engine = "both",
 		peak = 0.5,
 		release = 0.1,
-		cumulative = false,
-		engine = "both"
+		sustain = 0.1
 	})
 	self:add_preset_rumbles("hard_land", {
-		sustain = 0.3,
+		cumulative = false,
+		engine = "both",
 		peak = 1,
 		release = 0.1,
-		cumulative = false,
-		engine = "both"
+		sustain = 0.3
 	})
 	self:add_preset_rumbles("electrified", {
-		peak = 0.5,
+		cumulative = false,
 		engine = "both",
-		release = 0.05,
-		cumulative = false
+		peak = 0.5,
+		release = 0.05
 	})
 	self:add_preset_rumbles("electric_shock", {
-		sustain = 0.2,
+		cumulative = true,
+		engine = "both",
 		peak = 1,
 		release = 0.1,
-		cumulative = true,
-		engine = "both"
+		sustain = 0.2
 	})
 	self:add_preset_rumbles("incapacitated_shock", {
-		sustain = 0.2,
+		cumulative = true,
+		engine = "both",
 		peak = 0.75,
 		release = 0.1,
-		cumulative = true,
-		engine = "both"
+		sustain = 0.2
 	})
 	self:add_preset_rumbles("damage_bullet", {
-		sustain = 0.2,
+		cumulative = true,
+		engine = "both",
 		peak = 1,
 		release = 0,
-		cumulative = true,
-		engine = "both"
+		sustain = 0.2
 	})
 	self:add_preset_rumbles("bullet_whizby", {
-		sustain = 0.075,
+		cumulative = true,
+		engine = "both",
 		peak = 1,
 		release = 0,
-		cumulative = true,
-		engine = "both"
+		sustain = 0.075
 	})
 	self:add_preset_rumbles("melee_hit", {
-		sustain = 0.15,
+		cumulative = true,
+		engine = "both",
 		peak = 1,
 		release = 0,
-		cumulative = true,
-		engine = "both"
+		sustain = 0.15
 	})
 	self:add_preset_rumbles("mission_triggered", {
-		sustain = 0.3,
-		engine = "both",
-		release = 2.1,
-		cumulative = true,
 		attack = 0.1,
-		peak = 1
+		cumulative = true,
+		engine = "both",
+		peak = 1,
+		release = 2.1,
+		sustain = 0.3
 	})
 	self:add_preset_rumbles("reloaded", {
-		sustain = 0.1,
-		engine = "both",
-		release = 0.1,
-		cumulative = true,
 		attack = 0.05,
-		peak = 0.7
+		cumulative = true,
+		engine = "both",
+		peak = 0.7,
+		release = 0.1,
+		sustain = 0.1
 	})
 end
 

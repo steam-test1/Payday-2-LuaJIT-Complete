@@ -18,6 +18,7 @@ function VariableElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local text_sizer = EWS:BoxSizer("HORIZONTAL")
 	local name = EWS:StaticText(panel, "Variable:", 0, "")
 

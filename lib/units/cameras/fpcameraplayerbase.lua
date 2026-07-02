@@ -26,35 +26,30 @@ function FPCameraPlayerBase:init(unit)
 		position = unit:position(),
 		rotation = unit:rotation()
 	}
-	self._head_stance = {
-		translation = Vector3(),
-		rotation = Rotation()
-	}
-	self._shoulder_stance = {
-		translation = Vector3(),
-		rotation = Rotation()
-	}
-	self._vel_overshot = {
-		translation = Vector3(),
-		rotation = Rotation(),
-		last_yaw = 0,
-		last_pitch = 0,
-		target_yaw = 0,
-		target_pitch = 0
-	}
-	self._aim_assist = {
-		direction = Vector3(),
-		distance = 0,
-		mrotation = Rotation(),
-		distance_to_aim_line = 0
-	}
-	self._aim_assist_sticky = {
-		direction = Vector3(),
-		distance = 0,
-		mrotation = Rotation(),
-		distance_to_aim_line = 0,
-		is_sticky = true
-	}
+	self._head_stance = {}
+	self._head_stance.translation = Vector3()
+	self._head_stance.rotation = Rotation()
+	self._shoulder_stance = {}
+	self._shoulder_stance.translation = Vector3()
+	self._shoulder_stance.rotation = Rotation()
+	self._vel_overshot = {}
+	self._vel_overshot.translation = Vector3()
+	self._vel_overshot.rotation = Rotation()
+	self._vel_overshot.last_yaw = 0
+	self._vel_overshot.last_pitch = 0
+	self._vel_overshot.target_yaw = 0
+	self._vel_overshot.target_pitch = 0
+	self._aim_assist = {}
+	self._aim_assist.direction = Vector3()
+	self._aim_assist.distance = 0
+	self._aim_assist.mrotation = Rotation()
+	self._aim_assist.distance_to_aim_line = 0
+	self._aim_assist_sticky = {}
+	self._aim_assist_sticky.direction = Vector3()
+	self._aim_assist_sticky.distance = 0
+	self._aim_assist_sticky.mrotation = Rotation()
+	self._aim_assist_sticky.distance_to_aim_line = 0
+	self._aim_assist_sticky.is_sticky = true
 	self._fov = {
 		fov = 75
 	}
@@ -65,9 +60,8 @@ function FPCameraPlayerBase:init(unit)
 	self._camera_properties.look_speed_transition_timer = 0
 	self._camera_properties.target_tilt = 0
 	self._camera_properties.current_tilt = 0
-	self._recoil_kick = {
-		h = {}
-	}
+	self._recoil_kick = {}
+	self._recoil_kick.h = {}
 	self._episilon = 1e-05
 
 	self:check_flashlight_enabled()
@@ -75,7 +69,9 @@ function FPCameraPlayerBase:init(unit)
 
 	if _G.IS_VR then
 		self._hmd_tracking = true
+
 		local rot = VRManager:hmd_rotation()
+
 		self._base_rotation = self._output_data.rotation
 		self._fadeout = VRFadeout:new()
 	end
@@ -216,10 +212,12 @@ end
 function FPCameraPlayerBase:recoil_kick(up, down, left, right)
 	if math.abs(self._recoil_kick.accumulated or 0) < 20 then
 		local v = math.lerp(up, down, math.random())
+
 		self._recoil_kick.accumulated = (self._recoil_kick.accumulated or 0) + v
 	end
 
 	local h = math.lerp(left, right, math.random())
+
 	self._recoil_kick.h.accumulated = (self._recoil_kick.h.accumulated or 0) + h
 end
 
@@ -235,11 +233,12 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 		local trans_data = self._shoulder_stance.transition
 		local elapsed_t = t - trans_data.start_t
 
-		if trans_data.duration < elapsed_t then
+		if elapsed_t > trans_data.duration then
 			mvector3.set(self._shoulder_stance.translation, trans_data.end_translation)
 
 			self._shoulder_stance.rotation = trans_data.end_rotation
 			self._shoulder_stance.transition = nil
+
 			local in_steelsight = self._parent_movement_ext._current_state:in_steelsight()
 			local in_second_sight = self._parent_movement_ext._current_state:is_second_sight_on()
 
@@ -259,6 +258,7 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 			mvector3.lerp(self._shoulder_stance.translation, trans_data.start_translation, trans_data.end_translation, progress_smooth)
 
 			self._shoulder_stance.rotation = trans_data.start_rotation:slerp(trans_data.end_rotation, progress_smooth)
+
 			local in_steelsight = self._parent_movement_ext._current_state:in_steelsight()
 			local in_second_sight = self._parent_movement_ext._current_state:is_second_sight_on()
 
@@ -266,7 +266,7 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 				in_second_sight = false
 			end
 
-			local absolute_progress = nil
+			local absolute_progress
 
 			if in_steelsight and not in_second_sight then
 				absolute_progress = (1 - trans_data.absolute_progress) * progress_smooth + trans_data.absolute_progress
@@ -274,7 +274,7 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 				absolute_progress = trans_data.absolute_progress * (1 - progress_smooth)
 			end
 
-			if in_steelsight and not in_second_sight and not self._steelsight_swap_state and trans_data.steelsight_swap_progress_trigger <= absolute_progress then
+			if in_steelsight and not in_second_sight and not self._steelsight_swap_state and absolute_progress >= trans_data.steelsight_swap_progress_trigger then
 				self:_set_steelsight_swap_state(true)
 			elseif (not in_steelsight or in_second_sight) and self._steelsight_swap_state and absolute_progress < trans_data.steelsight_swap_progress_trigger then
 				self:_set_steelsight_swap_state(false)
@@ -286,7 +286,7 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 		local trans_data = self._head_stance.transition
 		local elapsed_t = t - trans_data.start_t
 
-		if trans_data.duration < elapsed_t then
+		if elapsed_t > trans_data.duration then
 			mvector3.set(self._head_stance.translation, trans_data.end_translation)
 
 			self._head_stance.transition = nil
@@ -302,7 +302,7 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 		local trans_data = self._vel_overshot.transition
 		local elapsed_t = t - trans_data.start_t
 
-		if trans_data.duration < elapsed_t then
+		if elapsed_t > trans_data.duration then
 			self._vel_overshot.yaw_neg = trans_data.end_yaw_neg
 			self._vel_overshot.yaw_pos = trans_data.end_yaw_pos
 			self._vel_overshot.pitch_neg = trans_data.end_pitch_neg
@@ -314,6 +314,7 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 		else
 			local progress = elapsed_t / trans_data.duration
 			local progress_smooth = math.bezier(bezier_values, progress)
+
 			self._vel_overshot.yaw_neg = math.lerp(trans_data.start_yaw_neg, trans_data.end_yaw_neg, progress_smooth)
 			self._vel_overshot.yaw_pos = math.lerp(trans_data.start_yaw_pos, trans_data.end_yaw_pos, progress_smooth)
 			self._vel_overshot.pitch_neg = math.lerp(trans_data.start_pitch_neg, trans_data.end_pitch_neg, progress_smooth)
@@ -329,12 +330,13 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 		local trans_data = self._fov.transition
 		local elapsed_t = t - trans_data.start_t
 
-		if trans_data.duration < elapsed_t then
+		if elapsed_t > trans_data.duration then
 			self._fov.fov = trans_data.end_fov
 			self._fov.transition = nil
 		else
 			local progress = elapsed_t / trans_data.duration
 			local progress_smooth = math.max(math.min(math.bezier(bezier_values, progress), 1), 0)
+
 			self._fov.fov = math.lerp(trans_data.start_fov, trans_data.end_fov, progress_smooth)
 		end
 
@@ -382,11 +384,12 @@ function FPCameraPlayerBase:_update_movement(t, dt)
 	else
 		mvector3.add(new_head_pos, self._head_stance.translation)
 
-		local stick_input_x = 0
-		local stick_input_y = 0
+		local stick_input_x, stick_input_y = 0, 0
 		local aim_assist_x, aim_assist_y = self:_get_aim_assist(t, dt, self._tweak_data.aim_assist_snap_speed, self._aim_assist)
+
 		stick_input_x = stick_input_x + self:_horizonatal_recoil_kick(t, dt) + aim_assist_x
 		stick_input_y = stick_input_y + self:_vertical_recoil_kick(t, dt) + aim_assist_y
+
 		local look_polar_spin = data.spin - stick_input_x
 		local look_polar_pitch = math.clamp(data.pitch + stick_input_y, -85, 85)
 
@@ -439,7 +442,9 @@ function FPCameraPlayerBase:_update_rot(axis, unscaled_axis)
 
 	local t = managers.player:player_timer():time()
 	local dt = t - (self._last_rot_t or t)
+
 	self._last_rot_t = t
+
 	local data = self._camera_properties
 	local new_head_pos = mvec2
 	local new_shoulder_pos = mvec1
@@ -451,6 +456,7 @@ function FPCameraPlayerBase:_update_rot(axis, unscaled_axis)
 
 	self._input.look = axis
 	self._input.look_multiplier = self._parent_unit:base():controller():get_setup():get_connection("look"):get_multiplier()
+
 	local stick_input_x, stick_input_y = self._look_function(axis, self._input.look_multiplier, dt, unscaled_axis)
 	local look_polar_spin = data.spin - stick_input_x
 	local look_polar_pitch = math.clamp(data.pitch + stick_input_y, -85, 85)
@@ -459,12 +465,14 @@ function FPCameraPlayerBase:_update_rot(axis, unscaled_axis)
 	if self._limits then
 		if self._limits.spin then
 			local d = (look_polar_spin - self._limits.spin.mid) / self._limits.spin.offset
+
 			d = math.clamp(d, -1, 1)
 			look_polar_spin = data.spin - math.lerp(stick_input_x, 0, math.abs(d))
 		end
 
 		if self._limits.pitch then
 			local d = math.abs((look_polar_pitch - self._limits.pitch.mid) / self._limits.pitch.offset)
+
 			d = math.clamp(d, -1, 1)
 			look_polar_pitch = data.pitch + math.lerp(stick_input_y, 0, math.abs(d))
 			look_polar_pitch = math.clamp(look_polar_pitch, -85, 85)
@@ -676,6 +684,7 @@ function FPCameraPlayerBase:_get_aim_assist(t, dt, speed, aim_data)
 		local mx = 1 - self._tweak_data.aim_assist_gradient_max
 		local mn = 1 - self._tweak_data.aim_assist_gradient_min
 		local min_strength = math.lerp(mn, mx, math.min(1, (aim_data.target_distance or 0) / self._tweak_data.aim_assist_gradient_max_distance))
+
 		strength = math.max(0, strength - min_strength) / (1 - min_strength)
 		r_value_x = r_value_x * strength
 		r_value_y = r_value_y * strength
@@ -701,8 +710,9 @@ function FPCameraPlayerBase:_vertical_recoil_kick(t, dt)
 
 	local r_value = 0
 
-	if self._recoil_kick.current and self._episilon < self._recoil_kick.accumulated - self._recoil_kick.current then
+	if self._recoil_kick.current and self._recoil_kick.accumulated - self._recoil_kick.current > self._episilon then
 		local n = math.step(self._recoil_kick.current, self._recoil_kick.accumulated, 40 * dt)
+
 		r_value = n - self._recoil_kick.current
 		self._recoil_kick.current = n
 	elseif self._recoil_wait then
@@ -713,7 +723,9 @@ function FPCameraPlayerBase:_vertical_recoil_kick(t, dt)
 		end
 	elseif self._recoil_kick.to_reduce then
 		self._recoil_kick.current = nil
+
 		local n = math.lerp(self._recoil_kick.to_reduce, 0, 9 * dt)
+
 		r_value = -(self._recoil_kick.to_reduce - n)
 		self._recoil_kick.to_reduce = n
 
@@ -734,8 +746,9 @@ function FPCameraPlayerBase:_horizonatal_recoil_kick(t, dt)
 
 	local r_value = 0
 
-	if self._recoil_kick.h.current and self._episilon < math.abs(self._recoil_kick.h.accumulated - self._recoil_kick.h.current) then
+	if self._recoil_kick.h.current and math.abs(self._recoil_kick.h.accumulated - self._recoil_kick.h.current) > self._episilon then
 		local n = math.step(self._recoil_kick.h.current, self._recoil_kick.h.accumulated, 40 * dt)
+
 		r_value = n - self._recoil_kick.h.current
 		self._recoil_kick.h.current = n
 	elseif self._recoil_wait then
@@ -746,7 +759,9 @@ function FPCameraPlayerBase:_horizonatal_recoil_kick(t, dt)
 		end
 	elseif self._recoil_kick.h.to_reduce then
 		self._recoil_kick.h.current = nil
+
 		local n = math.lerp(self._recoil_kick.h.to_reduce, 0, 5 * dt)
+
 		r_value = -(self._recoil_kick.h.to_reduce - n)
 		self._recoil_kick.h.to_reduce = n
 
@@ -766,7 +781,9 @@ function FPCameraPlayerBase:_gamepad_look_function(stick_input, stick_input_mult
 	if mvector3.length(stick_input) > self._tweak_data.look_speed_dead_zone * stick_input_multiplier.x then
 		local x = stick_input.x
 		local y = stick_input.y
+
 		stick_input = Vector3(x / (1.3 - 0.3 * (1 - math.abs(y))), y / (1.3 - 0.3 * (1 - math.abs(x))), 0)
+
 		local look_speed = self:_get_look_speed(stick_input, stick_input_multiplier, dt)
 		local stick_input_x = stick_input.x * dt * look_speed
 		local stick_input_y = stick_input.y * dt * look_speed
@@ -780,8 +797,7 @@ end
 local multiplier = Vector3()
 
 function FPCameraPlayerBase:_gamepad_look_function_ctl(stick_input, stick_input_multiplier, dt, unscaled_stick_input)
-	local aim_assist_x = 0
-	local aim_assist_y = 0
+	local aim_assist_x, aim_assist_y = 0, 0
 	local cs = managers.player:current_state()
 	local aim_assist = false
 	local in_aim_assist_state = cs == "standard" or cs == "carry" or cs == "bipod" or cs == "player_turret"
@@ -810,23 +826,30 @@ function FPCameraPlayerBase:_gamepad_look_function_ctl(stick_input, stick_input_
 
 		local x = unscaled_stick_input.x
 		local y = unscaled_stick_input.y
+
 		x = x / length
 		y = y / length
 		length = math.min(length, 1)
+
 		local scale = (length - dz) / (1 - dz)
+
 		x = x * scale
 		y = y * scale
 		unscaled_stick_input = Vector3(x, y, 0)
+
 		local look_speed_x, look_speed_y = self:_get_look_speed_ctl(unscaled_stick_input, multiplier, dt)
+
 		look_speed_y = look_speed_x
 		look_speed_x = look_speed_x * multiplier.x
 		look_speed_y = look_speed_y * multiplier.y
+
 		local stick_input_x = unscaled_stick_input.x * dt * look_speed_x
 		local stick_input_y = unscaled_stick_input.y * dt * look_speed_y
 		local look = Vector3(stick_input_x, stick_input_y, 0)
 
 		if aim_assist then
 			local len = mvector3.length(look)
+
 			look = Vector3(look.x + aim_assist_x, look.y, 0)
 
 			if length < 0.08 then
@@ -841,9 +864,10 @@ function FPCameraPlayerBase:_gamepad_look_function_ctl(stick_input, stick_input_
 
 	if aim_assist then
 		aim_assist_x, aim_assist_y = self:_get_aim_assist(0, dt, self._tweak_data.aim_assist_move_speed, self._aim_assist_sticky)
+
 		local move = math.abs(self._parent_unit:movement()._current_state._stick_move.x)
 
-		if self._tweak_data.aim_assist_move_th_min <= move and move <= self._tweak_data.aim_assist_move_th_max then
+		if move >= self._tweak_data.aim_assist_move_th_min and move <= self._tweak_data.aim_assist_move_th_max then
 			return aim_assist_x, 0
 		end
 	end
@@ -870,7 +894,7 @@ function FPCameraPlayerBase:_get_look_speed(stick_input, stick_input_multiplier,
 		return self._tweak_data.look_speed_steel_sight
 	end
 
-	if mvector3.length(stick_input) <= self._tweak_data.look_speed_transition_occluder * stick_input_multiplier.x or math.abs(stick_input.x) <= self._tweak_data.look_speed_transition_zone * stick_input_multiplier.x then
+	if not (mvector3.length(stick_input) > self._tweak_data.look_speed_transition_occluder * stick_input_multiplier.x) or not (math.abs(stick_input.x) > self._tweak_data.look_speed_transition_zone * stick_input_multiplier.x) then
 		self._camera_properties.look_speed_transition_timer = 0
 
 		return self._tweak_data.look_speed_standard
@@ -884,6 +908,7 @@ function FPCameraPlayerBase:_get_look_speed(stick_input, stick_input_multiplier,
 	local p2 = self._tweak_data.look_speed_standard
 	local p3 = self._tweak_data.look_speed_standard + (self._tweak_data.look_speed_fast - self._tweak_data.look_speed_standard) / 3 * 2
 	local p4 = self._tweak_data.look_speed_fast
+
 	self._camera_properties.look_speed_transition_timer = self._camera_properties.look_speed_transition_timer + dt / self._tweak_data.look_speed_transition_to_fast
 
 	return math.bezier({
@@ -911,7 +936,7 @@ function FPCameraPlayerBase:_get_look_speed_ctl(stick_input, stick_input_multipl
 		return self._tweak_data.look_speed_steel_sight
 	end
 
-	if self._tweak_data.look_speed_transition_occluder >= mvector3.length(stick_input) or self._tweak_data.look_speed_transition_zone >= math.abs(stick_input.x) then
+	if not (mvector3.length(stick_input) > self._tweak_data.look_speed_transition_occluder) or not (math.abs(stick_input.x) > self._tweak_data.look_speed_transition_zone) then
 		self._camera_properties.look_speed_transition_timer = 0
 
 		return self._tweak_data.look_speed_standard
@@ -925,6 +950,7 @@ function FPCameraPlayerBase:_get_look_speed_ctl(stick_input, stick_input_multipl
 	local p2 = self._tweak_data.look_speed_standard
 	local p3 = self._tweak_data.look_speed_standard + (self._tweak_data.look_speed_fast - self._tweak_data.look_speed_standard) / 3 * 2
 	local p4 = self._tweak_data.look_speed_fast
+
 	self._camera_properties.look_speed_transition_timer = self._camera_properties.look_speed_transition_timer + dt / self._tweak_data.look_speed_transition_to_fast
 
 	return math.bezier({
@@ -943,14 +969,16 @@ function FPCameraPlayerBase:_calculate_soft_velocity_overshot(dt)
 		return
 	end
 
-	local input_yaw, input_pitch, input_x, input_z = nil
+	local input_yaw, input_pitch, input_x, input_z
 	local mul = self._tweak_data.uses_keyboard and 0.002 / dt or 0.4
 
 	if stick_input.x >= 0 then
 		local stick_input_x = math.pow(math.abs(math.clamp(mul * stick_input.x, 0, 1)), 1.5) * math.sign(stick_input.x)
+
 		input_yaw = stick_input_x * vel_overshot.yaw_pos
 	else
 		local stick_input_x = math.pow(math.abs(math.clamp(mul * stick_input.x, -1, 0)), 1.5)
+
 		input_yaw = stick_input_x * vel_overshot.yaw_neg
 	end
 
@@ -960,22 +988,28 @@ function FPCameraPlayerBase:_calculate_soft_velocity_overshot(dt)
 	local sign_last_yaw = math.sign(last_yaw)
 	local abs_last_yaw = math.abs(last_yaw)
 	local step_v = self._tweak_data.uses_keyboard and 120 * dt or 2
+
 	vel_overshot.target_yaw = math.step(vel_overshot.target_yaw, input_yaw, step_v)
-	local final_yaw = nil
+
+	local final_yaw
 	local diff = math.abs(vel_overshot.target_yaw - last_yaw)
 	local diff_clamp = 40
 	local diff_ratio = math.pow(diff / diff_clamp, 1)
 	local diff_ratio_clamped = math.clamp(diff_ratio, 0, 1)
 	local step_amount = math.lerp(3, 180, diff_ratio_clamped) * dt
+
 	final_yaw = math.step(last_yaw, vel_overshot.target_yaw, step_amount)
 	vel_overshot.last_yaw = final_yaw
+
 	local mul = self._tweak_data.uses_keyboard and 0.002 / dt or 0.4
 
 	if stick_input.y >= 0 then
 		local stick_input_y = math.pow(math.abs(math.clamp(mul * stick_input.y, 0, 1)), 1.5) * math.sign(stick_input.y)
+
 		input_pitch = stick_input_y * vel_overshot.pitch_pos
 	else
 		local stick_input_y = math.pow(math.abs(math.clamp(mul * stick_input.y, -1, 0)), 1.5)
+
 		input_pitch = stick_input_y * vel_overshot.pitch_neg
 	end
 
@@ -985,13 +1019,16 @@ function FPCameraPlayerBase:_calculate_soft_velocity_overshot(dt)
 	local sign_last_pitch = math.sign(last_pitch)
 	local abs_last_pitch = math.abs(last_pitch)
 	local step_v = self._tweak_data.uses_keyboard and 120 * dt or 2
+
 	vel_overshot.target_pitch = math.step(vel_overshot.target_pitch, input_pitch, step_v)
-	local final_pitch = nil
+
+	local final_pitch
 	local diff = math.abs(vel_overshot.target_pitch - last_pitch)
 	local diff_clamp = 40
 	local diff_ratio = math.pow(diff / diff_clamp, 1)
 	local diff_ratio_clamped = math.clamp(diff_ratio, 0, 1)
 	local step_amount = math.lerp(3, 180, diff_ratio_clamped) * dt
+
 	final_pitch = math.step(last_pitch, vel_overshot.target_pitch, step_amount)
 	vel_overshot.last_pitch = final_pitch
 
@@ -1027,6 +1064,7 @@ function FPCameraPlayerBase:play_redirect(redirect_name, speed, offset_time)
 	self:set_anims_enabled(true)
 
 	self._anim_empty_state_wanted = false
+
 	local result = self._unit:play_redirect(redirect_name, offset_time)
 
 	if result == self.IDS_NOSTRING then
@@ -1060,6 +1098,7 @@ function FPCameraPlayerBase:play_raw(name, params)
 	self:set_anims_enabled(true)
 
 	self._anim_empty_state_wanted = false
+
 	local asm = self._unit:anim_state_machine()
 	local result = asm:play_raw(name, params)
 
@@ -1076,6 +1115,7 @@ function FPCameraPlayerBase:play_state(state_name)
 	self:set_anims_enabled(true)
 
 	self._anim_empty_state_wanted = false
+
 	local result = self._unit:play_state(Idstring(state_name))
 
 	return result ~= self.IDS_NOSTRING and result
@@ -1161,6 +1201,7 @@ end
 
 function FPCameraPlayerBase:_set_steelsight_swap_state(steelsight_swap_state)
 	self._steelsight_swap_state = steelsight_swap_state
+
 	local equipped_weapon = self._parent_unit:inventory():equipped_unit()
 
 	if alive(equipped_weapon) then
@@ -1176,7 +1217,7 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 	if new_shoulder_stance then
 		local was_in_steelsight = self._shoulder_stance.in_steelsight
 		local was_in_second_sight = self._shoulder_stance.in_second_sight
-		local absolute_progress = nil
+		local absolute_progress
 
 		if self._shoulder_stance.transition then
 			local trans_data = self._shoulder_stance.transition
@@ -1189,10 +1230,8 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 			else
 				absolute_progress = trans_data.absolute_progress * (1 - progress_smooth)
 			end
-		elseif was_in_steelsight and not was_in_second_sight then
-			absolute_progress = 1
 		else
-			absolute_progress = 0
+			absolute_progress = was_in_steelsight and not was_in_second_sight and 1 or 0
 		end
 
 		local steelsight_swap_progress_trigger = 1
@@ -1203,6 +1242,7 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 		end
 
 		local transition = {}
+
 		self._shoulder_stance.transition = transition
 		self._shoulder_stance.in_steelsight = self._parent_movement_ext._current_state:in_steelsight()
 		self._shoulder_stance.in_second_sight = self._parent_movement_ext._current_state:is_second_sight_on()
@@ -1218,6 +1258,7 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 
 	if new_head_stance then
 		local transition = {}
+
 		self._head_stance.transition = transition
 		transition.end_translation = new_head_stance.translation
 		transition.end_rotation = new_head_stance.rotation
@@ -1229,6 +1270,7 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 
 	if new_vel_overshot then
 		local transition = {}
+
 		self._vel_overshot.transition = transition
 		transition.end_pivot = new_vel_overshot.pivot
 		transition.end_yaw_neg = new_vel_overshot.yaw_neg
@@ -1249,6 +1291,7 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 			self._fov.transition = nil
 		else
 			local transition = {}
+
 			self._fov.transition = transition
 			transition.end_fov = new_fov
 			transition.start_fov = self._fov.fov
@@ -1360,6 +1403,7 @@ function FPCameraPlayerBase:animate_fov(new_fov, duration_multiplier)
 		self._fov.transition = nil
 	else
 		local transition = {}
+
 		self._fov.transition = transition
 		transition.end_fov = new_fov
 		transition.start_fov = self._fov.fov
@@ -1387,6 +1431,7 @@ function FPCameraPlayerBase:_check_play_empty_state()
 end
 
 function FPCameraPlayerBase:anim_clbk_idle_exit()
+	return
 end
 
 function FPCameraPlayerBase:anim_clbk_empty_enter()
@@ -1485,13 +1530,13 @@ function FPCameraPlayerBase:play_melee_sound(unit, sound_id)
 	end
 end
 
-FPCameraPlayerBase.anim_sound_condition_functions = {
-	has_part = function (self, part_id)
-		local weapon = self._parent_unit:inventory():equipped_unit()
+FPCameraPlayerBase.anim_sound_condition_functions = {}
 
-		return alive(weapon) and weapon:base() and weapon:base().has_part and weapon:base():has_part(part_id)
-	end
-}
+function FPCameraPlayerBase.anim_sound_condition_functions:has_part(part_id)
+	local weapon = self._parent_unit:inventory():equipped_unit()
+
+	return alive(weapon) and weapon:base() and weapon:base().has_part and weapon:base():has_part(part_id)
+end
 
 function FPCameraPlayerBase:play_sound_with_condition(unit, event, condition, condition_param)
 	if alive(self._parent_unit) then
@@ -1561,6 +1606,7 @@ function FPCameraPlayerBase:spawn_grenade()
 	local align_obj_l = self._unit:get_object(align_obj_l_name)
 	local align_obj_r = self._unit:get_object(align_obj_r_name)
 	local grenade_entry = managers.blackmarket:equipped_grenade()
+
 	self._grenade_unit = World:spawn_unit(Idstring(tweak_data.blackmarket.projectiles[grenade_entry].unit_dummy), align_obj_r:position(), align_obj_r:rotation())
 
 	self._unit:link(align_obj_r:name(), self._grenade_unit, self._grenade_unit:orientation_object():name())
@@ -1640,6 +1686,7 @@ function FPCameraPlayerBase:spawn_melee_item()
 			"a_weapon_left"
 		}
 		local graphic_objects = tweak_data.blackmarket.melee_weapons[melee_entry].graphic_objects or {}
+
 		self._melee_item_units = {}
 
 		for _, align in ipairs(aligns) do
@@ -1713,7 +1760,7 @@ function FPCameraPlayerBase:spawn_mask()
 		local mask_unit_name = "units/payday2/masks/fps_temp_dallas/temp_mask_dallas"
 		local equipped_mask = managers.blackmarket:equipped_mask()
 		local peer_id = managers.network:session():local_peer():id()
-		local blueprint = nil
+		local blueprint
 		local mask_id = equipped_mask.mask_id and managers.blackmarket:get_real_mask_id(equipped_mask.mask_id, peer_id)
 
 		if mask_id then
@@ -1752,6 +1799,7 @@ function FPCameraPlayerBase:spawn_mask()
 end
 
 function FPCameraPlayerBase:relink_mask()
+	return
 end
 
 function FPCameraPlayerBase:unspawn_mask()
@@ -1978,12 +2026,11 @@ function FPCameraPlayerBase:current_tilt()
 end
 
 function FPCameraPlayerBase:animate_pitch(start_t, start_pitch, end_pitch, total_duration)
-	self._animate_pitch = {
-		start_t = start_t,
-		start_pitch = start_pitch or self._camera_properties.pitch,
-		end_pitch = end_pitch,
-		duration = total_duration
-	}
+	self._animate_pitch = {}
+	self._animate_pitch.start_t = start_t
+	self._animate_pitch.start_pitch = start_pitch or self._camera_properties.pitch
+	self._animate_pitch.end_pitch = end_pitch
+	self._animate_pitch.duration = total_duration
 end
 
 function FPCameraPlayerBase:animate_pitch_upd()
@@ -2005,13 +2052,13 @@ function FPCameraPlayerBase:update_tilt_smooth(direction, max_tilt, tilt_speed, 
 	if direction < 0 and self._camera_properties.current_tilt <= 0 then
 		self:set_target_tilt(-1 * self:smoothstep(0, max_tilt, self._tilt_dt, tilt_speed))
 
-		if self._tilt_dt < tilt_speed then
+		if tilt_speed > self._tilt_dt then
 			self._tilt_dt = self._tilt_dt + dt
 		end
 	elseif direction > 0 and self._camera_properties.current_tilt >= 0 then
 		self:set_target_tilt(self:smoothstep(0, max_tilt, self._tilt_dt, tilt_speed))
 
-		if self._tilt_dt < tilt_speed then
+		if tilt_speed > self._tilt_dt then
 			self._tilt_dt = self._tilt_dt + dt
 		end
 	else
@@ -2033,7 +2080,9 @@ end
 
 function FPCameraPlayerBase:smoothstep(a, b, step, n)
 	local v = step / n
+
 	v = 1 - (1 - v) * (1 - v)
+
 	local x = a * (1 - v) + b * v
 
 	return x

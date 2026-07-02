@@ -76,6 +76,7 @@ function ElementStopwatch:update_timer(t, dt)
 end
 
 function ElementStopwatch:client_on_executed(...)
+	return
 end
 
 function ElementStopwatch:on_executed(instigator)
@@ -176,6 +177,7 @@ function ElementStopwatchOperator:init(...)
 end
 
 function ElementStopwatchOperator:client_on_executed(...)
+	return
 end
 
 function ElementStopwatchOperator:on_executed(instigator)
@@ -270,6 +272,7 @@ function ElementStopwatchTrigger:on_executed(instigator)
 end
 
 function ElementStopwatchTrigger:client_on_executed(...)
+	return
 end
 
 function ElementStopwatchTrigger:activate_trigger()
@@ -283,6 +286,7 @@ function ElementStopwatchTrigger:activate_trigger()
 end
 
 function ElementStopwatchTrigger:operation_add()
+	return
 end
 
 function ElementStopwatchTrigger:set_enabled(enabled)
@@ -304,9 +308,11 @@ function ElementStopwatchFilter:init(...)
 end
 
 function ElementStopwatchFilter:on_script_activated()
+	return
 end
 
 function ElementStopwatchFilter:client_on_executed(...)
+	return
 end
 
 function ElementStopwatchFilter:on_executed(instigator)
@@ -363,11 +369,11 @@ function ElementStopwatchFilter:_check_time(element, value)
 	if not self._values.check_type or self._values.check_type == "equal" then
 		return element:get_time() == value
 	elseif self._values.check_type == "less_or_equal" then
-		return element:get_time() <= value
+		return value >= element:get_time()
 	elseif self._values.check_type == "greater_or_equal" then
 		return value <= element:get_time()
 	elseif self._values.check_type == "less_than" then
-		return element:get_time() < value
+		return value > element:get_time()
 	elseif self._values.check_type == "greater_than" then
 		return value < element:get_time()
 	end

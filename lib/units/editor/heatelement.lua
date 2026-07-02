@@ -15,11 +15,12 @@ function HeatUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local heat_points_params = {
-		name = "Heat points:",
-		floats = 0,
-		name_proportions = 1,
 		ctrlr_proportions = 2,
+		floats = 0,
+		name = "Heat points:",
+		name_proportions = 1,
 		tooltip = "Can increase or decrease the heat level",
 		panel = panel,
 		sizer = panel_sizer,
@@ -37,13 +38,13 @@ function HeatUnitElement:_build_panel(panel, panel_sizer)
 	})
 
 	local heat_level_params = {
-		name_proportions = 1,
-		name = "Heat level:",
 		ctrlr_proportions = 2,
-		tooltip = "Use this to set the heat level (if it isn't this or hihger allready)",
-		min = 0,
 		floats = 0,
 		max = 10,
+		min = 0,
+		name = "Heat level:",
+		name_proportions = 1,
+		tooltip = "Use this to set the heat level (if it isn't this or hihger allready)",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.level
@@ -59,11 +60,11 @@ function HeatUnitElement:_build_panel(panel, panel_sizer)
 		ctrlr = heat_level
 	})
 
-	local help = {
-		text = "If level is specified (level ~= 0) the result of this element will be to try increase the heat level (it will never lower it though). If the level == 0 then the heat points will be used to increase or decrese the heat.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "If level is specified (level ~= 0) the result of this element will be to try increase the heat level (it will never lower it though). If the level == 0 then the heat points will be used to increase or decrese the heat."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end
@@ -84,14 +85,15 @@ function HeatTriggerUnitElement:_build_panel(panel, panel_sizer)
 
 	panel = panel or self._panel
 	panel_sizer = panel_sizer or self._panel_sizer
+
 	local heat_stage_params = {
-		name_proportions = 1,
-		name = "Heat stage:",
 		ctrlr_proportions = 2,
-		tooltip = "Set the heat stage to get a trigger from ",
-		min = 0,
 		floats = 0,
 		max = 10,
+		min = 0,
+		name = "Heat stage:",
+		name_proportions = 1,
+		tooltip = "Set the heat stage to get a trigger from ",
 		panel = panel,
 		sizer = panel_sizer,
 		value = self._hed.stage
@@ -107,11 +109,11 @@ function HeatTriggerUnitElement:_build_panel(panel, panel_sizer)
 		ctrlr = heat_stage
 	})
 
-	local help = {
-		text = "Set which heat stage to get a trigger from.",
-		panel = panel,
-		sizer = panel_sizer
-	}
+	local help = {}
+
+	help.text = "Set which heat stage to get a trigger from."
+	help.panel = panel
+	help.sizer = panel_sizer
 
 	self:add_help_text(help)
 end

@@ -1,4 +1,5 @@
 PlayerParachutingVR = PlayerParachuting or Application:error("PlayerParachutingVR needs PlayerParachuting!")
+
 local __init = PlayerParachuting.init
 
 function PlayerParachutingVR:init(...)

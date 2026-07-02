@@ -4,8 +4,8 @@ MutatorEnemyDamage.name_id = "mutator_enemy_damage"
 MutatorEnemyDamage.desc_id = "mutator_enemy_damage_desc"
 MutatorEnemyDamage.has_options = true
 MutatorEnemyDamage.reductions = {
-	money = 0,
-	exp = 0
+	exp = 0,
+	money = 0
 }
 MutatorEnemyDamage.disables_achievements = true
 MutatorEnemyDamage.categories = {
@@ -52,16 +52,16 @@ end
 
 function MutatorEnemyDamage:setup_options_gui(node)
 	local params = {
-		name = "enemy_damage_slider",
 		callback = "_update_mutator_value",
+		name = "enemy_damage_slider",
 		text_id = "menu_mutator_enemy_damage",
 		update_callback = callback(self, self, "_update_damage_multiplier")
 	}
 	local data_node = {
+		decimal_count = 2,
 		show_value = true,
 		step = 0.1,
 		type = "CoreMenuItemSlider.ItemSlider",
-		decimal_count = 2,
 		min = self:_min_damage(),
 		max = self:_max_damage()
 	}
