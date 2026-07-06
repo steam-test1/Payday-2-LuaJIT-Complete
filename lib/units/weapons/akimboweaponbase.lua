@@ -5,10 +5,8 @@ function AkimboWeaponBase:init(...)
 	AkimboWeaponBase.super.init(self, ...)
 
 	self._manual_fire_second_gun = self:weapon_tweak_data().manual_fire_second_gun
-
-	self._unit:set_extension_update_enabled(Idstring("base"), true)
-
 	self._fire_callbacks = {}
+	self._updating_fire_callbacks = false
 end
 
 function AkimboWeaponBase:update(unit, t, dt)
@@ -21,6 +19,12 @@ function AkimboWeaponBase:update(unit, t, dt)
 			data.callback(self)
 			table.remove(self._fire_callbacks, i)
 		end
+	end
+
+	if #self._fire_callbacks == 0 then
+		self._updating_fire_callbacks = false
+
+		self._unit:set_extension_update_enabled(Idstring("base"), false)
 	end
 end
 
@@ -84,6 +88,12 @@ function AkimboWeaponBase:toggle_firemode(skip_post_event)
 		if alive(self._second_gun) then
 			self._fire_callbacks = {}
 
+			if self._updating_fire_callbacks then
+				self._updating_fire_callbacks = false
+
+				self._unit:set_extension_update_enabled(Idstring("base"), false)
+			end
+
 			return self._second_gun:base():toggle_firemode(true)
 		else
 			return true
@@ -119,6 +129,7 @@ function AkimboWeaponBase:fire(...)
 					...
 				})
 			})
+			self._unit:set_extension_update_enabled(Idstring("base"), true)
 		end
 
 		return result
@@ -378,10 +389,8 @@ function NPCAkimboWeaponBase:init(...)
 	NPCAkimboWeaponBase.super.init(self, ...)
 
 	self._manual_fire_second_gun = self:weapon_tweak_data().manual_fire_second_gun
-
-	self._unit:set_extension_update_enabled(Idstring("base"), true)
-
 	self._fire_callbacks = {}
+	self._updating_fire_callbacks = false
 end
 
 function NPCAkimboWeaponBase:update(unit, t, dt)
@@ -394,6 +403,12 @@ function NPCAkimboWeaponBase:update(unit, t, dt)
 			data.callback(self)
 			table.remove(self._fire_callbacks, i)
 		end
+	end
+
+	if #self._fire_callbacks == 0 then
+		self._updating_fire_callbacks = false
+
+		self._unit:set_extension_update_enabled(Idstring("base"), false)
 	end
 end
 
@@ -467,6 +482,12 @@ function NPCAkimboWeaponBase:auto_fire_blank(direction, impact, sub_ids, overrid
 					override_direction
 				})
 			})
+
+			if not self._updating_fire_callbacks then
+				self._updating_fire_callbacks = true
+
+				self._unit:set_extension_update_enabled(Idstring("base"), true)
+			end
 		end
 	end
 
@@ -496,6 +517,12 @@ function NPCAkimboWeaponBase:start_autofire(nr_shots, sub_id)
 				t = self:get_fire_time(),
 				callback = callback(self, self, "_start_autofire_second", nr_shots or false)
 			})
+
+			if not self._updating_fire_callbacks then
+				self._updating_fire_callbacks = true
+
+				self._unit:set_extension_update_enabled(Idstring("base"), true)
+			end
 		end
 	end
 
@@ -525,6 +552,12 @@ function NPCAkimboWeaponBase:stop_autofire(sub_id)
 				t = self:get_fire_time(),
 				callback = callback(self, self, "_stop_autofire_second")
 			})
+
+			if not self._updating_fire_callbacks then
+				self._updating_fire_callbacks = true
+
+				self._unit:set_extension_update_enabled(Idstring("base"), true)
+			end
 		end
 	elseif sub_id == ID_FIRE_PRIMARY then
 		NPCAkimboWeaponBase.super.stop_autofire(self)

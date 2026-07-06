@@ -51,6 +51,7 @@ function HuskCivilianBase:sync_net_event(event_id)
 end
 
 HuskCivilianBaseResetSpawnPos = HuskCivilianBaseResetSpawnPos or class(HuskCivilianBase)
+HuskCivilianBaseResetSpawnPos._SPAWN_POS_RESET_TIME = 1
 
 function HuskCivilianBaseResetSpawnPos:init(unit)
 	local spawn_position = unit:position()
@@ -63,7 +64,7 @@ function HuskCivilianBaseResetSpawnPos:init(unit)
 		end
 
 		self._reset_spawn_pos_clbk_id = nil
-	end, TimerManager:game():time() + 1)
+	end, TimerManager:game():time() + self._SPAWN_POS_RESET_TIME)
 	HuskCivilianBaseResetSpawnPos.super.init(self, unit)
 end
 

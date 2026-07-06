@@ -23,7 +23,6 @@ local sentry_uid = 1
 function SentryGunBase:init(unit)
 	SentryGunBase.super.init(self, unit, false)
 
-	self._unit = unit
 	self._damage_multiplier = 1
 
 	if self._place_snd_event then
@@ -794,8 +793,8 @@ function SentryGunBase:load(save_data)
 	end
 end
 
-function SentryGunBase:pre_destroy()
-	SentryGunBase.super.pre_destroy(self, self._unit)
+function SentryGunBase:pre_destroy(unit)
+	SentryGunBase.super.pre_destroy(self, unit)
 	managers.mission:remove_global_event_listener(self._sentry_uid)
 	self:unregister()
 

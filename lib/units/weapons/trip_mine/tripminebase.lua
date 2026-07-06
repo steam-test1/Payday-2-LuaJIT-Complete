@@ -25,7 +25,7 @@ function TripMineBase:server_information()
 end
 
 function TripMineBase:init(unit)
-	UnitBase.init(self, unit, false)
+	TripMineBase.super.init(self, unit, false)
 
 	self._unit = unit
 	self._position = self._unit:position()
@@ -698,7 +698,9 @@ function TripMineBase:_debug_draw(from, to)
 	brush:cylinder(from, to, 1)
 end
 
-function TripMineBase:destroy()
+function TripMineBase:pre_destroy(unit)
+	TripMineBase.super.pre_destroy(self, unit)
+
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 

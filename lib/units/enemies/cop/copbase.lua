@@ -41,7 +41,6 @@ end
 function CopBase:init(unit)
 	UnitBase.init(self, unit, false)
 
-	self._unit = unit
 	self._char_tweak = tweak_data.character[self._tweak_table]
 
 	self:_set_tags(self._char_tweak.tags)
@@ -655,6 +654,10 @@ function CopBase:get_total_buff(name)
 end
 
 function CopBase:add_tweak_data_changed_listener(key, clbk)
+	if self._destroying then
+		return
+	end
+
 	if not self._tweak_data_listener_holder then
 		self._tweak_data_listener_holder = ListenerHolder:new()
 	end

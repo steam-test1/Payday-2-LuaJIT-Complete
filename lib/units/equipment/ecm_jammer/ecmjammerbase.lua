@@ -249,9 +249,7 @@ function ECMJammerBase:set_active(active)
 			self._unit:sound_source():post_event("ecm_jammer_jam_signal_stop")
 		end
 
-		if self._unit:contour() then
-			self._unit:contour():remove("deployable_active")
-		end
+		self._unit:contour():remove("deployable_active")
 	end
 
 	self._jammer_active = active
@@ -449,9 +447,7 @@ function ECMJammerBase:_set_feedback_active(state)
 			self._unit:sound_source():post_event("ecm_jammer_puke_signal_stop")
 		end
 
-		if self._unit:contour() then
-			self._unit:contour():remove("deployable_active")
-		end
+		self._unit:contour():remove("deployable_active")
 	end
 
 	self._feedback_active = state
@@ -651,7 +647,9 @@ function ECMJammerBase:load(data)
 	self._was_dropin = true
 end
 
-function ECMJammerBase:destroy()
+function ECMJammerBase:pre_destroy(unit)
+	ECMJammerBase.super.pre_destroy(self, unit)
+
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 

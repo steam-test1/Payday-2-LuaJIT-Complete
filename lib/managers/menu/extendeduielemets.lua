@@ -523,6 +523,14 @@ function ScrollItemList:mouse_pressed(button, x, y)
 	return ScrollItemList.super.mouse_pressed(self, button, x, y)
 end
 
+function ScrollItemList:special_btn_pressed(button)
+	if button == Idstring("continue") and self._selected_item._trigger then
+		return self._selected_item:_trigger()
+	end
+
+	return ScrollItemList.super.special_btn_pressed(self, button)
+end
+
 function ScrollItemList:_on_selected_changed(selected)
 	if self._on_selected_callback then
 		self._on_selected_callback(selected)
@@ -586,9 +594,7 @@ function ScrollItemList:select_item(item)
 	end
 
 	if self._selected_item and self._selected_item._hover_changed then
-		self._selected_item._hover = false
-
-		self._selected_item:_hover_changed(false)
+		self._selected_item:set_hover(false)
 
 		self._selected_item = nil
 	end
@@ -878,13 +884,17 @@ function BaseButton:allow_input()
 	return self._enabled and BaseButton.super.allow_input(self)
 end
 
+function BaseButton:set_hover(hover)
+	self._hover = hover
+
+	self:_hover_changed(hover)
+end
+
 function BaseButton:mouse_moved(o, x, y)
 	local hover = self:inside(x, y)
 
 	if self._hover ~= hover then
-		self._hover = hover
-
-		self:_hover_changed(hover)
+		self:set_hover(hover)
 	end
 
 	if hover then
@@ -905,13 +915,6 @@ function BaseButton:special_btn_pressed(button)
 		self:_trigger()
 
 		return true
-	end
-end
-
-function BaseButton:confirm_pressed()
-	if self._hover then
-		print("Hover!", self:name(), debug.traceback())
-		self:_trigger()
 	end
 end
 
@@ -937,6 +940,11 @@ function TextButton:init(parent, text_config, func, panel_config)
 		text_config.text = managers.localization:text(text_config.text_id, {
 			MY_BTN = managers.localization:btn_macro(text_config.binding, true)
 		})
+
+		if not text_config.no_upper_case then
+			text_config.text = text_config.text:upper()
+		end
+
 		text_config.text_id = nil
 	end
 
@@ -1133,6 +1141,8 @@ end
 
 function CompositeButton:register_child(item)
 	table.insert(self._child_list, item)
+
+	return item
 end
 
 ProgressBar = ProgressBar or class(ExtendedPanel)

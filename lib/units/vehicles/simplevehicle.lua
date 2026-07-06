@@ -207,7 +207,3 @@ end
 function SimpleVehicle:load(data)
 	local state = data.SimpleVehicle
 end
-
-function SimpleVehicle:destroy()
-	return
-end

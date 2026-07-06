@@ -5992,10 +5992,24 @@ function GroupAIStateBase:register_loot(loot_unit, pickup_area)
 	pickup_area.loot[loot_u_key] = loot_unit
 end
 
-function GroupAIStateBase:unregister_loot(loot_u_key)
+function GroupAIStateBase:register_loot_no_unit(loot_key, pickup_area)
 	for area_id, area in pairs(self._area_data) do
-		if area.loot and area.loot[loot_u_key] then
-			area.loot[loot_u_key] = nil
+		if area.loot and area.loot[loot_key] then
+			debug_pause("[GroupAIStateBase:register_loot_no_unit] loot registered twice", loot_key)
+		end
+	end
+
+	if not pickup_area.loot then
+		pickup_area.loot = {}
+	end
+
+	pickup_area.loot[loot_key] = true
+end
+
+function GroupAIStateBase:unregister_loot(loot_key)
+	for area_id, area in pairs(self._area_data) do
+		if area.loot and area.loot[loot_key] then
+			area.loot[loot_key] = nil
 
 			if not next(area.loot) then
 				area.loot = nil

@@ -2,7 +2,8 @@ WeaponUnderbarrel = WeaponUnderbarrel or class(WeaponGadgetBase)
 WeaponUnderbarrel.GADGET_TYPE = "underbarrel"
 
 function WeaponUnderbarrel:init(unit)
-	self._unit = unit
+	WeaponUnderbarrel.super.init(self, unit)
+
 	self._is_npc = false
 	self._tweak_data = tweak_data.weapon[self.name_id]
 	self._deployed = false
@@ -13,10 +14,6 @@ function WeaponUnderbarrel:init(unit)
 	WeaponUnderbarrel.enemy_mask = WeaponUnderbarrel.enemy_mask or managers.slot:get_mask("enemies")
 	WeaponUnderbarrel.wall_mask = WeaponUnderbarrel.wall_mask or managers.slot:get_mask("world_geometry")
 	WeaponUnderbarrel.wall_vehicle_mask = WeaponUnderbarrel.wall_vehicle_mask or managers.slot:get_mask("world_geometry", "vehicles")
-end
-
-function WeaponUnderbarrel:destroy(unit)
-	return
 end
 
 function WeaponUnderbarrel:setup_data(setup_data, damage_multiplier, ammo_data)

@@ -422,9 +422,11 @@ function SpyCameraBase:load(data)
 	self._was_dropin = true
 end
 
-SpyCameraDummyBase = SpyCameraDummyBase or class()
+SpyCameraDummyBase = SpyCameraDummyBase or class(UnitBase)
 
 function SpyCameraDummyBase:init(unit)
+	SpyCameraDummyBase.super.init(self, unit, false)
+
 	if not unit:damage() then
 		return
 	end
@@ -448,7 +450,7 @@ end
 SpyAccessCameraBase = SpyAccessCameraBase or class(UnitBase)
 
 function SpyAccessCameraBase:init(unit)
-	SpyAccessCameraBase.super.init(self, unit, true)
+	SpyAccessCameraBase.super.init(self, unit, false)
 
 	self._tweak_data = tweak_data.equipments.spy_camera
 	self._camera_object = self._unit:get_object(Idstring("a_camera"))
@@ -468,13 +470,14 @@ function SpyAccessCameraBase:init(unit)
 	managers.game_play_central:add_access_camera(self._tweak_data.access_channel, self)
 end
 
-function SpyAccessCameraBase:destroy()
+function SpyAccessCameraBase:destroy(unit)
+	SpyAccessCameraBase.super.destroy(self, unit)
 	managers.game_play_central:remove_access_camera(self._tweak_data.access_channel, self)
 
 	local current_state = game_state_machine:current_state()
 
 	if current_state and current_state.on_camera_access_changed then
-		current_state:on_camera_access_changed(self._unit)
+		current_state:on_camera_access_changed(unit)
 	end
 end
 

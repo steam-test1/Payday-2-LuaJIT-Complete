@@ -259,7 +259,9 @@ function DoctorBagBase:load(data)
 	self._was_dropin = true
 end
 
-function DoctorBagBase:destroy()
+function DoctorBagBase:destroy(unit)
+	DoctorBagBase.super.destroy(self, unit)
+
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 

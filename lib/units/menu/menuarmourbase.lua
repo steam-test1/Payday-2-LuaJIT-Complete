@@ -47,8 +47,8 @@ function MenuArmourBase:init(unit, update_enabled)
 	self._clbks = {}
 end
 
-function MenuArmourBase:destroy()
-	MenuArmourBase.super.destroy(self)
+function MenuArmourBase:destroy(unit)
+	MenuArmourBase.super.destroy(self, unit)
 	self:_unload_cosmetic_assets(self._cosmetics)
 	self:update_character_visuals(self._cosmetics)
 end

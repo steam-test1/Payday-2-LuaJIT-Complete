@@ -580,8 +580,8 @@ function PlayerTurretBase:damage_multiplier()
 	return managers.blackmarket:damage_multiplier(self._name_id, self:categories(), self._silencer, nil, current_state, self._blueprint)
 end
 
-function PlayerTurretBase:pre_destroy()
-	PlayerTurretBase.super.pre_destroy(self, self._unit)
+function PlayerTurretBase:pre_destroy(unit)
+	PlayerTurretBase.super.pre_destroy(self, unit)
 	self:remove_dead_owner()
 end
 

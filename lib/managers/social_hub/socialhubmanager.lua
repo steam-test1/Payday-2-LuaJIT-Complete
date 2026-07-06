@@ -162,7 +162,7 @@ function SocialHubManager:on_invite_recieved(invite_id, lobby_id, sender)
 end
 
 function SocialHubManager:on_search_lobby_fetched(lobby, success, intended_id)
-	if not lobby or not success == "success" then
+	if not lobby or success ~= "success" then
 		return
 	end
 

@@ -2445,12 +2445,7 @@ function MenuCallbackHandler:choice_distance_filter(item)
 	end
 
 	managers.network.matchmake:set_distance_filter(dist_filter)
-
-	if IS_EPIC_MM then
-		managers.user:set_setting("crimenet_filter_distance_epic", dist_filter)
-	else
-		managers.user:set_setting("crimenet_filter_distance", dist_filter)
-	end
+	managers.user:set_setting("crimenet_filter_distance", dist_filter)
 end
 
 function MenuCallbackHandler:choice_difficulty_filter(item)

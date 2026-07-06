@@ -227,7 +227,9 @@ function BodyBagsBagBase:load(data)
 	self._was_dropin = true
 end
 
-function BodyBagsBagBase:destroy()
+function BodyBagsBagBase:destroy(unit)
+	BodyBagsBagBase.super.destroy(self, unit)
+
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 

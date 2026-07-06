@@ -204,10 +204,6 @@ function GrenadeCrateBase:load(data)
 	self:_set_visual_stage()
 end
 
-function GrenadeCrateBase:destroy()
-	return
-end
-
 CustomGrenadeCrateBase = CustomGrenadeCrateBase or class(GrenadeCrateBase)
 
 function CustomGrenadeCrateBase:init(unit)

@@ -1,13 +1,12 @@
-TearGasGrenade = TearGasGrenade or class()
+TearGasGrenade = TearGasGrenade or class(UnitBase)
 
 function TearGasGrenade:init(unit)
-	self._unit = unit
+	TearGasGrenade.super.init(self, unit, false)
+
 	self.radius = 0
 	self.duration = 0
 	self.damage = 0
 	self._has_played_VO = false
-
-	unit:set_extension_update_enabled(Idstring("base"), false)
 end
 
 function TearGasGrenade:set_properties(props)
@@ -198,6 +197,7 @@ function TearGasGrenade:load(data)
 	end
 end
 
-function TearGasGrenade:destroy()
+function TearGasGrenade:pre_destroy(unit)
+	TearGasGrenade.super.pre_destroy(self, unit)
 	self:_remove_effects()
 end

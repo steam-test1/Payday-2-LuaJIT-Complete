@@ -54,10 +54,10 @@ function SmokeGrenade:_give_smoke_damage(col_ray, unit, damage)
 	return
 end
 
-function SmokeGrenade:destroy()
+function SmokeGrenade:destroy(unit)
 	if self._smoke_effect then
 		World:effect_manager():kill(self._smoke_effect)
 	end
 
-	SmokeGrenade.super.destroy(self)
+	SmokeGrenade.super.destroy(self, unit)
 end

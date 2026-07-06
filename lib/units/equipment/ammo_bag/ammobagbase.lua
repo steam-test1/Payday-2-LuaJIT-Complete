@@ -267,7 +267,9 @@ function AmmoBagBase:round_value(val)
 	return math.floor(val * dec_mul) / dec_mul
 end
 
-function AmmoBagBase:destroy()
+function AmmoBagBase:destroy(unit)
+	AmmoBagBase.super.destroy(self, unit)
+
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 

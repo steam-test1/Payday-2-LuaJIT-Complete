@@ -136,6 +136,8 @@ function CarryData:init(unit)
 			if link_body then
 				self._link_body = link_body
 
+				self:_add_body_activation_clbk()
+
 				local get_obj_f = unit.get_object
 				local link_obj
 
@@ -648,10 +650,20 @@ function CarryData:clbk_out_of_world()
 			end
 		end
 
-		local tracker = managers.navigation:create_nav_tracker(self._unit:position(), false)
+		local safe_pos
 
-		self._unit:set_position(tracker:field_position())
-		managers.navigation:destroy_nav_tracker(tracker)
+		if self._first_nav_pos then
+			safe_pos = self._first_nav_pos
+		else
+			local tracker = managers.navigation:create_nav_tracker(self._unit:position(), false)
+
+			safe_pos = tracker:field_position()
+
+			managers.navigation:destroy_nav_tracker(tracker)
+		end
+
+		self._unit:set_position(safe_pos)
+		managers.network:session():send_to_peers("sync_carry_set_position_and_throw", self._unit, safe_pos, Vector3(0, 0, 0), 0)
 
 		self._register_out_of_world_dynamic_clbk_id = "BagOutOfWorldDynamic" .. tostring(self._unit:key())
 
@@ -722,10 +734,10 @@ function CarryData:set_carry_id(carry_id, is_init)
 		self._expire_time = nil
 	end
 
-	if not is_init then
+	if not is_init and Network:is_server() and self._AI_carry then
 		self._register_steal_SO_clbk_id = "carrydata_registerSO" .. tostring(self._unit:key())
 
-		managers.enemy:add_delayed_clbk(self._register_steal_SO_clbk_id, callback(self, self, "clbk_register_steal_SO"), 0)
+		managers.enemy:add_delayed_clbk(self._register_steal_SO_clbk_id, callback(self, self, "clbk_register_steal_SO"), TimerManager:game():time() + 2 * math.random())
 	end
 end
 
@@ -820,27 +832,17 @@ function CarryData:_unregister_steal_SO()
 end
 
 function CarryData:_chk_register_steal_SO()
-	if not self._link_body then
+	if not Network:is_server() or not self._link_body or not self._AI_carry then
 		return
 	end
 
-	if not self._has_body_activation_clbk then
-		local clbk = callback(self, self, "clbk_body_active_state")
+	self:_add_body_activation_clbk()
 
-		self._has_body_activation_clbk = {
-			[self._link_body:key()] = clbk
-		}
-
-		self._unit:add_body_activation_callback(clbk)
-		self._link_body:set_activate_tag(Idstring("bag_moving"))
-		self._link_body:set_deactivate_tag(Idstring("bag_still"))
-	end
-
-	if not Network:is_server() or self._steal_SO_data or self._linked_to or self._zipline_unit or self._link_body:active() or not managers.navigation:is_data_ready() then
+	if self._steal_SO_data or self._linked_to or self._zipline_unit then
 		return
 	end
 
-	if not self._AI_carry then
+	if self._link_body:active() or not managers.navigation:is_data_ready() then
 		return
 	end
 
@@ -862,10 +864,12 @@ function CarryData:_chk_register_steal_SO()
 		drop_pos = mvector3.copy(drop_point.pos)
 		drop_nav_seg = drop_point.nav_seg
 		drop_area = drop_point.area
-	elseif not self._register_steal_SO_clbk_id then
-		self._register_steal_SO_clbk_id = "carrydata_registerSO" .. tostring(self._unit:key())
+	else
+		if not self._register_steal_SO_clbk_id then
+			self._register_steal_SO_clbk_id = "carrydata_registerSO" .. tostring(self._unit:key())
 
-		managers.enemy:add_delayed_clbk(self._register_steal_SO_clbk_id, callback(self, self, "clbk_register_steal_SO"), TimerManager:game():time() + 10)
+			managers.enemy:add_delayed_clbk(self._register_steal_SO_clbk_id, callback(self, self, "clbk_register_steal_SO"), TimerManager:game():time() + 10)
+		end
 
 		return
 	end
@@ -1159,17 +1163,7 @@ function CarryData:link_to(parent_unit)
 		int_ext._air_start_time = TimerManager:game():time()
 	end
 
-	local body_active_clbk = self._has_body_activation_clbk
-
-	body_active_clbk = body_active_clbk and body_active_clbk[self._link_body:key()]
-
-	if self._has_body_activation_clbk and self._has_body_activation_clbk[self._link_body:key()] then
-		self._unit:remove_body_activation_callback(self._has_body_activation_clbk[self._link_body:key()])
-		self._link_body:set_activate_tag(IDS_EMPTY)
-		self._link_body:set_deactivate_tag(IDS_EMPTY)
-
-		self._has_body_activation_clbk = nil
-	end
+	self:_remove_body_activation_clbk()
 
 	if self._steal_SO_data and (not self._steal_SO_data.picked_up or parent_unit ~= self._steal_SO_data.thief) then
 		self:_unregister_steal_SO()
@@ -1187,8 +1181,12 @@ function CarryData:link_to(parent_unit)
 		self._register_steal_SO_clbk_id = nil
 	end
 
+	self:_remove_collisions()
+
+	self._linked_to = parent_unit
+
 	call_on_next_update(function()
-		if not alive(self._unit) or not alive(parent_unit) then
+		if not alive(self._unit) or not alive(parent_unit) or self._linked_to ~= parent_unit or self._zipline_unit then
 			return
 		end
 
@@ -1212,9 +1210,6 @@ function CarryData:link_to(parent_unit)
 
 		self._unit:set_rotation(world_rot)
 	end)
-	self:_remove_collisions()
-
-	self._linked_to = parent_unit
 
 	local linked_mov_ext = parent_unit:movement()
 
@@ -1259,12 +1254,51 @@ function CarryData:unlink()
 
 	if Network:is_server() then
 		managers.network:session():send_to_peers_synched("loot_link", self._unit, self._unit)
+		self:_add_body_activation_clbk()
+
+		if not self._register_steal_SO_clbk_id and self._AI_carry then
+			self._register_steal_SO_clbk_id = "carrydata_registerSO" .. tostring(self._unit:key())
+
+			managers.enemy:add_delayed_clbk(self._register_steal_SO_clbk_id, callback(self, self, "clbk_register_steal_SO"), TimerManager:game():time() + 2 * math.random())
+		end
+	end
+end
+
+function CarryData:_add_body_activation_clbk()
+	if not self._link_body or self._has_body_activation_clbk and self._has_body_activation_clbk[self._link_body:key()] then
+		return
 	end
 
-	if not self._register_steal_SO_clbk_id then
-		self._register_steal_SO_clbk_id = "carrydata_registerSO" .. tostring(self._unit:key())
+	if not self._linked_to and not self._zipline_unit then
+		local clbk = callback(self, self, "clbk_body_active_state")
 
-		managers.enemy:add_delayed_clbk(self._register_steal_SO_clbk_id, callback(self, self, "clbk_register_steal_SO"), 0)
+		self._has_body_activation_clbk = self._has_body_activation_clbk or {}
+		self._has_body_activation_clbk[self._link_body:key()] = clbk
+
+		self._unit:add_body_activation_callback(clbk)
+		self._link_body:set_activate_tag(Idstring("bag_moving"))
+		self._link_body:set_deactivate_tag(Idstring("bag_still"))
+	end
+end
+
+function CarryData:_remove_body_activation_clbk()
+	if not self._has_body_activation_clbk or not self._link_body then
+		return
+	end
+
+	local key = self._link_body:key()
+
+	if self._has_body_activation_clbk[key] then
+		self._unit:remove_body_activation_callback(self._has_body_activation_clbk[key])
+
+		self._has_body_activation_clbk[key] = nil
+
+		self._link_body:set_activate_tag(IDS_EMPTY)
+		self._link_body:set_deactivate_tag(IDS_EMPTY)
+
+		if next(self._has_body_activation_clbk) == nil then
+			self._has_body_activation_clbk = nil
+		end
 	end
 end
 
@@ -1380,7 +1414,7 @@ function CarryData:_handle_hiding_and_destruction(destroy)
 	end
 end
 
-function CarryData:destroy()
+function CarryData:pre_destroy()
 	if self._dye_pack_smoke then
 		World:effect_manager():fade_kill(self._dye_pack_smoke)
 
@@ -1443,6 +1477,14 @@ function CarryData:set_latest_peer_id(peer_id)
 		return
 	end
 
+	if peer_id ~= 0 then
+		local tracker = managers.navigation:create_nav_tracker(self._unit:position(), false)
+
+		self._first_nav_pos = tracker:field_position()
+
+		managers.navigation:destroy_nav_tracker(tracker)
+	end
+
 	local local_peer = managers.network:session():local_peer()
 
 	if peer_id == local_peer:id() then
@@ -1490,7 +1532,7 @@ function CarryData:teleport_push(force, direction)
 end
 
 function CarryData:set_position_and_throw(position, direction, force)
-	if self._linked_to then
+	if self._linked_to or self._zipline_unit then
 		return
 	end
 

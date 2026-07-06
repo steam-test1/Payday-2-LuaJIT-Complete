@@ -2302,7 +2302,7 @@ function RaycastWeaponBase:remove_ignore_unit(unit)
 	table.delete(ignore_units, unit)
 end
 
-function RaycastWeaponBase:destroy(unit)
+function RaycastWeaponBase:pre_destroy(unit)
 	RaycastWeaponBase.super.pre_destroy(self, unit)
 
 	if self._shooting then

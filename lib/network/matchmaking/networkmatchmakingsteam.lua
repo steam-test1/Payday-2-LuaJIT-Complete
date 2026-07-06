@@ -110,7 +110,7 @@ function NetworkMatchMakingSTEAM:load_user_filters()
 	managers.network.matchmake:add_lobby_filter("state", in_lobby, "equal")
 	managers.network.matchmake:set_lobby_return_count(max_servers)
 	managers.network.matchmake:add_lobby_filter("num_players", new_servers, "equal")
-	managers.network.matchmake:set_distance_filter(managers.user:get_setting("crimenet_filter_distance"))
+	managers.network.matchmake:set_distance_filter(distance)
 	managers.network.matchmake:add_lobby_filter("difficulty", difficulty, "equal")
 	managers.network.matchmake:add_lobby_filter("job_id", job_id, "equal")
 	managers.network.matchmake:add_lobby_filter("kick_option", kick, "equal")
@@ -730,6 +730,13 @@ function NetworkMatchMakingSTEAM:join_server_with_check(room_id, is_invite)
 
 				self:search_lobby(self:search_friends_only())
 			end
+		end
+
+		if not lobby then
+			managers.system_menu:close("join_server")
+			managers.menu:show_failed_joining_dialog()
+
+			return
 		end
 
 		lobby:setup_callback(f)

@@ -1385,13 +1385,24 @@ function CopActionWalk:get_husk_interrupt_desc()
 		type = "walk",
 		end_rot = self._end_rot,
 		variant = self._haste,
-		nav_path = self._simplified_path,
 		persistent = self._persistent,
 		no_walk = self._no_walk,
 		no_strafe = self._no_strafe,
 		host_stop_pos_inserted = self._host_stop_pos_inserted,
 		host_stop_pos_ahead = self._host_stop_pos_ahead
 	}
+
+	if self._init_called then
+		old_action_desc.nav_path = self._simplified_path
+	else
+		old_action_desc.nav_path = self._nav_path
+
+		if self._simplified_path then
+			for _, nav_point in ipairs(self._simplified_path) do
+				table.insert(old_action_desc.nav_path, nav_point)
+			end
+		end
+	end
 
 	if self._blocks or self._old_blocks then
 		local blocks = {}

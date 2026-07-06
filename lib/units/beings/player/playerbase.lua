@@ -324,8 +324,8 @@ function PlayerBase:_unregister()
 end
 
 function PlayerBase:pre_destroy(unit)
-	self:_unregister()
 	UnitBase.pre_destroy(self, unit)
+	self:_unregister()
 	managers.player:player_destroyed(self._id)
 
 	if self._controller then

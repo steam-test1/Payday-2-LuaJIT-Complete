@@ -2278,7 +2278,7 @@ function GroupAIStateBesiege:get_safe_enemy_loot_drop_point(start_nav_seg)
 			end
 		else
 			for other_area_id, other_area in pairs(search_area.neighbours) do
-				if not found_areas[other_area] and not next(other_area.criminal.units) then
+				if not found_areas[other_area] then
 					table.insert(to_search_areas, other_area)
 
 					found_areas[other_area] = true

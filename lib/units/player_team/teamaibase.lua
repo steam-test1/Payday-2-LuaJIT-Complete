@@ -28,9 +28,9 @@ function TeamAIBase:arrest_settings()
 end
 
 function TeamAIBase:pre_destroy(unit)
+	UnitBase.pre_destroy(self, unit)
 	self:remove_upgrades()
 	self:unregister()
-	UnitBase.pre_destroy(self, unit)
 end
 
 function TeamAIBase:set_loadout(loadout)

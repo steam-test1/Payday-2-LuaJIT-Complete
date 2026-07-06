@@ -916,8 +916,8 @@ function UseInteractionExt:_check_achievements()
 	end
 end
 
-function UseInteractionExt:destroy()
-	UseInteractionExt.super.destroy(self)
+function UseInteractionExt:destroy(unit)
+	UseInteractionExt.super.destroy(self, unit)
 end
 
 MultipleChoiceInteractionExt = MultipleChoiceInteractionExt or class(UseInteractionExt)
@@ -1410,9 +1410,9 @@ function SentryGunInteractionExt:init(unit)
 	}, callback(self, self, "_on_death_event"))
 end
 
-function SentryGunInteractionExt:destroy()
-	SentryGunInteractionExt.super.destroy(self)
-	self._unit:event_listener():remove("interaction_on_fire")
+function SentryGunInteractionExt:destroy(unit)
+	SentryGunInteractionExt.super.destroy(self, unit)
+	unit:event_listener():remove("interaction_on_fire")
 end
 
 function SentryGunInteractionExt:interact(player)
@@ -1466,7 +1466,9 @@ function SentryGunFireModeInteractionExt:setup(sentry_gun_weapon)
 	end
 end
 
-function SentryGunFireModeInteractionExt:destroy()
+function SentryGunFireModeInteractionExt:destroy(unit)
+	SentryGunFireModeInteractionExt.super.destroy(self, unit)
+
 	if self._sentry_gun_weapon then
 		local unit = self._sentry_gun_weapon.unit and self._sentry_gun_weapon:unit()
 

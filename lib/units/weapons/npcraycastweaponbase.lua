@@ -257,7 +257,7 @@ function NPCRaycastWeaponBase:fire_blank(direction, impact)
 	self:_sound_singleshot()
 end
 
-function NPCRaycastWeaponBase:destroy(unit)
+function NPCRaycastWeaponBase:pre_destroy(unit)
 	if self._flashlight_data and alive(self._flashlight_data.light) then
 		World:delete_light(self._flashlight_data.light)
 

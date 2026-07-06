@@ -226,6 +226,12 @@ end
 
 function MissionScriptElement:set_enabled(enabled)
 	self._values.enabled = enabled
+
+	self:on_set_enabled(enabled)
+end
+
+function MissionScriptElement:on_set_enabled(enabled)
+	return
 end
 
 function MissionScriptElement:on_toggle()

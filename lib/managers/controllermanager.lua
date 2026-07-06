@@ -96,24 +96,38 @@ end
 
 function ControllerManager:load_user_mod()
 	if Global.controller_manager.user_mod then
-		local connections = managers.controller:get_settings(managers.user:get_setting("controller_mod_type")):get_connection_map()
+		local mod_type = managers.user:get_setting("controller_mod_type")
+		local user_controller_settings = managers.controller:get_settings(mod_type)
 
-		for connection_name, params in pairs(Global.controller_manager.user_mod) do
-			if params.axis and connections[params.axis] then
-				for button, button_params in pairs(params) do
-					if type(button_params) == "table" and button_params.button and connections[params.axis]._btn_connections[button_params.button] then
-						connections[params.axis]._btn_connections[button_params.button].name = button_params.connection
-					end
-				end
-			elseif params.button and connections[params.button] then
-				connections[params.button]:set_controller_id(params.controller_id)
-				connections[params.button]:set_input_name_list({
-					params.connection
-				})
-			end
+		if not user_controller_settings then
+			Application:error("[ControllerManager:load_user_mod] Can't get controller settings for mod_type, falling back to default.", mod_type)
+
+			mod_type = managers.user:get_default_setting("controller_mod_type")
+			user_controller_settings = managers.controller:get_settings(mod_type)
 		end
 
-		self:rebind_connections()
+		if user_controller_settings then
+			local connections = user_controller_settings:get_connection_map()
+
+			for connection_name, params in pairs(Global.controller_manager.user_mod) do
+				if params.axis and connections[params.axis] then
+					for button, button_params in pairs(params) do
+						if type(button_params) == "table" and button_params.button and connections[params.axis]._btn_connections[button_params.button] then
+							connections[params.axis]._btn_connections[button_params.button].name = button_params.connection
+						end
+					end
+				elseif params.button and connections[params.button] then
+					connections[params.button]:set_controller_id(params.controller_id)
+					connections[params.button]:set_input_name_list({
+						params.connection
+					})
+				end
+			end
+
+			self:rebind_connections()
+		else
+			Application:error("[ControllerManager:load_user_mod] Can't get controller settings even with default mod type setting..?", mod_type)
+		end
 	end
 end
 

@@ -78,6 +78,7 @@ NavigationManager.ACCESS_FLAGS = {
 }
 NavigationManager.ACCESS_FLAGS_OLD = {}
 NavigationManager._sector_grid_size = 500
+NavigationManager._OBSTACLE_DESTROY_KEY = "NavigationManagerObstacleDestroyed"
 
 function NavigationManager:init()
 	self._debug = IS_PC and Application:production_build()
@@ -1937,6 +1938,10 @@ function NavigationManager:_set_nav_seg_metadata(nav_seg_id, param_name, param_v
 	self._builder:set_nav_seg_metadata(nav_seg_id, param_name, param_value)
 end
 
+function NavigationManager:_clbk_obstacle_unit_destroyed(obstacle_obj_name, unit)
+	self:remove_obstacle(unit, obstacle_obj_name)
+end
+
 function NavigationManager:add_obstacle(obstacle_unit, obstacle_obj_name)
 	local obstacle_obj = obstacle_unit:get_object(obstacle_obj_name)
 
@@ -1944,6 +1949,14 @@ function NavigationManager:add_obstacle(obstacle_unit, obstacle_obj_name)
 		Application:error("[NavigationManager:add_obstacle] There was no obj to reference in this unit!", obstacle_unit, obstacle_obj_name, world_id)
 
 		return
+	end
+
+	local scriptdata_ext = obstacle_unit:unit_data()
+
+	if scriptdata_ext and scriptdata_ext.add_destroy_listener then
+		scriptdata_ext:add_destroy_listener(NavigationManager._OBSTACLE_DESTROY_KEY, callback(self, self, "_clbk_obstacle_unit_destroyed", obstacle_obj_name))
+	else
+		Application:error("[NavigationManager:add_obstacle] No unit_data extension to listen for destruction!", obstacle_unit)
 	end
 
 	local id = self._quad_field:add_obstacle(obstacle_obj)
@@ -1964,23 +1977,32 @@ function NavigationManager:remove_obstacle(obstacle_unit, obstacle_obj_name)
 		return
 	end
 
+	local scriptdata_ext = obstacle_unit:unit_data()
+
+	if scriptdata_ext and scriptdata_ext.remove_destroy_listener then
+		scriptdata_ext:remove_destroy_listener(NavigationManager._OBSTACLE_DESTROY_KEY)
+	end
+
 	self._quad_field:remove_obstacle(obstacle_obj)
 
 	local temp_array = {}
-	local removed
+	local removed_any = false
+	local u_key = obstacle_unit:key()
 
 	for i, obs_data in ipairs(self._obstacles) do
-		removed = false
+		local removed = false
 
 		if not alive(obs_data.unit) then
-			Application:debug("[NavigationManager:remove_obstacle] Found dead unit in obstalce list, removing it:", i)
+			Application:debug("[NavigationManager:remove_obstacle] Found dead unit in obstacle list, removing it:", i)
 
 			removed = true
-		elseif obs_data.unit:key() == obstacle_unit:key() and obs_data.obstacle_obj_name == obstacle_obj_name then
+			removed_any = true
+		elseif obs_data.unit:key() == u_key and obs_data.obstacle_obj_name == obstacle_obj_name then
 			Application:debug("[NavigationManager:remove_obstacle] obstacle removed", obs_data.obstacle_obj_name, obs_data.id)
 			self._quad_field:remove_obstacle(obs_data.id)
 
 			removed = true
+			removed_any = true
 		end
 
 		if not removed then
@@ -1988,7 +2010,7 @@ function NavigationManager:remove_obstacle(obstacle_unit, obstacle_obj_name)
 		end
 	end
 
-	Application:debug("[NavigationManager:remove_obstacle] Inspecting obstacles removed:", removed, removed and inspect(temp_array))
+	Application:debug("[NavigationManager:remove_obstacle] Inspecting obstacles removed:", removed_any, removed_any and inspect(temp_array) or nil)
 
 	self._obstacles = temp_array
 end

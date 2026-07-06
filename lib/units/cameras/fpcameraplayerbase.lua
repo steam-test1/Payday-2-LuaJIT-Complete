@@ -1987,7 +1987,9 @@ function FPCameraPlayerBase:load_fps_mask_units()
 	end
 end
 
-function FPCameraPlayerBase:destroy()
+function FPCameraPlayerBase:destroy(unit)
+	FPCameraPlayerBase.super.destroy(self, unit)
+
 	if self._parent_unit then
 		self._parent_unit:base():remove_destroy_listener("FPCameraPlayerBase")
 	end

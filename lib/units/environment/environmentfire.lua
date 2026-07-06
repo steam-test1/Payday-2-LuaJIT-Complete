@@ -22,7 +22,8 @@ function EnvironmentFire.spawn(position, rotation, data, normal, user_unit, weap
 end
 
 function EnvironmentFire:init(unit)
-	self._unit = unit
+	EnvironmentFire.super.init(self, unit, true)
+
 	self._burn_tick_counter = 0
 	self._burn_duration = 0
 	self._burn_duration_destroy = 1
@@ -325,10 +326,8 @@ function EnvironmentFire:_do_damage()
 end
 
 function EnvironmentFire:pre_destroy(unit)
-	return
-end
+	EnvironmentFire.super.pre_destroy(self, unit)
 
-function EnvironmentFire:destroy(unit)
 	for _, damage_effect_entry in pairs(self._molotov_damage_effect_table) do
 		World:effect_manager():fade_kill(damage_effect_entry.effect_id)
 	end
