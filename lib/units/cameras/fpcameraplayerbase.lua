@@ -1745,7 +1745,9 @@ end
 
 function FPCameraPlayerBase:enter_shotgun_reload_loop(unit, state, ...)
 	if alive(self._parent_unit) then
-		local speed_multiplier = self._parent_unit:inventory():equipped_unit():base():reload_speed_multiplier()
+		local equipped_unit = self._parent_unit:inventory():equipped_unit()
+		local weapon_base = alive(equipped_unit) and equipped_unit:base()
+		local speed_multiplier = weapon_base and weapon_base:reload_speed_multiplier() or 1
 
 		self._unit:anim_state_machine():set_speed(Idstring(state), speed_multiplier)
 	end

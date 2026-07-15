@@ -21,7 +21,7 @@ function ECMJammerBase.spawn(pos, rot, battery_life_upgrade_lvl, owner, peer_id)
 
 	local unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_jammer/gen_equipment_jammer"), pos, rot)
 
-	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, battery_life_upgrade_lvl, peer_id or 0)
+	managers.network:send_to_peers_synched("sync_equipment_setup", unit, battery_life_upgrade_lvl, peer_id or 0)
 	unit:base():setup(battery_life_upgrade_lvl, owner)
 
 	return unit
@@ -32,7 +32,11 @@ function ECMJammerBase:set_server_information(peer_id)
 		owner_peer_id = peer_id
 	}
 
-	managers.network:session():peer(peer_id):set_used_deployable(true)
+	local peer = managers.network:get_peer_safe(peer_id)
+
+	if peer then
+		peer:set_used_deployable(true)
+	end
 end
 
 function ECMJammerBase:server_information()
@@ -77,10 +81,14 @@ end
 function ECMJammerBase:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin then
-		local peer = managers.network:session():server_peer()
+	if self._was_dropin then
+		return
+	end
 
-		peer:mark_cheater(VoteManager.REASON.many_assets)
+	local server_peer = managers.network:get_server_peer_safe()
+
+	if server_peer then
+		server_peer:mark_cheater(VoteManager.REASON.many_assets)
 	end
 end
 
@@ -105,7 +113,7 @@ function ECMJammerBase:set_owner(owner)
 	self._owner = owner
 
 	if owner then
-		local peer = managers.network:session():peer_by_unit(owner)
+		local peer = managers.network:get_peer_by_unit_safe(owner)
 
 		if peer then
 			self._owner_id = peer:id()
@@ -117,11 +125,9 @@ end
 
 function ECMJammerBase:owner()
 	if not alive(self._owner) then
-		local peer = managers.network:session():peer(self._owner_id)
+		local peer = managers.network:get_peer_safe(self._owner_id)
 
-		if peer then
-			self._owner = peer:unit()
-		end
+		self._owner = peer and peer:unit() or nil
 	end
 
 	return self._owner
@@ -152,11 +158,11 @@ function ECMJammerBase:sync_net_event(event_id)
 end
 
 function ECMJammerBase:_send_net_event(event_id)
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", event_id)
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", event_id)
 end
 
 function ECMJammerBase:_send_net_event_to_host(event_id)
-	managers.network:session():send_to_host("sync_unit_event_id_16", self._unit, "base", event_id)
+	managers.network:send_to_host("sync_unit_event_id_16", self._unit, "base", event_id)
 end
 
 function ECMJammerBase:setup(battery_life_upgrade_lvl, owner)
@@ -166,7 +172,7 @@ function ECMJammerBase:setup(battery_life_upgrade_lvl, owner)
 	self._owner = owner
 
 	if alive(owner) then
-		local peer = managers.network:session():peer_by_unit(owner)
+		local peer = managers.network:get_peer_by_unit_safe(owner)
 
 		if peer then
 			self._owner_id = peer:id()
@@ -366,10 +372,6 @@ function ECMJammerBase:feedback_active()
 end
 
 function ECMJammerBase:set_feedback_active()
-	if not managers.network:session() then
-		return
-	end
-
 	if Network:is_client() then
 		self:_send_net_event_to_host(self._NET_EVENTS.feedback_start)
 	else
@@ -506,8 +508,18 @@ function ECMJammerBase:contour_unselected()
 end
 
 function ECMJammerBase:contour_interaction()
-	if managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") and managers.network:session() and self._unit:contour() and self._owner_id == managers.network:session():local_peer():id() then
-		self._unit:contour():add("deployable_interactable")
+	if not self._owner_id or not managers.player:has_category_upgrade("ecm_jammer", "can_activate_feedback") then
+		return
+	end
+
+	local contour_ext = self._unit:contour()
+
+	if contour_ext then
+		local local_peer = managers.network:get_local_peer_safe()
+
+		if local_peer and local_peer:id() == self._owner_id then
+			contour_ext:add("deployable_interactable")
+		end
 	end
 end
 

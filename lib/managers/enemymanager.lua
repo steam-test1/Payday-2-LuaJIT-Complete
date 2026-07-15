@@ -446,6 +446,10 @@ function EnemyManager:is_civilian(unit)
 end
 
 function EnemyManager:queue_task(id, task_clbk, data, execute_t, verification_clbk, asap)
+	if self._stopping then
+		return
+	end
+
 	local task_data = {
 		clbk = task_clbk,
 		id = id,
@@ -490,7 +494,9 @@ function EnemyManager:unqueue_task(id)
 		i = i - 1
 	end
 
-	debug_pause("[EnemyManager:unqueue_task] task", id, "was not queued!!!")
+	if not self._stopping then
+		debug_pause("[EnemyManager:unqueue_task] task", id, "was not queued!!!")
+	end
 end
 
 function EnemyManager:unqueue_task_debug(id)
@@ -516,7 +522,7 @@ function EnemyManager:unqueue_task_debug(id)
 		i = i - 1
 	end
 
-	if not removed then
+	if not removed and not self._stopping then
 		debug_pause("[EnemyManager:unqueue_task] task", id, "was not queued!!!")
 	end
 end
@@ -593,6 +599,10 @@ function EnemyManager:_update_queued_tasks(t, dt)
 end
 
 function EnemyManager:add_delayed_clbk(id, clbk, execute_t)
+	if self._stopping then
+		return
+	end
+
 	if not clbk then
 		debug_pause("[EnemyManager:add_delayed_clbk] Empty callback object!!!")
 	end
@@ -647,7 +657,7 @@ function EnemyManager:remove_delayed_clbk(id, no_pause)
 		end
 	end
 
-	if not no_pause then
+	if not no_pause and not self._stopping then
 		debug_pause("[EnemyManager:remove_delayed_clbk] id", id, "was not scheduled!!!")
 	end
 end
@@ -678,7 +688,9 @@ function EnemyManager:reschedule_delayed_clbk(id, execute_t)
 		return
 	end
 
-	debug_pause("[EnemyManager:reschedule_delayed_clbk] id", id, "was not scheduled!!!")
+	if not self._stopping then
+		debug_pause("[EnemyManager:reschedule_delayed_clbk] id", id, "was not scheduled!!!")
+	end
 end
 
 function EnemyManager:force_delayed_clbk(id)
@@ -694,7 +706,9 @@ function EnemyManager:force_delayed_clbk(id)
 		end
 	end
 
-	debug_pause("[EnemyManager:force_delayed_clbk] id", id, "was not scheduled!!!")
+	if not self._stopping then
+		debug_pause("[EnemyManager:force_delayed_clbk] id", id, "was not scheduled!!!")
+	end
 end
 
 function EnemyManager:queued_tasks_by_callback()
@@ -1125,20 +1139,19 @@ function EnemyManager:enable_disposal_on_corpse(unit)
 end
 
 function EnemyManager:_upd_corpse_disposal()
+	local camera_rot = managers.viewport:get_current_camera_rotation()
+
+	if not camera_rot then
+		self:queue_task(self._corpse_disposal_id, EnemyManager._upd_corpse_disposal, self, self._timer:time() + 1)
+
+		return
+	end
+
 	self._corpse_disposal_id = nil
 
 	local enemy_data = self._enemy_data
-	local player = managers.player:player_unit()
-	local cam_pos, cam_fwd
-
-	if player then
-		cam_pos = player:movement():m_head_pos()
-		cam_fwd = player:camera():forward()
-	elseif managers.viewport:get_current_camera() then
-		cam_pos = managers.viewport:get_current_camera_position()
-		cam_fwd = managers.viewport:get_current_camera_rotation():y()
-	end
-
+	local cam_fwd = camera_rot:y()
+	local cam_pos = managers.viewport:get_current_camera_position()
 	local corpses = enemy_data.corpses
 	local nr_corpses = enemy_data.nr_corpses
 	local disposals_needed = nr_corpses - self:corpse_limit()
@@ -1229,22 +1242,23 @@ function EnemyManager:_upd_shield_disposal_fast()
 end
 
 function EnemyManager:_upd_shield_disposal()
+	local camera_rot = managers.viewport:get_current_camera_rotation()
+
+	if not camera_rot then
+		self:queue_task(self._shield_disposal_id, EnemyManager._upd_shield_disposal, self, self._timer:time() + 1)
+
+		return
+	end
+
+	self._corpse_disposal_id = nil
+
+	local cam_fwd = camera_rot:y()
+	local cam_pos = managers.viewport:get_current_camera_position()
 	local t = self._timer:time()
 	local enemy_data = self._enemy_data
 	local nr_shields = enemy_data.nr_shields
 	local disposals_needed = nr_shields - self:shield_limit()
 	local shields = enemy_data.shields
-	local player = managers.player:player_unit()
-	local cam_pos, cam_fwd
-
-	if player then
-		cam_pos = player:movement():m_head_pos()
-		cam_fwd = player:camera():forward()
-	elseif managers.viewport:get_current_camera() then
-		cam_pos = managers.viewport:get_current_camera_position()
-		cam_fwd = managers.viewport:get_current_camera_rotation():y()
-	end
-
 	local to_dispose, nr_found = {}, 0
 	local disposal_life_t = self._shield_disposal_lifetime
 
@@ -1442,6 +1456,15 @@ function EnemyManager:dispose_all_corpses()
 	if next(self._enemy_data.corpses) then
 		debug_pause("[EnemyManager:dispose_all_corpses] there are still corpses in enemy manager\n", inspect(self._enemy_data.corpses))
 	end
+end
+
+function EnemyManager:stop_everything()
+	if not Application:editor() then
+		self._stopping = true
+	end
+
+	self._queued_tasks = {}
+	self._delayed_clbks = {}
 end
 
 function EnemyManager:save(data)

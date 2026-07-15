@@ -676,7 +676,7 @@ function Drill:on_autorepair()
 	unit:damage():run_sequence_simple("interact")
 
 	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", unit, "base", Drill.EVENT_IDS.autorepair)
+		managers.network:send_to_peers_synched("sync_unit_event_id_16", unit, "base", Drill.EVENT_IDS.autorepair)
 	end
 
 	int_ext:set_active(false)
@@ -931,10 +931,9 @@ function Drill:on_melee_hit(peer_id)
 	end
 
 	local unit = self._unit
-	local session = managers.network:session()
-	local local_peer = session:local_peer()
+	local local_peer = managers.network:get_local_peer_safe()
 
-	if local_peer:id() == peer_id then
+	if local_peer and local_peer:id() == peer_id then
 		local peer_unit = local_peer and local_peer:unit()
 
 		if not alive(peer_unit) or not unit:interaction():can_interact(peer_unit) then
@@ -967,7 +966,7 @@ function Drill:on_melee_hit_success()
 	unit:damage():run_sequence_simple("interact")
 
 	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", unit, "base", Drill.EVENT_IDS.melee_restart_success)
+		managers.network:send_to_peers_synched("sync_unit_event_id_16", unit, "base", Drill.EVENT_IDS.melee_restart_success)
 	end
 
 	int_ext:set_active(false)

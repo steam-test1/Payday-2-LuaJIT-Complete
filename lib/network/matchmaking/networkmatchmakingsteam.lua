@@ -474,9 +474,11 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 		self:_call_callback("search_lobby", info)
 	end
 
-	self.browser = LobbyBrowser(refresh_lobby, function()
+	self.browser = self.browser or LobbyBrowser(refresh_lobby, function()
 		return
 	end)
+
+	self.browser:clear_lobby_filters()
 
 	local interest_keys = {
 		"owner_id",
@@ -580,8 +582,6 @@ end
 
 function NetworkMatchMakingSTEAM:search_lobby_done()
 	managers.system_menu:close("find_server")
-
-	self.browser = nil
 end
 
 function NetworkMatchMakingSTEAM:game_owner_name()
@@ -652,7 +652,7 @@ function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_lis
 		return false
 	end
 
-	if not MenuCallbackHandler:is_modded_client() and not is_invite and attributes_list.mods and attributes_list.mods ~= "1" and not Global.game_settings.search_modded_lobbies then
+	if not MenuCallbackHandler:is_modded_client() and not is_invite and attributes_list.mods and attributes_list.mods ~= self:no_mod_string() and not Global.game_settings.search_modded_lobbies then
 		Application:debug("NetworkMatchMakingSTEAM:is_server_ok() server rejected. MODDED GAME")
 
 		return false

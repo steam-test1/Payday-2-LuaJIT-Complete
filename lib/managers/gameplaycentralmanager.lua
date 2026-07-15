@@ -2,6 +2,7 @@ local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 local tmp_vec3 = Vector3()
 local tmp_vec4 = Vector3()
+local tmp_vec5 = Vector3()
 local empty_idstr = IDS_EMPTY
 local idstr_concrete = Idstring("concrete")
 local idstr_blood_spatter = Idstring("blood_spatter")
@@ -19,6 +20,7 @@ local mvec3_spread = mvector3.spread
 local mvec3_dist_sq = mvector3.distance_sq
 local mvec3_dist = mvector3.distance
 local mvec3_dot = mvector3.dot
+local mvec3_copy = mvector3.copy
 
 GamePlayCentralManager = GamePlayCentralManager or class()
 GamePlayCentralManager.MAX_BULLET_HITS_PERFRAME = 5
@@ -340,50 +342,56 @@ end
 function GamePlayCentralManager:physics_push(col_ray, push_multiplier)
 	local unit = col_ray.unit
 
+	if not unit:in_slot(self._slotmask_physics_push) then
+		return
+	end
+
+	local body = col_ray.body
+
+	if not body:enabled() or not body:dynamic() then
+		local original_body_com = body:center_of_mass()
+		local closest_body_dis_sq
+		local nr_bodies = unit:num_bodies()
+		local i_body = 0
+
+		while i_body < nr_bodies do
+			local test_body = unit:body(i_body)
+
+			if test_body:enabled() and test_body:dynamic() then
+				local test_dis_sq = mvec3_dist_sq(test_body:center_of_mass(), original_body_com)
+
+				if not closest_body_dis_sq or test_dis_sq < closest_body_dis_sq then
+					closest_body_dis_sq = test_dis_sq
+					body = test_body
+				end
+			end
+
+			i_body = i_body + 1
+		end
+
+		if not closest_body_dis_sq then
+			return
+		end
+	end
+
 	push_multiplier = push_multiplier or 1
 
-	if unit:in_slot(self._slotmask_physics_push) then
-		local body = col_ray.body
+	local body_mass = math.min(50, body:mass()) * push_multiplier
+	local len = mvec3_dist(col_ray.position, body:center_of_mass())
+	local body_vel = body:velocity()
 
-		if not body:dynamic() then
-			local original_body_com = body:center_of_mass()
-			local closest_body_dis_sq
-			local nr_bodies = unit:num_bodies()
-			local i_body = 0
+	mvec3_set(tmp_vec1, col_ray.ray)
 
-			while i_body < nr_bodies do
-				local test_body = unit:body(i_body)
+	local vel_dot = mvec3_dot(body_vel, tmp_vec1)
+	local max_vel = 600
 
-				if test_body:enabled() and test_body:dynamic() then
-					local test_dis_sq = mvec3_dist_sq(test_body:center_of_mass(), original_body_com)
+	if vel_dot < max_vel then
+		local push_vel = max_vel - math.max(vel_dot, 0)
 
-					if not closest_body_dis_sq or test_dis_sq < closest_body_dis_sq then
-						closest_body_dis_sq = test_dis_sq
-						body = test_body
-					end
-				end
+		push_vel = math.lerp(push_vel * 0.7, push_vel, math.random()) * push_multiplier
 
-				i_body = i_body + 1
-			end
-		end
-
-		local body_mass = math.min(50, body:mass()) * push_multiplier
-		local len = mvec3_dist(col_ray.position, body:center_of_mass())
-		local body_vel = body:velocity()
-
-		mvec3_set(tmp_vec1, col_ray.ray)
-
-		local vel_dot = mvec3_dot(body_vel, tmp_vec1)
-		local max_vel = 600
-
-		if vel_dot < max_vel then
-			local push_vel = max_vel - math.max(vel_dot, 0)
-
-			push_vel = math.lerp(push_vel * 0.7, push_vel, math.random()) * push_multiplier
-
-			mvec3_mul(tmp_vec1, push_vel)
-			body:push_at(body_mass, tmp_vec1, col_ray.position)
-		end
+		mvec3_mul(tmp_vec1, push_vel)
+		body:push_at(body_mass, tmp_vec1, col_ray.position)
 	end
 end
 
@@ -498,8 +506,6 @@ function GamePlayCentralManager:_flush_play_sounds()
 	end
 end
 
-local zero_vector = Vector3()
-
 function GamePlayCentralManager:_play_bullet_hit(params)
 	local unit = params.col_ray.unit
 
@@ -524,9 +530,10 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 
 	local col_ray = params.col_ray
 	local event = params.event or "bullet_hit"
-	local decal = overrides and overrides.decal and Idstring(overrides.decal) or params.decal and Idstring(params.decal) or idstr_bullet_hit
 	local slot_mask = params.slot_mask or self._slotmask_bullet_impact_targets
-	local sound_switch_name = overrides and overrides.sound_switch_name or nil
+	local decal = overrides and overrides.decal and Idstring(overrides.decal) or params.decal and Idstring(params.decal) or idstr_bullet_hit
+	local sound_switch_name = overrides and overrides.sound_switch_name or params.sound_switch_name or nil
+	local effect = overrides and overrides.effect_name and Idstring(overrides.effect_name) or params.effect or nil
 	local decal_ray_from = tmp_vec1
 	local decal_ray_to = tmp_vec2
 
@@ -536,63 +543,80 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 	mvec3_add(decal_ray_to, decal_ray_from)
 	mvec3_neg(decal_ray_from)
 	mvec3_add(decal_ray_from, hit_pos)
-	mvec3_set(tmp_vec4, col_ray.ray)
-	mvec3_neg(tmp_vec4)
 
-	local effect_normal = tmp_vec3
+	local effect_normal
 
-	mvec3_set(effect_normal, col_ray.normal)
-	mvec3_lerp(effect_normal, col_ray.normal, tmp_vec4, math.random())
-	mvec3_spread(effect_normal, 10)
+	if need_effect then
+		effect_normal = tmp_vec3
 
-	local material_name, pos, norm = World:pick_decal_material(unit, decal_ray_from, decal_ray_to, slot_mask)
-
-	material_name = material_name ~= empty_idstr and material_name
-
-	local effect = overrides and overrides.effect_name and Idstring(overrides.effect_name) or params.effect
-
-	if material_name then
-		local offset = col_ray.sphere_cast_radius and col_ray.ray * col_ray.sphere_cast_radius or zero_vector
-		local redir_name
-
-		if need_decal then
-			redir_name, pos, norm = World:project_decal(decal, hit_pos + offset, col_ray.ray, unit, math.UP, col_ray.normal)
-		elseif need_effect then
-			redir_name, pos, norm = World:pick_decal_effect(decal, unit, decal_ray_from, decal_ray_to, slot_mask)
-		end
-
-		if redir_name == empty_idstr then
-			redir_name = idstr_fallback
-		end
-
-		if need_effect then
-			effect = {
-				effect = effect or redir_name,
-				position = hit_pos + offset,
-				normal = effect_normal
-			}
-		end
-
-		sound_switch_name = need_sound and (sound_switch_name or params.sound_switch_name or material_name)
-	else
-		if need_effect then
-			local generic_effect = effect or idstr_fallback
-
-			effect = {
-				effect = generic_effect,
-				position = hit_pos,
-				normal = effect_normal
-			}
-		end
-
-		sound_switch_name = need_sound and (sound_switch_name or params.sound_switch_name or idstr_no_material)
+		mvec3_set(effect_normal, col_ray.ray)
+		mvec3_neg(effect_normal)
+		mvec3_lerp(effect_normal, col_ray.normal, effect_normal, math.random())
+		mvec3_spread(effect_normal, 10)
 	end
 
-	if effect and effect.effect then
-		table.insert(self._play_effects, effect)
+	local material_name
+
+	if need_decal or need_effect and not effect or need_sound and not sound_switch_name then
+		material_name = World:pick_decal_material(unit, decal_ray_from, decal_ray_to, slot_mask)
+		material_name = material_name ~= empty_idstr and material_name or nil
+	end
+
+	local effect_entry
+
+	if material_name then
+		local offset_hitpos
+
+		if (need_effect or need_decal) and col_ray.sphere_cast_radius then
+			local offset = tmp_vec4
+
+			mvec3_set(offset, col_ray.ray)
+			mvec3_mul(offset, col_ray.sphere_cast_radius)
+
+			offset_hitpos = tmp_vec5
+
+			mvec3_set(offset_hitpos, hit_pos)
+			mvec3_add(offset_hitpos, offset)
+		end
+
+		if need_decal or need_effect and not effect then
+			local redir_name
+
+			if need_decal then
+				redir_name = World:project_decal(decal, offset_hitpos or hit_pos, col_ray.ray, unit, math.UP, col_ray.normal)
+			elseif need_effect then
+				redir_name = World:pick_decal_effect(decal, unit, decal_ray_from, decal_ray_to, slot_mask)
+			end
+
+			effect = effect or redir_name ~= empty_idstr and redir_name or nil
+		end
+
+		if need_effect then
+			local effect_pos = offset_hitpos and mvec3_copy(offset_hitpos) or hit_pos
+
+			effect_entry = {
+				effect = effect,
+				position = effect_pos,
+				normal = mvec3_copy(effect_normal)
+			}
+		end
+	elseif need_effect then
+		effect_entry = {
+			effect = effect,
+			position = hit_pos,
+			normal = mvec3_copy(effect_normal)
+		}
+	end
+
+	if effect_entry then
+		effect_entry.effect = effect_entry.effect or idstr_fallback
+
+		table.insert(self._play_effects, effect_entry)
 	end
 
 	if need_sound then
+		sound_switch_name = sound_switch_name or material_name or idstr_no_material
+
 		table.insert(self._play_sounds, {
 			sound_switch_name = sound_switch_name,
 			position = hit_pos,

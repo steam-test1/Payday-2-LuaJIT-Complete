@@ -2626,13 +2626,16 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 			result = self:give_impact_damage(col_ray, weapon_unit, user_unit, damage, armor_piercing, false, knock_down, stagger, variant)
 
 			if result ~= "friendly_fire" then
-				local has_died = hit_dmg_ext:dead()
+				local is_dead = hit_dmg_ext:dead()
 
-				do_push = true
-				push_mul = self:_get_character_push_multiplier(weapon_unit, was_alive and has_died)
+				if is_dead then
+					do_push = true
+					push_mul = self:_get_character_push_multiplier(weapon_unit, was_alive and is_dead)
+				end
 
 				if weap_base and result and result.type == "death" and weap_base.should_shotgun_push and weap_base:should_shotgun_push() then
 					do_shotgun_push = true
+					do_push = false
 				end
 			else
 				play_impact_flesh = false

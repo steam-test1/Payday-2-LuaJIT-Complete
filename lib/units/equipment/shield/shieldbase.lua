@@ -285,7 +285,7 @@ function ShieldFlashBase:clbk_seq_flash_start(parent_obj, priority_counter_body,
 	end
 
 	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_shield_flash_start", self._unit, event_sync_idx or 0)
+		managers.network:send_to_peers_synched("sync_shield_flash_start", self._unit, event_sync_idx or 0)
 	end
 
 	self._timer = self._flash_charge_timer
@@ -406,7 +406,7 @@ function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync
 		end
 
 		if has_authority then
-			managers.network:session():send_to_peers_synched("sync_shield_flash_counter_stun", self._unit, attacker_unit, pos, normal, event_sync_idx)
+			managers.network:send_to_peers_synched("sync_shield_flash_counter_stun", self._unit, attacker_unit, pos, normal, event_sync_idx)
 		end
 	end
 

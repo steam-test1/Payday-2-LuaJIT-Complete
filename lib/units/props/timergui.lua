@@ -463,8 +463,8 @@ function TimerGui:start(timer)
 	if not self._started then
 		self:_start(timer)
 
-		if managers.network:session() then
-			managers.network:session():send_to_peers_synched("start_timer_gui", self._unit, timer)
+		if Network:is_server() then
+			managers.network:send_to_peers_synched("start_timer_gui", self._unit, timer)
 		end
 	end
 
@@ -548,10 +548,10 @@ function TimerGui:sync_net_event(event_id)
 end
 
 function TimerGui:set_jammed(jammed)
-	if managers.network:session() then
+	if Network:is_server() then
 		local event_id = jammed and TimerGui.EVENT_IDS.jammed or TimerGui.EVENT_IDS.unjammed
 
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "timer_gui", event_id)
+		managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "timer_gui", event_id)
 	end
 
 	self:_set_jammed(jammed)

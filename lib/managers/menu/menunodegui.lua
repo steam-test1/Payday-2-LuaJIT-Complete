@@ -1896,6 +1896,12 @@ function MenuNodeMainGui:_add_version_string()
 	if Application:debug_enabled() or IS_PC then
 		local version = Application:version()
 
+		if IS_STEAM_MM then
+			version = version .. " SteamMM"
+		elseif IS_EPIC_MM then
+			version = version .. " EpicMM"
+		end
+
 		self._version_string = self.ws:panel():text({
 			align = "left",
 			alpha = 0.5,

@@ -357,6 +357,11 @@ function NetworkManager:stop_network(clean)
 		self._session:destroy()
 
 		self._session = nil
+
+		if managers.enemy then
+			managers.enemy:stop_everything()
+		end
+
 		self._stop_network = nil
 		self._stop_next_frame = nil
 		self._network_bound = nil
@@ -642,4 +647,128 @@ function NetworkManager:on_peer_added(peer, peer_id)
 	if game_state_machine:verify_game_state(GameStateFilters.any_ingame) then
 		managers.custom_safehouse:uno_achievement_challenge():attempt_access_notification()
 	end
+end
+
+function NetworkManager:get_peer_safe(peer_id)
+	return self._session and self._session:peer(peer_id) or nil
+end
+
+function NetworkManager:get_local_peer_safe()
+	return self._session and self._session:local_peer() or nil
+end
+
+function NetworkManager:get_server_peer_safe()
+	return self._session and self._session:server_peer() or nil
+end
+
+function NetworkManager:get_peer_by_unit_safe(unit)
+	return self._session and self._session:peer_by_unit(unit) or nil
+end
+
+function NetworkManager:get_dropin_peer_safe()
+	return self._session and self._session:dropin_peer() or nil
+end
+
+local function PrintError(fn_name, ...)
+	Application:stack_dump_error("[NetworkManager] Tried to call " .. tostring(fn_name) .. ", but the network session has been destroyed.", inspect(...))
+end
+
+function NetworkManager:send_to_peers(...)
+	if not self._session then
+		PrintError("send_to_peers", ...)
+
+		return
+	end
+
+	self._session:send_to_peers(...)
+end
+
+function NetworkManager:send_to_peers_ip_verified(...)
+	if not self._session then
+		PrintError("send_to_peers_ip_verified", ...)
+
+		return
+	end
+
+	self._session:send_to_peers_ip_verified(...)
+end
+
+function NetworkManager:send_to_peers_except(...)
+	if not self._session then
+		PrintError("send_to_peers_except", ...)
+
+		return
+	end
+
+	self._session:send_to_peers_except(...)
+end
+
+function NetworkManager:send_to_peers_synched(...)
+	if not self._session then
+		PrintError("send_to_peers_synched", ...)
+
+		return
+	end
+
+	self._session:send_to_peers_synched(...)
+end
+
+function NetworkManager:send_to_peers_synched_except(...)
+	if not self._session then
+		PrintError("send_to_peers_synched_except", ...)
+
+		return
+	end
+
+	self._session:send_to_peers_synched_except(...)
+end
+
+function NetworkManager:send_to_peers_loaded(...)
+	if not self._session then
+		PrintError("send_to_peers_loaded", ...)
+
+		return
+	end
+
+	self._session:send_to_peers_loaded(...)
+end
+
+function NetworkManager:send_to_peers_loaded_except(...)
+	if not self._session then
+		PrintError("send_to_peers_loaded_except", ...)
+
+		return
+	end
+
+	self._session:send_to_peers_loaded_except(...)
+end
+
+function NetworkManager:send_to_peer(...)
+	if not self._session then
+		PrintError("send_to_peer", ...)
+
+		return
+	end
+
+	self._session:send_to_peer(...)
+end
+
+function NetworkManager:send_to_peer_synched(...)
+	if not self._session then
+		PrintError("send_to_peer_synched", ...)
+
+		return
+	end
+
+	self._session:send_to_peer_synched(...)
+end
+
+function NetworkManager:send_to_host(...)
+	if not self._session then
+		PrintError("send_to_host", ...)
+
+		return
+	end
+
+	self._session:send_to_host(...)
 end

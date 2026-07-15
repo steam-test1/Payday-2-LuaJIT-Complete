@@ -272,8 +272,8 @@ function PlayerTurretBase:change_state(state)
 
 	self._current_state = state
 
-	if managers.network:session() and Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", state)
+	if Network:is_server() then
+		managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", state)
 	end
 
 	return true
@@ -414,18 +414,12 @@ end
 
 function PlayerTurretBase:start_shooting()
 	PlayerTurretBase.super.start_shooting(self)
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", PlayerTurretBase.SYNC_START_FIRE)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", PlayerTurretBase.SYNC_START_FIRE)
 end
 
 function PlayerTurretBase:stop_shooting()
 	PlayerTurretBase.super.stop_shooting(self)
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", PlayerTurretBase.SYNC_STOP_FIRE)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", PlayerTurretBase.SYNC_STOP_FIRE)
 end
 
 function PlayerTurretBase:set_ammo_remaining_in_clip(ammo_remaining_in_clip)

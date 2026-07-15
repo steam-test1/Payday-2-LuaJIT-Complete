@@ -1600,7 +1600,7 @@ end
 
 function PS4DLCManager:_verify_dlcs()
 	local unlock_all_test = false
-	local titleVersion = PS3:get_titleVersion()
+	local titleVersion = PS4:get_titleVersion()
 
 	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
 		if titleVersion == 2 or unlock_all_test then
@@ -1609,7 +1609,7 @@ function PS4DLCManager:_verify_dlcs()
 			if dlc_data.is_default or dlc_data.verified == true then
 				dlc_data.verified = true
 			else
-				dlc_data.verified = PS3:has_entitlement(dlc_data.product_id)
+				dlc_data.verified = PS4:has_entitlement(dlc_data.product_id)
 			end
 
 			if titleVersion == 1 and dlc_data.verified_for_TheBigScore == true then
@@ -2082,7 +2082,22 @@ function WINDLCManager:_check_dlc_data(dlc_data)
 end
 
 function WINDLCManager:chk_content_updated()
-	return
+	local has_content
+	local content_updated = false
+
+	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
+		has_content = self:_check_dlc_data(dlc_data)
+		content_updated = content_updated or has_content ~= dlc_data.verified
+		dlc_data.verified = has_content
+	end
+
+	if content_updated then
+		if (game_state_machine and game_state_machine:current_state_name()) == "menu_main" then
+			self:give_dlc_and_verify_blackmarket()
+		else
+			Global.dlc_manager.verify_content_update = true
+		end
+	end
 end
 
 function WINDLCManager:set_entitlements(entitlements)

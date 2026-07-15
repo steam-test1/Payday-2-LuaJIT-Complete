@@ -70,17 +70,7 @@ function MenuSetup:load_packages()
 		end
 	end
 
-	if IS_XB1 or IS_PS4 then
-		if not PackageManager:loaded("packages/game_base_init") then
-			PackageManager:load("packages/game_base_init")
-
-			if Application:installer():get_progress() >= 1 then
-				PackageManager:load("packages/game_base")
-			end
-
-			Global._game_base_package_loaded = true
-		end
-	elseif not PackageManager:loaded("packages/game_base_init") then
+	if not PackageManager:loaded("packages/game_base_init") then
 		local function _load_wip_func()
 			Global._game_base_package_loaded = true
 		end

@@ -20,6 +20,10 @@ function SearchBoxGuiObject:init(parent_panel, ws, current_search, override_pane
 	self.placeholder_text:set_visible(not self._focus and #self.text:text() == 0)
 end
 
+function SearchBoxGuiObject:allow_input()
+	return true
+end
+
 function SearchBoxGuiObject:destroy()
 	self._disconnect_callback = nil
 	self._finish_sorting_callback = nil

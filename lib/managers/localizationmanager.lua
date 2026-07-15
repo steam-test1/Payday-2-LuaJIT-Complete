@@ -21,10 +21,10 @@ function LocalizationManager:_setup_macros()
 	local btn_start = utf8.char(57349)
 	local stick_l = utf8.char(57350)
 	local stick_r = utf8.char(57351)
-	local btn_top_l = utf8.char(57352)
-	local btn_top_r = utf8.char(57353)
-	local btn_bottom_l = utf8.char(57354)
-	local btn_bottom_r = utf8.char(57355)
+	local btn_top_l = utf8.char(57354)
+	local btn_top_r = utf8.char(57355)
+	local btn_bottom_l = utf8.char(57352)
+	local btn_bottom_r = utf8.char(57353)
 	local btn_stick_l = utf8.char(57356)
 	local btn_stick_r = utf8.char(57357)
 	local btn_dpad_u = utf8.char(57358)
@@ -62,7 +62,7 @@ function LocalizationManager:_setup_macros()
 	local btn_change_profile_left = btn_top_l
 	local swap_accept = false
 
-	if IS_PS4 and PS3:pad_cross_circle_inverted() then
+	if IS_PS4 and PS4:pad_cross_circle_inverted() then
 		swap_accept = true
 	end
 

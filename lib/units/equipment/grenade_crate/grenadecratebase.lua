@@ -1,10 +1,11 @@
 GrenadeCrateBase = GrenadeCrateBase or class(UnitBase)
+GrenadeCrateBase.DEFAULT_GRENADE_TAKE_AMOUNT = 1
 
 function GrenadeCrateBase.spawn(pos, rot)
 	local unit_name = "units/payday2/equipment/gen_equipment_grenade_crate/gen_equipment_grenade_crate"
 	local unit = World:spawn_unit(Idstring(unit_name), pos, rot)
 
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", unit, "sync", 1)
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", unit, "sync", 1)
 
 	return unit
 end
@@ -86,10 +87,7 @@ end
 
 function GrenadeCrateBase:server_set_dynamic()
 	self:_set_dynamic()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
 end
 
 function GrenadeCrateBase:sync_net_event(event_id, peer)
@@ -113,27 +111,25 @@ function GrenadeCrateBase:_set_dynamic()
 end
 
 function GrenadeCrateBase:take_grenade(unit)
-	if self._empty then
+	if self._empty or not self:_can_take_grenade(unit) then
 		return
 	end
 
-	local can_take_grenade = self:_can_take_grenade() and 1 or 0
+	local take_amount = self.DEFAULT_GRENADE_TAKE_AMOUNT
 
-	if can_take_grenade == 1 then
-		unit:sound():play("pickup_ammo")
+	unit:sound():play("pickup_ammo")
 
-		local grenade_id = managers.blackmarket:equipped_grenade()
-		local grenade_tweak = tweak_data.blackmarket.projectiles[grenade_id]
-		local pickup_amount = grenade_tweak.pickup_amount or 1
+	local grenade_id = managers.blackmarket:equipped_grenade()
+	local grenade_tweak = tweak_data.blackmarket.projectiles[grenade_id]
+	local pickup_amount = grenade_tweak.pickup_amount or 1
 
-		managers.player:add_grenade_amount(pickup_amount)
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
-		managers.player:register_grenade(managers.network:session():local_peer():id())
+	managers.player:add_grenade_amount(pickup_amount)
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
+	managers.player:register_grenade(managers.network:get_local_peer_safe():id())
 
-		self._grenade_amount = self._grenade_amount - 1
+	self._grenade_amount = self._grenade_amount - take_amount
 
-		print("Took " .. pickup_amount .. " grenades, " .. self._grenade_amount .. " left")
-	end
+	print("Took " .. pickup_amount .. " grenades, " .. self._grenade_amount .. " left")
 
 	if self._grenade_amount <= 0 then
 		self:_set_empty()
@@ -141,7 +137,7 @@ function GrenadeCrateBase:take_grenade(unit)
 
 	self:_set_visual_stage()
 
-	return can_take_grenade
+	return take_amount
 end
 
 function GrenadeCrateBase:_set_visual_stage()
@@ -165,7 +161,18 @@ function GrenadeCrateBase:sync_grenade_taken(amount)
 end
 
 function GrenadeCrateBase:_can_take_grenade(unit)
-	if self._empty or self._grenade_amount < 1 or managers.player:got_max_grenades() then
+	if self._empty or self._grenade_amount < 1 then
+		return false
+	end
+
+	local peer = managers.network:get_peer_by_unit_safe(unit)
+	local local_peer = managers.network:get_local_peer_safe()
+
+	if not peer or not local_peer or peer:id() ~= local_peer:id() then
+		return false
+	end
+
+	if managers.player:got_max_grenades() then
 		return false
 	end
 
@@ -263,10 +270,14 @@ end
 function GrenadeCrateSync:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin and managers.network:session() then
-		local peer = managers.network:session():server_peer()
+	if self._was_dropin then
+		return
+	end
 
-		peer:mark_cheater(VoteManager.REASON.many_assets)
+	local server_peer = managers.network:get_server_peer_safe()
+
+	if server_peer then
+		server_peer:mark_cheater(VoteManager.REASON.many_assets)
 	end
 end
 
@@ -288,7 +299,11 @@ function GrenadeCrateDeployableBase:set_server_information(peer_id)
 		owner_peer_id = peer_id
 	}
 
-	managers.network:session():peer(peer_id):set_used_deployable(true)
+	local peer = managers.network:get_peer_safe(peer_id)
+
+	if peer then
+		peer:set_used_deployable(true)
+	end
 end
 
 function GrenadeCrateDeployableBase:setup()
@@ -307,14 +322,11 @@ end
 
 function GrenadeCrateDeployableBase:server_set_dynamic()
 	self:_set_dynamic()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
 end
 
 function GrenadeCrateDeployableBase:take_grenade(unit)
-	if self._empty or not self:_can_take_grenade() or not managers.network:session() then
+	if self._empty or not self:_can_take_grenade(unit) then
 		return
 	end
 
@@ -324,7 +336,7 @@ function GrenadeCrateDeployableBase:take_grenade(unit)
 
 	local grenade_amount = managers.player:add_grenade_amount(max_grenades, true)
 
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
 
 	self._grenade_amount = self._grenade_amount - 1
 

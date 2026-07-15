@@ -9,7 +9,7 @@ function SpyCameraBase.spawn(position, rotation, owner, peer_id)
 	local unit_name = "units/pd2_dlc_esp/equipment/esp_equipment_spy_camera/esp_equipment_spy_camera"
 	local unit = World:spawn_unit(Idstring(unit_name), position, rotation)
 
-	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, 0, peer_id or 0)
+	managers.network:send_to_peers_synched("sync_equipment_setup", unit, 0, peer_id or 0)
 	unit:base():setup(0, owner)
 
 	local owner_id = unit:base():get_owner_id()
@@ -19,7 +19,7 @@ function SpyCameraBase.spawn(position, rotation, owner, peer_id)
 		local access_unit = World:spawn_unit(Idstring(access_unit_name), position, rotation)
 
 		unit:base():interaction_setup(access_unit, owner_id)
-		managers.network:session():send_to_peers_synched("sync_spy_camera_interaction", unit, access_unit, owner_id)
+		managers.network:send_to_peers_synched("sync_spy_camera_interaction", unit, access_unit, owner_id)
 	end
 
 	return unit
@@ -30,7 +30,11 @@ function SpyCameraBase:set_server_information(peer_id)
 		owner_peer_id = peer_id
 	}
 
-	managers.network:session():peer(peer_id):set_used_deployable(true)
+	local peer = managers.network:get_peer_safe(peer_id)
+
+	if peer then
+		peer:set_used_deployable(true)
+	end
 end
 
 function SpyCameraBase:server_information()
@@ -58,10 +62,14 @@ end
 function SpyCameraBase:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin then
-		local peer = managers.network:session():server_peer()
+	if self._was_dropin then
+		return
+	end
 
-		peer:mark_cheater(VoteManager.REASON.many_assets)
+	local server_peer = managers.network:get_server_peer_safe()
+
+	if server_peer then
+		server_peer:mark_cheater(VoteManager.REASON.many_assets)
 	end
 end
 
@@ -91,7 +99,7 @@ function SpyCameraBase:set_owner(owner)
 	self._update_rate = is_whisper_mode and self.WHISPER_UPDATE_RATE or self.UPDATE_RATE
 
 	if owner then
-		local peer = managers.network:session():peer_by_unit(owner)
+		local peer = managers.network:get_peer_by_unit_safe(owner)
 
 		if peer then
 			self._owner_id = peer:id()
@@ -158,11 +166,9 @@ end
 
 function SpyCameraBase:owner()
 	if not alive(self._owner) then
-		local peer = managers.network:session():peer(self._owner_id)
+		local peer = managers.network:get_peer_safe(self._owner_id)
 
-		if peer then
-			self._owner = peer:unit()
-		end
+		self._owner = peer and peer:unit() or nil
 	end
 
 	return self._owner
@@ -245,7 +251,7 @@ function SpyCameraBase:on_interaction()
 		SpyCameraBase.on_picked_up()
 		self:remove()
 	else
-		managers.network:session():send_to_host("picked_up_spy_camera", self._unit)
+		managers.network:send_to_host("picked_up_spy_camera", self._unit)
 	end
 end
 
@@ -291,10 +297,7 @@ end
 
 function SpyCameraBase:server_set_dynamic()
 	self:_set_dynamic()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
 end
 
 function SpyCameraBase:sync_net_event(event_id)
@@ -382,34 +385,28 @@ function SpyCameraBase:save(data)
 	data.SpyCameraBase = state
 
 	if self._interaction_unit then
-		local peer = managers.network:session():dropin_peer()
+		local peer = managers.network:get_dropin_peer_safe()
 
-		self._dropin_clbk_id = "SpyCameraBase" .. tostring(self._unit:key())
+		if peer then
+			self._dropin_clbk_id = "SpyCameraBase" .. tostring(self._unit:key())
 
-		managers.enemy:add_delayed_clbk(self._dropin_clbk_id, callback(self, self, "_clbk_drop_in_sync", peer:id()), TimerManager:game():time() + 0.1)
+			managers.enemy:add_delayed_clbk(self._dropin_clbk_id, callback(self, self, "_clbk_drop_in_sync", peer:id()), TimerManager:game():time() + 0.1)
+		end
 	end
 end
 
 function SpyCameraBase:_clbk_drop_in_sync(peer_id)
 	self._dropin_clbk_id = nil
 
-	if not self._interaction_unit then
+	if not alive(self._interaction_unit) then
 		return
 	end
 
-	local session = managers.network:session()
+	local peer = managers.network:get_peer_safe(peer_id)
 
-	if not session then
-		return
+	if peer then
+		managers.network:send_to_peer_synched(peer, "sync_spy_camera_interaction", self._unit, self._interaction_unit, self._owner_id)
 	end
-
-	local peer = session:peer(peer_id)
-
-	if not peer then
-		return
-	end
-
-	session:send_to_peer_synched(peer, "sync_spy_camera_interaction", self._unit, self._interaction_unit, self._owner_id)
 end
 
 function SpyCameraBase:load(data)
@@ -431,13 +428,8 @@ function SpyCameraDummyBase:init(unit)
 		return
 	end
 
-	local session = managers.network:session()
-
-	if not session then
-		return
-	end
-
-	local peer_id = session:local_peer():id()
+	local peer = managers.network:get_local_peer_safe()
+	local peer_id = peer and peer:id() or "none"
 	local sequence = "set_owner_peer_" .. tostring(peer_id)
 
 	if unit:damage():has_sequence(sequence) then
@@ -541,13 +533,13 @@ function SpyAccessCameraBase:set_destroyed(value)
 	self._values.destroyed = value
 	self._destroyed = value
 
-	if value then
+	if value and self._destroy_listener_holder then
 		self._destroy_listener_holder:call(self._unit)
 	end
 end
 
 function SpyAccessCameraBase:set_owner_id(owner_id)
-	local owner_peer = managers.network:session():peer(owner_id)
+	local owner_peer = managers.network:get_peer_safe(owner_id)
 
 	if not owner_peer then
 		return

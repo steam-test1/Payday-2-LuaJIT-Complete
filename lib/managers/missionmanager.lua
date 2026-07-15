@@ -356,12 +356,16 @@ end
 
 function MissionManager:client_run_mission_element(id, unit, orientation_element_index, id_from)
 	for name, data in pairs(self._scripts) do
-		if data:element(id) then
-			if data:element(id).client_on_executed then
-				data:element(id):set_synced_orientation_element_index(orientation_element_index)
-				data:element(id):client_on_executed(unit)
+		local element = data:element(id)
+
+		if element then
+			local sync_id_from = id_from > 0 and id_from or nil
+
+			if element.client_on_executed then
+				element:set_synced_orientation_element_index(orientation_element_index)
+				element:client_on_executed(unit, nil, nil, sync_id_from)
 			else
-				debug_pause("[MissionManager:client_run_mission_element] Trying to run client_on_executed on an element that doesn't implement it:", data:element(id):editor_name(), mission_id, id, inspect(unit), orientation_element_index)
+				debug_pause("[MissionManager:client_run_mission_element] Trying to run client_on_executed on an element that doesn't implement it:", element:editor_name(), mission_id, id, sync_id_from and "synced id: " .. tostring(sync_id_from) or "no synced id", inspect(unit), orientation_element_index)
 			end
 
 			return
@@ -371,11 +375,15 @@ end
 
 function MissionManager:client_run_mission_element_end_screen(id, unit, orientation_element_index, id_from)
 	for name, data in pairs(self._scripts) do
-		if data:element(id) then
-			data:element(id):set_synced_orientation_element_index(orientation_element_index)
+		local element = data:element(id)
 
-			if data:element(id).client_on_executed_end_screen then
-				data:element(id):client_on_executed_end_screen(unit, nil, nil, id_from > 0 and id_from or nil)
+		if element then
+			element:set_synced_orientation_element_index(orientation_element_index)
+
+			if element.client_on_executed_end_screen then
+				local sync_id_from = id_from > 0 and id_from or nil
+
+				element:client_on_executed_end_screen(unit, nil, nil, sync_id_from)
 			end
 
 			return

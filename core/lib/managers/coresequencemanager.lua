@@ -2377,7 +2377,10 @@ function UnitElement:init(node, name, is_global)
 				if not name then
 					self:print_attribute_error("name", name, nil, false, nil, data)
 				else
-					sequence_nodes[name] = data
+					table.insert(sequence_nodes, {
+						name = name,
+						data = data
+					})
 				end
 			elseif element_name == "body" then
 				table.insert(body_nodes, data)
@@ -2400,8 +2403,8 @@ function UnitElement:init(node, name, is_global)
 			end
 		end
 
-		for name, sequence_node in pairs(sequence_nodes) do
-			self._sequence_elements[name] = SequenceElement:new(sequence_node, self, nil, nil)
+		for _, sequence_node in ipairs(sequence_nodes) do
+			self._sequence_elements[sequence_node.name] = SequenceElement:new(sequence_node.data, self, nil, nil)
 		end
 
 		for _, water_node in ipairs(water_node_list) do
