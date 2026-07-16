@@ -946,7 +946,7 @@ function Drill:on_melee_hit(peer_id)
 	registered_peers[#registered_peers + 1] = peer_id
 
 	if Network:is_client() then
-		session:send_to_host("sync_unit_event_id_16", unit, "base", Drill.EVENT_IDS.melee_restart_client)
+		managers.network:send_to_host("sync_unit_event_id_16", unit, "base", Drill.EVENT_IDS.melee_restart_client)
 
 		return
 	end
