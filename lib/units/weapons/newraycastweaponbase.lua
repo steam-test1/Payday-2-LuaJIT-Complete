@@ -3188,13 +3188,15 @@ function NewRaycastWeaponBase:set_timer(timer, ...)
 	end
 end
 
-function NewRaycastWeaponBase:destroy(unit)
-	NewRaycastWeaponBase.super.destroy(self, unit)
+function NewRaycastWeaponBase:pre_destroy(unit)
+	NewRaycastWeaponBase.super.pre_destroy(self, unit)
 
 	if self._parts_texture_switches then
 		for part_id, texture_ids in pairs(self._parts_texture_switches) do
 			TextureCache:unretrieve(texture_ids)
 		end
+
+		self._parts_texture_switches = nil
 	end
 
 	if self._textures then
@@ -3202,9 +3204,13 @@ function NewRaycastWeaponBase:destroy(unit)
 			if not texture_data.applied then
 				texture_data.applied = true
 
-				TextureCache:unretrieve(texture_data.name)
+				if texture_data.requested then
+					TextureCache:unretrieve(texture_data.name)
+				end
 			end
 		end
+
+		self._textures = {}
 	end
 
 	if self._charm_data then

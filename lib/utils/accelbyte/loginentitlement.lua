@@ -3,7 +3,7 @@ local json = require("lib/utils/accelbyte/json")
 local ClientId = "3c25c4f86e4d4ec48f727e5c4b8bf9c2"
 local ClientSecret = ""
 local BaseUrl = "https://nebula.starbreeze.com"
-local Namespace = "pd2"
+local Namespace = "PD2"
 local PublisherNamespace = "starbreeze"
 local LambdaUrl = "https://jji485ris4.execute-api.us-west-2.amazonaws.com/prod-pd2-account/prod_check_iam_steamlinking"
 local SteamPlatformId = "steam"
@@ -643,7 +643,7 @@ end
 function Entitlement:UpdateStat(stat_code, stat_value, update_method, callback)
 	cat_print("accelbyte", "[AccelByte] Entitlement:UpdateStat")
 
-	if not Login.player_session.access_token then
+	if true or not Login.player_session.access_token then
 		callback(false)
 
 		return

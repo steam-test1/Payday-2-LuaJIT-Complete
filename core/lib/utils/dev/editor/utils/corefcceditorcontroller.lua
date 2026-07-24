@@ -248,7 +248,9 @@ function FFCEditorController:create_cube_map()
 		if self._cube_counter == 1 then
 			self:_create_spot_projection()
 		elseif self._cube_counter == 2 then
-			self:_generate_spot_projection()
+			local output_file = (self._params.output_path or managers.database:root_path()) .. self._output_name .. ".dds"
+
+			CubemapGenerator:generate_spot(output_file, self._name_ordered[1])
 		else
 			self:_cubemap_done()
 		end
@@ -271,15 +273,20 @@ function FFCEditorController:create_cube_map()
 	elseif self._cube_counter == 6 then
 		self._camera:set_rotation(Rotation(Vector3(0, 0, -1), Vector3(0, -1, 0)))
 	elseif self._cube_counter == 7 then
-		self:_generate_cubemap(self._params.light and "cubemap_light" or "cubemap_reflection")
 		self:_cubemap_done()
+
+		local output_file = (self._params.output_path or managers.database:root_path()) .. self._output_name .. ".dds"
+
+		if self._params.light then
+			CubemapGenerator:generate_light(output_file, self._name_ordered)
+		else
+			CubemapGenerator:generate_reflection(output_file, self._name_ordered)
+		end
 
 		return true
 	end
 
-	local path = self._params.source_path or managers.database:root_path()
-
-	Application:screenshot(path .. self._names[self._cube_counter], x1, y1, x2, y2)
+	Application:screenshot(self._names[self._cube_counter], x1, y1, x2, y2)
 
 	return false
 end
@@ -311,24 +318,11 @@ function FFCEditorController:_create_spot_projection()
 	local x1, y1, x2, y2 = self:_get_screen_size()
 
 	self._camera:set_rotation(Rotation(-self._params.light:rotation():z(), Vector3(0, 0, 1)))
-
-	local path = self._params.source_path or managers.database:root_path()
-
-	Application:screenshot(path .. self._name_ordered[1], x1, y1, x2, y2)
+	Application:screenshot(self._name_ordered[1], x1, y1, x2, y2)
 end
 
 function FFCEditorController:_generate_spot_projection()
-	local execute = managers.database:root_path() .. "aux_assets/engine/tools/spotmapgen.bat "
-	local path = self._params.source_path or managers.database:root_path()
-
-	execute = execute .. path .. self._name_ordered[1] .. " "
-
-	local output_path = (self._params.output_path or managers.database:root_path()) .. self._output_name .. ".dds "
-
-	execute = execute .. output_path .. " "
-
-	os.execute(execute)
-	self:_add_meta_data((self._params.output_path or managers.database:root_path()) .. self._output_name .. ".dds", "diffuse_colormap_gradient_alpha_manual_mips")
+	return
 end
 
 function FFCEditorController:_generate_cubemap(file)

@@ -91,21 +91,6 @@ function NewNPCRaycastWeaponBase:init(unit)
 	self._textures = {}
 	self._cosmetics_data = nil
 	self._materials = nil
-
-	managers.mission:add_global_event_listener(tostring(self._unit:key()), {
-		"on_peer_removed"
-	}, callback(self, self, "_on_peer_removed"))
-end
-
-function NewNPCRaycastWeaponBase:_on_peer_removed(peer_id)
-	if self._shooting then
-		local user_unit = self._setup.user_unit
-		local user_peer_id = managers.criminals:character_peer_id_by_unit(user_unit)
-
-		if peer_id == user_peer_id then
-			self:stop_autofire()
-		end
-	end
 end
 
 function NewNPCRaycastWeaponBase:non_npc_name_id()
@@ -192,6 +177,10 @@ function NewNPCRaycastWeaponBase:start_autofire(nr_shots)
 end
 
 function NewNPCRaycastWeaponBase:stop_autofire()
+	if not self._shooting then
+		return
+	end
+
 	self:_sound_autofire_end()
 
 	self._shooting = nil
@@ -403,13 +392,8 @@ function NewNPCRaycastWeaponBase:_spawn_muzzle_effect(from_pos, direction)
 	World:effect_manager():spawn(self._muzzle_effect_table)
 end
 
-function NewNPCRaycastWeaponBase:destroy(unit)
-	if self._shooting then
-		self:stop_autofire()
-	end
-
-	NewNPCRaycastWeaponBase.super.destroy(self, unit)
-	managers.mission:remove_global_event_listener(tostring(self._unit:key()))
+function NewNPCRaycastWeaponBase:pre_destroy(unit)
+	NewNPCRaycastWeaponBase.super.pre_destroy(self, unit)
 end
 
 function NewNPCRaycastWeaponBase:_get_spread(user_unit)

@@ -1,16 +1,18 @@
 GroupAIStateBesiege = GroupAIStateBesiege or class(GroupAIStateBase)
 GroupAIStateBesiege._MAX_SIMULTANEOUS_SPAWNS = 3
+GroupAIStateBesiege._POLICE_ACTIVITY_DELAY = 2
+GroupAIStateBesiege._POLICE_ACTIVITY_DELAY_FAST = 0.4
 GroupAIStateBesiege._HOSTAGE_TASK_DELAY = 0.125
 
 function GroupAIStateBesiege:init(group_ai_state)
 	GroupAIStateBesiege.super.init(self)
 
-	if Network:is_server() and managers.navigation:is_data_ready() then
-		self:_queue_police_upd_task()
-	end
-
 	self._tweak_data = tweak_data.group_ai[group_ai_state]
 	self._graph_distance_cache = {}
+
+	if self._is_server and managers.navigation:is_data_ready() then
+		self:_queue_police_upd_task()
+	end
 end
 
 function GroupAIStateBesiege:_init_misc_data()
@@ -54,10 +56,10 @@ end
 function GroupAIStateBesiege:update(t, dt)
 	GroupAIStateBesiege.super.update(self, t, dt)
 
-	if Network:is_server() then
+	if self._is_server and managers.navigation:is_data_ready() then
 		self:_queue_police_upd_task()
 
-		if managers.navigation:is_data_ready() and self._draw_enabled then
+		if self._draw_enabled then
 			self:_draw_enemy_activity(t)
 			self:_draw_spawn_points()
 		end
@@ -67,18 +69,24 @@ end
 function GroupAIStateBesiege:paused_update(t, dt)
 	GroupAIStateBesiege.super.paused_update(self, t, dt)
 
-	if Network:is_server() and managers.navigation:is_data_ready() and self._draw_enabled then
+	if self._is_server and self._draw_enabled and managers.navigation:is_data_ready() then
 		self:_draw_enemy_activity(t)
 		self:_draw_spawn_points()
 	end
 end
 
 function GroupAIStateBesiege:_queue_police_upd_task()
-	if not self._police_upd_task_queued then
-		self._police_upd_task_queued = true
+	if self._police_upd_task_queued then
+		if self._t < self._police_upd_task_queued then
+			return
+		end
 
-		managers.enemy:queue_task("GroupAIStateBesiege._upd_police_activity", self._upd_police_activity, self, self._t + (next(self._spawning_groups) and 0.4 or 2))
+		self:_upd_police_activity()
 	end
+
+	local next_upd_t = next(self._spawning_groups) and GroupAIStateBesiege._POLICE_ACTIVITY_DELAY_FAST or GroupAIStateBesiege._POLICE_ACTIVITY_DELAY
+
+	self._police_upd_task_queued = self._t + next_upd_t
 end
 
 function GroupAIStateBesiege:assign_enemy_to_group_ai(unit, team_id)
@@ -142,32 +150,26 @@ function GroupAIStateBesiege:on_enemy_unregistered(unit)
 end
 
 function GroupAIStateBesiege:_upd_police_activity()
-	self._police_upd_task_queued = false
-
-	if self._police_activity_blocked then
+	if not self._ai_enabled or self._police_activity_blocked then
 		return
 	end
 
-	if self._ai_enabled then
-		self:_upd_SO()
-		self:_upd_grp_SO()
-		self:_check_spawn_phalanx()
-		self:_check_phalanx_group_has_spawned()
-		self:_check_phalanx_damage_reduction_increase()
+	self:_upd_SO()
+	self:_upd_grp_SO()
+	self:_check_spawn_phalanx()
+	self:_check_phalanx_group_has_spawned()
+	self:_check_phalanx_damage_reduction_increase()
 
-		if self._enemy_weapons_hot then
-			self:_claculate_drama_value()
-			self:_upd_regroup_task()
-			self:_upd_reenforce_tasks()
-			self:_upd_recon_tasks()
-			self:_upd_assault_task()
-			self:_begin_new_tasks()
-			self:_upd_group_spawning()
-			self:_upd_groups()
-		end
+	if self._enemy_weapons_hot then
+		self:_claculate_drama_value()
+		self:_upd_regroup_task()
+		self:_upd_reenforce_tasks()
+		self:_upd_recon_tasks()
+		self:_upd_assault_task()
+		self:_begin_new_tasks()
+		self:_upd_group_spawning()
+		self:_upd_groups()
 	end
-
-	self:_queue_police_upd_task()
 end
 
 function GroupAIStateBesiege:_upd_SO()
@@ -761,7 +763,7 @@ function GroupAIStateBesiege:_end_regroup_task()
 		self:set_assault_mode(false)
 
 		if not self._smoke_grenade_ignore_control then
-			managers.network:session():send_to_peers_synched("sync_smoke_grenade_kill")
+			managers.network:send_to_peers_synched("sync_smoke_grenade_kill")
 			self:sync_smoke_grenade_kill()
 		end
 
@@ -1635,7 +1637,7 @@ end
 function GroupAIStateBesiege:register_criminal(unit)
 	GroupAIStateBesiege.super.register_criminal(self, unit)
 
-	if not Network:is_server() then
+	if not self._is_server then
 		return
 	end
 
@@ -1647,7 +1649,7 @@ function GroupAIStateBesiege:register_criminal(unit)
 end
 
 function GroupAIStateBesiege:unregister_criminal(unit)
-	if Network:is_server() then
+	if self._is_server then
 		local u_key = unit:key()
 		local record = self._criminals[u_key]
 
@@ -2494,12 +2496,6 @@ function GroupAIStateBesiege:on_simulation_ended()
 		}
 		self._task_data.regroup = {}
 	end
-
-	if self._police_upd_task_queued then
-		self._police_upd_task_queued = nil
-
-		managers.enemy:unqueue_task("GroupAIStateBesiege._upd_police_activity")
-	end
 end
 
 function GroupAIStateBesiege:on_simulation_started()
@@ -2523,8 +2519,6 @@ function GroupAIStateBesiege:on_simulation_started()
 		}
 		self._task_data.regroup = {}
 	end
-
-	self:_queue_police_upd_task()
 end
 
 function GroupAIStateBesiege:on_enemy_weapons_hot(is_delayed_callback)
@@ -3887,12 +3881,12 @@ function GroupAIStateBesiege:set_team_relation(team1_id, team2_id, relation, mut
 		self._teams[team1_id].foes[team2_id] = nil
 	end
 
-	if Network:is_server() then
+	if self._is_server then
 		local team1_index = tweak_data.levels:get_team_index(team1_id)
 		local team2_index = tweak_data.levels:get_team_index(team2_id)
 		local relation_code = relation == "neutral" and 1 or relation == "friend" and 2 or 3
 
-		managers.network:session():send_to_peers_synched("sync_team_relation", team1_index, team2_index, relation_code)
+		managers.network:send_to_peers_synched("sync_team_relation", team1_index, team2_index, relation_code)
 	end
 end
 
@@ -3985,7 +3979,7 @@ function GroupAIStateBesiege:_spawn_phalanx()
 
 			self:set_assault_endless(true)
 			managers.game_play_central:announcer_say("cpa_a02_01")
-			managers.network:session():send_to_peers_synched("group_ai_event", self:get_sync_event_id("phalanx_spawned"), 0)
+			managers.network:send_to_peers_synched("group_ai_event", self:get_sync_event_id("phalanx_spawned"), 0)
 		end
 	end
 end
@@ -4080,8 +4074,8 @@ function GroupAIStateBesiege:set_phalanx_damage_reduction_buff(damage_reduction)
 		self:set_damage_reduction_buff_hud()
 	end
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_damage_reduction_buff", damage_reduction)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_damage_reduction_buff", damage_reduction)
 	end
 end
 
@@ -4106,8 +4100,8 @@ function GroupAIStateBesiege:set_assault_endless(enabled)
 
 	managers.hud:sync_set_assault_mode(enabled and "phalanx" or "normal")
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_assault_endless", enabled)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_assault_endless", enabled)
 	end
 end
 
@@ -4128,7 +4122,7 @@ function GroupAIStateBesiege:force_end_assault_phase(force_regroup)
 	local task_data = self._task_data.assault
 
 	if task_data.active then
-		print("GroupAIStateBesiege:force_end_assault_phase()")
+		cat_print("groupai", "[GroupAI] GroupAIStateBesiege:force_end_assault_phase - Forcing current assault to end.", force_regroup and "Forcing regroup." or "")
 
 		task_data.phase = "fade"
 		task_data.force_end = true
@@ -4136,7 +4130,9 @@ function GroupAIStateBesiege:force_end_assault_phase(force_regroup)
 		if force_regroup then
 			task_data.force_regroup = true
 
-			managers.enemy:update_queue_task("GroupAIStateBesiege._upd_police_activity", nil, nil, self._t + 0.1, nil, nil)
+			if self._police_upd_task_queued then
+				self._police_upd_task_queued = self._t + 0.1
+			end
 		end
 	end
 
@@ -4193,7 +4189,7 @@ function GroupAIStateBesiege:create_timed_groups_table()
 			else
 				for idx, spawn_data in ipairs(group_tweak_data.spawn) do
 					if spawn_data.respawn_cooldown then
-						Application:error("[GroupAIStateBesiege:create_timed_groups_table] Respawn cooldown for individual units can't be used if only one unit can spawn. Spawn cooldown is used instead. In group: ", group_id)
+						cat_error("groupai_unique_spawns", "[GroupAI] GroupAIStateBesiege:create_timed_groups_table - Respawn cooldown for individual units can't be used if only one unit can spawn. Spawn cooldown is used instead. In group: ", group_id)
 
 						break
 					end

@@ -481,10 +481,14 @@ function CopLogicBase._upd_attention_obj_detection(data, min_reaction, max_react
 
 	local function _nearly_visible_chk(attention_info, detect_pos)
 		local near_pos = tmp_vec1
+		local MAX_DISTANCE = 2000
 
-		if attention_info.verified_dis < 2000 and math.abs(detect_pos.z - my_pos.z) < 300 then
+		if MAX_DISTANCE > attention_info.verified_dis and math.abs(detect_pos.z - my_pos.z) < 300 then
 			mvec3_set(near_pos, detect_pos)
-			mvec3_set_z(near_pos, near_pos.z + 100)
+
+			local height_over_target = math.lerp(100, 10, math.max(attention_info.verified_dis / MAX_DISTANCE))
+
+			mvec3_set_z(near_pos, near_pos.z + height_over_target)
 
 			local near_vis_ray = World:raycast("ray", my_pos, near_pos, "slot_mask", data.visibility_slotmask, "ray_type", "ai_vision", "report")
 

@@ -258,17 +258,23 @@ function NPCRaycastWeaponBase:fire_blank(direction, impact)
 end
 
 function NPCRaycastWeaponBase:pre_destroy(unit)
-	if self._flashlight_data and alive(self._flashlight_data.light) then
-		World:delete_light(self._flashlight_data.light)
+	if self._flashlight_data then
+		if alive(self._flashlight_data.light) then
+			World:delete_light(self._flashlight_data.light)
+		end
 
-		self._flashlight_data.light = nil
+		self._flashlight_data = nil
 	end
 
-	RaycastWeaponBase.super.pre_destroy(self, unit)
+	if self._laser_unit then
+		if alive(self._laser_unit) then
+			self._laser_unit:set_slot(0)
+		end
 
-	if self._shooting then
-		self:stop_autofire()
+		self._laser_unit = nil
 	end
+
+	NPCRaycastWeaponBase.super.pre_destroy(self, unit)
 end
 
 function NPCRaycastWeaponBase:non_npc_name_id()
@@ -398,6 +404,10 @@ function NPCRaycastWeaponBase:_check_smoke_shot(user_unit, target_unit)
 	end
 
 	if managers.groupai:state():is_unit_team_AI(user_unit) then
+		return
+	end
+
+	if managers.groupai:state():is_enemy_converted_to_criminal(user_unit) then
 		return
 	end
 
@@ -535,8 +545,10 @@ function NPCRaycastWeaponBase:set_laser_enabled(state)
 		self._laser_unit:base():set_on()
 		self._laser_unit:base():set_color_by_theme("cop_sniper")
 		self._laser_unit:base():set_max_distace(max_distance)
-	elseif alive(self._laser_unit) then
-		self._laser_unit:set_slot(0)
+	elseif self._laser_unit then
+		if alive(self._laser_unit) then
+			self._laser_unit:set_slot(0)
+		end
 
 		self._laser_unit = nil
 	end

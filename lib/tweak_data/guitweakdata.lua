@@ -5941,7 +5941,7 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 
 	if index == 1 then
 		return function(x, y)
-			return y < x
+			return (tonumber(x) or -1) > (tonumber(y) or -1)
 		end
 	elseif index == 2 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
@@ -6002,11 +6002,13 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 			y_item = inventory_tradable[y]
 			x_td = (tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category])[x_item.entry]
 			y_td = (tweak_data.economy[y_item.category] or tweak_data.blackmarket[y_item.category])[y_item.entry]
-			x_rarity = tweak_data.economy.rarities[x_td.rarity or "common"]
-			y_rarity = tweak_data.economy.rarities[y_td.rarity or "common"]
+			x_rarity = tweak_data.economy.rarities[x_td.rarity]
+			x_rarity = x_rarity and x_rarity.index or -1
+			y_rarity = tweak_data.economy.rarities[y_td.rarity]
+			y_rarity = y_rarity and y_rarity.index or -1
 
-			if x_rarity.index ~= y_rarity.index then
-				return x_rarity.index > y_rarity.index
+			if x_rarity ~= y_rarity then
+				return x_rarity > y_rarity
 			end
 
 			if x_item.entry ~= y_item.entry then

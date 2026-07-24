@@ -85,7 +85,7 @@ function TankCopLogicAttack.update(data)
 
 	local enemy_visible = focus_enemy.verified
 	local engage = my_data.attitude == "engage"
-	local action_taken = my_data.turning or data.unit:movement():chk_action_forbidden("walk") or my_data.walking_to_chase_pos
+	local action_taken = my_data.turning or unit:movement():chk_action_forbidden("walk") or my_data.walking_to_chase_pos
 
 	if action_taken then
 		return
@@ -108,23 +108,21 @@ function TankCopLogicAttack.update(data)
 	end
 
 	local chase
-	local z_dist = math.abs(data.m_pos.z - focus_enemy.m_pos.z)
+	local within_z_distance = math.abs(data.m_pos.z - focus_enemy.m_pos.z) < 300
 
 	if focus_enemy.reaction >= AIAttentionObject.REACT_COMBAT then
 		if enemy_visible then
-			if z_dist < 300 or focus_enemy.verified_dis > 2000 or engage and focus_enemy.verified_dis > 500 then
+			if within_z_distance or focus_enemy.verified_dis > 2000 or engage and focus_enemy.verified_dis > 500 then
 				chase = true
 			end
 
 			if focus_enemy.verified_dis < 800 and unit:anim_data().run then
-				local new_action = {
+				unit:brain():action_request({
 					body_part = 2,
 					type = "idle"
-				}
-
-				data.unit:brain():action_request(new_action)
+				})
 			end
-		elseif z_dist < 300 or focus_enemy.verified_dis > 2000 or engage and (not focus_enemy.verified_t or t - focus_enemy.verified_t > 5 or focus_enemy.verified_dis > 700) then
+		elseif within_z_distance or focus_enemy.verified_dis > 2000 or engage and (not focus_enemy.verified_t or t - focus_enemy.verified_t > 5 or focus_enemy.verified_dis > 700) then
 			chase = true
 		end
 	end
@@ -185,8 +183,6 @@ function TankCopLogicAttack._process_pathing_results(data, my_data)
 		if path then
 			if path ~= "failed" then
 				my_data.chase_path = path
-			else
-				print("[TankCopLogicAttack._process_pathing_results] chase path failed")
 			end
 
 			my_data.pathing_to_chase_pos = nil
@@ -199,12 +195,10 @@ function TankCopLogicAttack._cancel_chase_attempt(data, my_data)
 	my_data.chase_path = nil
 
 	if my_data.walking_to_chase_pos then
-		local new_action = {
+		data.unit:brain():action_request({
 			body_part = 2,
 			type = "idle"
-		}
-
-		data.unit:brain():action_request(new_action)
+		})
 	elseif my_data.pathing_to_chase_pos then
 		data.brain:rem_pos_rsrv("path")
 

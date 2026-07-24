@@ -41,6 +41,7 @@ end
 function CopBase:init(unit)
 	UnitBase.init(self, unit, false)
 
+	self._unit = unit
 	self._char_tweak = tweak_data.character[self._tweak_table]
 
 	self:_set_tags(self._char_tweak.tags)
@@ -278,7 +279,7 @@ function CopBase:prevent_invisibility(state)
 		return
 	end
 
-	if self._prevent_invisible and not self._lod_stage then
+	if self._prevent_invisible and (not self.lod_stage or not self:lod_stage()) and not self._lod_stage then
 		self:set_visibility_state(false)
 	end
 end
@@ -295,7 +296,7 @@ function CopBase:set_force_invisible(state)
 	elseif self._force_invisible then
 		self._force_invisible = false
 
-		local new_lod = self._lod_stage
+		local new_lod = self.lod_stage and self:lod_stage() or self._lod_stage
 
 		self._lod_stage = false
 
@@ -365,7 +366,7 @@ function CopBase:set_anim_lod(stage)
 
 	if stage == 1 then
 		self._unit:set_animatable_enabled(ids_lod1, true)
-	elseif self._lod_stage == 1 then
+	elseif (self.lod_stage and self:lod_stage() or self._lod_stage) == 1 then
 		if self._ext_anim.recoil_auto and not self.is_husk_player then
 			self._ext_movement:play_redirect("up_idle")
 		end
@@ -379,14 +380,14 @@ function CopBase:on_death_exit()
 end
 
 function CopBase:chk_freeze_anims()
-	if (self._force_invisible or not self._lod_stage or self._lod_stage > 1) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
+	if (self._force_invisible or (not self.lod_stage or not self:lod_stage()) and not self._lod_stage or (self.lod_stage and self:lod_stage() or self._lod_stage) > 1) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
 		if not self._anims_frozen then
 			self._anims_frozen = true
 
 			self._unit:set_animations_enabled(false)
 			self._ext_movement:on_anim_freeze(true)
 
-			if self._force_invisible or not self._lod_stage then
+			if self._force_invisible or (not self.lod_stage or not self:lod_stage()) and not self._lod_stage then
 				self:_set_animated_bones_state(false)
 			end
 		end
@@ -396,7 +397,7 @@ function CopBase:chk_freeze_anims()
 		self._unit:set_animations_enabled(true)
 		self._ext_movement:on_anim_freeze(false)
 
-		if not self._force_invisible and self._lod_stage then
+		if not self._force_invisible and (self.lod_stage and self:lod_stage() or self._lod_stage) then
 			self:_set_animated_bones_state(true)
 		end
 	end
@@ -425,7 +426,7 @@ function CopBase:prevent_main_bones_disabling(state)
 
 	if state then
 		self:_set_animated_bones_state(true, true)
-	elseif (self._force_invisible or not self._lod_stage) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
+	elseif (self._force_invisible or (not self.lod_stage or not self:lod_stage()) and not self._lod_stage) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
 		self:_set_animated_bones_state(false, true)
 	else
 		self:_set_animated_bones_state(true, true)

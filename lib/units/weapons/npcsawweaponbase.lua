@@ -87,7 +87,7 @@ function NPCSawWeaponBase:third_person_important()
 	return SawWeaponBase.third_person_important(self)
 end
 
-function NPCSawWeaponBase:destroy(...)
-	NPCSawWeaponBase.super.destroy(self, ...)
+function NPCSawWeaponBase:pre_destroy(...)
+	NPCSawWeaponBase.super.pre_destroy(self, ...)
 	SawWeaponBase._stop_sawing_effect(self)
 end

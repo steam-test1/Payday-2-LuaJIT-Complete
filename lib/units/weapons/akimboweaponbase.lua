@@ -344,8 +344,8 @@ function AkimboWeaponBase:tweak_data_anim_stop(anim, ...)
 	end
 end
 
-function AkimboWeaponBase:destroy(...)
-	AkimboWeaponBase.super.destroy(self, ...)
+function AkimboWeaponBase:pre_destroy(...)
+	AkimboWeaponBase.super.pre_destroy(self, ...)
 
 	if alive(self._second_gun) then
 		self._second_gun:set_slot(0)
@@ -664,8 +664,8 @@ function NPCAkimboWeaponBase:set_gadget_color(color)
 	end
 end
 
-function NPCAkimboWeaponBase:destroy(...)
-	NPCAkimboWeaponBase.super.destroy(self, ...)
+function NPCAkimboWeaponBase:pre_destroy(...)
+	NPCAkimboWeaponBase.super.pre_destroy(self, ...)
 
 	if alive(self._second_gun) then
 		self._second_gun:set_slot(0)

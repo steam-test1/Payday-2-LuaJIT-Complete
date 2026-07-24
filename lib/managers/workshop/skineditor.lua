@@ -507,11 +507,13 @@ function SkinEditor:load_textures(skin, path_or_tex_type)
 			rel_path = rel_path .. tex_type .. "/"
 		end
 
+		print("[SkinEditor] Creating texture entry: " .. tostring(texture_id) .. " pointing at " .. rel_path .. texture)
 		DB:create_entry(type_texture_id, texture_id, rel_path .. texture)
 		table.insert(new_textures, texture_id)
 	end
 
 	if not table.empty(new_textures) then
+		print("[SkinEditor] New textures to be reloaded #", table.size(new_textures))
 		Application:reload_textures(new_textures)
 	end
 end
@@ -590,6 +592,8 @@ end
 function SkinEditor:apply_changes(cosmetics_data)
 	local skin = self:get_current_skin()
 
+	print("[SkinEditor] Applying changes")
+
 	if cosmetics_data then
 		self._unsaved = true
 		skin:config().data = cosmetics_data
@@ -605,18 +609,13 @@ function SkinEditor:apply_changes(cosmetics_data)
 		end
 	end
 
-	self:weapon_unit():base()._cosmetics_data = self:get_current_skin():config().data
+	local skin_config_data = self:get_current_skin():config().data
 
-	self:weapon_unit():base():_apply_cosmetics(function()
-		return
-	end)
+	print("[SkinEditor] Applying changes - To wpn base cosmetic data", inspect(skin_config_data))
+	self:weapon_unit():base():change_workshop_cosmetics(skin_config_data, false)
 
 	if self:second_weapon_unit() then
-		self:second_weapon_unit():base()._cosmetics_data = self:get_current_skin():config().data
-
-		self:second_weapon_unit():base():_apply_cosmetics(function()
-			return
-		end)
+		self:second_weapon_unit():base():change_workshop_cosmetics(skin_config_data, false)
 	end
 end
 
@@ -627,6 +626,8 @@ function SkinEditor:remove_texture_by_name(skin, texture_name)
 	}
 
 	while #to_process > 0 do
+		print("[SkinEditor] Removing textures to process", #to_process)
+
 		local data = table.remove(to_process)
 
 		for k, v in pairs(data) do

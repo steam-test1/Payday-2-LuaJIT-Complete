@@ -4,6 +4,21 @@ require("lib/managers/group_ai_states/GroupAIStateBesiege")
 require("lib/managers/group_ai_states/GroupAIStateStreet")
 
 GroupAIManager = GroupAIManager or class()
+GroupAIManager.STATE_CLASS_LOOKUP = {
+	empty = function()
+		return GroupAIStateEmpty
+	end,
+	street = function()
+		return GroupAIStateStreet
+	end,
+	besiege = function()
+		local level_tweak = managers.job and managers.job:current_level_data() or nil
+
+		return GroupAIStateBesiege, level_tweak and level_tweak.group_ai_state or "besiege"
+	end
+}
+GroupAIManager.STATE_CLASS_LOOKUP.airport = GroupAIManager.STATE_CLASS_LOOKUP.besiege
+GroupAIManager.STATE_CLASS_LOOKUP.zombie_apocalypse = GroupAIManager.STATE_CLASS_LOOKUP.besiege
 
 function GroupAIManager:init()
 	self:set_state("empty")
@@ -32,21 +47,28 @@ function GroupAIManager:paused_update(t, dt)
 end
 
 function GroupAIManager:set_state(name)
-	if name == "empty" then
-		self._state = GroupAIStateEmpty:new()
-	elseif name == "street" then
-		self._state = GroupAIStateStreet:new()
-	elseif name == "besiege" or name == "airport" or name == "zombie_apocalypse" then
-		local level_tweak = managers.job:current_level_data()
+	local new_state_getter = GroupAIManager.STATE_CLASS_LOOKUP[name]
 
-		self._state = GroupAIStateBesiege:new(level_tweak and level_tweak.group_ai_state or "besiege")
-	else
-		Application:error("[GroupAIManager:set_state] inexistent state name", name)
+	if not new_state_getter then
+		Application:error("[GroupAIManager:set_state] Inexistent state name.", name)
 
 		return
 	end
 
+	local new_state_class, state_type = new_state_getter()
+
+	if not new_state_class then
+		Application:error("[GroupAIManager:set_state] Inexistent state class..?", name)
+
+		return
+	end
+
+	if self._state ~= nil then
+		self._state:destroy()
+	end
+
 	self._state_name = name
+	self._state = new_state_class:new(state_type)
 end
 
 function GroupAIManager:state()
@@ -58,13 +80,7 @@ function GroupAIManager:state_name()
 end
 
 function GroupAIManager:state_names()
-	return {
-		"empty",
-		"airport",
-		"besiege",
-		"street",
-		"zombie_apocalypse"
-	}
+	return table.map_keys(GroupAIManager.STATE_CLASS_LOOKUP)
 end
 
 function GroupAIManager:on_simulation_started()

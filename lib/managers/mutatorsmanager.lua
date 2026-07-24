@@ -14,9 +14,9 @@ require("lib/mutators/MutatorPiggyRevenge")
 
 MutatorsManager = MutatorsManager or class()
 MutatorsManager.package = "packages/toxic"
-MutatorsManager._atlas_file = "guis/textures/pd2/mutator_icons_atlas"
-MutatorsManager._icon_size = 128
-MutatorsManager._options_icon_coord = {
+MutatorsManager.default_atlas_file = "guis/textures/pd2/mutator_icons_atlas"
+MutatorsManager.default_icon_size = 128
+MutatorsManager.default_options_icon_coord = {
 	8,
 	2
 }
@@ -392,8 +392,12 @@ end
 function MutatorsManager:are_achievements_disabled()
 	if game_state_machine:current_state_name() ~= "menu_main" then
 		for _, mutator in pairs(self:mutators()) do
-			if mutator:is_active() and mutator.disables_achievements then
-				return true
+			if mutator:is_active() then
+				if mutator.get_disables_achievements then
+					return mutator:get_disables_achievements()
+				elseif mutator.disables_achievements then
+					return true
+				end
 			end
 		end
 	else

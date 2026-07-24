@@ -130,6 +130,10 @@ function GroupAIStateBase:init()
 	self:_init_misc_data()
 end
 
+function GroupAIStateBase:destroy()
+	return
+end
+
 function GroupAIStateBase:update(t, dt)
 	self._t = t
 
@@ -1811,8 +1815,6 @@ function GroupAIStateBase:check_gameover_conditions()
 	elseif plrs_disabled and ai_disabled then
 		gameover = true
 	end
-
-	gameover = gameover or managers.skirmish:check_gameover_conditions()
 
 	if gameover then
 		if not self._gameover_clbk then

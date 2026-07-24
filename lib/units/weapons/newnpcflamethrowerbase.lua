@@ -28,9 +28,9 @@ function NewNPCFlamethrowerBase:init(...)
 	self:setup_default()
 end
 
-function NewNPCFlamethrowerBase:destroy(...)
+function NewNPCFlamethrowerBase:pre_destroy(...)
 	self:kill_effects()
-	NewNPCFlamethrowerBase.super.destroy(self, ...)
+	NewNPCFlamethrowerBase.super.pre_destroy(self, ...)
 end
 
 function NewNPCFlamethrowerBase:setup_default(...)
@@ -266,9 +266,9 @@ function NPCFlamethrowerBase:init(...)
 	self:setup_default()
 end
 
-function NPCFlamethrowerBase:destroy(...)
+function NPCFlamethrowerBase:pre_destroy(...)
 	self:kill_effects()
-	NPCFlamethrowerBase.super.destroy(self, ...)
+	NPCFlamethrowerBase.super.pre_destroy(self, ...)
 end
 
 function NPCFlamethrowerBase:third_person_important()

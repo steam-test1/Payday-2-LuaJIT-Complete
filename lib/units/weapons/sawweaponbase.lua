@@ -222,22 +222,38 @@ function SawWeaponBase:can_reload()
 end
 
 SawHit = SawHit or class(InstantBulletBase)
-SawHit.TAG_DAMAGE_MULTIPLIER_TANK = 1.5
+SawHit.TAG_DAMAGE_MULTIPLIERS = {
+	tank = 1.5
+}
 
 function SawHit:on_collision(col_ray, weapon_unit, user_unit, damage)
 	local hit_unit = col_ray.unit
+	local hit_unit_damage_ext = hit_unit:damage()
 
-	do
+	if hit_unit_damage_ext and not hit_unit:dead() then
 		local base_ext = hit_unit:base()
 
-		if base_ext and base_ext.has_tag and base_ext:has_tag("tank") then
-			damage = damage * SawHit.TAG_DAMAGE_MULTIPLIER_TANK
+		if base_ext and base_ext.get_tags then
+			local tags = base_ext:get_tags()
+			local highest_tag
+
+			if tags then
+				for tag, damage_mul in pairs(SawHit.TAG_DAMAGE_MULTIPLIERS) do
+					if tags[tag] and (not highest_tag or highest_tag < damage_mul) then
+						highest_tag = damage_mul
+					end
+				end
+			end
+
+			if highest_tag then
+				damage = damage * highest_tag
+			end
 		end
 	end
 
 	local result = InstantBulletBase.on_collision(self, col_ray, weapon_unit, user_unit, damage)
 
-	if hit_unit:damage() and col_ray.body:extension() and col_ray.body:extension().damage then
+	if hit_unit_damage_ext and col_ray.body:extension() and col_ray.body:extension().damage then
 		local lock_damage = damage
 
 		lock_damage = damage * managers.player:upgrade_value("saw", "lock_damage_multiplier", 1)

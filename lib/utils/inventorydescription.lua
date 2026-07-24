@@ -111,52 +111,60 @@ function InventoryDescription.create_description_safe(safe_entry, ingame_format)
 
 	color_ranges = {}
 
-	local items_list = {}
+	if content_td.ip_content then
+		text = text .. func_color_text(managers.localization:to_upper_text("bm_menu_warning_safe_content_deprecated"), func_hex_color(Color("ff1500")), ingame_format) .. func_add_lb(ingame_format) .. func_color_text(managers.localization:text("bm_menu_deprecated_no_trade_market_open"), func_hex_color(Color("808080")), ingame_format)
+	else
+		local items_list = {}
 
-	for category, items in pairs(content_td.contains) do
-		for _, item in ipairs(items) do
-			items_list[#items_list + 1] = {
-				category = category,
-				entry = item
-			}
-		end
-	end
-
-	local x_td, y_td, xr_td, yr_td
-
-	local function sort_func(x, y)
-		x_td = (tweak_data.economy[x.category] or tweak_data.blackmarket[x.category])[x.entry]
-		y_td = (tweak_data.economy[y.category] or tweak_data.blackmarket[y.category])[y.entry]
-		xr_td = tweak_data.economy.rarities[x_td.rarity or "common"]
-		yr_td = tweak_data.economy.rarities[y_td.rarity or "common"]
-
-		if xr_td.index ~= yr_td.index then
-			return xr_td.index < yr_td.index
+		for category, items in pairs(content_td.contains) do
+			for _, item in ipairs(items) do
+				items_list[#items_list + 1] = {
+					category = category,
+					entry = item
+				}
+			end
 		end
 
-		return x.entry < y.entry
-	end
+		local x_td, y_td, xr_td, yr_td
 
-	table.sort(items_list, sort_func)
+		local function sort_func(x, y)
+			x_td = (tweak_data.economy[x.category] or tweak_data.blackmarket[x.category])[x.entry]
+			y_td = (tweak_data.economy[y.category] or tweak_data.blackmarket[y.category])[y.entry]
+			xr_td = tweak_data.economy.rarities[x_td.rarity or "common"]
+			yr_td = tweak_data.economy.rarities[y_td.rarity or "common"]
 
-	local td
+			if xr_td.index ~= yr_td.index then
+				return xr_td.index < yr_td.index
+			end
 
-	for i, item in ipairs(items_list) do
-		td = (tweak_data.economy[item.category] or tweak_data.blackmarket[item.category])[item.entry]
-
-		local item_text = ""
-
-		if item.category == "contents" and td.rarity == "legendary" then
-			item_text = managers.localization:text("bm_menu_rarity_legendary_item_long")
-		else
-			item_text = (td.weapon_id and utf8.to_upper(managers.weapon_factory:get_weapon_name_by_weapon_id(td.weapon_id)) .. " | " or "") .. managers.localization:text(td.name_id)
+			return x.entry < y.entry
 		end
 
-		text = text .. func_color_text(item_text, func_hex_color(tweak_data.economy.rarities[td.rarity or "common"].color), ingame_format)
+		table.sort(items_list, sort_func)
 
-		if i ~= #items_list then
-			text = text .. func_add_lb(ingame_format)
+		local td
+
+		for i, item in ipairs(items_list) do
+			td = (tweak_data.economy[item.category] or tweak_data.blackmarket[item.category])[item.entry]
+
+			local item_text = ""
+
+			if item.category == "contents" and td.rarity == "legendary" then
+				item_text = managers.localization:text("bm_menu_rarity_legendary_item_long")
+			else
+				item_text = (td.weapon_id and utf8.to_upper(managers.weapon_factory:get_weapon_name_by_weapon_id(td.weapon_id)) .. " | " or "") .. managers.localization:text(td.name_id)
+			end
+
+			text = text .. func_color_text(item_text, func_hex_color(tweak_data.economy.rarities[td.rarity or "common"].color), ingame_format)
+
+			if i ~= #items_list then
+				text = text .. func_add_lb(ingame_format)
+			end
 		end
+
+		text = managers.localization:text("bm_menu_safe_contains_following_items", {
+			content = text
+		})
 	end
 
 	if ingame_format then
@@ -806,7 +814,7 @@ function WeaponDescription._get_base_stats(name)
 	local index
 	local tweak_stats = tweak_data.weapon.stats
 	local weapon_tweak = tweak_data.weapon[name]
-	local modifier_stats = weapon_tweak.stats_modifiers
+	local modifier_stats = weapon_tweak and weapon_tweak.stats_modifiers or nil
 
 	for _, stat in pairs(WeaponDescription._stats_shown) do
 		base_stats[stat.name] = {}

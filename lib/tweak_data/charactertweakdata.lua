@@ -2812,14 +2812,14 @@ function CharacterTweakData:_init_tank(presets)
 		1,
 		2
 	}
+	self.tank_mini.weapon.mini.autofire_rounds = {
+		40,
+		100
+	}
 	self.tank_mini.weapon.mini.range = {
 		close = 1000,
 		far = 5000,
 		optimal = 2500
-	}
-	self.tank_mini.weapon.mini.autofire_rounds = {
-		40,
-		100
 	}
 	self.tank_mini.weapon.mini.FALLOFF = {
 		{
@@ -13946,6 +13946,16 @@ function CharacterTweakData:_set_characters_weapon_preset(preset)
 
 	for _, name in ipairs(all_units) do
 		self[name].weapon = self.presets.weapon[preset]
+	end
+end
+
+function CharacterTweakData:print_character_map()
+	for k, v in pairs(self:character_map()) do
+		local prefix = v.path or ""
+
+		for _, id in ipairs(v.list or {}) do
+			print(prefix .. id .. "/" .. id)
+		end
 	end
 end
 

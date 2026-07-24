@@ -27,6 +27,7 @@ EnemyManager._nr_i_lod = {
 function EnemyManager:init()
 	self._unit_clbk_key = "EnemyManager"
 	self._timer = TimerManager:game()
+	self._stopping = false
 	self._magazines = {}
 	self._MAX_MAGAZINES = 30
 
@@ -43,7 +44,10 @@ function EnemyManager:update(t, dt)
 	self._queued_task_executed = false
 
 	self:_update_gfx_lod()
-	self:_update_queued_tasks(t, dt)
+
+	if not self._stopping then
+		self:_update_queued_tasks(t, dt)
+	end
 end
 
 function EnemyManager:corpse_limit()
@@ -446,10 +450,6 @@ function EnemyManager:is_civilian(unit)
 end
 
 function EnemyManager:queue_task(id, task_clbk, data, execute_t, verification_clbk, asap)
-	if self._stopping then
-		return
-	end
-
 	local task_data = {
 		clbk = task_clbk,
 		id = id,
@@ -494,9 +494,7 @@ function EnemyManager:unqueue_task(id)
 		i = i - 1
 	end
 
-	if not self._stopping then
-		debug_pause("[EnemyManager:unqueue_task] task", id, "was not queued!!!")
-	end
+	debug_pause("[EnemyManager:unqueue_task] task", id, "was not queued!!!")
 end
 
 function EnemyManager:unqueue_task_debug(id)
@@ -522,7 +520,7 @@ function EnemyManager:unqueue_task_debug(id)
 		i = i - 1
 	end
 
-	if not removed and not self._stopping then
+	if not removed then
 		debug_pause("[EnemyManager:unqueue_task] task", id, "was not queued!!!")
 	end
 end
@@ -599,10 +597,6 @@ function EnemyManager:_update_queued_tasks(t, dt)
 end
 
 function EnemyManager:add_delayed_clbk(id, clbk, execute_t)
-	if self._stopping then
-		return
-	end
-
 	if not clbk then
 		debug_pause("[EnemyManager:add_delayed_clbk] Empty callback object!!!")
 	end
@@ -657,7 +651,7 @@ function EnemyManager:remove_delayed_clbk(id, no_pause)
 		end
 	end
 
-	if not no_pause and not self._stopping then
+	if not no_pause then
 		debug_pause("[EnemyManager:remove_delayed_clbk] id", id, "was not scheduled!!!")
 	end
 end
@@ -688,9 +682,7 @@ function EnemyManager:reschedule_delayed_clbk(id, execute_t)
 		return
 	end
 
-	if not self._stopping then
-		debug_pause("[EnemyManager:reschedule_delayed_clbk] id", id, "was not scheduled!!!")
-	end
+	debug_pause("[EnemyManager:reschedule_delayed_clbk] id", id, "was not scheduled!!!")
 end
 
 function EnemyManager:force_delayed_clbk(id)
@@ -706,9 +698,7 @@ function EnemyManager:force_delayed_clbk(id)
 		end
 	end
 
-	if not self._stopping then
-		debug_pause("[EnemyManager:force_delayed_clbk] id", id, "was not scheduled!!!")
-	end
+	debug_pause("[EnemyManager:force_delayed_clbk] id", id, "was not scheduled!!!")
 end
 
 function EnemyManager:queued_tasks_by_callback()
@@ -1458,13 +1448,26 @@ function EnemyManager:dispose_all_corpses()
 	end
 end
 
-function EnemyManager:stop_everything()
-	if not Application:editor() then
-		self._stopping = true
+function EnemyManager:resume_activity()
+	self._stopping = false
+
+	local pending = {}
+
+	for _, clbk_data in pairs(self._delayed_clbks) do
+		table.insert(pending, clbk_data.id)
 	end
 
-	self._queued_tasks = {}
-	self._delayed_clbks = {}
+	for _, task_data in pairs(self._queued_tasks) do
+		table.insert(pending, task_data.id)
+	end
+
+	if next(pending) ~= nil then
+		Application:debug("[EnemyManager:resume_activity] There were still some queued tasks and/or delayed callbacks that weren't cleaned up.", inspect(pending))
+	end
+end
+
+function EnemyManager:stop_activity()
+	self._stopping = true
 end
 
 function EnemyManager:save(data)

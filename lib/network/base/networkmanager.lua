@@ -333,47 +333,48 @@ function NetworkManager:prepare_stop_network(...)
 end
 
 function NetworkManager:stop_network(clean)
-	if self._started then
-		self._session:on_network_stopped()
+	if not self._started then
+		return
+	end
 
-		self._started = false
+	self._session:on_network_stopped()
 
-		if clean and self._session then
-			local peers = self._session:peers()
+	self._started = false
 
-			for k, peer in pairs(peers) do
-				local rpc = peer:rpc()
+	if clean and self._session then
+		local peers = self._session:peers()
 
-				if rpc then
-					Network:reset_connection(rpc)
-					Network:remove_client(rpc)
-				end
+		for k, peer in pairs(peers) do
+			local rpc = peer:rpc()
+
+			if rpc then
+				Network:reset_connection(rpc)
+				Network:remove_client(rpc)
 			end
 		end
+	end
 
-		self._handlers = nil
-		self._shared_handler_data = nil
+	self._handlers = nil
+	self._shared_handler_data = nil
 
-		self._session:destroy()
+	self._session:destroy()
 
-		self._session = nil
+	self._session = nil
+	self._stop_network = nil
+	self._stop_next_frame = nil
+	self._network_bound = nil
 
-		if managers.enemy then
-			managers.enemy:stop_everything()
-		end
+	Network:unbind()
+	Network:set_disconnected()
 
-		self._stop_network = nil
-		self._stop_next_frame = nil
-		self._network_bound = nil
+	if not Application:editor() then
+		Network:set_multiplayer(false)
+	end
 
-		Network:unbind()
-		Network:set_disconnected()
+	cat_print("multiplayer_base", "[NetworkManager:stop_network]")
 
-		if not Application:editor() then
-			Network:set_multiplayer(false)
-		end
-
-		cat_print("multiplayer_base", "[NetworkManager:stop_network]")
+	if managers.enemy then
+		managers.enemy:stop_activity()
 	end
 end
 
@@ -487,6 +488,10 @@ function NetworkManager:host_game()
 
 	if self.is_ps3 then
 		self._session:broadcast_server_up()
+	end
+
+	if managers.enemy then
+		managers.enemy:resume_activity()
 	end
 end
 

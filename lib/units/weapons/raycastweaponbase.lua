@@ -456,6 +456,10 @@ function RaycastWeaponBase:stop_shooting()
 	self._bullets_fired = nil
 end
 
+function RaycastWeaponBase:stop_autofire()
+	self:stop_shooting()
+end
+
 function RaycastWeaponBase:update_next_shooting_time()
 	if self:gadget_overrides_weapon_functions() then
 		local gadget_func = self:gadget_function_override("update_next_shooting_time")
@@ -2306,7 +2310,7 @@ function RaycastWeaponBase:pre_destroy(unit)
 	RaycastWeaponBase.super.pre_destroy(self, unit)
 
 	if self._shooting then
-		self:stop_shooting()
+		self:stop_autofire()
 	end
 end
 

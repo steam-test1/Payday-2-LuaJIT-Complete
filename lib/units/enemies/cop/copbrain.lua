@@ -1093,16 +1093,7 @@ function CopBrain:on_suppressed(state)
 end
 
 function CopBrain:attention_objects()
-	if self._logic_data.attention_obj then
-		print("attention_obj")
-		print(inspect(self._logic_data.attention_obj))
-	end
-
-	for u_key, attention_data in pairs(self._logic_data.detected_attention_objects) do
-		if self._logic_data.attention_obj ~= attention_data then
-			print(inspect(attention_data))
-		end
-	end
+	return
 end
 
 function CopBrain:clbk_enemy_weapons_hot()
@@ -1157,10 +1148,12 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 	local damage_multiplier = 1
 
 	if alive(mastermind_criminal) then
-		health_multiplier = health_multiplier * (mastermind_criminal:base():upgrade_value("player", "convert_enemies_health_multiplier") or 1)
-		health_multiplier = health_multiplier * (mastermind_criminal:base():upgrade_value("player", "passive_convert_enemies_health_multiplier") or 1)
-		damage_multiplier = damage_multiplier * (mastermind_criminal:base():upgrade_value("player", "convert_enemies_damage_multiplier") or 1)
-		damage_multiplier = damage_multiplier * (mastermind_criminal:base():upgrade_value("player", "passive_convert_enemies_damage_multiplier") or 1)
+		local mmc_base = mastermind_criminal:base()
+
+		health_multiplier = health_multiplier * (mmc_base:upgrade_value("player", "convert_enemies_health_multiplier") or 1)
+		health_multiplier = health_multiplier * (mmc_base:upgrade_value("player", "passive_convert_enemies_health_multiplier") or 1)
+		damage_multiplier = damage_multiplier * (mmc_base:upgrade_value("player", "convert_enemies_damage_multiplier") or 1)
+		damage_multiplier = damage_multiplier * (mmc_base:upgrade_value("player", "passive_convert_enemies_damage_multiplier") or 1)
 	else
 		health_multiplier = health_multiplier * managers.player:upgrade_value("player", "convert_enemies_health_multiplier", 1)
 		health_multiplier = health_multiplier * managers.player:upgrade_value("player", "passive_convert_enemies_health_multiplier", 1)
@@ -1202,8 +1195,7 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 	managers.groupai:state():on_criminal_jobless(self._unit)
 	self._unit:base():set_slot(self._unit, 16)
 	self._unit:movement():set_stance("hos")
-
-	local action_data = {
+	self._unit:brain():action_request({
 		body_part = 1,
 		clamp_to_graph = true,
 		type = "act",
@@ -1215,9 +1207,7 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 			light_hurt = -1,
 			walk = -1
 		}
-	}
-
-	self._unit:brain():action_request(action_data)
+	})
 	self._unit:sound():say("cn1", true, nil)
 end
 

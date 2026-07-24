@@ -1029,15 +1029,20 @@ function ProjectileBase.check_time_cheat(projectile_type, owner_peer_id)
 	end
 
 	local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
+	local proj_time_cheat = tweak_data.blackmarket.projectiles[projectile_type].time_cheat
 
-	if tweak_data.blackmarket.projectiles[projectile_type].time_cheat then
+	if proj_time_cheat then
 		ProjectileBase.time_cheat[projectile_type_index] = ProjectileBase.time_cheat[projectile_type_index] or {}
 
-		if ProjectileBase.time_cheat[projectile_type_index][owner_peer_id] and ProjectileBase.time_cheat[projectile_type_index][owner_peer_id] > Application:time() then
+		local record_time = ProjectileBase.time_cheat[projectile_type_index][owner_peer_id]
+
+		if record_time and record_time > Application:time() then
+			print("[ProjectileBase.check_time_cheat] Shot too quick", record_time, Application:time())
+
 			return false
 		end
 
-		ProjectileBase.time_cheat[projectile_type_index][owner_peer_id] = Application:time() + tweak_data.blackmarket.projectiles[projectile_type].time_cheat
+		ProjectileBase.time_cheat[projectile_type_index][owner_peer_id] = Application:time() + proj_time_cheat
 	end
 
 	return true
