@@ -1,5 +1,7 @@
 require("lib/utils/VRLoadingEnvironment")
 
+VRViewport = VRViewport or class()
+
 function VRViewport:init(x, y, width, height, name, prio)
 	self._vp = Application:create_world_viewport(x, y, width, height)
 	self._use_adaptive_quality = true
