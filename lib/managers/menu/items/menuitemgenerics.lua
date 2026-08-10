@@ -294,6 +294,10 @@ function MenuGuiTabPage:init(page_id, page_panel, fullscreen_panel, gui)
 	self._page_name = page_id
 	self._panel = ExtendedPanel:new(page_panel)
 	self._info_panel = ExtendedPanel:new(gui:info_panel())
+	self._page_panel = page_panel
+	self._fullscreen_panel = fullscreen_panel
+	self._ws = gui._ws
+	self._fullscreen_ws = gui._fullscreen_ws
 
 	self:add_input_component(self._panel)
 	self:add_input_component(self._info_panel)

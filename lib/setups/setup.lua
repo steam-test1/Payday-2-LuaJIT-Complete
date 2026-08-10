@@ -214,12 +214,7 @@ end
 function Setup:load_packages()
 	PackageManager:set_resource_loaded_clbk(IDS_UNIT, nil)
 	TextureCache:set_streaming_enabled(true)
-
-	if IS_PS4 or IS_XB1 then
-		TextureCache:set_LOD_streaming_enabled(false)
-	else
-		TextureCache:set_LOD_streaming_enabled(true)
-	end
+	TextureCache:set_LOD_streaming_enabled(true)
 
 	if not Application:editor() then
 		PackageManager:set_streaming_enabled(true)

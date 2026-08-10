@@ -44,6 +44,7 @@ function SequenceManager:init(area_damage_mask, target_world_mask, beings_mask)
 	self:register_event_element_class(RunSequenceElement)
 	self:register_event_element_class(RunSpawnSystemSequenceElement)
 	self:register_event_element_class(SetDamageElement)
+	self:register_event_element_class(ResetDamageElement)
 	self:register_event_element_class(SetExtensionVarElement)
 	self:register_event_element_class(SetGlobalVariableElement)
 	self:register_event_element_class(SetGlobalVariablesElement)
@@ -5495,7 +5496,7 @@ function SetDamageElement:activate_callback(env)
 			self:print_error("Unable to set body damage on unit \"" .. tostring(env.dest_unit) .. "\" with body \"" .. env.dest_body:name() .. "\" since it didn't have a damage extension on the body.", true, env)
 		end
 	else
-		self:print_error("Unable to set body damage on destroyed body. This is probably because a scripter didn't specify a body when a sequence was executed or if it was executed from a sequence that had \"startup\" attribute set to true or if the sequence was triggered from a water element.", true, env)
+		_G.debug_pause_unit(env.dest_unit, "Unable to set body damage on destroyed body. This is probably because a scripter didn't specify a body when a sequence was executed or if it was executed from a sequence that had \"startup\" attribute set to true or if the sequence was triggered from a water element." .. tostring(env))
 	end
 end
 
@@ -5503,6 +5504,21 @@ function SetDamageElement:set_damage(env, damage, damage_type)
 	local extension = env.dest_body:extension().damage
 
 	extension:set_damage(damage_type, damage)
+end
+
+ResetDamageElement = ResetDamageElement or class(BaseElement)
+ResetDamageElement.NAME = "reset_damage"
+
+function SetDamageElement:init(node, unit_element)
+	BaseElement.init(self, node, unit_element)
+end
+
+function SetDamageElement:activate_callback(env)
+	if alive(env.dest_unit) then
+		self._unit_element:reset_damage(env.dest_unit)
+	else
+		_G.debug_pause_unit(env.dest_unit, "Unable to reset body damage missing unit")
+	end
 end
 
 DisableUnitElement = DisableUnitElement or class(BaseElement)

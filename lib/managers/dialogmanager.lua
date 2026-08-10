@@ -214,7 +214,7 @@ function DialogManager:_play_dialog(dialog, params, line)
 end
 
 function DialogManager:_stop_dialog()
-	if self._current_dialog and self._current_dialog.unit then
+	if self._current_dialog and alive(self._current_dialog.unit) then
 		self._current_dialog.unit:drama():stop_cue()
 	end
 end

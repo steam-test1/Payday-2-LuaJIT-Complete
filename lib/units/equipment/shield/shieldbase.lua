@@ -207,6 +207,10 @@ function ShieldFlashBase:chk_body_hit_priority(old_body_hit, new_body_hit)
 end
 
 function ShieldFlashBase:sync_flash_start(event_sync_idx)
+	if managers.enemy:is_shield_registered(self._unit) then
+		return
+	end
+
 	local dmg_ext = self._unit:damage()
 
 	if not dmg_ext then
@@ -272,7 +276,7 @@ function ShieldFlashBase:clbk_seq_flash_start(parent_obj, priority_counter_body,
 	end
 
 	if parent_obj and parent_obj ~= self._effect_parent_obj then
-		if self._snd_src then
+		if self._snd_src and self._snd_src_dispose then
 			self._snd_src:link(parent_obj)
 		end
 
@@ -323,7 +327,11 @@ function ShieldFlashBase:clbk_seq_flash(pos, dir)
 	end
 
 	if self._snd_src and self._flash_sound then
-		self._snd_event_flash = self._snd_src:post_event(self._flash_sound, callback(self, self, "_clbk_snd_event_end", "flash"), nil, "end_of_event")
+		if self._snd_src_dispose then
+			self._snd_event_flash = self._snd_src:post_event(self._flash_sound, callback(self, self, "_clbk_snd_event_end", "flash"), nil, "end_of_event")
+		else
+			self._snd_src:post_event(self._flash_sound)
+		end
 	end
 
 	if self._flash_effect then
@@ -376,7 +384,11 @@ function ShieldFlashBase:clbk_seq_chk_interrupt_flash(parent_obj)
 	end
 
 	if self._snd_src and self._flash_charge_stun_sound then
-		self._snd_event_stun = self._snd_src:post_event(self._flash_charge_stun_sound, callback(self, self, "_clbk_snd_event_end", "stun"), nil, "end_of_event")
+		if self._snd_src_dispose then
+			self._snd_event_stun = self._snd_src:post_event(self._flash_charge_stun_sound, callback(self, self, "_clbk_snd_event_end", "stun"), nil, "end_of_event")
+		else
+			self._snd_src:post_event(self._flash_charge_stun_sound)
+		end
 	end
 end
 
@@ -422,6 +434,9 @@ function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync
 	managers.explosion:play_sound_and_effects(pos, normal, range, effect_params)
 
 	if Network:is_server() then
+		local parent = self._unit:parent()
+		local parent_key = parent and parent:key() or nil
+
 		managers.explosion:detect_and_stun({
 			alert_radius = 10000,
 			curve_pow = 1,
@@ -431,13 +446,13 @@ function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync
 			range = range,
 			collision_slotmask = slot_mask,
 			user = attacker_unit or nil,
-			verify_callback = callback(self, self, "_can_stun_unit", self._unit:parent() and self._unit:parent():key())
+			verify_callback = callback(self, self, "_can_stun_unit", parent_key)
 		})
 	end
 end
 
 function ShieldFlashBase:_can_stun_unit(parent_key, unit)
-	if unit:key() == parent_key then
+	if parent_key and parent_key == unit:key() then
 		return true
 	end
 
@@ -537,7 +552,11 @@ function ShieldFlashBase:_beep()
 	end
 
 	if self._snd_src and self._beep_sound then
-		self._snd_event_beep = self._snd_src:post_event(self._beep_sound, callback(self, self, "_clbk_snd_event_end", "beep"), nil, "end_of_event")
+		if self._snd_src_dispose then
+			self._snd_event_beep = self._snd_src:post_event(self._beep_sound, callback(self, self, "_clbk_snd_event_end", "beep"), nil, "end_of_event")
+		else
+			self._snd_src:post_event(self._beep_sound)
+		end
 	end
 
 	self._beep_t = self:_get_next_beep_time(self._beep_speeds)
@@ -587,7 +606,7 @@ function ShieldFlashBase:destroy_light()
 
 	self._beep_light_obj = nil
 
-	if light then
+	if alive(light) then
 		World:delete_light(light)
 	end
 end

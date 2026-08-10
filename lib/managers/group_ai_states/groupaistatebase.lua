@@ -134,6 +134,14 @@ function GroupAIStateBase:destroy()
 	return
 end
 
+function GroupAIStateBase:get_persisting_data()
+	return
+end
+
+function GroupAIStateBase:set_persisting_data(data)
+	return
+end
+
 function GroupAIStateBase:update(t, dt)
 	self._t = t
 
@@ -4884,6 +4892,10 @@ function GroupAIStateBase:is_nav_seg_safe(nav_seg)
 end
 
 function GroupAIStateBase:_on_area_safety_status(area, event)
+	if not self:whisper_mode() then
+		return
+	end
+
 	local safe = area.is_safe
 	local unit_data = self._police
 

@@ -2969,6 +2969,8 @@ function MenuCallbackHandler:accept_crimenet_contract(item, node)
 
 	local job_data = item:parameters().gui_node.node:parameters().menu_component_data
 
+	print("[MenuCallbackHandler]", inspect(job_data))
+
 	if job_data.server then
 		managers.crime_spree:join_server(job_data)
 		managers.network.matchmake:join_server_with_check(job_data.room_id, false, job_data)
@@ -3505,6 +3507,8 @@ function MenuCallbackHandler:lobby_start_the_game()
 end
 
 function MenuCallbackHandler:leave_lobby()
+	print("[MenuCallbackHandler] standard leave lobby")
+
 	if game_state_machine:current_state_name() == "ingame_lobby_menu" then
 		self:end_game()
 

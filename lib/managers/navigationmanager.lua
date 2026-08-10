@@ -229,7 +229,7 @@ end
 function NavigationManager:_convert_nav_data_v5_to_v6(data_v5)
 	print("[NavigationManager:_convert_nav_data_v5_to_v6]")
 
-	if not next(data_v5.vis_groups) then
+	if not data_v5.vis_groups or not next(data_v5.vis_groups) then
 		return {
 			version = 6
 		}
@@ -482,7 +482,7 @@ function NavigationManager:set_nav_segment_state(id, state, filter_group)
 	local unique_id = tostring(id)
 
 	if not self._nav_segments[unique_id] then
-		debug_pause("[NavigationManager:set_nav_segment_state] nonexistent nav_segment", unique_idid)
+		debug_pause("[NavigationManager:set_nav_segment_state] nonexistent nav_segment", unique_id)
 
 		return
 	end

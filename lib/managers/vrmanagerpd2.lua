@@ -1,7 +1,5 @@
 require("lib/utils/VRLoadingEnvironment")
 
-VRViewport = VRViewport or class()
-
 function VRViewport:init(x, y, width, height, name, prio)
 	self._vp = Application:create_world_viewport(x, y, width, height)
 	self._use_adaptive_quality = true
@@ -366,7 +364,6 @@ function VRManagerPD2:_on_adaptive_quality_setting_changed(setting, old, new)
 	if RenderSettings.adaptive_quality ~= setting then
 		RenderSettings.adaptive_quality = setting
 
-		VRManager:set_adaptive_quality(new)
 		Application:apply_render_settings()
 	end
 end
@@ -389,10 +386,14 @@ function VRManagerPD2:_update_adaptive_quality_level(t)
 		Application:apply_render_settings()
 	end
 
-	local quality_level = VRManager:adaptive_level() + 1
+	local quality_level = VRManager:adaptive_level()
 
 	if self._force_disable_low_adaptive_quality then
 		quality_level = math.max(quality_level, 3)
+	end
+
+	if VRManagerPD2.DISABLE_ADAPTIVE_QUALITY then
+		quality_level = 7
 	end
 
 	local x_scale = 1

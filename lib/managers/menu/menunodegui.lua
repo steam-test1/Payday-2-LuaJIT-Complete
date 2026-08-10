@@ -1376,10 +1376,10 @@ function MenuNodeGui:_delete_row_item(item)
 
 			break
 		end
-	end
 
-	if table.contains(self.corner_items, row_item) then
-		table.delete(self.corner_items, row_item)
+		if table.contains(self.corner_items, row_item) then
+			table.delete(self.corner_items, row_item)
+		end
 	end
 
 	MenuNodeGui.super._delete_row_item(self, item)

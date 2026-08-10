@@ -1270,6 +1270,7 @@ function NewRaycastWeaponBase:_check_second_sight()
 end
 
 function NewRaycastWeaponBase:zoom()
+	local stats_table = tweak_data.weapon.stats.zoom
 	local second_sight = self:get_active_second_sight()
 
 	if second_sight then
@@ -1278,14 +1279,12 @@ function NewRaycastWeaponBase:zoom()
 		if not zoom_stats then
 			local tweak_stats = tweak_data.weapon.factory.parts[second_sight.part_id].stats
 
-			if not tweak_stats.gadget_zoom_add then
-				debug_pause("Invalid second sight:", second_sight.part_id)
-			end
-
-			zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #tweak_data.weapon.stats.zoom)
+			zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #stats_table)
 		end
 
-		return tweak_data.weapon.stats.zoom[zoom_stats]
+		local fov = stats_table[zoom_stats]
+
+		return fov
 	end
 
 	if self:is_second_sight_on() and self._second_sight_data then
@@ -1294,14 +1293,12 @@ function NewRaycastWeaponBase:zoom()
 		if not gadget_zoom_stats then
 			local tweak_stats = tweak_data.weapon.factory.parts[self._second_sight_data.part_id].stats
 
-			if not tweak_stats.gadget_zoom_add then
-				debug_pause("Invalid second sight:", self._second_sight_data.part_id)
-			end
-
-			gadget_zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #tweak_data.weapon.stats.zoom)
+			gadget_zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #stats_table)
 		end
 
-		return tweak_data.weapon.stats.zoom[gadget_zoom_stats]
+		local fov = stats_table[gadget_zoom_stats]
+
+		return fov
 	end
 
 	return NewRaycastWeaponBase.super.zoom(self)
@@ -1430,13 +1427,9 @@ function NewRaycastWeaponBase:stance_mod()
 		return nil
 	end
 
-	do
-		local second_sight_data = self:get_active_second_sight()
+	local second_sight_data = self:get_active_second_sight()
 
-		return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, second_sight_data and second_sight_data.part_id)
-	end
-
-	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, self:is_second_sight_on())
+	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, second_sight_data and second_sight_data.part_id)
 end
 
 function NewRaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
@@ -1743,7 +1736,10 @@ function NewRaycastWeaponBase:_set_parts_visible(visible)
 
 			if alive(unit) then
 				is_visible = visible and self:_is_part_visible(part_id)
-				is_visible = is_visible and (self._parts[part_id].steelsight_visible == nil or self._parts[part_id].steelsight_visible == steelsight_swap_state)
+
+				local part_data = self._parts[part_id]
+
+				is_visible = is_visible and (part_data.steelsight_visible == nil or part_data.steelsight_visible == steelsight_swap_state)
 
 				unit:set_visible(is_visible)
 

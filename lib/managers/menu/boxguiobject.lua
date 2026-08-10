@@ -25,11 +25,11 @@ function BoxGuiObject:create_sides(panel, config)
 
 	config = config or {}
 	self._panel = panel:panel({
-		halign = "scale",
-		valign = "scale",
 		name = config.name or "BoxGuiObject" .. tostring(panel:num_children()),
 		w = config.w,
 		h = config.h,
+		halign = config.halign or "scale",
+		valign = config.valign or "scale",
 		layer = config.layer or 1
 	})
 	self._color = config.color or self._color or Color.white

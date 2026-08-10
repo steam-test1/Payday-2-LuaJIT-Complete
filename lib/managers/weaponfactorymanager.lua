@@ -1596,17 +1596,21 @@ function WeaponFactoryManager:get_stance_mod(factory_id, blueprint, using_second
 				is_weapon_sight = not second_sight_id and part.type == "sight" or false
 				is_second_sight = second_sight_id and part_id == second_sight_id or false
 
-				if (is_not_sight_type or is_weapon_sight or is_second_sight) and part.stance_mod[factory_id] then
-					local part_translation = part.stance_mod[factory_id].translation
+				if is_not_sight_type or is_weapon_sight or is_second_sight then
+					local stance_mod_data = part.stance_mod[factory_id]
 
-					if part_translation then
-						mvector3.add(translation, part_translation)
-					end
+					if stance_mod_data then
+						local part_translation = stance_mod_data.translation
 
-					local part_rotation = part.stance_mod[factory_id].rotation
+						if part_translation then
+							mvector3.add(translation, part_translation)
+						end
 
-					if part_rotation then
-						mrotation.multiply(rotation, part_rotation)
+						local part_rotation = stance_mod_data.rotation
+
+						if part_rotation then
+							mrotation.multiply(rotation, part_rotation)
+						end
 					end
 				end
 			end

@@ -21,12 +21,8 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 
 	local is_local_peer
 
-	if self._rpc then
-		if self._rpc:ip_at_index(0) == Network:self(SystemInfo:matchmaking_protocol()):ip_at_index(0) then
-			is_local_peer = true
-		elseif IS_PS4 then
-			PSNVoice:send_to(self._name, self._rpc)
-		end
+	if self._rpc and self._rpc:ip_at_index(0) == Network:self(SystemInfo:matchmaking_protocol()):ip_at_index(0) then
+		is_local_peer = true
 	end
 
 	if is_local_peer and (id ~= 1 or managers.network:session():is_host()) then
@@ -105,10 +101,6 @@ function NetworkPeer:set_rpc(rpc)
 		Network:set_throttling_disabled(self._rpc, not managers.user:get_setting("net_packet_throttling"))
 		Network:set_connection_id(self._rpc, self._id)
 		self:_chk_flush_msg_queues()
-
-		if IS_PS4 then
-			PSNVoice:send_to(self._name, self._rpc)
-		end
 
 		if managers.network.voice_chat.on_member_added then
 			managers.network.voice_chat:on_member_added(self, self._muted)

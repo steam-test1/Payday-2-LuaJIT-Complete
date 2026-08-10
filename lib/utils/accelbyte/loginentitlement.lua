@@ -812,7 +812,9 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 	local function login_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "Callback login_callback ")
 
-		Global.telemetry._has_account_checked = true
+		if Global.telemetry ~= nil then
+			Global.telemetry._has_account_checked = true
+		end
 
 		Telemetry:on_login()
 		Telemetry:on_login_screen_passed()
@@ -865,7 +867,10 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 			end
 		else
 			Login.has_account = false
-			Global.telemetry._has_account_checked = true
+
+			if Global.telemetry ~= nil then
+				Global.telemetry._has_account_checked = true
+			end
 
 			Telemetry:on_login()
 			Telemetry:on_login_screen_passed()
@@ -879,7 +884,10 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 			Login:CheckPlatformIdForExistingAccount(player_id, check_platform_callback)
 		else
 			Login.has_account = false
-			Global.telemetry._has_account_checked = true
+
+			if Global.telemetry ~= nil then
+				Global.telemetry._has_account_checked = true
+			end
 
 			Telemetry:on_login()
 			Telemetry:on_login_screen_passed()

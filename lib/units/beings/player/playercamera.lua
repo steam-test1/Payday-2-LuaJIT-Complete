@@ -1,6 +1,4 @@
-if _G.IS_VR then
-	require("lib/units/cameras/ScopeCamera")
-end
+require("lib/units/cameras/ScopeCamera")
 
 PlayerCamera = PlayerCamera or class()
 PlayerCamera.IDS_NOTHING = IDS_EMPTY
@@ -28,6 +26,8 @@ function PlayerCamera:init(unit)
 	self:setup_viewport(managers.player:viewport_config())
 
 	if _G.IS_VR then
+		print("[PlayerCamera] Creating scope camera...")
+
 		self._scope_camera = ScopeCamera:new(self)
 	end
 end
@@ -139,11 +139,19 @@ function PlayerCamera:anim_data()
 end
 
 function PlayerCamera:link_scope(camera_object, screen_object, material, texture_channel, zoom)
-	self._scope_camera:link_scope(camera_object, screen_object, material, texture_channel, zoom)
+	if self._scope_camera then
+		self._scope_camera:link_scope(camera_object, screen_object, material, texture_channel, zoom)
+	else
+		Application:warn("[PlayerCamera] Link Scope missing self._scope_camera")
+	end
 end
 
 function PlayerCamera:unlink_scope()
-	self._scope_camera:unlink_scope()
+	if self._scope_camera then
+		self._scope_camera:unlink_scope()
+	else
+		Application:warn("[PlayerCamera] Unlink Scope missing self._scope_camera")
+	end
 end
 
 function PlayerCamera:update(unit, t, dt)

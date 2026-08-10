@@ -7,7 +7,6 @@ BaseNetworkSession._LOAD_WAIT_TIME = 3
 function BaseNetworkSession:init()
 	print("[BaseNetworkSession:init]")
 
-	self._ids_WIN32 = Idstring("WIN32")
 	self._peers = {}
 	self._peers_all = {}
 	self._server_peer = nil
@@ -413,10 +412,6 @@ function BaseNetworkSession:_on_peer_removed(peer, peer_id, reason)
 	end
 
 	if Network:multiplayer() then
-		if IS_XB1 or IS_PS4 then
-			managers.network.matchmake:on_peer_removed(peer)
-		end
-
 		if Network:is_client() then
 			if player_left then
 				managers.criminals:on_peer_left(peer_id)
@@ -969,22 +964,6 @@ function BaseNetworkSession:on_load_complete(simulation)
 			end
 		end
 	end
-
-	if not setup.IS_START_MENU and IS_PS4 then
-		PSN:set_online_callback(callback(self, self, "ps4_disconnect"))
-	end
-end
-
-function BaseNetworkSession:psn_disconnected()
-	if Global.game_settings.single_player then
-		return
-	end
-
-	if game_state_machine:current_state().on_disconnected then
-		game_state_machine:current_state():on_disconnected()
-	end
-
-	managers.network.voice_chat:destroy_voice(true)
 end
 
 function BaseNetworkSession:steam_disconnected()
@@ -999,115 +978,19 @@ function BaseNetworkSession:steam_disconnected()
 	managers.network.voice_chat:destroy_voice(true)
 end
 
-function BaseNetworkSession:xbox_disconnected()
-	if Global.game_settings.single_player then
-		return
-	end
-
-	if game_state_machine:current_state().on_disconnected then
-		game_state_machine:current_state():on_disconnected()
-	end
-
-	managers.network.voice_chat:destroy_voice(true)
-end
-
-function BaseNetworkSession:ps4_disconnect(connected)
-	managers.network.matchmake:psn_disconnected()
-
-	if not connected then
-		managers.platform:event("disconnect")
-	end
-end
-
-function BaseNetworkSession:ps3_disconnect(connected)
-	print("BaseNetworkSession ps3_disconnect", connected)
-
-	if Global.game_settings.single_player then
-		return
-	end
-
-	if not connected and not PSN:is_online() then
-		if game_state_machine:current_state().on_disconnected then
-			game_state_machine:current_state():on_disconnected()
-		end
-
-		managers.network.voice_chat:destroy_voice(true)
-	end
-end
-
 function BaseNetworkSession:chk_send_connection_established(name, user_id, peer)
-	if IS_PS4 then
-		peer = self:peer_by_name(name)
+	peer = peer or self:peer_by_user_id(user_id)
 
-		if not peer then
-			print("[BaseNetworkSession:chk_send_connection_established] no peer yet", name)
+	if not peer then
+		print("[BaseNetworkSession:chk_send_connection_established] no peer yet", user_id)
 
-			return
-		end
+		return
+	end
 
-		local connection_info = managers.network.matchmake:get_connection_info(name)
+	if not peer:rpc() then
+		print("[BaseNetworkSession:chk_send_connection_established] no rpc yet", user_id)
 
-		if not connection_info then
-			print("[BaseNetworkSession:chk_send_connection_established] no connection_info yet", name)
-
-			return
-		end
-
-		if connection_info.dead then
-			if peer:id() ~= 1 then
-				print("[BaseNetworkSession:chk_send_connection_established] reporting dead connection", name)
-
-				if self._server_peer then
-					self._server_peer:send_after_load("report_dead_connection", peer:id())
-				end
-			end
-
-			return
-		end
-
-		local rpc = Network:handshake(connection_info.external_ip, connection_info.port, "TCP_IP")
-
-		peer:set_rpc(rpc)
-		Network:add_co_client(rpc)
-		self:remove_connection_from_trash(rpc)
-		self:remove_connection_from_soft_remove_peers(rpc)
-	elseif IS_XB1 then
-		local xnaddr = managers.network.matchmake:internal_address(peer:xuid())
-
-		if not xnaddr then
-			return
-		end
-
-		peer:set_xnaddr(xnaddr)
-
-		local rpc = Network:handshake(xnaddr, managers.network.DEFAULT_PORT, "TCP_IP")
-
-		peer:set_rpc(rpc)
-		Network:add_co_client(rpc)
-
-		local player_info = {}
-
-		player_info.name = peer:name()
-		player_info.player_id = peer:xuid()
-		player_info.external_address = peer:xnaddr()
-
-		managers.network.voice_chat:open_channel_to(player_info, "game")
-		self:remove_connection_from_trash(rpc)
-		self:remove_connection_from_soft_remove_peers(rpc)
-	else
-		peer = peer or self:peer_by_user_id(user_id)
-
-		if not peer then
-			print("[BaseNetworkSession:chk_send_connection_established] no peer yet", user_id)
-
-			return
-		end
-
-		if not peer:rpc() then
-			print("[BaseNetworkSession:chk_send_connection_established] no rpc yet", user_id)
-
-			return
-		end
+		return
 	end
 
 	print("[BaseNetworkSession:chk_send_connection_established] success", name or "", user_id or "", peer:id())

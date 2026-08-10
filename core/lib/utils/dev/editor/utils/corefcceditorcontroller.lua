@@ -273,8 +273,6 @@ function FFCEditorController:create_cube_map()
 	elseif self._cube_counter == 6 then
 		self._camera:set_rotation(Rotation(Vector3(0, 0, -1), Vector3(0, -1, 0)))
 	elseif self._cube_counter == 7 then
-		self:_cubemap_done()
-
 		local output_file = (self._params.output_path or managers.database:root_path()) .. self._output_name .. ".dds"
 
 		if self._params.light then
@@ -282,6 +280,8 @@ function FFCEditorController:create_cube_map()
 		else
 			CubemapGenerator:generate_reflection(output_file, self._name_ordered)
 		end
+
+		self:_cubemap_done()
 
 		return true
 	end

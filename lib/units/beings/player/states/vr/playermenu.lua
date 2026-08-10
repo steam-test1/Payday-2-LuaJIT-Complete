@@ -201,7 +201,11 @@ function PlayerMenu:link_scope(camera_object, screen_object, material, texture_c
 end
 
 function PlayerMenu:unlink_scope()
-	self._scope_camera:unlink_scope()
+	if self._scope_camera then
+		self._scope_camera:unlink_scope()
+	else
+		Application:warn("[PlayerMenu] Unlink Scope missing self._scope_camera")
+	end
 end
 
 function PlayerMenu:on_savefile_loaded(slot, success, is_setting_slot, cache_only)
@@ -1128,7 +1132,14 @@ function PlayerMenu:_create_camera()
 
 		self._render_target:set_disable_clear(true)
 
-		local resolution = VRManager:target_resolution()
+		local resolution
+
+		if _G.IS_VR then
+			resolution = VRManager:target_resolution()
+		else
+			resolution = Vector3(512, 512, 0)
+		end
+
 		local scale_x = rt_resolution.x / resolution.x
 		local scale_y = rt_resolution.y / resolution.y
 

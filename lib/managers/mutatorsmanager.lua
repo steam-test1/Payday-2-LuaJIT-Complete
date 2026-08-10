@@ -14,9 +14,9 @@ require("lib/mutators/MutatorPiggyRevenge")
 
 MutatorsManager = MutatorsManager or class()
 MutatorsManager.package = "packages/toxic"
-MutatorsManager.default_atlas_file = "guis/textures/pd2/mutator_icons_atlas"
-MutatorsManager.default_icon_size = 128
-MutatorsManager.default_options_icon_coord = {
+MutatorsManager._atlas_file = "guis/textures/pd2/mutator_icons_atlas"
+MutatorsManager._icon_size = 128
+MutatorsManager._options_icon_coord = {
 	8,
 	2
 }

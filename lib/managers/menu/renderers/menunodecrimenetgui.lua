@@ -764,7 +764,7 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	local sum = 0
 
 	for type, items in pairs(droppable_items) do
-		sum = sum + weighted_type_chance[type]
+		sum = sum + (weighted_type_chance[type] or 0)
 	end
 
 	self._base_chances = {}
@@ -774,7 +774,7 @@ function MenuNodeCrimenetCasinoGui:_setup_layout()
 	end
 
 	for type, items in pairs(droppable_items) do
-		self._base_chances[type] = self:_round_value(weighted_type_chance[type] / sum * 100)
+		self._base_chances[type] = self:_round_value((weighted_type_chance[type] or 0) / sum * 100)
 	end
 
 	for _, stat in pairs(self._stats_cards) do

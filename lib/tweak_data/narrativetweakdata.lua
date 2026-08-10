@@ -409,6 +409,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.contacts.skirmish.assets_gui = Idstring("guis/mission_briefing/preload_contact_bain")
 	self.contacts.skirmish.hide_stream = true
 	self.contacts.skirmish.hidden = true
+	self.contacts.skirmish.ignore_heat = true
 	self.jobs = {}
 	self.stages = {}
 	self.stages.firestarter_1 = {

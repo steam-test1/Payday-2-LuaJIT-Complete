@@ -406,7 +406,7 @@ function CopLogicIdle.damage_clbk(data, damage_info)
 				local settings = attention_info.handler:get_attention(data.SO_access, nil, nil, data.team)
 
 				if settings then
-					enemy_data = CopLogicBase._create_detected_attention_object_data(data.t, data.unit, enemy_key, attention_info, settings)
+					enemy_data = CopLogicBase._create_detected_attention_object_data(t, data.unit, enemy_key, attention_info, settings)
 					enemy_data.verified_t = t
 					enemy_data.verified = true
 					enemy_data.dmg_t = t
@@ -931,7 +931,9 @@ function CopLogicIdle.on_area_safety(data, nav_seg, safe, event)
 				local settings = attention_info.handler:get_attention(data.SO_access, nil, nil, data.team)
 
 				if settings then
-					data.detected_attention_objects[key_criminal] = CopLogicBase._create_detected_attention_object_data(data.t, data.unit, key_criminal, attention_info, settings)
+					local t = TimerManager:game():time()
+
+					data.detected_attention_objects[key_criminal] = CopLogicBase._create_detected_attention_object_data(t, data.unit, key_criminal, attention_info, settings)
 				end
 			end
 		end

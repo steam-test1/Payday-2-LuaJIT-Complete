@@ -321,7 +321,7 @@ function TimerGui:setup()
 		self._original_colors[child:key()] = child:color()
 	end
 
-	self._gui_script.panel:set_alpha(1)
+	self._gui_script.panel:set_alpha(0.8)
 end
 
 function TimerGui:reset()
@@ -442,9 +442,9 @@ function TimerGui:set_background_icons(background_icons)
 
 	background_icons_panel:clear()
 
-	local alpha = self._gui_script.panel:alpha()
+	local alpha = panel:alpha()
 
-	self._gui_script.panel:set_alpha(1)
+	panel:set_alpha(1)
 
 	self._original_colors = self._original_colors or {}
 
@@ -454,7 +454,7 @@ function TimerGui:set_background_icons(background_icons)
 		self._original_colors[icon:key()] = icon_data.color or icon:color()
 	end
 
-	self._gui_script.panel:set_alpha(alpha)
+	panel:set_alpha(alpha)
 end
 
 function TimerGui:start(timer)

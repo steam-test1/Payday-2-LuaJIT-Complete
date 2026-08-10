@@ -40,7 +40,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	Network:set_multiplayer(true)
 	Network:set_client(host_rpc)
 
-	local xuid = IS_XB1 and managers.network.account:player_id() or ""
+	local xuid = ""
 	local lvl = managers.experience:current_level()
 	local rank = managers.experience:current_rank()
 	local join_stinger_index = managers.infamy:selected_join_stinger_index()
@@ -255,16 +255,6 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 
 		self._server_peer:set_character(server_character)
 		self._server_peer:set_xuid(xuid)
-
-		if IS_XB1 then
-			local xnaddr = managers.network.matchmake:external_address(self._server_peer:rpc())
-
-			self._server_peer:set_xnaddr(xnaddr)
-			managers.network.matchmake:on_peer_added(self._server_peer)
-		elseif IS_PS4 then
-			managers.network.matchmake:on_peer_added(self._server_peer)
-		end
-
 		self:register_local_peer(my_peer_id)
 		self._local_peer:set_character(my_character)
 		self._server_peer:set_id(1)
@@ -457,21 +447,13 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_a
 	peer:set_name_drop_in(drop_in_name)
 	cat_print("multiplayer_base", "[ClientNetworkSession:peer_handshake]", name, peer_user_id, loading, synched, id, inspect(peer))
 
-	local check_peer = IS_XB1 and peer or nil
+	local check_peer
 
 	self:chk_send_connection_established(name, peer_user_id, check_peer)
 
 	if managers.trade then
 		managers.trade:handshake_complete(peer_id)
 	end
-end
-
-function ClientNetworkSession:on_PSN_connection_established(name, ip)
-	if not IS_PS4 then
-		return
-	end
-
-	self:chk_send_connection_established(name, nil, false)
 end
 
 function ClientNetworkSession:on_peer_synched(peer_id)
@@ -596,14 +578,6 @@ function ClientNetworkSession:update()
 		end
 
 		self:_upd_request_join_resend(wall_time)
-
-		if IS_XB1 then
-			for peer_id, peer in pairs(self._peers) do
-				if peer ~= self._server_peer and not peer:rpc() then
-					self:chk_send_connection_established(peer:name(), peer:user_id(), peer)
-				end
-			end
-		end
 	end
 end
 

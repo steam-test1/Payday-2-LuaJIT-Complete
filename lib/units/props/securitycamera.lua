@@ -471,8 +471,6 @@ end
 
 function SecurityCamera:_create_detected_attention_object_data(t, u_key, attention_info, settings)
 	attention_info.handler:add_listener("sec_cam_" .. tostring(self._u_key), callback(self, self, "on_detected_attention_obj_modified"))
-	print("[SecurityCamera] _create_detected_attention_object_data ", t, u_key, attention_info.unit)
-	print(inspect(attention_info))
 
 	local att_unit = attention_info.unit
 	local m_pos = attention_info.handler:get_ground_m_pos()

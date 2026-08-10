@@ -115,6 +115,8 @@ function ConnectionNetworkHandler:peer_exchange_info(peer_id, sender)
 	local sender_peer = self._verify_sender(sender)
 
 	if not sender_peer then
+		Application:error("[ConnectionNetworkHandler:peer_exchange_info] tried to exhange with an unknown peer", peer_id)
+
 		return
 	end
 

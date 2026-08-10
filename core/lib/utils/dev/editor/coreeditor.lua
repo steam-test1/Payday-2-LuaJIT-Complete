@@ -92,11 +92,10 @@ require("core/lib/utils/dev/editor/utils/CoreFCCEditorController")
 require("core/lib/utils/dev/editor/utils/CoreEditorMessages")
 require("core/lib/utils/dev/editor/utils/CoreEditorMessageSystem")
 
-function CoreEditor:init(game_state_machine, session_state)
+function CoreEditor:init(game_state_machine)
 	assert(game_state_machine)
 
 	self._gsm = game_state_machine
-	self._session_state = session_state
 
 	PackageManager:set_resource_loaded_clbk(IDS_UNIT, callback(managers.sequence, managers.sequence, "clbk_pkg_manager_unit_loaded"))
 	World:get_object(Idstring("ref")):set_visibility(false)
@@ -914,14 +913,6 @@ function CoreEditor:run_simulation(simulation_mode)
 		managers.sequence:set_proximity_enabled(true)
 		self:_simulation_disable_continents()
 		self:project_run_simulation(simulation_mode)
-
-		if self._session_state then
-			self._session_state:player_slots():primary_slot():request_debug_local_user_binding()
-			self._session_state:session_info():set_run_mission_script(with_mission)
-			self._session_state:session_info():set_should_load_level(false)
-			self._session_state:join_standard_session()
-		end
-
 		managers.editor:output("Simulation started successfully.", nil, Vector3(0, 0, 255))
 	else
 		self:toggle()
@@ -1044,11 +1035,6 @@ function CoreEditor:stop_simulation()
 	managers.environment_effects:kill_all_mission_effects()
 	managers.music:stop()
 	managers.world_instance:on_simulation_ended()
-
-	if self._session_state then
-		self._session_state:quit_session()
-	end
-
 	self:project_clear_units()
 	self:project_stop_simulation()
 	self:clear_layers_and_units()

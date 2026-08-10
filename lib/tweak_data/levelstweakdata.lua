@@ -34,7 +34,6 @@ function LevelsTweakData:init()
 	self.framing_frame_1.package = {
 		"packages/narr_framing_1"
 	}
-	self.framing_frame_1.cube = "cube_apply_heist_bank"
 	self.framing_frame_1.ghost_bonus = 0.075
 	self.framing_frame_1.max_bags = 13
 	self.framing_frame_1.ai_group_type = america
@@ -53,7 +52,6 @@ function LevelsTweakData:init()
 	self.framing_frame_2.package = {
 		"packages/narr_framing_2"
 	}
-	self.framing_frame_2.cube = "cube_apply_heist_bank"
 	self.framing_frame_2.ghost_bonus = 0.025
 	self.framing_frame_2.max_bags = 13
 	self.framing_frame_2.repossess_bags = true
@@ -72,7 +70,6 @@ function LevelsTweakData:init()
 	}
 	self.framing_frame_3.music = "heist"
 	self.framing_frame_3.package = "packages/narr_framing_3"
-	self.framing_frame_3.cube = "cube_apply_heist_bank"
 	self.framing_frame_3.ghost_bonus = 0.15
 	self.framing_frame_3.max_bags = 21
 	self.framing_frame_3.ai_group_type = america
@@ -92,7 +89,6 @@ function LevelsTweakData:init()
 	self.election_day_1.package = {
 		"packages/narr_election1"
 	}
-	self.election_day_1.cube = "cube_apply_heist_bank"
 	self.election_day_1.ghost_bonus = 0.05
 	self.election_day_1.max_bags = 0
 	self.election_day_1.ai_group_type = america
@@ -111,7 +107,6 @@ function LevelsTweakData:init()
 	self.election_day_2.package = {
 		"packages/narr_election2"
 	}
-	self.election_day_2.cube = "cube_apply_heist_bank"
 	self.election_day_2.ghost_bonus = 0.15
 	self.election_day_2.max_bags = 21
 	self.election_day_2.ai_group_type = america
@@ -125,7 +120,6 @@ function LevelsTweakData:init()
 	self.election_day_3.outro_event = "Play_pln_ed3_end_a"
 	self.election_day_3.music = "heist"
 	self.election_day_3.package = "packages/narr_election3"
-	self.election_day_3.cube = "cube_apply_heist_bank"
 	self.election_day_3.max_bags = 16
 	self.election_day_3.ai_group_type = america
 	self.election_day_3.load_screen = "guis/dlcs/pic/textures/loading/job_electionday_03"
@@ -148,7 +142,6 @@ function LevelsTweakData:init()
 	}
 	self.alex_1.music = "heist"
 	self.alex_1.package = "packages/narr_alex1"
-	self.alex_1.cube = "cube_apply_heist_bank"
 	self.alex_1.max_bags = 11
 	self.alex_1.ai_group_type = america
 	self.alex_1.load_screen = "guis/dlcs/pic/textures/loading/job_rats01"
@@ -167,7 +160,6 @@ function LevelsTweakData:init()
 	}
 	self.alex_2.music = "heist"
 	self.alex_2.package = "packages/narr_alex2"
-	self.alex_2.cube = "cube_apply_heist_bank"
 	self.alex_2.max_bags = 19
 	self.alex_2.repossess_bags = true
 	self.alex_2.ai_group_type = america
@@ -185,7 +177,6 @@ function LevelsTweakData:init()
 	}
 	self.alex_3.music = "heist"
 	self.alex_3.package = "packages/narr_alex3"
-	self.alex_3.cube = "cube_apply_heist_bank"
 	self.alex_3.max_bags = 34
 	self.alex_3.ai_group_type = america
 	self.alex_3.load_screen = "guis/dlcs/pic/textures/loading/job_rats03"
@@ -204,7 +195,6 @@ function LevelsTweakData:init()
 	self.watchdogs_1.package = {
 		"packages/narr_watchdogs1"
 	}
-	self.watchdogs_1.cube = "cube_apply_heist_bank"
 	self.watchdogs_1.max_bags = 16
 	self.watchdogs_1.ai_group_type = america
 	self.watchdogs_1.load_screen = "guis/dlcs/pic/textures/loading/job_watchdogs_01"
@@ -233,7 +223,6 @@ function LevelsTweakData:init()
 	self.watchdogs_2.package = {
 		"packages/narr_watchdogs2"
 	}
-	self.watchdogs_2.cube = "cube_apply_heist_bank"
 	self.watchdogs_2.max_bags = 16
 	self.watchdogs_2.repossess_bags = true
 	self.watchdogs_2.ai_group_type = america
@@ -257,7 +246,6 @@ function LevelsTweakData:init()
 	}
 	self.firestarter_1.music = "heist"
 	self.firestarter_1.package = "packages/narr_firestarter1"
-	self.firestarter_1.cube = "cube_apply_heist_bank"
 	self.firestarter_1.ghost_bonus = 0.1
 	self.firestarter_1.max_bags = 16
 	self.firestarter_1.ai_group_type = america
@@ -274,7 +262,6 @@ function LevelsTweakData:init()
 	}
 	self.firestarter_2.music = "heist"
 	self.firestarter_2.package = "packages/narr_firestarter2"
-	self.firestarter_2.cube = "cube_apply_heist_bank"
 	self.firestarter_2.ghost_bonus = 0.15
 	self.firestarter_2.max_bags = 34
 	self.firestarter_2.ai_group_type = america
@@ -291,7 +278,6 @@ function LevelsTweakData:init()
 	}
 	self.firestarter_3.music = "heist"
 	self.firestarter_3.package = "packages/narr_firestarter3"
-	self.firestarter_3.cube = "cube_apply_heist_bank"
 	self.firestarter_3.mission_data = {
 		{
 			mission = "default"
@@ -316,7 +302,6 @@ function LevelsTweakData:init()
 	self.welcome_to_the_jungle_1.package = {
 		"packages/narr_jungle1"
 	}
-	self.welcome_to_the_jungle_1.cube = "cube_apply_heist_bank"
 	self.welcome_to_the_jungle_1.ghost_bonus = 0.15
 	self.welcome_to_the_jungle_1.max_bags = 14
 	self.welcome_to_the_jungle_1.ai_group_type = america
@@ -344,7 +329,6 @@ function LevelsTweakData:init()
 	self.welcome_to_the_jungle_2.package = {
 		"packages/narr_jungle2"
 	}
-	self.welcome_to_the_jungle_2.cube = "cube_apply_heist_bank"
 	self.welcome_to_the_jungle_2.max_bags = 15
 	self.welcome_to_the_jungle_2.ai_group_type = america
 	self.welcome_to_the_jungle_2.load_screen = "guis/dlcs/pic/textures/loading/job_bigoil_02"
@@ -364,7 +348,6 @@ function LevelsTweakData:init()
 	self.ukrainian_job.package = {
 		"packages/ukrainian_job"
 	}
-	self.ukrainian_job.cube = "cube_apply_heist_bank"
 	self.ukrainian_job.group_ai_preset = "small_urban"
 	self.ukrainian_job.ghost_bonus = 0.05
 	self.ukrainian_job.max_bags = 16
@@ -381,7 +364,6 @@ function LevelsTweakData:init()
 	}
 	self.four_stores.music = "heist"
 	self.four_stores.package = "packages/vlad_four_stores"
-	self.four_stores.cube = "cube_apply_heist_bank"
 	self.four_stores.ghost_bonus = 0.05
 	self.four_stores.max_bags = 5
 	self.four_stores.ai_group_type = america
@@ -401,7 +383,6 @@ function LevelsTweakData:init()
 	self.jewelry_store.outro_event = "pln_jewelerystore_stage1_end"
 	self.jewelry_store.music = "heist"
 	self.jewelry_store.package = "packages/ukrainian_job"
-	self.jewelry_store.cube = "cube_apply_heist_bank"
 	self.jewelry_store.ghost_bonus = 0.05
 	self.jewelry_store.max_bags = 16
 	self.jewelry_store.ai_group_type = america
@@ -417,7 +398,6 @@ function LevelsTweakData:init()
 	}
 	self.mallcrasher.music = "heist"
 	self.mallcrasher.package = "packages/vlad_mallcrasher"
-	self.mallcrasher.cube = "cube_apply_heist_bank"
 	self.mallcrasher.max_bags = 12
 	self.mallcrasher.ai_group_type = america
 	self.nightclub = {}
@@ -432,7 +412,6 @@ function LevelsTweakData:init()
 	}
 	self.nightclub.music = "heist"
 	self.nightclub.package = "packages/vlad_nightclub"
-	self.nightclub.cube = "cube_apply_heist_bank"
 	self.nightclub.ghost_bonus = 0.1
 	self.nightclub.max_bags = 28
 	self.nightclub.ai_group_type = america
@@ -453,7 +432,6 @@ function LevelsTweakData:init()
 	self.branchbank.ai_group_type = america
 	self.branchbank.music = "heist"
 	self.branchbank.package = "packages/narr_firestarter3"
-	self.branchbank.cube = "cube_apply_heist_bank"
 	self.branchbank.mission_data = {
 		{
 			mission = "standalone"
@@ -468,7 +446,6 @@ function LevelsTweakData:init()
 	self.escape_cafe_day.outro_event = "nothing"
 	self.escape_cafe_day.music = "heist"
 	self.escape_cafe_day.package = "packages/escape_cafe"
-	self.escape_cafe_day.cube = "cube_apply_heist_bank"
 	self.escape_cafe_day.ai_group_type = america
 	self.escape_cafe_day.repossess_bags = true
 	self.escape_cafe_day.load_screen = "guis/dlcs/pic/textures/loading/escape_cafe"
@@ -481,7 +458,6 @@ function LevelsTweakData:init()
 	self.escape_park_day.outro_event = "nothing"
 	self.escape_park_day.music = "heist"
 	self.escape_park_day.package = "packages/escape_park"
-	self.escape_park_day.cube = "cube_apply_heist_bank"
 	self.escape_park_day.repossess_bags = true
 	self.escape_park_day.load_screen = "guis/dlcs/pic/textures/loading/escape_park"
 	self.escape_cafe = {}
@@ -493,7 +469,6 @@ function LevelsTweakData:init()
 	self.escape_cafe.outro_event = "nothing"
 	self.escape_cafe.music = "heist"
 	self.escape_cafe.package = "packages/escape_cafe"
-	self.escape_cafe.cube = "cube_apply_heist_bank"
 	self.escape_cafe.ai_group_type = america
 	self.escape_cafe.repossess_bags = true
 	self.escape_cafe.load_screen = "guis/dlcs/pic/textures/loading/escape_cafe"
@@ -506,7 +481,6 @@ function LevelsTweakData:init()
 	self.escape_park.outro_event = "nothing"
 	self.escape_park.music = "heist"
 	self.escape_park.package = "packages/escape_park"
-	self.escape_park.cube = "cube_apply_heist_bank"
 	self.escape_park.ai_group_type = america
 	self.escape_park.repossess_bags = true
 	self.escape_park.load_screen = "guis/dlcs/pic/textures/loading/escape_park"
@@ -519,7 +493,6 @@ function LevelsTweakData:init()
 	self.escape_street.outro_event = "nothing"
 	self.escape_street.music = "heist"
 	self.escape_street.package = "packages/escape_street"
-	self.escape_street.cube = "cube_apply_heist_bank"
 	self.escape_street.ai_group_type = america
 	self.escape_street.repossess_bags = true
 	self.escape_street.load_screen = "guis/dlcs/pic/textures/loading/escape_street"
@@ -532,7 +505,6 @@ function LevelsTweakData:init()
 	self.escape_overpass.outro_event = "nothing"
 	self.escape_overpass.music = "heist"
 	self.escape_overpass.package = "packages/escape_overpass"
-	self.escape_overpass.cube = "cube_apply_heist_bank"
 	self.escape_overpass.ai_group_type = america
 	self.escape_overpass.repossess_bags = true
 	self.escape_overpass.load_screen = "guis/dlcs/pic/textures/loading/escape_overpass"
@@ -546,7 +518,6 @@ function LevelsTweakData:init()
 	self.escape_garage.outro_event = "nothing"
 	self.escape_garage.music = "heist"
 	self.escape_garage.package = "packages/escape_garage"
-	self.escape_garage.cube = "cube_apply_heist_bank"
 	self.escape_garage.ai_group_type = america
 	self.escape_garage.repossess_bags = true
 	self.escape_garage.load_screen = "guis/dlcs/pic/textures/loading/escape_garage"
@@ -560,7 +531,6 @@ function LevelsTweakData:init()
 	self.driving_escapes_industry_day.outro_event = "nothing"
 	self.driving_escapes_industry_day.music = "heist"
 	self.driving_escapes_industry_day.package = "packages/escape_2_industry"
-	self.driving_escapes_industry_day.cube = "cube_apply_heist_bank"
 	self.driving_escapes_industry_day.ai_group_type = america
 	self.driving_escapes_city_day = {}
 	self.driving_escapes_city_day.name_id = "heist_driving_escapes_city_hl"
@@ -572,7 +542,6 @@ function LevelsTweakData:init()
 	self.driving_escapes_city_day.outro_event = "nothing"
 	self.driving_escapes_city_day.music = "heist"
 	self.driving_escapes_city_day.package = "packages/escape_2_city"
-	self.driving_escapes_city_day.cube = "cube_apply_heist_bank"
 	self.driving_escapes_city_day.ai_group_type = america
 	self.safehouse = {}
 	self.safehouse.name_id = "heist_safehouse_hl"
@@ -583,7 +552,6 @@ function LevelsTweakData:init()
 	self.safehouse.outro_event = "nothing"
 	self.safehouse.music = "heist"
 	self.safehouse.package = "packages/safehouse"
-	self.safehouse.cube = "cube_apply_heist_bank"
 	self.safehouse.team_ai_off = true
 	self.safehouse.ai_group_type = america
 	self.crojob2 = {}
@@ -600,7 +568,6 @@ function LevelsTweakData:init()
 	self.crojob2.package = {
 		"packages/dlcs/the_bomb/crojob_stage_2"
 	}
-	self.crojob2.cube = "cube_apply_heist_bank"
 	self.crojob2.ghost_bonus = 0.15
 	self.crojob2.max_bags = 21
 	self.crojob2.ai_group_type = america
@@ -616,7 +583,6 @@ function LevelsTweakData:init()
 	self.crojob3.package = {
 		"packages/dlcs/the_bomb/crojob_stage_3"
 	}
-	self.crojob3.cube = "cube_apply_heist_bank"
 	self.crojob3.max_bags = 16
 	self.crojob3.ai_group_type = america
 	self.crojob3.sniper_laser_distance = 30000
@@ -643,7 +609,6 @@ function LevelsTweakData:init()
 	}
 	self.arm_cro.music = "heist"
 	self.arm_cro.package = "packages/narr_arm_cro"
-	self.arm_cro.cube = "cube_apply_heist_bank"
 	self.arm_cro.max_bags = 22
 	self.arm_cro.ai_group_type = america
 	self.arm_und = {}
@@ -662,7 +627,6 @@ function LevelsTweakData:init()
 	}
 	self.arm_und.music = "heist"
 	self.arm_und.package = "packages/narr_arm_und"
-	self.arm_und.cube = "cube_apply_heist_bank"
 	self.arm_und.max_bags = 22
 	self.arm_und.ai_group_type = america
 	self.arm_hcm = {}
@@ -681,7 +645,6 @@ function LevelsTweakData:init()
 	}
 	self.arm_hcm.music = "heist"
 	self.arm_hcm.package = "packages/narr_arm_hcm"
-	self.arm_hcm.cube = "cube_apply_heist_bank"
 	self.arm_hcm.max_bags = 22
 	self.arm_hcm.ai_group_type = america
 	self.arm_par = {}
@@ -700,7 +663,6 @@ function LevelsTweakData:init()
 	}
 	self.arm_par.music = "heist"
 	self.arm_par.package = "packages/narr_arm_par"
-	self.arm_par.cube = "cube_apply_heist_bank"
 	self.arm_par.max_bags = 22
 	self.arm_par.ai_group_type = america
 	self.arm_fac = {}
@@ -719,7 +681,6 @@ function LevelsTweakData:init()
 	}
 	self.arm_fac.music = "heist"
 	self.arm_fac.package = "packages/narr_arm_fac"
-	self.arm_fac.cube = "cube_apply_heist_bank"
 	self.arm_fac.max_bags = 22
 	self.arm_fac.ai_group_type = america
 	self.arm_for = {}
@@ -734,7 +695,6 @@ function LevelsTweakData:init()
 	}
 	self.arm_for.music = "heist"
 	self.arm_for.package = "packages/narr_arm_for"
-	self.arm_for.cube = "cube_apply_heist_bank"
 	self.arm_for.bonus_escape = true
 	self.arm_for.max_bags = 30
 	self.arm_for.ghost_bonus = 0.1
@@ -752,7 +712,6 @@ function LevelsTweakData:init()
 	}
 	self.family.music = "heist"
 	self.family.package = "packages/narr_family"
-	self.family.cube = "cube_apply_heist_bank"
 	self.family.ghost_bonus = 0.05
 	self.family.max_bags = 24
 	self.family.sniper_laser_distance = 13000
@@ -772,7 +731,6 @@ function LevelsTweakData:init()
 	}
 	self.big.music = "big_bank"
 	self.big.package = "packages/narr_big"
-	self.big.cube = "cube_apply_heist_bank"
 	self.big.ghost_bonus = 0.15
 	self.big.max_bags = 28
 	self.big.sniper_laser_distance = 20000
@@ -790,7 +748,6 @@ function LevelsTweakData:init()
 	}
 	self.roberts.music = "heist"
 	self.roberts.package = "packages/narr_roberts"
-	self.roberts.cube = "cube_apply_heist_bank"
 	self.roberts.ghost_bonus = 0.1
 	self.roberts.max_bags = 14
 	self.roberts.sniper_laser_distance = 20000
@@ -804,7 +761,6 @@ function LevelsTweakData:init()
 	self.mia_1.outro_event = "Play_pln_hm1_end_01"
 	self.mia_1.music = "heist"
 	self.mia_1.package = "packages/narr_mia_1"
-	self.mia_1.cube = "cube_apply_heist_bank"
 	self.mia_1.max_bags = 20
 	self.mia_1.ai_group_type = america
 	self.mia_2 = {}
@@ -818,7 +774,6 @@ function LevelsTweakData:init()
 	}
 	self.mia_2.music = "heist"
 	self.mia_2.package = "packages/narr_mia_2"
-	self.mia_2.cube = "cube_apply_heist_bank"
 	self.mia_2.max_bags = 35
 	self.mia_2.ai_group_type = america
 	self.mia_2.load_screen = "guis/dlcs/pic/textures/loading/job_hlm_02"
@@ -898,7 +853,6 @@ function LevelsTweakData:init()
 	}
 	self.mia2_new.music = "heist"
 	self.mia2_new.package = "packages/narr_mia_2"
-	self.mia2_new.cube = "cube_apply_heist_bank"
 	self.mia2_new.teams = self.mia_2.teams
 	self.mia2_new.ai_group_type = america
 	self.kosugi = {}
@@ -913,7 +867,6 @@ function LevelsTweakData:init()
 	self.kosugi.music = "ghost"
 	self.kosugi.music_ext_start = "suspense_1"
 	self.kosugi.package = "packages/kosugi"
-	self.kosugi.cube = "cube_apply_heist_bank"
 	self.kosugi.ghost_bonus = 0.05
 	self.kosugi.ghost_required = true
 	self.kosugi.max_bags = 30
@@ -938,7 +891,6 @@ function LevelsTweakData:init()
 	}
 	self.hox_1.music = "heist"
 	self.hox_1.package = "packages/narr_hox_1"
-	self.hox_1.cube = "cube_apply_heist_bank"
 	self.hox_1.block_AIs = {
 		old_hoxton = true
 	}
@@ -954,7 +906,6 @@ function LevelsTweakData:init()
 	}
 	self.hox_2.music = "heist"
 	self.hox_2.package = "packages/narr_hox_2"
-	self.hox_2.cube = "cube_apply_heist_bank"
 	self.hox_2.block_AIs = {
 		old_hoxton = true
 	}
@@ -969,7 +920,6 @@ function LevelsTweakData:init()
 	self.pines.outro_event = "Play_vld_cp1_end"
 	self.pines.music = "heist"
 	self.pines.package = "packages/narr_pines"
-	self.pines.cube = "cube_apply_heist_bank"
 	self.pines.max_bags = 1200
 	self.pines.ai_group_type = america
 	self.pines.is_christmas_heist = true
@@ -985,7 +935,6 @@ function LevelsTweakData:init()
 	}
 	self.mus.music = "heist"
 	self.mus.package = "packages/narr_mus"
-	self.mus.cube = "cube_apply_heist_bank"
 	self.mus.max_bags = 30
 	self.mus.ghost_bonus = 0.15
 	self.mus.ai_group_type = america
@@ -998,7 +947,6 @@ function LevelsTweakData:init()
 	self.cage.outro_event = "Play_pln_ch1_end_01"
 	self.cage.music = "heist"
 	self.cage.package = "packages/narr_cage"
-	self.cage.cube = "cube_apply_heist_bank"
 	self.cage.max_bags = 6
 	self.cage.ghost_bonus = 0.1
 	self.cage.ghost_required_visual = true
@@ -1012,7 +960,6 @@ function LevelsTweakData:init()
 	self.hox_3.outro_event = "lol"
 	self.hox_3.music = "heist"
 	self.hox_3.package = "packages/narr_hox_3"
-	self.hox_3.cube = "cube_apply_heist_bank"
 	self.hox_3.max_bags = 10
 	self.hox_3.ghost_bonus = 0.1
 	self.hox_3.ai_group_type = america
@@ -1030,7 +977,6 @@ function LevelsTweakData:init()
 	}
 	self.rat.music = "heist"
 	self.rat.package = "packages/narr_alex1"
-	self.rat.cube = "cube_apply_heist_bank"
 	self.rat.max_bags = 1200
 	self.rat.ai_group_type = america
 	self.shoutout_raid = {}
@@ -1042,7 +988,6 @@ function LevelsTweakData:init()
 	self.shoutout_raid.outro_event = "Play_vld_ko1b_end_01"
 	self.shoutout_raid.music = "heist"
 	self.shoutout_raid.package = "packages/vlad_shout"
-	self.shoutout_raid.cube = "cube_apply_heist_bank"
 	self.shoutout_raid.max_bags = 20
 	self.shoutout_raid.ai_group_type = america
 	self.shoutout_raid.sniper_laser_distance = 20000
@@ -1060,7 +1005,6 @@ function LevelsTweakData:init()
 	self.arena.death_track = "track_01"
 	self.arena.death_event = "music_heist_assault"
 	self.arena.package = "packages/narr_arena"
-	self.arena.cube = "cube_apply_heist_bank"
 	self.arena.max_bags = 25
 	self.arena.ghost_bonus = 0.1
 	self.arena.ai_group_type = america
@@ -1082,7 +1026,6 @@ function LevelsTweakData:init()
 	self.kenaz.package = {
 		"packages/kenaz"
 	}
-	self.kenaz.cube = "cube_apply_heist_bank"
 	self.kenaz.ghost_bonus = 0.1
 	self.kenaz.max_bags = 40
 	self.kenaz.ai_group_type = america
@@ -1098,7 +1041,6 @@ function LevelsTweakData:init()
 	}
 	self.jolly.music = "heist"
 	self.jolly.package = "packages/jolly"
-	self.jolly.cube = "cube_apply_heist_bank"
 	self.jolly.max_bags = 15
 	self.jolly.ai_group_type = america
 	self.red2 = {}
@@ -1115,7 +1057,6 @@ function LevelsTweakData:init()
 	self.red2.package = {
 		"packages/narr_red2"
 	}
-	self.red2.cube = "cube_apply_heist_bank"
 	self.red2.max_bags = 84
 	self.red2.ghost_bonus = 0.15
 	self.red2.ai_group_type = america
@@ -1132,7 +1073,6 @@ function LevelsTweakData:init()
 	self.dinner.package = {
 		"packages/narr_dinner"
 	}
-	self.dinner.cube = "cube_apply_heist_bank"
 	self.dinner.max_bags = 20
 	self.dinner.ai_group_type = america
 	self.dinner.player_style = "slaughterhouse"
@@ -1147,7 +1087,6 @@ function LevelsTweakData:init()
 	self.pbr.package = {
 		"packages/narr_jerry1"
 	}
-	self.pbr.cube = "cube_apply_heist_bank"
 	self.pbr.max_bags = 20
 	self.pbr.ai_group_type = murkywater
 	self.pbr2 = {}
@@ -1161,7 +1100,6 @@ function LevelsTweakData:init()
 	self.pbr2.package = {
 		"packages/narr_jerry2"
 	}
-	self.pbr2.cube = "cube_apply_heist_bank"
 	self.pbr2.max_bags = 20
 	self.pbr2.ai_group_type = america
 	self.cane = {}
@@ -1172,7 +1110,6 @@ function LevelsTweakData:init()
 	self.cane.intro_event = "Play_pln_can_intro_01"
 	self.cane.outro_event = "Play_vld_can_11"
 	self.cane.package = "packages/cane"
-	self.cane.cube = "cube_apply_heist_bank"
 	self.cane.max_bags = 3600
 	self.cane.ai_group_type = america
 	self.cane.is_christmas_heist = true
@@ -1192,7 +1129,6 @@ function LevelsTweakData:init()
 	self.nail.package = {
 		"packages/job_nail"
 	}
-	self.nail.cube = "cube_apply_heist_bank"
 	self.nail.max_bags = 1000
 	self.nail.ai_group_type = america
 	self.nail.no_police_calling = true
@@ -1205,7 +1141,6 @@ function LevelsTweakData:init()
 	self.peta.outro_event = "Play_vld_pt1_07"
 	self.peta.music = "heist"
 	self.peta.package = "packages/narr_peta"
-	self.peta.cube = "cube_apply_heist_bank"
 	self.peta.ai_group_type = america
 	self.peta.sniper_laser_distance = 20000
 	self.peta.load_screen = "guis/dlcs/pic/textures/loading/job_goatsim_01"
@@ -1218,7 +1153,6 @@ function LevelsTweakData:init()
 	self.peta2.outro_event = "Play_vld_pt2_04"
 	self.peta2.music = "heist"
 	self.peta2.package = "packages/narr_peta2"
-	self.peta2.cube = "cube_apply_heist_bank"
 	self.peta2.ai_group_type = america
 	self.peta2.sniper_laser_distance = 20000
 	self.peta2.repossess_bags = true
@@ -1234,7 +1168,6 @@ function LevelsTweakData:init()
 	self.pal.package = {
 		"packages/narr_pal"
 	}
-	self.pal.cube = "cube_apply_heist_bank"
 	self.pal.max_bags = 1200
 	self.pal.player_style = "poolrepair"
 	self.man = {}
@@ -1246,7 +1179,6 @@ function LevelsTweakData:init()
 	self.man.outro_event = "Play_pln_man_81"
 	self.man.music = "heist"
 	self.man.package = "packages/narr_man"
-	self.man.cube = "cube_apply_heist_bank"
 	self.man.max_bags = 10
 	self.man.no_police_calling = true
 	self.dark = {}
@@ -1262,7 +1194,6 @@ function LevelsTweakData:init()
 	self.dark.music = "ghost"
 	self.dark.music_ext_start = "suspense_1"
 	self.dark.package = "packages/job_dark"
-	self.dark.cube = "cube_apply_heist_bank"
 	self.dark.max_bags = 20
 	self.dark.ghost_bonus = 0.15
 	self.dark.ghost_required = true
@@ -1275,7 +1206,6 @@ function LevelsTweakData:init()
 	self.mad.outro_event = "Play_rb14_mad_outro_01"
 	self.mad.music = "heist"
 	self.mad.package = "packages/lvl_mad"
-	self.mad.cube = "cube_apply_heist_bank"
 	self.mad.ai_group_type = russia
 	self.mad.sniper_laser_distance = 15000
 	self.mad.prevent_carry_disposal = table.list_to_set({
@@ -1290,7 +1220,6 @@ function LevelsTweakData:init()
 		"Play_loc_jr2_44"
 	}
 	self.biker_train.music = "heist"
-	self.biker_train.cube = "cube_apply_heist_bank"
 	self.born = {}
 	self.born.name_id = "heist_born_hl"
 	self.born.briefing_id = "heist_born_briefing"
@@ -1306,7 +1235,6 @@ function LevelsTweakData:init()
 	}
 	self.born.music = "heist"
 	self.born.package = "packages/narr_born_1"
-	self.born.cube = "cube_apply_heist_bank"
 	self.born.max_bags = 10
 	self.chew = {}
 	self.chew.name_id = "heist_chew_hl"
@@ -1317,7 +1245,6 @@ function LevelsTweakData:init()
 	self.chew.outro_event = "Play_elp_chw_01"
 	self.chew.music = "heist"
 	self.chew.package = "packages/lvl_chew"
-	self.chew.cube = "cube_apply_heist_bank"
 	self.chew.load_screen = "guis/dlcs/pic/textures/loading/job_chew"
 	self.short1_stage1 = {}
 	self.short1_stage1.name_id = "heist_short1_stage1_hl"
@@ -1328,7 +1255,6 @@ function LevelsTweakData:init()
 	self.short1_stage1.outro_event = "Play_pln_sh11_30"
 	self.short1_stage1.music = "heist"
 	self.short1_stage1.package = "packages/job_short1_stage1"
-	self.short1_stage1.cube = "cube_apply_heist_bank"
 	self.short1_stage1.force_equipment = {
 		armor = "level_1",
 		body_bags = 1,
@@ -1356,7 +1282,6 @@ function LevelsTweakData:init()
 	self.short1_stage2.outro_event = "Play_pln_sh12_30"
 	self.short1_stage2.music = "heist"
 	self.short1_stage2.package = "packages/job_short1_stage2"
-	self.short1_stage2.cube = "cube_apply_heist_bank"
 	self.short1_stage2.force_equipment = {
 		armor = "level_1",
 		character = "russian",
@@ -1383,7 +1308,6 @@ function LevelsTweakData:init()
 	self.short2_stage1.outro_event = "Play_rb4_sh21_06"
 	self.short2_stage1.music = "heist"
 	self.short2_stage1.package = "packages/job_short2_stage1"
-	self.short2_stage1.cube = "cube_apply_heist_bank"
 	self.short2_stage1.force_equipment = {
 		armor = "level_4",
 		character = "russian",
@@ -1404,7 +1328,6 @@ function LevelsTweakData:init()
 	self.short2_stage2b.outro_event = "Play_rb4_sh22_05"
 	self.short2_stage2b.music = "heist"
 	self.short2_stage2b.package = "packages/job_short2_stage2b"
-	self.short2_stage2b.cube = "cube_apply_heist_bank"
 	self.short2_stage2b.force_equipment = {
 		armor = "level_4",
 		character = "russian",
@@ -1427,7 +1350,6 @@ function LevelsTweakData:init()
 		"Play_pln_bb1_end_02"
 	}
 	self.chill.package = "packages/narr_chill"
-	self.chill.cube = "cube_apply_heist_bank"
 	self.chill.max_bags = 28
 	self.chill.team_ai_off = true
 	self.chill.on_enter_clbks = {
@@ -1450,7 +1372,6 @@ function LevelsTweakData:init()
 	self.chill_combat.intro_event = "Play_pln_sfr_intro"
 	self.chill_combat.outro_event = "Play_pln_sfr_end"
 	self.chill_combat.package = "packages/narr_chill"
-	self.chill_combat.cube = "cube_apply_heist_bank"
 	self.chill.ghost_bonus = 0.15
 	self.chill_combat.max_bags = 28
 	self.chill_combat.team_ai_off = false
@@ -1469,7 +1390,6 @@ function LevelsTweakData:init()
 		"Play_btc_fri_end_b"
 	}
 	self.friend.package = "packages/lvl_friend"
-	self.friend.cube = "cube_apply_heist_bank"
 	self.friend.ghost_bonus = 0.15
 	self.friend.max_bags = 28
 	self.friend.ai_group_type = america
@@ -1481,7 +1401,6 @@ function LevelsTweakData:init()
 	self.flat.intro_event = "Play_pln_flt_intro_01"
 	self.flat.outro_event = "Play_pln_flt_50"
 	self.flat.package = "packages/narr_flat"
-	self.flat.cube = "cube_apply_heist_bank"
 	self.flat.max_bags = 11
 	self.flat.music_overrides = {
 		track_47_gen = "track_47_flat"
@@ -1496,7 +1415,6 @@ function LevelsTweakData:init()
 	self.help.outro_event = "Play_big_clk_hlp_end"
 	self.help.failure_event = "Play_big_clk_hlp_fal"
 	self.help.package = "packages/lvl_help"
-	self.help.cube = "cube_apply_heist_bank"
 	self.help.ghost_bonus = nil
 	self.help.max_bags = 9999
 	self.help.ai_group_type = america
@@ -1508,7 +1426,6 @@ function LevelsTweakData:init()
 	self.moon.intro_event = "Play_vld_moon_intro"
 	self.moon.outro_event = "Play_vld_moon_end"
 	self.moon.package = "packages/lvl_moon"
-	self.moon.cube = "cube_apply_heist_bank"
 	self.moon.ghost_bonus = nil
 	self.moon.max_bags = 12
 	self.moon.ai_group_type = america
@@ -1521,7 +1438,6 @@ function LevelsTweakData:init()
 	self.spa.intro_event = "Play_pln_spa_intro"
 	self.spa.outro_event = "Play_cha_spa_end"
 	self.spa.package = "packages/job_spa"
-	self.spa.cube = "cube_apply_heist_bank"
 	self.spa.ghost_bonus = nil
 	self.spa.max_bags = 9999
 	self.spa.ai_group_type = america
@@ -1536,7 +1452,6 @@ function LevelsTweakData:init()
 	self.fish.music = "ghost"
 	self.fish.music_ext_start = "suspense_1"
 	self.fish.package = "packages/lvl_fish"
-	self.fish.cube = "cube_apply_heist_bank"
 	self.fish.ghost_bonus = 0.1
 	self.fish.ghost_required = true
 	self.fish.max_bags = 9999
@@ -1552,7 +1467,6 @@ function LevelsTweakData:init()
 	}
 	self.haunted.music = "heist"
 	self.haunted.package = "packages/narr_haunted"
-	self.haunted.cube = "cube_apply_heist_bank"
 	self.haunted.max_bags = 4
 	self.run = {}
 	self.run.name_id = "heist_run_hl"
@@ -1563,7 +1477,6 @@ function LevelsTweakData:init()
 	self.run.outro_event = "Play_loc_run_end"
 	self.run.music = "heist"
 	self.run.package = "packages/narr_run"
-	self.run.cube = "cube_apply_heist_bank"
 	self.glace = {}
 	self.glace.name_id = "heist_glace_hl"
 	self.glace.briefing_id = "heist_glace_briefing"
@@ -1573,7 +1486,6 @@ function LevelsTweakData:init()
 	self.glace.outro_event = "Play_pln_glace_end"
 	self.glace.music = "heist"
 	self.glace.package = "packages/narr_glace"
-	self.glace.cube = "cube_apply_heist_bank"
 	self.glace.environment_effects = {
 		"rain",
 		"raindrop_screen",
@@ -1603,7 +1515,6 @@ function LevelsTweakData:init()
 		"Play_pln_dah_end_loud"
 	}
 	self.dah.music = "heist"
-	self.dah.cube = "cube_apply_heist_bank"
 	self.dah.max_bags = 20
 	self.dah.ghost_bonus = 0.1
 	self.dah.ai_group_type = america
@@ -1618,7 +1529,6 @@ function LevelsTweakData:init()
 	self.rvd1.outro_event = "Play_loc_rvd_end"
 	self.rvd1.music = "heist"
 	self.rvd1.package = "packages/job_rvd"
-	self.rvd1.cube = "cube_apply_heist_bank"
 	self.rvd1.max_bags = 10
 	self.rvd1.ai_group_type = america
 	self.rvd1.narrator = "locke"
@@ -1632,7 +1542,6 @@ function LevelsTweakData:init()
 	self.rvd2.outro_event = "Play_pln_rvd_end"
 	self.rvd2.music = "heist"
 	self.rvd2.package = "packages/job_rvd2"
-	self.rvd2.cube = "cube_apply_heist_bank"
 	self.rvd2.ai_group_type = america
 	self.rvd2.sniper_laser_distance = 20000
 	self.rvd2.max_bags = 30
@@ -1649,7 +1558,6 @@ function LevelsTweakData:init()
 		"lolo"
 	}
 	self.hvh.music = "heist"
-	self.hvh.cube = "cube_apply_heist_bank"
 	self.hvh.max_bags = 80
 	self.hvh.ai_group_type = zombie
 	self.hvh.ai_marshal_spawns_disabled = true
@@ -1663,7 +1571,6 @@ function LevelsTweakData:init()
 	self.wwh.intro_event = "Play_loc_wwh_intro"
 	self.wwh.outro_event = "Play_pln_wwh_end"
 	self.wwh.music = "heist"
-	self.wwh.cube = "cube_apply_heist_bank"
 	self.wwh.environment_effects = {
 		"snow"
 	}
@@ -1681,7 +1588,6 @@ function LevelsTweakData:init()
 	self.brb.outro_event = "Play_loc_brb_end"
 	self.brb.music = "heist"
 	self.brb.package = "packages/lvl_brb"
-	self.brb.cube = "cube_apply_heist_bank"
 	self.brb.max_bags = 26
 	self.brb.narrator = "locke"
 	self.brb.sniper_laser_distance = 15000
@@ -1695,7 +1601,6 @@ function LevelsTweakData:init()
 	self.tag.intro_event = "Play_loc_tag_intro"
 	self.tag.outro_event = "Play_loc_tag_end"
 	self.tag.music = "ghost"
-	self.tag.cube = "cube_apply_heist_bank"
 	self.tag.music_ext_start = "suspense_1"
 	self.tag.max_bags = 20
 	self.tag.ghost_bonus = 0.1
@@ -1712,7 +1617,6 @@ function LevelsTweakData:init()
 	self.des.intro_event = "Play_loc_des_intro"
 	self.des.outro_event = "Play_loc_des_end"
 	self.des.music = "heist"
-	self.des.cube = "cube_apply_heist_bank"
 	self.des.max_bags = 20
 	self.des.ai_group_type = murkywater
 	self.des.narrator = "locke"
@@ -1725,7 +1629,6 @@ function LevelsTweakData:init()
 	self.nmh.world_name = "narratives/classics/nmh"
 	self.nmh.intro_event = "Play_pln_nmh_intro"
 	self.nmh.outro_event = "Play_pln_nmh_end_win"
-	self.nmh.cube = "cube_apply_heist_bank"
 	self.nmh.failure_event = "Play_pln_nmh_end_fail"
 	self.nmh.max_bags = 0
 	self.nmh.ghost_bonus = 0.1
@@ -1743,7 +1646,6 @@ function LevelsTweakData:init()
 		"Play_loc_sah_end_stealth",
 		"Play_loc_sah_end_loud"
 	}
-	self.sah.cube = "cube_apply_heist_bank"
 	self.sah.music = "heist"
 	self.sah.music_ext = "music_tag"
 	self.sah.music_ext_start = "suspense_1"
@@ -1762,7 +1664,6 @@ function LevelsTweakData:init()
 	self.bph.outro_event = "Play_loc_bph_end_win"
 	self.bph.failure_event = "Play_loc_bph_end_fail"
 	self.bph.music = "heist"
-	self.bph.cube = "cube_apply_heist_bank"
 	self.bph.max_bags = 20
 	self.bph.ai_group_type = murkywater
 	self.bph.player_style = "sneak_suit"
@@ -1779,7 +1680,6 @@ function LevelsTweakData:init()
 		"Play_loc_skm_end_win",
 		"Play_loc_skm_end_fail"
 	}
-	self.skm_mus.cube = "cube_apply_heist_bank"
 	self.skm_mus.music = "heist"
 	self.skm_mus.ai_group_type = america
 	self.skm_mus.group_ai_state = "skirmish"
@@ -1797,7 +1697,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_red2.music = "heist"
 	self.skm_red2.package = "packages/dlcs/skm/job_skm"
-	self.skm_red2.cube = "cube_apply_heist_bank"
 	self.skm_red2.ai_group_type = america
 	self.skm_red2.group_ai_state = "skirmish"
 	self.skm_red2.wave_count = 9
@@ -1814,7 +1713,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_run.music = "heist"
 	self.skm_run.package = "packages/dlcs/skm/job_skm"
-	self.skm_run.cube = "cube_apply_heist_bank"
 	self.skm_run.ai_group_type = america
 	self.skm_run.group_ai_state = "skirmish"
 	self.skm_run.wave_count = 9
@@ -1831,7 +1729,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_watchdogs_stage2.music = "heist"
 	self.skm_watchdogs_stage2.package = "packages/dlcs/skm/job_skm"
-	self.skm_watchdogs_stage2.cube = "cube_apply_heist_bank"
 	self.skm_watchdogs_stage2.ai_group_type = america
 	self.skm_watchdogs_stage2.group_ai_state = "skirmish"
 	self.skm_watchdogs_stage2.wave_count = 9
@@ -1848,7 +1745,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_cas.music = "heist"
 	self.skm_cas.package = "packages/dlcs/skm/job_skm"
-	self.skm_cas.cube = "cube_apply_heist_bank"
 	self.skm_cas.ai_group_type = america
 	self.skm_cas.group_ai_state = "skirmish"
 	self.skm_cas.wave_count = 9
@@ -1865,7 +1761,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_big2.music = "heist"
 	self.skm_big2.package = "packages/dlcs/skm/job_skm"
-	self.skm_big2.cube = "cube_apply_heist_bank"
 	self.skm_big2.ai_group_type = america
 	self.skm_big2.group_ai_state = "skirmish"
 	self.skm_big2.wave_count = 9
@@ -1882,7 +1777,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_mallcrasher.music = "heist"
 	self.skm_mallcrasher.package = "packages/dlcs/skm/job_skm"
-	self.skm_mallcrasher.cube = "cube_apply_heist_bank"
 	self.skm_mallcrasher.ai_group_type = america
 	self.skm_mallcrasher.group_ai_state = "skirmish"
 	self.skm_mallcrasher.wave_count = 9
@@ -1899,7 +1793,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_arena.music = "heist"
 	self.skm_arena.package = "packages/dlcs/skm/job_skm"
-	self.skm_arena.cube = "cube_apply_heist_bank"
 	self.skm_arena.ai_group_type = america
 	self.skm_arena.group_ai_state = "skirmish"
 	self.skm_arena.wave_count = 9
@@ -1916,7 +1809,6 @@ function LevelsTweakData:init()
 	}
 	self.skm_bex.music = "heist"
 	self.skm_bex.package = "packages/dlcs/skm/job_bex_skm"
-	self.skm_bex.cube = "cube_apply_heist_bank"
 	self.skm_bex.ai_group_type = federales
 	self.skm_bex.group_ai_state = "skirmish"
 	self.skm_bex.wave_count = 9
@@ -1934,7 +1826,6 @@ function LevelsTweakData:init()
 	}
 	self.vit.failure_event = "Play_loc_vit_end_fail"
 	self.vit.music = "heist"
-	self.vit.cube = "cube_apply_heist_bank"
 	self.vit.max_bags = 20
 	self.vit.ghost_bonus = 0.1
 	self.vit.ai_group_type = murkywater
@@ -1953,7 +1844,6 @@ function LevelsTweakData:init()
 		"Play_loc_mex_end_loud_01"
 	}
 	self.mex.music = "heist"
-	self.mex.cube = "cube_apply_heist_bank"
 	self.mex.max_bags = 100
 	self.mex.ghost_bonus = 0.15
 	self.mex.ai_group_type = murkywater
@@ -1973,7 +1863,6 @@ function LevelsTweakData:init()
 		"Play_loc_count_gen_16"
 	}
 	self.mex_cooking.music = "heist"
-	self.mex_cooking.cube = "cube_apply_heist_bank"
 	self.mex_cooking.max_bags = 100
 	self.mex_cooking.ai_group_type = murkywater
 	self.mex_cooking.narrator = "locke"
@@ -1989,7 +1878,6 @@ function LevelsTweakData:init()
 	}
 	self.bex.music = "heist"
 	self.bex.package = "packages/job_bex"
-	self.bex.cube = "cube_apply_heist_bank"
 	self.bex.ai_group_type = federales
 	self.bex.narrator = "locke"
 	self.bex.ghost_bonus = 0.15
@@ -2007,7 +1895,6 @@ function LevelsTweakData:init()
 	}
 	self.pex.music = "heist"
 	self.pex.package = "packages/job_pex"
-	self.pex.cube = "cube_apply_heist_bank"
 	self.pex.ai_group_type = federales
 	self.pex.narrator = "locke"
 	self.pex.ghost_bonus = 0.15
@@ -2082,7 +1969,6 @@ function LevelsTweakData:init()
 	}
 	self.fex.music = "heist"
 	self.fex.package = "packages/job_fex"
-	self.fex.cube = "cube_apply_heist_bank"
 	self.fex.ai_group_type = federales
 	self.fex.narrator = "locke"
 	self.fex.ghost_bonus = 0.15
@@ -2100,7 +1986,6 @@ function LevelsTweakData:init()
 	}
 	self.chas.music = "heist"
 	self.chas.package = "packages/job_chas"
-	self.chas.cube = "cube_apply_heist_bank"
 	self.chas.ai_group_type = america
 	self.chas.narrator = "locke"
 	self.chas.ghost_bonus = 0.15
@@ -2118,7 +2003,6 @@ function LevelsTweakData:init()
 	}
 	self.sand.music = "heist"
 	self.sand.package = "packages/job_sand"
-	self.sand.cube = "cube_apply_heist_bank"
 	self.sand.ai_group_type = america
 	self.sand.narrator = "locke"
 	self.sand.ghost_bonus = 0.15
@@ -2139,7 +2023,6 @@ function LevelsTweakData:init()
 	}
 	self.chca.music = "heist"
 	self.chca.package = "packages/job_chca"
-	self.chca.cube = "cube_apply_heist_bank"
 	self.chca.ai_group_type = america
 	self.chca.narrator = "locke"
 	self.chca.ghost_bonus = 0.15
@@ -2157,7 +2040,6 @@ function LevelsTweakData:init()
 	}
 	self.pent.music = "heist"
 	self.pent.package = "packages/job_pent"
-	self.pent.cube = "cube_apply_heist_bank"
 	self.pent.ai_group_type = america
 	self.pent.narrator = "locke"
 	self.pent.ghost_bonus = 0.15
@@ -2175,7 +2057,6 @@ function LevelsTweakData:init()
 	}
 	self.ranc.music = "heist"
 	self.ranc.package = "packages/job_ranc"
-	self.ranc.cube = "cube_apply_heist_bank"
 	self.ranc.ai_group_type = america
 	self.ranc.ai_marshal_spawns_fast = true
 	self.ranc.narrator = "locke"
@@ -2194,7 +2075,6 @@ function LevelsTweakData:init()
 	}
 	self.trai.music = "heist"
 	self.trai.package = "packages/job_trai"
-	self.trai.cube = "cube_apply_heist_bank"
 	self.trai.ai_group_type = america
 	self.trai.sniper_laser_distance = 15000
 	self.trai.ai_marshal_spawns_fast = true
@@ -2225,7 +2105,6 @@ function LevelsTweakData:init()
 	}
 	self.corp.music = "heist"
 	self.corp.package = "packages/job_corp"
-	self.corp.cube = "cube_apply_heist_bank"
 	self.corp.ai_group_type = america
 	self.corp.ai_marshal_spawns_fast = true
 	self.corp.narrator = "locke"
@@ -2259,7 +2138,6 @@ function LevelsTweakData:init()
 	self.deep.failure_event = {}
 	self.deep.music = "heist"
 	self.deep.package = "packages/job_deep"
-	self.deep.cube = "cube_apply_heist_bank"
 	self.deep.ai_group_type = america
 	self.deep.ai_marshal_spawns_fast = true
 	self.deep.ai_unit_group_overrides = {

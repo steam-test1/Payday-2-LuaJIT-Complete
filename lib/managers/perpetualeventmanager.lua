@@ -7,7 +7,7 @@ function PerpetualEventManager:init()
 end
 
 function PerpetualEventManager:init_finalize()
-	if IS_STEAM_MM and not Global.perpetual_manager.event_fetched then
+	if not IS_EPIC_MM and not Global.perpetual_manager.event_fetched then
 		self:fetch_event()
 	end
 

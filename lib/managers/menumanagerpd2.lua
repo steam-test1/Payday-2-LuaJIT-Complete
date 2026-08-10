@@ -1583,7 +1583,7 @@ function MenuCallbackHandler:steam_sell_item(item)
 	if not MenuCallbackHandler:is_overlay_enabled() then
 		managers.menu:show_enable_steam_overlay_tradable_item()
 	elseif steam_id and instance_id then
-		print("selling item", "steam_id", steam_id, "instance_id", instance_id)
+		print("[MenuCallbackHandler] selling item", "steam_id", steam_id, "instance_id", instance_id)
 		managers.network.account:add_overlay_listener("steam_transaction_tradable_item", {
 			"overlay_close"
 		}, callback(MenuCallbackHandler, MenuCallbackHandler, "on_steam_transaction_over"))
@@ -1592,7 +1592,7 @@ function MenuCallbackHandler:steam_sell_item(item)
 end
 
 function MenuCallbackHandler:on_steam_transaction_over(canceled)
-	print("on_steam_transaction_over", canceled)
+	print("[MenuCallbackHandler] on_steam_transaction_over", canceled)
 	managers.network.account:remove_overlay_listener("steam_transaction_tradable_item")
 	managers.network.account:inventory_load()
 	managers.system_menu:close("buy_tradable_item")
@@ -1632,10 +1632,12 @@ function MenuCallbackHandler:steam_open_container(item)
 	data.safe_id = nil
 	data.drill_id = nil
 
+	local reward_clbk = callback(MenuCallbackHandler, MenuCallbackHandler, "_safe_result_recieved")
+
 	if safe_tweak and safe_tweak.free then
-		managers.network.account:inventory_reward_open(safe_entry, safe_id, callback(MenuCallbackHandler, MenuCallbackHandler, "_safe_result_recieved"))
+		managers.network.account:inventory_reward_open(safe_entry, safe_id, reward_clbk)
 	else
-		managers.network.account:inventory_reward_unlock(safe_entry, safe_id, drill_id, callback(MenuCallbackHandler, MenuCallbackHandler, "_safe_result_recieved"))
+		managers.network.account:inventory_reward_unlock(safe_entry, safe_id, drill_id, reward_clbk)
 	end
 end
 
@@ -2239,8 +2241,10 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 
 			skin_editor:reload_current_skin()
 
+			local multichoice_list
 			local base_gradient_textures = skin_editor:get_texture_list_by_type(skin, "base_gradient")
-			local multichoice_list = {
+
+			multichoice_list = {
 				{
 					_meta = "option",
 					localize = false,
@@ -3053,6 +3057,8 @@ function MenuCallbackHandler:select_weapon_skin(item)
 end
 
 function MenuCallbackHandler:cleanup_weapon_skin_data(copy_data, skip_base)
+	print("[MenuCallbackHandler:cleanup_weapon_skin_data]")
+
 	local function remove_empty_func(data)
 		local remove = {}
 
@@ -3083,6 +3089,8 @@ function MenuCallbackHandler:cleanup_weapon_skin_data(copy_data, skip_base)
 		end
 
 		for _, key in ipairs(remove) do
+			print("[MenuCallbackHandler:cleanup_weapon_skin_data] clearing data", key, data[key])
+
 			data[key] = nil
 		end
 	end

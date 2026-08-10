@@ -6185,18 +6185,6 @@ function WeaponTweakData:_init_stats()
 		20.9,
 		21
 	}
-	self.stats.zoom = {
-		63,
-		60,
-		55,
-		50,
-		45,
-		40,
-		35,
-		30,
-		25,
-		20
-	}
 
 	if _G.IS_VR then
 		self.stats.zoom = {
@@ -6209,6 +6197,19 @@ function WeaponTweakData:_init_stats()
 			20,
 			20,
 			20,
+			20
+		}
+	else
+		self.stats.zoom = {
+			63,
+			60,
+			55,
+			50,
+			45,
+			40,
+			35,
+			30,
+			25,
 			20
 		}
 	end

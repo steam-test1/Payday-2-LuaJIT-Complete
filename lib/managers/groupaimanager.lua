@@ -55,7 +55,7 @@ function GroupAIManager:set_state(name)
 		return
 	end
 
-	local new_state_class, state_type = new_state_getter()
+	local new_state_class, state_tweak_type = new_state_getter()
 
 	if not new_state_class then
 		Application:error("[GroupAIManager:set_state] Inexistent state class..?", name)
@@ -63,12 +63,20 @@ function GroupAIManager:set_state(name)
 		return
 	end
 
+	local persisting_data
+
 	if self._state ~= nil then
+		persisting_data = self._state:get_persisting_data()
+
 		self._state:destroy()
 	end
 
 	self._state_name = name
-	self._state = new_state_class:new(state_type)
+	self._state = new_state_class:new(state_tweak_type)
+
+	if persisting_data then
+		self._state:set_persisting_data(persisting_data)
+	end
 end
 
 function GroupAIManager:state()

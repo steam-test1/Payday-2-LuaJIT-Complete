@@ -429,8 +429,6 @@ function CoreEnvironmentControllerManager:refresh_render_settings(vp)
 		return
 	end
 
-	local lvl_tweak_data = Global.level_data and Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
-	local cubemap_name = lvl_tweak_data and lvl_tweak_data.cube or "cube_apply_empty"
 	local color_grading = self._default_color_grading
 
 	if not self._ignore_user_color_grading then

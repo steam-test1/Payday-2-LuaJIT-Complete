@@ -13,18 +13,6 @@ local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
 local tiny_font_size = tweak_data.menu.pd2_tiny_font_size
 
-local function set_defaults(target, source)
-	target = target or {}
-
-	for k, v in pairs(source) do
-		if target[k] == nil then
-			target[k] = v
-		end
-	end
-
-	return target
-end
-
 GrowPanel = GrowPanel or class(ExtendedPanel)
 
 function GrowPanel:init(parent, config)
@@ -100,6 +88,14 @@ function ListGrowPanel:register_child(item)
 	table.insert(self._all_items, item)
 end
 
+function ListGrowPanel:all_items()
+	return self._all_items
+end
+
+function ListGrowPanel:current_items()
+	return self._current_items
+end
+
 function ListGrowPanel:add_item(item, force_visible, at_index)
 	if force_visible ~= nil then
 		item:set_visible(force_visible)
@@ -109,6 +105,10 @@ function ListGrowPanel:add_item(item, force_visible, at_index)
 		table.insert(self._all_items, at_index, item)
 	else
 		table.insert(self._all_items, item)
+	end
+
+	if type(item) ~= "userdata" then
+		item._parent = self
 	end
 
 	self:place_items_in_order()
@@ -126,6 +126,7 @@ function ListGrowPanel:place_items_in_order(mod_placer, keep_selection, reverse_
 	local placer = self:placer()
 
 	placer:clear()
+	self:_set_ensure_size(self._fixed_w or 0, self._fixed_h or 0)
 
 	if mod_placer then
 		mod_placer(placer)
@@ -150,10 +151,14 @@ function ListGrowPanel:place_items_in_order(mod_placer, keep_selection, reverse_
 	end
 end
 
+function ListGrowPanel:child_size_changed()
+	self:place_items_in_order()
+end
+
 ScrollGrowPanel = ScrollGrowPanel or class(GrowPanel)
 
 function ScrollGrowPanel:init(scroll, config)
-	config = set_defaults(config, {
+	config = table.set_defaults(config, {
 		use_given = true
 	})
 
@@ -194,7 +199,7 @@ end
 ScrollableList = ScrollableList or class(ExtendedPanel)
 
 function ScrollableList:init(parent, scroll_config, canvas_config)
-	scroll_config = set_defaults(scroll_config, {
+	scroll_config = table.set_defaults(scroll_config, {
 		ignore_down_indicator = true,
 		ignore_up_indicator = true,
 		padding = 0,
@@ -224,9 +229,9 @@ function ScrollableList:init(parent, scroll_config, canvas_config)
 	canvas_config.input = nil
 
 	if not scroll_config.horizontal then
-		canvas_config.fixed_w = self._scroll._scroll_bar:left() - scrollbar_padding
+		canvas_config.fixed_w = canvas_config.fixed_w or self._scroll._scroll_bar:left() - scrollbar_padding
 	else
-		canvas_config.fixed_h = self._scroll._scroll_bar:top() - scrollbar_padding
+		canvas_config.fixed_h = canvas_config.fixed_h or self._scroll._scroll_bar:top() - scrollbar_padding
 	end
 
 	self._canvas = ScrollGrowPanel:new(self._scroll, canvas_config)
@@ -320,10 +325,6 @@ function ScrollableList:mouse_released(button, x, y)
 
 	self._scroll:mouse_released(button, x, y)
 
-	if not self._scroll:panel():inside(x, y) then
-		return
-	end
-
 	return ScrollableList.super.mouse_released(self, button, x, y)
 end
 
@@ -334,10 +335,6 @@ function ScrollableList:mouse_wheel_up(x, y)
 
 	self._scroll:scroll(x, y, 1)
 
-	if not self._scroll:panel():inside(x, y) then
-		return
-	end
-
 	return ScrollableList.super.mouse_wheel_up(self, x, y)
 end
 
@@ -347,10 +344,6 @@ function ScrollableList:mouse_wheel_down(x, y)
 	end
 
 	self._scroll:scroll(x, y, -1)
-
-	if not self._scroll:panel():inside(x, y) then
-		return
-	end
 
 	return ScrollableList.super.mouse_wheel_down(self, x, y)
 end
@@ -441,8 +434,10 @@ function ScrollItemList:init(parent, scroll_config, canvas_config)
 	ScrollItemList.super.init(self, parent, scroll_config, canvas_config)
 
 	self._input_focus = scroll_config.input_focus
-	self._click_selection = scroll_config.click_selection
+	self._click_selection = scroll_config.click_selection or false
+	self._allow_deselect = scroll_config.allow_deselect or false
 	self._on_selected_callback = scroll_config.on_selected_callback
+	self._on_hovered_callback = scroll_config.on_hovered_callback
 	self._all_items = {}
 	self._current_items = {}
 end
@@ -476,19 +471,13 @@ function ScrollItemList:mouse_moved(button, x, y)
 		return self._scroll:mouse_moved(button, x, y)
 	end
 
-	if not self._scroll:panel():inside(x, y) then
-		return
-	end
-
 	local used, pointer
 
 	for k, v in pairs(self._current_items) do
 		if v:inside(x, y) then
-			if v.mouse_moved then
-				used, pointer = v:mouse_moved(button, x, y)
-			end
-
-			if self._selected_item ~= v and not self._click_selection then
+			if self._click_selection and self._hovered_item ~= v then
+				self:hover_item(v)
+			elseif self._selected_item ~= v and not self._click_selection then
 				self:select_item(v)
 			end
 		end
@@ -502,14 +491,10 @@ function ScrollItemList:mouse_moved(button, x, y)
 end
 
 function ScrollItemList:mouse_pressed(button, x, y)
-	if not self._scroll:panel():inside(x, y) then
-		return
-	end
-
 	for k, v in pairs(self._current_items) do
 		if v:inside(x, y) then
-			if v.mouse_pressed then
-				v:mouse_pressed(button, x, y)
+			if self._allow_deselect and self._selected_item == v then
+				v = nil
 			end
 
 			if self._selected_item ~= v and self._click_selection then
@@ -524,8 +509,12 @@ function ScrollItemList:mouse_pressed(button, x, y)
 end
 
 function ScrollItemList:special_btn_pressed(button)
-	if button == Idstring("continue") and self._selected_item._trigger then
-		return self._selected_item:_trigger()
+	if button == Idstring("continue") then
+		if self._click_selection and self._selected_item ~= self._hovered_item then
+			self:select_item(self._hovered_item)
+		elseif self._selected_item and self._selected_item._trigger then
+			return self._selected_item:_trigger()
+		end
 	end
 
 	return ScrollItemList.super.special_btn_pressed(self, button)
@@ -537,8 +526,18 @@ function ScrollItemList:_on_selected_changed(selected)
 	end
 end
 
+function ScrollItemList:_on_hovered_changed(hovered)
+	if self._on_hovered_callback then
+		self._on_hovered_callback(hovered)
+	end
+end
+
 function ScrollItemList:set_selected_callback(func)
 	self._on_selected_callback = func
+end
+
+function ScrollItemList:set_hovered_callback(func)
+	self._on_hovered_callback = func
 end
 
 function ScrollItemList:selected_index()
@@ -562,9 +561,7 @@ function ScrollItemList:move_selection(move)
 		self:select_index(1)
 	else
 		local index = table.index_of(self._current_items, self._selected_item)
-		local new_index = index + move
-
-		new_index = math.clamp(new_index, 1, #self._current_items)
+		local new_index = (index - 1 + move) % #self._current_items + 1
 
 		if self._current_items[new_index].skip_selection and self._current_items[new_index]:skip_selection() then
 			if new_index == #self._current_items or new_index == 1 then
@@ -582,37 +579,64 @@ function ScrollItemList:move_selection(move)
 	end
 end
 
-function ScrollItemList:select_item(item)
+function ScrollItemList:select_item(item, scroll_to)
 	if item == self._selected_item then
 		return
 	end
 
-	if self._selected_item and self._selected_item.set_selected then
-		self._selected_item:set_selected(false)
+	if self._selected_item then
+		local select_func = self._selected_item.set_selected or self._selected_item.set_hover
 
-		self._selected_item = nil
+		if select_func then
+			select_func(self._selected_item, false)
+
+			self._selected_item = nil
+		end
 	end
 
-	if self._selected_item and self._selected_item._hover_changed then
-		self._selected_item:set_hover(false)
+	if item then
+		local select_func = item.set_selected or item.set_hover
 
-		self._selected_item = nil
-	end
+		if select_func then
+			self._selected_item = item
 
-	if item and item.set_selected then
-		self._selected_item = item
+			select_func(item, true)
 
-		item:set_selected(true)
-	end
-
-	if item and item._hover_changed then
-		self._selected_item = item
-		item._hover = true
-
-		item:_hover_changed(true)
+			if scroll_to then
+				self:scroll_to_show(item)
+			end
+		end
 	end
 
 	self:_on_selected_changed(item)
+end
+
+function ScrollItemList:hover_item(item, scroll_to)
+	if item == self._hovered_item then
+		return
+	end
+
+	if self._hovered_item then
+		if self._hovered_item.set_hover then
+			self._hovered_item:set_hover(false)
+		end
+
+		self._hovered_item = nil
+	end
+
+	if item then
+		self._hovered_item = item
+
+		if item.set_hover then
+			item:set_hover(true)
+		end
+
+		if scroll_to then
+			self:scroll_to_show(item)
+		end
+	end
+
+	self:_on_hovered_changed(item)
 end
 
 function ScrollItemList:add_item(item, force_visible, at_index)
@@ -634,6 +658,14 @@ function ScrollItemList:add_item(item, force_visible, at_index)
 		table.insert(self._all_items, at_index, item)
 	else
 		table.insert(self._all_items, item)
+	end
+
+	if type(item) ~= "userdata" then
+		item._parent = self
+	end
+
+	if item.allow_input then
+		self:add_input_component(item)
 	end
 
 	return item
@@ -735,6 +767,10 @@ function ScrollItemList:filter_items(filter_function, mod_start, keep_selection)
 	end
 end
 
+function ScrollItemList:child_size_changed()
+	self:place_items_in_order(nil, true)
+end
+
 HorizontalScrollItemList = HorizontalScrollItemList or class(ScrollItemList)
 
 function HorizontalScrollItemList:init(parent, scroll_config, canvas_config)
@@ -822,13 +858,28 @@ end
 
 ListItem = ListItem or class(ExtendedPanel)
 
-function ListItem:init(...)
-	ListItem.super.init(self, ...)
+function ListItem:init(panel, config)
+	ListItem.super.init(self, panel, config)
+
+	self._on_selected_changed_callback = config.on_selected_changed_callback
+	self._on_hover_changed_callback = config.on_hover_changed_callback
+end
+
+function ListItem:set_selected_changed_callback(func)
+	self._on_selected_changed_callback = func
+end
+
+function ListItem:set_hover_changed_callback(func)
+	self._on_hover_changed_callback = func
 end
 
 function ListItem:_selected_changed(state)
 	if self._select_panel then
 		self._select_panel:set_visible(state)
+	end
+
+	if self._on_selected_changed_callback then
+		self._on_selected_changed_callback(state)
 	end
 end
 
@@ -844,10 +895,32 @@ function ListItem:set_selected(state)
 	local _ = state and managers.menu_component:post_event("highlight")
 end
 
+function ListItem:_hover_changed(state)
+	if self._hover_panel then
+		self._hover_panel:set_visible(state)
+	end
+
+	if self._on_hover_changed_callback then
+		self._on_hover_changed_callback(state)
+	end
+end
+
+function ListItem:set_hover(state)
+	if self._hover == state then
+		return
+	end
+
+	self._hover = state
+
+	self:_hover_changed(state)
+
+	local _ = state and managers.menu_component:post_event("highlight")
+end
+
 BaseButton = BaseButton or class(ExtendedPanel)
 
 function BaseButton:init(parent, config)
-	config = set_defaults(config, {
+	config = table.set_defaults(config, {
 		input = true
 	})
 
@@ -856,6 +929,10 @@ function BaseButton:init(parent, config)
 	self._binding = config.binding and Idstring(config.binding)
 	self._enabled = config.enabled == nil and true or config.enabled
 	self._hover = false
+end
+
+function BaseButton:set_hover_changed_callback(func)
+	self._on_hover_changed_callback = func
 end
 
 function BaseButton:set_enabled(state)
@@ -885,6 +962,10 @@ function BaseButton:allow_input()
 end
 
 function BaseButton:set_hover(hover)
+	if hover ~= self._hover and self._on_hover_changed_callback then
+		self:_on_hover_changed_callback(hover)
+	end
+
 	self._hover = hover
 
 	self:_hover_changed(hover)
@@ -921,13 +1002,13 @@ end
 TextButton = TextButton or class(BaseButton)
 
 function TextButton:init(parent, text_config, func, panel_config)
-	panel_config = set_defaults(panel_config, {
+	panel_config = table.set_defaults(panel_config, {
 		binding = text_config.binding
 	})
 
 	TextButton.super.init(self, parent, panel_config)
 
-	text_config = set_defaults(text_config, {
+	text_config = table.set_defaults(text_config, {
 		font = large_font,
 		font_size = small_font_size
 	})
@@ -1025,7 +1106,7 @@ end
 ToggleButton = ToggleButton or class(BaseButton)
 
 function ToggleButton:init(parent, toggle_config, panel_config, func)
-	panel_config = set_defaults(panel_config, {
+	panel_config = table.set_defaults(panel_config, {
 		binding = toggle_config.binding
 	})
 
@@ -1091,7 +1172,8 @@ end
 CompositeButton = CompositeButton or class(BaseButton)
 
 function CompositeButton:init(parent, composite_button_config, panel_config, func)
-	panel_config = set_defaults(panel_config, {
+	composite_button_config = composite_button_config or {}
+	panel_config = table.set_defaults(panel_config, {
 		binding = composite_button_config.binding
 	})
 
@@ -1323,20 +1405,20 @@ ButtonLegendsBar = ButtonLegendsBar or class(GrowPanel)
 ButtonLegendsBar.PADDING = 10
 
 function ButtonLegendsBar:init(panel, config, panel_config)
-	panel_config = set_defaults(panel_config, {
+	panel_config = table.set_defaults(panel_config, {
 		border = 0,
 		input = true,
 		padding_y = 0,
 		w = panel:w(),
 		padding = self.PADDING
 	})
-	panel_config = set_defaults(panel_config, {
+	panel_config = table.set_defaults(panel_config, {
 		fixed_w = panel_config.w
 	})
 
 	ButtonLegendsBar.super.init(self, panel, panel_config)
 
-	self._text_config = set_defaults(config, {
+	self._text_config = table.set_defaults(config, {
 		font = small_font,
 		font_size = small_font_size
 	})
@@ -1475,7 +1557,7 @@ TextLegendsBar.SEPERATOR = "  |  "
 function TextLegendsBar:init(panel, config, panel_config)
 	TextLegendsBar.super.init(self, panel, config, panel_config)
 
-	self._text_config = set_defaults(self._text_config, {
+	self._text_config = table.set_defaults(self._text_config, {
 		align = "right",
 		keep_w = true,
 		text = " "

@@ -246,9 +246,9 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 				in_second_sight = false
 			end
 
-			if in_steelsight and not in_second_sight and not self._steelsight_swap_state then
+			if in_steelsight and not in_second_sight and not self:get_steelsight_swap_state() then
 				self:_set_steelsight_swap_state(true)
-			elseif (not in_steelsight or in_second_sight) and self._steelsight_swap_state then
+			elseif (not in_steelsight or in_second_sight) and self:get_steelsight_swap_state() then
 				self:_set_steelsight_swap_state(false)
 			end
 		else
@@ -274,9 +274,9 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 				absolute_progress = trans_data.absolute_progress * (1 - progress_smooth)
 			end
 
-			if in_steelsight and not in_second_sight and not self._steelsight_swap_state and absolute_progress >= trans_data.steelsight_swap_progress_trigger then
+			if in_steelsight and not in_second_sight and not self:get_steelsight_swap_state() and absolute_progress >= trans_data.steelsight_swap_progress_trigger then
 				self:_set_steelsight_swap_state(true)
-			elseif (not in_steelsight or in_second_sight) and self._steelsight_swap_state and absolute_progress < trans_data.steelsight_swap_progress_trigger then
+			elseif (not in_steelsight or in_second_sight) and self:get_steelsight_swap_state() and absolute_progress < trans_data.steelsight_swap_progress_trigger then
 				self:_set_steelsight_swap_state(false)
 			end
 		end
