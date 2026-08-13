@@ -358,8 +358,8 @@ local function equip_weapon_in_game(category, slot)
 	local blueprint = weapon.blueprint
 	local ids_unit_name = Idstring(managers.weapon_factory:get_weapon_unit(factory_id, blueprint))
 
-	if not managers.dyn_resource:is_resource_ready(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
-		managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+	if not managers.dyn_resource:is_resource_ready(IDS_UNIT, ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+		managers.dyn_resource:load(IDS_UNIT, ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 	end
 
 	managers.player:player_unit():movement():current_state():_start_action_unequip_weapon(TimerManager:game():time(), {

@@ -29,11 +29,9 @@ function HuskTeamAIBase:on_death_exit()
 end
 
 function HuskTeamAIBase:pre_destroy(unit)
-	self:remove_upgrades()
-	unit:movement():pre_destroy()
-	unit:inventory():pre_destroy(unit)
-	TeamAIBase.unregister(self)
 	UnitBase.pre_destroy(self, unit)
+	self:remove_upgrades()
+	TeamAIBase.unregister(self)
 end
 
 function HuskTeamAIBase:load(data)

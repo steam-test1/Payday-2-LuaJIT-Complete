@@ -2551,7 +2551,7 @@ function GroupAITweakData:_init_enemy_spawn_cooldowns(difficulty_index)
 end
 
 function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
-	local is_console = SystemInfo:platform() ~= Idstring("WIN32")
+	local is_console = IS_CONSOLE
 
 	self.max_nr_simultaneous_boss_types = 0
 	self.difficulty_curve_points = {

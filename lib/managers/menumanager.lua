@@ -33,10 +33,6 @@ MenuCallbackHandler = MenuCallbackHandler or class(CoreMenuCallbackHandler.Callb
 
 require("lib/managers/MenuManagerPD2")
 require("lib/managers/menu/MenuManagerCrimeSpreeCallbacks")
-
-MenuManager.IS_NORTH_AMERICA = SystemInfo:platform() == Idstring("WIN32") or Application:is_northamerica()
-MenuManager.ONLINE_AGE = (SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4")) and MenuManager.IS_NORTH_AMERICA and 17 or 18
-
 require("lib/managers/MenuManagerDialogs")
 require("lib/managers/MenuManagerDebug")
 
@@ -144,7 +140,7 @@ function MenuManager:init(is_start_menu)
 		self._controller:add_trigger("toggle_chat", callback(self, self, "toggle_chatinput"))
 	end
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		self._controller:add_trigger("push_to_talk", callback(self, self, "push_to_talk", true))
 		self._controller:add_release_trigger("push_to_talk", callback(self, self, "push_to_talk", false))
 	end
@@ -165,7 +161,6 @@ function MenuManager:init(is_start_menu)
 	managers.user:add_setting_changed_callback("music_volume", callback(self, self, "music_volume_changed"), true)
 	managers.user:add_setting_changed_callback("sfx_volume", callback(self, self, "sfx_volume_changed"), true)
 	managers.user:add_setting_changed_callback("voice_volume", callback(self, self, "voice_volume_changed"), true)
-	managers.user:add_setting_changed_callback("use_lightfx", callback(self, self, "lightfx_changed"), true)
 	managers.user:add_setting_changed_callback("effect_quality", callback(self, self, "effect_quality_changed"), true)
 	managers.user:add_setting_changed_callback("dof_setting", callback(self, self, "dof_setting_changed"), true)
 	managers.user:add_setting_changed_callback("chromatic_setting", callback(self, self, "chromatic_setting_changed"), true)
@@ -173,7 +168,6 @@ function MenuManager:init(is_start_menu)
 	managers.user:add_setting_changed_callback("net_packet_throttling", callback(self, self, "net_packet_throttling_changed"), true)
 	managers.user:add_setting_changed_callback("net_forwarding", callback(self, self, "net_forwarding_changed"), true)
 	managers.user:add_setting_changed_callback("net_use_compression", callback(self, self, "net_use_compression_changed"), true)
-	managers.user:add_setting_changed_callback("flush_gpu_command_queue", callback(self, self, "flush_gpu_command_queue_changed"), true)
 	managers.user:add_setting_changed_callback("use_thq_weapon_parts", callback(self, self, "use_thq_weapon_parts_changed"), true)
 	managers.user:add_setting_changed_callback("use_telemetry", callback(self, self, "use_telemetry_changed"), true)
 	managers.user:add_setting_changed_callback("use_gamesight", callback(self, self, "use_gamesight_changed"), true)
@@ -190,7 +184,6 @@ function MenuManager:init(is_start_menu)
 	self:net_packet_throttling_changed(nil, nil, managers.user:get_setting("net_packet_throttling"))
 	self:net_forwarding_changed(nil, nil, managers.user:get_setting("net_forwarding"))
 	self:net_use_compression_changed(nil, nil, managers.user:get_setting("net_use_compression"))
-	self:flush_gpu_command_queue_changed(nil, nil, managers.user:get_setting("flush_gpu_command_queue"))
 	self:invert_camera_y_changed("invert_camera_y", nil, managers.user:get_setting("invert_camera_y"))
 	self:southpaw_changed("southpaw", nil, managers.user:get_setting("southpaw"))
 	self:dof_setting_changed("dof_setting", nil, managers.user:get_setting("dof_setting"))
@@ -469,7 +462,7 @@ function MenuManager:toggle_chatinput()
 		return
 	end
 
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		return
 	end
 
@@ -498,7 +491,11 @@ end
 
 function MenuManager:create_controller()
 	if not self._controller then
-		self._controller = managers.controller:create_controller("MenuManager", nil, false)
+		self._controller = managers.controller:get_controller_by_name("MenuManager")
+
+		if not self._controller then
+			self._controller = managers.controller:create_controller("MenuManager", nil, false)
+		end
 
 		local setup = self._controller:get_setup()
 		local look_connection = setup:get_connection("look")
@@ -635,7 +632,6 @@ function MenuManager:set_mouse_sensitivity(zoomed)
 
 	mvector3.set_static(multiplier, sense_x * self._look_multiplier.x, sense_y * self._look_multiplier.y, 0)
 	self._controller:get_setup():get_connection("look"):set_multiplier(multiplier)
-	managers.controller:request_rebind_connections()
 end
 
 function MenuManager:camera_sensitivity_x_changed(name, old_value, new_value)
@@ -776,7 +772,7 @@ function MenuManager:chromatic_setting_changed(name, old_value, new_value)
 end
 
 function MenuManager:fps_limit_changed(name, old_value, new_value)
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		return
 	end
 
@@ -799,7 +795,7 @@ function MenuManager:net_use_compression_changed(name, old_value, new_value)
 end
 
 function MenuManager:flush_gpu_command_queue_changed(name, old_value, new_value)
-	RenderSettings.flush_gpu_command_queue = new_value
+	return
 end
 
 function MenuManager:use_thq_weapon_parts_changed(name, old_value, new_value)
@@ -886,17 +882,13 @@ end
 
 function MenuManager:_recompile(dir)
 	local source_files = self:_source_files(dir)
-	local t = {
-		send_idstrings = false,
-		target_db_name = "all",
-		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = managers.database:root_path() .. "/assets",
-		target_db_root = Application:base_path() .. "assets",
-		source_files = source_files
-	}
 
-	Application:data_compile(t)
+	Application:data_compile({
+		send_idstrings = false,
+		verbose = false,
+		build_profile = Application:build_profile_path(),
+		source_files = source_files
+	})
 	DB:reload()
 	managers.database:clear_all_cached_indices()
 
@@ -944,27 +936,15 @@ function MenuManager:_dialog_progress_resetted_ok()
 end
 
 function MenuManager:is_console()
-	return self:is_ps3() or self:is_x360() or self:is_ps4() or self:is_xb1()
-end
-
-function MenuManager:is_ps3()
-	return SystemInfo:platform() == Idstring("PS3")
+	return self:is_ps4() or self:is_xb1()
 end
 
 function MenuManager:is_ps4()
-	return SystemInfo:platform() == Idstring("PS4")
-end
-
-function MenuManager:is_x360()
-	return SystemInfo:platform() == Idstring("X360")
+	return IS_PS4
 end
 
 function MenuManager:is_xb1()
-	return SystemInfo:platform() == Idstring("XB1")
-end
-
-function MenuManager:is_na()
-	return MenuManager.IS_NORTH_AMERICA
+	return IS_XB1
 end
 
 function MenuManager:check_vr_dlc()
@@ -972,11 +952,7 @@ function MenuManager:check_vr_dlc()
 end
 
 function MenuManager:open_sign_in_menu(cb)
-	if self:is_ps3() then
-		managers.network.matchmake:register_callback("found_game", callback(self, self, "_cb_matchmake_found_game"))
-		managers.network.matchmake:register_callback("player_joined", callback(self, self, "_cb_matchmake_player_joined"))
-		self:open_ps3_sign_in_menu(cb)
-	elseif self:is_ps4() then
+	if self:is_ps4() then
 		managers.network.matchmake:register_callback("found_game", callback(self, self, "_cb_matchmake_found_game"))
 		managers.network.matchmake:register_callback("player_joined", callback(self, self, "_cb_matchmake_player_joined"))
 
@@ -995,12 +971,6 @@ function MenuManager:open_sign_in_menu(cb)
 			PSN:fetch_status()
 		else
 			self:open_ps4_sign_in_menu(cb)
-		end
-	elseif self:is_x360() then
-		if managers.network.account:signin_state() == "signed in" and managers.user:check_privilege(nil, "multiplayer_sessions") then
-			self:open_x360_sign_in_menu(cb)
-		else
-			self:show_err_not_signed_in_dialog()
 		end
 	elseif self:is_xb1() then
 		self._queued_privilege_check_cb = nil
@@ -1025,7 +995,7 @@ function MenuManager:open_sign_in_menu(cb)
 	else
 		local is_signed_in = managers.network.account:signin_state() == "signed in"
 
-		if SystemInfo:matchmaking() == Idstring("MM_EPIC") and not EpicMM:logged_on() then
+		if IS_EPIC_MM and not DistributionMatchmaking:logged_on() then
 			is_signed_in = false
 		end
 
@@ -1112,11 +1082,6 @@ function MenuManager:open_ps4_sign_in_menu(cb)
 		else
 			success = false
 		end
-	elseif PSN:user_age() < MenuManager.ONLINE_AGE and PSN:parental_control_settings_active() then
-		Global.boot_invite = nil
-		success = false
-
-		self:show_err_under_age()
 	else
 		if #PSN:get_world_list() == 0 then
 			managers.network.matchmake:getting_world_list()
@@ -1142,38 +1107,26 @@ function MenuManager:open_xb1_sign_in_menu(cb)
 end
 
 function MenuManager:external_enter_online_menus()
-	if self:is_ps3() then
-		self:_enter_online_menus()
-	elseif self:is_ps4() then
+	if self:is_ps4() then
 		self:_enter_online_menus_ps4()
-	elseif self:is_x360() then
-		self:_enter_online_menus_x360()
 	elseif self:is_xb1() then
 		self:_enter_online_menus_xb1()
 	end
 end
 
 function MenuManager:_enter_online_menus()
-	if PSN:user_age() < MenuManager.ONLINE_AGE and PSN:parental_control_settings_active() then
-		Global.boot_invite = nil
+	local res = PSN:check_plus()
 
-		self:show_err_under_age()
+	if res == 1 then
+		managers.platform:set_presence("Signed_in")
+		print("voice chat from enter_online_menus")
+		managers.network:ps3_determine_voice(false)
+		managers.network.voice_chat:check_status_information()
+		PSN:set_online_callback(callback(self, self, "ps3_disconnect"))
 
-		return false
-	else
-		local res = PSN:check_plus()
-
-		if res == 1 then
-			managers.platform:set_presence("Signed_in")
-			print("voice chat from enter_online_menus")
-			managers.network:ps3_determine_voice(false)
-			managers.network.voice_chat:check_status_information()
-			PSN:set_online_callback(callback(self, self, "ps3_disconnect"))
-
-			return true
-		elseif res ~= 2 then
-			self:show_err_not_signed_in_dialog()
-		end
+		return true
+	elseif res ~= 2 then
+		self:show_err_not_signed_in_dialog()
 	end
 
 	return false
@@ -1211,7 +1164,9 @@ function MenuManager:psn_disconnected()
 		self:exit_online_menues()
 	end
 
-	self:show_mp_disconnected_internet_dialog({})
+	self:show_mp_disconnected_internet_dialog({
+		ok_func = nil
+	})
 end
 
 function MenuManager:steam_disconnected()
@@ -1223,7 +1178,9 @@ function MenuManager:steam_disconnected()
 		self:exit_online_menues()
 	end
 
-	self:show_mp_disconnected_internet_dialog({})
+	self:show_mp_disconnected_internet_dialog({
+		ok_func = nil
+	})
 end
 
 function MenuManager:xbox_disconnected()
@@ -1238,7 +1195,9 @@ function MenuManager:xbox_disconnected()
 
 	self:exit_online_menues()
 	managers.user:on_exit_online_menus()
-	self:show_mp_disconnected_internet_dialog({})
+	self:show_mp_disconnected_internet_dialog({
+		ok_func = nil
+	})
 end
 
 function MenuManager:ps3_disconnect(connected)
@@ -1260,10 +1219,6 @@ end
 function MenuManager:show_disconnect_message(requires_signin)
 	if self._showing_disconnect_message then
 		return
-	end
-
-	if self:is_ps3() then
-		PS3:abort_display_keyboard()
 	end
 
 	self:exit_online_menues()
@@ -1314,11 +1269,11 @@ function MenuManager:exit_online_menues()
 end
 
 function MenuManager:leave_online_menu()
-	if self:is_ps3() or self:is_ps4() then
+	if self:is_ps4() then
 		PSN:set_online_callback(callback(self, self, "refresh_player_profile_gui"))
 	end
 
-	if self:is_x360() or self:is_xb1() then
+	if self:is_xb1() then
 		managers.user:on_exit_online_menus()
 	end
 end
@@ -1339,11 +1294,11 @@ function MenuManager:_close_lobby_menu_components()
 end
 
 function MenuManager:on_leave_lobby()
-	local skip_destroy_matchmaking = self:is_ps3() or self:is_ps4()
+	local skip_destroy_matchmaking = self:is_ps4()
 
 	managers.network:prepare_stop_network(skip_destroy_matchmaking)
 
-	if self:is_x360() or self:is_xb1() then
+	if self:is_xb1() then
 		managers.user:on_exit_online_menus()
 	end
 
@@ -1487,7 +1442,7 @@ function MenuManager:do_clear_progress()
 
 	managers.user:set_setting("mask_set", "clowns")
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_level_to_steam()
 	end
 end
@@ -1554,7 +1509,7 @@ function MenuCallbackHandler:is_overlay_enabled()
 end
 
 function MenuCallbackHandler:is_installed()
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		return true
 	end
 
@@ -1673,27 +1628,27 @@ function MenuCallbackHandler:is_level_50()
 end
 
 function MenuCallbackHandler:is_win32()
-	return SystemInfo:platform() == Idstring("WIN32")
+	return IS_PC
 end
 
 function MenuCallbackHandler:is_actually_win32()
-	return SystemInfo:platform() == Idstring("WIN32")
+	return IS_PC
 end
 
 function MenuCallbackHandler:is_win32_pc()
-	return SystemInfo:platform() == Idstring("WIN32") and not self:is_vr()
+	return IS_WIN32 and not self:is_vr()
 end
 
 function MenuCallbackHandler:is_steam()
-	return SystemInfo:distribution() == Idstring("STEAM")
+	return IS_STEAM
 end
 
 function MenuCallbackHandler:is_epic()
-	return SystemInfo:distribution() == Idstring("EPIC")
+	return IS_EPIC
 end
 
 function MenuCallbackHandler:is_not_epic()
-	return SystemInfo:distribution() ~= Idstring("EPIC")
+	return not IS_EPIC
 end
 
 function MenuCallbackHandler:is_fullscreen()
@@ -1701,7 +1656,7 @@ function MenuCallbackHandler:is_fullscreen()
 end
 
 function MenuCallbackHandler:voice_enabled()
-	return self:is_ps3() or self:is_win32() and managers.network and managers.network.voice_chat and managers.network.voice_chat.enabled and managers.network.voice_chat:enabled()
+	return self:is_win32() and managers.network and managers.network.voice_chat and managers.network.voice_chat.enabled and managers.network.voice_chat:enabled()
 end
 
 function MenuCallbackHandler:customize_controller_enabled()
@@ -1709,51 +1664,27 @@ function MenuCallbackHandler:customize_controller_enabled()
 end
 
 function MenuCallbackHandler:is_win32_not_lan()
-	return SystemInfo:platform() == Idstring("WIN32") and not Global.game_settings.playing_lan
+	return IS_WIN32 and not Global.game_settings.playing_lan
 end
 
 function MenuCallbackHandler:is_console()
-	return self:is_ps3() or self:is_x360() or self:is_ps4() or self:is_xb1()
-end
-
-function MenuCallbackHandler:is_ps3()
-	return SystemInfo:platform() == Idstring("PS3")
+	return self:is_ps4() or self:is_xb1()
 end
 
 function MenuCallbackHandler:is_ps4()
-	return SystemInfo:platform() == Idstring("PS4")
-end
-
-function MenuCallbackHandler:is_x360()
-	return SystemInfo:platform() == Idstring("X360")
+	return IS_PS4
 end
 
 function MenuCallbackHandler:is_xb1()
-	return SystemInfo:platform() == Idstring("XB1")
+	return IS_XB1
 end
 
 function MenuCallbackHandler:is_not_xb1()
 	return not self:is_xb1()
 end
 
-function MenuCallbackHandler:is_not_x360()
-	return not self:is_x360()
-end
-
-function MenuCallbackHandler:is_not_xbox()
-	return not self:is_x360()
-end
-
-function MenuCallbackHandler:is_not_x360_or_xb1()
-	return not self:is_x360() and not self:is_xb1()
-end
-
 function MenuCallbackHandler:is_not_nextgen()
 	return not self:is_xb1() and not self:is_ps4()
-end
-
-function MenuCallbackHandler:is_na()
-	return MenuManager.IS_NORTH_AMERICA
 end
 
 function MenuCallbackHandler:has_dropin()
@@ -1896,7 +1827,7 @@ function MenuCallbackHandler:hidden()
 end
 
 function MenuCallbackHandler:chat_visible()
-	return SystemInfo:platform() == Idstring("WIN32")
+	return IS_PC
 end
 
 function MenuCallbackHandler:is_pc_controller()
@@ -1952,11 +1883,11 @@ function MenuCallbackHandler:is_crime_spree()
 end
 
 function MenuCallbackHandler:is_epic_mm()
-	return SystemInfo:matchmaking() == Idstring("MM_EPIC")
+	return IS_EPIC_MM
 end
 
 function MenuCallbackHandler:is_steam_mm()
-	return SystemInfo:matchmaking() == Idstring("MM_STEAM")
+	return IS_STEAM_MM
 end
 
 function MenuCallbackHandler:has_gamemode_event()
@@ -2072,13 +2003,13 @@ function MenuCallbackHandler:on_press_tracking(item)
 end
 
 function MenuCallbackHandler:chk_dlc_content_updated()
-	if SystemInfo:platform() ~= Idstring("XB1") and managers.dlc then
+	if not IS_XB1 and managers.dlc then
 		managers.dlc:chk_content_updated()
 	end
 end
 
 function MenuCallbackHandler:chk_dlc_content_updated_xb1()
-	if SystemInfo:platform() == Idstring("XB1") and managers.dlc then
+	if IS_XB1 and managers.dlc then
 		managers.dlc:chk_content_updated()
 	end
 end
@@ -2514,12 +2445,7 @@ function MenuCallbackHandler:choice_distance_filter(item)
 	end
 
 	managers.network.matchmake:set_distance_filter(dist_filter)
-
-	if SystemInfo:matchmaking() == Idstring("MM_EPIC") then
-		managers.user:set_setting("crimenet_filter_distance_epic", dist_filter)
-	else
-		managers.user:set_setting("crimenet_filter_distance", dist_filter)
-	end
+	managers.user:set_setting("crimenet_filter_distance", dist_filter)
 end
 
 function MenuCallbackHandler:choice_difficulty_filter(item)
@@ -2957,6 +2883,10 @@ function MenuCallbackHandler:choice_lobby_permission(item)
 
 	self:update_matchmake_attributes()
 	self:_on_host_setting_updated()
+
+	if managers.platform then
+		managers.platform:refresh_rich_presence_state()
+	end
 end
 
 function MenuCallbackHandler:choice_lobby_reputation_permission(item)
@@ -3038,6 +2968,8 @@ function MenuCallbackHandler:accept_crimenet_contract(item, node)
 	managers.menu:active_menu().logic:navigate_back(true)
 
 	local job_data = item:parameters().gui_node.node:parameters().menu_component_data
+
+	print("[MenuCallbackHandler]", inspect(job_data))
 
 	if job_data.server then
 		managers.crime_spree:join_server(job_data)
@@ -3202,7 +3134,7 @@ function MenuCallbackHandler:_increase_infamous(yes_clbk)
 		yes_clbk()
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_level_to_steam()
 	end
 end
@@ -3247,7 +3179,7 @@ function MenuCallbackHandler:_increase_infamous_with_prestige(yes_clbk)
 		yes_clbk()
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_level_to_steam()
 	end
 end
@@ -3410,7 +3342,7 @@ function MenuCallbackHandler:choice_choose_shadow_quality(item)
 end
 
 function MenuCallbackHandler:toggle_gpu_flush_setting(item)
-	managers.user:set_setting("flush_gpu_command_queue", item:value() == "on")
+	return
 end
 
 function MenuCallbackHandler:choice_choose_anisotropic(item)
@@ -3501,7 +3433,7 @@ function MenuCallbackHandler:toggle_light_adaption(item)
 end
 
 function MenuCallbackHandler:toggle_lightfx(item)
-	managers.user:set_setting("use_lightfx", item:value() == "on")
+	return
 end
 
 function MenuCallbackHandler:choice_max_streaming_chunk(item)
@@ -3575,6 +3507,8 @@ function MenuCallbackHandler:lobby_start_the_game()
 end
 
 function MenuCallbackHandler:leave_lobby()
+	print("[MenuCallbackHandler] standard leave lobby")
+
 	if game_state_machine:current_state_name() == "ingame_lobby_menu" then
 		self:end_game()
 
@@ -3696,7 +3630,7 @@ function MenuCallbackHandler:_find_online_games(friends_only)
 		managers.network.matchmake:register_callback("search_lobby", f)
 		managers.network.matchmake:search_lobby(friends_only)
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			local function usrs_f(success, amount)
 				print("usrs_f", success, amount)
 
@@ -3717,7 +3651,7 @@ function MenuCallbackHandler:_find_online_games(friends_only)
 		end
 	end
 
-	if self:is_ps3() or self:is_ps4() then
+	if self:is_ps4() then
 		if #PSN:get_world_list() == 0 then
 			return
 		end
@@ -5573,7 +5507,7 @@ MenuResolutionCreator = MenuResolutionCreator or class()
 function MenuResolutionCreator:modify_node(node)
 	local new_node = deep_clone(node)
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		local resolutions = clone(RenderSettings.modes)
 
 		table.sort(resolutions)
@@ -5756,7 +5690,7 @@ end
 MenuPSNPlayerProfileInitiator = MenuPSNPlayerProfileInitiator or class()
 
 function MenuPSNPlayerProfileInitiator:modify_node(node)
-	if (managers.menu:is_ps3() or managers.menu:is_ps4()) and not managers.network:session() then
+	if managers.menu:is_ps4() and not managers.network:session() then
 		PSN:set_online_callback(callback(managers.menu, managers.menu, "refresh_player_profile_gui"))
 	end
 
@@ -7654,7 +7588,11 @@ function MenuPrePlanningInitiator:modifiy_node_view_only(node, item_name, select
 	node:parameters().current_viewing = true
 
 	local params = {
+		callback = nil,
+		color_ranges = nil,
 		localize = "false",
+		name = nil,
+		text_id = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -7737,7 +7675,11 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning(node, item_name, sele
 	end
 
 	local params = {
+		callback = nil,
+		color_ranges = nil,
 		localize = "false",
+		name = nil,
+		text_id = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -7798,8 +7740,11 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_category(node, item_n
 	local category_data = tweak_data:get_raw_value("preplanning", "categories", current_category) or {}
 	local params = {
 		callback = "open_preplanning_type_item",
+		color_ranges = nil,
 		enabled = true,
 		localize = "false",
+		name = nil,
+		text_id = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -7856,7 +7801,11 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_type(node, item_name,
 
 	local params = {
 		callback = "reserve_preplanning_mission_element_by_item",
-		localize = "false"
+		color_ranges = nil,
+		localize = "false",
+		name = nil,
+		text_id = nil,
+		tooltip = nil
 	}
 	local mission_elements = managers.preplanning:get_mission_elements_by_type(current_type)
 	local locations = managers.preplanning:sort_mission_elements_into_locations(mission_elements)
@@ -8008,8 +7957,12 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_plan(node, item_name,
 	local category_data = tweak_data.preplanning.categories[current_plan]
 	local params = {
 		callback = "vote_preplanning_mission_element_by_item",
+		color_ranges = nil,
 		enabled = false,
 		localize = "false",
+		name = nil,
+		text_id = nil,
+		votes = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -8094,6 +8047,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_custom(node, item_nam
 
 	local params = {
 		callback = "pressed_preplanning_custom_point",
+		color_ranges = nil,
 		localize = "false",
 		name = "test",
 		text_id = "TEST"
@@ -8675,7 +8629,7 @@ function MenuCrimeNetGageAssignmentInitiator:modify_node(original_node, data)
 		name_localized = managers.localization:text("menu_gage_assignment_summary_title")
 	})
 
-	if SystemInfo:platform() ~= Idstring("XB1") then
+	if not IS_XB1 then
 		self:create_item(node, {
 			id = "_video",
 			name_localized = managers.localization:text("menu_gage_assignment_video_title")
@@ -10110,7 +10064,7 @@ function MenuOptionInitiator:refresh_node(node)
 end
 
 function MenuOptionInitiator:modify_resolution(node)
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		local res_name = string.format("%d x %d", RenderSettings.resolution.x, RenderSettings.resolution.y)
 
 		node:set_default_item_name(res_name)
@@ -10277,7 +10231,6 @@ function MenuOptionInitiator:modify_adv_video(node)
 	end
 
 	node:item("choose_anim_lod"):set_value(managers.user:get_setting("video_animation_lod"))
-	node:item("use_lightfx"):set_value(managers.user:get_setting("use_lightfx") and "on" or "off")
 	node:item("choose_texture_quality"):set_value(RenderSettings.texture_quality_default)
 	node:item("choose_shadow_quality"):set_value(RenderSettings.shadow_quality_default)
 	node:item("choose_anisotropic"):set_value(RenderSettings.max_anisotropy)
@@ -10286,7 +10239,6 @@ function MenuOptionInitiator:modify_adv_video(node)
 		node:item("fov_multiplier"):set_value(managers.user:get_setting("fov_multiplier"))
 	end
 
-	node:item("choose_gpu_flush"):set_value(managers.user:get_setting("flush_gpu_command_queue") and "on" or "off")
 	node:item("choose_fps_cap"):set_value(managers.user:get_setting("fps_cap"))
 	node:item("use_headbob"):set_value(managers.user:get_setting("use_headbob") and "on" or "off")
 	node:item("max_streaming_chunk"):set_value(managers.user:get_setting("max_streaming_chunk"))

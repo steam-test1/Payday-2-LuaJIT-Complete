@@ -4849,14 +4849,6 @@ function MissionBriefingGui:reload_loadout()
 
 	local loadout_data = self._node:parameters().menu_component_data.loadout
 
-	if SystemInfo:platform() == Idstring("X360") then
-		if loadout_data.changing_loadout == "primary" and loadout_data.current_slot ~= managers.blackmarket:equipped_weapon_slot("primaries") then
-			managers.blackmarket:preload_primary_weapon()
-		elseif loadout_data.changing_loadout == "secondary" and loadout_data.current_slot ~= managers.blackmarket:equipped_weapon_slot("secondaries") then
-			managers.blackmarket:preload_secondary_weapon()
-		end
-	end
-
 	loadout_data.changing_loadout = nil
 	loadout_data.current_slot = nil
 

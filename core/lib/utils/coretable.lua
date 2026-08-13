@@ -752,6 +752,28 @@ function table.upper_bound(t, target, func)
 	end
 end
 
+function table.set_defaults(target, source)
+	target = target or {}
+
+	for k, v in pairs(source) do
+		if target[k] == nil then
+			target[k] = v
+		end
+	end
+
+	return target
+end
+
+function table.value_as_key(t, key)
+	local new_table = {}
+
+	for _, v in pairs(t) do
+		new_table[v[key]] = v
+	end
+
+	return new_table
+end
+
 if Application:ews_enabled() then
 	local __lua_representation, __write_lua_representation_to_file
 

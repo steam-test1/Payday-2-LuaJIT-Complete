@@ -460,7 +460,7 @@ function CrimeNetManager:start_no_servers()
 end
 
 function CrimeNetManager:start(skip_servers)
-	if not skip_servers and SystemInfo:platform() == Idstring("XB1") then
+	if not skip_servers and IS_XB1 then
 		XboxLive:refresh_friends_list()
 	end
 
@@ -550,116 +550,22 @@ function CrimeNetManager:_crimenet_gui()
 	return managers.menu_component._crimenet_gui
 end
 
-local is_win32 = SystemInfo:platform() == Idstring("WIN32")
-local is_ps3 = SystemInfo:platform() == Idstring("PS3")
-local is_x360 = SystemInfo:platform() == Idstring("X360")
-local is_xb1 = SystemInfo:platform() == Idstring("XB1")
-local is_ps4 = SystemInfo:platform() == Idstring("PS4")
-local is_steam = SystemInfo:distribution() == Idstring("STEAM")
-local is_epic = SystemInfo:distribution() == Idstring("EPIC")
+local is_win32 = IS_PC
+local is_xb1 = IS_XB1
+local is_ps4 = IS_PS4
+local is_steam = IS_STEAM
+local is_epic = IS_EPIC
 
 function CrimeNetManager:_find_online_games(friends_only)
 	if is_win32 then
 		self:_find_online_games_win32(friends_only)
-	elseif is_ps3 then
-		self:_find_online_games_ps3(friends_only)
 	elseif is_ps4 then
 		self:_find_online_games_ps4(friends_only)
-	elseif is_x360 then
-		self:_find_online_games_xbox360(friends_only)
 	elseif is_xb1 then
 		self:_find_online_games_xb1(friends_only)
 	else
 		Application:error("[CrimeNetManager] Unknown gaming platform trying to access Crime.net!")
 	end
-end
-
-function CrimeNetManager:_find_online_games_xbox360(friends_only)
-	local function f(info)
-		local friends = managers.network.friends:get_friends_by_name()
-
-		managers.network.matchmake:search_lobby_done()
-
-		local room_list = info.room_list
-		local attribute_list = info.attribute_list
-		local dead_list = {}
-
-		for id, _ in pairs(self._active_server_jobs) do
-			dead_list[id] = true
-		end
-
-		for i, room in ipairs(room_list) do
-			local name_str = tostring(room.owner_name)
-			local attributes_numbers = attribute_list[i].numbers
-
-			if managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
-				local host_name = name_str
-				local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
-				local name_id = level_id and tweak_data.levels[level_id] and tweak_data.levels[level_id].name_id
-				local level_name = name_id and managers.localization:text(name_id) or "LEVEL NAME ERROR"
-				local difficulty_id = attributes_numbers[2]
-				local difficulty = tweak_data:index_to_difficulty(difficulty_id)
-				local job_id = tweak_data.narrative:get_job_name_from_index(math.floor(attributes_numbers[1] / 1000))
-				local state_string_id = tweak_data:index_to_server_state(attributes_numbers[4])
-				local state_name = state_string_id and managers.localization:text("menu_lobby_server_state_" .. state_string_id) or "UNKNOWN"
-				local state = attributes_numbers[4]
-				local num_plrs = attributes_numbers[5]
-				local is_friend = friends[host_name] and true or false
-
-				if name_id then
-					if not self._active_server_jobs[room.room_id] then
-						if table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
-							self._active_server_jobs[room.room_id] = {
-								added = false,
-								alive_time = 0
-							}
-
-							managers.menu_component:add_crimenet_server_job({
-								room_id = room.room_id,
-								info = room.info,
-								id = room.room_id,
-								level_id = level_id,
-								difficulty = difficulty,
-								difficulty_id = difficulty_id,
-								num_plrs = num_plrs,
-								host_name = host_name,
-								state_name = state_name,
-								state = state,
-								level_name = level_name,
-								job_id = job_id,
-								is_friend = is_friend
-							})
-						end
-					else
-						managers.menu_component:update_crimenet_server_job({
-							room_id = room.room_id,
-							info = room.info,
-							id = room.room_id,
-							level_id = level_id,
-							difficulty = difficulty,
-							difficulty_id = difficulty_id,
-							num_plrs = num_plrs,
-							host_name = host_name,
-							state_name = state_name,
-							state = state,
-							level_name = level_name,
-							job_id = job_id,
-							is_friend = is_friend
-						})
-					end
-				end
-			end
-		end
-
-		for id, _ in pairs(dead_list) do
-			self._active_server_jobs[id] = nil
-
-			managers.menu_component:remove_crimenet_gui_job(id)
-		end
-	end
-
-	managers.network.matchmake:register_callback("search_lobby", f)
-	managers.network.matchmake:search_lobby(friends_only)
 end
 
 function CrimeNetManager:_find_online_games_xb1(friends_only)
@@ -779,137 +685,6 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 
 	managers.network.matchmake:register_callback("search_lobby", f)
 	managers.network.matchmake:search_lobby(friends_only)
-end
-
-function CrimeNetManager:_find_online_games_ps3(friends_only)
-	local function f(info_list)
-		managers.network.matchmake:search_lobby_done()
-
-		local friend_names = managers.network.friends:get_names_friends_list()
-
-		for _, info in ipairs(info_list) do
-			local room_list = info.room_list
-			local attribute_list = info.attribute_list
-
-			for i, room in ipairs(room_list) do
-				local name_str = tostring(room.owner_id)
-				local friend_str = room.friend_id and tostring(room.friend_id)
-				local attributes_numbers = managers.network.matchmake:_psn2payday(info.attribute_list[i].numbers)
-
-				if managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
-					local host_name = name_str
-					local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
-					local is_friend = friend_names[host_name] and true or false
-
-					if name_id and not self._active_server_jobs[name_str] and table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
-						self._active_server_jobs[name_str] = {
-							added = false,
-							alive_time = 0,
-							room_id = room.room_id
-						}
-
-						managers.menu_component:add_crimenet_server_job({
-							room_id = room.room_id,
-							id = name_str,
-							level_id = level_id,
-							difficulty = difficulty,
-							difficulty_id = difficulty_id,
-							num_plrs = num_plrs,
-							host_name = host_name,
-							state_name = state_name,
-							state = state,
-							level_name = level_name,
-							job_id = job_id,
-							is_friend = is_friend
-						})
-					end
-				end
-			end
-		end
-	end
-
-	if #PSN:get_world_list() == 0 then
-		return
-	end
-
-	local function done_verify_func()
-		managers.network.matchmake:register_callback("search_lobby", f)
-		managers.network.matchmake:start_search_lobbys(friends_only)
-	end
-
-	local dead_list = {}
-	local rooms_original = {}
-
-	for id, data in pairs(self._active_server_jobs) do
-		dead_list[id] = true
-
-		table.insert(rooms_original, data.room_id)
-	end
-
-	local rooms = {}
-
-	while #rooms_original > 0 do
-		table.insert(rooms, table.remove(rooms_original, math.random(#rooms_original)))
-	end
-
-	local function updated_session_attributes(active_info_list)
-		self._test_result = active_info_list
-
-		if active_info_list then
-			local friend_names = managers.network.friends:get_names_friends_list()
-
-			for _, info in ipairs(active_info_list) do
-				local room_list = info.room_list
-				local attribute_list = info.attribute_list
-
-				for i, room in ipairs(room_list) do
-					local name_str = tostring(room.owner_id)
-					local friend_str = room.friend_id and tostring(room.friend_id)
-					local attributes_numbers = attribute_list[i].numbers
-
-					if friends_only then
-						-- Nothing
-					end
-
-					local is_friend = friend_names[name_str] and true or false
-
-					if (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
-						dead_list[name_str] = nil
-
-						local host_name = name_str
-						local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
-
-						if name_id and self._active_server_jobs[name_str] then
-							managers.menu_component:update_crimenet_server_job({
-								room_id = room.room_id,
-								id = name_str,
-								level_id = level_id,
-								difficulty = difficulty,
-								difficulty_id = difficulty_id,
-								num_plrs = num_plrs,
-								host_name = host_name,
-								state_name = state_name,
-								state = state,
-								level_name = level_name,
-								job_id = job_id,
-								is_friend = is_friend
-							})
-						end
-					end
-				end
-			end
-
-			for id, _ in pairs(dead_list) do
-				self._active_server_jobs[id] = nil
-
-				managers.menu_component:remove_crimenet_gui_job(id)
-			end
-		end
-
-		done_verify_func()
-	end
-
-	managers.network.matchmake:update_session_attributes(rooms, updated_session_attributes)
 end
 
 function CrimeNetManager:_find_online_games_ps4(friends_only)
@@ -1201,7 +976,7 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 	managers.network.matchmake:register_callback("search_lobby", f)
 	managers.network.matchmake:search_lobby(friends_only)
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		local function usrs_f(success, amount)
 			if success then
 				managers.menu_component:set_crimenet_players_online(amount)
@@ -1231,7 +1006,7 @@ function CrimeNetManager:load(data)
 end
 
 function CrimeNetManager:join_quick_play_game()
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		return
 	end
 
@@ -2124,11 +1899,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	end
 
 	if not no_servers and not is_xb1 then
-		if is_x360 then
-			local var_1_0 = "menu_cn_friends"
-		else
-			local id = "menu_cn_filter"
-		end
+		-- Nothing
 	elseif not no_servers and is_xb1 then
 		local id = "menu_cn_smart_matchmaking"
 		local smart_matchmaking_button = self._panel:text({
@@ -4390,9 +4161,7 @@ function CrimeNetGui:special_btn_pressed(button)
 	if not managers.network:session() and not Global.game_settings.single_player and button == Idstring("menu_toggle_filters") then
 		managers.menu_component:post_event("menu_enter")
 
-		if is_x360 then
-			XboxLive:show_friends_ui(managers.user:get_platform_id())
-		elseif is_xb1 then
+		if is_xb1 then
 			managers.menu:open_node("crimenet_contract_smart_matchmaking", {})
 		else
 			managers.menu:open_node("crimenet_filters", {})

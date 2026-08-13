@@ -522,7 +522,7 @@ function HUDLootScreen:hide()
 end
 
 function HUDLootScreen:show()
-	if not self._video and SystemInfo:platform() ~= Idstring("X360") then
+	if not self._video then
 		local variant
 
 		variant = managers.dlc:is_installing() and 1 or math.random(8)
@@ -723,6 +723,7 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 				peer_data.steam_drop = true
 				peer_data.effects = {
 					flip_card = "lootdrop_safe_drop_flip_card",
+					flip_wait = nil,
 					show_item = "lootdrop_safe_drop_show_item",
 					show_wait = "lootdrop_safe_drop_show_wait"
 				}
@@ -763,6 +764,7 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 				peer_data.steam_drop = true
 				peer_data.effects = {
 					flip_card = "lootdrop_drill_drop_flip_card",
+					flip_wait = nil,
 					show_item = "lootdrop_drill_drop_show_item",
 					show_wait = "lootdrop_drill_drop_show_wait"
 				}
@@ -944,11 +946,11 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 
 	cards[card_one] = wait_for_lootdrop and 3 or item_pc
 
-	local card_two = #cards + 1
+	local card_two = math.max((#cards + 1) % 4, 1)
 
 	cards[card_two] = left_pc
 
-	local card_three = #cards + 1
+	local card_three = math.max((#cards + 1) % 4, 1)
 
 	cards[card_three] = right_pc
 	peer_data.chosen_card_id = wait_for_lootdrop and card_id

@@ -687,7 +687,7 @@ function HUDLootScreenSkirmish:show()
 
 	self._active = true
 
-	if not self._video and SystemInfo:platform() ~= Idstring("X360") then
+	if not self._video then
 		local variant
 
 		variant = managers.dlc:is_installing() and 1 or math.random(8)

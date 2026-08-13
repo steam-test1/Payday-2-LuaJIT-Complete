@@ -4,7 +4,7 @@ function BodyBagsBagBase.spawn(pos, rot, upgrade_lvl, peer_id)
 	local unit_name = "units/payday2/equipment/gen_equipment_bodybags_bag/gen_equipment_bodybags_bag"
 	local unit = World:spawn_unit(Idstring(unit_name), pos, rot)
 
-	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, upgrade_lvl, peer_id or 0)
+	managers.network:send_to_peers_synched("sync_equipment_setup", unit, upgrade_lvl, peer_id or 0)
 	unit:base():setup(upgrade_lvl)
 
 	return unit
@@ -15,7 +15,11 @@ function BodyBagsBagBase:set_server_information(peer_id)
 		owner_peer_id = peer_id
 	}
 
-	managers.network:session():peer(peer_id):set_used_deployable(true)
+	local peer = managers.network:get_peer_safe(peer_id)
+
+	if peer then
+		peer:set_used_deployable(true)
+	end
 end
 
 function BodyBagsBagBase:server_information()
@@ -45,10 +49,14 @@ end
 function BodyBagsBagBase:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin then
-		local peer = managers.network:session():server_peer()
+	if self._was_dropin then
+		return
+	end
 
-		peer:mark_cheater(VoteManager.REASON.many_assets)
+	local server_peer = managers.network:get_server_peer_safe()
+
+	if server_peer then
+		server_peer:mark_cheater(VoteManager.REASON.many_assets)
 	end
 end
 
@@ -119,10 +127,7 @@ end
 
 function BodyBagsBagBase:server_set_dynamic()
 	self:_set_dynamic()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
 end
 
 function BodyBagsBagBase:sync_net_event(event_id)
@@ -149,7 +154,7 @@ function BodyBagsBagBase:take_bodybag(unit)
 	if can_take_bodybag == 1 then
 		unit:sound():play("pickup_ammo")
 		managers.player:add_body_bags_amount(1)
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
+		managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
 
 		self._bodybag_amount = self._bodybag_amount - 1
 
@@ -227,7 +232,9 @@ function BodyBagsBagBase:load(data)
 	self._was_dropin = true
 end
 
-function BodyBagsBagBase:destroy()
+function BodyBagsBagBase:destroy(unit)
+	BodyBagsBagBase.super.destroy(self, unit)
+
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 

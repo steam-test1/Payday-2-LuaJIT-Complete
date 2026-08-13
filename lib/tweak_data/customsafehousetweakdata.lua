@@ -446,9 +446,8 @@ function CustomSafehouseTweakData:_init_safehouse_rooms(tweak_data)
 		}
 	})
 	table.insert(self.rooms, {
-		dlc = "john_wick_character",
 		help_id = "menu_cs_help_jowi",
-		name_id = "menu_jowi",
+		name_id = "menu_cs_shooting_range",
 		room_id = "jowi",
 		tier_max = 3,
 		title_id = "menu_cs_title_jowi",

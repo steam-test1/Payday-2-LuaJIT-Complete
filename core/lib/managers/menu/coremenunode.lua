@@ -80,6 +80,7 @@ function MenuNode:init(data_node)
 	self:_parse_items(data_node)
 
 	self._selected_item = nil
+	self._allow_deselect = false
 end
 
 function MenuNode:_parse_items(data_node)
@@ -190,7 +191,13 @@ function MenuNode:delete_item(item_name)
 end
 
 function MenuNode:item(item_name)
-	item_name = item_name or self._default_item_name
+	if not item_name then
+		if self._allow_deselect then
+			return nil
+		end
+
+		item_name = self._default_item_name
+	end
 
 	local item
 

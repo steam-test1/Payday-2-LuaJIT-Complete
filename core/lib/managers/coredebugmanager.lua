@@ -2549,7 +2549,7 @@ function MacroDebug:spawn(unit_name, pos, rot)
 		local pos = pos or cam and cam:position() + cam:rotation():y() * self._default_spawn_cam_offset or Vector3()
 		local rot = rot or cam and cam:rotation() or Rotation()
 
-		CoreEngineAccess._editor_load(Idstring("unit"), unit_name:id())
+		CoreEngineAccess._editor_load(IDS_UNIT, unit_name:id())
 
 		local unit = World:spawn_unit(unit_name:id(), pos, rot)
 

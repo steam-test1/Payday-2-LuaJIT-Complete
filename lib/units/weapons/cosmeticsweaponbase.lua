@@ -29,6 +29,14 @@ local IDS_PATTERN_TWEAK = Idstring("pattern_tweak")
 local IDS_UV_SCALE = Idstring("uv_scale")
 local IDS_WEAR_TEAR_VALUE = Idstring("wear_tear_value")
 
+function NewRaycastWeaponBase:change_workshop_cosmetics(cosmetics, async_clbk)
+	self._cosmetics_data = cosmetics
+
+	self:_apply_cosmetics(async_clbk or function()
+		return
+	end)
+end
+
 function NewRaycastWeaponBase:change_cosmetics(cosmetics, async_clbk)
 	self:set_cosmetics_data(cosmetics)
 	self:_apply_cosmetics(async_clbk or function()
@@ -50,12 +58,12 @@ function NewRaycastWeaponBase:set_cosmetics_data(cosmetics)
 		return
 	end
 
-	self._cosmetics_id = cosmetics and cosmetics.id
-	self._cosmetics_quality = cosmetics and cosmetics.quality
-	self._cosmetics_bonus = cosmetics and cosmetics.bonus
+	self._cosmetics_id = cosmetics.id
+	self._cosmetics_quality = cosmetics.quality
+	self._cosmetics_bonus = cosmetics.bonus
 	self._cosmetics_data = self._cosmetics_id and tweak_data.blackmarket.weapon_skins[self._cosmetics_id]
-	self._cosmetics_color_index = cosmetics and cosmetics.color_index
-	self._cosmetics_pattern_scale = cosmetics and cosmetics.pattern_scale or tweak_data.blackmarket.weapon_color_pattern_scale_default
+	self._cosmetics_color_index = cosmetics.color_index
+	self._cosmetics_pattern_scale = cosmetics.pattern_scale or tweak_data.blackmarket.weapon_color_pattern_scale_default
 
 	if self._cosmetics_color_index and self._cosmetics_data and self._cosmetics_data.color_skin_data then
 		local color_skin_data = self._cosmetics_data.color_skin_data
@@ -168,7 +176,12 @@ function NewRaycastWeaponBase:_update_materials()
 				if part_data and (not self:_third_person() or not part_data.skip_third_thq) then
 					local new_material_config_ids = self:_material_config_name(part_id, part_data, use_cc_material_config)
 
-					if part.unit:material_config() ~= new_material_config_ids and DB:has(IDS_MATERIAL_CONFIG, new_material_config_ids) then
+					if part.unit:material_config() ~= new_material_config_ids then
+						if DB:has(IDS_MATERIAL_CONFIG, new_material_config_ids) then
+							part.unit:set_material_config(new_material_config_ids, true)
+						end
+					elseif use_cc_material_config then
+						part.unit:set_material_config(Idstring(part_data.unit), true)
 						part.unit:set_material_config(new_material_config_ids, true)
 					end
 				end
@@ -259,12 +272,14 @@ function NewRaycastWeaponBase:_apply_cosmetics(async_clbk)
 						value = mvec1
 					end
 
-					material:set_variable(Idstring(variable), value)
+					if value then
+						material:set_variable(Idstring(variable), value)
+					end
 				end
 			end
 
-			for key, material_texture in pairs(material_textures) do
-				value = self:get_cosmetic_value("weapons", self._name_id, "parts", part_id, material:name():key(), key) or self:get_cosmetic_value("weapons", self._name_id, "types", p_type, key) or self:get_cosmetic_value("weapons", self._name_id, key) or self:get_cosmetic_value("parts", part_id, material:name():key(), key) or self:get_cosmetic_value("types", p_type, key) or self:get_cosmetic_value(key) or material_defaults[material_texture]
+			for key, variable in pairs(material_textures) do
+				value = self:get_cosmetic_value("weapons", self._name_id, "parts", part_id, material:name():key(), key) or self:get_cosmetic_value("weapons", self._name_id, "types", p_type, key) or self:get_cosmetic_value("weapons", self._name_id, key) or self:get_cosmetic_value("parts", part_id, material:name():key(), key) or self:get_cosmetic_value("types", p_type, key) or self:get_cosmetic_value(key) or material_defaults[variable]
 
 				if value then
 					if type_name(value) ~= "Idstring" then
@@ -284,7 +299,11 @@ function NewRaycastWeaponBase:_apply_cosmetics(async_clbk)
 
 	for key, old_texture in pairs(self._textures) do
 		if not textures[key] and not old_texture.applied then
-			TextureCache:unretrieve(old_texture.name)
+			if DB:has(IDS_TEXTURE, old_texture.name) then
+				TextureCache:unretrieve(old_texture.name)
+			else
+				Application:error("[NewRaycastWeaponBase:_apply_cosmetics] Weapon cosmetics tried to unload no-existing texture!", "old_texture", old_texture.name)
+			end
 		end
 	end
 
@@ -355,15 +374,15 @@ function NewRaycastWeaponBase:_set_material_textures()
 		p_type = managers.weapon_factory:get_type_from_part_id(part_id)
 
 		for _, material in pairs(materials) do
-			for key, material_texture in pairs(material_textures) do
-				value = self:get_cosmetic_value("weapons", self._name_id, "parts", part_id, material:name():key(), key) or self:get_cosmetic_value("weapons", self._name_id, "types", p_type, key) or self:get_cosmetic_value("weapons", self._name_id, key) or self:get_cosmetic_value("parts", part_id, material:name():key(), key) or self:get_cosmetic_value("types", p_type, key) or self:get_cosmetic_value(key) or material_defaults[material_texture]
+			for key, variable in pairs(material_textures) do
+				value = self:get_cosmetic_value("weapons", self._name_id, "parts", part_id, material:name():key(), key) or self:get_cosmetic_value("weapons", self._name_id, "types", p_type, key) or self:get_cosmetic_value("weapons", self._name_id, key) or self:get_cosmetic_value("parts", part_id, material:name():key(), key) or self:get_cosmetic_value("types", p_type, key) or self:get_cosmetic_value(key) or material_defaults[variable]
 
 				if value then
 					if type_name(value) ~= "Idstring" then
 						value = Idstring(value)
 					end
 
-					Application:set_material_texture(material, Idstring(material_texture), value, IDS_NORMAL)
+					Application:set_material_texture(material, Idstring(variable), value, IDS_NORMAL)
 				end
 			end
 		end
@@ -373,7 +392,11 @@ function NewRaycastWeaponBase:_set_material_textures()
 		if not texture_data.applied then
 			texture_data.applied = true
 
-			TextureCache:unretrieve(texture_data.name)
+			if DB:has(IDS_TEXTURE, texture_data.name) then
+				TextureCache:unretrieve(texture_data.name)
+			else
+				Application:error("[NewRaycastWeaponBase:_apply_cosmetics] Weapon cosmetics tried to unload no-existing texture!", "texture", texture_data.name)
+			end
 		end
 	end
 end

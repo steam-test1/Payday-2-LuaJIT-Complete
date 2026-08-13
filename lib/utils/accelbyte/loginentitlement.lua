@@ -1,21 +1,21 @@
 local base64 = require("lib/utils/base64")
 local json = require("lib/utils/accelbyte/json")
-local ClientId = Utility:get_current_client_id()
-local ClientSecret = Utility:get_current_client_secret()
-local BaseUrl = Utility:get_current_base_url()
-local Namespace = Utility:get_current_namespace()
-local PublisherNamespace = Utility:get_current_publisher_namespace()
+local ClientId = "3c25c4f86e4d4ec48f727e5c4b8bf9c2"
+local ClientSecret = ""
+local BaseUrl = "https://nebula.starbreeze.com"
+local Namespace = "PD2"
+local PublisherNamespace = "starbreeze"
+local LambdaUrl = "https://jji485ris4.execute-api.us-west-2.amazonaws.com/prod-pd2-account/prod_check_iam_steamlinking"
 local SteamPlatformId = "steam"
 local IamSteamPlatformUrl = string.format("%s/iam/oauth/platforms/%s/token", BaseUrl, SteamPlatformId)
 local EpicPlatformId = "epicgames"
 local IamEpicPlatformUrl = string.format("%s/iam/v3/oauth/platforms/%s/token", BaseUrl, EpicPlatformId)
 local IamServerUrl = string.format("%s/iam/oauth/token", BaseUrl)
 
-if SystemInfo:distribution() == Idstring("EPIC") then
+if IS_EPIC then
 	IamServerUrl = string.format("%s/iam/v3/oauth/token", BaseUrl)
 end
 
-local LambdaUrl = Utility:get_current_lambda_url()
 local publisher_user_id
 
 NamespaceRoles = {
@@ -272,9 +272,9 @@ function Login:CheckPlatformIdForExistingAccount(platform_user_id, callback)
 
 	local platform_id
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		platform_id = SteamPlatformId
-	elseif SystemInfo:distribution() == Idstring("EPIC") then
+	elseif IS_EPIC then
 		platform_id = EpicPlatformId
 	end
 
@@ -300,7 +300,7 @@ function Login:CheckPlatformIdForExistingAccount(platform_user_id, callback)
 	local function existing_account_callback(success, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback CheckPlatformIdForExistingAccount : " .. Url)
 
-		if success then
+		if success and response_body then
 			cat_print("accelbyte", "[AccelByte] CheckPlatformIdForExistingAccount Success ")
 			cat_print("accelbyte", "[AccelByte] Platform ID Found, logging in with Steam")
 			cat_print("accelbyte", "[AccelByte] Responses Body : " .. response_body)
@@ -643,7 +643,7 @@ end
 function Entitlement:UpdateStat(stat_code, stat_value, update_method, callback)
 	cat_print("accelbyte", "[AccelByte] Entitlement:UpdateStat")
 
-	if not Login.player_session.access_token then
+	if true or not Login.player_session.access_token then
 		callback(false)
 
 		return
@@ -812,7 +812,9 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 	local function login_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "Callback login_callback ")
 
-		Global.telemetry._has_account_checked = true
+		if Global.telemetry ~= nil then
+			Global.telemetry._has_account_checked = true
+		end
 
 		Telemetry:on_login()
 		Telemetry:on_login_screen_passed()
@@ -834,7 +836,7 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 
 			cat_print("accelbyte", "[AccelByte] Linked Starbreeze User for this Platform ID is found")
 
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if IS_STEAM then
 				local function get_steamticket_callback(ticket)
 					if ticket == "" then
 						cat_print("accelbyte", "[AccelByte] Failed to authenticate Steam Ticket, reason : " .. reason)
@@ -842,35 +844,33 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 						return
 					end
 
-					local function login_with_steam_callback(success, reason)
-						if success then
-							cat_print("accelbyte", "[AccelByte] Successfully authenticated the Steam Ticket, now logging in with Steam to AB Backend , callback reason " .. reason)
-							Login:LoginWithSteamToken(ticket, login_callback)
-						else
-							cat_print("accelbyte", "[AccelByte] Failed to authenticate Steam Ticket, reason : " .. reason)
-						end
-					end
+					ticket = "steam_ticket:" .. ticket
 
-					Steam:bind_steam_ticket_validate_callback(player_id, login_with_steam_callback, ticket)
 					Login:LoginWithSteamToken(ticket, login_callback)
 				end
 
-				Utility:get_steamticket(get_steamticket_callback)
-			elseif SystemInfo:distribution() == Idstring("EPIC") then
-				local ticket = EpicEntitlements:get_epic_ticket()
+				Distribution:create_secure_ticket_for_services("steam_ticket", get_steamticket_callback)
+			elseif IS_EPIC then
+				local function get_epicticket_callback(ticket)
+					if ticket == "" then
+						cat_print("accelbyte", "[AccelByte] Failed to retrieve Epic Ticket")
 
-				if string.len(ticket) > 0 then
-					cat_print("accelbyte", "[AccelByte] Successfully authenticated the Epic Ticket, now logging in with Epic to AB Backend")
+						return
+					end
+
 					Login:LoginWithEpicToken(ticket, login_callback)
-				else
-					cat_print("accelbyte", "[AccelByte] Failed to retrieve Epic Ticket")
 				end
+
+				Distribution:create_secure_ticket_for_services("", get_epicticket_callback)
 			else
 				Login:LoginWithUsernamePassword("username@email.com", "password_sample")
 			end
 		else
 			Login.has_account = false
-			Global.telemetry._has_account_checked = true
+
+			if Global.telemetry ~= nil then
+				Global.telemetry._has_account_checked = true
+			end
 
 			Telemetry:on_login()
 			Telemetry:on_login_screen_passed()
@@ -884,7 +884,10 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 			Login:CheckPlatformIdForExistingAccount(player_id, check_platform_callback)
 		else
 			Login.has_account = false
-			Global.telemetry._has_account_checked = true
+
+			if Global.telemetry ~= nil then
+				Global.telemetry._has_account_checked = true
+			end
 
 			Telemetry:on_login()
 			Telemetry:on_login_screen_passed()

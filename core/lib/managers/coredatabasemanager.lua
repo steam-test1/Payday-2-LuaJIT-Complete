@@ -4,15 +4,17 @@ core:import("CoreApp")
 core:import("CoreString")
 
 DatabaseManager = DatabaseManager or class()
+DatabaseManager.IDS_INDEX = Idstring("index")
+DatabaseManager.IDS_TYPES = Idstring("indices/lookups/editor_types")
 
 function DatabaseManager:list_unit_types()
 	if self.__unit_types == nil then
+		self:list_units_of_type("")
+
 		self.__unit_types = {}
 
-		for _, unit in ipairs(self:list_entries_of_type("unit")) do
-			local unit_data = CoreEngineAccess._editor_unit_data(unit:id())
-
-			table.insert(self.__unit_types, unit_data and unit_data:type() or nil)
+		for _, type in ipairs(self.__units_by_type) do
+			self.__unit_types[type._meta] = true
 		end
 	end
 
@@ -21,21 +23,10 @@ end
 
 function DatabaseManager:list_units_of_type(type)
 	if self.__units_by_type == nil then
-		self.__units_by_type = {}
-
-		for _, unit in ipairs(self:list_entries_of_type("unit")) do
-			local unit_data = CoreEngineAccess._editor_unit_data(unit:id())
-			local key = unit_data and unit_data:type() and unit_data:type():key()
-
-			if key then
-				self.__units_by_type[key] = self.__units_by_type[key] or {}
-
-				table.insert(self.__units_by_type[key], unit)
-			end
-		end
+		self.__units_by_type = PackageManager:editor_load_script_data(self.IDS_INDEX, self.IDS_TYPES)
 	end
 
-	return self.__units_by_type[type:key()] or {}
+	return self.__units_by_type[type] or {}
 end
 
 function DatabaseManager:list_entries_of_type(type, pattern)
@@ -60,12 +51,8 @@ function DatabaseManager:recompile(...)
 	end
 
 	Application:data_compile({
-		preprocessor_definitions = "preprocessor_definitions",
-		target_db_name = "all",
 		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = self:base_path(),
-		target_db_root = Application:base_path() .. "assets",
+		build_profile = Application:build_profile_path(),
 		source_files = files
 	})
 	DB:reload()
@@ -90,7 +77,7 @@ function DatabaseManager:clear_all_cached_indices()
 end
 
 function DatabaseManager:root_path()
-	local path = Application:base_path() .. (CoreApp.arg_value("-assetslocation") or "..\\..\\")
+	local path = Application:project_path()
 
 	path = Application:nice_path(path, true)
 
@@ -250,15 +237,11 @@ function DatabaseManager:_type_index(type)
 end
 
 function DatabaseManager:_parse_entries_in_index(index)
-	local file = DB:has("index", index) and DB:open("index", index) or nil
-
-	if file == nil then
+	if not DB:has("index", index) then
 		return {}
-	else
-		local contents = file:read()
-
-		file:close()
-
-		return string.split(contents, "[\r\n]")
 	end
+
+	local file = PackageManager:editor_load_script_data(self.IDS_INDEX, Idstring(index))
+
+	return file
 end

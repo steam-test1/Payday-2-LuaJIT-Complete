@@ -123,7 +123,6 @@ function CoreEnvEditor:create_shadow_tab()
 	local scrolled_window = EWS:ScrolledWindow(panel, "", "VSCROLL")
 
 	scrolled_window:set_scroll_rate(Vector3(0, 1, 0))
-	scrolled_window:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 	scrolled_window:set_virtual_size(Vector3(200, 2000, 0))
 
 	local box = EWS:BoxSizer("VERTICAL")

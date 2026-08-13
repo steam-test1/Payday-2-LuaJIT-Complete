@@ -321,7 +321,7 @@ function TimerGui:setup()
 		self._original_colors[child:key()] = child:color()
 	end
 
-	self._gui_script.panel:set_alpha(1)
+	self._gui_script.panel:set_alpha(0.8)
 end
 
 function TimerGui:reset()
@@ -442,9 +442,9 @@ function TimerGui:set_background_icons(background_icons)
 
 	background_icons_panel:clear()
 
-	local alpha = self._gui_script.panel:alpha()
+	local alpha = panel:alpha()
 
-	self._gui_script.panel:set_alpha(1)
+	panel:set_alpha(1)
 
 	self._original_colors = self._original_colors or {}
 
@@ -454,7 +454,7 @@ function TimerGui:set_background_icons(background_icons)
 		self._original_colors[icon:key()] = icon_data.color or icon:color()
 	end
 
-	self._gui_script.panel:set_alpha(alpha)
+	panel:set_alpha(alpha)
 end
 
 function TimerGui:start(timer)
@@ -463,8 +463,8 @@ function TimerGui:start(timer)
 	if not self._started then
 		self:_start(timer)
 
-		if managers.network:session() then
-			managers.network:session():send_to_peers_synched("start_timer_gui", self._unit, timer)
+		if Network:is_server() then
+			managers.network:send_to_peers_synched("start_timer_gui", self._unit, timer)
 		end
 	end
 
@@ -548,10 +548,10 @@ function TimerGui:sync_net_event(event_id)
 end
 
 function TimerGui:set_jammed(jammed)
-	if managers.network:session() then
+	if Network:is_server() then
 		local event_id = jammed and TimerGui.EVENT_IDS.jammed or TimerGui.EVENT_IDS.unjammed
 
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "timer_gui", event_id)
+		managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "timer_gui", event_id)
 	end
 
 	self:_set_jammed(jammed)

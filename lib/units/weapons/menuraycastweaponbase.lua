@@ -3,6 +3,8 @@ NewRaycastWeaponBase = NewRaycastWeaponBase or class()
 require("lib/units/weapons/CosmeticsWeaponBase")
 require("lib/units/weapons/ScopeBase")
 
+local IDS_TEXTURE = Idstring("texture")
+
 function NewRaycastWeaponBase:init(unit)
 	self._unit = unit
 	self._name_id = self.name_id or "amcar"
@@ -241,7 +243,7 @@ function NewRaycastWeaponBase:_cosmetics_applied(clbk)
 	end
 end
 
-local material_type_ids = Idstring("material")
+local material_type_ids = IDS_MATERIAL
 
 function NewRaycastWeaponBase:apply_material_parameters()
 	local parts_tweak = tweak_data.weapon.factory.parts
@@ -289,7 +291,7 @@ function NewRaycastWeaponBase:apply_texture_switches()
 
 				if texture_switch and part_data then
 					unit = part_data.unit
-					material_config = unit:get_objects_by_type(Idstring("material"))
+					material_config = unit:get_objects_by_type(IDS_MATERIAL)
 
 					local ids = {}
 
@@ -566,7 +568,7 @@ function NewRaycastWeaponBase:check_stats()
 	local base_stats = self:weapon_tweak_data().stats
 
 	if not base_stats then
-		print("no stats")
+		print("[NewRaycastWeaponBase] no stats")
 
 		return
 	end
@@ -615,7 +617,11 @@ function NewRaycastWeaponBase:destroy(unit)
 			if not texture_data.applied then
 				texture_data.applied = true
 
-				TextureCache:unretrieve(texture_data.name)
+				if DB:has(IDS_TEXTURE, texture_data.name) then
+					TextureCache:unretrieve(texture_data.name)
+				else
+					Application:error("[NewRaycastWeaponBase:_apply_cosmetics] Weapon cosmetics tried to unload no-existing texture!", "texture", texture_data.name)
+				end
 			end
 		end
 	end

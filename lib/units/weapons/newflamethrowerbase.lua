@@ -28,9 +28,9 @@ function NewFlamethrowerBase:init(...)
 	self:setup_default()
 end
 
-function NewFlamethrowerBase:destroy(...)
+function NewFlamethrowerBase:pre_destroy(...)
 	self:kill_effects()
-	NewFlamethrowerBase.super.destroy(self, ...)
+	NewFlamethrowerBase.super.pre_destroy(self, ...)
 end
 
 function NewFlamethrowerBase:update(unit, t, dt)

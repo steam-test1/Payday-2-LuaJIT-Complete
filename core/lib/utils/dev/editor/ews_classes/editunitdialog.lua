@@ -23,7 +23,6 @@ function EditUnitDialog:add_page(data)
 	local panel = EWS:ScrolledWindow(self._notebook, "", "VSCROLL,TAB_TRAVERSAL")
 
 	panel:set_scroll_rate(Vector3(0, 1, 0))
-	panel:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 
 	local sizer = EWS:BoxSizer("VERTICAL")
 

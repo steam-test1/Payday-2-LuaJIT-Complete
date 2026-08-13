@@ -1164,6 +1164,10 @@ function EventJobsTweakData:_init_community_challenges(tweak_data)
 		event_data = {
 			pigs = "pigs",
 			stage = "unlockstage"
+		},
+		event_over = {
+			pigs = 20000000,
+			unlockstage = 5
 		}
 	}
 	self.community_challenges.cg22 = {
@@ -1171,6 +1175,10 @@ function EventJobsTweakData:_init_community_challenges(tweak_data)
 		event_data = {
 			bags = "bags",
 			stage = "unlockstage"
+		},
+		event_over = {
+			bags = 6417206,
+			unlockstage = 6
 		}
 	}
 	self.community_challenges.pda10 = {
@@ -1178,6 +1186,10 @@ function EventJobsTweakData:_init_community_challenges(tweak_data)
 		event_data = {
 			bags = "bucks",
 			stage = "unlockstage"
+		},
+		event_over = {
+			bucks = 21825945,
+			unlockstage = 6
 		}
 	}
 end

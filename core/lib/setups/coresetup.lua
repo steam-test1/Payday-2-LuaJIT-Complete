@@ -16,10 +16,7 @@ core:import("CorePortalManager")
 core:import("CoreDOFManager")
 core:import("CoreRumbleManager")
 core:import("CoreOverlayEffectManager")
-core:import("CoreSessionManager")
-core:import("CoreInputManager")
 core:import("CoreGTextureManager")
-core:import("CoreSmoketestManager")
 core:import("CoreEnvironmentAreaManager")
 core:import("CoreEnvironmentEffectsManager")
 core:import("CoreSlaveManager")
@@ -263,7 +260,7 @@ function CoreSetup:__init()
 		local frame_resolution = SystemInfo:desktop_resolution()
 
 		aspect_ratio = frame_resolution.x / frame_resolution.y
-	elseif SystemInfo:platform() == Idstring("WIN32") then
+	elseif IS_WIN32 then
 		aspect_ratio = RenderSettings.aspect_ratio
 
 		if aspect_ratio == 0 then
@@ -303,9 +300,6 @@ function CoreSetup:__init()
 	managers.world_instance = CoreWorldInstanceManager:new()
 	managers.environment_controller = CoreEnvironmentControllerManager:new()
 	managers.helper_unit = CoreHelperUnitManager.HelperUnitManager:new()
-	self._input = CoreInputManager.InputManager:new()
-	self._session = CoreSessionManager.SessionManager:new(self.session_factory, self._input)
-	self._smoketest = CoreSmoketestManager.Manager:new(self._session:session())
 
 	managers.sequence:internal_load()
 	self:init_managers(managers)
@@ -334,7 +328,6 @@ function CoreSetup:__init()
 	self.__gsm = assert(self:init_game(), "self:init_game must return a GameStateMachine.")
 
 	managers.cutscene:post_init()
-	self._smoketest:post_init()
 
 	if not Application:editor() then
 		-- Nothing
@@ -352,9 +345,6 @@ function CoreSetup:__destroy()
 	managers.viewport:destroy()
 	managers.worldcamera:destroy()
 	managers.overlay_effect:destroy()
-	self._session:destroy()
-	self._input:destroy()
-	self._smoketest:destroy()
 end
 
 function CoreSetup:loading_update(t, dt)
@@ -381,9 +371,6 @@ function CoreSetup:__update(t, dt)
 	managers.viewport:update(t, dt)
 	managers.mission:update(t, dt)
 	managers.slave:update(t, dt)
-	self._session:update(t, dt)
-	self._input:update(t, dt)
-	self._smoketest:update(t, dt)
 	managers.environment_controller:update(t, dt)
 	self:update(t, dt)
 end
@@ -391,7 +378,7 @@ end
 function CoreSetup:__paused_update(t, dt)
 	managers.viewport:paused_update(t, dt)
 
-	if SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		managers.controller:update(t, dt)
 	else
 		managers.controller:paused_update(t, dt)
@@ -400,15 +387,11 @@ function CoreSetup:__paused_update(t, dt)
 	managers.cutscene:paused_update(t, dt)
 	managers.overlay_effect:paused_update(t, dt)
 	managers.slave:paused_update(t, dt)
-	self._session:update(t, dt)
-	self._input:update(t, dt)
-	self._smoketest:update(t, dt)
 	self:paused_update(t, dt)
 end
 
 function CoreSetup:__end_update(t, dt)
 	managers.camera:update(t, dt)
-	self._session:end_update(t, dt)
 	self:end_update(t, dt)
 	self.__gsm:end_update(t, dt)
 	managers.viewport:end_update(t, dt)
@@ -456,7 +439,6 @@ function CoreSetup:__end_frame(t, dt)
 		end
 
 		World:unload_all_units()
-		Application:resource_soft_reset()
 
 		if managers.menu_scene then
 			managers.menu_scene:unload()
@@ -492,7 +474,6 @@ function CoreSetup:__end_frame(t, dt)
 end
 
 function CoreSetup:__loading_update(t, dt)
-	self._session:update(t, dt)
 	self:loading_update()
 end
 

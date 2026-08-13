@@ -13,7 +13,7 @@ function WorldDefinition:init(params)
 	self._world_dir = params.world_dir
 	self._cube_lights_path = params.cube_lights_path
 
-	PackageManager:set_resource_loaded_clbk(Idstring("unit"), nil)
+	PackageManager:set_resource_loaded_clbk(IDS_UNIT, nil)
 	self:_load_world_package()
 
 	self._definition = self:_serialize_to_script(params.file_type, params.file_path)
@@ -30,13 +30,9 @@ function WorldDefinition:init(params)
 	self._excluded_continents = {}
 
 	self:_parse_world_setting(params.world_setting)
-
-	self._blacklist_data = {}
-
-	self:_load_blacklist()
 	self:parse_continents()
 	managers.sequence:preload()
-	PackageManager:set_resource_loaded_clbk(Idstring("unit"), callback(managers.sequence, managers.sequence, "clbk_pkg_manager_unit_loaded"))
+	PackageManager:set_resource_loaded_clbk(IDS_UNIT, callback(managers.sequence, managers.sequence, "clbk_pkg_manager_unit_loaded"))
 
 	self._all_units = {}
 	self._trigger_units = {}
@@ -161,14 +157,6 @@ function WorldDefinition:_load_continent_init_package(path)
 end
 
 function WorldDefinition:_load_continent_package(path)
-	function blacklist_filter_pred(t, name)
-		if t == Idstring("unit") then
-			return not self._blacklist_data[name:key()]
-		end
-
-		return true
-	end
-
 	if Application:editor() then
 		return
 	end
@@ -182,7 +170,7 @@ function WorldDefinition:_load_continent_package(path)
 	self._continent_packages = self._continent_packages or {}
 
 	if not PackageManager:loaded(path) then
-		PackageManager:load_filtered(path, blacklist_filter_pred)
+		PackageManager:load(path)
 		table.insert(self._continent_packages, path)
 	end
 end
@@ -227,20 +215,6 @@ function WorldDefinition:_parse_world_setting(world_setting)
 
 	for name, bool in pairs(t) do
 		self._excluded_continents[name] = bool
-	end
-end
-
-function WorldDefinition:_load_blacklist()
-	if not Application:editor() then
-		local path = self:world_dir() .. "blacklist"
-
-		if DB:has("blacklist", path) then
-			local blacklist_data = self:_serialize_to_script("blacklist", path)
-
-			for _, k in ipairs(blacklist_data) do
-				self._blacklist_data[Idstring(k):key()] = true
-			end
-		end
 	end
 end
 
@@ -716,8 +690,8 @@ function WorldDefinition:_create_massunit(data, offset)
 		local l = MassUnitManager:list(path:id())
 
 		for _, name in ipairs(l) do
-			if DB:has(Idstring("unit"), name:id()) then
-				CoreEngineAccess._editor_load(Idstring("unit"), name:id())
+			if DB:has(IDS_UNIT, name:id()) then
+				CoreEngineAccess._editor_load(IDS_UNIT, name:id())
 			elseif not self._massunit_replace_names[name:s()] then
 				managers.editor:output("Unit " .. name:s() .. " does not exist")
 
@@ -725,8 +699,8 @@ function WorldDefinition:_create_massunit(data, offset)
 
 				name = managers.editor:show_replace_massunit()
 
-				if name and DB:has(Idstring("unit"), name:id()) then
-					CoreEngineAccess._editor_load(Idstring("unit"), name:id())
+				if name and DB:has(IDS_UNIT, name:id()) then
+					CoreEngineAccess._editor_load(IDS_UNIT, name:id())
 				end
 
 				self._massunit_replace_names[old_name] = name or ""
@@ -890,20 +864,21 @@ function WorldDefinition:_create_wires_unit(data, offset)
 	return unit
 end
 
-function WorldDefinition:create_delayed_unit(new_unit_id)
-	local spawn_data = self._delayed_units[new_unit_id]
+function WorldDefinition:create_delayed_unit(new_unit_ids)
+	for _, new_unit_id in ipairs(new_unit_ids) do
+		local spawn_data = self._delayed_units[new_unit_id]
 
-	if spawn_data then
-		local unit_data = spawn_data[1]
+		if spawn_data then
+			local unit_data = spawn_data[1]
 
-		PackageManager:load_delayed("unit", unit_data.name)
-		self:preload_unit(unit_data.name)
+			self:preload_unit(unit_data.name)
 
-		local unit = self:make_unit(unit_data, spawn_data[2])
+			local unit = self:make_unit(unit_data, spawn_data[2])
 
-		if unit then
-			unit:set_spawn_delayed(true)
-			table.insert(spawn_data[3], unit)
+			if unit then
+				unit:set_spawn_delayed(true)
+				table.insert(spawn_data[3], unit)
+			end
 		end
 	end
 end
@@ -937,8 +912,8 @@ function WorldDefinition:preload_unit(name)
 
 	if self._replace_names[name] then
 		name = self._replace_names[name]
-	elseif is_editor and (not DB:has(Idstring("unit"), name:id()) or CoreEngineAccess._editor_unit_data(name:id()):type():id() == Idstring("deleteme")) then
-		if not DB:has(Idstring("unit"), name:id()) then
+	elseif is_editor and (not DB:has(IDS_UNIT, name:id()) or CoreEngineAccess._editor_unit_data(name:id()):type():id() == Idstring("deleteme")) then
+		if not DB:has(IDS_UNIT, name:id()) then
 			managers.editor:output_info("Unit " .. name .. " does not exist")
 		else
 			managers.editor:output_info("Unit " .. name .. " is of type " .. CoreEngineAccess._editor_unit_data(name:id()):type():t())
@@ -953,7 +928,7 @@ function WorldDefinition:preload_unit(name)
 	end
 
 	if is_editor and name then
-		CoreEngineAccess._editor_load(Idstring("unit"), name:id())
+		CoreEngineAccess._editor_load(IDS_UNIT, name:id())
 	end
 end
 

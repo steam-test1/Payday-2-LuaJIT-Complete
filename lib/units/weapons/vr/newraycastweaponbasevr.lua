@@ -6,7 +6,7 @@ local __check_autoaim = NewRaycastWeaponBase.check_autoaim
 local __get_spread = NewRaycastWeaponBase._get_spread
 local __reload_speed_multiplier = NewRaycastWeaponBase.reload_speed_multiplier
 local __clbk_assembly_complete = NewRaycastWeaponBase.clbk_assembly_complete
-local __destroy = NewRaycastWeaponBase.destroy
+local __pre_destroy = NewRaycastWeaponBase.pre_destroy
 
 function NewRaycastWeaponBaseVR:clbk_assembly_complete(...)
 	__clbk_assembly_complete(self, ...)
@@ -14,8 +14,8 @@ function NewRaycastWeaponBaseVR:clbk_assembly_complete(...)
 	tweak_data:add_reload_callback(self, self.tweak_data_clbk_reload)
 end
 
-function NewRaycastWeaponBaseVR:destroy(...)
-	__destroy(self, ...)
+function NewRaycastWeaponBaseVR:pre_destroy(...)
+	__pre_destroy(self, ...)
 	tweak_data:remove_reload_callback(self)
 end
 
@@ -119,8 +119,8 @@ function NewRaycastWeaponBaseVR:start_reload(total_time)
 	if belt_mag_unit then
 		local belt_mag_unit_id = Idstring(belt_mag_unit)
 
-		if not managers.dyn_resource:is_resource_ready(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
-			managers.dyn_resource:load(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+		if not managers.dyn_resource:is_resource_ready(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+			managers.dyn_resource:load(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 		end
 	end
 
@@ -361,8 +361,8 @@ function NewRaycastWeaponBaseVR:spawn_belt_magazine_unit(pos)
 	if belt_mag_unit then
 		local belt_mag_unit_id = Idstring(belt_mag_unit)
 
-		if not managers.dyn_resource:is_resource_ready(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
-			managers.dyn_resource:load(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+		if not managers.dyn_resource:is_resource_ready(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+			managers.dyn_resource:load(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 		end
 
 		return World:spawn_unit(belt_mag_unit_id, pos or Vector3(), Rotation())

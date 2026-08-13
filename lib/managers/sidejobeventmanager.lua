@@ -43,16 +43,20 @@ function SideJobEventManager:_fetch_community_challenges()
 	self._fetched_event_data_count = table.size(self._tweak_data.community_challenges)
 
 	for event_id, challenge in pairs(self._tweak_data.community_challenges) do
-		HttpRequest:get(challenge.url, callback(self, self, "_fetch_done_clbk", event_id))
+		if challenge.event_over then
+			self:_fetch_done_clbk(event_id, true, challenge.event_over)
+		else
+			HttpRequest:get(challenge.url, callback(self, self, "_fetch_done_clbk", event_id))
+		end
 	end
 end
 
-function SideJobEventManager:_fetch_done_clbk(event_id, success, s)
-	print("[SideJobEventManager:_fetch_done_clbk]", success, s)
+function SideJobEventManager:_fetch_done_clbk(event_id, success, event_json)
+	print("[SideJobEventManager:_fetch_done_clbk]", success, event_json)
 
 	if success then
 		local challenge_tweak = self._tweak_data.community_challenges[event_id]
-		local json_data = json.decode(s) or {}
+		local json_data = type(event_json) == "string" and json.decode(event_json) or type(event_json) == "table" and event_json or {}
 
 		self._fetched_event_data[event_id] = self._fetched_event_data[event_id] or {}
 
@@ -382,7 +386,7 @@ function SideJobEventManager:load(cache, version)
 		state.version = 3
 
 		self:load(cache, 3)
-	elseif SystemInfo:distribution() == Idstring("STEAM") and state and state.version == 1 and self.save_version == 3 then
+	elseif IS_STEAM and state and state.version == 1 and self.save_version == 3 then
 		for idx, saved_challenge in ipairs(state.challenges or {}) do
 			local challenge = self:get_challenge(saved_challenge.id)
 
@@ -757,32 +761,24 @@ function SideJobEventManager:has_already_claimed_reward(challenge_id, reward_id)
 	local challenge = self:get_challenge(challenge_id)
 
 	if not challenge then
-		Application:error("[SideJobEventManager:claim_reward] Invalid challenge", challenge_id)
+		Application:error("[SideJobEventManager:has_already_claimed_reward] Invalid challenge", challenge_id)
 
 		return nil
 	end
 
 	if not challenge.completed then
-		Application:error("[SideJobEventManager:claim_reward] Trying to claim reward from an uncompleted challenge", challenge_id)
-
 		return nil
 	end
 
 	local reward = challenge.rewards and challenge.rewards[reward_id]
 
 	if not reward then
-		Application:error("[SideJobEventManager:claim_reward] Invalid reward", challenge_id, reward_id)
+		Application:error("[SideJobEventManager:has_already_claimed_reward] Invalid reward", challenge_id, reward_id)
 
 		return nil
 	end
 
-	if reward.rewarded then
-		Application:error("[SideJobEventManager:claim_reward] Trying to claim reward that is already rewarded", challenge_id, reward_id)
-
-		return true
-	end
-
-	return false
+	return not not reward.rewarded
 end
 
 function SideJobEventManager:claim_reward(challenge_id, reward_id)

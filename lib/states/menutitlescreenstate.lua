@@ -16,14 +16,12 @@ function MenuTitlescreenState:init(game_state_machine, setup)
 	end
 end
 
-local is_ps3 = SystemInfo:platform() == Idstring("PS3")
-local is_ps4 = SystemInfo:platform() == Idstring("PS4")
-local is_xb1 = SystemInfo:platform() == Idstring("XB1")
-local is_x360 = SystemInfo:platform() == Idstring("X360")
-local is_win32 = SystemInfo:platform() == Idstring("WIN32")
-local is_steam = SystemInfo:distribution() == Idstring("STEAM")
-local is_epic = SystemInfo:distribution() == Idstring("EPIC")
-local is_mm_eos = SystemInfo:matchmaking() == Idstring("MM_EPIC")
+local is_ps4 = IS_PS4
+local is_xb1 = IS_XB1
+local is_win32 = IS_PC
+local is_steam = IS_STEAM
+local is_epic = IS_EPIC
+local is_mm_eos = IS_EPIC_MM
 
 function MenuTitlescreenState:setup()
 	local res = RenderSettings.resolution
@@ -50,7 +48,7 @@ function MenuTitlescreenState:setup()
 		color = Color.black
 	})
 
-	local text_id = (is_ps3 or is_x360 or is_ps4 or is_xb1) and "menu_press_start" or "menu_visit_forum3"
+	local text_id = (is_ps4 or is_xb1) and "menu_press_start" or "menu_visit_forum3"
 	local text = self._workspace:panel():text({
 		align = "center",
 		layer = 2,
@@ -140,13 +138,6 @@ function MenuTitlescreenState:at_enter()
 	self._clbk_game_has_music_control_callback = callback(self, self, "clbk_game_has_music_control")
 
 	managers.platform:add_event_callback("media_player_control", self._clbk_game_has_music_control_callback)
-
-	if is_epic and EpicMM:logged_on() then
-		managers.dlc:check_ownerships()
-
-		self._wait_on_dlcs = true
-	end
-
 	self:reset_attract_video()
 end
 
@@ -167,25 +158,19 @@ function MenuTitlescreenState:_get_eos_login_time()
 
 	self._queried_login_time = true
 
-	local userid = EpicMM:userid()
+	local server_time = managers.network.matchmake:server_time()
 
-	EpicMM:query_users({
-		userid
-	}, function(s, data)
-		if s then
-			managers.network.matchmake:set_login_time(data[userid].last_login_time)
-			managers.perpetual_event:fetch_event()
-		end
-	end)
+	managers.network.matchmake:set_login_time(server_time)
+	managers.perpetual_event:fetch_event()
 end
 
 function MenuTitlescreenState:update(t, dt)
-	if is_mm_eos and EpicMM:logged_on() then
+	if is_mm_eos and Distribution:logged_on() then
 		self:_get_eos_login_time()
 	end
 
 	if self._waiting_for_loaded_savegames then
-		if is_mm_eos and self._waiting_on_connection == nil and not EpicMM:logged_on() then
+		if IS_EPIC_MM and self._waiting_on_connection == nil and not DistributionMatchmaking:logged_on() and not Distribution:logged_on() then
 			self._waiting_on_connection = 10
 
 			self._text:set_text(managers.localization:to_upper_text("menu_connect_eos"))
@@ -193,7 +178,7 @@ function MenuTitlescreenState:update(t, dt)
 			return
 		end
 
-		if is_mm_eos and self._waiting_on_connection and EpicMM:logged_on() then
+		if IS_EPIC_MM and self._waiting_on_connection and DistributionMatchmaking:logged_on() and Distribution:logged_on() then
 			self._waiting_on_connection = nil
 		end
 
@@ -219,6 +204,12 @@ function MenuTitlescreenState:update(t, dt)
 
 				return
 			end
+		end
+
+		if TDVS:should_use() and not TDVS:has_ticket() and not TDVS:waiting_for_ticket() then
+			TDVS:local_ticket(function()
+				return
+			end)
 		end
 
 		if not managers.perpetual_event:is_event_ready() then
@@ -264,7 +255,7 @@ function MenuTitlescreenState:update(t, dt)
 				managers.menu:show_corrupt_dlc()
 			end
 
-			if is_epic and not EpicMM:logged_on() then
+			if is_epic and not DistributionMatchmaking:logged_on() then
 				self._text:set_text(managers.localization:to_upper_text("menu_connect_eos"))
 			end
 		elseif not self:check_attract_video() and self:is_attract_video_delay_done() then
@@ -287,10 +278,6 @@ function MenuTitlescreenState:get_start_pressed_controller_index()
 	for index, controller in ipairs(self._controller_list) do
 		if is_ps4 or is_xb1 then
 			if controller:get_input_pressed("confirm") then
-				return index
-			end
-		elseif is_ps3 or is_x360 then
-			if controller:get_input_pressed("start") then
 				return index
 			end
 		else

@@ -322,12 +322,7 @@ function CrimeNetSidebarGui:clbk_toggle_sidebar()
 end
 
 function CrimeNetSidebarGui:clbk_crimenet_filters()
-	if SystemInfo:platform() == Idstring("X360") then
-		XboxLive:show_friends_ui(managers.user:get_platform_id())
-	else
-		managers.menu:open_node("crimenet_filters", {})
-	end
-
+	managers.menu:open_node("crimenet_filters", {})
 	managers.menu:post_event("menu_enter")
 end
 
@@ -396,7 +391,7 @@ function CrimeNetSidebarGui:clbk_visible_multiplayer()
 end
 
 function CrimeNetSidebarGui:clbk_visible_multiplayer_epic_mm()
-	return CrimeNetSidebarGui:clbk_visible_multiplayer() and SystemInfo:matchmaking() == Idstring("MM_EPIC")
+	return CrimeNetSidebarGui:clbk_visible_multiplayer() and IS_EPIC_MM
 end
 
 function CrimeNetSidebarGui:clbk_visible_singleplayer()

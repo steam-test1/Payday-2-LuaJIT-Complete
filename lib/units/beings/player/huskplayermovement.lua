@@ -25,7 +25,7 @@ local sync_action_force_and_execute = {
 	execute = true,
 	force = true
 }
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 HuskPlayerMovement = HuskPlayerMovement or class()
 HuskPlayerMovement._ids_base = Idstring("base")
@@ -1054,12 +1054,12 @@ function HuskPlayerMovement:play_redirect_idstr(redirect_name, at_time)
 
 	local result = self._unit:play_redirect(redirect_name, at_time)
 
-	result = result ~= Idstring("") and result
+	result = result ~= IDS_EMPTY and result
 
 	if result and replay_redir then
 		local replay_result = self._unit:play_redirect(Idstring(replay_redir), replay_t)
 
-		if replay_speed and replay_result ~= Idstring("") then
+		if replay_speed and replay_result ~= IDS_EMPTY then
 			self._machine:set_speed(replay_result, replay_speed)
 		end
 	end
@@ -1085,7 +1085,7 @@ function HuskPlayerMovement:play_state(state_name, at_time)
 
 	local result = self._unit:play_state(Idstring(state_name), at_time)
 
-	result = result ~= Idstring("") and result
+	result = result ~= IDS_EMPTY and result
 
 	if was_frozen then
 		self._ext_base:chk_freeze_anims()
@@ -1108,7 +1108,7 @@ function HuskPlayerMovement:play_state_idstr(state_name, at_time)
 
 	local result = self._unit:play_state(state_name, at_time)
 
-	result = result ~= Idstring("") and result
+	result = result ~= IDS_EMPTY and result
 
 	if was_frozen then
 		self._ext_base:chk_freeze_anims()
@@ -3878,7 +3878,7 @@ function HuskPlayerMovement:_spawn_magazine_unit(part_id, unit_name, pos, rot)
 	local equipped_weapon = self._unit:inventory():equipped_unit()
 	local is_thq = self:allow_dropped_magazines()
 	local use_cc_material_config = is_thq and equipped_weapon and equipped_weapon:base()._cosmetics_data and true or false
-	local material_config_ids = Idstring("material_config")
+	local material_config_ids = IDS_MATERIAL_CONFIG
 	local magazine_unit = World:spawn_unit(unit_name, pos, rot)
 	local part_data = equipped_weapon and managers.weapon_factory:get_part_data_by_part_id_from_weapon(part_id, equipped_weapon:base()._factory_id, equipped_weapon:base()._blueprint)
 	local new_material_config_ids = self:_material_config_name(part_id, part_data, magazine_unit, use_cc_material_config)
@@ -3888,7 +3888,7 @@ function HuskPlayerMovement:_spawn_magazine_unit(part_id, unit_name, pos, rot)
 	end
 
 	local materials = {}
-	local unit_materials = magazine_unit:get_objects_by_type(Idstring("material")) or {}
+	local unit_materials = magazine_unit:get_objects_by_type(IDS_MATERIAL) or {}
 
 	for _, m in ipairs(unit_materials) do
 		if m:variable_exists(Idstring("wear_tear_value")) then
@@ -5020,7 +5020,6 @@ function HuskPlayerMovement:pre_destroy(unit)
 
 	self:set_need_revive(false)
 	self:set_need_assistance(false)
-	self._attention_handler:set_attention(nil)
 
 	if self._nav_tracker then
 		managers.navigation:destroy_nav_tracker(self._nav_tracker)
@@ -5506,7 +5505,7 @@ function HuskPlayerMovement:spawn_wanted_items()
 	end
 end
 
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 function HuskPlayerMovement:_equip_item(item_type, align_place, droppable)
 	local align_name = self._gadgets.aligns[align_place]

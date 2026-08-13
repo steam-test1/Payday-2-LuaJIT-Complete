@@ -144,8 +144,8 @@ function TaserLogicAttack._upd_enemy_detection(data)
 
 	local tasing = my_data.tasing
 	local tased_u_key = tasing and tasing.target_u_key
-	local under_fire_nr = 0
 	local under_multiple_fire
+	local under_fire_nr = 0
 	local alert_chk_t = data.t - 1.2
 
 	for key, enemy_data in pairs(data.detected_attention_objects) do
@@ -391,19 +391,17 @@ end
 
 function TaserLogicAttack._cancel_tase_attempt(data, my_data)
 	if my_data.tasing then
-		local new_action = {
+		data.unit:brain():action_request({
 			body_part = 3,
 			type = "idle"
-		}
-
-		data.unit:brain():action_request(new_action)
+		})
 	end
 end
 
 function TaserLogicAttack.on_criminal_neutralized(data, criminal_key)
 	local my_data = data.internal_data
 
-	if my_data.tasing and criminal_key == my_data.tasing.target_u_data.u_key then
+	if my_data.tasing and my_data.tasing.target_u_data.u_key == criminal_key then
 		if not my_data.tasing.target_u_data.unit:movement():tased() then
 			CopLogicAttack.on_criminal_neutralized(data, criminal_key)
 			TaserLogicAttack._cancel_tase_attempt(data, my_data)
@@ -418,7 +416,7 @@ function TaserLogicAttack.on_detected_enemy_destroyed(data, enemy_unit)
 
 	local my_data = data.internal_data
 
-	if my_data.tasing and enemy_unit:key() == my_data.tasing.target_u_data.u_key then
+	if my_data.tasing and my_data.tasing.target_u_data.u_key == enemy_unit:key() then
 		TaserLogicAttack._cancel_tase_attempt(data, my_data)
 	end
 end
@@ -450,7 +448,7 @@ function TaserLogicAttack._chk_reaction_to_attention_object(data, attention_data
 end
 
 function TaserLogicAttack._chk_play_charge_weapon_sound(data, my_data, focus_enemy)
-	if not my_data.tasing and (not data.last_charge_snd_play_t or data.t - data.last_charge_snd_play_t > 30) and focus_enemy.verified_dis < 2000 and math.abs(data.m_pos.z - focus_enemy.m_pos.z) < 300 then
+	if not my_data.tasing and (not data.last_charge_snd_play_t or data.t - data.last_charge_snd_play_t > 3) and focus_enemy.verified_dis < data.internal_data.tase_distance * 2 and math.abs(data.m_pos.z - focus_enemy.m_pos.z) < 300 then
 		data.last_charge_snd_play_t = data.t
 
 		data.unit:sound():play("taser_charge", nil, true)

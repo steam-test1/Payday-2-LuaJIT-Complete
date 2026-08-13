@@ -480,7 +480,7 @@ function MenuManager:show_internet_connection_required()
 end
 
 function MenuManager:show_err_no_chat_parental_control()
-	if SystemInfo:platform() == Idstring("PS4") then
+	if IS_PS4 then
 		PSN:show_chat_parental_control()
 	else
 		local dialog_data = {}
@@ -1142,6 +1142,8 @@ function MenuManager:show_and_more_tradable_item_received(params)
 end
 
 function MenuManager:show_new_tradable_item_received(params)
+	print("[MenuManager:show_new_tradable_item_received] params", params and inspect(params))
+
 	local dialog_data = {}
 
 	dialog_data.title = managers.localization:text("dialog_new_tradable_item_title")
@@ -1169,19 +1171,21 @@ function MenuManager:show_new_tradable_item_received(params)
 			name = params.item_name
 		})
 
-		local data = deep_clone(params)
-		local open_container_button = {}
+		if params.item and tweak_data.economy:has_contents(params.item.entry) then
+			local data = deep_clone(params)
+			local open_container_button = {}
 
-		open_container_button.text = managers.localization:text("dialog_new_tradable_item_open_container")
+			open_container_button.text = managers.localization:text("dialog_new_tradable_item_open_container")
 
-		function open_container_button.callback_func()
-			managers.system_menu:force_close_all()
-			managers.menu:open_node("inventory_tradable_container", {
-				data
-			})
+			function open_container_button.callback_func()
+				managers.system_menu:force_close_all()
+				managers.menu:open_node("inventory_tradable_container", {
+					data
+				})
+			end
+
+			table.insert(dialog_data.button_list, open_container_button)
 		end
-
-		table.insert(dialog_data.button_list, open_container_button)
 	elseif item.category == "drills" then
 		dialog_data.text = managers.localization:to_upper_text("dialog_new_tradable_item", {
 			quality = "",
@@ -3110,6 +3114,8 @@ function MenuManager:show_challenge_reward(reward)
 		return
 	end
 
+	print("[MenuManager:show_challenge_reward] reward, tweakdata", inspect(reward), inspect(td))
+
 	local amount = reward.amount or 1
 	local name_string = td.name_id and managers.localization:text(td.name_id)
 	local params = {}
@@ -3176,10 +3182,14 @@ function MenuManager:show_challenge_reward(reward)
 		texture_path = "guis/textures/pd2/blackmarket/cash_drop"
 	elseif category == "xp" then
 		texture_path = "guis/textures/pd2/blackmarket/xp_drop"
-	elseif category == "colors" then
-		-- Nothing
 	else
-		texture_path = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (category == "weapon_mods" and "mods" or category) .. "/" .. id
+		local no_nonsense_category = ""
+
+		if category == "weapon_mods" then
+			no_nonsense_category = "mods"
+		end
+
+		texture_path = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (no_nonsense_category or category) .. "/" .. id
 	end
 
 	dialog_data.texture = texture_path
@@ -3418,7 +3428,7 @@ function MenuManager:show_accept_gamesight_telemetry(params)
 	local privacy_button = {}
 	local license_button = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		privacy_button.text = managers.localization:text("dialog_privacy")
 		privacy_button.no_close = true
 
@@ -3456,7 +3466,7 @@ function MenuManager:show_accept_gamesight_telemetry(params)
 	ok_button.callback_func = params.accept_func
 	ok_button.cancel_button = true
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		dialog_data.button_list = {
 			privacy_button,
 			license_button,
@@ -3490,7 +3500,7 @@ function MenuManager:show_policy_seen(params)
 	local privacy_button = {}
 	local license_button = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		privacy_button.text = managers.localization:text("dialog_privacy")
 		privacy_button.no_close = true
 
@@ -3511,7 +3521,7 @@ function MenuManager:show_policy_seen(params)
 	ok_button.text = managers.localization:text("dialog_ok")
 	ok_button.cancel_button = true
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		dialog_data.button_list = {
 			privacy_button,
 			license_button,
@@ -3535,7 +3545,7 @@ function MenuManager:show_accept_policy_new(params)
 	local privacy_button = {}
 	local license_button = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		privacy_button.text = managers.localization:text("dialog_privacy")
 		privacy_button.no_close = true
 
@@ -3732,7 +3742,7 @@ function MenuManager:show_eos_no_connect_dialog(params)
 
 	local button_list = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if Distribution:type() == Idstring("STEAM") then
 		local play_offline_button = {}
 
 		play_offline_button.text = managers.localization:text("dialog_eos_play_offline")

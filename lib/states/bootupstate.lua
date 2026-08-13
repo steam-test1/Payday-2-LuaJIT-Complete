@@ -95,8 +95,7 @@ function BootupState:setup()
 	local res = RenderSettings.resolution
 	local safe_rect_pixels = managers.gui_data:scaled_size()
 	local gui = Overlay:gui()
-	local is_win32 = SystemInfo:platform() == Idstring("WIN32")
-	local is_x360 = SystemInfo:platform() == Idstring("X360")
+	local is_win32 = IS_PC
 	local show_esrb = false
 
 	if _G.IS_VR then
@@ -117,7 +116,6 @@ function BootupState:setup()
 	local esrb_y = safe_rect_pixels.height / 1.9
 	local has_full_game = managers.dlc:has_full_game()
 	local item_layer = self._back_drop_gui:background_layers()
-	local intro_trailer_layer = self._back_drop_gui:foreground_layers()
 
 	managers.savefile:add_load_done_callback(callback(self, self, "on_savefile_loaded"))
 
@@ -145,16 +143,7 @@ function BootupState:setup()
 		can_skip = has_full_game,
 		duration = show_esrb and 6.5 or 0
 	})
-
-	local play_intros = not Application:production_build()
-
-	if play_intros then
-		if SystemInfo:distribution() == Idstring("EPIC") and EpicMM.wait_for_logged_on then
-			EpicMM:wait_for_logged_on(5)
-		end
-
-		self:setup_intro_videos()
-	end
+	self:setup_intro_videos()
 
 	self._full_panel = self._full_workspace:panel()
 	self._panel = self._workspace:panel()
@@ -181,17 +170,7 @@ function BootupState:setup_intro_videos()
 	local safe_rect_pixels = managers.gui_data:scaled_size()
 	local legal_text = managers.localization:text("legal_text")
 	local item_layer = self._back_drop_gui:background_layers()
-	local intro_trailer_layer = self._back_drop_gui:foreground_layers()
 
-	table.insert(self._play_data_list, {
-		can_skip = true,
-		limit_file_streamer = true,
-		padding = 200,
-		video = "movies/intro_trailer",
-		layer = intro_trailer_layer,
-		width = res.x,
-		height = res.y
-	})
 	table.insert(self._play_data_list, {
 		can_skip = true,
 		duration = 6,

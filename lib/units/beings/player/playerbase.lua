@@ -324,8 +324,8 @@ function PlayerBase:_unregister()
 end
 
 function PlayerBase:pre_destroy(unit)
-	self:_unregister()
 	UnitBase.pre_destroy(self, unit)
+	self:_unregister()
 	managers.player:player_destroyed(self._id)
 
 	if self._controller then
@@ -349,10 +349,6 @@ function PlayerBase:pre_destroy(unit)
 			peer:set_unit(nil)
 		end
 	end
-
-	unit:movement():pre_destroy(unit)
-	unit:inventory():pre_destroy(unit)
-	unit:character_damage():pre_destroy()
 end
 
 function PlayerBase:upgrade_value(category, upgrade)

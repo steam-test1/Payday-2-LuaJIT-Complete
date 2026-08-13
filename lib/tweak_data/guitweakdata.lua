@@ -1,8 +1,8 @@
 GuiTweakData = GuiTweakData or class()
 
 function GuiTweakData:init(tweak_data)
-	local is_win_32 = SystemInfo:platform() == Idstring("WIN32")
-	local is_nextgen = SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1")
+	local is_win_32 = IS_PC
+	local is_nextgen = IS_PS4 or IS_XB1
 	local soundtrack = {
 		date_id = "menu_content_soundtrack_date",
 		desc_id = "menu_content_soundtrack_desc",
@@ -548,7 +548,7 @@ function GuiTweakData:init(tweak_data)
 	}
 	self.store_page = "https://store.steampowered.com/app/218620"
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		self.content_updates.item_list = {
 			soundtrack,
 			diamond_store,
@@ -616,25 +616,18 @@ function GuiTweakData:init(tweak_data)
 			pim,
 			tango
 		}
-	elseif SystemInfo:platform() == Idstring("PS3") then
-		self.content_updates.item_list = {
-			armored_transport,
-			gage_pack,
-			gage_pack_lmg
-		}
-	elseif SystemInfo:platform() == Idstring("PS4") then
+	elseif IS_PS4 then
 		self.content_updates.item_list = {
 			armored_transport
 		}
-	elseif SystemInfo:platform() == Idstring("XB1") then
+	elseif IS_XB1 then
 		self.content_updates.item_list = {
 			armored_transport
 		}
-	elseif SystemInfo:platform() == Idstring("X360") then
-		self.content_updates.item_list = {}
 	end
 
 	self.fav_videos = {
+		choice_id = nil,
 		db_url = "https://www.paydaythegame.com/static/payday2/birthday/",
 		num_items = 3,
 		title_id = "menu_fav_videos",
@@ -719,7 +712,7 @@ function GuiTweakData:init(tweak_data)
 	self.crime_net.job_vars.active_job_time = 25
 	self.crime_net.job_vars.new_job_min_time = 1.5
 	self.crime_net.job_vars.new_job_max_time = 3.5
-	self.crime_net.job_vars.refresh_servers_time = SystemInfo:platform() == Idstring("PS4") and 10 or 5
+	self.crime_net.job_vars.refresh_servers_time = IS_PS4 and 10 or 5
 	self.crime_net.job_vars.total_active_jobs = 40
 	self.crime_net.job_vars.max_active_server_jobs = 100
 	self.crime_net.debug_options = {}
@@ -1823,7 +1816,7 @@ function GuiTweakData:init(tweak_data)
 		}
 	}
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		table.insert(self.crime_net.special_contracts, {
 			desc_id = "menu_cn_challenge_desc",
 			icon = "guis/textures/pd2/crimenet_challenge",
@@ -2400,7 +2393,7 @@ function GuiTweakData:init(tweak_data)
 	}
 	self.crime_net.locations = {}
 
-	if not Application:production_build() or SystemInfo:platform() ~= Idstring("WIN32") then
+	if not Application:production_build() or not IS_PC then
 		self.crime_net.locations = {
 			{
 				{
@@ -5220,18 +5213,6 @@ function GuiTweakData:init(tweak_data)
 		texture_path = "guis/dlcs/esp/textures/pd2/new_heists/esp_dlc_banner",
 		url = "https://pd2.link/EspionageWeaponPackS"
 	})
-
-	local distribution_id = SystemInfo:distribution()
-
-	if distribution_id == Idstring("STEAM") then
-		table.insert(self.new_heists, {
-			epic_url = "",
-			name_id = "menu_nh_acsbzbanner_sub",
-			texture_path = "guis/dlcs/acsbzbanners/textures/pd2/new_heists/subscription_banner",
-			url = "https://store.steampowered.com/app/3847540/"
-		})
-	end
-
 	table.insert(self.new_heists, {
 		epic_url = "https://pd2.link/XM25Merch",
 		name_id = "menu_nh_xm25_01",
@@ -5960,7 +5941,7 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 
 	if index == 1 then
 		return function(x, y)
-			return y < x
+			return (tonumber(x) or -1) > (tonumber(y) or -1)
 		end
 	elseif index == 2 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
@@ -6021,11 +6002,13 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 			y_item = inventory_tradable[y]
 			x_td = (tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category])[x_item.entry]
 			y_td = (tweak_data.economy[y_item.category] or tweak_data.blackmarket[y_item.category])[y_item.entry]
-			x_rarity = tweak_data.economy.rarities[x_td.rarity or "common"]
-			y_rarity = tweak_data.economy.rarities[y_td.rarity or "common"]
+			x_rarity = tweak_data.economy.rarities[x_td.rarity]
+			x_rarity = x_rarity and x_rarity.index or -1
+			y_rarity = tweak_data.economy.rarities[y_td.rarity]
+			y_rarity = y_rarity and y_rarity.index or -1
 
-			if x_rarity.index ~= y_rarity.index then
-				return x_rarity.index > y_rarity.index
+			if x_rarity ~= y_rarity then
+				return x_rarity > y_rarity
 			end
 
 			if x_item.entry ~= y_item.entry then

@@ -1,10 +1,11 @@
-WeaponLionGadget1 = WeaponLionGadget1 or class()
+WeaponLionGadget1 = WeaponLionGadget1 or class(UnitBase)
 WeaponLionGadget1.GADGET_TYPE = "bipod"
 WeaponLionGadget1._previous_state = nil
 WeaponLionGadget1.bipod_length = nil
 
 function WeaponLionGadget1:init(unit)
-	self._unit = unit
+	WeaponLionGadget1.super.init(self, unit, false)
+
 	self._is_npc = false
 
 	local function on_cash_inspect_weapon()
@@ -14,10 +15,6 @@ function WeaponLionGadget1:init(unit)
 	managers.player:register_message(Message.OnCashInspectWeapon, self, on_cash_inspect_weapon)
 
 	self._deployed = false
-end
-
-function WeaponLionGadget1:update(unit, t, dt)
-	return
 end
 
 function WeaponLionGadget1:set_npc()
@@ -335,10 +332,9 @@ function WeaponLionGadget1:check_state()
 			self:_unmount()
 		end
 	end
-
-	self._unit:set_extension_update_enabled(Idstring("base"), self._deployed)
 end
 
-function WeaponLionGadget1:destroy(unit)
+function WeaponLionGadget1:pre_destroy(unit)
+	WeaponLionGadget1.super.pre_destroy(self, unit)
 	managers.player:unregister_message(Message.OnCashInspectWeapon, self)
 end

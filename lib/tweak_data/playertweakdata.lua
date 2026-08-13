@@ -75,7 +75,7 @@ function PlayerTweakData:_set_multiplayer()
 end
 
 function PlayerTweakData:init()
-	local is_console = SystemInfo:platform() ~= Idstring("WIN32")
+	local is_console = IS_CONSOLE
 	local is_vr = false
 
 	is_vr = _G.IS_VR

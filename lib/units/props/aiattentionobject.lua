@@ -452,12 +452,4 @@ end
 
 function AIAttentionObject:destroy()
 	self:set_attention(nil)
-
-	local extensions = self._unit:extensions()
-	local last_extension_name = extensions[#extensions]
-	local last_extension = self._unit[last_extension_name]
-
-	if self == last_extension then
-		self._unit:base():pre_destroy(self._unit)
-	end
 end

@@ -19,9 +19,9 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	if host_account_type_str == "STEAM" then
 		local temp = host_name
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			host_name = managers.network.account:username_by_id(host_account_id)
-		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+		elseif IS_STEAM_MM then
 			host_name = managers.network.matchmake:username_by_id(host_account_id)
 		end
 
@@ -30,7 +30,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 		end
 	end
 
-	local host_user_id = SystemInfo:platform() == self._ids_WIN32 and host_rpc:ip_at_index(0) or false
+	local host_user_id = IS_PC and host_rpc:ip_at_index(0) or false
 	local id, peer = self:add_peer(host_name, host_rpc, nil, nil, nil, 1, nil, host_user_id, host_account_type_str, host_account_id, "", "")
 
 	peer:set_name_drop_in(drop_in_name)
@@ -40,7 +40,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	Network:set_multiplayer(true)
 	Network:set_client(host_rpc)
 
-	local xuid = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1")) and managers.network.account:player_id() or ""
+	local xuid = ""
 	local lvl = managers.experience:current_level()
 	local rank = managers.experience:current_rank()
 	local join_stinger_index = managers.infamy:selected_join_stinger_index()
@@ -110,9 +110,17 @@ function ClientNetworkSession:on_auth_request_received(reply, auth_ticket, sende
 			return
 		end
 
-		self._join_request_params.ticket = self._server_peer:create_ticket(self._local_peer:account_id())
+		local function ticket_callback(ticket)
+			self._join_request_params.ticket = ticket
 
-		sender:auth_request_reply(self._join_request_params.ticket)
+			if TDVS:should_chunk_auth_ticket(ticket) then
+				TDVS:send_auth_ticket_in_chunks(ticket, sender, false)
+			else
+				sender:auth_request_reply(self._join_request_params.ticket)
+			end
+		end
+
+		self._server_peer:create_ticket(self._local_peer:account_id(), ticket_callback)
 
 		return
 	elseif reply == HostNetworkSession.JOIN_REPLY.FAILED_CONNECT then
@@ -159,6 +167,37 @@ function ClientNetworkSession:on_auth_request_received(reply, auth_ticket, sende
 	self._cb_find_game = nil
 end
 
+function ClientNetworkSession:on_join_request_auth_chunk_received(chunk, total_chunks, total_length, ticket, reply_id, sender)
+	print("[ClientNetworkSession:on_join_request_auth_chunk_received]")
+
+	if type(chunk) ~= "number" or type(total_chunks) ~= "number" or type(total_length) ~= "number" or type(ticket) ~= "string" then
+		return
+	end
+
+	print("[ClientNetworkSession:on_join_request_auth_chunk_received] chunk: " .. tostring(chunk) .. "/" .. tostring(total_chunks) .. " total_length: " .. tostring(total_length) .. " chunk_length: " .. tostring(string.len(ticket)))
+
+	self._ticket_chunks = self._ticket_chunks or {}
+	self._ticket_chunks[sender:to_string()] = self._ticket_chunks[sender:to_string()] or {}
+
+	local sender_chunks = self._ticket_chunks[sender:to_string()]
+
+	sender_chunks[chunk + 1] = ticket
+
+	print("[ClientNetworkSession:on_join_request_auth_chunk_received] Have " .. #sender_chunks .. " chunks from " .. sender:to_string())
+
+	if #sender_chunks == total_chunks then
+		local ticket = ""
+
+		for i = 1, total_chunks do
+			ticket = ticket .. sender_chunks[i]
+		end
+
+		self._ticket_chunks[sender:to_string()] = nil
+
+		self:on_auth_request_received(reply_id, ticket, sender)
+	end
+end
+
 function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, one_down, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, sender)
 	if not sender then
 		print("[ClientNetworkSession:on_join_request_reply] Invalid sender")
@@ -181,7 +220,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	self._last_join_request_t = nil
 	self._join_request_params = nil
 
-	if SystemInfo:platform() == self._ids_WIN32 then
+	if IS_PC then
 		if self._server_peer:user_id() and user_id ~= self._server_peer:user_id() then
 			print("[ClientNetworkSession:on_join_request_reply] wrong host replied", self._server_peer:user_id(), user_id)
 
@@ -216,16 +255,6 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 
 		self._server_peer:set_character(server_character)
 		self._server_peer:set_xuid(xuid)
-
-		if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
-			local xnaddr = managers.network.matchmake:external_address(self._server_peer:rpc())
-
-			self._server_peer:set_xnaddr(xnaddr)
-			managers.network.matchmake:on_peer_added(self._server_peer)
-		elseif SystemInfo:platform() == Idstring("PS4") then
-			managers.network.matchmake:on_peer_added(self._server_peer)
-		end
-
 		self:register_local_peer(my_peer_id)
 		self._local_peer:set_character(my_character)
 		self._server_peer:set_id(1)
@@ -395,20 +424,6 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_a
 		Network:add_co_client(rpc)
 	end
 
-	if SystemInfo:platform() == Idstring("X360") then
-		local ip = managers.network.matchmake:internal_address(xuid)
-
-		rpc = Network:handshake(ip, managers.network.DEFAULT_PORT, "TCP_IP")
-
-		Network:add_co_client(rpc)
-	end
-
-	if SystemInfo:platform() == self._ids_WIN32 then
-		-- Nothing
-	else
-		peer_user_id = false
-	end
-
 	name = managers.network:sanitize_peer_name(name)
 
 	local drop_in_name = name
@@ -416,9 +431,9 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_a
 	if peer_account_type_str == "STEAM" then
 		local temp = name
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			name = managers.network.account:username_by_id(peer_account_id)
-		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+		elseif IS_STEAM_MM then
 			name = managers.network.matchmake:username_by_id(peer_account_id)
 		end
 
@@ -432,21 +447,13 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_a
 	peer:set_name_drop_in(drop_in_name)
 	cat_print("multiplayer_base", "[ClientNetworkSession:peer_handshake]", name, peer_user_id, loading, synched, id, inspect(peer))
 
-	local check_peer = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1")) and peer or nil
+	local check_peer
 
 	self:chk_send_connection_established(name, peer_user_id, check_peer)
 
 	if managers.trade then
 		managers.trade:handshake_complete(peer_id)
 	end
-end
-
-function ClientNetworkSession:on_PSN_connection_established(name, ip)
-	if SystemInfo:platform() ~= Idstring("PS3") and SystemInfo:platform() ~= Idstring("PS4") then
-		return
-	end
-
-	self:chk_send_connection_established(name, nil, false)
 end
 
 function ClientNetworkSession:on_peer_synched(peer_id)
@@ -571,14 +578,6 @@ function ClientNetworkSession:update()
 		end
 
 		self:_upd_request_join_resend(wall_time)
-
-		if SystemInfo:platform() == Idstring("XB1") then
-			for peer_id, peer in pairs(self._peers) do
-				if peer ~= self._server_peer and not peer:rpc() then
-					self:chk_send_connection_established(peer:name(), peer:user_id(), peer)
-				end
-			end
-		end
 	end
 end
 
@@ -670,7 +669,11 @@ function ClientNetworkSession:_upd_request_join_resend(wall_time)
 		local account_type = self._local_peer:account_type_str()
 
 		if self._join_request_params.ticket then
-			self._join_request_params.host_rpc:auth_request_reply(self._join_request_params.ticket)
+			if TDVS:should_chunk_auth_ticket(self._join_request_params.ticket) then
+				TDVS:send_auth_ticket_in_chunks(self._join_request_params.ticket, self._join_request_params.host_rpc, false)
+			else
+				self._join_request_params.host_rpc:auth_request_reply(self._join_request_params.ticket)
+			end
 		elseif account_type == "EPIC" then
 			self._join_request_params.host_rpc:request_join_epic(unpack(self._join_request_params.params))
 		elseif account_type == "STEAM" then

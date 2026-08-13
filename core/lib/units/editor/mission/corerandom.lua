@@ -32,7 +32,7 @@ function CoreRandomUnitElement:update_editing()
 end
 
 function CoreRandomUnitElement:draw_links(t, dt, selected_unit, all_units)
-	CoreRandomUnitElement.super.draw_links(self, t, dt, selected_unit)
+	CoreRandomUnitElement.super.draw_links(self, t, dt, selected_unit, all_units)
 
 	if self._hed.counter_id then
 		local unit = all_units[self._hed.counter_id]
@@ -108,7 +108,7 @@ function CoreRandomUnitElement:_build_panel(panel, panel_sizer)
 	})
 	self:_build_value_number(panel, panel_sizer, "amount", {
 		floats = 0,
-		min = 1
+		min = 0
 	}, "Specifies the amount of elements to be executed")
 	self:_build_value_number(panel, panel_sizer, "amount_random", {
 		floats = 0,

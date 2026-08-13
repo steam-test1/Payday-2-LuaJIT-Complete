@@ -927,6 +927,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		local permission = {
 			"menu_public_game",
 			"menu_friends_only_game",
+			"menu_private_game",
 			"menu_private_game"
 		}
 

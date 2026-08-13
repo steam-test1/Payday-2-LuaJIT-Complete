@@ -68,6 +68,10 @@ function SpawnEnemyUnitElement:test_element()
 
 		unit:movement():action_request(action_desc)
 		unit:movement():set_position(unit:position())
+
+		if self._hed.force_pickup then
+			unit:character_damage():set_pickup(self._hed.force_pickup)
+		end
 	end
 end
 
@@ -77,7 +81,9 @@ end
 
 function SpawnEnemyUnitElement:stop_test_element()
 	for _, enemy in ipairs(self._enemies) do
-		enemy:set_slot(0)
+		if alive(enemy) then
+			enemy:set_slot(0)
+		end
 	end
 
 	self._enemies = {}

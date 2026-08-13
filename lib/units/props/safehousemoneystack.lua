@@ -88,10 +88,8 @@ function SafehouseMoneyStack:update()
 
 		if self._test_money >= SafehouseMoneyStack.MAX_SUM then
 			self._test_money = nil
+
+			self._unit:set_extension_update_enabled(Idstring("base"), false)
 		end
 	end
-end
-
-function SafehouseMoneyStack:destroy(...)
-	SafehouseMoneyStack.super.destroy(self, ...)
 end

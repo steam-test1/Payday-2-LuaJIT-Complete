@@ -514,7 +514,7 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	clbk()
 end
 
-local material_type_ids = Idstring("material")
+local material_type_ids = IDS_MATERIAL
 
 function NewRaycastWeaponBase:apply_material_parameters()
 	local parts_tweak = tweak_data.weapon.factory.parts
@@ -566,7 +566,7 @@ function NewRaycastWeaponBase:apply_texture_switches()
 
 				if texture_switch and part_data then
 					unit = part_data.unit
-					material_config = unit:get_objects_by_type(Idstring("material"))
+					material_config = unit:get_objects_by_type(IDS_MATERIAL)
 
 					local ids = {}
 
@@ -1270,6 +1270,7 @@ function NewRaycastWeaponBase:_check_second_sight()
 end
 
 function NewRaycastWeaponBase:zoom()
+	local stats_table = tweak_data.weapon.stats.zoom
 	local second_sight = self:get_active_second_sight()
 
 	if second_sight then
@@ -1278,14 +1279,12 @@ function NewRaycastWeaponBase:zoom()
 		if not zoom_stats then
 			local tweak_stats = tweak_data.weapon.factory.parts[second_sight.part_id].stats
 
-			if not tweak_stats.gadget_zoom_add then
-				debug_pause("Invalid second sight:", second_sight.part_id)
-			end
-
-			zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #tweak_data.weapon.stats.zoom)
+			zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #stats_table)
 		end
 
-		return tweak_data.weapon.stats.zoom[zoom_stats]
+		local fov = stats_table[zoom_stats]
+
+		return fov
 	end
 
 	if self:is_second_sight_on() and self._second_sight_data then
@@ -1294,14 +1293,12 @@ function NewRaycastWeaponBase:zoom()
 		if not gadget_zoom_stats then
 			local tweak_stats = tweak_data.weapon.factory.parts[self._second_sight_data.part_id].stats
 
-			if not tweak_stats.gadget_zoom_add then
-				debug_pause("Invalid second sight:", self._second_sight_data.part_id)
-			end
-
-			gadget_zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #tweak_data.weapon.stats.zoom)
+			gadget_zoom_stats = math.min(NewRaycastWeaponBase.super.zoom(self) + tweak_stats.gadget_zoom_add, #stats_table)
 		end
 
-		return tweak_data.weapon.stats.zoom[gadget_zoom_stats]
+		local fov = stats_table[gadget_zoom_stats]
+
+		return fov
 	end
 
 	return NewRaycastWeaponBase.super.zoom(self)
@@ -1430,13 +1427,9 @@ function NewRaycastWeaponBase:stance_mod()
 		return nil
 	end
 
-	do
-		local second_sight_data = self:get_active_second_sight()
+	local second_sight_data = self:get_active_second_sight()
 
-		return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, second_sight_data and second_sight_data.part_id)
-	end
-
-	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, self:is_second_sight_on())
+	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, second_sight_data and second_sight_data.part_id)
 end
 
 function NewRaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
@@ -1507,7 +1500,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 		self._unit:anim_stop(ids_anim_name)
 		self._unit:anim_play_to(ids_anim_name, length, speed_multiplier)
 
-		local offset = self:_get_anim_start_offset(anim_name, length)
+		local offset = self:_get_anim_start_offset(anim_name)
 
 		if offset then
 			self._unit:anim_set_time(ids_anim_name, offset)
@@ -1666,7 +1659,7 @@ end
 function NewRaycastWeaponBase:_set_parts_enabled(enabled)
 	if self._parts then
 		local anim_groups
-		local empty_s = Idstring("")
+		local empty_s = IDS_EMPTY
 
 		for part_id, data in pairs(self._parts) do
 			if alive(data.unit) then
@@ -1729,7 +1722,7 @@ end
 
 function NewRaycastWeaponBase:_set_parts_visible(visible)
 	if self._parts then
-		local empty_s = Idstring("")
+		local empty_s = IDS_EMPTY
 		local anim_groups, is_visible
 		local is_player = self._setup.user_unit == managers.player:player_unit()
 		local steelsight_swap_state = false
@@ -1743,7 +1736,10 @@ function NewRaycastWeaponBase:_set_parts_visible(visible)
 
 			if alive(unit) then
 				is_visible = visible and self:_is_part_visible(part_id)
-				is_visible = is_visible and (self._parts[part_id].steelsight_visible == nil or self._parts[part_id].steelsight_visible == steelsight_swap_state)
+
+				local part_data = self._parts[part_id]
+
+				is_visible = is_visible and (part_data.steelsight_visible == nil or part_data.steelsight_visible == steelsight_swap_state)
 
 				unit:set_visible(is_visible)
 
@@ -1984,6 +1980,8 @@ function NewRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 		dmg_mul = dmg_mul * (self._volley_damage_mul or 1)
 
 		local result = {
+			enemies_in_cone = nil,
+			hit_enemy = nil,
 			rays = {}
 		}
 
@@ -3162,7 +3160,7 @@ function NewRaycastWeaponBase:on_reload(...)
 
 	local user_unit = managers.player:player_unit()
 
-	if user_unit then
+	if alive(user_unit) then
 		user_unit:movement():current_state():send_reload_interupt()
 	end
 
@@ -3186,13 +3184,15 @@ function NewRaycastWeaponBase:set_timer(timer, ...)
 	end
 end
 
-function NewRaycastWeaponBase:destroy(unit)
-	NewRaycastWeaponBase.super.destroy(self, unit)
+function NewRaycastWeaponBase:pre_destroy(unit)
+	NewRaycastWeaponBase.super.pre_destroy(self, unit)
 
 	if self._parts_texture_switches then
 		for part_id, texture_ids in pairs(self._parts_texture_switches) do
 			TextureCache:unretrieve(texture_ids)
 		end
+
+		self._parts_texture_switches = nil
 	end
 
 	if self._textures then
@@ -3200,9 +3200,13 @@ function NewRaycastWeaponBase:destroy(unit)
 			if not texture_data.applied then
 				texture_data.applied = true
 
-				TextureCache:unretrieve(texture_data.name)
+				if texture_data.requested then
+					TextureCache:unretrieve(texture_data.name)
+				end
 			end
 		end
+
+		self._textures = {}
 	end
 
 	if self._charm_data then

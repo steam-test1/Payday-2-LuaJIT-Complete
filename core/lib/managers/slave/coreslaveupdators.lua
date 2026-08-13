@@ -54,7 +54,7 @@ function SlaveUpdator:slaveupdators_sync(key, name, pos, rot, rpc)
 
 		self._pings[key] = nil
 	else
-		CoreEngineAccess._editor_load(Idstring("unit"), name:id())
+		CoreEngineAccess._editor_load(IDS_UNIT, name:id())
 
 		unit = World:spawn_unit_without_extensions(name:id(), pos, rot)
 		self._units[key] = unit

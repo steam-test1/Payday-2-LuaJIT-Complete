@@ -6,7 +6,7 @@ local massive_font_size = tweak_data.menu.pd2_massive_font_size
 local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
-local IS_WIN_32 = SystemInfo:platform() == Idstring("WIN32")
+local IS_WIN_32 = IS_PC
 local NOT_WIN_32 = not IS_WIN_32
 local TOP_ADJUSTMENT = NOT_WIN_32 and 55 or 55
 local BOT_ADJUSTMENT = NOT_WIN_32 and 60 or 60
@@ -40,6 +40,18 @@ function MenuGuiComponentGeneric:init(ws, fullscreen_ws, node)
 
 	self:_setup(is_start_page, component_data)
 	self:set_layer(10)
+end
+
+function MenuGuiComponentGeneric:get_tab(name_id)
+	for _, tab in pairs(self._tabs) do
+		if tab.name_id == name_id then
+			return tab
+		end
+	end
+end
+
+function MenuGuiComponentGeneric:allow_input()
+	return true
 end
 
 function MenuGuiComponentGeneric:close()
@@ -321,6 +333,7 @@ function MenuGuiComponentGeneric:_add_tabs()
 		tab_x = tab_item:next_page_position()
 
 		table.insert(self._tabs, {
+			name_id = tab_data.name_id,
 			tab = tab_item,
 			page = tab_page,
 			width_multiplier = tab_data.width_multiplier ~= nil and tab_data.width_multiplier or WIDTH_MULTIPLIER

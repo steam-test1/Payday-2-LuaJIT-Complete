@@ -88,10 +88,6 @@ function InstanceEventUnitElement:layer_finished(...)
 	end
 end
 
-function InstanceEventUnitElement:selected()
-	InstanceEventUnitElement.super.selected(self)
-end
-
 function InstanceEventUnitElement:update_selected(t, dt)
 	for _, data in ipairs(self._hed.event_list) do
 		self:_draw_instance_link(t, dt, data.instance)
@@ -111,14 +107,10 @@ function InstanceEventUnitElement:_draw_instance_link(t, dt, instance_name)
 
 	managers.editor:layer("Instances"):external_draw_instance(t, dt, instance_name, r, g, b)
 
-	local instance_data = managers.world_instance:get_instance_data_by_name(instance_name)
-
-	if instance_data then
-		if self._type == "input" then
-			Application:draw_arrow(self._unit:position(), instance_data.position, r, g, b, 0.2)
-		else
-			Application:draw_arrow(instance_data.position, self._unit:position(), r, g, b, 0.2)
-		end
+	if self._type == "input" then
+		Application:draw_arrow(self._unit:position(), managers.world_instance:get_instance_data_by_name(instance_name).position, r, g, b, 0.2)
+	else
+		Application:draw_arrow(managers.world_instance:get_instance_data_by_name(instance_name).position, self._unit:position(), r, g, b, 0.2)
 	end
 end
 
@@ -141,7 +133,7 @@ function InstanceEventUnitElement:_instance_name_raycast()
 
 	local instance_data = managers.world_instance:get_instance_data_by_name(instance_name)
 
-	return instance_data and instance_data.script == self._unit:mission_element_data().script and instance_name or nil
+	return instance_data.script == self._unit:mission_element_data().script and instance_name or nil
 end
 
 function InstanceEventUnitElement:on_instance_changed_name(old_name, new_name)
@@ -188,13 +180,16 @@ end
 
 function InstanceEventUnitElement:_add_instance_by_name(instance_name)
 	local events = self:_get_events(instance_name)
-	local event_list_data = {
-		instance = instance_name,
-		event = events[1]
-	}
 
-	table.insert(self._hed.event_list, event_list_data)
-	self:_add_instance_gui(instance_name, events, event_list_data)
+	if events then
+		local event_list_data = {
+			instance = instance_name,
+			event = events[1]
+		}
+
+		table.insert(self._hed.event_list, event_list_data)
+		self:_add_instance_gui(instance_name, events, event_list_data)
+	end
 end
 
 function InstanceEventUnitElement:_add_instance_gui(instance_name, events, event_list_data)
@@ -287,7 +282,13 @@ function InstanceEventUnitElement:_on_gui_select_instance_list()
 
 	settings.list_style = "LC_REPORT,LC_NO_HEADER,LC_SORT_ASCENDING"
 
-	local names = managers.world_instance:instance_names_by_script(self._unit:mission_element_data().script)
+	local names = managers.world_instance:instance_names_by_script("default")
+	local names_script = managers.world_instance:instance_names_by_script(self._unit:mission_element_data().script)
+
+	for _, val in ipairs(names_script) do
+		table.insert(names, val)
+	end
+
 	local dialog = SelectNameModal:new("Select instances", names, settings)
 
 	if dialog:cancelled() then
@@ -307,7 +308,7 @@ function InstanceEventUnitElement:_build_panel(panel, panel_sizer)
 
 	local btn_toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
 
-	btn_toolbar:add_tool("SELECT_UNIT_LIST", "Select unit from unit list", CoreEws.image_path("world_editor\\unit_by_name_list.png"), nil)
+	btn_toolbar:add_tool("SELECT_UNIT_LIST", "Select instance from instance list", CoreEws.image_path("world_editor\\unit_by_name_list.png"), nil)
 	btn_toolbar:connect("SELECT_UNIT_LIST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_gui_select_instance_list"), nil)
 	btn_toolbar:realize()
 	panel_sizer:add(btn_toolbar, 0, 1, "EXPAND,LEFT")
@@ -356,6 +357,7 @@ end
 
 CoreInstancePointUnitElement = CoreInstancePointUnitElement or class(MissionElement)
 InstancePointUnitElement = InstancePointUnitElement or class(CoreInstancePointUnitElement)
+InstancePointUnitElement.USES_POINT_ORIENTATION = true
 InstancePointUnitElement.LINK_VALUES = {
 	{
 		layer = "Instances",
@@ -369,6 +371,7 @@ function InstancePointUnitElement:init(...)
 	InstancePointUnitElement.super.init(self, ...)
 
 	self._hed.instance = nil
+	self._hed.trigger_times = 1
 
 	table.insert(self._save_values, "instance")
 end
@@ -388,7 +391,7 @@ function InstancePointUnitElement:update_editing(t, dt)
 end
 
 function InstancePointUnitElement:selected()
-	InstanceEventUnitElement.super.selected(self)
+	InstancePointUnitElement.super.selected(self)
 
 	local names = self:_get_options()
 
@@ -403,6 +406,13 @@ function InstancePointUnitElement:selected()
 	if self._instance_params then
 		CoreEws.change_combobox_value(self._instance_params, self._hed.instance)
 	end
+
+	self:_update_preview_unit()
+end
+
+function InstancePointUnitElement:on_unselected()
+	self:_update_preview_unit(true)
+	InstancePointUnitElement.super.on_unselected(self)
 end
 
 function InstancePointUnitElement:external_change_instance(instance)
@@ -438,18 +448,15 @@ function InstancePointUnitElement:_instance_name_raycast()
 
 	local instance_data = managers.world_instance:get_instance_data_by_name(instance_name)
 
-	return instance_data and instance_data.mission_placed and instance_data.script == self._unit:mission_element_data().script and instance_name or nil
+	return instance_data.mission_placed and instance_data.script == self._unit:mission_element_data().script and instance_name or nil
 end
 
 function InstancePointUnitElement:_get_options()
 	local _names = managers.world_instance:instance_names_by_script(self._unit:mission_element_data().script)
 	local names = {}
-	local instance_data
 
 	for _, name in ipairs(_names) do
-		instance_data = managers.world_instance:get_instance_data_by_name(name)
-
-		if instance_data and instance_data.mission_placed then
+		if managers.world_instance:get_instance_data_by_name(name).mission_placed then
 			table.insert(names, name)
 		end
 	end
@@ -470,6 +477,41 @@ end
 
 function InstancePointUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "_set_instance_by_raycast"))
+end
+
+function InstancePointUnitElement:_update_preview_unit(destroy_only)
+	if alive(self._preview_unit) then
+		World:delete_unit(self._preview_unit)
+
+		self._preview_unit = nil
+	end
+
+	if destroy_only then
+		return
+	end
+
+	if self._hed.instance then
+		local inst_data = managers.world_instance:get_instance_data_by_name(self._hed.instance)
+
+		if inst_data then
+			local low_poly = managers.editor:layer("Instances"):get_preview_unit(inst_data.predef)
+
+			if low_poly and low_poly ~= "" then
+				local ids_rootpoint = Idstring("rp_hub_element")
+
+				self._preview_unit = CoreUnit.safe_spawn_unit(low_poly, self._unit:position(), self._unit:rotation())
+
+				self._unit:link(ids_rootpoint, self._preview_unit)
+			end
+		else
+			Application:error("[InstancePointUnitElement:_update_preview_unit] No instance data, This might be bad. On instance:", self._hed.instance)
+		end
+	end
+end
+
+function InstancePointUnitElement:clear()
+	self:_update_preview_unit(true)
+	InstancePointUnitElement.super.clear(self)
 end
 
 CoreInstanceParamsUnitElement = CoreInstanceParamsUnitElement or class(MissionElement)
@@ -520,7 +562,7 @@ function InstanceParamsUnitElement:_add_var_dialog()
 	if type == "number" then
 		default_value = 0
 	elseif type == "enemy" then
-		default_value = SpawnEnemyUnitElement._options[1]
+		default_value = managers.enemy:enemy_units()[1]
 	elseif type == "civilian" then
 		default_value = SpawnCivilianUnitElement._options[1]
 	elseif type == "objective" then
@@ -585,7 +627,7 @@ function InstanceParamsUnitElement:_build_var_panel(data)
 	if data.type == "number" then
 		self:_build_number(data, panel, sizer)
 	elseif data.type == "enemy" then
-		self:_build_combobox(data, panel, sizer, SpawnEnemyUnitElement._options)
+		self:_build_combobox(data, panel, sizer, managers.enemy:enemy_units())
 	elseif data.type == "civilian" then
 		self:_build_combobox(data, panel, sizer, SpawnCivilianUnitElement._options)
 	elseif data.type == "objective" then
@@ -802,7 +844,7 @@ function InstanceSetParamsUnitElement:_instance_name_raycast()
 
 	local instance_data = managers.world_instance:get_instance_data_by_name(instance_name)
 
-	return instance_data and instance_data.script == self._unit:mission_element_data().script and instance_name or nil
+	return instance_data.script == self._unit:mission_element_data().script and instance_name or nil
 end
 
 function InstanceSetParamsUnitElement:_set_instance_by_raycast()
@@ -839,15 +881,8 @@ function InstanceSetParamsUnitElement:_check_change_instance(new_instance)
 		return
 	end
 
-	local new_instance_data = managers.world_instance:get_instance_data_by_name(new_instance)
-	local instance_data = managers.world_instance:get_instance_data_by_name(self._hed.instance)
-
-	if not new_instance_data or not instance_data then
-		return
-	end
-
-	local new_folder = new_instance_data.folder
-	local folder = instance_data.folder
+	local new_folder = managers.world_instance:get_instance_data_by_name(new_instance).folder
+	local folder = managers.world_instance:get_instance_data_by_name(self._hed.instance).folder
 
 	if new_folder == folder then
 		self._hed.instance = new_instance
@@ -920,7 +955,7 @@ function InstanceSetParamsUnitElement:_build_from_params(params)
 		if data.type == "number" then
 			value_ctrlr = self:_build_number(data, value_panel, value_sizer)
 		elseif data.type == "enemy" then
-			value_ctrlr = self:_build_combobox(data, value_panel, value_sizer, SpawnEnemyUnitElement._options)
+			value_ctrlr = self:_build_combobox(data, value_panel, value_sizer, managers.enemy:enemy_units())
 		elseif data.type == "civilian" then
 			value_ctrlr = self:_build_combobox(data, value_panel, value_sizer, SpawnCivilianUnitElement._options)
 		elseif data.type == "objective" then

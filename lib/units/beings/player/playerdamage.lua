@@ -197,6 +197,7 @@ function PlayerDamage:init(unit)
 
 	self._delayed_damage = {
 		epsilon = 0.001,
+		next_tick = nil,
 		chunks = {}
 	}
 

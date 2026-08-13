@@ -409,6 +409,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.contacts.skirmish.assets_gui = Idstring("guis/mission_briefing/preload_contact_bain")
 	self.contacts.skirmish.hide_stream = true
 	self.contacts.skirmish.hidden = true
+	self.contacts.skirmish.ignore_heat = true
 	self.jobs = {}
 	self.stages = {}
 	self.stages.firestarter_1 = {
@@ -1200,6 +1201,7 @@ function NarrativeTweakData:init(tweak_data)
 		6000
 	}
 	self.stages.branchbank_random = {
+		briefing_dialog = nil,
 		level_id = "branchbank",
 		mission = "standalone",
 		type = "d",
@@ -1632,9 +1634,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.safehouse.name_id = "heist_safehouse"
 	self.jobs.safehouse.briefing_id = "heist_safehouse_crimenet"
 
-	local platform = SystemInfo:platform()
-
-	if platform == Idstring("XB1") or platform == Idstring("PS4") then
+	if IS_XB1 or IS_PS4 then
 		self.jobs.safehouse.contact = "bain_no_variation"
 	else
 		self.jobs.safehouse.contact = "bain"
@@ -1697,6 +1697,7 @@ function NarrativeTweakData:init(tweak_data)
 		200000
 	}
 	self.stages.arm_cro = {
+		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_cro",
 		type = "d",
@@ -1772,6 +1773,7 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_und = {
+		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_und",
 		type = "d",
@@ -1847,6 +1849,7 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_hcm = {
+		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_hcm",
 		type = "d",
@@ -1922,6 +1925,7 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_par = {
+		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_par",
 		type = "d",
@@ -1997,6 +2001,7 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_fac = {
+		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_fac",
 		type = "d",
@@ -2072,6 +2077,7 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_for = {
+		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_for",
 		type = "d",
@@ -7838,7 +7844,7 @@ function NarrativeTweakData:create_job_name(job_id, skip_professional)
 		local pro_text = "  "
 
 		if job_tweak.dlc == "pd2_clan" then
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if IS_STEAM then
 				pro_text = pro_text .. managers.localization:to_upper_text("cn_menu_community")
 			end
 		else

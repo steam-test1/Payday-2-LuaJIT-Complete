@@ -377,7 +377,7 @@ function ContractBrokerHeistItem:get_dlc_name_and_color(job_tweak)
 			if job_tweak.dlc == "pd2_clan" then
 				dlc_color = tweak_data.screen_colors.community_color
 
-				if SystemInfo:distribution() == Idstring("STEAM") then
+				if IS_STEAM then
 					dlc_name = managers.localization:to_upper_text("cn_menu_community")
 				end
 			else

@@ -320,6 +320,8 @@ function AnimatedVehicleBase:load(save_data)
 end
 
 function AnimatedVehicleBase:destroy(unit)
+	AnimatedVehicleBase.super.destroy(self, unit)
+
 	if self._modules then
 		local modules = self._modules
 

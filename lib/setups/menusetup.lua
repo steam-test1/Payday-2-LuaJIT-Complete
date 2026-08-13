@@ -29,9 +29,9 @@ core:import("SequenceManager")
 MenuSetup = MenuSetup or class(Setup)
 MenuSetup.IS_START_MENU = true
 
-local is_steam = SystemInfo:distribution() == Idstring("STEAM")
-local is_epic = SystemInfo:distribution() == Idstring("EPIC")
-local is_mm_eos = SystemInfo:matchmaking() == Idstring("MM_EPIC")
+local is_steam = IS_STEAM
+local is_epic = IS_EPIC
+local is_mm_eos = IS_EPIC_MM
 
 function MenuSetup:load_packages()
 	Setup.load_packages(self)
@@ -70,19 +70,7 @@ function MenuSetup:load_packages()
 		end
 	end
 
-	local platform = SystemInfo:platform()
-
-	if platform == Idstring("XB1") or platform == Idstring("PS4") then
-		if not PackageManager:loaded("packages/game_base_init") then
-			PackageManager:load("packages/game_base_init")
-
-			if Application:installer():get_progress() >= 1 then
-				PackageManager:load("packages/game_base")
-			end
-
-			Global._game_base_package_loaded = true
-		end
-	elseif not PackageManager:loaded("packages/game_base_init") then
+	if not PackageManager:loaded("packages/game_base_init") then
 		local function _load_wip_func()
 			Global._game_base_package_loaded = true
 		end
@@ -197,7 +185,7 @@ end
 function MenuSetup:init_managers(managers)
 	Setup.init_managers(self, managers)
 	managers.sequence:preload()
-	PackageManager:set_resource_loaded_clbk(Idstring("unit"), callback(managers.sequence, managers.sequence, "clbk_pkg_manager_unit_loaded"))
+	PackageManager:set_resource_loaded_clbk(IDS_UNIT, callback(managers.sequence, managers.sequence, "clbk_pkg_manager_unit_loaded"))
 
 	managers.menu_scene = MenuSceneManager:new()
 	managers.money = MoneyManager:new()
@@ -212,17 +200,7 @@ function MenuSetup:init_finalize()
 		managers.network:init_finalize()
 	end
 
-	if SystemInfo:platform() == Idstring("PS3") then
-		if not Global.hdd_space_checked then
-			managers.savefile:check_space_required()
-
-			self.update = self.update_wait_for_savegame_info
-		else
-			managers.achievment:chk_install_trophies()
-		end
-	end
-
-	if SystemInfo:platform() == Idstring("PS4") then
+	if IS_PS4 then
 		managers.achievment:chk_install_trophies()
 	end
 
@@ -245,7 +223,7 @@ function MenuSetup:update_wait_for_savegame_info(t, dt)
 	if managers.savefile:fetch_savegame_hdd_space_required() then
 		Application:check_sufficient_hdd_space_to_launch(managers.savefile:fetch_savegame_hdd_space_required(), managers.dlc:has_full_game())
 
-		if SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4") then
+		if IS_PS4 then
 			Trophies:set_translation_text(managers.localization:text("err_load"), managers.localization:text("err_ins"), managers.localization:text("err_disk"))
 			managers.achievment:chk_install_trophies()
 		end

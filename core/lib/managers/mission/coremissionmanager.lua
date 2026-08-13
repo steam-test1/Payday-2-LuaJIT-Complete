@@ -635,16 +635,24 @@ function MissionScript:load(data)
 
 	if self._element_groups.ElementInstancePoint then
 		for _, element in ipairs(self._element_groups.ElementInstancePoint) do
-			if state[element:id()] then
-				self._elements[element:id()]:load(state[element:id()])
+			local id = element:id()
 
-				state[element:id()] = nil
+			if state[id] then
+				if self._elements[id].load then
+					self._elements[id]:load(state[id])
+				end
+
+				state[id] = nil
 			end
 		end
 	end
 
 	for id, mission_state in pairs(state) do
-		self._elements[id]:load(mission_state)
+		local element = self._elements[id]
+
+		if element.load then
+			element:load(mission_state)
+		end
 	end
 end
 

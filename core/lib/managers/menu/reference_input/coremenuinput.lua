@@ -310,14 +310,16 @@ function MenuInput:focus(focus)
 end
 
 function MenuInput:create_controller()
-	if not self._controller then
-		local controller = managers.controller:create_controller(nil, nil, false)
-
-		controller:add_trigger("cancel", callback(self, self, "back"))
-		controller:set_enabled(true)
-
-		self._controller = controller
+	if self._controller then
+		return
 	end
+
+	local controller = managers.controller:create_controller("menu_input", nil, false)
+
+	controller:add_trigger("cancel", callback(self, self, "back"))
+	controller:set_enabled(true)
+
+	self._controller = controller
 end
 
 function MenuInput:destroy_controller()

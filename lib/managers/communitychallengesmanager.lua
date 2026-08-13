@@ -18,7 +18,7 @@ function CommunityChallengesManager:init()
 	}
 	Global.community_challenges_manager = self._global
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		self:fetch_community_challenge_data_steam()
 	end
 end

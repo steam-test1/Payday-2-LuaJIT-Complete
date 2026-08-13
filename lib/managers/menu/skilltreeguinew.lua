@@ -22,7 +22,7 @@ local massive_font_size = tweak_data.menu.pd2_massive_font_size
 local large_font_size = tweak_data.menu.pd2_large_font_size
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 local small_font_size = tweak_data.menu.pd2_small_font_size
-local IS_WIN_32 = SystemInfo:platform() == Idstring("WIN32")
+local IS_WIN_32 = IS_PC
 local NOT_WIN_32 = not IS_WIN_32
 local TOP_ADJUSTMENT = NOT_WIN_32 and 45 or 45
 local BOT_ADJUSTMENT = NOT_WIN_32 and 45 or 45

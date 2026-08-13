@@ -10,7 +10,7 @@ local UNIT_IDS = Idstring("units/payday2/equipment/gen_equipment_ammobag/gen_equ
 function AmmoBagBase.spawn(pos, rot, ammo_upgrade_lvl, peer_id, bullet_storm_level)
 	local unit = World:spawn_unit(UNIT_IDS, pos, rot)
 
-	managers.network:session():send_to_peers_synched("sync_ammo_bag_setup", unit, ammo_upgrade_lvl, peer_id or 0, bullet_storm_level or 0)
+	managers.network:send_to_peers_synched("sync_ammo_bag_setup", unit, ammo_upgrade_lvl, peer_id or 0, bullet_storm_level or 0)
 	unit:base():setup(ammo_upgrade_lvl, bullet_storm_level)
 
 	return unit
@@ -21,7 +21,11 @@ function AmmoBagBase:set_server_information(peer_id)
 		owner_peer_id = peer_id
 	}
 
-	managers.network:session():peer(peer_id):set_used_deployable(true)
+	local peer = managers.network:get_peer_safe(peer_id)
+
+	if peer then
+		peer:set_used_deployable(true)
+	end
 end
 
 function AmmoBagBase:server_information()
@@ -52,10 +56,14 @@ end
 function AmmoBagBase:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin then
-		local peer = managers.network:session():server_peer()
+	if self._was_dropin then
+		return
+	end
 
-		peer:mark_cheater(VoteManager.REASON.many_assets)
+	local server_peer = managers.network:get_server_peer_safe()
+
+	if server_peer then
+		server_peer:mark_cheater(VoteManager.REASON.many_assets)
 	end
 end
 
@@ -126,10 +134,7 @@ end
 
 function AmmoBagBase:server_set_dynamic()
 	self:_set_dynamic()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
 end
 
 function AmmoBagBase:sync_net_event(event_id)
@@ -151,7 +156,7 @@ function AmmoBagBase:take_ammo(unit)
 
 	if taken > 0 then
 		unit:sound():play("pickup_ammo")
-		managers.network:session():send_to_peers_synched("sync_ammo_bag_ammo_taken", self._unit, taken)
+		managers.network:send_to_peers_synched("sync_ammo_bag_ammo_taken", self._unit, taken)
 	end
 
 	if self._ammo_amount <= 0 then
@@ -267,7 +272,9 @@ function AmmoBagBase:round_value(val)
 	return math.floor(val * dec_mul) / dec_mul
 end
 
-function AmmoBagBase:destroy()
+function AmmoBagBase:destroy(unit)
+	AmmoBagBase.super.destroy(self, unit)
+
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 

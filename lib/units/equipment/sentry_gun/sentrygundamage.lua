@@ -730,12 +730,6 @@ function SentryGunDamage:melee_hit_sfx()
 	return "hit_gen"
 end
 
-function SentryGunDamage:destroy(unit)
-	unit:brain():pre_destroy()
-	unit:movement():pre_destroy()
-	unit:base():pre_destroy()
-end
-
 function SentryGunDamage:shield_smoke_level()
 	return self._shield_smoke_level
 end

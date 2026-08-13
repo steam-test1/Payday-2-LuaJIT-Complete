@@ -1,11 +1,15 @@
 function NewRaycastWeaponBase:set_scope_enabled(enabled)
+	print("[ScopeBase] set_scope_enabled", enabled)
+
 	if self:is_npc() then
+		print("[ScopeBase] is_npc does not use PiP scope")
+
 		return
 	end
 
 	if self._scope_camera_configuration and _G.IS_VR then
-		local user_unit = managers.player:player_unit()
 		local camera
+		local user_unit = managers.player:player_unit()
 
 		if not user_unit then
 			camera = managers.menu:player()
@@ -13,13 +17,19 @@ function NewRaycastWeaponBase:set_scope_enabled(enabled)
 			camera = user_unit:camera()
 		end
 
+		print("[ScopeBase] preparing to use PiP scope. camera:", camera)
+
 		if camera then
 			if enabled then
 				local config = self._scope_camera_configuration
 
 				camera:link_scope(config.a_camera, config.a_screen, config.material, config.channel, config.fov)
+
+				self.pip_camera_linked = true
 			else
 				camera:unlink_scope()
+
+				self.pip_camera_linked = nil
 			end
 		end
 	end
@@ -44,7 +54,7 @@ function NewRaycastWeaponBase:configure_scope()
 
 				local material
 				local material_name = Idstring(camera.material)
-				local material_config = part.unit:get_objects_by_type(Idstring("material"))
+				local material_config = part.unit:get_objects_by_type(IDS_MATERIAL)
 
 				for _, _material in ipairs(material_config) do
 					if _material:name() == material_name then

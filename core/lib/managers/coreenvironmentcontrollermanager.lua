@@ -232,11 +232,14 @@ function CoreEnvironmentControllerManager:set_blurzone(id, mode, pos, radius, he
 
 	if id then
 		blurzone = blurzone or {
+			check = nil,
 			delete_after_fadeout = false,
 			height = 0,
 			mode = -1,
 			opacity = 0,
-			radius = 0
+			pos = nil,
+			radius = 0,
+			update = nil
 		}
 
 		if mode > 0 then
@@ -426,8 +429,6 @@ function CoreEnvironmentControllerManager:refresh_render_settings(vp)
 		return
 	end
 
-	local lvl_tweak_data = Global.level_data and Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
-	local cubemap_name = lvl_tweak_data and lvl_tweak_data.cube or "cube_apply_empty"
 	local color_grading = self._default_color_grading
 
 	if not self._ignore_user_color_grading then

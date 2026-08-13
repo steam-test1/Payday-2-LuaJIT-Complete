@@ -287,10 +287,6 @@ function TextTemplateBase:_big_bank_welcome()
 	end
 end
 
-function TextTemplateBase:destroy()
-	return
-end
-
 function TextTemplateBase:save(data)
 	local state = {}
 

@@ -233,6 +233,7 @@ function ExtendedPanel.limit_text_rows(text, limit, make_fine, ...)
 		end
 
 		last_size = #str
+		str = text:text()
 	end
 
 	ExtendedPanel.make_fine_text(text, ...)
@@ -330,7 +331,7 @@ function ExtendedPanel:allow_input()
 	return alive(self._panel) and self._panel:visible()
 end
 
-local function call_on_all_exists(set, func_name, ...)
+function ExtendedPanel.call_on_all_exists(set, func_name, ...)
 	for v, _ in pairs(set) do
 		if v:allow_input() then
 			local func = v[func_name]
@@ -342,13 +343,15 @@ local function call_on_all_exists(set, func_name, ...)
 	end
 end
 
-local function call_return_b_on_all_exists(set, func_name, ...)
-	for v, _ in pairs(set) do
-		if v:allow_input() then
-			local func = v[func_name]
+function ExtendedPanel.call_return_b_on_all_exists(set, func_name, ...)
+	if type(set) == "table" then
+		for v, _ in pairs(set) do
+			if v:allow_input() then
+				local func = v[func_name]
 
-			if func and func(v, ...) then
-				return true
+				if func and func(v, ...) then
+					return true
+				end
 			end
 		end
 	end
@@ -380,7 +383,7 @@ function ExtendedPanel:mouse_released(button, x, y)
 		return
 	end
 
-	call_on_all_exists(self._input_components_set, "mouse_released", button, x, y)
+	ExtendedPanel.call_on_all_exists(self._input_components_set, "mouse_released", button, x, y)
 end
 
 function ExtendedPanel:mouse_clicked(o, button, x, y)
@@ -388,7 +391,7 @@ function ExtendedPanel:mouse_clicked(o, button, x, y)
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "mouse_clicked", o, button, x, y)
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_clicked", o, button, x, y)
 end
 
 function ExtendedPanel:mouse_double_click(o, button, x, y)
@@ -396,7 +399,7 @@ function ExtendedPanel:mouse_double_click(o, button, x, y)
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "mouse_double_click", o, button, x, y)
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_double_click", o, button, x, y)
 end
 
 function ExtendedPanel:mouse_pressed(button, x, y)
@@ -404,7 +407,7 @@ function ExtendedPanel:mouse_pressed(button, x, y)
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "mouse_pressed", button, x, y)
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_pressed", button, x, y)
 end
 
 function ExtendedPanel:mouse_wheel_up(x, y)
@@ -412,7 +415,7 @@ function ExtendedPanel:mouse_wheel_up(x, y)
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "mouse_wheel_up", x, y)
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_wheel_up", x, y)
 end
 
 function ExtendedPanel:mouse_wheel_down(x, y)
@@ -420,7 +423,7 @@ function ExtendedPanel:mouse_wheel_down(x, y)
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "mouse_wheel_down", x, y)
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_wheel_down", x, y)
 end
 
 function ExtendedPanel:special_btn_pressed(button)
@@ -428,7 +431,7 @@ function ExtendedPanel:special_btn_pressed(button)
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "special_btn_pressed", button)
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "special_btn_pressed", button)
 end
 
 function ExtendedPanel:move_up()
@@ -436,7 +439,7 @@ function ExtendedPanel:move_up()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "move_up")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_up")
 end
 
 function ExtendedPanel:move_down()
@@ -444,7 +447,7 @@ function ExtendedPanel:move_down()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "move_down")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_down")
 end
 
 function ExtendedPanel:move_left()
@@ -452,7 +455,7 @@ function ExtendedPanel:move_left()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "move_left")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_left")
 end
 
 function ExtendedPanel:move_right()
@@ -460,7 +463,7 @@ function ExtendedPanel:move_right()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "move_right")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_right")
 end
 
 function ExtendedPanel:previous_page()
@@ -468,7 +471,7 @@ function ExtendedPanel:previous_page()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "previous_page")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "previous_page")
 end
 
 function ExtendedPanel:next_page()
@@ -476,7 +479,7 @@ function ExtendedPanel:next_page()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "next_page")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "next_page")
 end
 
 function ExtendedPanel:confirm_pressed()
@@ -484,7 +487,7 @@ function ExtendedPanel:confirm_pressed()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "confirm_pressed")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "confirm_pressed")
 end
 
 function ExtendedPanel:back_pressed()
@@ -492,5 +495,5 @@ function ExtendedPanel:back_pressed()
 		return
 	end
 
-	return call_return_b_on_all_exists(self._input_components_set, "back_pressed")
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "back_pressed")
 end

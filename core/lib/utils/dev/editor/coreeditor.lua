@@ -92,13 +92,12 @@ require("core/lib/utils/dev/editor/utils/CoreFCCEditorController")
 require("core/lib/utils/dev/editor/utils/CoreEditorMessages")
 require("core/lib/utils/dev/editor/utils/CoreEditorMessageSystem")
 
-function CoreEditor:init(game_state_machine, session_state)
+function CoreEditor:init(game_state_machine)
 	assert(game_state_machine)
 
 	self._gsm = game_state_machine
-	self._session_state = session_state
 
-	PackageManager:set_resource_loaded_clbk(Idstring("unit"), callback(managers.sequence, managers.sequence, "clbk_pkg_manager_unit_loaded"))
+	PackageManager:set_resource_loaded_clbk(IDS_UNIT, callback(managers.sequence, managers.sequence, "clbk_pkg_manager_unit_loaded"))
 	World:get_object(Idstring("ref")):set_visibility(false)
 
 	self._WORKING_ON_CONTINENTS = true
@@ -872,7 +871,7 @@ function CoreEditor:run_simulation(simulation_mode)
 
 		self._notebook:set_enabled(false)
 
-		Global.render_debug.draw_enabled = false
+		Global.render_debug.draw_enabled = true
 		Global.running_simulation = true
 		Global.running_simulation_with_mission = with_mission
 
@@ -914,14 +913,6 @@ function CoreEditor:run_simulation(simulation_mode)
 		managers.sequence:set_proximity_enabled(true)
 		self:_simulation_disable_continents()
 		self:project_run_simulation(simulation_mode)
-
-		if self._session_state then
-			self._session_state:player_slots():primary_slot():request_debug_local_user_binding()
-			self._session_state:session_info():set_run_mission_script(with_mission)
-			self._session_state:session_info():set_should_load_level(false)
-			self._session_state:join_standard_session()
-		end
-
 		managers.editor:output("Simulation started successfully.", nil, Vector3(0, 0, 255))
 	else
 		self:toggle()
@@ -1044,11 +1035,6 @@ function CoreEditor:stop_simulation()
 	managers.environment_effects:kill_all_mission_effects()
 	managers.music:stop()
 	managers.world_instance:on_simulation_ended()
-
-	if self._session_state then
-		self._session_state:quit_session()
-	end
-
 	self:project_clear_units()
 	self:project_stop_simulation()
 	self:clear_layers_and_units()
@@ -1181,8 +1167,8 @@ function CoreEditor:build_editor_controls()
 	self._notebook = EWS:Notebook(sp, "_notebook", "NB_TOP,NB_MULTILINE")
 
 	self._ews_editor_frame:connect("_notebook", "EVT_COMMAND_NOTEBOOK_PAGE_CHANGED", callback(self, self, "change_layer"), self._notebook)
-	sp:split_horizontally(self._continents_panel:panel(), self._notebook, 256)
-	sp:set_minimum_pane_size(75)
+	sp:split_horizontally(self._continents_panel:panel(), self._notebook, 174)
+	sp:set_minimum_pane_size(100)
 	editor_sizer:add(sp, 1, 0, "EXPAND")
 
 	return editor_sizer
@@ -1257,6 +1243,7 @@ function CoreEditor:set_in_mixed_input_mode(mixed_input)
 
 	if not self._in_mixed_input_mode then
 		Input:mouse():acquire()
+		Input:mouse():set_lock_mouse(true)
 		Input:mouse():set_deviceless(false)
 		self._workspace:set_relative_mouse()
 
@@ -1267,6 +1254,7 @@ function CoreEditor:set_in_mixed_input_mode(mixed_input)
 		self._skipped_freeflight_frames = 0
 	else
 		Input:mouse():unacquire()
+		Input:mouse():set_lock_mouse(false)
 		Input:mouse():set_deviceless(true)
 		self._workspace:set_absolute_mouse()
 		Global.application_window:set_focus()
@@ -1956,13 +1944,9 @@ function CoreEditor:reload_units(unit_names, small_compile, skip_replace_units)
 		end
 
 		Application:data_compile({
-			preprocessor_definitions = "preprocessor_definitions",
 			send_idstrings = false,
-			target_db_name = "all",
 			verbose = false,
-			platform = string.lower(SystemInfo:platform():s()),
-			source_root = managers.database:base_path(),
-			target_db_root = Application:base_path() .. "assets",
+			build_profile = Application:build_profile_path(),
 			source_files = files
 		})
 		DB:reload()
@@ -1973,7 +1957,7 @@ function CoreEditor:reload_units(unit_names, small_compile, skip_replace_units)
 
 	for _, unit_name in ipairs(unit_names) do
 		managers.sequence:reload(unit_name, true)
-		CoreEngineAccess._editor_reload(Idstring("unit"), unit_name:id())
+		CoreEngineAccess._editor_reload(IDS_UNIT, unit_name:id())
 
 		local material_config = CoreEngineAccess._editor_unit_data(unit_name:id()):material_config()
 
@@ -3265,6 +3249,7 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving, starting_sim
 	self._continent_save_tables = {}
 	self._world_save_table.world_data = {
 		continents_file = "continents",
+		editor_groups = nil,
 		max_id = self._max_id,
 		markers = self._markers,
 		values = self._values.world
@@ -3300,7 +3285,6 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving, starting_sim
 	self:_save_continents_file(dir)
 	self:_save_mission_file(dir)
 	self:_save_cover_ai_data(dir)
-	self:_save_blacklist(dir)
 	self:_save_packages(dir)
 	self:_save_unit_stats(dir)
 	self:_save_bundle_info_files(dir)
@@ -3361,18 +3345,13 @@ end
 
 function CoreEditor:_recompile(dir)
 	local source_files = self:_source_files(dir)
-	local t = {
-		preprocessor_definitions = "preprocessor_definitions",
-		send_idstrings = false,
-		target_db_name = "all",
-		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = managers.database:root_path() .. "/assets",
-		target_db_root = Application:base_path() .. "assets",
-		source_files = source_files
-	}
 
-	Application:data_compile(t)
+	Application:data_compile({
+		send_idstrings = false,
+		verbose = false,
+		build_profile = Application:build_profile_path(),
+		source_files = source_files
+	})
 	DB:reload()
 	managers.database:clear_all_cached_indices()
 
@@ -3860,57 +3839,6 @@ function CoreEditor:_save_bundle_info_files(dir)
 	SystemFS:close(file)
 end
 
-function CoreEditor:_save_blacklist(dir)
-	local function tableSetInsert(t, val)
-		for _, v in ipairs(t) do
-			if v == val then
-				return
-			end
-		end
-
-		table.insert(t, val)
-	end
-
-	local function tableSetContains(t, val)
-		for _, v in ipairs(t) do
-			if v == val then
-				return true
-			end
-		end
-
-		return false
-	end
-
-	local used_assets = {}
-	local unused_assets = {}
-	local units = World:find_units_quick("all")
-
-	for _, u in ipairs(units) do
-		if u:unit_data() and u:unit_data().delayed_load then
-			tableSetInsert(unused_assets, u:name())
-		else
-			tableSetInsert(used_assets, u:name())
-		end
-	end
-
-	local blacklist = {}
-
-	for _, v in pairs(unused_assets) do
-		if not tableSetContains(used_assets, v) then
-			table.insert(blacklist, v:s())
-		end
-	end
-
-	if #blacklist > 0 then
-		Application:debug("delayed units saved in the blacklist " .. tostring(#blacklist))
-
-		local blfile = self:_open_file(dir .. "\\blacklist.blacklist")
-
-		blfile:puts(ScriptSerializer:to_generic_xml(blacklist))
-		SystemFS:close(blfile)
-	end
-end
-
 function CoreEditor:_get_instances_paths()
 	local all_instance_paths = {}
 
@@ -3973,7 +3901,7 @@ function CoreEditor:get_unit_stat(u)
 	t.slot = u:slot()
 	t.mass = string.format("%.4f", u:mass())
 	t.nr_textures = #u:used_texture_names()
-	t.nr_materials = #u:get_objects_by_type(Idstring("material"))
+	t.nr_materials = #u:get_objects_by_type(IDS_MATERIAL)
 	t.vertices_per_tris = self:vertices_per_tris(u)
 	t.instanced = self:_is_instanced(u)
 	t.unit_filename = u:unit_filename()
@@ -4255,7 +4183,6 @@ function CoreEditor:current_selected_units()
 end
 
 function CoreEditor:select_units(units)
-	local id = Profiler:start("select_units")
 	local layers = {}
 
 	for _, unit in ipairs(units) do
@@ -4275,9 +4202,6 @@ function CoreEditor:select_units(units)
 	for layer, units in pairs(layers) do
 		layer:set_selected_units(units)
 	end
-
-	Profiler:stop(id)
-	Profiler:counter_time("select_units")
 end
 
 function CoreEditor:select_group(group)

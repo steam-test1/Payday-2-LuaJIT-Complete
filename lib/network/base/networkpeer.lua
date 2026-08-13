@@ -1,4 +1,6 @@
-local ids_unit = Idstring("unit")
+require("lib/utils/TDVSHelper")
+
+local ids_unit = IDS_UNIT
 local ids_NORMAL = Idstring("NORMAL")
 
 NetworkPeer = NetworkPeer or class()
@@ -15,16 +17,12 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 	self._account_type_str = account_type_str
 	self._account_id = account_id or user_id
 	self._xuid = ""
-	self._need_steam_ticket = account_type_str == "STEAM" and (SystemInfo:distribution() == IDS_STEAM or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
+	self._need_steam_ticket = account_type_str == "STEAM" and (IS_STEAM or IS_STEAM_MM)
 
 	local is_local_peer
 
-	if self._rpc then
-		if self._rpc:ip_at_index(0) == Network:self(SystemInfo:matchmaking_protocol()):ip_at_index(0) then
-			is_local_peer = true
-		elseif SystemInfo:platform() == Idstring("PS4") then
-			PSNVoice:send_to(self._name, self._rpc)
-		end
+	if self._rpc and self._rpc:ip_at_index(0) == Network:self(SystemInfo:matchmaking_protocol()):ip_at_index(0) then
+		is_local_peer = true
 	end
 
 	if is_local_peer and (id ~= 1 or managers.network:session():is_host()) then
@@ -78,7 +76,9 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 	end
 
 	self._profile = {
-		outfit_string = ""
+		level = nil,
+		outfit_string = "",
+		rank = nil
 	}
 	self._handshakes = {}
 	self._streaming_status = 0
@@ -102,25 +102,47 @@ function NetworkPeer:set_rpc(rpc)
 		Network:set_connection_id(self._rpc, self._id)
 		self:_chk_flush_msg_queues()
 
-		if SystemInfo:platform() == Idstring("PS4") then
-			PSNVoice:send_to(self._name, self._rpc)
-		end
-
 		if managers.network.voice_chat.on_member_added then
 			managers.network.voice_chat:on_member_added(self, self._muted)
 		end
 	end
 end
 
-function NetworkPeer:create_ticket(verifyer_id)
+function NetworkPeer:create_ticket(account_id, callback)
+	if TDVS:should_use() then
+		TDVS:local_ticket(callback)
+
+		return ""
+	end
+
 	if self._need_steam_ticket then
-		return Steam:create_ticket(self._account_id, verifyer_id)
+		local ticket = Steam:create_ticket(self._account_id)
+
+		if callback then
+			callback(ticket)
+		end
+
+		return ticket
 	end
 
 	return ""
 end
 
 function NetworkPeer:begin_ticket_session(ticket)
+	if TDVS:should_use() and TDVS:available() then
+		self._ticket_wait_response = true
+		self._begin_ticket_session_called = true
+
+		local function ticket_callback(result, reason)
+			print("[NetworkPeer] ticket session result. success: " .. tostring(result) .. " reason: " .. tostring(reason))
+			self:on_verify_ticket(result, reason)
+
+			self._begin_ticket_session_called = nil
+		end
+
+		return TDVS:begin_ticket_session(self._account_id, ticket, ticket_callback)
+	end
+
 	if self._need_steam_ticket then
 		self._ticket_wait_response = true
 		self._begin_ticket_session_called = true
@@ -158,14 +180,21 @@ function NetworkPeer:on_verify_ticket(result, reason)
 			self:verify_outfit()
 		end
 
+		self:verify_character()
+
 		if not Network:is_server() then
 			self:verify_job(managers.job:current_job_id())
-			self:verify_character()
 		end
 	end
 end
 
 function NetworkPeer:end_ticket_session()
+	if TDVS:should_use() then
+		TDVS:end_ticket_session(self._account_id)
+
+		return
+	end
+
 	if self._need_steam_ticket then
 		self._ticket_wait_response = nil
 
@@ -181,7 +210,7 @@ function NetworkPeer:change_ticket_callback()
 end
 
 function NetworkPeer:verify_job(job)
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		return
 	end
 
@@ -197,13 +226,17 @@ function NetworkPeer:verify_job(job)
 		return
 	end
 
-	if SystemInfo:distribution() == IDS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
+	if TDVS:should_use() and TDVS:available() then
+		if not TDVS:is_user_product_owned(self._account_id, dlc_data) then
+			self:mark_cheater(VoteManager.REASON.invalid_job, Network:is_server())
+		end
+	elseif IS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 		self:mark_cheater(VoteManager.REASON.invalid_job, Network:is_server())
 	end
 end
 
 function NetworkPeer:verify_character()
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		return
 	end
 
@@ -223,7 +256,11 @@ function NetworkPeer:verify_character()
 		return
 	end
 
-	if SystemInfo:distribution() == IDS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
+	if TDVS:should_use() and TDVS:available() then
+		if not TDVS:is_user_product_owned(self._account_id, dlc_data) then
+			self:mark_cheater(VoteManager.REASON.invalid_character, Network:is_server())
+		end
+	elseif IS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 		self:mark_cheater(VoteManager.REASON.invalid_character, Network:is_server())
 	end
 end
@@ -330,7 +367,7 @@ function NetworkPeer:_verify_cheated_outfit(item_type, item_id, result)
 end
 
 function NetworkPeer:_verify_content(item_type, item_id)
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		return true
 	end
 
@@ -376,8 +413,14 @@ function NetworkPeer:_verify_item_data(item_data)
 	for _, dlc in pairs(dlc_list) do
 		local dlc_data = dlc and Global.dlc_manager.all_dlc_data[dlc]
 
-		if dlc_data and dlc_data.app_id and not dlc_data.external and SystemInfo:distribution() == IDS_STEAM and self:account_type() == IDS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
-			return false
+		if dlc_data and not dlc_data.external then
+			if TDVS:should_use() then
+				if TDVS:available() and not TDVS:is_user_product_owned(self._account_id, dlc_data) then
+					return false
+				end
+			elseif IS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
+				return false
+			end
 		end
 	end
 
@@ -479,7 +522,7 @@ function NetworkPeer:is_cheater()
 end
 
 function NetworkPeer:mark_cheater(reason, auto_kick)
-	if Application:editor() or SystemInfo:platform() ~= Idstring("WIN32") then
+	if Application:editor() or IS_CONSOLE then
 		return
 	end
 
@@ -584,14 +627,14 @@ function NetworkPeer:load(data)
 	self._name = data.name
 	self._account_type_str = data.account_type_str
 	self._account_id = data.account_id
-	self._need_steam_ticket = self._account_type_str == "STEAM" and (SystemInfo:distribution() == IDS_STEAM or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
+	self._need_steam_ticket = self._account_type_str == "STEAM" and (IS_STEAM or IS_STEAM_MM)
 
 	if self._account_type_str == "STEAM" then
 		local temp = self._name
 
-		if SystemInfo:distribution() == IDS_STEAM then
+		if IS_STEAM then
 			self._name = managers.network.account:username_by_id(self._account_id)
-		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+		elseif IS_STEAM_MM then
 			self._name = managers.network.matchmake:username_by_id(self._account_id)
 		end
 
@@ -795,13 +838,13 @@ function NetworkPeer:set_ip_verified(state)
 
 	local is_modded = self:is_modded()
 
-	if SystemInfo:distribution() == IDS_STEAM and self:account_type_str() == "STEAM" then
+	if IS_STEAM and self:account_type_str() == "STEAM" then
 		local user = Steam:user(self:ip())
 
 		is_modded = is_modded or user and user:rich_presence("is_modded") == "1"
 	end
 
-	if SystemInfo:distribution() == IDS_EPIC and self:account_type_str() == "EPIC" then
+	if IS_EPIC and self:account_type_str() == "EPIC" then
 		-- Nothing
 	end
 
@@ -903,7 +946,10 @@ function NetworkPeer:set_character(character)
 	self._character = character
 
 	self:_reload_outfit()
-	self:verify_character()
+
+	if not self._ticket_wait_response then
+		self:verify_character()
+	end
 end
 
 function NetworkPeer:set_waiting_for_player_ready(state)
@@ -1517,14 +1563,6 @@ function NetworkPeer:is_host()
 	return self._id == 1
 end
 
-function NetworkPeer:next_windistrib_p2p_send_t()
-	return self._next_windistrib_p2p_send_t
-end
-
-function NetworkPeer:set_next_windistrib_p2p_send_t(t)
-	self._next_windistrib_p2p_send_t = t
-end
-
 function NetworkPeer:set_force_open_lobby_state(state)
 	self._force_open_lobby = state or nil
 end
@@ -2067,7 +2105,7 @@ function NetworkPeer:spawn_unit(spawn_point_id, is_drop_in, spawn_as)
 end
 
 function NetworkPeer:_get_old_entry()
-	local peer_ident = SystemInfo:platform() == Idstring("WIN32") and self:user_id() or self:name()
+	local peer_ident = IS_PC and self:user_id() or self:name()
 	local old_plr_entry = managers.network:session()._old_players[peer_ident]
 	local member_downed
 	local health = 1

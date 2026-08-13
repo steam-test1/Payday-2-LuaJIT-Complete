@@ -9,7 +9,7 @@ CoreEWS.TIP_MAX_LEN = 512
 function CoreEWS.image_path(file_name)
 	file_name = file_name or ""
 
-	local base_path = managers.database and managers.database:base_path() or Application:base_path() .. (arg_value("-assetslocation") or "../../") .. "assets\\"
+	local base_path = managers.database and managers.database:base_path() or Application:project_path() .. "assets\\"
 	local path = base_path .. "lib\\utils\\dev\\ews\\images\\"
 
 	if file_name ~= "" and EWS and not EWS:system_file_exists(path .. file_name) then

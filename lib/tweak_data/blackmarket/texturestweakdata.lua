@@ -1,4 +1,4 @@
-local is_nextgen_console = SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1")
+local is_nextgen_console = IS_PS4 or IS_XB1
 
 function BlackMarketTweakData:_init_textures(tweak_data)
 	self.textures = {}

@@ -37,7 +37,7 @@ function FirstAidKitBase.spawn(pos, rot, bits, peer_id)
 	local unit_name = "units/pd2_dlc_old_hoxton/equipment/gen_equipment_first_aid_kit/gen_equipment_first_aid_kit"
 	local unit = World:spawn_unit(Idstring(unit_name), pos, rot)
 
-	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, bits, peer_id or 0)
+	managers.network:send_to_peers_synched("sync_equipment_setup", unit, bits, peer_id or 0)
 	unit:base():setup(bits)
 
 	return unit
@@ -48,7 +48,11 @@ function FirstAidKitBase:set_server_information(peer_id)
 		owner_peer_id = peer_id
 	}
 
-	managers.network:session():peer(peer_id):set_used_deployable(true)
+	local peer = managers.network:get_peer_safe(peer_id)
+
+	if peer then
+		peer:set_used_deployable(true)
+	end
 end
 
 function FirstAidKitBase:server_information()
@@ -79,10 +83,14 @@ end
 function FirstAidKitBase:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin then
-		local peer = managers.network:session():server_peer()
+	if self._was_dropin then
+		return
+	end
 
-		peer:mark_cheater(VoteManager.REASON.many_assets)
+	local server_peer = managers.network:get_server_peer_safe()
+
+	if server_peer then
+		server_peer:mark_cheater(VoteManager.REASON.many_assets)
 	end
 end
 
@@ -122,7 +130,6 @@ function FirstAidKitBase:setup(bits)
 	if auto_recovery == 1 then
 		self._min_distance = tweak_data.upgrades.values.first_aid_kit.first_aid_kit_auto_recovery[1]
 
-		print("min distance ", self._min_distance)
 		FirstAidKitBase.Add(self, self._unit:position(), self._min_distance)
 	end
 end
@@ -159,10 +166,7 @@ end
 
 function FirstAidKitBase:server_set_dynamic()
 	self:_set_dynamic()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
-	end
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
 end
 
 function FirstAidKitBase:sync_net_event(event_id)
@@ -190,10 +194,7 @@ function FirstAidKitBase:take(unit)
 		managers.player:activate_temporary_upgrade("temporary", "first_aid_damage_reduction")
 	end
 
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
-	end
-
+	managers.network:send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 2)
 	self:_set_empty()
 end
 
@@ -234,7 +235,9 @@ function FirstAidKitBase:load(data)
 	self._was_dropin = true
 end
 
-function FirstAidKitBase:destroy()
+function FirstAidKitBase:pre_destroy(unit)
+	FirstAidKitBase.super.pre_destroy(self, unit)
+
 	if self._min_distance then
 		FirstAidKitBase.Remove(self)
 	end

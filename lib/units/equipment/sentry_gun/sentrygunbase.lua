@@ -23,7 +23,6 @@ local sentry_uid = 1
 function SentryGunBase:init(unit)
 	SentryGunBase.super.init(self, unit, false)
 
-	self._unit = unit
 	self._damage_multiplier = 1
 
 	if self._place_snd_event then
@@ -42,10 +41,14 @@ end
 function SentryGunBase:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin then
-		local peer = managers.network:session():server_peer()
+	if self._was_dropin then
+		return
+	end
 
-		peer:mark_cheater(VoteManager.REASON.many_assets)
+	local server_peer = managers.network:get_server_peer_safe()
+
+	if server_peer then
+		server_peer:mark_cheater(VoteManager.REASON.many_assets)
 	end
 end
 
@@ -68,7 +71,13 @@ function SentryGunBase:set_owner_id(owner_id)
 end
 
 function SentryGunBase:is_owner()
-	return self._owner_id and self._owner_id == managers.network:session():local_peer():id()
+	if not self._owner_id then
+		return false
+	end
+
+	local local_peer = managers.network:get_local_peer_safe()
+
+	return local_peer and local_peer:id() == self._owner_id
 end
 
 function SentryGunBase:is_category(...)
@@ -149,7 +158,7 @@ function SentryGunBase.spawn(owner, pos, rot, peer_id, verify_equipment, unit_id
 	local spread_multiplier = SentryGunBase.SPREAD_MUL[spread_level]
 	local rot_speed_multiplier = SentryGunBase.ROTATION_SPEED_MUL[rot_speed_level]
 
-	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, 0, peer_id or 0)
+	managers.network:send_to_peers_synched("sync_equipment_setup", unit, 0, peer_id or 0)
 
 	ammo_multiplier = SentryGunBase.AMMO_MUL[ammo_multiplier]
 
@@ -161,7 +170,7 @@ function SentryGunBase.spawn(owner, pos, rot, peer_id, verify_equipment, unit_id
 		local fire_mode_unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_sentry/gen_equipment_sentry_fire_mode"), unit:position(), unit:rotation())
 
 		unit:weapon():interaction_setup(fire_mode_unit, owner_id)
-		managers.network:session():send_to_peers_synched("sync_fire_mode_interaction", unit, fire_mode_unit, owner_id)
+		managers.network:send_to_peers_synched("sync_fire_mode_interaction", unit, fire_mode_unit, owner_id)
 	end
 
 	local team
@@ -203,8 +212,11 @@ function SentryGunBase:spawn_from_sequence(align_obj_name, module_id)
 	local ammo_mul = SentryGunBase.AMMO_MUL[2]
 
 	unit:base():setup(managers.player:player_unit(), ammo_mul, 1, spread_mul, rot_mul, 1, true, attached_data)
-	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, 0, 0)
-	managers.network:session():send_to_peers_synched("from_server_sentry_gun_place_result", managers.network:session():local_peer():id(), 0, unit, 2, 2, true, 2, 1)
+	managers.network:send_to_peers_synched("sync_equipment_setup", unit, 0, 0)
+
+	local peer = managers.network:get_local_peer_safe()
+
+	managers.network:send_to_peers_synched("from_server_sentry_gun_place_result", peer and peer:id() or 0, 0, unit, 2, 2, true, 2, 1)
 
 	local team = managers.groupai:state():team_data(tweak_data.levels:get_default_team_ID("player"))
 
@@ -240,8 +252,11 @@ function SentryGunBase:spawn_from_sequence_new(align_obj_name, module_id, sentry
 	local ammo_mul = SentryGunBase.AMMO_MUL[2]
 
 	unit:base():setup(managers.player:player_unit(), ammo_mul, 1, spread_mul, rot_mul, 1, true, attached_data)
-	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, 0, 0)
-	managers.network:session():send_to_peers_synched("from_server_sentry_gun_place_result", managers.network:session():local_peer():id(), 0, unit, 2, 2, true, 2, 1)
+	managers.network:send_to_peers_synched("sync_equipment_setup", unit, 0, 0)
+
+	local peer = managers.network:get_local_peer_safe()
+
+	managers.network:send_to_peers_synched("from_server_sentry_gun_place_result", peer and peer:id() or 0, 0, unit, 2, 2, true, 2, 1)
 
 	local team = managers.groupai:state():team_data(tweak_data.levels:get_default_team_ID("player"))
 
@@ -264,6 +279,7 @@ function SentryGunBase:activate_as_module(team_type, tweak_table_id)
 		auto_reload = true,
 		expend_ammo = true,
 		spread_mul = 1,
+		user_unit = nil,
 		ignore_units = {
 			self._unit
 		},
@@ -295,7 +311,11 @@ function SentryGunBase:set_server_information(peer_id)
 		owner_peer_id = peer_id
 	}
 
-	managers.network:session():peer(peer_id):set_used_deployable(true)
+	local peer = managers.network:get_peer_safe(peer_id)
+
+	if peer then
+		peer:set_used_deployable(true)
+	end
 end
 
 function SentryGunBase:server_information()
@@ -330,7 +350,7 @@ function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, spread_mu
 	self._owner = owner
 
 	if owner then
-		local peer = managers.network:session():peer_by_unit(owner)
+		local peer = managers.network:get_peer_by_unit_safe(owner)
 
 		if peer then
 			self._owner_id = peer:id()
@@ -394,11 +414,19 @@ function SentryGunBase:_on_picked_up_cash(unit)
 end
 
 function SentryGunBase:get_owner()
-	return self._owner or self._owner_id and managers.network:session() and managers.network:session():peer(self._owner_id) and managers.network:session():peer(self._owner_id):unit()
+	if self._owner then
+		return self._owner
+	end
+
+	local peer = self._owner_id and managers.network:get_peer_safe(self._owner_id) or nil
+
+	return peer and peer:unit() or nil
 end
 
 function SentryGunBase:get_owner_peer()
-	return self._owner_id and managers.network:session() and managers.network:session():peer(self._owner_id)
+	local peer = self._owner_id and managers.network:get_peer_safe(self._owner_id) or nil
+
+	return peer
 end
 
 function SentryGunBase:get_owner_id()
@@ -410,6 +438,8 @@ function SentryGunBase:get_type()
 end
 
 function SentryGunBase:remove_dead_owner(dead_owner)
+	self._owner = nil
+
 	if alive(self._unit) then
 		self._unit:weapon():remove_dead_owner(dead_owner)
 	end
@@ -424,7 +454,7 @@ function SentryGunBase:on_interaction()
 		SentryGunBase.on_picked_up(self:get_type(), self._unit:weapon():ammo_ratio(), self._unit:id())
 		self:remove()
 	else
-		managers.network:session():send_to_host("picked_up_sentry_gun", self._unit)
+		managers.network:send_to_host("picked_up_sentry_gun", self._unit)
 	end
 end
 
@@ -454,10 +484,7 @@ end
 
 function SentryGunBase:server_set_dynamic()
 	self:sync_set_dynamic()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_sentrygun_dynamic", self._unit)
-	end
+	managers.network:send_to_peers_synched("sync_sentrygun_dynamic", self._unit)
 end
 
 function SentryGunBase:sync_set_dynamic()
@@ -793,8 +820,8 @@ function SentryGunBase:load(save_data)
 	end
 end
 
-function SentryGunBase:pre_destroy()
-	SentryGunBase.super.pre_destroy(self, self._unit)
+function SentryGunBase:pre_destroy(unit)
+	SentryGunBase.super.pre_destroy(self, unit)
 	managers.mission:remove_global_event_listener(self._sentry_uid)
 	self:unregister()
 

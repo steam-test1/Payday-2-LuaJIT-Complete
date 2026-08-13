@@ -35,7 +35,7 @@ function CinematicStateCamera:_set_interpolation_type(type)
 	self._camera_controller:set_interpolation_type(Idstring("tar"), Idstring(type))
 end
 
-CinematicStateCamera.IDS_NOSTRING = Idstring("")
+CinematicStateCamera.IDS_NOSTRING = IDS_EMPTY
 
 function CinematicStateCamera:play_redirect(redirect_name, speed, offset_time)
 	local result = self._unit:play_redirect(redirect_name, offset_time)

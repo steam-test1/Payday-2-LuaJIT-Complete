@@ -219,12 +219,24 @@ function CoreMaterialEditor:_on_rebuild()
 	end
 
 	if EWS:message_box(self._main_frame, "All unsaved data in this material config will be saved before compiling!", "Compile", "OK,CANCEL,ICON_INFORMATION", Vector3(-1, -1, -1)) == "OK" then
-		local make_params, temp_params = self:_create_make_file(true)
+		local shader = self._compilable_shaders[self._compilable_shader_combo_box:get_value()]._entry
 
-		if self:_run_compiler() then
-			self:_insert_libs_in_database(temp_params, make_params)
-			self:_load_shaders(true)
-		end
+		Application:data_compile({
+			send_idstrings = false,
+			verbose = false,
+			build_profile = Application:build_profile_path(),
+			source_files = {
+				"core/shader_sources"
+			},
+			shader_compiler_settings = {
+				force_recompile_shaders = {
+					shader
+				}
+			}
+		})
+		DB:reload()
+		managers.database:clear_all_cached_indices()
+		self:_load_shaders(true)
 	end
 end
 
@@ -265,65 +277,40 @@ function CoreMaterialEditor:_on_compile_btn()
 			EWS:message_box(self._main_frame, "The request has been sent to the server. It might take up to a minute before it is commited in to the project repository.", "Remote Compile", "OK", Vector3(-1, -1, -1))
 		end
 	elseif EWS:message_box(self._main_frame, "All unsaved data in this material config will be saved before compiling!", "Compile", "OK,CANCEL,ICON_INFORMATION", Vector3(-1, -1, -1)) == "OK" then
-		local make_params, temp_params = self:_create_make_file()
-		local to_file_path = ""
-		local renderer = ""
-		local platform = ""
+		local shader = self._compilable_shaders[self._compilable_shader_combo_box:get_value()]._entry
+		local defines
 
-		if SystemInfo:renderer() == Idstring("DX11") then
-			renderer = "d3d11"
-			platform = "PCD3D11"
-			to_file_path = temp_params.win32d3d11
-		elseif SystemInfo:renderer() == Idstring("DX9") then
-			renderer = "d3d9"
-			platform = "PCD3D9"
-			to_file_path = temp_params.win32d3d9
-		elseif SystemInfo:renderer() == Idstring("DX10") then
-			renderer = "d3d10"
-			platform = "PCD3D10"
-			to_file_path = temp_params.win32d3d10
+		for k, v in pairs(self._shader_defines) do
+			if v._checked then
+				if not defines then
+					defines = k
+				else
+					defines = defines .. " " .. k
+				end
+			end
 		end
 
-		local properties = {
-			renderer
-		}
-		local to_file = SystemFS:open(to_file_path, "w")
-		local from_file = DB:open_with_properties("shaders", "core/temp/base", properties)
-		local path = from_file:path()
-		local bin_str = from_file:read("*a")
-
-		to_file:write(bin_str)
-		to_file:close()
-		from_file:close()
-
-		if self:_run_compiler(platform) then
-			print("opening writable " .. path)
-
-			local new_to_file = SystemFS:open(path, "w")
-			local new_from_file = SystemFS:open(to_file_path, "r")
-			local new_bin_str = new_from_file:read("*a")
-
-			new_to_file:write(new_bin_str)
-			new_to_file:close()
-			new_from_file:close()
-
-			local rtd_to_file = DB:open("render_template_database", "shaders/base")
-			local rtd_to_file_path = rtd_to_file:path()
-
-			rtd_to_file:close()
-
-			local new_rtd_to_file = SystemFS:open(rtd_to_file_path, "w")
-			local new_rtd_from_file = SystemFS:open(temp_params.render_templates, "r")
-			local new_rtd_str = new_rtd_from_file:read("*a")
-
-			new_rtd_to_file:write(new_rtd_str)
-			new_rtd_to_file:close()
-			new_rtd_from_file:close()
-			self:_load_shaders()
-		end
-
-		assert(SystemFS:copy_file(temp_params.render_templates, make_params.render_templates), string.format("Could not copy %s -> %s", temp_params.render_templates, make_params.render_templates))
-		self:_cleanup_temp_files(temp_params)
+		Application:data_compile({
+			send_idstrings = false,
+			verbose = false,
+			build_profile = Application:build_profile_path(),
+			source_files = {
+				"core/shader_sources"
+			},
+			shader_compiler_settings = {
+				compile_specific_shaders = {
+					[shader] = {
+						{
+							shader = self._compilable_shader_combo_box:get_value(),
+							defines = defines
+						}
+					}
+				}
+			}
+		})
+		DB:reload()
+		managers.database:clear_all_cached_indices()
+		self:_load_shaders()
 	end
 end
 
@@ -442,7 +429,7 @@ function CoreMaterialEditor:_load_shaders(load_only)
 		for child in render_templates_node:children() do
 			if child:name() == "render_template_database" and child:has_parameter("name") then
 				cat_print("debug", "render_templates", child:parameter("name"))
-				Application:reload_render_template_database(Idstring(child:parameter("name")))
+				RenderDevice:reload_render_template_database(Idstring(child:parameter("name")))
 			end
 		end
 	end
@@ -453,7 +440,7 @@ function CoreMaterialEditor:_load_shaders(load_only)
 		for child in shader_libs_node:children() do
 			if child:name() == "shaders" and child:has_parameter("name") then
 				cat_print("debug", "shader_config", child:parameter("name"))
-				Application:reload_shader_lib(Idstring(child:parameter("name")))
+				RenderDevice:reload_shader_database(Idstring(child:parameter("name")))
 			end
 		end
 	end
@@ -484,13 +471,9 @@ function CoreMaterialEditor:_save_to_disk(path)
 	local global_file = self:_save_global_to_disk(false)
 
 	Application:data_compile({
-		preprocessor_definitions = "preprocessor_definitions",
 		send_idstrings = false,
-		target_db_name = "all",
 		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = managers.database:base_path(),
-		target_db_root = Application:base_path() .. "assets",
+		build_profile = Application:build_profile_path(),
 		source_files = {
 			managers.database:entry_relative_path(path),
 			managers.database:entry_relative_path(global_file)
@@ -515,13 +498,9 @@ function CoreMaterialEditor:_save_global_to_disk(recompile)
 
 	if recompile then
 		Application:data_compile({
-			preprocessor_definitions = "preprocessor_definitions",
 			send_idstrings = false,
-			target_db_name = "all",
 			verbose = false,
-			platform = string.lower(SystemInfo:platform():s()),
-			source_root = managers.database:base_path(),
-			target_db_root = Application:base_path() .. "assets",
+			build_profile = Application:build_profile_path(),
 			source_files = {
 				managers.database:entry_relative_path(global_file)
 			}
@@ -754,7 +733,6 @@ end
 function CoreMaterialEditor:_load_shader_sources()
 	self._shader_sources = {}
 
-	self:_load_shader_sources_from_db(self._shader_sources)
 	self:_load_shader_sources_from_db(self._shader_sources)
 end
 

@@ -1,11 +1,9 @@
-ExplodingProp = ExplodingProp or class()
+ExplodingProp = ExplodingProp or class(UnitBase)
 ExplodingProp.DETONATE_EVENT_ID = 1
 ExplodingProp.EXTENSION = "base"
 
 function ExplodingProp:init(unit)
-	self._unit = unit
-
-	unit:set_extension_update_enabled(Idstring("base"), false)
+	ExplodingProp.super.init(self, unit, false)
 end
 
 function ExplodingProp:detonate(pos, range, damage, player_damage)
@@ -18,6 +16,12 @@ function ExplodingProp:detonate(pos, range, damage, player_damage)
 
 		return
 	end
+
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
 
 	local effect_params = {
 		camera_shake_max_mul = 4,
@@ -34,6 +38,7 @@ function ExplodingProp:detonate(pos, range, damage, player_damage)
 			curve_pow = 3,
 			no_raycast_check_characters = false,
 			player_damage = 0,
+			user = nil,
 			hit_pos = pos,
 			range = range,
 			collision_slotmask = slot_mask,
@@ -86,6 +91,12 @@ function ExplodingProp:_check_detonation_ready()
 	if self._data_list == nil then
 		return
 	end
+
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
 
 	local data = table.remove(self._data_list, 1)
 

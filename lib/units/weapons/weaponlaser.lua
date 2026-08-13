@@ -431,13 +431,14 @@ function WeaponMultiLaser:destroy(unit)
 	end
 end
 
-WatchLaser = WatchLaser or class()
+WatchLaser = WatchLaser or class(UnitBase)
 WatchLaser.MAX_DISTANCE = 68
 
 local mrot1 = Rotation()
 
 function WatchLaser:init(unit)
-	self._unit = unit
+	WatchLaser.super.init(self, unit, false)
+
 	self._active = false
 
 	if self._laser_obj_name and self._impact_obj_name and self._impact_effect_name then
@@ -452,8 +453,6 @@ function WatchLaser:init(unit)
 
 	self._projectile_data = tweak_data.blackmarket.projectiles[self._tweak_projectile_entry or "laser_watch"]
 	self._slotmask = managers.slot:get_mask("bullet_impact_targets")
-
-	self._unit:set_extension_update_enabled(Idstring("base"), false)
 end
 
 function WatchLaser:set_enabled(enabled)

@@ -310,7 +310,6 @@ function NpcVehicleDrivingExt:drive_to_point(cop_path, unit_and_pos, dt)
 	end
 
 	local profiler_name = "NpcVehicleDrivingExt:drive_to_point" .. unit_and_pos.unit
-	local profiler_id = Profiler:start(profiler_name)
 	local cop_points
 
 	if not unit_and_pos.direction or unit_and_pos.direction == "fwd" then
@@ -361,18 +360,6 @@ function NpcVehicleDrivingExt:drive_to_point(cop_path, unit_and_pos, dt)
 		local controls_override = self._current_state:evasion_maneuvers(self, target_steering)
 
 		self:_drive(target_steering, speed_limit, controls_override)
-	end
-
-	Profiler:stop(profiler_id)
-
-	local profiler_time = Profiler:counter_time(profiler_name)
-	local percentage_of_current_fps = 100 * profiler_time / dt
-
-	if self._debug then
-		self._debug.nav_paths.ai_cost = {
-			cost = profiler_time * 1000,
-			fps = percentage_of_current_fps
-		}
 	end
 
 	return skip_checkpoint
@@ -483,7 +470,9 @@ function NpcVehicleDrivingExt:_find_bridge(cop_path, target_path, unit_and_pos)
 	local player_position = player_unit:position()
 	local cop_on_checkpoint = cop_path.marker_checkpoints[point_id_in_direction]
 	local min_distance_marker = {
-		distance = 2000000
+		direction = nil,
+		distance = 2000000,
+		marker_to = nil
 	}
 
 	for marker_from, markers_to in pairs(bridges_to_target) do

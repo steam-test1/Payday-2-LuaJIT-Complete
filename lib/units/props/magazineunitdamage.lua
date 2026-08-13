@@ -2,7 +2,7 @@ MagazineUnitDamage = MagazineUnitDamage or class(UnitDamage)
 
 local ray_from = Vector3()
 local ray_to = Vector3()
-local empty_idstr = Idstring("")
+local empty_idstr = IDS_EMPTY
 local idstr_concrete = Idstring("concrete")
 local idstr_no_material = Idstring("no_material")
 

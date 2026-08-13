@@ -96,7 +96,6 @@ function ShieldLogicAttack.queued_update(data)
 	ShieldLogicAttack._process_pathing_results(data, my_data)
 
 	local enemy_visible = focus_enemy.verified
-	local engage = my_data.attitude == "engage"
 	local action_taken = my_data.turning or data.unit:movement():chk_action_forbidden("walk") or my_data.walking_to_optimal_pos
 
 	if not action_taken then
@@ -169,17 +168,17 @@ function ShieldLogicAttack.queued_update(data)
 
 				if reservation then
 					to_pos = reservation.position
+
+					data.brain:set_pos_rsrv("path", reservation)
 				else
 					reservation = {
 						radius = 60,
-						position = mvector3.copy(to_pos),
-						filter = data.pos_rsrv_id
+						position = mvector3.copy(to_pos)
 					}
 
-					managers.navigation:add_pos_reservation(reservation)
+					data.brain:add_pos_rsrv("path", reservation)
 				end
 
-				data.brain:set_pos_rsrv("path", reservation)
 				data.brain:search_for_path(my_data.optimal_path_search_id, to_pos)
 			end
 		end

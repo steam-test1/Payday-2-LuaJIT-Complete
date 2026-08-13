@@ -115,7 +115,7 @@ function SentryGunWeapon:_init()
 			parent = self._effect_align[2]
 		}
 	}
-	self._use_shell_ejection_effect = SystemInfo:platform() == Idstring("WIN32")
+	self._use_shell_ejection_effect = IS_PC
 
 	if self._use_shell_ejection_effect then
 		self._obj_shell_ejection = self._unit:get_object(Idstring("shell"))

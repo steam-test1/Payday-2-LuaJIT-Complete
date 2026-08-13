@@ -41,12 +41,7 @@ function SocialHubGui:init(ws, fullscreen_ws, node)
 	})
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		managers.socialhub:fetch_steam_friends(callback(self, self, "update_setup_pre_progress", "platform_friends"))
-	elseif SystemInfo:distribution() == Idstring("EPIC") then
-		managers.socialhub:fetch_epic_friends(callback(self, self, "update_setup_pre_progress", "platform_friends"))
-	end
-
+	managers.socialhub:fetch_friends(callback(self, self, "update_setup_pre_progress", "platform_friends"))
 	managers.socialhub:fetch_users(callback(self, self, "update_setup_pre_progress", "friends"))
 end
 

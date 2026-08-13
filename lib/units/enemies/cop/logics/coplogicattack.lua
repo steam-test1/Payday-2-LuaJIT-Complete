@@ -501,12 +501,10 @@ function CopLogicAttack._cancel_walking_to_cover(data, my_data, skip_action)
 
 	if my_data.moving_to_cover then
 		if not skip_action then
-			local new_action = {
+			data.unit:brain():action_request({
 				body_part = 2,
 				type = "idle"
-			}
-
-			data.unit:brain():action_request(new_action)
+			})
 		end
 	elseif my_data.processing_cover_path then
 		data.unit:brain():cancel_all_pathing_searches()
@@ -587,11 +585,10 @@ function CopLogicAttack._chk_request_action_crouch(data)
 		return
 	end
 
-	local new_action_data = {
+	local res = data.unit:brain():action_request({
 		body_part = 4,
 		type = "crouch"
-	}
-	local res = data.unit:brain():action_request(new_action_data)
+	})
 
 	return res
 end
@@ -601,11 +598,10 @@ function CopLogicAttack._chk_request_action_stand(data)
 		return
 	end
 
-	local new_action_data = {
+	local res = data.unit:brain():action_request({
 		body_part = 4,
 		type = "stand"
-	}
-	local res = data.unit:brain():action_request(new_action_data)
+	})
 
 	return res
 end
@@ -1041,7 +1037,7 @@ function CopLogicAttack.action_complete_clbk(data, action)
 		local timeout = action:timeout()
 
 		if timeout then
-			data.dodge_timeout_t = TimerManager:game():time() + math.lerp(timeout[1], timeout[2], math.random())
+			data.dodge_timeout_t = TimerManager:game():time() + math.rand(timeout[1], timeout[2])
 		end
 
 		CopLogicAttack._cancel_cover_pathing(data, my_data)
@@ -1060,7 +1056,7 @@ function CopLogicAttack._upd_aim(data, my_data)
 		local last_sup_t = data.unit:character_damage():last_suppression_t()
 
 		if focus_enemy.verified or focus_enemy.nearly_visible then
-			if data.unit:anim_data().run and focus_enemy.dis > math.lerp(my_data.weapon_range.close, my_data.weapon_range.optimal, 0) then
+			if data.unit:anim_data().run and focus_enemy.dis > my_data.weapon_range.close then
 				local walk_to_pos = data.unit:movement():get_walk_to_pos()
 
 				if walk_to_pos then
@@ -1083,8 +1079,6 @@ function CopLogicAttack._upd_aim(data, my_data)
 
 					if data.internal_data.weapon_range then
 						firing_range = running and data.internal_data.weapon_range.close or data.internal_data.weapon_range.far
-					else
-						debug_pause_unit(data.unit, "[CopLogicAttack]: Unit doesn't have data.internal_data.weapon_range")
 					end
 
 					if last_sup_t and data.t - last_sup_t < 7 * (running and 0.3 or 1) * (focus_enemy.verified and 1 or focus_enemy.vis_ray and firing_range < focus_enemy.vis_ray.distance and 0.5 or 0.2) then
@@ -1123,7 +1117,6 @@ function CopLogicAttack._upd_aim(data, my_data)
 		elseif focus_enemy.reaction >= AIAttentionObject.REACT_AIM then
 			local time_since_verification = focus_enemy.verified_t and data.t - focus_enemy.verified_t
 			local running = my_data.advancing and not my_data.advancing:stopping() and my_data.advancing:haste() == "run"
-			local same_z = math.abs(focus_enemy.verified_pos.z - data.m_pos.z) < 250
 
 			if running then
 				if time_since_verification and time_since_verification < math.lerp(5, 1, math.max(0, focus_enemy.verified_dis - 500) / 600) then
@@ -1408,15 +1401,15 @@ function CopLogicAttack.is_available_for_assignment(data, new_objective)
 		return true
 	end
 
+	if data.is_suppressed then
+		return
+	end
+
 	if data.unit:movement():chk_action_forbidden("walk") then
 		return
 	end
 
 	if data.path_fail_t and data.t < data.path_fail_t + 6 then
-		return
-	end
-
-	if data.is_suppressed then
 		return
 	end
 
@@ -1551,7 +1544,7 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 				local found_doors = managers.navigation:find_segment_doors(from_nav_seg, callback(CopLogicAttack, CopLogicAttack, "_chk_is_right_segment", to_nav_seg))
 
 				for _, door in pairs(found_doors) do
-					mvec3_set(temp_vec1, door.center)
+					mvec3_set(temp_vec1, door)
 
 					local dis = mvec3_dis_sq(e_pos, temp_vec1)
 
@@ -1562,12 +1555,12 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 				end
 
 				if closest_door then
-					mvec3_set(temp_vec1, closest_door.center)
+					mvec3_set(temp_vec1, closest_door)
 					mvec3_sub(temp_vec1, data.m_pos)
 					mvec3_set_z(temp_vec1, 0)
 
 					if min_point_dis_sq < mvector3.length_sq(temp_vec1) then
-						mvec3_set(temp_vec1, closest_door.center)
+						mvec3_set(temp_vec1, closest_door)
 						mvec3_set_z(temp_vec1, temp_vec1.z + 140)
 
 						return temp_vec1

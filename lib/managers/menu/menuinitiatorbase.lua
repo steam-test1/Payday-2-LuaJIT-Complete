@@ -93,7 +93,7 @@ function MenuInitiatorBase:create_multichoice(node, choices, params, index)
 
 	local new_item = node:create_item(data_node, params)
 
-	new_item:set_value(choices[1].value)
+	new_item:set_value(params.value or choices[1].value)
 
 	if index then
 		node:insert_item(new_item, index)

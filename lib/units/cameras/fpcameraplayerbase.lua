@@ -1,6 +1,6 @@
 FPCameraPlayerBase = FPCameraPlayerBase or class(UnitBase)
 FPCameraPlayerBase.IDS_EMPTY = Idstring("empty")
-FPCameraPlayerBase.IDS_NOSTRING = Idstring("")
+FPCameraPlayerBase.IDS_NOSTRING = IDS_EMPTY
 FPCameraPlayerBase.bipod_location = nil
 FPCameraPlayerBase.camera_last_pos = nil
 
@@ -246,9 +246,9 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 				in_second_sight = false
 			end
 
-			if in_steelsight and not in_second_sight and not self._steelsight_swap_state then
+			if in_steelsight and not in_second_sight and not self:get_steelsight_swap_state() then
 				self:_set_steelsight_swap_state(true)
-			elseif (not in_steelsight or in_second_sight) and self._steelsight_swap_state then
+			elseif (not in_steelsight or in_second_sight) and self:get_steelsight_swap_state() then
 				self:_set_steelsight_swap_state(false)
 			end
 		else
@@ -274,9 +274,9 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 				absolute_progress = trans_data.absolute_progress * (1 - progress_smooth)
 			end
 
-			if in_steelsight and not in_second_sight and not self._steelsight_swap_state and absolute_progress >= trans_data.steelsight_swap_progress_trigger then
+			if in_steelsight and not in_second_sight and not self:get_steelsight_swap_state() and absolute_progress >= trans_data.steelsight_swap_progress_trigger then
 				self:_set_steelsight_swap_state(true)
-			elseif (not in_steelsight or in_second_sight) and self._steelsight_swap_state and absolute_progress < trans_data.steelsight_swap_progress_trigger then
+			elseif (not in_steelsight or in_second_sight) and self:get_steelsight_swap_state() and absolute_progress < trans_data.steelsight_swap_progress_trigger then
 				self:_set_steelsight_swap_state(false)
 			end
 		end
@@ -1745,7 +1745,9 @@ end
 
 function FPCameraPlayerBase:enter_shotgun_reload_loop(unit, state, ...)
 	if alive(self._parent_unit) then
-		local speed_multiplier = self._parent_unit:inventory():equipped_unit():base():reload_speed_multiplier()
+		local equipped_unit = self._parent_unit:inventory():equipped_unit()
+		local weapon_base = alive(equipped_unit) and equipped_unit:base()
+		local speed_multiplier = weapon_base and weapon_base:reload_speed_multiplier() or 1
 
 		self._unit:anim_state_machine():set_speed(Idstring(state), speed_multiplier)
 	end
@@ -1784,7 +1786,7 @@ function FPCameraPlayerBase:spawn_mask()
 		if not tweak_data.blackmarket.masks[mask_id].type then
 			local backside = World:spawn_unit(Idstring("units/payday2/masks/msk_fps_back_straps/msk_fps_back_straps"), align_obj_r:position(), align_obj_r:rotation())
 
-			for _, material in ipairs(backside:get_objects_by_type(Idstring("material"))) do
+			for _, material in ipairs(backside:get_objects_by_type(IDS_MATERIAL)) do
 				material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:NORMALMAP:SKINNED_3WEIGHTS"))
 			end
 
@@ -1842,7 +1844,7 @@ function FPCameraPlayerBase:spawn_taser_hooks()
 		local hooks_align = self._unit:get_object(Idstring("a_weapon_right"))
 		local taser_hooks_unit_name = "units/payday2/weapons/wpn_fps_taser_hooks/wpn_fps_taser_hooks"
 
-		managers.dyn_resource:load(Idstring("unit"), Idstring(taser_hooks_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:load(IDS_UNIT, Idstring(taser_hooks_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._taser_hooks_unit = World:spawn_unit(Idstring(taser_hooks_unit_name), hooks_align:position(), hooks_align:rotation())
 
@@ -1860,7 +1862,7 @@ function FPCameraPlayerBase:unspawn_taser_hooks()
 		local name = self._taser_hooks_unit:name()
 
 		World:delete_unit(self._taser_hooks_unit)
-		managers.dyn_resource:unload(Idstring("unit"), name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:unload(IDS_UNIT, name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._taser_hooks_unit = nil
 	end
@@ -1987,7 +1989,9 @@ function FPCameraPlayerBase:load_fps_mask_units()
 	end
 end
 
-function FPCameraPlayerBase:destroy()
+function FPCameraPlayerBase:destroy(unit)
+	FPCameraPlayerBase.super.destroy(self, unit)
+
 	if self._parent_unit then
 		self._parent_unit:base():remove_destroy_listener("FPCameraPlayerBase")
 	end

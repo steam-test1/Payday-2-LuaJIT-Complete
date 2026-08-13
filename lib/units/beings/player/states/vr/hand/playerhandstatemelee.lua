@@ -102,7 +102,7 @@ function PlayerHandStateMelee:_spawn_melee_unit()
 
 		local new_material_config = Idstring(unit_name .. "_thq")
 
-		if DB:has(Idstring("material_config"), new_material_config) then
+		if DB:has(IDS_MATERIAL_CONFIG, new_material_config) then
 			self._melee_unit:set_material_config(new_material_config, true)
 		end
 	end

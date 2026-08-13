@@ -931,23 +931,11 @@ function StoryActGuiSidebarItem:init(panel, parameters)
 	self:set_h(self._text:bottom())
 end
 
-local function set_defaults(target, source)
-	target = target or {}
-
-	for k, v in pairs(source) do
-		if target[k] == nil then
-			target[k] = v
-		end
-	end
-
-	return target
-end
-
 StoryMissionGuiRewardItem = StoryMissionGuiRewardItem or class(ExtendedPanel)
 StoryMissionGuiRewardItem.SIZE = 128
 
 function StoryMissionGuiRewardItem:init(panel, reward_data, config, skipped_mission)
-	config = set_defaults(config, {
+	config = table.set_defaults(config, {
 		input = true,
 		w = self.SIZE,
 		h = self.SIZE

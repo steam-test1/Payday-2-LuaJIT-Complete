@@ -1,6 +1,6 @@
 require("lib/managers/menu/WalletGuiObject")
 
-local is_win_32 = SystemInfo:platform() == Idstring("WIN32")
+local is_win_32 = IS_PC
 local WIDTH_MULTIPLIER = is_win_32 and 0.65 or 0.5
 
 InfamyTreeGui = InfamyTreeGui or class()

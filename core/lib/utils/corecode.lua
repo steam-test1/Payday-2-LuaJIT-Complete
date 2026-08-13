@@ -444,7 +444,7 @@ function memory_report(limit)
 	recurse(_G, nil, nil)
 
 	local units = World:unit_manager():get_units()
-	local is_windows = SystemInfo:platform() == Idstring("win32")
+	local is_windows = IS_WIN32
 
 	for _, u in ipairs(units) do
 		recurse(u, "Units", is_windows and u:name():s() or u:name(), u)

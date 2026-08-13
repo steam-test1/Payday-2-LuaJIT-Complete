@@ -1,6 +1,6 @@
 local tmp_vec1 = Vector3()
 
-QuickFlashGrenade = QuickFlashGrenade or class()
+QuickFlashGrenade = QuickFlashGrenade or class(UnitBase)
 
 local VALUE_FUNC = 1
 local VALUE_TIME = 2
@@ -27,7 +27,8 @@ QuickFlashGrenade.Events = {
 }
 
 function QuickFlashGrenade:init(unit)
-	self._unit = unit
+	QuickFlashGrenade.super.init(self, unit, false)
+
 	self._state = 0
 
 	local flash_grenade_data = tweak_data.group_ai.flash_grenade
@@ -44,8 +45,6 @@ function QuickFlashGrenade:init(unit)
 	if Network:is_client() then
 		self._unit:set_enabled(false)
 	end
-
-	self._unit:set_extension_update_enabled(Idstring("base"), false)
 end
 
 function QuickFlashGrenade:update(unit, t, dt)
@@ -355,7 +354,8 @@ function QuickFlashGrenade:on_network_event(event_id)
 	end
 end
 
-function QuickFlashGrenade:destroy()
+function QuickFlashGrenade:pre_destroy(unit)
+	QuickFlashGrenade.super.pre_destroy(self, unit)
 	self:remove_light()
 
 	if self._destroy_clbk_id then

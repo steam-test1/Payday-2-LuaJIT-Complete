@@ -53,6 +53,7 @@ function CopActionShoot:init(action_desc, common_data)
 	self._machine = common_data.machine
 	self._unit = common_data.unit
 
+	local char_tweak = common_data.char_tweak
 	local weapon_unit = self._ext_inventory:equipped_unit()
 
 	if not weapon_unit then
@@ -70,7 +71,7 @@ function CopActionShoot:init(action_desc, common_data)
 		self._ext_base:prevent_main_bones_disabling(true)
 	end
 
-	self._miss_first_player_shot = common_data.char_tweak.misses_first_player_shot and not self._ext_movement.missed_first_shot
+	self._miss_first_player_shot = char_tweak.misses_first_player_shot and not self._ext_movement.missed_first_shot
 	self._glint_effect = weapon_unit:effect_spawner(Idstring("glint_scope"))
 
 	if self._glint_effect then
@@ -91,7 +92,7 @@ function CopActionShoot:init(action_desc, common_data)
 	end
 
 	local weap_tweak = weapon_unit:base():weapon_tweak_data()
-	local weapon_usage_tweak = common_data.char_tweak.weapon[weap_tweak.usage]
+	local weapon_usage_tweak = char_tweak.weapon[weap_tweak.usage]
 
 	self._weapon_unit = weapon_unit
 	self._weapon_base = weapon_unit:base()
@@ -103,8 +104,8 @@ function CopActionShoot:init(action_desc, common_data)
 	self._body_part = action_desc.body_part
 	self._turn_allowed = Network:is_client()
 	self._automatic_weap = weap_tweak.auto and weapon_usage_tweak.autofire_rounds and true
-	self._shoot_t = 0
 	self._melee_timeout_t = t + 1
+	self._shoot_t = 0
 	self._reload_speed = self._ext_movement:get_reload_speed_multiplier()
 	self._looped_expire_time = self._ext_movement:get_looped_reload_time() or nil
 
@@ -427,7 +428,7 @@ function CopActionShoot:update(t)
 		if not target_vec or not self._common_data.allow_fire then
 			self._weapon_base:stop_autofire()
 
-			self._shoot_t = t + 0.6
+			self._shoot_t = t + (self._common_data.is_suppressed and 1 or 0.6)
 			self._autofiring = nil
 			self._autoshots_fired = nil
 
@@ -526,7 +527,7 @@ function CopActionShoot:update(t)
 			shoot = true
 		end
 
-		if self._common_data.char_tweak.no_move_and_shoot and self._common_data.ext_anim and self._common_data.ext_anim.move then
+		if self._common_data.char_tweak.no_move_and_shoot and self._common_data.ext_anim and (self._common_data.ext_anim.move or self._common_data.ext_anim.act) then
 			shoot = false
 			self._shoot_t = t + (self._common_data.char_tweak.move_and_shoot_cooldown or 1)
 		end

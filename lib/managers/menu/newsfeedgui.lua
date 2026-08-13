@@ -74,14 +74,18 @@ function NewsFeedGui:update(t, dt)
 end
 
 function NewsFeedGui:make_news_request()
-	if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
+	if IS_STEAM or IS_EPIC then
 		Application:debug("[NewsFeedGui] make_news_request()")
 
-		local headers = {}
+		local feed_url
 
-		headers["Content-Type"] = "text/xml"
+		feed_url = IS_STEAM and "https://steamcommunity.com/games/218620/rss" or "https://www.paydaythegame.com/news/category/payday2/feed/"
 
-		HttpRequest:get("https://www.paydaythegame.com/feed/", callback(self, self, "news_result"), headers)
+		local headers = {
+			["Content-Type"] = "text/xml"
+		}
+
+		HttpRequest:get(feed_url, callback(self, self, "news_result"), headers)
 	end
 end
 
@@ -94,7 +98,13 @@ function NewsFeedGui:news_result(success, body)
 
 	if success then
 		self._titles = self:_get_text_block(body, "<title>", "</title>", self.MAX_NEWS)
-		self._links = self:_get_text_block(body, "<link>", "</link>", self.MAX_NEWS)
+
+		if IS_STEAM then
+			self._links = self:_get_text_block(body, "<link><![CDATA[", "]]></link>", self.MAX_NEWS)
+		else
+			self._links = self:_get_text_block(body, "<link>", "</link>", self.MAX_NEWS)
+		end
+
 		self._news = {
 			i = 0
 		}

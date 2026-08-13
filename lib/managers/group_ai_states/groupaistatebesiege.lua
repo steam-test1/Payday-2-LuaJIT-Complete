@@ -1,16 +1,18 @@
 GroupAIStateBesiege = GroupAIStateBesiege or class(GroupAIStateBase)
 GroupAIStateBesiege._MAX_SIMULTANEOUS_SPAWNS = 3
+GroupAIStateBesiege._POLICE_ACTIVITY_DELAY = 2
+GroupAIStateBesiege._POLICE_ACTIVITY_DELAY_FAST = 0.4
 GroupAIStateBesiege._HOSTAGE_TASK_DELAY = 0.125
 
 function GroupAIStateBesiege:init(group_ai_state)
 	GroupAIStateBesiege.super.init(self)
 
-	if Network:is_server() and managers.navigation:is_data_ready() then
-		self:_queue_police_upd_task()
-	end
-
 	self._tweak_data = tweak_data.group_ai[group_ai_state]
 	self._graph_distance_cache = {}
+
+	if self._is_server and managers.navigation:is_data_ready() then
+		self:_queue_police_upd_task()
+	end
 end
 
 function GroupAIStateBesiege:_init_misc_data()
@@ -54,10 +56,10 @@ end
 function GroupAIStateBesiege:update(t, dt)
 	GroupAIStateBesiege.super.update(self, t, dt)
 
-	if Network:is_server() then
+	if self._is_server and managers.navigation:is_data_ready() then
 		self:_queue_police_upd_task()
 
-		if managers.navigation:is_data_ready() and self._draw_enabled then
+		if self._draw_enabled then
 			self:_draw_enemy_activity(t)
 			self:_draw_spawn_points()
 		end
@@ -67,18 +69,24 @@ end
 function GroupAIStateBesiege:paused_update(t, dt)
 	GroupAIStateBesiege.super.paused_update(self, t, dt)
 
-	if Network:is_server() and managers.navigation:is_data_ready() and self._draw_enabled then
+	if self._is_server and self._draw_enabled and managers.navigation:is_data_ready() then
 		self:_draw_enemy_activity(t)
 		self:_draw_spawn_points()
 	end
 end
 
 function GroupAIStateBesiege:_queue_police_upd_task()
-	if not self._police_upd_task_queued then
-		self._police_upd_task_queued = true
+	if self._police_upd_task_queued then
+		if self._t < self._police_upd_task_queued then
+			return
+		end
 
-		managers.enemy:queue_task("GroupAIStateBesiege._upd_police_activity", self._upd_police_activity, self, self._t + (next(self._spawning_groups) and 0.4 or 2))
+		self:_upd_police_activity()
 	end
+
+	local next_upd_t = next(self._spawning_groups) and GroupAIStateBesiege._POLICE_ACTIVITY_DELAY_FAST or GroupAIStateBesiege._POLICE_ACTIVITY_DELAY
+
+	self._police_upd_task_queued = self._t + next_upd_t
 end
 
 function GroupAIStateBesiege:assign_enemy_to_group_ai(unit, team_id)
@@ -142,32 +150,26 @@ function GroupAIStateBesiege:on_enemy_unregistered(unit)
 end
 
 function GroupAIStateBesiege:_upd_police_activity()
-	self._police_upd_task_queued = false
-
-	if self._police_activity_blocked then
+	if not self._ai_enabled or self._police_activity_blocked then
 		return
 	end
 
-	if self._ai_enabled then
-		self:_upd_SO()
-		self:_upd_grp_SO()
-		self:_check_spawn_phalanx()
-		self:_check_phalanx_group_has_spawned()
-		self:_check_phalanx_damage_reduction_increase()
+	self:_upd_SO()
+	self:_upd_grp_SO()
+	self:_check_spawn_phalanx()
+	self:_check_phalanx_group_has_spawned()
+	self:_check_phalanx_damage_reduction_increase()
 
-		if self._enemy_weapons_hot then
-			self:_claculate_drama_value()
-			self:_upd_regroup_task()
-			self:_upd_reenforce_tasks()
-			self:_upd_recon_tasks()
-			self:_upd_assault_task()
-			self:_begin_new_tasks()
-			self:_upd_group_spawning()
-			self:_upd_groups()
-		end
+	if self._enemy_weapons_hot then
+		self:_claculate_drama_value()
+		self:_upd_regroup_task()
+		self:_upd_reenforce_tasks()
+		self:_upd_recon_tasks()
+		self:_upd_assault_task()
+		self:_begin_new_tasks()
+		self:_upd_group_spawning()
+		self:_upd_groups()
 	end
-
-	self:_queue_police_upd_task()
 end
 
 function GroupAIStateBesiege:_upd_SO()
@@ -761,7 +763,7 @@ function GroupAIStateBesiege:_end_regroup_task()
 		self:set_assault_mode(false)
 
 		if not self._smoke_grenade_ignore_control then
-			managers.network:session():send_to_peers_synched("sync_smoke_grenade_kill")
+			managers.network:send_to_peers_synched("sync_smoke_grenade_kill")
 			self:sync_smoke_grenade_kill()
 		end
 
@@ -799,80 +801,6 @@ function GroupAIStateBesiege:_upd_regroup_task()
 			self:_end_regroup_task()
 		end
 	end
-end
-
-function GroupAIStateBesiege:_find_nearest_safe_area(start_area, start_pos)
-	local to_search_areas = {
-		group.objective.area
-	}
-	local found_areas = {
-		[group.objective.area] = "init"
-	}
-
-	repeat
-		local search_area = table.remove(to_search_areas, 1)
-
-		if next(search_area.criminal.units) then
-			assault_area = search_area
-
-			break
-		else
-			for other_area_id, other_area in pairs(search_area.neighbours) do
-				if not found_areas[other_area] then
-					table.insert(to_search_areas, other_area)
-
-					found_areas[other_area] = search_area
-				end
-			end
-		end
-	until #to_search_areas == 0
-
-	local mvec3_dis_sq = mvector3.distance_sq
-	local all_areas = self._area_data
-	local all_nav_segs = managers.navigation._nav_segments
-	local all_doors = managers.navigation._room_doors
-	local my_enemy_pos, my_enemy_dis_sq
-
-	for c_key, c_data in pairs(self._criminals) do
-		local my_dis = mvec3_dis_sq(start_pos, c_data.m_pos)
-
-		if (not my_enemy_pos or my_enemy_dis_sq < my_dis) and math.abs(mvector3.z(c_data.m_pos) - mvector3.z(start_pos)) < 300 then
-			my_enemy_pos = c_data.m_pos
-			my_enemy_dis_sq = my_dis
-		end
-	end
-
-	if not my_enemy_pos or my_enemy_dis_sq > 9000000 then
-		return
-	end
-
-	local closest_dis, closest_safe_nav_seg_id, closest_area
-	local start_neighbours = all_nav_segs[nav_seg_id].neighbours
-
-	for neighbour_seg_id, door_list in pairs(start_neighbours) do
-		local neighbour_area = self:get_area_from_nav_seg_id(neighbour_seg_id)
-
-		if not next(neighbour_area.criminal.units) then
-			local neighbour_nav_seg = all_nav_segs[neighbour_seg_id]
-
-			if not neighbour_nav_seg.disabled and my_enemy_dis_sq < mvec3_dis_sq(my_enemy_pos, neighbour_nav_seg.pos) then
-				for _, i_door in ipairs(door_list) do
-					if type(i_door) == "number" then
-						local door = all_doors[i_door]
-						local my_dis = mvec3_dis_sq(door.center, start_pos)
-
-						if not closest_dis or my_dis < closest_dis then
-							closest_dis = my_dis
-							closest_safe_nav_seg_id = neighbour_seg_id
-							closest_area = neighbour_area
-						end
-					end
-				end
-			end
-		end
-	end
-
-	return closest_area, closest_safe_nav_seg_id
 end
 
 function GroupAIStateBesiege:_upd_recon_tasks()
@@ -1709,7 +1637,7 @@ end
 function GroupAIStateBesiege:register_criminal(unit)
 	GroupAIStateBesiege.super.register_criminal(self, unit)
 
-	if not Network:is_server() then
+	if not self._is_server then
 		return
 	end
 
@@ -1721,7 +1649,7 @@ function GroupAIStateBesiege:register_criminal(unit)
 end
 
 function GroupAIStateBesiege:unregister_criminal(unit)
-	if Network:is_server() then
+	if self._is_server then
 		local u_key = unit:key()
 		local record = self._criminals[u_key]
 
@@ -1846,7 +1774,6 @@ function GroupAIStateBesiege:on_cop_jobless(unit)
 	end
 
 	local nav_seg = unit:movement():nav_tracker():nav_segment()
-	local new_occupation = self:find_occupation_in_area(nav_seg)
 	local area = self:get_area_from_nav_seg_id(nav_seg)
 	local force_factor = area.factors.force
 	local demand = force_factor and force_factor.force
@@ -2178,83 +2105,6 @@ function GroupAIStateBesiege:_draw_enemy_activity(t)
 	end
 end
 
-function GroupAIStateBesiege:find_occupation_in_area(nav_seg)
-	local doors = managers.navigation:find_segment_doors(nav_seg, callback(self, self, "filter_nav_seg_unsafe"))
-
-	if not next(doors) then
-		return
-	end
-
-	for other_seg, door_list in ipairs(doors) do
-		for i_door, door_data in ipairs(door_list) do
-			door_data.weight = 0
-		end
-	end
-
-	local tmp_vec1 = Vector3()
-	local tmp_vec2 = Vector3()
-	local math_max = math.max
-	local mvec3_lerp = mvector3.lerp
-	local mvec3_dis_sq = mvector3.distance_sq
-	local nav_manager = managers.navigation
-	local area_data = self:get_area_from_nav_seg_id(nav_seg)
-	local area_police = area_data.police.units
-	local unit_data = self._police
-	local guarded_doors = {}
-
-	for u_key, _ in pairs(area_police) do
-		local objective = unit_data[u_key].unit:brain():objective()
-
-		if objective and objective.guard_obj then
-			local door_list = doors[objective.from_seg]
-
-			if door_list then
-				mvec3_lerp(tmp_vec1, objective.guard_obj.door.low_pos, objective.guard_obj.door.high_pos, 0.5)
-
-				for i_door, door_data in ipairs(door_list) do
-					mvec3_lerp(tmp_vec2, door_data.low_pos, door_dataoor.high_pos, 0.5)
-
-					local weight = 1 / math_max(1, mvec3_dis_sq(tmp_vec1, tmp_vec2))
-
-					door_data.weight = door_data.weight + weight
-				end
-			end
-		end
-	end
-
-	local best_door, best_door_weight, best_door_nav_seg
-
-	for other_seg, door_list in ipairs(doors) do
-		for i_door, door_data in ipairs(door_list) do
-			if not best_door or best_door_weight > door_data.weight then
-				best_door = door_data.center
-				best_door_weight = door_data.weight
-				best_door_nav_seg = other_seg
-			end
-		end
-	end
-
-	for other_seg, door_list in ipairs(doors) do
-		for i_door, door_data in ipairs(door_list) do
-			door_data.weight = nil
-		end
-	end
-
-	if best_door then
-		local center = mvector3.copy(best_door.low_pos)
-
-		mvec3_lerp(center, center, best_door.heigh_pos, 0.5)
-
-		best_door.center = center
-
-		return {
-			type = "guard",
-			door = best_door,
-			from_seg = best_door_nav_seg
-		}
-	end
-end
-
 function GroupAIStateBesiege:verify_occupation_in_area(objective)
 	local nav_seg = objective.nav_seg
 
@@ -2430,7 +2280,7 @@ function GroupAIStateBesiege:get_safe_enemy_loot_drop_point(start_nav_seg)
 			end
 		else
 			for other_area_id, other_area in pairs(search_area.neighbours) do
-				if not found_areas[other_area] and not next(other_area.criminal.units) then
+				if not found_areas[other_area] then
 					table.insert(to_search_areas, other_area)
 
 					found_areas[other_area] = true
@@ -2646,12 +2496,6 @@ function GroupAIStateBesiege:on_simulation_ended()
 		}
 		self._task_data.regroup = {}
 	end
-
-	if self._police_upd_task_queued then
-		self._police_upd_task_queued = nil
-
-		managers.enemy:unqueue_task("GroupAIStateBesiege._upd_police_activity")
-	end
 end
 
 function GroupAIStateBesiege:on_simulation_started()
@@ -2675,8 +2519,6 @@ function GroupAIStateBesiege:on_simulation_started()
 		}
 		self._task_data.regroup = {}
 	end
-
-	self:_queue_police_upd_task()
 end
 
 function GroupAIStateBesiege:on_enemy_weapons_hot(is_delayed_callback)
@@ -3528,12 +3370,12 @@ function GroupAIStateBesiege:_chk_group_use_smoke_grenade(group, task_data, deto
 						local area = self:get_area_from_nav_seg_id(neighbour_nav_seg_id)
 
 						if task_data.target_areas[1].nav_segs[neighbour_nav_seg_id] or next(area.criminal.units) then
-							local random_door_id = door_list[math.random(#door_list)]
+							local door = door_list[math.random(#door_list)]
 
-							if type(random_door_id) == "number" then
-								detonate_pos = managers.navigation._room_doors[random_door_id].center
+							if door.x then
+								detonate_pos = door
 							else
-								detonate_pos = random_door_id:script_data().element:nav_link_end_pos()
+								detonate_pos = door:script_data().element:nav_link_end_pos()
 							end
 
 							shooter_pos = mvector3.copy(u_data.m_pos)
@@ -3574,12 +3416,12 @@ function GroupAIStateBesiege:_chk_group_use_flash_grenade(group, task_data, deto
 
 					for neighbour_nav_seg_id, door_list in pairs(nav_seg.neighbours) do
 						if task_data.target_areas[1].nav_segs[neighbour_nav_seg_id] then
-							local random_door_id = door_list[math.random(#door_list)]
+							local door = door_list[math.random(#door_list)]
 
-							if type(random_door_id) == "number" then
-								detonate_pos = managers.navigation._room_doors[random_door_id].center
+							if door.x then
+								detonate_pos = door
 							else
-								detonate_pos = random_door_id:script_data().element:nav_link_end_pos()
+								detonate_pos = door:script_data().element:nav_link_end_pos()
 							end
 
 							shooter_pos = mvector3.copy(u_data.m_pos)
@@ -4039,12 +3881,12 @@ function GroupAIStateBesiege:set_team_relation(team1_id, team2_id, relation, mut
 		self._teams[team1_id].foes[team2_id] = nil
 	end
 
-	if Network:is_server() then
+	if self._is_server then
 		local team1_index = tweak_data.levels:get_team_index(team1_id)
 		local team2_index = tweak_data.levels:get_team_index(team2_id)
 		local relation_code = relation == "neutral" and 1 or relation == "friend" and 2 or 3
 
-		managers.network:session():send_to_peers_synched("sync_team_relation", team1_index, team2_index, relation_code)
+		managers.network:send_to_peers_synched("sync_team_relation", team1_index, team2_index, relation_code)
 	end
 end
 
@@ -4137,7 +3979,7 @@ function GroupAIStateBesiege:_spawn_phalanx()
 
 			self:set_assault_endless(true)
 			managers.game_play_central:announcer_say("cpa_a02_01")
-			managers.network:session():send_to_peers_synched("group_ai_event", self:get_sync_event_id("phalanx_spawned"), 0)
+			managers.network:send_to_peers_synched("group_ai_event", self:get_sync_event_id("phalanx_spawned"), 0)
 		end
 	end
 end
@@ -4232,8 +4074,8 @@ function GroupAIStateBesiege:set_phalanx_damage_reduction_buff(damage_reduction)
 		self:set_damage_reduction_buff_hud()
 	end
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_damage_reduction_buff", damage_reduction)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_damage_reduction_buff", damage_reduction)
 	end
 end
 
@@ -4258,8 +4100,8 @@ function GroupAIStateBesiege:set_assault_endless(enabled)
 
 	managers.hud:sync_set_assault_mode(enabled and "phalanx" or "normal")
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_assault_endless", enabled)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_assault_endless", enabled)
 	end
 end
 
@@ -4280,7 +4122,7 @@ function GroupAIStateBesiege:force_end_assault_phase(force_regroup)
 	local task_data = self._task_data.assault
 
 	if task_data.active then
-		print("GroupAIStateBesiege:force_end_assault_phase()")
+		cat_print("groupai", "[GroupAI] GroupAIStateBesiege:force_end_assault_phase - Forcing current assault to end.", force_regroup and "Forcing regroup." or "")
 
 		task_data.phase = "fade"
 		task_data.force_end = true
@@ -4288,7 +4130,9 @@ function GroupAIStateBesiege:force_end_assault_phase(force_regroup)
 		if force_regroup then
 			task_data.force_regroup = true
 
-			managers.enemy:update_queue_task("GroupAIStateBesiege._upd_police_activity", nil, nil, self._t + 0.1, nil, nil)
+			if self._police_upd_task_queued then
+				self._police_upd_task_queued = self._t + 0.1
+			end
 		end
 	end
 
@@ -4345,7 +4189,7 @@ function GroupAIStateBesiege:create_timed_groups_table()
 			else
 				for idx, spawn_data in ipairs(group_tweak_data.spawn) do
 					if spawn_data.respawn_cooldown then
-						Application:error("[GroupAIStateBesiege:create_timed_groups_table] Respawn cooldown for individual units can't be used if only one unit can spawn. Spawn cooldown is used instead. In group: ", group_id)
+						cat_error("groupai_unique_spawns", "[GroupAI] GroupAIStateBesiege:create_timed_groups_table - Respawn cooldown for individual units can't be used if only one unit can spawn. Spawn cooldown is used instead. In group: ", group_id)
 
 						break
 					end

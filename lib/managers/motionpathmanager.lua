@@ -818,7 +818,10 @@ function MotionPathManager:find_nearest_ground_path(ground_unit_id)
 
 	local ground_unit_position = ground_unit:position()
 	local min_distance_marker = {
-		distance = 2000000
+		direction = nil,
+		distance = 2000000,
+		marker_to = nil,
+		path = nil
 	}
 
 	for _, path in ipairs(self._paths) do

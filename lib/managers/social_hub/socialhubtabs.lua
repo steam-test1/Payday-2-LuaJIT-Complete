@@ -85,7 +85,7 @@ function SocialHubTab:on_user_lobby_pressed(first, second, third)
 	end
 
 	if first == "join" then
-		EpicSocialHub:join_lobby(second)
+		DistributionMatchmaking:request_lobby_join(second)
 		managers.socialhub:remove_pending_lobby(second)
 	elseif first == "decline" then
 		managers.socialhub:remove_pending_lobby(second)
@@ -113,7 +113,7 @@ function SocialHubFriendTab:setup_panel(parent_panel)
 	self.open_friend_categories = {}
 
 	local friends = managers.socialhub:get_platform_friends()
-	local platform_name = SystemInfo:distribution() == Idstring("STEAM") and managers.localization:text("socialhub_friends_platform_title_steam") or SystemInfo:distribution() == Idstring("EPIC") and managers.localization:text("socialhub_friends_platform_title_epic") or managers.localization:text("socialhub_friends_platform_title")
+	local platform_name = Distribution:type() == Idstring("STEAM") and managers.localization:text("socialhub_friends_platform_title_steam") or Distribution:type() == Idstring("EPIC") and managers.localization:text("socialhub_friends_platform_title_epic") or managers.localization:text("socialhub_friends_platform_title")
 	local category_header = SocialHubUserCategoryHeader:new(self.scroll:canvas(), {
 		text = platform_name .. " [" .. managers.socialhub:get_number_of_platform_friends() .. "]",
 		press_callback = callback(self, self, "on_user_filter_pressed", 2)
@@ -383,7 +383,7 @@ function SocialHubInviteTab:on_selected()
 		self._loading_icon:animate(spin_anim)
 
 		for index, item in pairs(managers.socialhub:get_pending_lobbies()) do
-			EpicSocialHub:get_lobby_info(index, callback(self, self, "on_refresh_lobby_fetched"))
+			DistributionMatchmaking:lobby_from_id(index, true, callback(self, self, "on_refresh_lobby_fetched"))
 		end
 	end
 end
@@ -439,19 +439,21 @@ end
 
 function SocialHubInviteTab:searchbox_disconnect_callback(first, second, third)
 	if string.len(first) == 32 then
-		EpicMM:query_users({
+		DistributionMatchmaking:search_users_from_id({
 			first
 		}, callback(self, self, "on_search_users_fetched"))
-		EpicSocialHub:get_lobby_info(first, callback(self, self, "on_search_lobby_fetched"))
+		DistributionMatchmaking:lobby_from_id(first, true, callback(self, self, "on_search_lobby_fetched"))
+	elseif string.len(first) == 6 then
+		DistributionMatchmaking:lobby_from_hash(first, true, callback(self, self, "on_search_lobby_fetched"))
 	end
 end
 
-function SocialHubInviteTab:on_search_users_fetched(first, second, third)
-	if not first or not second or second and table.size(second) <= 0 or not self:invite_tab_valid() then
+function SocialHubInviteTab:on_search_users_fetched(users)
+	if not users or table.size(users) <= 0 or not self:invite_tab_valid() then
 		return
 	end
 
-	print("SocialHubInviteTab:on_search_users_fetched", first, inspect(second), table.size(second))
+	print("SocialHubInviteTab:on_search_users_fetched", inspect(users))
 
 	if self.search_item then
 		self.scroll:remove_item(#self.scroll:items() - 1)
@@ -460,13 +462,20 @@ function SocialHubInviteTab:on_search_users_fetched(first, second, third)
 		self.search_item = nil
 	end
 
-	for index, item in pairs(second) do
-		managers.socialhub:add_cached_user(index, item)
+	for _, user in pairs(users) do
+		managers.socialhub:add_cached_user(users, {
+			rich_presence = nil,
+			state = nil,
+			name = user:username(),
+			id = user:id(),
+			account_id = user:account_id(),
+			platform = user:type()
+		})
 
 		self.search_item = SocialHubUserItem:new(self.scroll:canvas(), {
 			right_display = "status",
-			id = index,
-			buttons = managers.socialhub:get_actions_for_user(self, "on_user_item_pressed", index)
+			id = user:id(),
+			buttons = managers.socialhub:get_actions_for_user(self, "on_user_item_pressed", user:id())
 		})
 
 		self.scroll:add_item(self.search_item, nil, #self.scroll:items())
@@ -474,12 +483,12 @@ function SocialHubInviteTab:on_search_users_fetched(first, second, third)
 	end
 end
 
-function SocialHubInviteTab:on_search_lobby_fetched(lobby_id, host_user_id, lobby_parameters)
-	if not lobby_id or not host_user_id or not self:invite_tab_valid() then
+function SocialHubInviteTab:on_search_lobby_fetched(lobby, result, intended_lobby_id)
+	if not lobby or not self:invite_tab_valid() then
 		return
 	end
 
-	print("SocialHubInviteTab:on_search_lobby_fetched", inspect(lobby_id), inspect(host_user_id), inspect(lobby_parameters))
+	print("SocialHubInviteTab:on_search_lobby_fetched", inspect(lobby), inspect(result), inspect(intended_lobby_id))
 
 	if self.search_item then
 		self.scroll:remove_item(#self.scroll:items() - 1)
@@ -487,6 +496,8 @@ function SocialHubInviteTab:on_search_lobby_fetched(lobby_id, host_user_id, lobb
 
 		self.search_item = nil
 	end
+
+	local lobby_parameters = lobby:lobby_attributes()
 
 	lobby_parameters.buttons = {
 		{
@@ -498,26 +509,28 @@ function SocialHubInviteTab:on_search_lobby_fetched(lobby_id, host_user_id, lobb
 			press_callback = callback(self, self, "on_user_lobby_pressed", "join")
 		}
 	}
-	lobby_parameters.LOBBYID = lobby_id
+	lobby_parameters.lobby_id = lobby:id()
 	self.search_item = SocialHubLobbyItem:new(self.scroll:canvas(), lobby_parameters)
 
 	self.scroll:add_item(self.search_item, nil, #self.scroll:items())
 	self.scroll:place_items_in_order(nil, true, true)
 end
 
-function SocialHubInviteTab:on_refresh_lobby_fetched(lobby_id, host_user_id, lobby_parameters)
+function SocialHubInviteTab:on_refresh_lobby_fetched(lobby, result, intended_lobby_id)
 	self._refresh_count = self._refresh_count - 1
 
 	if not alive(self.scroll) then
 		return
 	end
 
-	if host_user_id then
-		lobby_parameters.LOBBYID = lobby_id
+	if lobby then
+		local lobby_parameters = lobby:lobby_attributes()
 
-		managers.socialhub:update_pending_lobby(lobby_id, lobby_parameters)
+		lobby_parameters.lobby_id = lobby:id()
+
+		managers.socialhub:update_pending_lobby(lobby:id(), lobby_parameters)
 	else
-		managers.socialhub:remove_pending_lobby(lobby_id)
+		managers.socialhub:remove_pending_lobby(intended_lobby_id)
 	end
 
 	if self._refresh_count == 0 then

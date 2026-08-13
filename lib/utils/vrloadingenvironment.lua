@@ -41,7 +41,11 @@ function VRLoadingEnvironment:init(overlays)
 			exit = callback(self, self, "_resume_exit"),
 			update = callback(self, self, "_resume_update")
 		},
-		[VRLoadingEnvironment.STATE_NONE] = {}
+		[VRLoadingEnvironment.STATE_NONE] = {
+			enter = nil,
+			exit = nil,
+			update = nil
+		}
 	}
 	self._block_exec = false
 	self._current_state = nil

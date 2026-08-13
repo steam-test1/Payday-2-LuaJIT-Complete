@@ -1,7 +1,18 @@
 ScopeCamera = ScopeCamera or class()
 ScopeCamera.DISABLE_STABILIZATION = false
 
+local IDS_SCOPE_AA_PP = Idstring("AA_off")
+local IDS_SCOPE_AO_AOB = Idstring("AO_aob")
+local IDS_IDENTITY = Idstring("identity")
+local IDS_SHADOW_PROCESSOR = Idstring("shadow_processor")
+local IDS_AO_POST_PROCESSOR = Idstring("ao_post_processor")
+local IDS_ANTI_ALIASING_POST_PROCESSOR = Idstring("anti_aliasing_post_processor")
+local IDS_TRANSFER_BACK_BUFFER = Idstring("transfer_back_buffer")
+local IDS_RENDER_BACKBUFFER_TO_TARGET = Idstring("render_backbuffer_to_target")
+
 function ScopeCamera:init(camera)
+	print("[ScopeCamera] init", camera)
+
 	self._camera_ext = camera
 
 	self:_setup_camera()
@@ -16,17 +27,19 @@ function ScopeCamera:_weapon_precision_mode_changed(setting, old, new)
 end
 
 function ScopeCamera:_add_setting_callback(setting_name, method)
-	local clbk = callback(self, self, method)
+	if _G.IS_VR then
+		local clbk = callback(self, self, method)
 
-	managers.vr:add_setting_changed_callback(setting_name, clbk)
-	clbk(setting_name, nil, managers.vr:get_setting(setting_name))
+		managers.vr:add_setting_changed_callback(setting_name, clbk)
+		clbk(setting_name, nil, managers.vr:get_setting(setting_name))
 
-	self._settings = self._settings or {}
+		self._settings = self._settings or {}
 
-	table.insert(self._settings, {
-		name = setting_name,
-		clbk = clbk
-	})
+		table.insert(self._settings, {
+			name = setting_name,
+			clbk = clbk
+		})
+	end
 end
 
 function ScopeCamera:_setup_camera()
@@ -52,19 +65,19 @@ function ScopeCamera:_setup_camera()
 	vp:set_camera(camera_object)
 	vp:set_enable_adaptive_quality(false)
 	vp:set_active(false)
-	vp:set_pre_render(true)
-	vp:vp():set_post_processor_effect("World", Idstring("shadow_processor"), Idstring("identity"))
-	vp:vp():set_post_processor_effect("World", Idstring("ao_post_processor"), Idstring("AO_aob"))
-	vp:vp():set_post_processor_effect("World", Idstring("anti_aliasing_post_processor"), Idstring("AA_off"))
+	vp:set_pre_render(_G.IS_VR)
+	vp:vp():set_post_processor_effect("World", IDS_SHADOW_PROCESSOR, IDS_IDENTITY)
+	vp:vp():set_post_processor_effect("World", IDS_AO_POST_PROCESSOR, IDS_SCOPE_AO_AOB)
+	vp:vp():set_post_processor_effect("World", IDS_ANTI_ALIASING_POST_PROCESSOR, IDS_SCOPE_AA_PP)
 
 	local clear_vp = managers.vr:new_vp(0, 0, scale_x, scale_y, "scope_clear", CoreManagerBase.PRIO_WORLDCAMERA)
 
 	clear_vp:set_render_params("GBufferClear", clear_vp:vp(), rt)
-	clear_vp:vp():set_post_processor_effect("GBufferClear", Idstring("transfer_back_buffer"), Idstring("render_backbuffer_to_target"))
+	clear_vp:vp():set_post_processor_effect("GBufferClear", IDS_TRANSFER_BACK_BUFFER, IDS_RENDER_BACKBUFFER_TO_TARGET)
 	clear_vp:set_camera(camera_object)
 	clear_vp:set_enable_adaptive_quality(false)
 	clear_vp:set_active(false)
-	clear_vp:set_pre_render(true)
+	clear_vp:set_pre_render(_G.IS_VR)
 
 	self._resolution = rt_resolution
 	self._render_target = rt

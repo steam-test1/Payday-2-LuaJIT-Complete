@@ -9,7 +9,7 @@ SequenceManager = SequenceManager or class()
 SequenceManager.GLOBAL_CORE_SEQUENCE_PATH = "core/settings/core_sequence_manager"
 SequenceManager.GLOBAL_SEQUENCE_PATH = "settings/sequence_manager"
 SequenceManager.SEQUENCE_FILE_EXTENSION = "sequence_manager"
-SequenceManager.IDS_UNIT = Idstring("unit")
+SequenceManager.IDS_UNIT = IDS_UNIT
 
 function SequenceManager:init(area_damage_mask, target_world_mask, beings_mask)
 	self._area_damage_mask = area_damage_mask
@@ -44,6 +44,7 @@ function SequenceManager:init(area_damage_mask, target_world_mask, beings_mask)
 	self:register_event_element_class(RunSequenceElement)
 	self:register_event_element_class(RunSpawnSystemSequenceElement)
 	self:register_event_element_class(SetDamageElement)
+	self:register_event_element_class(ResetDamageElement)
 	self:register_event_element_class(SetExtensionVarElement)
 	self:register_event_element_class(SetGlobalVariableElement)
 	self:register_event_element_class(SetGlobalVariablesElement)
@@ -740,7 +741,6 @@ function SequenceManager:verify_material_configs(skip_unit_map, processed_unit_m
 	local index_file = DB:open("index", "indices/types/unit")
 	local unit_list_string = index_file:read()
 	local unit_list = string.split(unit_list_string, "[\r\n]")
-	local unit_id = Idstring("unit")
 	local assets_path = Application:base_path() .. "../../assets/"
 
 	assets_path = managers.debug and managers.debug.macro:get_cleaned_path(assets_path) or assets_path
@@ -2240,7 +2240,7 @@ function BaseElement:get_xml_origin(node)
 	return "File: \"" .. tostring(file or "N/A") .. "\" (Line: " .. tostring(line or "N/A, remove .xmb file") .. ")\nUnit: \"" .. tostring(self._unit_element and self._unit_element:get_name():t() or "[None]") .. "\"\nElement: " .. self:get_xml_element_string(node)
 end
 
-local is_win32 = SystemInfo:platform() == Idstring("WIN32")
+local is_win32 = IS_WIN32
 
 function BaseElement:get_model_xml_file()
 	if self._node_file then
@@ -2378,7 +2378,10 @@ function UnitElement:init(node, name, is_global)
 				if not name then
 					self:print_attribute_error("name", name, nil, false, nil, data)
 				else
-					sequence_nodes[name] = data
+					table.insert(sequence_nodes, {
+						name = name,
+						data = data
+					})
 				end
 			elseif element_name == "body" then
 				table.insert(body_nodes, data)
@@ -2401,8 +2404,8 @@ function UnitElement:init(node, name, is_global)
 			end
 		end
 
-		for name, sequence_node in pairs(sequence_nodes) do
-			self._sequence_elements[name] = SequenceElement:new(sequence_node, self, nil, nil)
+		for _, sequence_node in ipairs(sequence_nodes) do
+			self._sequence_elements[sequence_node.name] = SequenceElement:new(sequence_node.data, self, nil, nil)
 		end
 
 		for _, water_node in ipairs(water_node_list) do
@@ -4326,6 +4329,7 @@ function DebugElement:activate_callback(env)
 	local text = self:run_parsed_func(env, self._text)
 
 	cat_debug("sequence", "[SequenceManager] " .. tostring(text))
+	print("[SequenceManager]", tostring(text))
 end
 
 AlertElement = AlertElement or class(BaseElement)
@@ -5284,7 +5288,7 @@ function PhysicEffectElement:activate_callback(env)
 	local param_list = self:run_parsed_func_list(env, self._param_list)
 	local store_id_var = self:run_parsed_func(env, self._store_id_var) or "last_physic_effect_id"
 
-	env.vars[store_id_var] = World:play_physic_effect(Idstring(name), target, unpack(param_list))
+	env.vars[store_id_var] = World:play_physic_effect_on_unit(env.dest_unit, Idstring(name), target, unpack(param_list))
 end
 
 ProjectDecalElement = ProjectDecalElement or class(BaseElement)
@@ -5492,7 +5496,7 @@ function SetDamageElement:activate_callback(env)
 			self:print_error("Unable to set body damage on unit \"" .. tostring(env.dest_unit) .. "\" with body \"" .. env.dest_body:name() .. "\" since it didn't have a damage extension on the body.", true, env)
 		end
 	else
-		self:print_error("Unable to set body damage on destroyed body. This is probably because a scripter didn't specify a body when a sequence was executed or if it was executed from a sequence that had \"startup\" attribute set to true or if the sequence was triggered from a water element.", true, env)
+		_G.debug_pause_unit(env.dest_unit, "Unable to set body damage on destroyed body. This is probably because a scripter didn't specify a body when a sequence was executed or if it was executed from a sequence that had \"startup\" attribute set to true or if the sequence was triggered from a water element." .. tostring(env))
 	end
 end
 
@@ -5500,6 +5504,21 @@ function SetDamageElement:set_damage(env, damage, damage_type)
 	local extension = env.dest_body:extension().damage
 
 	extension:set_damage(damage_type, damage)
+end
+
+ResetDamageElement = ResetDamageElement or class(BaseElement)
+ResetDamageElement.NAME = "reset_damage"
+
+function SetDamageElement:init(node, unit_element)
+	BaseElement.init(self, node, unit_element)
+end
+
+function SetDamageElement:activate_callback(env)
+	if alive(env.dest_unit) then
+		self._unit_element:reset_damage(env.dest_unit)
+	else
+		_G.debug_pause_unit(env.dest_unit, "Unable to reset body damage missing unit")
+	end
 end
 
 DisableUnitElement = DisableUnitElement or class(BaseElement)

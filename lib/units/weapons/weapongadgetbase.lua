@@ -2,7 +2,7 @@ WeaponGadgetBase = WeaponGadgetBase or class(UnitBase)
 WeaponGadgetBase.GADGET_TYPE = ""
 
 function WeaponGadgetBase:init(unit)
-	WeaponGadgetBase.super.init(self, unit)
+	WeaponGadgetBase.super.init(self, unit, false)
 
 	self._on = false
 end
@@ -71,8 +71,4 @@ end
 
 function WeaponGadgetBase:overrides_weapon_firing()
 	return self:is_underbarrel()
-end
-
-function WeaponGadgetBase:destroy(unit)
-	WeaponGadgetBase.super.pre_destroy(self, unit)
 end

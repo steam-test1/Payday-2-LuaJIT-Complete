@@ -555,11 +555,16 @@ function Layer:repopulate_units()
 	for c, names in pairs(self._category_map) do
 		local data = self._notebook_units_lists[managers.editor:category_name(c)]
 
-		data.units:clear()
+		data.units:clear_all()
+		data.units:append_column("Name")
 
 		for name, _ in pairs(names) do
-			data.units:append(name)
+			local i = data.units:append_item(self:_stripped_unit_name(name))
+
+			data.units:set_item_data(i, name)
 		end
+
+		data.units:autosize_column(0)
 	end
 end
 
@@ -694,10 +699,8 @@ function Layer:load_unit_map_from_vector(which)
 		self._category_map[t] = {}
 
 		for _, unit_name in ipairs(managers.database:list_units_of_type(t)) do
-			local unit_data = CoreEngineAccess._editor_unit_data(unit_name:id())
-
-			self._unit_map[unit_name] = unit_data
-			self._category_map[t][unit_name] = unit_data
+			self._unit_map[unit_name] = t
+			self._category_map[t][unit_name] = t
 		end
 	end
 end
@@ -1159,14 +1162,10 @@ function Layer:set_selected_units(units)
 
 	self._selecting_many_units = true
 
-	local id = Profiler:start("call_set_select_unit")
-
 	for _, unit in ipairs(units) do
 		self:set_select_unit(unit)
 	end
 
-	Profiler:stop(id)
-	Profiler:counter_time("call_set_select_unit")
 	managers.editor:selected_units(self._selected_units)
 	self:update_unit_settings()
 
@@ -1460,7 +1459,7 @@ function Layer:check_unit_dependencies(unit_name)
 		recursive_check_object(object_xml)
 	end
 
-	local unit_file_path = Application:base_path() .. "../../assets/" .. unit_name:s() .. ".unit"
+	local unit_file_path = Application:editor_assets_path() .. unit_name:s() .. ".unit"
 	local unit_xml = SystemFS:parse_xml(unit_file_path)
 	local recursive_check_unit
 

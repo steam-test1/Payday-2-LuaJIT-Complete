@@ -16,6 +16,7 @@ function ElementLootPile:on_script_activated()
 
 	if not self._updator and Network:is_server() then
 		self._updator = true
+		self._loot_key = "LootPile" .. tostring(self._id)
 
 		self._mission_script:add_updator(self._id, callback(self, self, "update"))
 	end
@@ -24,6 +25,10 @@ function ElementLootPile:on_script_activated()
 end
 
 function ElementLootPile:on_set_enabled()
+	if not Network:is_server() then
+		return
+	end
+
 	if self:enabled() then
 		self:register_steal_SO()
 	else
@@ -80,10 +85,11 @@ function ElementLootPile:register_steal_SO()
 	end
 
 	local drop_objective = {
-		action_duration = 2,
-		haste = "walk",
-		interrupt_dis = 400,
+		action_duration = 1,
+		haste = "run",
+		interrupt_dis = 200,
 		interrupt_health = 0.5,
+		path_ahead = true,
 		pose = "crouch",
 		type = "act",
 		nav_seg = drop_nav_seg,
@@ -95,13 +101,17 @@ function ElementLootPile:register_steal_SO()
 			align_sync = true,
 			body_part = 1,
 			type = "act",
-			variant = "untie"
+			variant = "untie",
+			blocks = {
+				action = -1,
+				walk = -1
+			}
 		}
 	}
 	local pickup_objective = {
 		destroy_clbk_key = false,
 		haste = "run",
-		interrupt_dis = 100,
+		interrupt_dis = 200,
 		interrupt_health = 0.5,
 		pose = "crouch",
 		type = "act",
@@ -114,7 +124,11 @@ function ElementLootPile:register_steal_SO()
 			align_sync = true,
 			body_part = 1,
 			type = "act",
-			variant = "untie"
+			variant = "untie",
+			blocks = {
+				action = -1,
+				walk = -1
+			}
 		},
 		action_duration = math.lerp(1, 2.5, math.random()),
 		followup_objective = drop_objective
@@ -130,6 +144,7 @@ function ElementLootPile:register_steal_SO()
 		AI_group = AI_carry.SO_category,
 		admin_clbk = callback(self, self, "on_pickup_SO_administered", loot_index)
 	}
+	local should_register = next(self._steal_SO_data) == nil
 	local so_id = string.format("carrysteal_%i_pile_%s", loot_index, tostring(self._id))
 
 	self._steal_SO_data[loot_index] = {
@@ -142,14 +157,19 @@ function ElementLootPile:register_steal_SO()
 
 	managers.groupai:state():add_special_objective(so_id, so_descriptor)
 
+	if should_register then
+		managers.groupai:state():register_loot_no_unit(self._loot_key, pickup_area)
+	end
+
 	self._next_steal_time = tonumber(self:value("reissue_delay")) or 30
 end
 
 function ElementLootPile:unregister_steal_SO()
+	local was_registered = next(self._steal_SO_data) ~= nil
+
 	for i, SO_data in pairs(self._steal_SO_data) do
 		if SO_data.SO_registered then
 			managers.groupai:state():remove_special_objective(SO_data.SO_id)
-			managers.groupai:state():unregister_loot(self._unit:key())
 		elseif SO_data.thief then
 			local thief = SO_data.thief
 
@@ -166,6 +186,10 @@ function ElementLootPile:unregister_steal_SO()
 	end
 
 	self._steal_SO_data = {}
+
+	if was_registered then
+		managers.groupai:state():unregister_loot(self._loot_key)
+	end
 end
 
 function ElementLootPile:on_pickup_SO_completed(loot_index, thief)
@@ -198,6 +222,10 @@ function ElementLootPile:on_pickup_SO_failed(loot_index, thief)
 
 	self._steal_SO_data[loot_index] = nil
 
+	if next(self._steal_SO_data) == nil then
+		managers.groupai:state():unregister_loot(self._loot_key)
+	end
+
 	if self._remaining_loot > 0 then
 		self:register_steal_SO()
 	end
@@ -217,6 +245,10 @@ function ElementLootPile:on_secure_SO_completed(loot_index, thief)
 	managers.mission:call_global_event("loot_lost")
 
 	self._steal_SO_data[loot_index] = nil
+
+	if next(self._steal_SO_data) == nil then
+		managers.groupai:state():unregister_loot(self._loot_key)
+	end
 end
 
 function ElementLootPile:on_secure_SO_failed(loot_index, thief)
@@ -232,6 +264,10 @@ function ElementLootPile:on_secure_SO_failed(loot_index, thief)
 	end
 
 	self._steal_SO_data[loot_index] = nil
+
+	if next(self._steal_SO_data) == nil then
+		managers.groupai:state():unregister_loot(self._loot_key)
+	end
 end
 
 function ElementLootPile:clbk_pickup_SO_verification(loot_index, candidate_unit)
@@ -243,14 +279,26 @@ function ElementLootPile:clbk_pickup_SO_verification(loot_index, candidate_unit)
 		return
 	end
 
-	local nav_seg = candidate_unit:movement():nav_tracker():nav_segment()
-
-	if not self._steal_SO_data[loot_index].pickup_area.nav_segs[nav_seg] then
+	if not candidate_unit:base():char_tweak().steal_loot then
 		return
 	end
 
-	if not candidate_unit:base():char_tweak().steal_loot then
-		return
+	local nav_seg = candidate_unit:movement():nav_tracker():nav_segment()
+
+	if not self._steal_SO_data[loot_index].pickup_area.nav_segs[nav_seg] then
+		local close_by
+
+		for _, neighbour_area in pairs(self._steal_SO_data[loot_index].pickup_area.neighbours) do
+			if neighbour_area.nav_segs[nav_seg] then
+				close_by = true
+
+				break
+			end
+		end
+
+		if not close_by then
+			return
+		end
 	end
 
 	return true

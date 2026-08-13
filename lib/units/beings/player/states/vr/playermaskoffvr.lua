@@ -34,7 +34,7 @@ function PlayerMaskOffVR:_enter(enter_data)
 	if not tweak_data.blackmarket.masks[mask_id].type then
 		local backside = World:spawn_unit(Idstring("units/payday2/masks/msk_fps_back_straps/msk_fps_back_straps"), Vector3(0, 0, 0), Rotation(0, 0, 0))
 
-		for _, material in ipairs(backside:get_objects_by_type(Idstring("material"))) do
+		for _, material in ipairs(backside:get_objects_by_type(IDS_MATERIAL)) do
 			material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:NORMALMAP:SKINNED_3WEIGHTS"))
 		end
 

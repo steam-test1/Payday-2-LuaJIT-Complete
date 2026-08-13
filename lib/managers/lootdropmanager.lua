@@ -296,7 +296,7 @@ function LootDropManager:_new_make_drop(debug, add_to_inventory, debug_stars, re
 	local sum = 0
 
 	for type, items in pairs(droppable_items) do
-		weighted_type_chance[type] = tweak_data.lootdrop.WEIGHTED_TYPE_CHANCE[pc][type]
+		weighted_type_chance[type] = tweak_data.lootdrop.WEIGHTED_TYPE_CHANCE[pc][type] or 0
 		sum = sum + weighted_type_chance[type]
 
 		if not debug then

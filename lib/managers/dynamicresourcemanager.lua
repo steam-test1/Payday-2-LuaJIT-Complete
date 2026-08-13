@@ -4,7 +4,7 @@ DynamicResourceManager.listener_events = {
 	file_streamer_workload = 1
 }
 
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 function DynamicResourceManager:init()
 	if not Global.dyn_resource_manager_data then

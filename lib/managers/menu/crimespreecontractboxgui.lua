@@ -105,7 +105,7 @@ function CrimeSpreeContractBoxGui:mouse_pressed(button, x, y)
 		return
 	end
 
-	if button == Idstring("0") and self._peer_panels and SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_overlay_enabled() then
+	if button == Idstring("0") and self._peer_panels and IS_PC and MenuCallbackHandler:is_overlay_enabled() then
 		for peer_id, object in pairs(self._peer_panels) do
 			if alive(object:panel()) and object:panel():inside(x, y) then
 				local peer = managers.network:session() and managers.network:session():peer(peer_id)
@@ -126,7 +126,7 @@ function CrimeSpreeContractBoxGui:mouse_moved(x, y)
 	local used = false
 	local pointer = "arrow"
 
-	if self._peer_panels and SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_overlay_enabled() then
+	if self._peer_panels and IS_PC and MenuCallbackHandler:is_overlay_enabled() then
 		for peer_id, object in pairs(self._peer_panels) do
 			if alive(object:panel()) and object:panel():inside(x, y) then
 				used = true

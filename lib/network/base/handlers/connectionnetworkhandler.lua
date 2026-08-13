@@ -66,12 +66,28 @@ function ConnectionNetworkHandler:auth_request_reply(auth_ticket, sender)
 	managers.network:session():on_join_auth_received(auth_ticket, sender)
 end
 
+function ConnectionNetworkHandler:join_request_reply_auth_chunk(chunk, total_chunks, total_length, ticket, sender)
+	if not self._verify_in_server_session() or not managers.network:session() or not managers.network:session().on_join_request_reply_auth_chunk_received then
+		return
+	end
+
+	managers.network:session():on_join_request_reply_auth_chunk_received(chunk, total_chunks, total_length, ticket, sender)
+end
+
 function ConnectionNetworkHandler:request_join_auth(reply_id, auth_ticket, sender)
 	if not self._verify_in_client_session() or not managers.network:session() or not managers.network:session().on_auth_request_received then
 		return
 	end
 
 	managers.network:session():on_auth_request_received(reply_id, auth_ticket, sender)
+end
+
+function ConnectionNetworkHandler:join_request_auth_chunk(chunk, total_chunks, total_length, ticket, reply_id, sender)
+	if not self._verify_in_client_session() or not managers.network:session() or not managers.network:session().on_join_request_auth_chunk_received then
+		return
+	end
+
+	managers.network:session():on_join_request_auth_chunk_received(chunk, total_chunks, total_length, ticket, reply_id, sender)
 end
 
 function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, sender)
@@ -99,6 +115,8 @@ function ConnectionNetworkHandler:peer_exchange_info(peer_id, sender)
 	local sender_peer = self._verify_sender(sender)
 
 	if not sender_peer then
+		Application:error("[ConnectionNetworkHandler:peer_exchange_info] tried to exhange with an unknown peer", peer_id)
+
 		return
 	end
 
@@ -327,6 +345,7 @@ function ConnectionNetworkHandler:sync_game_settings(job_index, level_id_index, 
 	Global.game_settings.weekly_skirmish = weekly_skirmish
 
 	if managers.platform then
+		managers.platform:refresh_rich_presence_state()
 		managers.platform:update_discord_heist()
 	end
 
@@ -672,18 +691,6 @@ function ConnectionNetworkHandler:sync_profile(level, rank, sender)
 	end
 
 	peer:set_profile(level, rank)
-end
-
-function ConnectionNetworkHandler:windistrib_p2p_ping(sender)
-	local session = managers.network:session()
-
-	if not session or session:closing() then
-		print("[ConnectionNetworkHandler:windistrib_p2p_ping] no session or closing")
-
-		return
-	end
-
-	session:on_windistrib_p2p_ping(sender)
 end
 
 function ConnectionNetworkHandler:re_open_lobby_request(state, sender)

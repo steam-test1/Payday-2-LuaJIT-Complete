@@ -6,7 +6,7 @@ local mvec3_dir = mvector3.direction
 local mvec3_l_sq = mvector3.length_sq
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 GroupAIStateBase = GroupAIStateBase or class()
 GroupAIStateBase._nr_important_cops = 3
@@ -128,6 +128,18 @@ GroupAIStateBase.EVENT_SYNC = {
 
 function GroupAIStateBase:init()
 	self:_init_misc_data()
+end
+
+function GroupAIStateBase:destroy()
+	return
+end
+
+function GroupAIStateBase:get_persisting_data()
+	return
+end
+
+function GroupAIStateBase:set_persisting_data(data)
+	return
 end
 
 function GroupAIStateBase:update(t, dt)
@@ -393,6 +405,7 @@ function GroupAIStateBase:_init_misc_data()
 	self:_init_team_tables()
 
 	self._phalanx_data = {
+		vip = nil,
 		minions = {}
 	}
 end
@@ -1218,54 +1231,67 @@ function GroupAIStateBase:on_enemy_engaging(unit, other_u_key)
 		return
 	end
 
-	local sighting = self._criminals[other_u_key]
-	local force = sighting.engaged_force + 1
+	local record = self._criminals[other_u_key]
 
-	sighting.engaged_force = force
-	sighting.engaged[u_key] = e_data
+	if not record then
+		return
+	end
+
+	record.engaged_force = record.engaged_force + 1
+	record.engaged[u_key] = e_data
 end
 
 function GroupAIStateBase:on_enemy_disengaging(unit, other_u_key)
 	local u_key = unit:key()
-	local sighting = self._criminals[other_u_key]
-	local force = sighting.engaged_force - 1
+	local record = self._criminals[other_u_key]
 
-	sighting.engaged_force = force
-	sighting.engaged[u_key] = nil
+	if not record then
+		return
+	end
+
+	record.engaged_force = record.engaged_force - 1
+	record.engaged[u_key] = nil
 end
 
 function GroupAIStateBase:on_tase_start(cop_key, criminal_key)
-	self._criminals[criminal_key].being_tased = cop_key
+	local record = self._criminals[criminal_key]
+
+	if record then
+		record.being_tased = cop_key
+	end
 end
 
 function GroupAIStateBase:on_tase_end(criminal_key)
 	local record = self._criminals[criminal_key]
 
 	if record then
-		self._criminals[criminal_key].being_tased = nil
+		record.being_tased = nil
 	end
 end
 
 function GroupAIStateBase:on_arrest_start(enemy_key, criminal_key)
-	local sighting = self._criminals[criminal_key]
-	local arrest = sighting.being_arrested
+	local record = self._criminals[criminal_key]
 
-	if arrest then
-		sighting.being_arrested[enemy_key] = true
-	else
-		sighting.being_arrested = {
-			[enemy_key] = true
-		}
+	if record then
+		if record.being_arrested then
+			record.being_arrested[enemy_key] = true
+		else
+			record.being_arrested = {
+				[enemy_key] = true
+			}
+		end
 	end
 end
 
 function GroupAIStateBase:on_arrest_end(enemy_key, criminal_key)
-	local sighting = self._criminals[criminal_key]
+	local record = self._criminals[criminal_key]
 
-	sighting.being_arrested[enemy_key] = nil
+	if record then
+		record.being_arrested[enemy_key] = nil
 
-	if not next(sighting.being_arrested) then
-		sighting.being_arrested = nil
+		if not next(record.being_arrested) then
+			record.being_arrested = nil
+		end
 	end
 end
 
@@ -1797,8 +1823,6 @@ function GroupAIStateBase:check_gameover_conditions()
 	elseif plrs_disabled and ai_disabled then
 		gameover = true
 	end
-
-	gameover = gameover or managers.skirmish:check_gameover_conditions()
 
 	if gameover then
 		if not self._gameover_clbk then
@@ -3448,14 +3472,6 @@ function GroupAIStateBase:set_assault_mode(enabled)
 			end
 		end
 	end
-
-	if SystemInfo:platform() == Idstring("WIN32") and managers.network.account:has_alienware() then
-		if self._assault_mode then
-			LightFX:set_lamps(255, 0, 0, 255)
-		else
-			LightFX:set_lamps(0, 255, 0, 255)
-		end
-	end
 end
 
 function GroupAIStateBase:sync_assault_mode(enabled)
@@ -3464,14 +3480,6 @@ function GroupAIStateBase:sync_assault_mode(enabled)
 
 		self:set_ambience_flag()
 		SoundDevice:set_state("wave_flag", enabled and "assault" or "control")
-	end
-
-	if SystemInfo:platform() == Idstring("WIN32") and managers.network and managers.network.account:has_alienware() then
-		if self._assault_mode then
-			LightFX:set_lamps(255, 0, 0, 255)
-		else
-			LightFX:set_lamps(0, 255, 0, 255)
-		end
 	end
 end
 
@@ -4740,7 +4748,7 @@ function GroupAIStateBase:add_area(area_id, nav_segs, area_pos)
 	local all_nav_segs = managers.navigation._nav_segments
 
 	for _, seg_id in ipairs(nav_segs) do
-		local nav_seg = all_nav_segs[seg_id]
+		local nav_seg = all_nav_segs[tostring(seg_id)]
 
 		if nav_seg then
 			if not nav_seg.disabled then
@@ -4884,6 +4892,10 @@ function GroupAIStateBase:is_nav_seg_safe(nav_seg)
 end
 
 function GroupAIStateBase:_on_area_safety_status(area, event)
+	if self:whisper_mode() then
+		return
+	end
+
 	local safe = area.is_safe
 	local unit_data = self._police
 
@@ -5994,10 +6006,24 @@ function GroupAIStateBase:register_loot(loot_unit, pickup_area)
 	pickup_area.loot[loot_u_key] = loot_unit
 end
 
-function GroupAIStateBase:unregister_loot(loot_u_key)
+function GroupAIStateBase:register_loot_no_unit(loot_key, pickup_area)
 	for area_id, area in pairs(self._area_data) do
-		if area.loot and area.loot[loot_u_key] then
-			area.loot[loot_u_key] = nil
+		if area.loot and area.loot[loot_key] then
+			debug_pause("[GroupAIStateBase:register_loot_no_unit] loot registered twice", loot_key)
+		end
+	end
+
+	if not pickup_area.loot then
+		pickup_area.loot = {}
+	end
+
+	pickup_area.loot[loot_key] = true
+end
+
+function GroupAIStateBase:unregister_loot(loot_key)
+	for area_id, area in pairs(self._area_data) do
+		if area.loot and area.loot[loot_key] then
+			area.loot[loot_key] = nil
 
 			if not next(area.loot) then
 				area.loot = nil

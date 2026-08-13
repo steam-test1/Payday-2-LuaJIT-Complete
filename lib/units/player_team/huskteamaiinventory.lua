@@ -32,8 +32,8 @@ function HuskTeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	TeamAIInventory.add_unit(self, new_unit, equip)
 end
 
-function HuskTeamAIInventory:pre_destroy()
-	HuskTeamAIInventory.super.pre_destroy(self)
+function HuskTeamAIInventory:pre_destroy(unit)
+	HuskTeamAIInventory.super.pre_destroy(self, unit)
 	TeamAIInventory._unload_mask(self)
 end
 

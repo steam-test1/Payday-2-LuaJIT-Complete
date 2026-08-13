@@ -2818,13 +2818,6 @@ function CopDamage:damage_melee(attack_data)
 				managers.achievment:award_progress(tweak_data.achievement.cant_hear_you_scream.stat)
 			end
 
-			mvector3.set(mvec_1, self._unit:position())
-			mvector3.subtract(mvec_1, attack_data.attacker_unit:position())
-			mvector3.normalize(mvec_1)
-			mvector3.set(mvec_2, self._unit:rotation():y())
-
-			local from_behind = mvector3.dot(mvec_1, mvec_2) >= 0
-
 			if is_cop and Global.game_settings.level_id == "nightclub" and attack_data.name_id and attack_data.name_id == "fists" then
 				managers.achievment:award_progress(tweak_data.achievement.final_rule.stat)
 			end

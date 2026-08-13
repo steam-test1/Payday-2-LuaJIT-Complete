@@ -955,7 +955,7 @@ function ContractBoxGui:mouse_pressed(button, x, y)
 		local used = false
 		local pointer = "arrow"
 
-		if self._peers and SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_overlay_enabled() then
+		if self._peers and IS_PC and MenuCallbackHandler:is_overlay_enabled() then
 			for peer_id, object in pairs(self._peers) do
 				if alive(object) and object:inside(x, y) then
 					local peer = managers.network:session() and managers.network:session():peer(peer_id)
@@ -977,7 +977,7 @@ function ContractBoxGui:mouse_moved(x, y)
 	local used = false
 	local pointer = "arrow"
 
-	if self._peers and SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_overlay_enabled() then
+	if self._peers and IS_PC and MenuCallbackHandler:is_overlay_enabled() then
 		for peer_id, object in pairs(self._peers) do
 			if alive(object) and object:inside(x, y) then
 				used = true

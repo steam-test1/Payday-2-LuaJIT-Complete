@@ -20,7 +20,3 @@ function ChristmasPresentBase:take_money(unit)
 	detach_unit_from_network(self._unit)
 	self._unit:set_slot(0)
 end
-
-function ChristmasPresentBase:destroy(...)
-	ChristmasPresentBase.super.destroy(...)
-end

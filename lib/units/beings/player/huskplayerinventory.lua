@@ -1,6 +1,6 @@
 HuskPlayerInventory = HuskPlayerInventory or class(PlayerInventory)
 
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 function HuskPlayerInventory:init(unit)
 	HuskPlayerInventory.super.init(self, unit)

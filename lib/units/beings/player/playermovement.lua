@@ -61,7 +61,8 @@ function PlayerMovement:init(unit)
 	self._kill_overlay_t = managers.player:player_timer():time() + 5
 	self._state_data = {
 		ducking = false,
-		in_air = false
+		in_air = false,
+		reticle_obj = nil
 	}
 	self._synced_suspicion = false
 	self._suspicion_ratio = false

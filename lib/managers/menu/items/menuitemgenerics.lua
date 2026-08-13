@@ -1,4 +1,4 @@
-local is_win32 = SystemInfo:platform() == Idstring("WIN32")
+local is_win32 = IS_PC
 local NOT_WIN_32 = not is_win32
 local medium_font = tweak_data.menu.pd2_medium_font
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
@@ -9,6 +9,7 @@ MenuGuiItem = MenuGuiItem or class()
 
 function MenuGuiItem:init()
 	self._selected = false
+	self._input_components_set = {}
 end
 
 function MenuGuiItem:refresh()
@@ -54,6 +55,139 @@ end
 
 function MenuGuiItem:flash()
 	return
+end
+
+function MenuGuiItem:allow_input()
+	return self._active
+end
+
+function MenuGuiItem:add_input_component(component)
+	self._input_components_set[component] = true
+
+	if component.__input_parents then
+		component.__input_parents[self] = true
+	end
+end
+
+function MenuGuiItem:remove_input_component(component, dont_change_input_parents)
+	self._input_components_set[component] = nil
+
+	if not dont_change_input_parents then
+		component.__input_parents[self] = nil
+	end
+end
+
+function MenuGuiItem:clear_input_components()
+	self._input_components_set = {}
+end
+
+function MenuGuiItem:mouse_clicked(o, button, x, y)
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_clicked", o, button, x, y)
+end
+
+function MenuGuiItem:mouse_pressed(button, x, y)
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_pressed", button, x, y)
+end
+
+function MenuGuiItem:mouse_released(button, x, y)
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_released", button, x, y)
+end
+
+function MenuGuiItem:mouse_moved(o, x, y)
+	if not self:allow_input() then
+		return
+	end
+
+	local hover, cursor_type
+
+	for v, _ in pairs(self._input_components_set) do
+		if v.mouse_moved and v:allow_input() then
+			local res, t = v:mouse_moved(o, x, y)
+
+			if res then
+				hover = res
+				cursor_type = t
+			end
+		end
+	end
+
+	return hover, cursor_type
+end
+
+function MenuGuiItem:mouse_wheel_up(x, y)
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_wheel_up", x, y)
+end
+
+function MenuGuiItem:mouse_wheel_down(x, y)
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "mouse_wheel_down", x, y)
+end
+
+function MenuGuiItem:move_up()
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_up")
+end
+
+function MenuGuiItem:move_down()
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_down")
+end
+
+function MenuGuiItem:move_left()
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_left")
+end
+
+function MenuGuiItem:move_right()
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "move_right")
+end
+
+function MenuGuiItem:confirm_pressed()
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "confirm_pressed")
+end
+
+function MenuGuiItem:special_btn_pressed(button)
+	if not self:allow_input() then
+		return
+	end
+
+	return ExtendedPanel.call_return_b_on_all_exists(self._input_components_set, "special_btn_pressed", button)
 end
 
 MenuGuiTabItem = MenuGuiTabItem or class(MenuGuiItem)
@@ -158,8 +292,15 @@ function MenuGuiTabPage:init(page_id, page_panel, fullscreen_panel, gui)
 	self._active = false
 	self._selected = 0
 	self._page_name = page_id
-	self._panel = page_panel:panel({})
-	self._info_panel = gui:info_panel():panel({})
+	self._panel = ExtendedPanel:new(page_panel)
+	self._info_panel = ExtendedPanel:new(gui:info_panel())
+	self._page_panel = page_panel
+	self._fullscreen_panel = fullscreen_panel
+	self._ws = gui._ws
+	self._fullscreen_ws = gui._fullscreen_ws
+
+	self:add_input_component(self._panel)
+	self:add_input_component(self._info_panel)
 
 	if gui.event_listener then
 		self._event_listener = gui:event_listener()
@@ -216,52 +357,12 @@ function MenuGuiTabPage:stack_panels(padding, panels)
 	end
 end
 
-function MenuGuiTabPage:mouse_clicked(o, button, x, y)
-	return
-end
-
-function MenuGuiTabPage:mouse_pressed(button, x, y)
-	return
-end
-
-function MenuGuiTabPage:mouse_released(button, x, y)
-	return
-end
-
-function MenuGuiTabPage:mouse_moved(button, x, y)
-	return
-end
-
-function MenuGuiTabPage:mouse_wheel_up(x, y)
-	return
-end
-
-function MenuGuiTabPage:mouse_wheel_down(x, y)
-	return
-end
-
-function MenuGuiTabPage:move_up()
-	return
-end
-
-function MenuGuiTabPage:move_down()
-	return
-end
-
-function MenuGuiTabPage:move_left()
-	return
-end
-
-function MenuGuiTabPage:move_right()
-	return
-end
-
-function MenuGuiTabPage:confirm_pressed()
-	return
+function MenuGuiTabItem:allow_input()
+	return true
 end
 
 function MenuGuiTabPage:special_btn_pressed(button)
-	if not self:is_active() or not self._controllers_mapping then
+	if not self:is_active() or not self:allow_input() then
 		return
 	end
 
@@ -275,6 +376,8 @@ function MenuGuiTabPage:special_btn_pressed(button)
 
 		return
 	end
+
+	return MenuGuiTabPage.super.special_btn_pressed(self, button)
 end
 
 function MenuGuiTabPage:get_legend()

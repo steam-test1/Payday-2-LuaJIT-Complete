@@ -84,26 +84,30 @@ function CrimenetSearchLobbyCodeGui:close()
 	managers.menu_component:enable_crimenet()
 end
 
-function CrimenetSearchLobbyCodeGui:searchbox_disconnect_callback(first, second, third)
-	if string.len(first) == 32 then
-		EpicSocialHub:get_lobby_info(first, callback(self, self, "on_search_lobby_fetched"))
+function CrimenetSearchLobbyCodeGui:searchbox_disconnect_callback(lobby_id, second, third)
+	if string.len(lobby_id) == 32 then
+		DistributionMatchmaking:lobby_from_id(lobby_id, true, callback(self, self, "on_search_lobby_fetched"))
+	elseif string.len(lobby_id) == 6 then
+		DistributionMatchmaking:lobby_from_hash(lobby_id, true, callback(self, self, "on_search_lobby_fetched"))
 	end
 end
 
-function CrimenetSearchLobbyCodeGui:on_search_lobby_fetched(first, second, third)
-	if not first or not second then
+function CrimenetSearchLobbyCodeGui:on_search_lobby_fetched(lobby, result, intended_lobby_id)
+	if not lobby or result ~= "success" then
 		return
 	end
 
-	print("CrimenetSearchLobbyCodeGui:on_search_lobby_fetched", inspect(first), inspect(second), inspect(third))
+	local lobby_data = lobby:lobby_attributes()
 
-	third.buttons = {
+	print("CrimenetSearchLobbyCodeGui:on_search_lobby_fetched", inspect(lobby_data))
+
+	lobby_data.buttons = {
 		{
 			text = managers.localization:text("socialhub_lobby_action_join"),
 			press_callback = callback(self, self, "on_user_lobby_pressed", "join")
 		}
 	}
-	third.LOBBYID = first
+	lobby_data.lobby_id = lobby:id()
 
 	if self.search_item then
 		self.scroll:remove_item(1)
@@ -112,11 +116,11 @@ function CrimenetSearchLobbyCodeGui:on_search_lobby_fetched(first, second, third
 		self.search_item = nil
 	end
 
-	local owner_name = third.OWNER_NAME
+	local owner_name = lobby_data.owner_name
 
 	if owner_name and utf8.len(owner_name) <= NetworkManager.MAX_PEER_NAME_LENGTH then
-		third.OWNER_NAME = managers.network:sanitize_peer_name(owner_name)
-		self.search_item = SocialHubLobbyItem:new(self.scroll:canvas(), third)
+		lobby_data.owner_name = managers.network:sanitize_peer_name(owner_name)
+		self.search_item = SocialHubLobbyItem:new(self.scroll:canvas(), lobby_data)
 
 		self.scroll:add_item(self.search_item, nil)
 		self.scroll:place_items_in_order(nil, true, true)
@@ -134,7 +138,7 @@ function CrimenetSearchLobbyCodeGui:on_user_lobby_pressed(first, second, third)
 	end
 
 	if first == "join" then
-		EpicSocialHub:join_lobby(second)
+		DistributionMatchmaking:request_lobby_join(second)
 	elseif first == "decline" then
 		-- Nothing
 	end

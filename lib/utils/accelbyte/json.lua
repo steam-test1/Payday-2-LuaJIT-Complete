@@ -135,6 +135,7 @@ local escape_chars = create_set("\\", "/", "\"", "b", "f", "n", "r", "t", "u")
 local literals = create_set("true", "false", "null")
 local literal_map = {
 	["false"] = false,
+	null = nil,
 	["true"] = true
 }
 

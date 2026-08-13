@@ -179,7 +179,7 @@ function PlayerHandStateWeapon:link_arrow_unit(weap_base)
 
 	local material_config_ids = weap_base:_material_config_name(arrow_id, arrow_data, weap_base._cosmetics_data and true)
 
-	if self._arrow_unit:material_config() ~= material_config_ids and DB:has(Idstring("material_config"), material_config_ids) then
+	if self._arrow_unit:material_config() ~= material_config_ids and DB:has(IDS_MATERIAL_CONFIG, material_config_ids) then
 		self._arrow_unit:set_material_config(material_config_ids, true)
 	end
 

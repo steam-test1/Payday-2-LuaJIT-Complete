@@ -109,8 +109,8 @@ function MaskExt:swap_to_fps()
 end
 
 function MaskExt:apply_blueprint(blueprint, async_clbk)
-	if not blueprint then
-		Application:error("[MaskExt:apply_blueprint] NO BLUEPRINT GIVEN!!")
+	if not blueprint or not blueprint.material then
+		Application:error("[MaskExt:apply_blueprint] No blueprint or not even a base material applied", blueprint and inspect(blueprint))
 
 		return
 	end

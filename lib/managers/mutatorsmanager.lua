@@ -392,8 +392,12 @@ end
 function MutatorsManager:are_achievements_disabled()
 	if game_state_machine:current_state_name() ~= "menu_main" then
 		for _, mutator in pairs(self:mutators()) do
-			if mutator:is_active() and mutator.disables_achievements then
-				return true
+			if mutator:is_active() then
+				if mutator.get_disables_achievements then
+					return mutator:get_disables_achievements()
+				elseif mutator.disables_achievements then
+					return true
+				end
 			end
 		end
 	else

@@ -203,7 +203,7 @@ function ToolHub:buildmenu()
 	self._main_frame:connect("SPECULAR", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "change_visualization"), "specular_visualization")
 	self._main_frame:connect("GLOSSINESS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "change_visualization"), "glossiness_visualization")
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_WIN32 then
 		local resolution_menu = EWS:Menu("")
 
 		for _, res in ipairs(RenderSettings.modes) do

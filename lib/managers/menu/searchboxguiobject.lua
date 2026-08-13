@@ -20,6 +20,10 @@ function SearchBoxGuiObject:init(parent_panel, ws, current_search, override_pane
 	self.placeholder_text:set_visible(not self._focus and #self.text:text() == 0)
 end
 
+function SearchBoxGuiObject:allow_input()
+	return true
+end
+
 function SearchBoxGuiObject:destroy()
 	self._disconnect_callback = nil
 	self._finish_sorting_callback = nil
@@ -222,71 +226,7 @@ function SearchBoxGuiObject:search_key_press(o, k)
 	local len = utf8.len(text:text())
 
 	text:clear_range_color(0, len)
-
-	if k == Idstring("backspace") then
-		if s == e and s > 0 then
-			text:set_selection(s - 1, e)
-		end
-
-		text:replace_text("")
-		self:enter_text()
-	elseif k == Idstring("delete") then
-		if s == e and s < n then
-			text:set_selection(s, e + 1)
-		end
-
-		text:replace_text("")
-	elseif k == Idstring("insert") or self._key_ctrl_pressed == true and k == Idstring("v") then
-		local clipboard = Application:get_clipboard() or ""
-
-		text:replace_text(clipboard)
-
-		local lbs = text:line_breaks()
-
-		if #text:text() > SearchBoxGuiObject.MAX_SEARCH_LENGTH then
-			text:set_text(string.sub(text:text(), 1, SearchBoxGuiObject.MAX_SEARCH_LENGTH))
-		end
-
-		if #lbs > 1 then
-			local s = lbs[2]
-			local e = utf8.len(text:text())
-
-			text:set_selection(s, e)
-			text:replace_text("")
-		end
-	elseif k == Idstring("left") then
-		if s < e then
-			text:set_selection(s, s)
-		elseif s > 0 then
-			text:set_selection(s - 1, s - 1)
-		end
-	elseif k == Idstring("right") then
-		if s < e then
-			text:set_selection(e, e)
-		elseif s < n then
-			text:set_selection(s + 1, s + 1)
-		end
-	elseif self._key_pressed == Idstring("end") then
-		text:set_selection(n, n)
-	elseif self._key_pressed == Idstring("home") then
-		text:set_selection(0, 0)
-	elseif k == Idstring("enter") then
-		if type(self._enter_callback) ~= "number" then
-			self._enter_callback()
-		end
-	elseif k == Idstring("esc") then
-		if type(self._esc_callback) ~= "number" then
-			if not _G.IS_VR then
-				text:set_text("")
-				text:set_selection(0, 0)
-			end
-
-			self._esc_callback()
-		end
-	elseif k == Idstring("left ctrl") or k == Idstring("right ctrl") then
-		self._key_ctrl_pressed = true
-	end
-
+	InputUtils.common_text_input_key_press(text, k, SearchBoxGuiObject.MAX_SEARCH_LENGTH, false, self._enter_callback, self._esc_callback, nil)
 	self:update_caret()
 end
 
@@ -295,9 +235,7 @@ function SearchBoxGuiObject:search_key_release(o, k)
 		self._key_pressed = false
 	end
 
-	if k == Idstring("left ctrl") or k == Idstring("right ctrl") then
-		self._key_ctrl_pressed = false
-	end
+	self:update_caret()
 end
 
 function SearchBoxGuiObject:update_key_down(o, k)
@@ -306,56 +244,7 @@ function SearchBoxGuiObject:update_key_down(o, k)
 	local text = self.text
 
 	while self._key_pressed == k do
-		local s, e = text:selection()
-		local n = utf8.len(text:text())
-		local d = math.abs(e - s)
-
-		if self._key_pressed == Idstring("backspace") then
-			if s == e and s > 0 then
-				text:set_selection(s - 1, e)
-			end
-
-			text:replace_text("")
-		elseif self._key_pressed == Idstring("delete") then
-			if s == e and s < n then
-				text:set_selection(s, e + 1)
-			end
-
-			text:replace_text("")
-		elseif self._key_pressed == Idstring("insert") then
-			local clipboard = Application:get_clipboard() or ""
-
-			text:replace_text(clipboard)
-
-			if #text:text() > SearchBoxGuiObject.MAX_SEARCH_LENGTH then
-				text:set_text(string.sub(text:text(), 1, SearchBoxGuiObject.MAX_SEARCH_LENGTH))
-			end
-
-			local lbs = text:line_breaks()
-
-			if #lbs > 1 then
-				local s = lbs[2]
-				local e = utf8.len(text:text())
-
-				text:set_selection(s, e)
-				text:replace_text("")
-			end
-		elseif self._key_pressed == Idstring("left") then
-			if s < e then
-				text:set_selection(s, s)
-			elseif s > 0 then
-				text:set_selection(s - 1, s - 1)
-			end
-		elseif self._key_pressed == Idstring("right") then
-			if s < e then
-				text:set_selection(e, e)
-			elseif s < n then
-				text:set_selection(s + 1, s + 1)
-			end
-		else
-			self._key_pressed = false
-		end
-
+		InputUtils.common_text_input_key_press(text, k, SearchBoxGuiObject.MAX_SEARCH_LENGTH, false, nil, nil, nil)
 		self:update_caret()
 		wait(0.03)
 	end
@@ -447,27 +336,7 @@ end
 function SearchBoxGuiObject:update_caret()
 	local text = self.text
 	local caret = self.caret
-	local s, e = text:selection()
-	local x, y, w, h = text:selection_rect()
-	local text_s = text:text()
+	local blink = InputUtils.common_text_input_update_caret(text, caret, self._focus, self.placeholder_text, nil, true)
 
-	if #text_s == 0 then
-		x = text:world_center_x()
-		y = text:world_y()
-	end
-
-	h = text:h()
-
-	if w < 3 then
-		w = 3
-	end
-
-	if not self._focus then
-		w = 0
-		h = 0
-	end
-
-	caret:set_world_shape(x, y + 2, w, h - 4)
-	self:set_blinking(s == e and self._focus)
-	self.placeholder_text:set_visible(not self._focus and #text_s == 0)
+	self:set_blinking(blink)
 end

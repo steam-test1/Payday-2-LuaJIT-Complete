@@ -677,11 +677,14 @@ function CopActionWalk:_chk_start_anim(next_pos)
 	end
 
 	self._start_run = true
-	self._root_blend_disabled = true
 
-	self._ext_movement:set_root_blend(false)
+	if self._start_run_turn then
+		if not self._root_blend_disabled then
+			self._root_blend_disabled = true
 
-	if not self._start_run_turn then
+			self._ext_movement:set_root_blend(false)
+		end
+	else
 		local right_dot = mvec3_dot(path_dir, self._common_data.right)
 		local fwd_dot = mvec3_dot(path_dir, self._common_data.fwd)
 		local wanted_walk_dir
@@ -894,13 +897,15 @@ function CopActionWalk:on_exit()
 	end
 
 	if self._root_blend_disabled then
+		self._root_blend_disabled = nil
+
 		self._ext_movement:set_root_blend(true)
 	end
 
 	if self._changed_driving then
-		self._common_data.unit:set_driving("script")
-
 		self._changed_driving = nil
+
+		self._common_data.unit:set_driving("script")
 	end
 
 	if self._expired and self._common_data.ext_anim.move then
@@ -1227,6 +1232,12 @@ end
 
 function CopActionWalk:_upd_start_anim(t)
 	if not self._ext_anim.run_start then
+		if self._root_blend_disabled then
+			self._root_blend_disabled = nil
+
+			self._ext_movement:set_root_blend(true)
+		end
+
 		self._start_run = nil
 		self._start_run_turn = nil
 
@@ -1385,13 +1396,24 @@ function CopActionWalk:get_husk_interrupt_desc()
 		type = "walk",
 		end_rot = self._end_rot,
 		variant = self._haste,
-		nav_path = self._simplified_path,
 		persistent = self._persistent,
 		no_walk = self._no_walk,
 		no_strafe = self._no_strafe,
 		host_stop_pos_inserted = self._host_stop_pos_inserted,
 		host_stop_pos_ahead = self._host_stop_pos_ahead
 	}
+
+	if self._init_called then
+		old_action_desc.nav_path = self._simplified_path
+	else
+		old_action_desc.nav_path = self._nav_path
+
+		if self._simplified_path then
+			for _, nav_point in ipairs(self._simplified_path) do
+				table.insert(old_action_desc.nav_path, nav_point)
+			end
+		end
+	end
 
 	if self._blocks or self._old_blocks then
 		local blocks = {}

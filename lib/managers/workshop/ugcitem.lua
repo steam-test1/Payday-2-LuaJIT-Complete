@@ -6,7 +6,7 @@ UGCItem.TMP_FILE = "tmp"
 UGCItem.DEFAULT_TAGS = {}
 UGCItem.DEFAULT_VISIBILITY = "hidden"
 
-local UGC = SystemInfo:distribution() == Idstring("STEAM") and Steam:ugc_handler()
+local UGC = IS_STEAM and Steam:ugc_handler()
 
 local function time_stamp()
 	local t = os.date("*t")
@@ -431,7 +431,7 @@ end
 function UGCItem:_load_config()
 	local function parse_vector(key, value)
 		if string.find(value, "Vector3") then
-			local x, y, z = string.match(value, "Vector3%(([-+]?[0-9]*.?[0-9]*), ([-+]?[0-9]*.?[0-9]*), ([-+]?[0-9]*.?[0-9]*)%)")
+			local x, y, z = string.match(value, "Vector3%(([-+]?[0-9]*%.?[0-9]*), ([-+]?[0-9]*%.?[0-9]*), ([-+]?[0-9]*%.?[0-9]*)%)")
 
 			value = Vector3(x, y, z)
 		end

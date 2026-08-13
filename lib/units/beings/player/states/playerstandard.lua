@@ -619,7 +619,7 @@ function PlayerStandard:_create_on_controller_disabled_input()
 	return input
 end
 
-local win32 = SystemInfo:platform() == Idstring("WIN32")
+local win32 = IS_PC
 
 function PlayerStandard:_get_input(t, dt, paused)
 	if self._state_data.controller_enabled ~= self._controller:enabled() then
@@ -2169,10 +2169,12 @@ function PlayerStandard:_check_tap_to_interact_inputs(t, pressed, released, hold
 				self:_show_tap_to_interact_text("hud_int_release_cancel", alive(obj) and obj)
 			elseif self._start_standard_expire_t then
 				managers.hud:show_progress_timer({
+					icon = nil,
 					text = managers.localization:text("hud_starting_heist")
 				})
 			elseif self._exit_vehicle_expire_t then
 				managers.hud:show_progress_timer({
+					icon = nil,
 					text = managers.localization:text("hud_action_exit_vehicle")
 				})
 			else
@@ -2607,11 +2609,12 @@ function PlayerStandard:_do_action_melee(t, input, skip_damage)
 	self._state_data.meleeing = nil
 
 	local melee_entry = managers.blackmarket:equipped_melee_weapon()
-	local instant_hit = tweak_data.blackmarket.melee_weapons[melee_entry].instant
-	local pre_calc_hit_ray = tweak_data.blackmarket.melee_weapons[melee_entry].hit_pre_calculation
-	local melee_damage_delay = tweak_data.blackmarket.melee_weapons[melee_entry].melee_damage_delay or 0
+	local melee_entry_data = tweak_data.blackmarket.melee_weapons[melee_entry]
+	local instant_hit = melee_entry_data.instant
+	local pre_calc_hit_ray = melee_entry_data.hit_pre_calculation
+	local melee_damage_delay = melee_entry_data.melee_damage_delay or 0
 
-	melee_damage_delay = math.min(melee_damage_delay, tweak_data.blackmarket.melee_weapons[melee_entry].repeat_expire_t)
+	melee_damage_delay = math.min(melee_damage_delay, melee_entry_data.repeat_expire_t)
 
 	local primary = managers.blackmarket:equipped_primary()
 	local primary_id = primary.weapon_id
@@ -2622,8 +2625,8 @@ function PlayerStandard:_do_action_melee(t, input, skip_damage)
 		bayonet_melee = true
 	end
 
-	self._state_data.melee_expire_t = t + tweak_data.blackmarket.melee_weapons[melee_entry].expire_t
-	self._state_data.melee_repeat_expire_t = t + math.min(tweak_data.blackmarket.melee_weapons[melee_entry].repeat_expire_t, tweak_data.blackmarket.melee_weapons[melee_entry].expire_t)
+	self._state_data.melee_expire_t = t + melee_entry_data.expire_t
+	self._state_data.melee_repeat_expire_t = t + math.min(melee_entry_data.repeat_expire_t, melee_entry_data.expire_t)
 
 	if not instant_hit and not skip_damage then
 		self._state_data.melee_damage_delay_t = t + melee_damage_delay
@@ -2661,16 +2664,16 @@ function PlayerStandard:_do_action_melee(t, input, skip_damage)
 		end
 	else
 		local state = self._ext_camera:play_redirect(self:get_animation("melee_attack"))
-		local anim_attack_vars = tweak_data.blackmarket.melee_weapons[melee_entry].anim_attack_vars
+		local anim_attack_vars = melee_entry_data.anim_attack_vars
 
 		self._melee_attack_var = anim_attack_vars and math.random(#anim_attack_vars)
 
 		self:_play_melee_sound(melee_entry, "hit_air", self._melee_attack_var)
 
+		local anim_attack_param = anim_attack_vars and anim_attack_vars[self._melee_attack_var]
 		local melee_item_tweak_anim = "attack"
 		local melee_item_prefix = ""
 		local melee_item_suffix = ""
-		local anim_attack_param = anim_attack_vars and anim_attack_vars[self._melee_attack_var]
 
 		if anim_attack_param then
 			self._camera_unit:anim_state_machine():set_parameter(state, anim_attack_param, 1)
@@ -2833,12 +2836,11 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 
 			dmg_multiplier = dmg_multiplier * managers.player:temporary_upgrade_value("temporary", "berserker_damage_multiplier", 1)
 
-			do
-				local target_dead = character_unit:character_damage().dead and not character_unit:character_damage():dead()
-				local target_hostile = managers.enemy:is_enemy(character_unit) and not tweak_data.character[character_unit:base()._tweak_table].is_escort and character_unit:brain():is_hostile()
-				local life_leach_available = managers.player:has_category_upgrade("temporary", "melee_life_leech") and not managers.player:has_activate_temporary_upgrade("temporary", "melee_life_leech")
+			if managers.player:has_category_upgrade("temporary", "melee_life_leech") and not managers.player:has_activate_temporary_upgrade("temporary", "melee_life_leech") then
+				local target_alive = character_unit:character_damage().dead and not character_unit:character_damage():dead()
+				local target_hostile = managers.enemy:is_enemy(character_unit) and not character_unit:base():char_tweak().is_escort and not character_unit:anim_data().hands_tied
 
-				if target_dead and target_hostile and life_leach_available then
+				if target_alive and target_hostile then
 					managers.player:activate_temporary_upgrade("temporary", "melee_life_leech")
 					self._unit:character_damage():restore_health(managers.player:temporary_upgrade_value("temporary", "melee_life_leech", 1))
 				end
@@ -2847,6 +2849,12 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 			local action_data = {}
 
 			action_data.variant = "melee"
+
+			local special_weapon = tweak_data.blackmarket.melee_weapons[melee_entry].special_weapon
+
+			if special_weapon then
+				action_data.variant = "taser_tased"
+			end
 
 			if _G.IS_VR and melee_entry == "weapon" and not bayonet_melee then
 				dmg_multiplier = 0.1
@@ -3227,6 +3235,7 @@ function PlayerStandard:_update_use_item_timers(t, input)
 				})
 
 				managers.hud:show_progress_timer({
+					icon = nil,
 					text = text
 				})
 			end
@@ -3269,6 +3278,7 @@ function PlayerStandard:_start_action_use_item(t)
 	})
 
 	managers.hud:show_progress_timer({
+		icon = nil,
 		text = text
 	})
 

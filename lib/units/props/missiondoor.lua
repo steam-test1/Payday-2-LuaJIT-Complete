@@ -415,7 +415,3 @@ function MissionDoorDevice:report_trigger_sequence(trigger_sequence_name)
 
 	self._parent_door:base():trigger_sequence(trigger_sequence_name)
 end
-
-function MissionDoorDevice:destroy()
-	return
-end

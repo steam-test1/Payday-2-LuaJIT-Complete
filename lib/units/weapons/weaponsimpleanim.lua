@@ -37,7 +37,3 @@ end
 function WeaponSimpleAnim:toggle_requires_stance_update()
 	return true
 end
-
-function WeaponSimpleAnim:destroy(unit)
-	WeaponSimpleAnim.super.destroy(self, unit)
-end

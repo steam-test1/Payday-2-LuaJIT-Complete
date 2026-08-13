@@ -90,7 +90,9 @@ function UnoDeviceBase:generate_challenge()
 	end
 end
 
-function UnoDeviceBase:destroy()
+function UnoDeviceBase:destroy(unit)
+	UnoDeviceBase.super.destroy(self, unit)
+
 	if alive(self._ws) then
 		self._gui:destroy_workspace(self._ws)
 	end

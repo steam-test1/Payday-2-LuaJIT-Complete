@@ -100,7 +100,11 @@ function MenuManager:cash_safe_scene_done()
 end
 
 function MenuManager:http_test()
-	HttpRequest:get("https://www.paydaythegame.com/feed/?feed=rss", callback(self, self, "http_test_result"))
+	local feed_url
+
+	feed_url = IS_STEAM and "https://steamcommunity.com/games/218620/rss" or "https://www.paydaythegame.com/news/category/payday2/feed/"
+
+	HttpRequest:get(feed_url, callback(self, self, "http_test_result"))
 end
 
 function MenuManager:http_test_result(success, body)
@@ -332,6 +336,7 @@ end
 function MenuCallbackHandler:do_content_lootdrop(node)
 	managers.menu:open_node("crimenet_contract_casino_lootdrop", {
 		increase_infamous = false,
+		preferred_item = nil,
 		secure_cards = 0
 	})
 end
@@ -774,7 +779,7 @@ function MenuCrimeNetInitiator:refresh_node(node)
 	local online = {}
 	local offline = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		for _, user in ipairs(Steam:friends()) do
 			if math.random(2) == 1 and user:state() == "online" or user:state() == "away" then
 				table.insert(online, user)
@@ -1198,7 +1203,7 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 		end
 
 		local function get_identifier(peer)
-			return SystemInfo:platform() == Idstring("WIN32") and peer:account_id() or peer:name()
+			return IS_PC and peer:account_id() or peer:name()
 		end
 
 		local params = {
@@ -1272,7 +1277,7 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 	self:create_divider(node, "admin_spacer")
 
-	local user = SystemInfo:distribution() == Idstring("STEAM") and Steam:user(inspect_peer:ip())
+	local user = IS_STEAM and Steam:user(inspect_peer:ip())
 
 	if user and user:rich_presence("is_modded") == "1" or inspect_peer:is_modded() then
 		local params = {
@@ -1578,7 +1583,7 @@ function MenuCallbackHandler:steam_sell_item(item)
 	if not MenuCallbackHandler:is_overlay_enabled() then
 		managers.menu:show_enable_steam_overlay_tradable_item()
 	elseif steam_id and instance_id then
-		print("selling item", "steam_id", steam_id, "instance_id", instance_id)
+		print("[MenuCallbackHandler] selling item", "steam_id", steam_id, "instance_id", instance_id)
 		managers.network.account:add_overlay_listener("steam_transaction_tradable_item", {
 			"overlay_close"
 		}, callback(MenuCallbackHandler, MenuCallbackHandler, "on_steam_transaction_over"))
@@ -1587,7 +1592,7 @@ function MenuCallbackHandler:steam_sell_item(item)
 end
 
 function MenuCallbackHandler:on_steam_transaction_over(canceled)
-	print("on_steam_transaction_over", canceled)
+	print("[MenuCallbackHandler] on_steam_transaction_over", canceled)
 	managers.network.account:remove_overlay_listener("steam_transaction_tradable_item")
 	managers.network.account:inventory_load()
 	managers.system_menu:close("buy_tradable_item")
@@ -1627,10 +1632,12 @@ function MenuCallbackHandler:steam_open_container(item)
 	data.safe_id = nil
 	data.drill_id = nil
 
+	local reward_clbk = callback(MenuCallbackHandler, MenuCallbackHandler, "_safe_result_recieved")
+
 	if safe_tweak and safe_tweak.free then
-		managers.network.account:inventory_reward_open(safe_entry, safe_id, callback(MenuCallbackHandler, MenuCallbackHandler, "_safe_result_recieved"))
+		managers.network.account:inventory_reward_open(safe_entry, safe_id, reward_clbk)
 	else
-		managers.network.account:inventory_reward_unlock(safe_entry, safe_id, drill_id, callback(MenuCallbackHandler, MenuCallbackHandler, "_safe_result_recieved"))
+		managers.network.account:inventory_reward_unlock(safe_entry, safe_id, drill_id, reward_clbk)
 	end
 end
 
@@ -1663,7 +1670,7 @@ function MenuBanListInitiator:modify_node(node)
 	local added = false
 
 	local function get_identifier(peer)
-		return SystemInfo:platform() == Idstring("WIN32") and peer:account_id() or peer:name()
+		return IS_PC and peer:account_id() or peer:name()
 	end
 
 	if managers.network:session() then
@@ -1940,7 +1947,7 @@ function MenuMutatorsInitiator:modify_node(node)
 	node:clean_items()
 
 	local function get_identifier(peer)
-		return SystemInfo:platform() == Idstring("WIN32") and peer:account_id() or peer:name()
+		return IS_PC and peer:account_id() or peer:name()
 	end
 
 	if #managers.mutators:mutators() < 1 then
@@ -2234,12 +2241,15 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 
 			skin_editor:reload_current_skin()
 
+			local multichoice_list
 			local base_gradient_textures = skin_editor:get_texture_list_by_type(skin, "base_gradient")
-			local multichoice_list = {
+
+			multichoice_list = {
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -2270,7 +2280,8 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -2301,7 +2312,8 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -2471,7 +2483,8 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -2716,7 +2729,8 @@ function MenuSkinEditorInitiator:modify_node(node, data)
 			{
 				_meta = "option",
 				localize = false,
-				text_id = "NONE"
+				text_id = "NONE",
+				value = nil
 			}
 		}
 
@@ -3043,6 +3057,8 @@ function MenuCallbackHandler:select_weapon_skin(item)
 end
 
 function MenuCallbackHandler:cleanup_weapon_skin_data(copy_data, skip_base)
+	print("[MenuCallbackHandler:cleanup_weapon_skin_data]")
+
 	local function remove_empty_func(data)
 		local remove = {}
 
@@ -3073,6 +3089,8 @@ function MenuCallbackHandler:cleanup_weapon_skin_data(copy_data, skip_base)
 		end
 
 		for _, key in ipairs(remove) do
+			print("[MenuCallbackHandler:cleanup_weapon_skin_data] clearing data", key, data[key])
+
 			data[key] = nil
 		end
 	end
@@ -3256,7 +3274,8 @@ function MenuCallbackHandler:weapon_skin_changed(item)
 				item:add_option(CoreMenuItemOption.ItemOption:new({
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}))
 				skin_editor:load_textures(skin)
 
@@ -3707,7 +3726,8 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -3738,7 +3758,8 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -3769,7 +3790,8 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -3927,7 +3949,8 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 				{
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}
 			}
 
@@ -4225,7 +4248,8 @@ function MenuArmorSkinEditorInitiator:modify_node(node, data)
 			{
 				_meta = "option",
 				localize = false,
-				text_id = "NONE"
+				text_id = "NONE",
+				value = nil
 			}
 		}
 
@@ -4531,7 +4555,8 @@ function MenuCallbackHandler:armor_skin_changed(item)
 				item:add_option(CoreMenuItemOption.ItemOption:new({
 					_meta = "option",
 					localize = false,
-					text_id = "DEFAULT"
+					text_id = "DEFAULT",
+					value = nil
 				}))
 				editor:load_textures(skin)
 

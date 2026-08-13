@@ -456,6 +456,10 @@ function RaycastWeaponBase:stop_shooting()
 	self._bullets_fired = nil
 end
 
+function RaycastWeaponBase:stop_autofire()
+	self:stop_shooting()
+end
+
 function RaycastWeaponBase:update_next_shooting_time()
 	if self:gadget_overrides_weapon_functions() then
 		local gadget_func = self:gadget_function_override("update_next_shooting_time")
@@ -2302,11 +2306,11 @@ function RaycastWeaponBase:remove_ignore_unit(unit)
 	table.delete(ignore_units, unit)
 end
 
-function RaycastWeaponBase:destroy(unit)
+function RaycastWeaponBase:pre_destroy(unit)
 	RaycastWeaponBase.super.pre_destroy(self, unit)
 
 	if self._shooting then
-		self:stop_shooting()
+		self:stop_autofire()
 	end
 end
 
@@ -2626,13 +2630,16 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 			result = self:give_impact_damage(col_ray, weapon_unit, user_unit, damage, armor_piercing, false, knock_down, stagger, variant)
 
 			if result ~= "friendly_fire" then
-				local has_died = hit_dmg_ext:dead()
+				local is_dead = hit_dmg_ext:dead()
 
-				do_push = true
-				push_mul = self:_get_character_push_multiplier(weapon_unit, was_alive and has_died)
+				if is_dead then
+					do_push = true
+					push_mul = self:_get_character_push_multiplier(weapon_unit, was_alive and is_dead)
+				end
 
 				if weap_base and result and result.type == "death" and weap_base.should_shotgun_push and weap_base:should_shotgun_push() then
 					do_shotgun_push = true
+					do_push = false
 				end
 			else
 				play_impact_flesh = false
@@ -2776,7 +2783,7 @@ InstantExplosiveBulletBase.EFFECT_PARAMS = {
 	feedback_range = tweak_data.upgrades.explosive_bullet.feedback_range,
 	camera_shake_max_mul = tweak_data.upgrades.explosive_bullet.camera_shake_max_mul,
 	idstr_decal = Idstring("explosion_round"),
-	idstr_effect = Idstring("")
+	idstr_effect = IDS_EMPTY
 }
 
 function InstantExplosiveBulletBase:bullet_slotmask()
@@ -2820,6 +2827,7 @@ function InstantExplosiveBulletBase:on_collision(col_ray, weapon_unit, user_unit
 		self:on_collision_server(tmp_vec1, col_ray.normal, damage, user_unit, weapon_unit, managers.network:session():local_peer():id())
 
 		return {
+			type = nil,
 			variant = "explosion",
 			col_ray = col_ray
 		}
@@ -2908,7 +2916,7 @@ FlameBulletBase.EFFECT_PARAMS = {
 	feedback_range = tweak_data.upgrades.flame_bullet.feedback_range,
 	camera_shake_max_mul = tweak_data.upgrades.flame_bullet.camera_shake_max_mul,
 	idstr_decal = Idstring("explosion_round"),
-	idstr_effect = Idstring(""),
+	idstr_effect = IDS_EMPTY,
 	pushunits = tweak_data.upgrades.flame_bullet.push_units
 }
 FlameBulletBase.VARIANT = "fire"

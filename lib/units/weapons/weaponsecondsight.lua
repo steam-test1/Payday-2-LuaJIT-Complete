@@ -46,7 +46,3 @@ function WeaponSecondSight:play_anim()
 
 	self._unit:anim_play_to(self._anim, self._anim_state and length or 0, speed)
 end
-
-function WeaponSecondSight:destroy(unit)
-	WeaponSecondSight.super.destroy(self, unit)
-end

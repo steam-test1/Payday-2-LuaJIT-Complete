@@ -72,21 +72,23 @@ function ArmSimulator:init(neural_network, controller)
 end
 
 function ArmSimulator:load_neural_net(neural_network)
-	local node = PackageManager:xml_data(Idstring("neural_net"), Idstring(neural_network))
+	local node = PackageManager:script_data(Idstring("neural_net"), Idstring(neural_network))
 
 	self._neural_network = {
 		weights = {},
 		bias = {}
 	}
 
-	for n, _ in node:children() do
-		local array = Array.from_node(n):transpose()
-		local name = array:name()
+	for k, v in ipairs(node) do
+		if type(k) == "number" then
+			local array = Array.from_script_data(v):transpose()
+			local name = array:name()
 
-		if not name or name == "weight" then
-			table.insert(self._neural_network.weights, array)
-		elseif name == "bias" then
-			table.insert(self._neural_network.bias, array)
+			if not name or name == "weight" then
+				table.insert(self._neural_network.weights, array)
+			elseif name == "bias" then
+				table.insert(self._neural_network.bias, array)
+			end
 		end
 	end
 end

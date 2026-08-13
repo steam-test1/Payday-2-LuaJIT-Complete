@@ -77,15 +77,18 @@ function ConcussionGrenade:_detonate(tag, unit, body, other_unit, other_body, po
 end
 
 function ConcussionGrenade:_can_stun_unit(unit)
-	local can_stun = false
 	local unit_name
 
 	if unit and unit:base() then
 		unit_name = unit:base()._tweak_table
 	end
 
-	if alive(unit) and unit:brain() and unit:brain().is_hostage and unit:brain():is_hostage() then
-		return false
+	if alive(unit) and unit:brain() then
+		local brain = unit:brain()
+
+		if brain.is_hostage and brain:is_hostage() or brain.is_current_logic and brain:is_current_logic("trade") then
+			return false
+		end
 	end
 
 	if unit_name then

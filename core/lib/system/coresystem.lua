@@ -2,6 +2,7 @@ require("core/lib/system/CorePatchLua")
 require("core/lib/system/CorePatchEngine")
 require("core/lib/system/CoreModule")
 require("core/lib/system/CoreModules")
+require("core/lib/system/CoreGlobals")
 core:import("CoreExtendLua")
 core:import("CoreEngineAccess")
 
@@ -21,4 +22,8 @@ core:_copy_module_to_global("CoreTable")
 core:_copy_module_to_global("CoreUnit")
 core:_copy_module_to_global("CoreXml")
 core:_copy_module_to_global("CoreApp")
+
+Steam = Steam or {}
+
+core:_add_to_pristine_and_global("Steam", Steam)
 core:_close_pristine_namespace()

@@ -556,8 +556,9 @@ function HUDChat:update_caret()
 		h = 0
 	end
 
-	caret:set_world_shape(x, y + 2, w, h - 4)
-	self:set_blinking(s == e and self._focus)
+	local blink = InputUtils.common_text_input_update_caret(text, caret, self._focus, nil)
+
+	self:set_blinking(blink)
 
 	local mid = x / self._input_panel:child("input_bg"):w()
 
@@ -609,66 +610,15 @@ function HUDChat:update_key_down(o, k)
 	local text = self._input_panel:child("input_text")
 
 	while self._key_pressed == k do
-		local s, e = text:selection()
-		local n = utf8.len(text:text())
-		local d = math.abs(e - s)
-
-		if self._key_pressed == Idstring("backspace") then
-			if s == e and s > 0 then
-				text:set_selection(s - 1, e)
+		InputUtils.common_text_input_key_press(text, k, nil, false, self._enter_callback, self._esc_callback, function(arrow)
+			if arrow == "up" then
+				self:scroll_up()
+				self:set_scroll_indicators()
+			elseif arrow == "down" then
+				self:scroll_down()
+				self:set_scroll_indicators()
 			end
-
-			text:replace_text("")
-
-			if utf8.len(text:text()) < 1 and type(self._esc_callback) ~= "number" then
-				-- Nothing
-			end
-		elseif self._key_pressed == Idstring("delete") then
-			if s == e and s < n then
-				text:set_selection(s, e + 1)
-			end
-
-			text:replace_text("")
-
-			if utf8.len(text:text()) < 1 and type(self._esc_callback) ~= "number" then
-				-- Nothing
-			end
-		elseif self._key_pressed == Idstring("insert") then
-			local clipboard = Application:get_clipboard() or ""
-
-			text:replace_text(clipboard)
-
-			local lbs = text:line_breaks()
-
-			if #lbs > 1 then
-				local s = lbs[2]
-				local e = utf8.len(text:text())
-
-				text:set_selection(s, e)
-				text:replace_text("")
-			end
-		elseif self._key_pressed == Idstring("left") then
-			if s < e then
-				text:set_selection(s, s)
-			elseif s > 0 then
-				text:set_selection(s - 1, s - 1)
-			end
-		elseif self._key_pressed == Idstring("right") then
-			if s < e then
-				text:set_selection(e, e)
-			elseif s < n then
-				text:set_selection(s + 1, s + 1)
-			end
-		elseif self._key_pressed == Idstring("up") then
-			self:scroll_up()
-			self:set_scroll_indicators()
-		elseif self._key_pressed == Idstring("down") then
-			self:scroll_down()
-			self:set_scroll_indicators()
-		else
-			self._key_pressed = false
-		end
-
+		end)
 		self:update_caret()
 		wait(0.03)
 	end
@@ -678,6 +628,8 @@ function HUDChat:key_release(o, k)
 	if self._key_pressed == k then
 		self._key_pressed = false
 	end
+
+	self:update_caret()
 end
 
 function HUDChat:key_press(o, k)
@@ -702,73 +654,15 @@ function HUDChat:key_press(o, k)
 
 	text:stop()
 	text:animate(callback(self, self, "update_key_down"), k)
-
-	if k == Idstring("backspace") then
-		if s == e and s > 0 then
-			text:set_selection(s - 1, e)
+	InputUtils.common_text_input_key_press(text, k, nil, false, self._enter_callback, self._esc_callback, function(arrow)
+		if arrow == "up" then
+			self:scroll_up()
+			self:set_scroll_indicators()
+		elseif arrow == "down" then
+			self:scroll_down()
+			self:set_scroll_indicators()
 		end
-
-		text:replace_text("")
-
-		if utf8.len(text:text()) < 1 and type(self._esc_callback) ~= "number" then
-			-- Nothing
-		end
-	elseif k == Idstring("delete") then
-		if s == e and s < n then
-			text:set_selection(s, e + 1)
-		end
-
-		text:replace_text("")
-
-		if utf8.len(text:text()) < 1 and type(self._esc_callback) ~= "number" then
-			-- Nothing
-		end
-	elseif k == Idstring("insert") then
-		local clipboard = Application:get_clipboard() or ""
-
-		text:replace_text(clipboard)
-
-		local lbs = text:line_breaks()
-
-		if #lbs > 1 then
-			local s = lbs[2]
-			local e = utf8.len(text:text())
-
-			text:set_selection(s, e)
-			text:replace_text("")
-		end
-	elseif k == Idstring("left") then
-		if s < e then
-			text:set_selection(s, s)
-		elseif s > 0 then
-			text:set_selection(s - 1, s - 1)
-		end
-	elseif k == Idstring("right") then
-		if s < e then
-			text:set_selection(e, e)
-		elseif s < n then
-			text:set_selection(s + 1, s + 1)
-		end
-	elseif k == Idstring("up") then
-		self:scroll_up()
-		self:set_scroll_indicators()
-	elseif k == Idstring("down") then
-		self:scroll_down()
-		self:set_scroll_indicators()
-	elseif self._key_pressed == Idstring("end") then
-		text:set_selection(n, n)
-	elseif self._key_pressed == Idstring("home") then
-		text:set_selection(0, 0)
-	elseif k == Idstring("enter") then
-		if type(self._enter_callback) ~= "number" then
-			self._enter_callback()
-		end
-	elseif k == Idstring("esc") and type(self._esc_callback) ~= "number" then
-		text:set_text("")
-		text:set_selection(0, 0)
-		self._esc_callback()
-	end
-
+	end)
 	self:update_caret()
 end
 

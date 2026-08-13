@@ -366,7 +366,6 @@ function VRManagerPD2:_on_adaptive_quality_setting_changed(setting, old, new)
 	if RenderSettings.adaptive_quality ~= setting then
 		RenderSettings.adaptive_quality = setting
 
-		VRManager:set_adaptive_quality(new)
 		Application:apply_render_settings()
 	end
 end
@@ -389,16 +388,20 @@ function VRManagerPD2:_update_adaptive_quality_level(t)
 		Application:apply_render_settings()
 	end
 
-	local quality_level = VRManager:adaptive_level() + 1
+	local quality_level = VRManager:adaptive_level()
 
 	if self._force_disable_low_adaptive_quality then
 		quality_level = math.max(quality_level, 3)
 	end
 
+	if VRManagerPD2.DISABLE_ADAPTIVE_QUALITY then
+		quality_level = 7
+	end
+
 	local x_scale = 1
 	local y_scale = 1
 
-	if self._use_adaptive_quality and quality_level < 7 then
+	if self._use_adaptive_quality and quality_level > 0 and quality_level <= #self._adaptive_scale then
 		local tres = VRManager:target_resolution()
 		local scaling = self._adaptive_scale[quality_level]
 

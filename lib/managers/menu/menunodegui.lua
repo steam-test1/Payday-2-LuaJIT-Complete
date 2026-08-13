@@ -445,8 +445,10 @@ function MenuNodeGui:_create_menu_item(row_item)
 			layer = self.layers.items
 		})
 		row_item.unselected = row_item.gui_panel:bitmap({
+			halign = nil,
 			layer = -1,
 			texture = "guis/textures/menu_unselected",
+			valign = nil,
 			visible = false,
 			x = 0,
 			y = 0,
@@ -454,8 +456,10 @@ function MenuNodeGui:_create_menu_item(row_item)
 			w = row_item.gui_panel:w()
 		})
 		row_item.selected = row_item.gui_panel:bitmap({
+			halign = nil,
 			layer = 0,
 			texture = "guis/textures/menu_selected",
+			valign = nil,
 			visible = false,
 			x = 0,
 			y = 0,
@@ -475,7 +479,9 @@ function MenuNodeGui:_create_menu_item(row_item)
 		})
 		row_item.arrow_selected = row_item.gui_panel:bitmap({
 			blend_mode = "add",
+			halign = nil,
 			texture = "guis/textures/menu_arrows",
+			valign = nil,
 			visible = false,
 			x = 0,
 			y = 0,
@@ -491,7 +497,9 @@ function MenuNodeGui:_create_menu_item(row_item)
 		})
 		row_item.arrow_unselected = row_item.gui_panel:bitmap({
 			blend_mode = "add",
+			halign = nil,
 			texture = "guis/textures/menu_arrows",
+			valign = nil,
 			visible = true,
 			x = 0,
 			y = 0,
@@ -1368,10 +1376,10 @@ function MenuNodeGui:_delete_row_item(item)
 
 			break
 		end
-	end
 
-	if table.contains(self.corner_items, row_item) then
-		table.delete(self.corner_items, row_item)
+		if table.contains(self.corner_items, row_item) then
+			table.delete(self.corner_items, row_item)
+		end
 	end
 
 	MenuNodeGui.super._delete_row_item(self, item)
@@ -1885,8 +1893,14 @@ function MenuNodeMainGui:_add_version_string()
 		self._version_string = nil
 	end
 
-	if Application:debug_enabled() or SystemInfo:platform() == Idstring("WIN32") then
+	if Application:debug_enabled() or IS_PC then
 		local version = Application:version()
+
+		if IS_STEAM_MM then
+			version = version .. " SteamMM"
+		elseif IS_EPIC_MM then
+			version = version .. " EpicMM"
+		end
 
 		self._version_string = self.ws:panel():text({
 			align = "left",

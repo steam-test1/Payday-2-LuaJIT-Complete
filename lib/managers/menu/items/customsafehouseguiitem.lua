@@ -1,4 +1,4 @@
-local is_win32 = SystemInfo:platform() == Idstring("WIN32")
+local is_win32 = IS_PC
 local NOT_WIN_32 = not is_win32
 local medium_font = tweak_data.menu.pd2_medium_font
 local medium_font_size = tweak_data.menu.pd2_medium_font_size

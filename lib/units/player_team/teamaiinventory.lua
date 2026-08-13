@@ -9,7 +9,7 @@ function TeamAIInventory:preload_mask()
 	mask_unit_name = mask_unit_name[Global.level_data.level_id] or mask_unit_name.default or mask_unit_name
 	self._mask_unit_name = mask_unit_name
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(mask_unit_name), managers.dyn_resource.DYN_RESOURCES_PACKAGE, callback(self, self, "clbk_mask_unit_loaded"))
+	managers.dyn_resource:load(IDS_UNIT, Idstring(mask_unit_name), managers.dyn_resource.DYN_RESOURCES_PACKAGE, callback(self, self, "clbk_mask_unit_loaded"))
 end
 
 function TeamAIInventory:clbk_mask_unit_loaded(status, asset_type, asset_name)
@@ -126,7 +126,7 @@ end
 
 function TeamAIInventory:_unload_mask()
 	if self._mask_unit_name then
-		managers.dyn_resource:unload(Idstring("unit"), Idstring(self._mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:unload(IDS_UNIT, Idstring(self._mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._mask_unit_name = nil
 	end

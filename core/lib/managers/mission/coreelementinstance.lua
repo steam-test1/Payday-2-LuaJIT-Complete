@@ -11,10 +11,6 @@ function ElementInstanceInput:init(...)
 	end
 end
 
-function ElementInstanceInput:client_on_executed(...)
-	return
-end
-
 function ElementInstanceInput:on_executed(instigator)
 	if not self._values.enabled then
 		return
@@ -25,16 +21,8 @@ end
 
 ElementInstanceOutput = ElementInstanceOutput or class(CoreMissionScriptElement.MissionScriptElement)
 
-function ElementInstanceOutput:init(...)
-	ElementInstanceOutput.super.init(self, ...)
-end
-
 function ElementInstanceOutput:on_created()
 	self._output_elements = managers.world_instance:get_registered_output_event_elements(self._values.instance_name, self._values.event)
-end
-
-function ElementInstanceOutput:client_on_executed(...)
-	return
 end
 
 function ElementInstanceOutput:on_executed(instigator)
@@ -52,18 +40,6 @@ function ElementInstanceOutput:on_executed(instigator)
 end
 
 ElementInstanceInputEvent = ElementInstanceInputEvent or class(CoreMissionScriptElement.MissionScriptElement)
-
-function ElementInstanceInputEvent:init(...)
-	ElementInstanceInputEvent.super.init(self, ...)
-end
-
-function ElementInstanceInputEvent:on_created()
-	return
-end
-
-function ElementInstanceInputEvent:client_on_executed(...)
-	return
-end
 
 function ElementInstanceInputEvent:on_executed(instigator)
 	if not self._values.enabled then
@@ -109,10 +85,6 @@ function ElementInstanceOutputEvent:init(...)
 	end
 end
 
-function ElementInstanceOutputEvent:client_on_executed(...)
-	return
-end
-
 function ElementInstanceOutputEvent:on_executed(instigator)
 	if not self._values.enabled then
 		return
@@ -138,6 +110,10 @@ end
 
 function ElementInstancePoint:_create()
 	if self._has_created then
+		if Application:editor() then
+			managers.editor:output_error("[ElementInstancePoint:_create()] Attempted to double-spawn a spawned instance [" .. self._editor_name .. "]")
+		end
+
 		return
 	end
 
@@ -148,9 +124,11 @@ function ElementInstancePoint:_create()
 	end
 
 	if self._values.instance then
+		local pos, rot = self:get_orientation()
+
 		managers.world_instance:custom_create_instance(self._values.instance, {
-			position = self._values.position,
-			rotation = self._values.rotation
+			position = pos,
+			rotation = rot
 		})
 	elseif Application:editor() then
 		managers.editor:output_error("[ElementInstancePoint:_create()] No instance defined in [" .. self._editor_name .. "]")

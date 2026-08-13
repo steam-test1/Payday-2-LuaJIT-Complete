@@ -16,8 +16,15 @@ function SmokeScreenEffect:init(position, normal, time, has_dodge_bonus, grenade
 		position = position,
 		normal = normal
 	})
-	self._variant = grenade_unit and grenade_unit:base() and grenade_unit:base()._projectile_entry
-	self._mine = grenade_unit and grenade_unit:base():thrower_unit() == managers.player:player_unit()
+
+	if alive(grenade_unit) then
+		local base_ext = grenade_unit:base()
+
+		if base_ext then
+			self._variant = base_ext._projectile_entry
+			self._mine = base_ext:thrower_unit() == managers.player:player_unit()
+		end
+	end
 end
 
 function SmokeScreenEffect:variant()

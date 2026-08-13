@@ -8,6 +8,7 @@ end
 
 function ElementLookAtTrigger:on_script_activated()
 	self:add_callback()
+	self._mission_script:add_save_state_cb(self._id)
 end
 
 function ElementLookAtTrigger:set_enabled(enabled)

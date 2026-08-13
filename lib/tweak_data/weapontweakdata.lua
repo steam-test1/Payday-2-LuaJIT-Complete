@@ -5738,7 +5738,7 @@ end
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		autohit_rifle_default = {
 			INIT_RATIO = 0.15,
 			MAX_RATIO = 0.85,
@@ -6185,18 +6185,6 @@ function WeaponTweakData:_init_stats()
 		20.9,
 		21
 	}
-	self.stats.zoom = {
-		63,
-		60,
-		55,
-		50,
-		45,
-		40,
-		35,
-		30,
-		25,
-		20
-	}
 
 	if _G.IS_VR then
 		self.stats.zoom = {
@@ -6209,6 +6197,19 @@ function WeaponTweakData:_init_stats()
 			20,
 			20,
 			20,
+			20
+		}
+	else
+		self.stats.zoom = {
+			63,
+			60,
+			55,
+			50,
+			45,
+			40,
+			35,
+			30,
+			25,
 			20
 		}
 	end
@@ -17175,6 +17176,7 @@ function WeaponTweakData:_init_hailstorm(weapon_data)
 	self.hailstorm.fire_mode_data.volley.can_shoot_through_wall = false
 	self.hailstorm.fire_mode_data.volley.can_shoot_through_shield = true
 	self.hailstorm.fire_mode_data.volley.can_shoot_through_enemy = true
+	self.hailstorm.fire_mode_data.volley.armor_piercing_chance = 1
 	self.hailstorm.fire_mode_data.volley.muzzleflash = "effects/payday2/particles/weapons/hailstorm_volley_effect"
 	self.hailstorm.fire_mode_data.volley.muzzleflash_silenced = "effects/payday2/particles/weapons/hailstorm_suppressed_volley"
 	self.hailstorm.fire_mode_data.toggable = {
@@ -18417,7 +18419,7 @@ function WeaponTweakData:_init_china(weapon_data)
 	self.china.stats = {
 		alert_size = 7,
 		concealment = 18,
-		damage = 96,
+		damage = 100,
 		extra_ammo = 51,
 		recoil = 25,
 		reload = 11,
@@ -20649,7 +20651,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 	self.contraband_m203.stats = {
 		alert_size = 7,
 		concealment = 18,
-		damage = 96,
+		damage = 130,
 		extra_ammo = 51,
 		recoil = 25,
 		reload = 11,

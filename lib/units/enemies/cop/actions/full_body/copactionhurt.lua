@@ -1815,13 +1815,40 @@ function CopActionHurt:_prepare_ragdoll()
 	end
 end
 
+local ZeroVec = Vector3()
+
 function CopActionHurt:_start_ragdoll(reset_momentum)
 	if self._ragdolled then
 		return true
 	end
 
 	if reset_momentum and self._unit:damage() and self._unit:damage():has_sequence("leg_arm_hitbox") then
+		local nr_u_bodies = self._unit:num_bodies()
+		local i_u_body = 0
+
+		while i_u_body < nr_u_bodies do
+			local u_body = self._unit:body(i_u_body)
+
+			if u_body:dynamic() then
+				u_body:set_velocity(ZeroVec)
+			end
+
+			i_u_body = i_u_body + 1
+		end
+
 		self._unit:damage():run_sequence_simple("leg_arm_hitbox")
+
+		i_u_body = 0
+
+		while i_u_body < nr_u_bodies do
+			local u_body = self._unit:body(i_u_body)
+
+			if u_body:dynamic() then
+				u_body:set_velocity(ZeroVec)
+			end
+
+			i_u_body = i_u_body + 1
+		end
 	end
 
 	if self._unit:damage() and self._unit:damage():has_sequence("switch_to_ragdoll") then
@@ -1873,6 +1900,21 @@ function CopActionHurt:_start_ragdoll(reset_momentum)
 
 		if self._unit:anim_data().repel_loop then
 			self._unit:sound():anim_clbk_play_sound(self._unit, "repel_end")
+		end
+
+		if reset_momentum then
+			local nr_u_bodies = self._unit:num_bodies()
+			local i_u_body = 0
+
+			while i_u_body < nr_u_bodies do
+				local u_body = self._unit:body(i_u_body)
+
+				if u_body:dynamic() then
+					u_body:set_velocity(ZeroVec)
+				end
+
+				i_u_body = i_u_body + 1
+			end
 		end
 
 		return true

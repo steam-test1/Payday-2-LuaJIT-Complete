@@ -228,27 +228,10 @@ function print_console_result(...)
 end
 
 function compile_and_reload()
-	local function root_path()
-		local path = Application:base_path() .. (CoreApp.arg_value("-assetslocation") or "../../")
-		local f
-
-		function f(s)
-			local str, i = string.gsub(s, "\\[%w_%.%s]+\\%.%.", "")
-
-			return i > 0 and f(str) or str
-		end
-
-		return f(path)
-	end
-
-	assert(SystemInfo:platform() == Idstring("WIN32"), "You can only compile on win32 platforms!")
+	assert(IS_WIN32, "You can only compile on win32 platforms!")
 	Application:data_compile({
-		preprocessor_definitions = "preprocessor_definitions",
-		target_db_name = "all",
 		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = root_path() .. "//assets",
-		target_db_root = Application:base_path() .. "assets"
+		build_profile = Application:build_profile_path()
 	})
 	DB:reload()
 	Application:console_command("reload")
