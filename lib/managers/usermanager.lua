@@ -914,8 +914,6 @@ end
 WinUserManager = WinUserManager or class(GenericUserManager)
 UserManager.PLATFORM_CLASS_MAP[Idstring("WIN32"):key()] = WinUserManager
 
-local is_epic = IS_EPIC
-
 function WinUserManager:init()
 	self._init_finalize_index = not self:is_global_initialized()
 
@@ -937,7 +935,7 @@ function WinUserManager:init_finalize()
 end
 
 function WinUserManager:set_index(user_index)
-	if is_epic and not self._epic_logged_in_and_ready then
+	if IS_EPIC and not self._epic_logged_in_and_ready then
 		self._epic_user_index = user_index
 
 		return
@@ -951,7 +949,7 @@ function WinUserManager:set_index(user_index)
 end
 
 function WinUserManager:check_user(callback_func, show_select_user_question_dialog)
-	if false and not self._epic_logged_in_and_ready then
+	if IS_EPIC and not self._epic_logged_in_and_ready then
 		if not self._epic_check_user_params then
 			self._epic_dlcs_checked = false
 			self._epic_achievements_fetched = false
@@ -969,11 +967,9 @@ function WinUserManager:check_user(callback_func, show_select_user_question_dial
 end
 
 function WinUserManager:update(t, dt)
-	if false and self._epic_check_user_params and DistributionMatchmaking:logged_on() then
+	if IS_EPIC and self._epic_check_user_params and DistributionMatchmaking:logged_on() then
 		if not Global.dlc_manager.ownership_check_called then
 			Global.dlc_manager.ownership_check_called = true
-
-			managers.dlc:check_ownerships()
 		end
 
 		if not Global.achievment_manager.init_called then
@@ -982,7 +978,7 @@ function WinUserManager:update(t, dt)
 			managers.achievment.handler:init()
 		end
 
-		if not self._epic_dlcs_checked and managers.dlc:has_catalog_ownerships() then
+		if not self._epic_dlcs_checked then
 			self._epic_dlcs_checked = true
 		end
 

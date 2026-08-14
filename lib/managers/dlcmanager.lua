@@ -1196,14 +1196,6 @@ function WINDLCManager:_verify_dlcs()
 	end
 end
 
-function WINDLCManager:_check_dlc_data(dlc_data)
-	if dlc_data.entitlement_id and self:has_entitlement(dlc_data.entitlement_id) then
-		return true
-	end
-
-	return false
-end
-
 function WINDLCManager:chk_content_updated()
 	local has_content
 	local content_updated = false
@@ -1275,24 +1267,22 @@ function WinSteamDLCManager:has_stat(data)
 	return sa_handler:get_stat(data.stat_id) >= (data.stat_value or 1)
 end
 
-local IDS_STEAM = Idstring("STEAM")
-local IDS_EPIC = Idstring("EPIC")
-
 function WinSteamDLCManager:_check_dlc_data(dlc_data)
 	if dlc_data.blocked then
 		return false
 	end
 
 	local had_verification = false
+	local verify_all = dlc_data.verify_all
 
 	if dlc_data.app_id or dlc_data.epic_id then
 		had_verification = true
 
 		local app_id
 
-		if Distribution:type() == IDS_STEAM then
+		if IS_STEAM then
 			app_id = dlc_data.app_id
-		elseif Distribution:type() == IDS_EPIC then
+		elseif IS_EPIC then
 			app_id = dlc_data.epic_id
 		end
 
@@ -1300,29 +1290,29 @@ function WinSteamDLCManager:_check_dlc_data(dlc_data)
 
 		if dlc_data.no_install then
 			if Distribution:is_product_owned(app_id) then
-				if not dlc_data.verify_all then
+				if not verify_all then
 					return true
 				end
-			elseif dlc_data.verify_all then
+			elseif verify_all then
 				return false
 			end
-		elseif Distribution:is_product_installed(dlc_data.app_id) then
-			if not dlc_data.verify_all then
+		elseif Distribution:is_product_installed(app_id) then
+			if not verify_all then
 				return true
 			end
-		elseif dlc_data.verify_all then
+		elseif verify_all then
 			return false
 		end
 	end
 
-	if dlc_data.source_id and Distribution:type() == IDS_STEAM then
+	if dlc_data.source_id and IS_STEAM then
 		had_verification = true
 
 		if Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
-			if not dlc_data.verify_all then
+			if not verify_all then
 				return true
 			end
-		elseif dlc_data.verify_all then
+		elseif verify_all then
 			return false
 		end
 	end
@@ -1331,15 +1321,15 @@ function WinSteamDLCManager:_check_dlc_data(dlc_data)
 		had_verification = true
 
 		if self:has_entitlement(dlc_data.entitlement_id) then
-			if not dlc_data.verify_all then
+			if not verify_all then
 				return true
 			end
-		elseif dlc_data.verify_all then
+		elseif verify_all then
 			return false
 		end
 	end
 
-	if dlc_data.verify_all then
+	if verify_all then
 		return had_verification
 	end
 
