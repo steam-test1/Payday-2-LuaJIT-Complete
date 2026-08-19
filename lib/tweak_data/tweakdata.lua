@@ -972,8 +972,7 @@ function TweakData:init()
 			value = "color_payday"
 		},
 		{
-			text_id = "menu_color_default",
-			value = nil
+			text_id = "menu_color_default"
 		},
 		{
 			text_id = "menu_color_heat",
@@ -1026,7 +1025,6 @@ function TweakData:init()
 		fade_in = 3,
 		fade_out = 2,
 		play_paused = true,
-		sustain = nil,
 		color = Color(1, 0, 0, 0),
 		timer = TimerManager:main()
 	}
@@ -2993,19 +2991,14 @@ function TweakData:init()
 	}
 	self.player_turrets = {}
 	self.player_turrets.ranc_heavy_machine_gun = {
-		activate_point = nil,
 		assemble_point = "assemble",
-		deactivate_point = nil,
 		disassemble_into_inactive = true,
 		disassemble_point = "disassemble",
 		enter_point = "enter",
-		exit_point = nil,
-		interact_activate = nil,
 		interact_assemble = "ranc_hold_assemble_turret",
 		interact_deactivate = "ranc_hold_disassemble_turret",
 		interact_disassemble = "ranc_hold_disassemble_turret",
 		interact_enter = "ranc_hold_enter_turret",
-		interact_exit = nil,
 		bullet_objects = {
 			amount = 12,
 			prefix = "g_bullet_",

@@ -1980,8 +1980,6 @@ function NewRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 		dmg_mul = dmg_mul * (self._volley_damage_mul or 1)
 
 		local result = {
-			enemies_in_cone = nil,
-			hit_enemy = nil,
 			rays = {}
 		}
 

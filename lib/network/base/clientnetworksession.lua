@@ -51,6 +51,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 		params = {
 			self._local_peer:name(),
 			self._local_peer:account_id(),
+			self._local_peer:account_type_str(),
 			is_invite,
 			managers.blackmarket:get_preferred_character_string(),
 			xuid,
@@ -61,13 +62,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 		}
 	}
 
-	local account_type = self._local_peer:account_type_str()
-
-	if account_type == "EPIC" then
-		host_rpc:request_join_epic(unpack(self._join_request_params.params))
-	elseif account_type == "STEAM" then
-		host_rpc:request_join_steam(unpack(self._join_request_params.params))
-	end
+	host_rpc:request_join(unpack(self._join_request_params.params))
 
 	self._first_join_request_t = TimerManager:wall():time()
 	self._last_join_request_t = self._first_join_request_t
@@ -674,10 +669,8 @@ function ClientNetworkSession:_upd_request_join_resend(wall_time)
 			else
 				self._join_request_params.host_rpc:auth_request_reply(self._join_request_params.ticket)
 			end
-		elseif account_type == "EPIC" then
-			self._join_request_params.host_rpc:request_join_epic(unpack(self._join_request_params.params))
-		elseif account_type == "STEAM" then
-			self._join_request_params.host_rpc:request_join_steam(unpack(self._join_request_params.params))
+		else
+			self._join_request_params.host_rpc:request_join(unpack(self._join_request_params.params))
 		end
 
 		self._last_join_request_t = wall_time

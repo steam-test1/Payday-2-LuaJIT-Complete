@@ -4535,19 +4535,16 @@ function MenuSceneManager:_load_economy_safe(safe_entry, ready_clbk)
 	local saferoom_name = Idstring("units/payday2_cash/safe_room/cash_int_safehouse_saferoom")
 	local safe_data = {
 		ready = false,
-		ready_clbk = nil,
 		safe_unit = false,
 		safe_name = safe_name
 	}
 	local drill_data = {
 		ready = false,
-		ready_clbk = nil,
 		safe_unit = false,
 		drill_name = drill_name
 	}
 	local saferoom_data = {
 		ready = false,
-		ready_clbk = nil,
 		saferoom_unit = false,
 		saferoom_name = saferoom_name
 	}
@@ -4651,7 +4648,6 @@ function MenuSceneManager:load_safe_result_content(result, ready_clbk)
 	local item_data = (tweak_data.economy[result.category] or tweak_data.blackmarket[result.category])[result.entry]
 
 	self._safe_result_content_data = {
-		min_time_ready = nil,
 		result = result,
 		item_data = item_data,
 		ready_flags = {},

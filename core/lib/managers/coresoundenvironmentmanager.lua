@@ -483,7 +483,6 @@ function CoreSoundEnvironmentManager:add_check_object(data)
 	end
 
 	local t = {
-		area = nil,
 		sound_area_counter = 1,
 		object = data.object,
 		soundsource = soundsource,

@@ -170,7 +170,7 @@ function MenuTitlescreenState:update(t, dt)
 	end
 
 	if self._waiting_for_loaded_savegames then
-		if IS_EPIC_MM and self._waiting_on_connection == nil and not DistributionMatchmaking:logged_on() and not Distribution:logged_on() then
+		if IS_EPIC_MM and self._waiting_on_connection == nil and (not DistributionMatchmaking:logged_on() or not Distribution:logged_on()) then
 			self._waiting_on_connection = 10
 
 			self._text:set_text(managers.localization:to_upper_text("menu_connect_eos"))

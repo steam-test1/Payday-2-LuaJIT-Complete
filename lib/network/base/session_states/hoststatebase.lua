@@ -8,8 +8,8 @@ function HostStateBase:exit(data, name, enter_params)
 	return
 end
 
-function HostStateBase:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
-	print("[HostStateBase:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender:ip_at_index(0))
+function HostStateBase:on_join_request_received(data, peer_name, peer_account_id, peer_account_type_str, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+	print("[HostStateBase:on_join_request_received]", data, peer_name, peer_account_id, peer_account_type_str, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender:ip_at_index(0))
 
 	local my_user_id = data.local_peer:user_id() or ""
 

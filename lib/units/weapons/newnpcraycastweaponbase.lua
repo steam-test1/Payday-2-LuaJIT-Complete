@@ -38,7 +38,6 @@ function NewNPCRaycastWeaponBase:init(unit)
 
 	self._damage = td.DAMAGE
 	self._shoot_through_data = {
-		has_hit_wall = nil,
 		from = Vector3()
 	}
 	self._next_fire_allowed = -1000

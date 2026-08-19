@@ -521,8 +521,6 @@ function CrimeNetManager:activate_job()
 			local contact = tweak_data.narrative.jobs[presets[i].job_id].contact
 
 			if not self._active_jobs[i] and i ~= 0 and not table.contains(disabled_contacts, contact) then
-				print("-- activate", math.round(chance * 100) .. "%", presets[i].job_id, roll, chance)
-
 				self._active_jobs[i] = {
 					added = false,
 					active_timer = self._active_job_time + math.random(5)

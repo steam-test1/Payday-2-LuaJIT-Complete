@@ -405,7 +405,6 @@ function GroupAIStateBase:_init_misc_data()
 	self:_init_team_tables()
 
 	self._phalanx_data = {
-		vip = nil,
 		minions = {}
 	}
 end
@@ -4713,12 +4712,19 @@ function GroupAIStateBase:_add_group_member(group, u_key)
 end
 
 function GroupAIStateBase:add_area(area_id, nav_segs, area_pos)
+	if not area_id or not nav_segs then
+		return
+	end
+
+	area_id = tostring(area_id)
+
 	local all_areas = self._area_data
 
 	if all_areas[area_id] then
 		return
 	end
 
+	local all_nav_segs = managers.navigation._nav_segments
 	local new_area = self:_empty_area_data()
 
 	new_area.id = area_id
@@ -4726,36 +4732,28 @@ function GroupAIStateBase:add_area(area_id, nav_segs, area_pos)
 	new_area.pos_nav_seg = managers.navigation:get_nav_seg_from_pos(area_pos, true)
 
 	for _, seg_id in ipairs(nav_segs) do
+		seg_id = tostring(seg_id)
 		new_area.nav_segs[seg_id] = true
-	end
-
-	for _, seg_id in ipairs(nav_segs) do
 		self._nav_seg_to_area_map[seg_id] = new_area
-	end
 
-	for _, seg_id in ipairs(nav_segs) do
 		if all_areas[seg_id] then
 			local neighbours = all_areas[seg_id].neighbours
 
 			all_areas[seg_id] = nil
 
-			for neighbour_area_id, neighbour_area in pairs(neighbours) do
+			for _, neighbour_area in pairs(neighbours) do
 				neighbour_area.neighbours[seg_id] = nil
 			end
 		end
-	end
 
-	local all_nav_segs = managers.navigation._nav_segments
-
-	for _, seg_id in ipairs(nav_segs) do
-		local nav_seg = all_nav_segs[tostring(seg_id)]
+		local nav_seg = all_nav_segs[seg_id]
 
 		if nav_seg then
 			if not nav_seg.disabled then
 				for neighbour_seg_id, door_list in pairs(nav_seg.neighbours) do
 					local neighbour_nav_seg = all_nav_segs[neighbour_seg_id]
 
-					if not neighbour_nav_seg.disabled then
+					if neighbour_nav_seg and not neighbour_nav_seg.disabled then
 						for other_area_id, other_area in pairs(all_areas) do
 							if other_area.nav_segs[neighbour_seg_id] then
 								new_area.neighbours[other_area_id] = other_area

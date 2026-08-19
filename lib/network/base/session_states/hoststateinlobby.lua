@@ -1,6 +1,6 @@
 HostStateInLobby = HostStateInLobby or class(HostStateBase)
 
-function HostStateInLobby:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+function HostStateInLobby:on_join_request_received(data, peer_name, peer_account_id, peer_account_type_str, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
 	local peer_id = sender:ip_at_index(0)
 	local my_user_id = data.local_peer:user_id() or ""
 
@@ -8,7 +8,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 
 	local drop_in_name = peer_name
 
-	print("[HostStateInLobby:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, peer_id)
+	print("[HostStateInLobby:on_join_request_received]", data, peer_name, peer_account_id, peer_account_type_str, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, peer_id)
 
 	if peer_account_type_str == "STEAM" then
 		local temp = peer_name

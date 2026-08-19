@@ -697,7 +697,8 @@ function NetworkMatchMakingSTEAM:join_server_with_check(room_id, is_invite)
 				local ikey = lobby:key_value(NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY)
 
 				if ikey == "value_missing" or ikey == "value_pending" then
-					print("Wrong version!!")
+					print("Wrong version!!", ikey, NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY)
+					print("Lobby info", inspect(lobby:get_lobby_data()))
 					managers.system_menu:close("join_server")
 					managers.menu:show_failed_joining_dialog()
 

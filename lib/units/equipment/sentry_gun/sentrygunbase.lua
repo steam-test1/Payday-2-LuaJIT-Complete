@@ -279,7 +279,6 @@ function SentryGunBase:activate_as_module(team_type, tweak_table_id)
 		auto_reload = true,
 		expend_ammo = true,
 		spread_mul = 1,
-		user_unit = nil,
 		ignore_units = {
 			self._unit
 		},

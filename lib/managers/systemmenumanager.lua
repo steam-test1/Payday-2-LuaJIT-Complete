@@ -32,9 +32,7 @@ GenericSystemMenuManager.GENERIC_BUTTON_DIALOG_CLASS = ButtonsDialog
 
 function GenericSystemMenuManager:init()
 	if not Global.dialog_manager then
-		Global.dialog_manager = {
-			init_show_data_list = nil
-		}
+		Global.dialog_manager = {}
 	end
 
 	self._dialog_shown_callback_handler = CoreEvent.CallbackEventHandler:new()

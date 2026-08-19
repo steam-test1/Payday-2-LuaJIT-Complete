@@ -66,13 +66,7 @@ function BlackMarketManager:_setup()
 	end
 
 	self._defaults.henchman = {
-		ability = nil,
-		glove_id = nil,
-		mask = "character_locked",
-		player_style = nil,
-		primary = nil,
-		skill = nil,
-		suit_variation = nil
+		mask = "character_locked"
 	}
 
 	if not Global.blackmarket_manager then

@@ -3249,7 +3249,6 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving, starting_sim
 	self._continent_save_tables = {}
 	self._world_save_table.world_data = {
 		continents_file = "continents",
-		editor_groups = nil,
 		max_id = self._max_id,
 		markers = self._markers,
 		values = self._values.world

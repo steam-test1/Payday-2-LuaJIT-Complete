@@ -42,20 +42,15 @@ function ConnectionNetworkHandler:discover_host_reply(sender_name, level_id, lev
 	managers.network:on_discover_host_reply(sender, sender_name, level_name, my_ip, state, difficulty)
 end
 
-function ConnectionNetworkHandler:request_join_steam(peer_name, peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+function ConnectionNetworkHandler:request_join(peer_name, peer_account_id, peer_account_type, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
 	if not self._verify_in_server_session() or not managers.network:session() or not managers.network:session().on_join_request_received then
+		print("[ConnectionNetworkHandler:request_join] FAILED", peer_name)
+
 		return
 	end
 
-	managers.network:session():on_join_request_received(peer_name, "STEAM", peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
-end
-
-function ConnectionNetworkHandler:request_join_epic(peer_name, peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
-	if not self._verify_in_server_session() or not managers.network:session() or not managers.network:session().on_join_request_received then
-		return
-	end
-
-	managers.network:session():on_join_request_received(peer_name, "EPIC", peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+	print("[ConnectionNetworkHandler:request_join] Requested", peer_name)
+	managers.network:session():on_join_request_received(peer_name, peer_account_id, peer_account_type, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
 end
 
 function ConnectionNetworkHandler:auth_request_reply(auth_ticket, sender)

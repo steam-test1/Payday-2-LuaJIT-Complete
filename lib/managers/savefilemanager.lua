@@ -91,9 +91,6 @@ function SavefileManager:init()
 
 	if not Global.savefile_manager then
 		Global.savefile_manager = {
-			current_game_cache_slot = nil,
-			safe_profile_save_time = nil,
-			setting_changed = nil,
 			meta_data_list = {}
 		}
 	end
@@ -1105,11 +1102,9 @@ function SavefileManager:_meta_data(slot)
 
 	if not meta_data then
 		meta_data = {
-			cache = nil,
 			is_corrupt = false,
 			is_synched_cache = false,
 			is_synched_text = false,
-			text = nil,
 			slot = slot
 		}
 		Global.savefile_manager.meta_data_list[slot] = meta_data

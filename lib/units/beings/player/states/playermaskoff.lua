@@ -298,7 +298,6 @@ function PlayerMaskOff:_start_action_state_standard(t)
 
 	managers.hud:show_progress_timer_bar(0, mask_on_time)
 	managers.hud:show_progress_timer({
-		icon = nil,
 		text = managers.localization:text("hud_starting_heist")
 	})
 	self:_chk_tap_to_interact_enable(t, mask_on_time)

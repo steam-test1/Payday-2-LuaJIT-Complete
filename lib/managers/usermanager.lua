@@ -24,10 +24,7 @@ function GenericUserManager:init()
 
 	if not self:is_global_initialized() then
 		Global.user_manager = {
-			active_user_state_change_quit = nil,
 			initializing = true,
-			storage_changed = nil,
-			user_index = nil,
 			setting_map = {},
 			setting_data_map = {},
 			setting_data_id_to_name_map = {},

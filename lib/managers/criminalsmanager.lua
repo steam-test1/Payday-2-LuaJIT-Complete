@@ -32,7 +32,6 @@ function CriminalsManager:_create_characters()
 		local character_data = {
 			peer_id = 0,
 			taken = false,
-			unit = nil,
 			name = character.name,
 			static_data = static_data,
 			data = {},

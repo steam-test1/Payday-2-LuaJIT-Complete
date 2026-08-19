@@ -77,7 +77,6 @@ function SkillTreeManager:_setup_skill_switches()
 
 		for i = 1, #tweak_data.skilltree.skill_switches do
 			self._global.skill_switches[i] = {
-				name = nil,
 				specialization = false,
 				unlocked = i == 1,
 				points = Application:digest_value(0, true)
@@ -1737,9 +1736,21 @@ end
 function SkillTreeManager:get_specialization_value(...)
 	local value = self._global.specializations
 
+	if not value then
+		Application:error("[SkillTreeManager:get_specialization_value] failed at missing 'self._global.specializations'. Likely called too early!")
+
+		return 0
+	end
+
 	for _, index in ipairs({
 		...
 	}) do
+		if not value[index] then
+			Application:error("[SkillTreeManager:get_specialization_value] failed at index", index, ...)
+
+			return 0
+		end
+
 		value = value[index]
 	end
 

@@ -464,8 +464,6 @@ function SocialHubInviteTab:on_search_users_fetched(users)
 
 	for _, user in pairs(users) do
 		managers.socialhub:add_cached_user(users, {
-			rich_presence = nil,
-			state = nil,
 			name = user:username(),
 			id = user:id(),
 			account_id = user:account_id(),

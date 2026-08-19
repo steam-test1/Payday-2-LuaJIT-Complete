@@ -30,7 +30,6 @@ function MenuMainState:at_enter(old_state)
 					sustain = 0.5,
 					color = Color.black
 				})
-				managers.menu:external_enter_online_menus()
 				managers.menu:on_enter_lobby()
 			else
 				self:on_server_left()
@@ -130,52 +129,14 @@ function MenuMainState:at_enter(old_state)
 
 	local has_invite = false
 
-	if IS_PS4 then
-		local is_boot = not Global.psn_boot_invite_checked and Application:is_booted_from_invitation()
+	if Global.boot_invite then
+		has_invite = true
 
-		if not is_boot then
-			Global.boot_invite = Global.boot_invite or nil
-		else
-			Global.boot_invite = {}
-		end
+		local lobby = Global.boot_invite
 
-		if is_boot or Global.boot_invite and not Global.boot_invite.used then
-			has_invite = true
-			Global.boot_invite.used = false
-			Global.boot_invite.pending = true
+		Global.boot_invite = nil
 
-			managers.menu:open_sign_in_menu(function(success)
-				if success then
-					Global.boot_invite = is_boot and PSN:get_boot_invitation() or Global.boot_invite
-					Global.boot_invite.used = false
-					Global.boot_invite.pending = true
-
-					managers.network.matchmake:join_boot_invite()
-				end
-			end)
-		end
-
-		Global.psn_boot_invite_checked = true
-	elseif IS_PC then
-		if Global.boot_invite then
-			has_invite = true
-
-			local lobby = Global.boot_invite
-
-			Global.boot_invite = nil
-
-			managers.network.matchmake:join_server_with_check(lobby)
-		end
-	elseif IS_XB1 then
-		if XboxLive:has_boot_invite() then
-			has_invite = true
-		end
-
-		if Global.boot_invite and next(Global.boot_invite) then
-			has_invite = true
-
-			managers.network.matchmake:join_boot_invite()
-		end
+		managers.network.matchmake:join_server_with_check(lobby)
 	end
 
 	if Global.open_trial_buy then

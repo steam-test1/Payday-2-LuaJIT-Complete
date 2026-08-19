@@ -3014,8 +3014,6 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 
 	self.melee_weapons.funder_strike = {
 		anim_global_param = "melee_axe",
-		animation = nil,
-		dlc = nil,
 		expire_t = 0.7,
 		info_id = "bm_melee_funder_strike_info",
 		melee_damage_delay = 0.13333333333333333,
@@ -3051,7 +3049,6 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.bonk = {
 		anim_global_param = "melee_baseballbat",
-		animation = nil,
 		dlc = "unk",
 		expire_t = 1,
 		info_id = "bm_melee_bonk_info",

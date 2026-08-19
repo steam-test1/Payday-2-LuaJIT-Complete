@@ -76,9 +76,7 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 	end
 
 	self._profile = {
-		level = nil,
-		outfit_string = "",
-		rank = nil
+		outfit_string = ""
 	}
 	self._handshakes = {}
 	self._streaming_status = 0

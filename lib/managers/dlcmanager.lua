@@ -623,7 +623,6 @@ function GenericDLCManager:has_dlc(dlc)
 			return unlocked_check_function(self, dlc_tweak)
 		else
 			Application:error("Didn't have dlc has function for", dlc, "has_dlc()", dlc_tweak.dlc)
-			Application:stack_dump()
 		end
 	end
 
@@ -633,7 +632,6 @@ function GenericDLCManager:has_dlc(dlc)
 
 	if not dlc_data then
 		Application:error("Didn't have dlc data for ", dlc)
-		Application:stack_dump()
 
 		return false
 	end

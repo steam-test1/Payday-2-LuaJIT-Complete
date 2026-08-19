@@ -744,7 +744,6 @@ function ContractBrokerGui:_setup_filter_contact()
 	local last_y = 0
 	local check_new_job_data = {
 		filter_key = "contact",
-		filter_param = nil,
 		filter_func = ContractBrokerGui.perform_filter_contact
 	}
 
@@ -779,7 +778,6 @@ function ContractBrokerGui:_setup_filter_time()
 	local last_y = 0
 	local check_new_job_data = {
 		filter_key = "job_id",
-		filter_param = nil,
 		filter_func = ContractBrokerGui.perform_filter_time
 	}
 
@@ -816,7 +814,6 @@ function ContractBrokerGui:_setup_filter_tactic()
 	local last_y = 0
 	local check_new_job_data = {
 		filter_key = "job",
-		filter_param = nil,
 		filter_func = ContractBrokerGui.perform_filter_tactic
 	}
 

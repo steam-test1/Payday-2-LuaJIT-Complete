@@ -1201,7 +1201,6 @@ function NarrativeTweakData:init(tweak_data)
 		6000
 	}
 	self.stages.branchbank_random = {
-		briefing_dialog = nil,
 		level_id = "branchbank",
 		mission = "standalone",
 		type = "d",
@@ -1697,7 +1696,6 @@ function NarrativeTweakData:init(tweak_data)
 		200000
 	}
 	self.stages.arm_cro = {
-		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_cro",
 		type = "d",
@@ -1773,7 +1771,6 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_und = {
-		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_und",
 		type = "d",
@@ -1849,7 +1846,6 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_hcm = {
-		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_hcm",
 		type = "d",
@@ -1925,7 +1921,6 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_par = {
-		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_par",
 		type = "d",
@@ -2001,7 +1996,6 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_fac = {
-		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_fac",
 		type = "d",
@@ -2077,7 +2071,6 @@ function NarrativeTweakData:init(tweak_data)
 		12000
 	}
 	self.stages.arm_for = {
-		briefing_dialog = nil,
 		dlc = "armored_transport",
 		level_id = "arm_for",
 		type = "d",
@@ -7891,6 +7884,36 @@ function NarrativeTweakData:create_job_name(job_id, skip_professional)
 			start = s_len,
 			stop = e_len,
 			color = tweak_data.screen_colors.competitive_color
+		})
+	end
+
+	if job_tweak.contact == "skirmish" then
+		local holdout_text = "  " .. managers.localization:to_upper_text("menu_cn_skirmish")
+		local s_len = utf8.len(text_id)
+
+		text_id = text_id .. holdout_text
+
+		local e_len = utf8.len(text_id)
+
+		table.insert(color_ranges, {
+			start = s_len,
+			stop = e_len,
+			color = tweak_data.screen_colors.skirmish_color
+		})
+	end
+
+	if job_tweak.contact == "escape" then
+		local escape_text = "  " .. managers.localization:to_upper_text("hud_e_framing_frame_stage3_mission9_hl")
+		local s_len = utf8.len(text_id)
+
+		text_id = text_id .. escape_text
+
+		local e_len = utf8.len(text_id)
+
+		table.insert(color_ranges, {
+			start = s_len,
+			stop = e_len,
+			color = tweak_data.screen_colors.pro_color
 		})
 	end
 

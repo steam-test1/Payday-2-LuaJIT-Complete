@@ -1010,7 +1010,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		barrel = true,
 		barrel_ext = true,
 		exclusive_set = true,
-		gadget = true,
 		slide = true
 	}
 	self.weapon_skins.deagle_bling.base_gradient = Idstring("units/payday2_cash/safes/cf15/base_gradient/base_cf15_004_df")
@@ -10220,6 +10219,7 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 	self.weapon_skins.judge_same.bonus = "spread_n1"
 	self.weapon_skins.judge_same.reserve_quality = true
 	self.weapon_skins.judge_same.texture_bundle_folder = "same"
+	self.weapon_skins.judge_same.base_gradient = "units/payday2_cash/safes/shared/base_gradient/base_full_white_df"
 	self.weapon_skins.judge_same.parts = {
 		wpn_fps_pis_judge_body_standard = {
 			[Idstring("mtr_mech"):key()] = {
@@ -10270,7 +10270,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		}
 	}
 	self.weapon_skins.judge_same.types = {
-		lower_reciever = {},
 		gadget = {
 			pattern = "units/payday2_cash/safes/same/pattern/pattern_same_006_b_df",
 			pattern_gradient = "units/payday2_cash/safes/same/pattern_gradient/pattern_gradient_same_006_df"

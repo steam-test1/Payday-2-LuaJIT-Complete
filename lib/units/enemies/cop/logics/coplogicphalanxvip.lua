@@ -242,9 +242,6 @@ function CopLogicPhalanxVip.do_vip_flee(unit)
 		unit:brain():set_objective({
 			attitude = "avoid",
 			forced = true,
-			interrupt_dis = nil,
-			interrupt_health = nil,
-			interrupt_suppression = nil,
 			type = "flee",
 			pos = flee_pos,
 			nav_seg = flee_nav_seg

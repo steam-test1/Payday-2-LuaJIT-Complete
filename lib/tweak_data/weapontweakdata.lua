@@ -15934,6 +15934,7 @@ function WeaponTweakData:_init_plainsider(weapon_data)
 	}
 	self.plainsrider.projectile_type = "west_arrow"
 	self.plainsrider.not_allowed_in_bleedout = true
+	self.plainsrider.ammo_default_sub_type = "ammo_arrow"
 	self.plainsrider.damage_melee = weapon_data.damage_melee_default
 	self.plainsrider.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
 	self.plainsrider.sounds = {}
@@ -16523,6 +16524,7 @@ function WeaponTweakData:_init_hunter(weapon_data)
 			"clip_ammo_increase"
 		}
 	}
+	self.hunter.ammo_default_sub_type = "ammo_arrow"
 	self.hunter.damage_melee = weapon_data.damage_melee_default
 	self.hunter.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
 	self.hunter.sounds = {}
@@ -17485,6 +17487,7 @@ function WeaponTweakData:_init_arblast(weapon_data)
 			"clip_ammo_increase"
 		}
 	}
+	self.arblast.ammo_default_sub_type = "ammo_arrow"
 	self.arblast.damage_melee = weapon_data.damage_melee_default
 	self.arblast.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
 	self.arblast.sounds = {}
@@ -17590,6 +17593,7 @@ function WeaponTweakData:_init_frankish(weapon_data)
 			"clip_ammo_increase"
 		}
 	}
+	self.frankish.ammo_default_sub_type = "ammo_arrow"
 	self.frankish.damage_melee = weapon_data.damage_melee_default
 	self.frankish.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
 	self.frankish.sounds = {}
@@ -17696,6 +17700,7 @@ function WeaponTweakData:_init_long(weapon_data)
 	}
 	self.long.projectile_type = "long_arrow"
 	self.long.not_allowed_in_bleedout = true
+	self.long.ammo_default_sub_type = "ammo_arrow"
 	self.long.damage_melee = weapon_data.damage_melee_default
 	self.long.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
 	self.long.sounds = {}
@@ -22877,6 +22882,7 @@ function WeaponTweakData:_init_ecp(weapon_data)
 			"clip_ammo_increase"
 		}
 	}
+	self.ecp.ammo_default_sub_type = "ammo_arrow"
 	self.ecp.damage_melee = weapon_data.damage_melee_default
 	self.ecp.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
 	self.ecp.sounds = {}
@@ -26981,6 +26987,7 @@ function WeaponTweakData:_init_elastic(weapon_data)
 	}
 	self.elastic.projectile_type = "elastic_arrow"
 	self.elastic.not_allowed_in_bleedout = true
+	self.elastic.ammo_default_sub_type = "ammo_arrow"
 	self.elastic.damage_melee = weapon_data.damage_melee_default
 	self.elastic.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
 	self.elastic.sounds = {}

@@ -2677,8 +2677,7 @@ function AchievementsTweakData:init(tweak_data)
 		jordan_3 = {
 			award = "brooklyn_3",
 			memory = {
-				is_shortterm = false,
-				value = nil
+				is_shortterm = false
 			}
 		},
 		jordan_4 = {
@@ -4755,8 +4754,7 @@ function AchievementsTweakData:init(tweak_data)
 			award = "cac_4",
 			loud = true,
 			memory = {
-				is_shortterm = false,
-				value = nil
+				is_shortterm = false
 			}
 		},
 		cac_5 = {
@@ -5750,8 +5748,7 @@ function AchievementsTweakData:init(tweak_data)
 			job = "alex",
 			need_full_job = true,
 			memory = {
-				is_shortterm = false,
-				value = nil
+				is_shortterm = false
 			}
 		},
 		challenge_crime_spree = {
@@ -6089,8 +6086,7 @@ function AchievementsTweakData:init(tweak_data)
 				"MutatorFriendlyFire"
 			},
 			memory = {
-				is_shortterm = false,
-				value = nil
+				is_shortterm = false
 			}
 		},
 		trophy_defender = {
@@ -6178,8 +6174,7 @@ function AchievementsTweakData:init(tweak_data)
 				}
 			},
 			memory = {
-				is_shortterm = true,
-				value = nil
+				is_shortterm = true
 			}
 		},
 		daily_spacetime = {
@@ -6235,8 +6230,7 @@ function AchievementsTweakData:init(tweak_data)
 				armor = "level_7"
 			},
 			memory = {
-				is_shortterm = true,
-				value = nil
+				is_shortterm = true
 			}
 		},
 		daily_akimbo = {

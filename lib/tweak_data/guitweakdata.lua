@@ -627,7 +627,6 @@ function GuiTweakData:init(tweak_data)
 	end
 
 	self.fav_videos = {
-		choice_id = nil,
 		db_url = "https://www.paydaythegame.com/static/payday2/birthday/",
 		num_items = 3,
 		title_id = "menu_fav_videos",

@@ -39103,6 +39103,7 @@ function WeaponFactoryTweakData:_init_plainsrider()
 		is_a_unlockable = true,
 		name_id = "bm_wpn_fps_upg_a_bow_explosion",
 		parent = "lower_reciever",
+		sort_number = -1000,
 		sub_type = "ammo_explosive",
 		texture_bundle_folder = "west",
 		third_unit = "units/pd2_dlc_west/weapons/wpn_fps_bow_plainsrider_pts/wpn_third_bow_plainsrider_m_explosive",
@@ -67455,7 +67456,6 @@ function WeaponFactoryTweakData:_init_speen()
 		animations = {
 			equip = "equip",
 			reload = "reload",
-			reload_not_empty = nil,
 			unequip = "unequip"
 		}
 	}

@@ -7589,6 +7589,19 @@ function DLCTweakData:init(tweak_data)
 	self.pda10_bessy.content.loot_global_value = "pda10_bessy"
 	self.pda10_bessy.content.loot_drops = {}
 	self.pda10_bessy.content.upgrades = {}
+	self.pda10_bessy_bayonette = {
+		dlc = "has_parent_dlc",
+		parent_dlc = "pda10_bessy",
+		content = {
+			loot_global_value = "pda10",
+			loot_drops = {
+				{
+					item_entry = "wpn_fps_spec_bessy_bayonette",
+					type_items = "weapon_mods"
+				}
+			}
+		}
+	}
 	self.pda10_piggy_hammer = {}
 	self.pda10_piggy_hammer.content = {}
 	self.pda10_piggy_hammer.dlc = "has_pda10_piggy_hammer"

@@ -110,8 +110,6 @@ function ObjectivesManager:_remind_objetive(id, title_id)
 		local text = objective.text
 
 		managers.hud:present_mid_text({
-			event = nil,
-			icon = nil,
 			time = 4,
 			text = text,
 			title = title_message
@@ -208,7 +206,6 @@ function ObjectivesManager:activate_objective(id, load_data, data)
 
 		if self._delayed_presentation then
 			self._delayed_presentation.mid_text_params = {
-				icon = nil,
 				time = 4,
 				text = text,
 				title = title_message,
@@ -216,7 +213,6 @@ function ObjectivesManager:activate_objective(id, load_data, data)
 			}
 		else
 			managers.hud:present_mid_text({
-				icon = nil,
 				time = 4,
 				text = text,
 				title = title_message,
@@ -274,7 +270,6 @@ function ObjectivesManager:activate_objective_countdown(id, load_data, data)
 
 		if self._delayed_presentation then
 			self._delayed_presentation.mid_text_params = {
-				icon = nil,
 				time = 4,
 				text = text,
 				title = title_message,
@@ -282,7 +277,6 @@ function ObjectivesManager:activate_objective_countdown(id, load_data, data)
 			}
 		else
 			managers.hud:present_mid_text({
-				icon = nil,
 				time = 4,
 				text = text,
 				title = title_message,

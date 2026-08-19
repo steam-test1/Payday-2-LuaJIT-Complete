@@ -52,7 +52,6 @@ function MenuNodeAchievementFilterCreator:create_tags_option(node, category_name
 		{
 			_meta = "option",
 			text_id = "menu_achievement_filter_off",
-			value = nil,
 			color = tweak_data.screen_colors.button_stage_3
 		},
 		{

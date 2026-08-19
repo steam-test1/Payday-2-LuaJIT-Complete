@@ -470,9 +470,7 @@ function NpcVehicleDrivingExt:_find_bridge(cop_path, target_path, unit_and_pos)
 	local player_position = player_unit:position()
 	local cop_on_checkpoint = cop_path.marker_checkpoints[point_id_in_direction]
 	local min_distance_marker = {
-		direction = nil,
-		distance = 2000000,
-		marker_to = nil
+		distance = 2000000
 	}
 
 	for marker_from, markers_to in pairs(bridges_to_target) do

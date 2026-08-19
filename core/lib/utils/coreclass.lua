@@ -146,7 +146,6 @@ function freeze(...)
 
 			if metatable == nil then
 				setmetatable(instance, {
-					__metatable = nil,
 					__newindex = __frozen__newindex
 				})
 			else

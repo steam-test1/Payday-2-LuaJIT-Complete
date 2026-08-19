@@ -16,9 +16,7 @@ function ControllerManager:init(path, default_settings_path)
 	ControllerManager.super.init(self, "controller")
 
 	if not Global.controller_manager then
-		Global.controller_manager = {
-			default_controller_connected = nil
-		}
+		Global.controller_manager = {}
 	end
 
 	self._skip_controller_map = {}

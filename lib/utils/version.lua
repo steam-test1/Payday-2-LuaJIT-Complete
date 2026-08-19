@@ -1,4 +1,4 @@
-local VERSION = "payday2_v3_beta_06"
+local VERSION = "payday2_v3_" .. Application:version():gsub(" ", "_")
 
 function pd2_version()
 	return VERSION

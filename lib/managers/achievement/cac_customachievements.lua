@@ -147,7 +147,8 @@ local function init_cac_28()
 	local sync_listener_key = {}
 
 	local function attempt_infection(peer)
-		local is_infected = managers.achievment.achievments.cac_28.awarded
+		local cac_achievments = managers.achievment.achievments
+		local is_infected = cac_achievments and cac_achievments.cac_28 and cac_achievments.cac_28.awarded
 
 		if is_infected then
 			peer:send_after_load("get_virus_achievement")

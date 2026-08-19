@@ -232,18 +232,6 @@ function MenuManager:play_join_stinger_by_index(index)
 	return self._sound_source:post_event("infamy_stinger_player_join")
 end
 
-function MenuManager:_cb_matchmake_found_game(game_id, created)
-	print("_cb_matchmake_found_game", game_id, created)
-end
-
-function MenuManager:_cb_matchmake_player_joined(player_info)
-	print("_cb_matchmake_player_joined")
-
-	if managers.network.group:is_group_leader() then
-		-- Nothing
-	end
-end
-
 function MenuManager:destroy()
 	MenuManager.super.destroy(self)
 	self:destroy_controller()
@@ -952,206 +940,17 @@ function MenuManager:check_vr_dlc()
 end
 
 function MenuManager:open_sign_in_menu(cb)
-	if self:is_ps4() then
-		managers.network.matchmake:register_callback("found_game", callback(self, self, "_cb_matchmake_found_game"))
-		managers.network.matchmake:register_callback("player_joined", callback(self, self, "_cb_matchmake_player_joined"))
+	local is_signed_in = managers.network.account:signin_state() == "signed in"
 
-		if PSN:is_fetching_status() then
-			self:show_fetching_status_dialog({
-				cancel_func = function()
-					PSN:fetch_cancel()
-				end
-			})
+	if IS_EPIC_MM and not DistributionMatchmaking:logged_on() then
+		is_signed_in = false
+	end
 
-			local function f()
-				self:open_ps4_sign_in_menu(cb)
-			end
-
-			PSN:set_matchmaking_callback("fetch_status", f)
-			PSN:fetch_status()
-		else
-			self:open_ps4_sign_in_menu(cb)
-		end
-	elseif self:is_xb1() then
-		self._queued_privilege_check_cb = nil
-
-		managers.system_menu:close("fetching_status")
-
-		if managers.network.account:signin_state() == "signed in" then
-			if managers.user:check_privilege(nil, "multiplayer_sessions", callback(self, self, "_check_privilege_callback")) then
-				self:show_fetching_status_dialog({
-					cancel_func = function()
-						self._queued_privilege_check_cb = nil
-					end
-				})
-
-				self._queued_privilege_check_cb = cb
-			else
-				self:show_err_not_signed_in_dialog()
-			end
-		else
-			self:show_err_not_signed_in_dialog()
-		end
+	if is_signed_in then
+		cb(true)
 	else
-		local is_signed_in = managers.network.account:signin_state() == "signed in"
-
-		if IS_EPIC_MM and not DistributionMatchmaking:logged_on() then
-			is_signed_in = false
-		end
-
-		if is_signed_in then
-			cb(true)
-		else
-			self:show_err_not_signed_in_dialog()
-		end
-	end
-end
-
-function MenuManager:_check_privilege_callback(is_success)
-	if self._queued_privilege_check_cb then
-		local cb = self._queued_privilege_check_cb
-
-		managers.system_menu:close("fetching_status")
-
-		self._queued_privilege_check_cb = nil
-
-		if is_success then
-			self:open_xb1_sign_in_menu(cb)
-		else
-			self:show_err_not_signed_in_dialog()
-		end
-	end
-end
-
-function MenuManager:open_ps3_sign_in_menu(cb)
-	local success = true
-
-	if managers.network.account:signin_state() == "not signed in" then
-		managers.network.account:show_signin_ui()
-
-		if managers.network.account:signin_state() == "signed in" then
-			print("SIGNED IN")
-
-			if #PSN:get_world_list() == 0 then
-				managers.network.matchmake:getting_world_list()
-			end
-
-			success = self:_enter_online_menus()
-		else
-			success = false
-		end
-	else
-		if #PSN:get_world_list() == 0 then
-			managers.network.matchmake:getting_world_list()
-			PSN:init_matchmaking()
-		end
-
-		success = self:_enter_online_menus()
-	end
-
-	cb(success)
-end
-
-function MenuManager:open_ps4_sign_in_menu(cb)
-	if managers.system_menu:is_active_by_id("fetching_status") then
-		managers.system_menu:close("fetching_status")
-	end
-
-	local success = true
-
-	if PSN:needs_update() then
-		Global.boot_invite = nil
-		success = false
-
-		self:show_err_new_patch()
-	elseif not PSN:cable_connected() then
-		self:show_internet_connection_required()
-
-		success = false
-	elseif managers.network.account:signin_state() == "not signed in" then
-		managers.network.account:show_signin_ui()
-
-		if managers.network.account:signin_state() == "signed in" then
-			print("SIGNED IN")
-
-			if #PSN:get_world_list() == 0 then
-				managers.network.matchmake:getting_world_list()
-			end
-
-			success = self:_enter_online_menus()
-		else
-			success = false
-		end
-	else
-		if #PSN:get_world_list() == 0 then
-			managers.network.matchmake:getting_world_list()
-			PSN:init_matchmaking()
-		end
-
-		success = self:_enter_online_menus()
-	end
-
-	cb(success)
-end
-
-function MenuManager:open_x360_sign_in_menu(cb)
-	local success = self:_enter_online_menus_x360()
-
-	cb(success)
-end
-
-function MenuManager:open_xb1_sign_in_menu(cb)
-	local success = self:_enter_online_menus_xb1()
-
-	cb(success)
-end
-
-function MenuManager:external_enter_online_menus()
-	if self:is_ps4() then
-		self:_enter_online_menus_ps4()
-	elseif self:is_xb1() then
-		self:_enter_online_menus_xb1()
-	end
-end
-
-function MenuManager:_enter_online_menus()
-	local res = PSN:check_plus()
-
-	if res == 1 then
-		managers.platform:set_presence("Signed_in")
-		print("voice chat from enter_online_menus")
-		managers.network:ps3_determine_voice(false)
-		managers.network.voice_chat:check_status_information()
-		PSN:set_online_callback(callback(self, self, "ps3_disconnect"))
-
-		return true
-	elseif res ~= 2 then
 		self:show_err_not_signed_in_dialog()
 	end
-
-	return false
-end
-
-function MenuManager:_enter_online_menus_ps4()
-	managers.platform:set_presence("Signed_in")
-	print("voice chat from enter_online_menus_ps4")
-	managers.network:ps3_determine_voice(false)
-	managers.network.voice_chat:check_status_information()
-	PSN:set_online_callback(callback(self, self, "ps3_disconnect"))
-end
-
-function MenuManager:_enter_online_menus_x360()
-	managers.platform:set_presence("Signed_in")
-	managers.user:on_entered_online_menus()
-
-	return true
-end
-
-function MenuManager:_enter_online_menus_xb1()
-	managers.platform:set_presence("Signed_in")
-	managers.user:on_entered_online_menus()
-
-	return true
 end
 
 function MenuManager:psn_disconnected()
@@ -1164,9 +963,7 @@ function MenuManager:psn_disconnected()
 		self:exit_online_menues()
 	end
 
-	self:show_mp_disconnected_internet_dialog({
-		ok_func = nil
-	})
+	self:show_mp_disconnected_internet_dialog({})
 end
 
 function MenuManager:steam_disconnected()
@@ -1178,9 +975,7 @@ function MenuManager:steam_disconnected()
 		self:exit_online_menues()
 	end
 
-	self:show_mp_disconnected_internet_dialog({
-		ok_func = nil
-	})
+	self:show_mp_disconnected_internet_dialog({})
 end
 
 function MenuManager:xbox_disconnected()
@@ -1195,9 +990,7 @@ function MenuManager:xbox_disconnected()
 
 	self:exit_online_menues()
 	managers.user:on_exit_online_menus()
-	self:show_mp_disconnected_internet_dialog({
-		ok_func = nil
-	})
+	self:show_mp_disconnected_internet_dialog({})
 end
 
 function MenuManager:ps3_disconnect(connected)
@@ -7588,11 +7381,7 @@ function MenuPrePlanningInitiator:modifiy_node_view_only(node, item_name, select
 	node:parameters().current_viewing = true
 
 	local params = {
-		callback = nil,
-		color_ranges = nil,
 		localize = "false",
-		name = nil,
-		text_id = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -7675,11 +7464,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning(node, item_name, sele
 	end
 
 	local params = {
-		callback = nil,
-		color_ranges = nil,
 		localize = "false",
-		name = nil,
-		text_id = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -7740,11 +7525,8 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_category(node, item_n
 	local category_data = tweak_data:get_raw_value("preplanning", "categories", current_category) or {}
 	local params = {
 		callback = "open_preplanning_type_item",
-		color_ranges = nil,
 		enabled = true,
 		localize = "false",
-		name = nil,
-		text_id = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -7801,11 +7583,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_type(node, item_name,
 
 	local params = {
 		callback = "reserve_preplanning_mission_element_by_item",
-		color_ranges = nil,
-		localize = "false",
-		name = nil,
-		text_id = nil,
-		tooltip = nil
+		localize = "false"
 	}
 	local mission_elements = managers.preplanning:get_mission_elements_by_type(current_type)
 	local locations = managers.preplanning:sort_mission_elements_into_locations(mission_elements)
@@ -7957,12 +7735,8 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_plan(node, item_name,
 	local category_data = tweak_data.preplanning.categories[current_plan]
 	local params = {
 		callback = "vote_preplanning_mission_element_by_item",
-		color_ranges = nil,
 		enabled = false,
 		localize = "false",
-		name = nil,
-		text_id = nil,
-		votes = nil,
 		tooltip = {
 			texture = tweak_data.preplanning.gui.type_icons_path
 		}
@@ -8047,7 +7821,6 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_custom(node, item_nam
 
 	local params = {
 		callback = "pressed_preplanning_custom_point",
-		color_ranges = nil,
 		localize = "false",
 		name = "test",
 		text_id = "TEST"

@@ -2827,7 +2827,6 @@ function InstantExplosiveBulletBase:on_collision(col_ray, weapon_unit, user_unit
 		self:on_collision_server(tmp_vec1, col_ray.normal, damage, user_unit, weapon_unit, managers.network:session():local_peer():id())
 
 		return {
-			type = nil,
 			variant = "explosion",
 			col_ray = col_ray
 		}
