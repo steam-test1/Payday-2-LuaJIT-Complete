@@ -41,16 +41,16 @@ function ElementInventoryDummy:_spawn_weapon(category, slot, position, rotation)
 		return
 	end
 
-	local slot_data = category[slot]
+	local crafted = category[slot]
 
-	if not slot_data then
+	if not crafted then
 		return
 	end
 
-	self._factory_id = slot_data.factory_id
+	self._factory_id = crafted.factory_id
 
-	self:assemble_weapon(slot_data.factory_id, slot_data.blueprint, position, rotation)
-	managers.sync:add_synced_weapon_blueprint(self._id, slot_data.factory_id, slot_data.blueprint)
+	self:assemble_weapon(crafted.factory_id, crafted.blueprint, position, rotation)
+	managers.sync:add_synced_weapon_blueprint(self._id, crafted.factory_id, crafted.blueprint)
 end
 
 function ElementInventoryDummy:assemble_weapon(factory_id, blueprint, position, rotation)
@@ -85,16 +85,16 @@ function ElementInventoryDummy:_spawn_mask(category, slot, position, rotation)
 		return
 	end
 
-	local slot_data = category[slot]
+	local crafted = category[slot]
 
-	if not slot_data then
+	if not crafted then
 		return
 	end
 
-	self._mask_id = slot_data.mask_id
+	self._mask_id = crafted.mask_id
 
-	self:assemble_mask(slot_data.mask_id, slot_data.blueprint, position, rotation)
-	managers.sync:add_synced_mask_blueprint(self._id, slot_data.mask_id, slot_data.blueprint)
+	self:assemble_mask(crafted.mask_id, crafted.blueprint, position, rotation)
+	managers.sync:add_synced_mask_blueprint(self._id, crafted.mask_id, crafted.blueprint)
 end
 
 function ElementInventoryDummy:assemble_mask(mask_id, blueprint, position, rotation)

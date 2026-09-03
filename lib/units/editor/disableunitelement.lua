@@ -177,6 +177,16 @@ function DisableUnitUnitElement:remove_unit_list_btn()
 	end
 end
 
+function DisableUnitUnitElement:select_unit_list_btn()
+	local function f(unit)
+		return self._units[unit:unit_data().unit_id]
+	end
+
+	local dialog = SelectUnitByNameModal:new("Select Units", f)
+
+	managers.editor:select_units(dialog:selected_units())
+end
+
 function DisableUnitUnitElement:_build_panel(panel, panel_sizer)
 	self:_create_panel()
 
@@ -188,6 +198,8 @@ function DisableUnitUnitElement:_build_panel(panel, panel_sizer)
 	self._btn_toolbar:connect("ADD_UNIT_LIST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "add_unit_list_btn"), nil)
 	self._btn_toolbar:add_tool("REMOVE_UNIT_LIST", "Remove unit from unit list", CoreEws.image_path("toolbar\\delete_16x16.png"), nil)
 	self._btn_toolbar:connect("REMOVE_UNIT_LIST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "remove_unit_list_btn"), nil)
+	self._btn_toolbar:add_tool("SELECT_UNIT_LIST", "Select units from unit list", CoreEws.image_path("world_editor\\gift_wrap.png"), nil)
+	self._btn_toolbar:connect("SELECT_UNIT_LIST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "select_unit_list_btn"), nil)
 	self._btn_toolbar:realize()
 	panel_sizer:add(self._btn_toolbar, 0, 1, "EXPAND,LEFT")
 end

@@ -3902,14 +3902,6 @@ function InteractionTweakData:init(tweak_data)
 	self.access_sidejobs.text_id = "hud_chill_access_sidejobs"
 	self.access_sidejobs.interact_distance = 200
 	self.access_sidejobs.axis = "y"
-	self.access_weapon_primary = {}
-	self.access_weapon_primary.text_id = "hud_chill_access_primary"
-	self.access_weapon_primary.interact_distance = 200
-	self.access_weapon_primary.category = "primaries"
-	self.access_weapon_secondary = {}
-	self.access_weapon_secondary.text_id = "hud_chill_access_secondary"
-	self.access_weapon_secondary.interact_distance = 200
-	self.access_weapon_secondary.category = "secondaries"
 	self.chl_slot_machine = {}
 	self.chl_slot_machine.text_id = "hud_hold_bet_slotmachine_chl"
 	self.chl_slot_machine.action_text_id = "hud_action_playing_slots"

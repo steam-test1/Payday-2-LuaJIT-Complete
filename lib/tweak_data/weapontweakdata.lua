@@ -8142,7 +8142,6 @@ function WeaponTweakData:_init_contender(weapon_data)
 	self.contender.can_shoot_through_enemy = true
 	self.contender.can_shoot_through_shield = true
 	self.contender.can_shoot_through_wall = true
-	self.contender.ignore_damage_upgrades = true
 	self.contender.stats = {
 		alert_size = 7,
 		concealment = 20,

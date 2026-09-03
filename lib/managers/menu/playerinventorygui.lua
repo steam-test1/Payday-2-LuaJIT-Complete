@@ -3009,9 +3009,24 @@ end
 function PlayerInventoryGui:_update_info_weapon_mod(box)
 	local mod_data = box.params.mod_data
 	local crafted = managers.blackmarket:get_crafted_category_slot(mod_data.category, mod_data.slot)
+
+	if not crafted then
+		self:set_info_text(" ")
+
+		return
+	end
+
 	local part_id = managers.weapon_factory:get_part_id_from_weapon_by_type(mod_data.selected_tab, crafted.blueprint)
 	local tweak_stats = tweak_data.weapon.stats
-	local modifier_stats = tweak_data.weapon[crafted.weapon_id].stats_modifiers
+	local weapon_tweak = tweak_data.weapon[crafted.weapon_id]
+
+	if not weapon_tweak then
+		self:set_info_text(" ")
+
+		return
+	end
+
+	local modifier_stats = weapon_tweak.stats_modifiers
 
 	if not part_id or managers.weapon_factory:is_part_standard_issue_by_weapon_id(mod_data.name, part_id) then
 		local total_base_stats, total_mods_stats, total_skill_stats = WeaponDescription._get_stats(crafted.weapon_id, mod_data.category, mod_data.slot)

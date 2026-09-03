@@ -6949,11 +6949,48 @@ function BlackMarketGui:update_info_text()
 
 	local is_renaming_this = self._renaming_item and not self._data.is_loadout and self._renaming_item.category == slot_data.category and self._renaming_item.slot == slot_data.slot
 
+	local function update_info_text_invalid_unusable()
+		updated_texts[UTS_LOCKED].text = updated_texts[UTS_LOCKED].text .. managers.localization:text("bm_invalid_unusable_kit_hint_short")
+		updated_texts[UTS_WARN].text = updated_texts[UTS_WARN].text .. managers.localization:text("bm_invalid_unusable_kit_hint") .. "\n\n"
+
+		for k, v in pairs(slot_data.invalid_unusable_locked) do
+			if k == "bad_part_id" or k == "bad_duped_part_id" or k == "bad_materials_id" then
+				updated_texts[UTS_WARN].text = updated_texts[UTS_WARN].text .. "» " .. managers.localization:text("bm_invalid_unusable_reason_" .. k) .. "\n"
+
+				local parts_list
+
+				if k == "bad_part_id" then
+					parts_list = managers.blackmarket:get_invalid_unusable_parts(slot_data.category, slot_data.slot)
+				elseif k == "bad_duped_part_id" then
+					parts_list = managers.blackmarket:get_crafted_category_slot(slot_data.category, slot_data.slot)
+					parts_list = parts_list and managers.weapon_factory:get_duplicate_parts_by_type(parts_list.blueprint) or {}
+				elseif k == "bad_materials_id" then
+					parts_list = managers.blackmarket:get_invalid_unusable_mask_blueprint_parts(slot_data.slot, k)
+				end
+
+				table.sort(parts_list)
+
+				for i, part_id in ipairs(parts_list) do
+					updated_texts[UTS_WARN].text = updated_texts[UTS_WARN].text .. "  '" .. part_id .. "'\n"
+				end
+			else
+				local reason_data = {}
+
+				reason_data.REASON_ID = reason_data.REASON_ID or k == "bad_mask_id" and tostring(slot_data.name)
+				reason_data.REASON_ID = reason_data.REASON_ID or k == "bad_textures_id" and tostring(managers.blackmarket:get_crafted_category_slot(slot_data.category, slot_data.slot).blueprint.pattern.id)
+				reason_data.REASON_ID = reason_data.REASON_ID or k == "bad_weapon_id" and tostring(slot_data.name)
+				reason_data.REASON_ID = reason_data.REASON_ID or k == "bad_weapon_factory_id" and tostring(slot_data.factory_name)
+				reason_data.REASON_ID = reason_data.REASON_ID or k == "bad_weapon_factory_mismatch" and tostring(slot_data.name)
+				reason_data.REASON_ID2 = reason_data.REASON_ID2 or k == "bad_weapon_factory_mismatch" and tostring(slot_data.factory_name)
+				reason_data.REASON_ID = reason_data.REASON_ID or k == "bad_global_value" and tostring(slot_data.name and tweak_data.weapon[slot_data.name] and tweak_data.weapon[slot_data.name].global_value)
+				updated_texts[UTS_WARN].text = updated_texts[UTS_WARN].text .. "» " .. managers.localization:text("bm_invalid_unusable_reason_" .. k, reason_data) .. "\n"
+			end
+		end
+	end
+
 	self._armor_info_panel:set_visible(identifier == self.identifiers.armor)
 
 	if identifier == self.identifiers.weapon then
-		local price = slot_data.price or 0
-
 		if slot_data.ignore_slot then
 			-- Nothing
 		elseif not slot_data.empty_slot then
@@ -6969,6 +7006,8 @@ function BlackMarketGui:update_info_text()
 			local resource_color = {}
 
 			updated_texts[UTS_STATS].resource_color = resource_color
+
+			local price = slot_data.price or 0
 
 			if price > 0 then
 				updated_texts[UTS_STATS].text = "##" .. managers.localization:to_upper_text(slot_data.not_moddable and "st_menu_cost" or "st_menu_value") .. " " .. managers.experience:cash_string(price) .. "##"
@@ -7041,8 +7080,11 @@ function BlackMarketGui:update_info_text()
 			end
 
 			if slot_data.global_value and slot_data.global_value ~= "normal" then
-				updated_texts[UTS_SELECTED].text = updated_texts[UTS_SELECTED].text .. "##" .. managers.localization:to_upper_text(tweak_data.lootdrop.global_values[slot_data.global_value].desc_id) .. "##"
-				updated_texts[UTS_SELECTED].resource_color = tweak_data.lootdrop.global_values[slot_data.global_value].color
+				local global_value_data = tweak_data.lootdrop.global_values[slot_data.global_value]
+				local global_value_desc = managers.localization:to_upper_text(global_value_data and global_value_data.desc_id)
+
+				updated_texts[UTS_SELECTED].text = updated_texts[UTS_SELECTED].text .. "##" .. global_value_desc .. "##"
+				updated_texts[UTS_SELECTED].resource_color = global_value_data and global_value_data.color or Color.red
 				updated_texts[UTS_SELECTED].below_stats = true
 			end
 
@@ -10205,24 +10247,19 @@ function BlackMarketGui:show_btns(slot)
 end
 
 function BlackMarketGui:get_lock_icon(data, default)
-	local category = data.category
-	local global_value = data.global_value
-	local dlc = data.dlc
-	local unlock_dlc = data.unlock_dlc
-	local name = data.name
-	local unlocked = data.unlocked
-	local level = data.level
-	local skill_based = data.skill_based
-	local func_based = data.func_based
-
 	if _G.IS_VR and data.vr_locked then
 		return "units/pd2_dlc_vr/player/lock_vr"
 	end
+
+	local unlocked = data.unlocked
 
 	if unlocked and (type(unlocked) ~= "number" or unlocked > 0) then
 		return nil
 	end
 
+	local global_value = data.global_value
+	local dlc = data.dlc
+	local unlock_dlc = data.unlock_dlc
 	local dlc_unlocked = not dlc or managers.dlc:is_dlc_unlocked(dlc)
 	local should_hide_unavailable = data.hide_unavailable or dlc and managers.dlc:should_hide_unavailable(dlc)
 	local global_value_dlc = managers.dlc:global_value_to_dlc(global_value)
@@ -10239,9 +10276,13 @@ function BlackMarketGui:get_lock_icon(data, default)
 		return should_hide_unavailable and "guis/textures/pd2/skilltree/padlock" or global_value_data.unique_lock_icon or "guis/textures/pd2/lock_dlc"
 	end
 
+	local skill_based = data.skill_based
+
 	if skill_based then
 		return "guis/textures/pd2/lock_skill"
 	end
+
+	local func_based = data.func_based
 
 	if func_based then
 		local _, _, icon = BlackMarketGui.get_func_based(func_based)
@@ -12001,261 +12042,255 @@ function BlackMarketGui:populate_masks_new(data)
 		crafted = crafted_category[index]
 
 		if crafted then
-			local guis_mask_id = crafted.mask_id
-
-			mask_tweak = tweak_data.blackmarket.masks[guis_mask_id]
-
-			if mask_tweak.guis_id then
-				guis_mask_id = mask_tweak.guis_id
-			end
-
-			new_data = {
-				name = crafted.mask_id,
-				name_localized = managers.blackmarket:get_mask_name_by_category_slot("masks", index),
-				raw_name_localized = managers.localization:text(mask_tweak.name_id),
-				custom_name_text = managers.blackmarket:get_crafted_custom_name("masks", index, true),
-				custom_name_text_right = crafted.modded and -55 or -20,
-				custom_name_text_width = crafted.modded and 0.6
-			}
+			new_data = {}
 			new_data.category = "masks"
-			new_data.global_value = crafted.global_value
-			new_data.dlc = mask_tweak.dlc or managers.dlc:global_value_to_dlc(new_data.global_value)
-			new_data.unlock_dlc = mask_tweak.unlock_dlc or new_data.dlc
 			new_data.slot = index
-			new_data.unlocked = true
+			new_data.name = crafted.mask_id
 			new_data.equipped = crafted.equipped
-			new_data.bitmap_texture = managers.blackmarket:get_mask_icon(guis_mask_id, self._data.character_id)
-			new_data.stream = false
-			new_data.holding = currently_holding and hold_crafted_item.slot == index
+			new_data.global_value = crafted.global_value
 			new_data.item_id = crafted.item_id
-			hide_unavailable = nil
+			new_data.unlocked = true
+			new_data.stream = false
+			new_data.custom_name_text = managers.blackmarket:get_crafted_custom_name("masks", index, true)
+			new_data.custom_name_text_right = crafted.modded and -55 or -20
+			new_data.custom_name_text_width = crafted.modded and 0.6
 
-			if new_data.dlc and not managers.dlc:is_dlc_unlocked(new_data.dlc) then
-				new_data.unlocked = false
-				new_data.lock_texture = self:get_lock_icon(new_data, "guis/textures/pd2/lock_incompatible")
-				dlc_global_value = managers.dlc:dlc_to_global_value(new_data.unlock_dlc)
-				dlc_global_value_tweak = dlc_global_value and tweak_data.lootdrop.global_values[dlc_global_value]
-				dlc_unlock_id = dlc_global_value_tweak and tweak_data.lootdrop.global_values[dlc_global_value].unlock_id or managers.dlc:get_unavailable_id(dlc_global_value)
-				hide_unavailable = managers.dlc:should_hide_unavailable(new_data.dlc)
-				new_data.dlc_locked = hide_unavailable and managers.dlc:get_unavailable_id(dlc_global_value) or dlc_unlock_id
-			elseif managers.dlc:is_content_achievement_locked(data.category, new_data.name) or managers.dlc:is_content_achievement_milestone_locked(data.category, new_data.name) then
-				-- Nothing
-			elseif managers.dlc:is_content_skirmish_locked(data.category, new_data.name) then
-				-- Nothing
-			elseif managers.dlc:is_content_crimespree_locked(data.category, new_data.name) then
-				-- Nothing
-			elseif managers.dlc:is_content_infamy_locked(data.category, new_data.name) then
-				-- Nothing
-			else
-				local event_job_challenge = managers.event_jobs:get_challenge_from_reward(data.category, new_data.name)
+			do
+				local guis_mask_id = crafted.mask_id
 
-				if event_job_challenge and not event_job_challenge.completed then
+				mask_tweak = tweak_data.blackmarket.masks[guis_mask_id]
+				new_data.name_localized = managers.blackmarket:get_mask_name_by_category_slot("masks", index)
+				new_data.raw_name_localized = managers.localization:text(mask_tweak.name_id)
+				new_data.dlc = mask_tweak.dlc or managers.dlc:global_value_to_dlc(new_data.global_value)
+				new_data.unlock_dlc = mask_tweak.unlock_dlc or new_data.dlc
+				new_data.bitmap_texture = managers.blackmarket:get_mask_icon(guis_mask_id, self._data.character_id)
+				new_data.holding = currently_holding and hold_crafted_item.slot == index
+				hide_unavailable = nil
+
+				if new_data.dlc and not managers.dlc:is_dlc_unlocked(new_data.dlc) then
 					new_data.unlocked = false
-					new_data.lock_texture = "guis/textures/pd2/lock_achievement"
-					new_data.dlc_locked = event_job_challenge.locked_id or "menu_event_job_lock_info"
-				end
-			end
-
-			local locked_global_value
-			local locked_parts = {}
-
-			if new_data.unlocked then
-				local name_converter = {
-					color = "colors",
-					material = "materials",
-					pattern = "textures"
-				}
-				local default_blueprint = mask_tweak.default_blueprint or {}
-
-				for type, part in pairs(crafted.blueprint) do
-					if default_blueprint[type] ~= part.id and default_blueprint[name_converter[type]] ~= part.id and tweak_data.lootdrop.global_values[part.global_value] and tweak_data.lootdrop.global_values[part.global_value].dlc and not managers.dlc:is_dlc_unlocked(part.global_value) then
-						locked_parts[type] = part.global_value
-						locked_global_value = part.global_value or locked_global_value
-						new_data.unlocked = false
-					end
-				end
-			else
-				locked_global_value = new_data.global_value
-			end
-
-			if not new_data.unlocked then
-				local t, gv = next(locked_parts)
-
-				if gv then
 					new_data.lock_texture = self:get_lock_icon(new_data, "guis/textures/pd2/lock_incompatible")
-					new_data.dlc_locked = tweak_data.lootdrop.global_values[gv] and tweak_data.lootdrop.global_values[gv].unlock_id or managers.dlc:get_unavailable_id(gv)
-				end
-			end
-
-			new_data.active = true
-
-			if currently_holding then
-				if index ~= 1 then
-					new_data.selected_text = managers.localization:to_upper_text("bm_menu_btn_swap_mask")
-				end
-
-				if index ~= 1 and new_data.slot ~= hold_crafted_item.slot then
-					table.insert(new_data, "m_swap")
-				end
-
-				table.insert(new_data, "i_stop_move")
-			else
-				if new_data.unlocked and new_data.active then
-					if not new_data.equipped then
-						table.insert(new_data, "m_equip")
-					end
-
-					if index ~= 1 and new_data.equipped then
-						table.insert(new_data, "m_move")
-					end
-
-					local can_mod_mask = true
-
-					if can_mod_mask and not crafted.modded and managers.blackmarket:can_modify_mask(index) and index ~= 1 then
-						table.insert(new_data, "m_mod")
-					end
-
-					table.insert(new_data, "m_preview")
+					dlc_global_value = managers.dlc:dlc_to_global_value(new_data.unlock_dlc)
+					dlc_global_value_tweak = dlc_global_value and tweak_data.lootdrop.global_values[dlc_global_value]
+					dlc_unlock_id = dlc_global_value_tweak and tweak_data.lootdrop.global_values[dlc_global_value].unlock_id or managers.dlc:get_unavailable_id(dlc_global_value)
+					hide_unavailable = managers.dlc:should_hide_unavailable(new_data.dlc)
+					new_data.dlc_locked = hide_unavailable and managers.dlc:get_unavailable_id(dlc_global_value) or dlc_unlock_id
+				elseif managers.dlc:is_content_achievement_locked(data.category, new_data.name) or managers.dlc:is_content_achievement_milestone_locked(data.category, new_data.name) then
+					-- Nothing
+				elseif managers.dlc:is_content_skirmish_locked(data.category, new_data.name) then
+					-- Nothing
+				elseif managers.dlc:is_content_crimespree_locked(data.category, new_data.name) then
+					-- Nothing
+				elseif managers.dlc:is_content_infamy_locked(data.category, new_data.name) then
+					-- Nothing
 				else
-					if index ~= 1 and new_data.equipped then
-						table.insert(new_data, "m_move")
+					local event_job_challenge = managers.event_jobs:get_challenge_from_reward(data.category, new_data.name)
+
+					if event_job_challenge and not event_job_challenge.completed then
+						new_data.unlocked = false
+						new_data.lock_texture = "guis/textures/pd2/lock_achievement"
+						new_data.dlc_locked = event_job_challenge.locked_id or "menu_event_job_lock_info"
+					end
+				end
+
+				local locked_global_value
+				local locked_parts = {}
+
+				if new_data.unlocked then
+					local name_converter = {
+						color = "colors",
+						material = "materials",
+						pattern = "textures"
+					}
+					local default_blueprint = mask_tweak.default_blueprint or {}
+
+					for type, part in pairs(crafted.blueprint) do
+						if default_blueprint[type] ~= part.id and default_blueprint[name_converter[type]] ~= part.id and tweak_data.lootdrop.global_values[part.global_value] and tweak_data.lootdrop.global_values[part.global_value].dlc and not managers.dlc:is_dlc_unlocked(part.global_value) then
+							locked_parts[type] = part.global_value
+							locked_global_value = part.global_value or locked_global_value
+							new_data.unlocked = false
+						end
+					end
+				else
+					locked_global_value = new_data.global_value
+				end
+
+				if not new_data.unlocked then
+					local t, gv = next(locked_parts)
+
+					if gv then
+						new_data.lock_texture = self:get_lock_icon(new_data, "guis/textures/pd2/lock_incompatible")
+						new_data.dlc_locked = tweak_data.lootdrop.global_values[gv] and tweak_data.lootdrop.global_values[gv].unlock_id or managers.dlc:get_unavailable_id(gv)
+					end
+				end
+
+				new_data.active = true
+
+				if currently_holding then
+					if index ~= 1 then
+						new_data.selected_text = managers.localization:to_upper_text("bm_menu_btn_swap_mask")
 					end
 
-					if new_data.active then
+					if index ~= 1 and new_data.slot ~= hold_crafted_item.slot then
+						table.insert(new_data, "m_swap")
+					end
+
+					table.insert(new_data, "i_stop_move")
+				else
+					if new_data.unlocked and new_data.active then
+						if not new_data.equipped then
+							table.insert(new_data, "m_equip")
+						end
+
+						if index ~= 1 and new_data.equipped then
+							table.insert(new_data, "m_move")
+						end
+
+						local can_mod_mask = true
+
+						if can_mod_mask and not crafted.modded and managers.blackmarket:can_modify_mask(index) and index ~= 1 then
+							table.insert(new_data, "m_mod")
+						end
+
 						table.insert(new_data, "m_preview")
-					end
-				end
-
-				if index ~= 1 then
-					if managers.money:get_mask_sell_value(new_data.name, new_data.global_value) > 0 then
-						table.insert(new_data, "m_sell")
 					else
-						table.insert(new_data, "m_remove")
+						if index ~= 1 and new_data.equipped then
+							table.insert(new_data, "m_move")
+						end
+
+						if new_data.active then
+							table.insert(new_data, "m_preview")
+						end
 					end
 
-					if is_win32 and not managers.menu:is_pc_controller() then
-						-- Nothing
+					if index ~= 1 then
+						if managers.money:get_mask_sell_value(new_data.name, new_data.global_value) > 0 then
+							table.insert(new_data, "m_sell")
+						else
+							table.insert(new_data, "m_remove")
+						end
 					end
 				end
-			end
 
-			local override_color = Color.white
+				local override_color = Color.white
 
-			new_data.search_rect = self:get_global_value_search(new_data)
-			new_data.bitmap_color = override_color
+				new_data.search_rect = self:get_global_value_search(new_data)
+				new_data.bitmap_color = override_color
 
-			if crafted.modded then
-				new_data.mini_icons = {}
+				if crafted.modded then
+					new_data.mini_icons = {}
 
-				for i, material_id in ipairs({
-					crafted.blueprint.material.id,
-					crafted.blueprint.color_a.id,
-					crafted.blueprint.color_b.id,
-					crafted.blueprint.color_c.id
-				}) do
-					local gui_icon_path, gui_icon_color = managers.blackmarket:get_mask_materials_icon(material_id)
-					local right = 0
-					local bottom = 0
-					local w = 24
-					local h = 24
+					for i, material_id in ipairs({
+						crafted.blueprint.material.id,
+						crafted.blueprint.color_a.id,
+						crafted.blueprint.color_b.id,
+						crafted.blueprint.color_c.id
+					}) do
+						local gui_icon_path, gui_icon_color = managers.blackmarket:get_mask_materials_icon(material_id)
+						local right = 0
+						local bottom = 0
+						local w = 24
+						local h = 24
 
-					if i == 1 then
-						right = 24
-						bottom = 30
-					elseif i == 2 then
-						right = 24
-						bottom = 2
-					elseif i == 3 then
-						right = 0
-						bottom = 2
-					elseif i == 4 then
-						right = 0
-						bottom = 30
+						if i == 1 then
+							right = 24
+							bottom = 30
+						elseif i == 2 then
+							right = 24
+							bottom = 2
+						elseif i == 3 then
+							right = 0
+							bottom = 2
+						elseif i == 4 then
+							right = 0
+							bottom = 30
+						end
+
+						table.insert(new_data.mini_icons, {
+							layer = 1,
+							stream = true,
+							right = right,
+							bottom = bottom,
+							w = w,
+							h = h,
+							texture = gui_icon_path,
+							color = gui_icon_color
+						})
 					end
 
-					table.insert(new_data.mini_icons, {
-						layer = 1,
-						stream = true,
-						right = right,
-						bottom = bottom,
-						w = w,
-						h = h,
-						texture = gui_icon_path,
-						color = gui_icon_color
-					})
-				end
-
-				if locked_parts.color then
-					local texture = self:get_lock_icon({
-						global_value = locked_parts.color
-					})
-
-					table.insert(new_data.mini_icons, {
-						bottom = -4,
-						h = 24,
-						layer = 2,
-						right = 6,
-						w = 24,
-						texture = texture,
-						color = tweak_data.screen_colors.important_1
-					})
-				end
-
-				local pattern = crafted.blueprint.pattern.id
-
-				do
-					local right = 0
-					local top = 0
-					local w = 48
-					local h = 48
-
-					table.insert(new_data.mini_icons, {
-						layer = 1,
-						stream = true,
-						texture = tweak_data.blackmarket.textures[pattern].texture,
-						right = right,
-						top = top,
-						w = w,
-						h = h,
-						render_template = Idstring("VertexColorTexturedPatterns")
-					})
-
-					if locked_parts.pattern then
+					if locked_parts.color then
 						local texture = self:get_lock_icon({
-							global_value = locked_parts.pattern
+							global_value = locked_parts.color
 						})
 
 						table.insert(new_data.mini_icons, {
+							bottom = -4,
+							h = 24,
 							layer = 2,
+							right = 6,
+							w = 24,
 							texture = texture,
-							w = w - 8,
-							h = w - 8,
-							right = right + 4,
-							top = top + 4,
 							color = tweak_data.screen_colors.important_1
 						})
 					end
+
+					local pattern = crafted.blueprint.pattern.id
+
+					do
+						local right = 0
+						local top = 0
+						local w = 48
+						local h = 48
+						local texture_data = tweak_data.blackmarket.textures[pattern]
+
+						table.insert(new_data.mini_icons, {
+							layer = 1,
+							stream = true,
+							texture = texture_data and texture_data.texture or "units/payday2/masks/shared_textures/patterns/pattern_no_color_no_material_df",
+							right = right,
+							top = top,
+							w = w,
+							h = h,
+							render_template = Idstring("VertexColorTexturedPatterns")
+						})
+
+						if locked_parts.pattern then
+							local texture = self:get_lock_icon({
+								global_value = locked_parts.pattern
+							})
+
+							table.insert(new_data.mini_icons, {
+								layer = 2,
+								texture = texture,
+								w = w - 8,
+								h = w - 8,
+								right = right + 4,
+								top = top + 4,
+								color = tweak_data.screen_colors.important_1
+							})
+						end
+					end
+
+					new_data.mini_icons.borders = {
+						w = 68
+					}
+				elseif index ~= 1 and managers.blackmarket:can_modify_mask(i) and managers.blackmarket:got_new_drop("normal", "mask_mods", crafted.mask_id) then
+					new_data.mini_icons = new_data.mini_icons or {}
+
+					table.insert(new_data.mini_icons, {
+						h = 16,
+						layer = 1,
+						name = "new_drop",
+						right = 0,
+						stream = false,
+						texture = "guis/textures/pd2/blackmarket/inv_newdrop",
+						top = 0,
+						visible = true,
+						w = 16
+					})
+
+					new_data.new_drop_data = {}
 				end
-
-				new_data.mini_icons.borders = {
-					w = 68
-				}
-			elseif index ~= 1 and managers.blackmarket:can_modify_mask(i) and managers.blackmarket:got_new_drop("normal", "mask_mods", crafted.mask_id) then
-				new_data.mini_icons = new_data.mini_icons or {}
-
-				table.insert(new_data.mini_icons, {
-					h = 16,
-					layer = 1,
-					name = "new_drop",
-					right = 0,
-					stream = false,
-					texture = "guis/textures/pd2/blackmarket/inv_newdrop",
-					top = 0,
-					visible = true,
-					w = 16
-				})
-
-				new_data.new_drop_data = {}
 			end
 
 			if self._populate_masks_debug then
@@ -12412,39 +12447,43 @@ function BlackMarketGui:populate_weapon_category_new(data)
 		crafted = crafted_category[index]
 
 		if crafted then
+			local crafted_weapon_data = weapon_data[crafted.weapon_id]
+
 			new_data = {
-				ignore_slot = data.equip_weapon_cosmetics and data.equip_weapon_cosmetics.weapon_id ~= crafted.weapon_id,
+				category = category,
+				slot = index,
 				name = crafted.weapon_id,
 				name_localized = managers.blackmarket:get_weapon_name_by_category_slot(category, index),
-				raw_name_localized = managers.weapon_factory:get_weapon_name_by_factory_id(crafted.factory_id)
+				factory_name = crafted.factory_id,
+				raw_name_localized = crafted.factory_id and managers.weapon_factory:get_weapon_name_by_factory_id(crafted.factory_id)
 			}
+			new_data.can_afford = true
+			new_data.price = managers.money:get_weapon_slot_sell_value(category, index)
+			new_data.ignore_slot = data.equip_weapon_cosmetics and data.equip_weapon_cosmetics.weapon_id ~= crafted.weapon_id
 			new_data.custom_name_text = not new_data.ignore_slot and managers.blackmarket:get_crafted_custom_name(category, index, true)
-			new_data.category = category
-			new_data.slot = index
-			unlocked, part_dlc_lock = managers.blackmarket:weapon_unlocked_by_crafted(new_data.category, new_data.slot)
+			unlocked, part_dlc_lock = managers.blackmarket:weapon_unlocked_by_crafted(category, new_data.slot)
 			new_data.unlocked = unlocked
 			new_data.level = managers.blackmarket:weapon_level(crafted.weapon_id)
-			new_data.can_afford = true
 			new_data.equipped = crafted.equipped
-			new_data.skill_based = weapon_data[crafted.weapon_id].skill_based
+			new_data.skill_based = crafted_weapon_data and crafted_weapon_data.skill_based
 			new_data.skill_name = new_data.skill_based and "bm_menu_skill_locked_" .. new_data.name
-			new_data.func_based = weapon_data[crafted.weapon_id].func_based
-			new_data.price = managers.money:get_weapon_slot_sell_value(category, index)
+			new_data.func_based = crafted_weapon_data and crafted_weapon_data.func_based
 
 			local bitmap_texture, bg_texture = managers.blackmarket:get_weapon_icon_path(crafted.weapon_id, crafted.cosmetics)
 
 			new_data.bitmap_texture = bitmap_texture
-			new_data.bg_texture = not new_data.ignore_slot and bg_texture
+			new_data.bg_texture = bg_texture
 			new_data.customize_locked = crafted.customize_locked
 			new_data.locked_name = crafted.locked_name
 			new_data.name_color = new_data.locked_name and crafted.cosmetics and tweak_data.economy.rarities[tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id].rarity or "common"].color
 			new_data.stream = true
-			new_data.akimbo_gui_data = nil
 			new_data.comparision_data = not new_data.ignore_slot and managers.blackmarket:get_weapon_stats(category, index)
 
 			if _G.IS_VR then
-				new_data.vr_locked = tweak_data.vr:is_locked("weapons", crafted.weapon_id)
-				new_data.unlocked = new_data.unlocked and not tweak_data.vr:is_locked("weapons", crafted.weapon_id)
+				local vr_is_locked = tweak_data.vr:is_locked("weapons", crafted.weapon_id)
+
+				new_data.vr_locked = vr_is_locked
+				new_data.unlocked = new_data.unlocked and not vr_is_locked
 			end
 
 			new_data.global_value = tweak_data.weapon[new_data.name] and tweak_data.weapon[new_data.name].global_value or "normal"
@@ -12484,7 +12523,7 @@ function BlackMarketGui:populate_weapon_category_new(data)
 			new_data.bitmap_color = override_color
 			new_data.mini_icons = {}
 
-			if not new_data.ignore_slot then
+			if not new_data.ignore_slot and icon_list then
 				for _, icon in ipairs(icon_list) do
 					table.insert(new_data.mini_icons, {
 						h = 16,
@@ -12568,9 +12607,8 @@ function BlackMarketGui:populate_weapon_category_new(data)
 					table.insert(new_data, "i_stop_move")
 				else
 					local has_mods = managers.weapon_factory:has_weapon_more_than_default_parts(crafted.factory_id)
-					local can_mod = true
 
-					if data.allow_modify ~= false and can_mod and has_mods and active then
+					if data.allow_modify ~= false and has_mods and active then
 						table.insert(new_data, "w_mod")
 					end
 
@@ -13419,8 +13457,7 @@ function BlackMarketGui:populate_mods(data)
 				})
 			end
 
-			local is_gadget = false
-			local show_stats = not new_data.conflict and new_data.unlocked and not is_gadget and not new_data.dlc_locked and weapon_factory_tweak[new_data.name].type ~= "charm"
+			local show_stats = not new_data.conflict and new_data.unlocked and not new_data.dlc_locked and weapon_factory_tweak[new_data.name].type ~= "charm"
 
 			if show_stats then
 				new_data.comparision_data = managers.blackmarket:get_weapon_stats_with_mod(new_data.category, new_data.slot, mod_name)
@@ -15523,7 +15560,11 @@ function BlackMarketGui:choose_equip_weapon_cosmetics_callback(data)
 end
 
 function BlackMarketGui:sell_tradable_item(data)
-	MenuCallbackHandler:steam_sell_item(data)
+	if IS_STEAM then
+		MenuCallbackHandler:steam_sell_item(data)
+	else
+		managers.menu_component:post_event("menu_error")
+	end
 end
 
 function BlackMarketGui:preview_weapon_cosmetics_callback(data)
@@ -16053,7 +16094,7 @@ function BlackMarketGui:open_weapon_buy_menu(data, check_allowed_item_func)
 			local gv = weapon_tweak[id] and weapon_tweak[id].global_value
 			local dlc = gv and managers.dlc:global_value_to_dlc(gv)
 			local level = item.level or 0
-			local sn = gv and tweak_data.lootdrop.global_values[gv].sort_number or 0
+			local sn = gv and tweak_data.lootdrop.global_values[gv] and tweak_data.lootdrop.global_values[gv].sort_number or 0
 			local skill = item.skill_based or false
 			local func = item.func_based or false
 

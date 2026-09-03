@@ -28252,22 +28252,27 @@ function WeaponFactoryTweakData:create_bonuses(tweak_data, weapon_skins)
 			},
 			wpn_fps_upg_bonus_concealment_p2 = {
 				weapon = {
-					"p90"
+					"p90",
+					"x_p90"
 				}
 			},
 			wpn_fps_upg_bonus_concealment_p3 = {
 				weapon = {
 					"b92fs",
+					"x_b92fs",
 					"famas",
 					"g26",
 					"jowi",
 					"new_raging_bull",
-					"ppk"
+					"x_rage",
+					"ppk",
+					"x_ppk"
 				}
 			},
 			wpn_fps_upg_bonus_recoil_p2 = {
 				weapon = {
 					"deagle",
+					"x_deagle",
 					"komodo",
 					"m16",
 					"scar"
@@ -40446,7 +40451,7 @@ function WeaponFactoryTweakData:_init_polymer()
 	self.parts.wpn_fps_smg_polymer_bolt_standard = {
 		a_obj = "a_bolt",
 		name_id = "bm_wp_polymer_bolt",
-		type = "extra",
+		type = "bolt",
 		unit = "units/pd2_dlc_turtles/weapons/wpn_fps_smg_polymer_pts/wpn_fps_smg_polymer_bolt_standard",
 		stats = {
 			value = 1

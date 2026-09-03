@@ -730,10 +730,18 @@ function WeaponFactoryManager:_part_data(part_id, factory_id, override)
 		return {}
 	end
 
+	local weapon = factory[factory_id]
+
+	if not weapon then
+		Application:error("[WeaponFactoryManager:_part_data] factory_id does not exist!", factory_id)
+
+		return {}
+	end
+
 	local part = deep_clone(factory.parts[part_id])
 
-	if factory[factory_id].override and factory[factory_id].override[part_id] then
-		for d, v in pairs(factory[factory_id].override[part_id]) do
+	if weapon.override and weapon.override[part_id] then
+		for d, v in pairs(weapon.override[part_id]) do
 			part[d] = type(v) == "table" and deep_clone(v) or v
 		end
 	end
@@ -1104,7 +1112,9 @@ function WeaponFactoryManager:get_part_id_from_weapon_by_type(type, blueprint)
 	local factory = tweak_data.weapon.factory
 
 	for _, part_id in pairs(blueprint) do
-		if factory.parts[part_id].type == type then
+		local part_data = factory.parts[part_id]
+
+		if part_data and part_data.type == type then
 			return part_id
 		end
 	end

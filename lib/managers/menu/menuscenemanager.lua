@@ -1147,16 +1147,18 @@ function MenuSceneManager:on_blackmarket_reset()
 end
 
 function MenuSceneManager:_setup_bg()
-	local yaw = 180
+	local v3z = Vector3(0, 0, 0)
+	local r3z = Rotation(180, 0, 0)
 
-	self._bg_unit = World:spawn_unit(Idstring("units/menu/menu_scene/menu_cylinder"), Vector3(0, 0, 0), Rotation(yaw, 0, 0))
+	self._bg_unit = World:spawn_unit(Idstring("units/menu/menu_scene/menu_cylinder"), v3z, r3z)
 
-	World:spawn_unit(Idstring("units/menu/menu_scene/menu_cylinder_pattern"), Vector3(0, 0, 0), Rotation(yaw, 0, 0))
-	World:spawn_unit(Idstring("units/menu/menu_scene/menu_smokecylinder1"), Vector3(0, 0, 0), Rotation(yaw, 0, 0))
-	World:spawn_unit(Idstring("units/menu/menu_scene/menu_smokecylinder2"), Vector3(0, 0, 0), Rotation(yaw, 0, 0))
-	World:spawn_unit(Idstring("units/menu/menu_scene/menu_smokecylinder3"), Vector3(0, 0, 0), Rotation(yaw, 0, 0))
+	World:spawn_unit(Idstring("units/menu/menu_scene/menu_cylinder_pattern"), v3z, r3z)
+	World:spawn_unit(Idstring("units/menu/menu_scene/menu_smokecylinder1"), v3z, r3z)
+	World:spawn_unit(Idstring("units/menu/menu_scene/menu_smokecylinder2"), v3z, r3z)
+	World:spawn_unit(Idstring("units/menu/menu_scene/menu_smokecylinder3"), v3z, r3z)
+	World:spawn_unit(Idstring("units/menu/menu_scene/menu_solid_bg"), v3z, r3z)
 
-	self._menu_logo = World:spawn_unit(Idstring("units/menu/menu_scene/menu_logo"), Vector3(0, 10, 0), Rotation(yaw, 0, 0))
+	self._menu_logo = World:spawn_unit(Idstring("units/menu/menu_scene/menu_logo"), Vector3(0, 10, 0), r3z)
 
 	self:set_character(managers.blackmarket:get_preferred_character())
 	self:_setup_lobby_characters()

@@ -508,6 +508,10 @@ end
 function BlackMarketManager:weapon_unlocked(weapon_id)
 	local data = Global.blackmarket_manager.weapons[weapon_id]
 
+	if not data then
+		return false
+	end
+
 	if data.func_based and not self[data.func_based](self) then
 		return false
 	end
@@ -527,6 +531,11 @@ function BlackMarketManager:weapon_unlocked_by_crafted(category, slot)
 	local cosmetics_data = cosmetics and cosmetics.id and tweak_data.blackmarket.weapon_skins[cosmetics.id]
 	local cosmetic_blueprint = cosmetics_data and managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(weapon_id, cosmetics.id) or {}
 	local data = Global.blackmarket_manager.weapons[weapon_id]
+
+	if not data then
+		return false
+	end
+
 	local unlocked = data.unlocked
 
 	if _G.IS_VR then
@@ -839,9 +848,9 @@ function BlackMarketManager:equipped_weapon(category, weap_category)
 		local on_sell_weap_f = self.on_sell_weapon
 		local cur_equip_data
 
-		for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
-			if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
-				on_sell_weap_f(self, category, s, not data.equipped)
+		for s, crafted in pairs(Global.blackmarket_manager.crafted_items[category]) do
+			if not weap_verify_f(weap_factory_manager, crafted.weapon_id, crafted.factory_id) then
+				on_sell_weap_f(self, category, s, not crafted.equipped)
 			end
 		end
 	end
@@ -1058,24 +1067,24 @@ function BlackMarketManager:equip_weapon(category, slot, skip_outfit)
 	local on_sell_weap_f = self.on_sell_weapon
 	local cache_data_override
 
-	for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
-		if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
-			on_sell_weap_f(self, category, s, not data.equipped)
+	for s, crafted in pairs(Global.blackmarket_manager.crafted_items[category]) do
+		if not weap_verify_f(weap_factory_manager, crafted.weapon_id, crafted.factory_id) then
+			on_sell_weap_f(self, category, s, not crafted.equipped)
 		elseif s == slot and self:weapon_unlocked_by_crafted(category, slot) then
-			data.equipped = true
-			cache_data_override = data
+			crafted.equipped = true
+			cache_data_override = crafted
 		else
-			data.equipped = false
+			crafted.equipped = false
 		end
 	end
 
 	if not cache_data_override then
 		self:aquire_default_weapons()
 
-		for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
+		for s, crafted in pairs(Global.blackmarket_manager.crafted_items[category]) do
 			if self:weapon_unlocked_by_crafted(category, s) then
-				data.equipped = true
-				cache_data_override = data
+				crafted.equipped = true
+				cache_data_override = crafted
 
 				break
 			end
@@ -2751,14 +2760,23 @@ function BlackMarketManager:get_weapon_data(weapon_id)
 end
 
 function BlackMarketManager:get_crafted_custom_name(category, slot, add_quotation)
-	local crafted_slot = self:get_crafted_category_slot(category, slot)
-	local cosmetics = crafted_slot and crafted_slot.cosmetics
+	local crafted = self:get_crafted_category_slot(category, slot)
 
-	if cosmetics and cosmetics.id and tweak_data.blackmarket.weapon_skins[cosmetics.id] and tweak_data.blackmarket.weapon_skins[cosmetics.id].unique_name_id then
+	if not crafted then
+		Application:warn("[BlackMarketManager:get_crafted_custom_name] Cannot get name of nil item", category, slot)
+
 		return
 	end
 
-	local custom_name = crafted_slot and crafted_slot.custom_name
+	local cosmetics = crafted.cosmetics
+
+	if cosmetics and cosmetics.id and tweak_data.blackmarket.weapon_skins[cosmetics.id] and tweak_data.blackmarket.weapon_skins[cosmetics.id].unique_name_id then
+		Application:warn("[BlackMarketManager:get_crafted_custom_name] Cannot get name of uniquely named cosmetic item", category, slot, tweak_data.blackmarket.weapon_skins[cosmetics.id].unique_name_id)
+
+		return
+	end
+
+	local custom_name = crafted.custom_name
 
 	if custom_name then
 		if add_quotation then
@@ -2770,13 +2788,21 @@ function BlackMarketManager:get_crafted_custom_name(category, slot, add_quotatio
 end
 
 function BlackMarketManager:set_crafted_custom_name(category, slot, custom_name)
-	local crafted_slot = self:get_crafted_category_slot(category, slot)
+	local crafted = self:get_crafted_category_slot(category, slot)
 
-	if crafted_slot.locked_name then
+	if not crafted then
+		Application:warn("[BlackMarketManager:set_crafted_custom_name] Cannot change name of nil item", category, slot)
+
 		return
 	end
 
-	crafted_slot.custom_name = custom_name ~= "" and custom_name
+	if crafted.locked_name then
+		Application:warn("[BlackMarketManager:set_crafted_custom_name] Cannot change name of item when name is locked", category, slot)
+
+		return
+	end
+
+	crafted.custom_name = custom_name ~= "" and custom_name
 end
 
 function BlackMarketManager:get_mask_name_by_category_slot(category, slot)
@@ -2787,8 +2813,14 @@ function BlackMarketManager:get_mask_name_by_category_slot(category, slot)
 			return "\"" .. crafted_slot.custom_name .. "\""
 		end
 
-		return managers.localization:text(tweak_data.blackmarket.masks[crafted_slot.mask_id].name_id)
+		local mask_tweak_data = tweak_data.blackmarket.masks[crafted_slot.mask_id]
+
+		if mask_tweak_data then
+			return managers.localization:text(mask_tweak_data.name_id)
+		end
 	end
+
+	Application:warn("[BlackMarketManager:set_crafted_custom_name] Could not get mask name", category, slot)
 
 	return ""
 end
@@ -2984,6 +3016,11 @@ end
 function BlackMarketManager:_calculate_weapon_concealment(weapon)
 	local factory_id = weapon.factory_id
 	local weapon_id = weapon.weapon_id or managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
+
+	if not tweak_data.weapon[weapon_id] then
+		return 0
+	end
+
 	local blueprint = weapon.blueprint
 	local base_stats = tweak_data.weapon[weapon_id].stats
 	local modifiers_stats = tweak_data.weapon[weapon_id].stats_modifiers
@@ -3276,9 +3313,14 @@ function BlackMarketManager:get_lootdropable_mods_by_weapon_id(weapon_id, global
 end
 
 function BlackMarketManager:get_dropable_mods_by_weapon_id(weapon_id, weapon_data)
+	local weapon_mods = managers.weapon_factory:get_parts_from_weapon_id(weapon_id)
+
+	if not weapon_mods then
+		return {}
+	end
+
 	local parts_tweak_data = tweak_data.weapon.factory.parts
 	local all_mods = tweak_data.blackmarket.weapon_mods
-	local weapon_mods = managers.weapon_factory:get_parts_from_weapon_id(weapon_id)
 	local dropable_mods = {}
 	local dlc_mods = {}
 	local blueprint, blueprint_gv
@@ -4893,10 +4935,15 @@ end
 
 function BlackMarketManager:on_sell_weapon(category, slot, skip_verification)
 	if not self._global.crafted_items[category] or not self._global.crafted_items[category][slot] then
+		Application:error("[BlackMarketManager:on_sell_weapon] Nothing to sell in this space. cat/slot:", category, slot)
+
 		return
 	end
 
 	local crafted = self._global.crafted_items[category][slot]
+
+	print("[BlackMarketManager:on_sell_weapon] Selling weapon from", category, slot, "exists", not not crafted)
+
 	local cosmetic_blueprint = crafted and crafted.cosmetics and crafted.cosmetics.id and managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(crafted.weapon_id, crafted.cosmetics.id)
 
 	self:add_crafted_weapon_blueprint_to_inventory(category, slot, cosmetic_blueprint)
@@ -7876,7 +7923,7 @@ function BlackMarketManager:_set_weapon_cosmetics(category, slot, cosmetics, upd
 	end
 
 	crafted.customize_locked = weapon_skin_data.locked
-	crafted.locked_name = weapon_skin_data.rarity == "legendary"
+	crafted.locked_name = weapon_skin_data.rarity == "legendary" and true or nil
 	crafted.cosmetics = cosmetics
 
 	if old_cosmetic_id then
@@ -8980,11 +9027,11 @@ function BlackMarketManager:_cleanup_blackmarket()
 	local cleanup_mask = false
 	local crafted_masks = crafted_items.masks
 
-	for i, mask in pairs(crafted_masks) do
+	for slot, mask in pairs(crafted_masks) do
 		local mask_data = tweak_data.blackmarket.masks[mask.mask_id]
 
-		cleanup_mask = not mask_data or mask_data.inaccessible
-		cleanup_mask = cleanup_mask or not chk_global_value_func(mask.global_value, mask, mask_data.infamous and "infamous" or mask_data.dlc or mask_data.global_value)
+		cleanup_mask = false
+		cleanup_mask = not mask_data or mask_data.inaccessible or not chk_global_value_func(mask.global_value, mask, mask_data.infamous and "infamous" or mask_data.dlc or mask_data.global_value)
 
 		local blueprint = mask.blueprint or {}
 
@@ -9007,9 +9054,9 @@ function BlackMarketManager:_cleanup_blackmarket()
 
 					local convert_to_material = tweak_data.blackmarket.mask_colors[data.id] and tweak_data.blackmarket.mask_colors[data.id].convert_to_material or "plastic"
 
-					part_data = tweak_data.blackmarket.materials[convert_to_material]
+					part_data = convert_to_material and tweak_data.blackmarket.materials[convert_to_material]
 
-					print("[BlackMarketManager:LICConverter] Converting material to " .. convert_to_material, data.id, inspect(part_data or {}))
+					print("[BlackMarketManager:LICConverter] Converting material to ", convert_to_material, data.id, inspect(part_data or {}))
 
 					if part_data then
 						data.id = convert_to_material
@@ -9029,13 +9076,15 @@ function BlackMarketManager:_cleanup_blackmarket()
 		end
 
 		if cleanup_mask then
-			if i == 1 then
-				self._global.crafted_items.masks[i] = false
+			print("[BlackMarketManager:_cleanup_blackmarket] Mask wants cleanup", slot)
+
+			if slot == 1 then
+				self._global.crafted_items.masks[slot] = false
 
 				self:on_buy_mask(self._defaults.mask, "normal", 1, nil)
 			else
 				Application:error("BlackMarketManager:_cleanup_blackmarket() Mask or component of mask invalid, Selling the mask!", "mask_id", mask.mask_id, "global_value", mask.global_value, "blueprint", inspect(blueprint))
-				self:on_sell_mask(i, true)
+				self:on_sell_mask(slot, true)
 			end
 		end
 	end
@@ -9052,6 +9101,18 @@ function BlackMarketManager:_cleanup_blackmarket()
 			if invalid_parts[i] and invalid_parts[i].slot == slot then
 				Application:error("removing part from invalid_parts", "part_id", part_id)
 				table.remove(invalid_parts, i)
+			end
+		end
+	end
+
+	local function charm_cleanup_quick_fix(blueprint)
+		local charm_prefix = "wpn_fps_upg_charm_"
+		local tweak_data_weapon_factory_parts = tweak_data.weapon.factory.parts
+
+		for idx, part_id in dpairs(blueprint) do
+			if charm_prefix == string.sub(part_id, 1, #charm_prefix) and not tweak_data_weapon_factory_parts[part_id] then
+				Application:error("BlackMarketManager:_cleanup_blackmarket() Weapon charm '" .. part_id .. "' does not exist! Quickly removing it from the weapon blueprint before cleanup begins.")
+				table.remove(blueprint, idx)
 			end
 		end
 	end
@@ -9083,6 +9144,8 @@ function BlackMarketManager:_cleanup_blackmarket()
 			local index_table = {}
 			local default_blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
 
+			charm_cleanup_quick_fix(blueprint)
+
 			if missing_from_default[factory_id] then
 				for _, part in ipairs(missing_from_default[factory_id]) do
 					if not table.contains(blueprint, part) then
@@ -9092,9 +9155,14 @@ function BlackMarketManager:_cleanup_blackmarket()
 				end
 			end
 
-			local weapon_invalid = not Global.blackmarket_manager.weapons[weapon_id] or not tweak_data.weapon[weapon_id] or not tweak_data.weapon.factory[factory_id] or managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id) ~= factory_id or managers.weapon_factory:get_weapon_id_by_factory_id(factory_id) ~= weapon_id or not chk_global_value_func(tweak_data.weapon[weapon_id].global_value)
+			local bad_weapon_id = not Global.blackmarket_manager.weapons[weapon_id] or not tweak_data.weapon[weapon_id]
+			local bad_global_value = bad_weapon_id or not chk_global_value_func(tweak_data.weapon[weapon_id].global_value)
+			local bad_weapon_factory_id = not tweak_data.weapon.factory[factory_id]
+			local bad_weapon_factory_mismatch = managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id) ~= factory_id or managers.weapon_factory:get_weapon_id_by_factory_id(factory_id) ~= weapon_id
+			local weapon_invalid = bad_weapon_id or bad_weapon_factory_id or bad_weapon_factory_mismatch or bad_global_value
 
 			if weapon_invalid then
+				Application:warn("[BlackMarketManager:_cleanup_blackmarket] weapon in slot was invalid for some reason", slot, bad_weapon_id and "bad_weapon_id", bad_weapon_factory_id and "bad_weapon_factory_id", bad_weapon_factory_mismatch and "bad_weapon_factory_mismatch", bad_global_value and "bad_global_value")
 				table.insert(invalid_weapons, slot)
 			else
 				item.global_values = item.global_values or {}
@@ -9198,6 +9266,7 @@ function BlackMarketManager:_cleanup_blackmarket()
 					end
 				else
 					item.customize_locked = nil
+					item.locked_name = nil
 				end
 			end
 
@@ -9516,9 +9585,7 @@ function BlackMarketManager:_verify_dlc_items()
 
 			equipped_mask = nil
 		end
-	end
 
-	if equipped_mask then
 		local mask_tweak = tweak_data.blackmarket.masks[equipped_mask.mask_id]
 
 		if mask_tweak and mask_tweak.dlc and not managers.dlc:is_dlc_unlocked(mask_tweak.dlc) then
@@ -9964,7 +10031,7 @@ function BlackMarketManager:_verfify_equipped_category(category)
 
 		local slot, craft = next(self._global.crafted_items[category])
 
-		print("  Equip", category, slot)
+		print("[BlackMarketManager:_verfify_equipped_category] 1 Equip", category, slot)
 
 		craft.equipped = true
 
@@ -9978,6 +10045,7 @@ function BlackMarketManager:_verfify_equipped_category(category)
 
 	for slot, craft in pairs(self._global.crafted_items[category]) do
 		if not weap_verify_f(weap_factory_manager, craft.weapon_id, craft.factory_id) then
+			print("[BlackMarketManager:_verfify_equipped_category] deleting invalid entry in slot ", slot, " category ", category, " entry data ", inspect(craft))
 			on_sell_weap_f(self, category, slot, not craft.equipped)
 		end
 	end
@@ -9987,6 +10055,8 @@ function BlackMarketManager:_verfify_equipped_category(category)
 			if self:weapon_unlocked_by_crafted(category, slot) then
 				return
 			else
+				print("[BlackMarketManager:_verfify_equipped_category] UnEquip:", category, slot)
+
 				craft.equipped = false
 			end
 		end
@@ -9994,7 +10064,7 @@ function BlackMarketManager:_verfify_equipped_category(category)
 
 	for slot, craft in pairs(self._global.crafted_items[category]) do
 		if self:weapon_unlocked_by_crafted(category, slot) then
-			print("  Equip", category, slot)
+			print("[BlackMarketManager:_verfify_equipped_category] 2 Equip:", category, slot)
 
 			craft.equipped = true
 
