@@ -1,5 +1,64 @@
 VehicleTweakData = VehicleTweakData or class()
 
+local ALLOW_LIST_TEMP = {
+	ammo = true,
+	artifact_statue = true,
+	auc_auction_item = true,
+	auc_statue_special_01 = true,
+	auc_statue_special_02 = true,
+	auc_statue_special_03 = true,
+	auc_statue_special_04 = true,
+	cage_bag = true,
+	circuit = true,
+	coke = true,
+	corp_papers = true,
+	corp_prototype = true,
+	counterfeit_money = true,
+	cro_loot1 = true,
+	cro_loot2 = true,
+	diamonds = true,
+	engine_01 = true,
+	engine_02 = true,
+	engine_03 = true,
+	engine_04 = true,
+	engine_05 = true,
+	engine_06 = true,
+	engine_07 = true,
+	engine_08 = true,
+	engine_09 = true,
+	engine_10 = true,
+	engine_11 = true,
+	engine_12 = true,
+	equipment_bag = true,
+	goat = true,
+	gold = true,
+	grenades = true,
+	ladder_bag = true,
+	lance_bag = true,
+	lance_bag_large = true,
+	lost_artifact = true,
+	mad_master_server_value_1 = true,
+	mad_master_server_value_2 = true,
+	mad_master_server_value_3 = true,
+	mad_master_server_value_4 = true,
+	master_server = true,
+	masterpiece_painting = true,
+	meth = true,
+	money = true,
+	old_wine = true,
+	painting = true,
+	paper_roll = true,
+	present = true,
+	prototype = true,
+	ranc_weapon = true,
+	safe_ovk = true,
+	safe_wpn = true,
+	samurai_suit = true,
+	turret = true,
+	warhead = true,
+	weapon = true
+}
+
 function VehicleTweakData:init(tweak_data)
 	self:_init_data_falcogini()
 	self:_init_data_muscle()
@@ -13,6 +72,7 @@ function VehicleTweakData:init(tweak_data)
 	self:_init_data_bike_2()
 	self:_init_data_wanker()
 	self:_init_data_golfcart()
+	self:_init_data_kubelwagen()
 end
 
 function VehicleTweakData:_init_data_falcogini()
@@ -71,6 +131,7 @@ function VehicleTweakData:_init_data_falcogini()
 	self.falcogini.interact_distance = 350
 	self.falcogini.driver_camera_offset = Vector3(0, 0, 2.5)
 	self.falcogini.fov = 75
+	self.falcogini.pos_rsrv_radius = 240
 end
 
 function VehicleTweakData:_init_data_muscle()
@@ -136,6 +197,9 @@ function VehicleTweakData:_init_data_muscle()
 			name = "loot"
 		}
 	}
+	self.muscle.secure_loot = false
+	self.muscle.loot_filter = ALLOW_LIST_TEMP
+	self.muscle.allow_only_filtered = true
 	self.muscle.trunk_point = "trunk"
 	self.muscle.damage = {
 		max_health = 9000000
@@ -147,6 +211,7 @@ function VehicleTweakData:_init_data_muscle()
 	self.muscle.interact_distance = 350
 	self.muscle.driver_camera_offset = Vector3(0, 0.2, 2.5)
 	self.muscle.fov = 75
+	self.muscle.pos_rsrv_radius = 280
 end
 
 function VehicleTweakData:_init_data_forklift()
@@ -203,6 +268,7 @@ function VehicleTweakData:_init_data_forklift()
 	self.forklift.interact_distance = 350
 	self.forklift.driver_camera_offset = Vector3(0, 0, 7.5)
 	self.forklift.fov = 70
+	self.forklift.pos_rsrv_radius = 180
 	self.forklift_3 = deep_clone(self.forklift)
 	self.forklift_3.max_loot_bags = 0
 end
@@ -254,6 +320,7 @@ function VehicleTweakData:_init_data_forklift_2()
 	self.forklift_2.interact_distance = 350
 	self.forklift_2.driver_camera_offset = Vector3(0, 0, 7.5)
 	self.forklift_2.fov = 70
+	self.forklift_2.pos_rsrv_radius = 250
 end
 
 function VehicleTweakData:_init_data_box_truck_1()
@@ -316,6 +383,9 @@ function VehicleTweakData:_init_data_box_truck_1()
 			name = "loot_right"
 		}
 	}
+	self.box_truck_1.secure_loot = false
+	self.box_truck_1.loot_filter = ALLOW_LIST_TEMP
+	self.box_truck_1.allow_only_filtered = true
 	self.box_truck_1.damage = {
 		max_health = 900000
 	}
@@ -326,6 +396,7 @@ function VehicleTweakData:_init_data_box_truck_1()
 	self.box_truck_1.interact_distance = 350
 	self.box_truck_1.driver_camera_offset = Vector3(0, 0.2, 2.5)
 	self.box_truck_1.fov = 75
+	self.box_truck_1.pos_rsrv_radius = 340
 end
 
 function VehicleTweakData:_init_data_mower_1()
@@ -375,6 +446,7 @@ function VehicleTweakData:_init_data_mower_1()
 	self.mower_1.interact_distance = 350
 	self.mower_1.driver_camera_offset = Vector3(0, 0, 3.5)
 	self.mower_1.fov = 70
+	self.mower_1.pos_rsrv_radius = 120
 end
 
 function VehicleTweakData:_init_data_boat_rib_1()
@@ -573,6 +645,7 @@ function VehicleTweakData:_init_data_bike_1()
 			yaw = 30
 		}
 	}
+	self.bike_1.pos_rsrv_radius = 120
 end
 
 function VehicleTweakData:_init_data_bike_2()
@@ -625,6 +698,7 @@ function VehicleTweakData:_init_data_bike_2()
 			yaw = 30
 		}
 	}
+	self.bike_2.pos_rsrv_radius = 120
 end
 
 function VehicleTweakData:_init_data_wanker()
@@ -698,6 +772,7 @@ function VehicleTweakData:_init_data_wanker()
 	self.wanker.interact_distance = 350
 	self.wanker.driver_camera_offset = Vector3(0, 0, 0)
 	self.wanker.fov = 75
+	self.wanker.pos_rsrv_radius = 300
 end
 
 function VehicleTweakData:_init_data_golfcart()
@@ -752,4 +827,84 @@ function VehicleTweakData:_init_data_golfcart()
 	self.golfcart.interact_distance = 350
 	self.golfcart.driver_camera_offset = Vector3(0, 0, 7.5)
 	self.golfcart.fov = 70
+	self.golfcart.pos_rsrv_radius = 160
+end
+
+function VehicleTweakData:_init_data_kubelwagen()
+	self.kubelwagen = {}
+	self.kubelwagen.name_id = "vhl_kubelwagen_name"
+	self.kubelwagen.hud_label_offset = 180
+	self.kubelwagen.animations = {
+		driver = "drive_muscle_driver",
+		passenger_back_left = "drive_muscle_back_left",
+		passenger_back_right = "drive_muscle_back_right",
+		passenger_front = "drive_muscle_passanger",
+		vehicle_id = "muscle"
+	}
+	self.kubelwagen.sound = {
+		broken_engine = "falcogini_engine_broken_loop",
+		bump = "car_bumper_01",
+		bump_rtpc = "car_bump_vel",
+		bump_treshold = 8,
+		door_close = "car_door_open",
+		engine_rpm_rtpc = "car_falcogini_rpm",
+		engine_sound_event = "muscle",
+		engine_speed_rtpc = "car_falcogini_speed",
+		hit = "car_hit_gen_01",
+		hit_rtpc = "car_hit_vel",
+		lateral_slip_treshold = 0.35,
+		longitudal_slip_treshold = 0.8,
+		slip = "car_skid_01",
+		slip_stop = "car_skid_stop_01"
+	}
+	self.kubelwagen.seats = {
+		driver = {
+			driving = true,
+			name = "driver"
+		},
+		passenger_front = {
+			allow_shooting = false,
+			driving = false,
+			has_shooting_mode = true,
+			name = "passenger_front",
+			shooting_pos = Vector3(50, -20, 50)
+		},
+		passenger_back_left = {
+			allow_shooting = false,
+			driving = false,
+			has_shooting_mode = true,
+			name = "passenger_back_left"
+		},
+		passenger_back_right = {
+			allow_shooting = false,
+			driving = false,
+			has_shooting_mode = true,
+			name = "passenger_back_right"
+		}
+	}
+	self.kubelwagen.loot_points = {
+		loot_left = {
+			name = "loot_left"
+		},
+		loot_right = {
+			name = "loot_right"
+		},
+		loot = {
+			name = "loot"
+		}
+	}
+	self.kubelwagen.secure_loot = false
+	self.kubelwagen.loot_filter = ALLOW_LIST_TEMP
+	self.kubelwagen.allow_only_filtered = true
+	self.kubelwagen.damage = {
+		max_health = 9000000
+	}
+	self.kubelwagen.max_speed = 160
+	self.kubelwagen.max_rpm = 8000
+	self.kubelwagen.loot_drop_point = "v_repair_engine"
+	self.kubelwagen.max_loot_bags = 4
+	self.kubelwagen.interact_distance = 350
+	self.kubelwagen.driver_camera_offset = Vector3(0, 0.2, 2.5)
+	self.kubelwagen.fov = 75
+	self.kubelwagen.pos_rsrv_radius = 230
 end

@@ -5,7 +5,8 @@ CopDamage.civilian_types = table.list_to_set({
 	"bank_manager",
 	"robbers_safehouse",
 	"civilian_mariachi",
-	"civilian_no_penalty"
+	"civilian_no_penalty",
+	"lead_curator"
 })
 CopDamage.gangster_types = table.list_to_set({
 	"gangster",
@@ -937,7 +938,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	local achievements = tweak_data.achievement.enemy_kill_achievements or {}
 	local current_mask_id = managers.blackmarket:equipped_mask().mask_id
 	local attack_weapon_type = attack_weapon:base()._type
-	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, diff_pass, complete_count_pass, count_memory_pass, critical_pass, variant_pass, attack_weapon_type_pass, vip_pass, tags_all_pass, tags_any_pass, player_state_pass, mutators_pass, style_pass, all_pass, memory
+	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, stealth_pass, loud_pass, part_pass, parts_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, diff_pass, complete_count_pass, count_memory_pass, critical_pass, variant_pass, attack_weapon_type_pass, vip_pass, tags_all_pass, tags_any_pass, player_state_pass, mutators_pass, style_pass, all_pass, memory
 	local kill_count_no_reload = managers.job:get_memory("kill_count_no_reload_" .. tostring(attack_weapon:base()._name_id), true)
 
 	kill_count_no_reload = (kill_count_no_reload or 0) + 1
@@ -967,12 +968,15 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 		enemy_pass = not achievement_data.enemy or unit_type == achievement_data.enemy
 		enemy_weapon_pass = not achievement_data.enemy_weapon or unit_weapon == achievement_data.enemy_weapon
 		mask_pass = not achievement_data.mask or current_mask_id == achievement_data.mask
+		mask_pass = mask_pass and (not achievement_data.masks or table.contains(achievement_data.masks, current_mask_id))
 		hiding_pass = not achievement_data.hiding or unit_anim and unit_anim.hide
 		head_pass = not achievement_data.in_head or head
 		distance_pass = not achievement_data.distance or attack_data.col_ray and attack_data.col_ray.distance and attack_data.col_ray.distance >= achievement_data.distance
 		zipline_pass = not achievement_data.on_zipline or attack_data.attacker_unit and attack_data.attacker_unit:movement():zipline_unit()
 		rope_pass = not achievement_data.on_rope or self._unit:movement() and self._unit:movement():rope_unit()
 		level_pass = not achievement_data.level_id or (managers.job:current_level_id() or "") == achievement_data.level_id
+		stealth_pass = not achievement_data.stealth or managers.groupai and managers.groupai:state():whisper_mode()
+		loud_pass = not achievement_data.loud or managers.groupai and not managers.groupai:state():whisper_mode()
 		steelsight_pass = achievement_data.in_steelsight == nil or attack_data.attacker_unit and attack_data.attacker_unit:movement() and not not attack_data.attacker_unit:movement():current_state():in_steelsight() == not not achievement_data.in_steelsight
 		count_no_reload_pass = not achievement_data.count_no_reload or kill_count_no_reload >= achievement_data.count_no_reload
 		count_pass = not achievement_data.kill_count or achievement_data.weapon and managers.statistics:session_killed_by_weapon(achievement_data.weapon) == achievement_data.kill_count
@@ -1047,7 +1051,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 		end
 
 		vip_pass = not achievement_data.is_vip
-		all_pass = weapon_type_pass and weapons_pass and weapon_pass and fire_mode_pass and ammo_pass and one_shot_pass and enemy_pass and enemy_weapon_pass and mask_pass and hiding_pass and head_pass and distance_pass and zipline_pass and rope_pass and level_pass and part_pass and parts_pass and steelsight_pass and cop_pass and count_no_reload_pass and count_pass and diff_pass and complete_count_pass and critical_pass and variant_pass and attack_weapon_type_pass and vip_pass and tags_all_pass and tags_any_pass and player_state_pass and style_pass and mutators_pass
+		all_pass = weapon_type_pass and weapons_pass and weapon_pass and fire_mode_pass and ammo_pass and one_shot_pass and enemy_pass and enemy_weapon_pass and mask_pass and hiding_pass and head_pass and distance_pass and zipline_pass and rope_pass and level_pass and stealth_pass and loud_pass and part_pass and parts_pass and steelsight_pass and cop_pass and count_no_reload_pass and count_pass and diff_pass and complete_count_pass and critical_pass and variant_pass and attack_weapon_type_pass and vip_pass and tags_all_pass and tags_any_pass and player_state_pass and style_pass and mutators_pass
 		count_memory_pass = not achievement_data.timer and not achievement_data.count_in_row
 
 		if achievement_data.timer then
@@ -3335,6 +3339,10 @@ function CopDamage:drop_pickup(extra)
 			position = mvec_1,
 			rotation = rotation
 		})
+
+		if not extra and self._pickup then
+			self:set_pickup(nil)
+		end
 	end
 end
 
@@ -4230,6 +4238,22 @@ function CopDamage:remove_listener(key)
 end
 
 function CopDamage:set_pickup(pickup)
+	if self._pickup then
+		local old_pickup_ids = tweak_data.pickups[self._pickup] and tweak_data.pickups[self._pickup].acc_obj or Idstring("g_acc_" .. self._pickup)
+
+		if self._unit:get_object(old_pickup_ids) then
+			self._unit:get_object(old_pickup_ids):set_visibility(false)
+		end
+	end
+
+	if pickup then
+		local new_pickup_ids = tweak_data.pickups[pickup] and tweak_data.pickups[pickup].acc_obj or Idstring("g_acc_" .. pickup)
+
+		if self._unit:get_object(new_pickup_ids) then
+			self._unit:get_object(new_pickup_ids):set_visibility(true)
+		end
+	end
+
 	self._pickup = pickup
 end
 

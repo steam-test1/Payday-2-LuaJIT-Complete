@@ -211,29 +211,18 @@ function ContourExt:apply_to_linked(func_name, ...)
 		return
 	end
 
-	local linked_units = spawn_ext:linked_units()
+	local contour_ext, contour_func
 
-	if not linked_units then
-		return
-	end
+	for unit_id, unit_entry in pairs(spawn_ext:spawned_units()) do
+		contour_ext = alive(unit_entry.unit) and unit_entry.unit:contour()
 
-	local entries = spawn_ext:spawned_units()
-	local entry, contour_ext, contour_func
+		if contour_ext then
+			contour_func = contour_ext[func_name]
 
-	for unit_id, _ in pairs(linked_units) do
-		entry = entries[unit_id]
-
-		if entry then
-			contour_ext = alive(entry.unit) and entry.unit:contour()
-
-			if contour_ext then
-				contour_func = contour_ext[func_name]
-
-				if contour_func then
-					contour_func(contour_ext, ...)
-				else
-					Application:error("[ContourExt:apply_to_linked] No function with name '" .. tostring(func_name) .. "' found in contour extension. ", self._unit, entry.unit)
-				end
+			if contour_func then
+				contour_func(contour_ext, ...)
+			else
+				Application:error("[ContourExt:apply_to_linked] No function with name '" .. tostring(func_name) .. "' found in contour extension. ", self._unit, entry.unit)
 			end
 		end
 	end

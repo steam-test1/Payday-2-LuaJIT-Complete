@@ -224,7 +224,8 @@ function StatisticsTweakData:statistics_table()
 		"marshal_marksman",
 		"marshal_shield",
 		"marshal_shield_break",
-		"piggydozer"
+		"piggydozer",
+		"lead_curator"
 	}
 	local armor_list = {
 		"level_1",

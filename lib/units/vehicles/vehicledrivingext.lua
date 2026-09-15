@@ -9,6 +9,8 @@ require("lib/units/vehicles/VehicleStateSecured")
 require("lib/units/vehicles/VehicleStateFrozen")
 require("lib/units/vehicles/VehicleStateBlocked")
 
+local tmp_vec1 = Vector3()
+
 VehicleDrivingExt = VehicleDrivingExt or class()
 VehicleDrivingExt.SEAT_PREFIX = "v_"
 VehicleDrivingExt.INTERACTION_PREFIX = "interact_"
@@ -46,6 +48,9 @@ VehicleDrivingExt.SEQUENCE_REPAIRED = "int_seq_repaired"
 VehicleDrivingExt.SEQUENCE_TRUNK_OPEN = "anim_trunk_open"
 VehicleDrivingExt.SEQUENCE_TRUNK_CLOSE = "anim_trunk_close"
 VehicleDrivingExt.PLAYER_CAPSULE_OFFSET = Vector3(0, 0, -150)
+VehicleDrivingExt.ENEMY_WEAPONS_HOT_EVENTS = {
+	"enemy_weapons_hot"
+}
 
 function VehicleDrivingExt:init(unit)
 	self._unit = unit
@@ -87,6 +92,18 @@ function VehicleDrivingExt:init(unit)
 	self._unit:set_body_collision_callback(callback(self, self, "collision_callback"))
 	self:set_tweak_data(tweak_data.vehicle[self.tweak_data])
 
+	if Network:is_server() and self._pos_rsrv_radius then
+		local groupai_state = managers.groupai:state()
+
+		if groupai_state:enemy_weapons_hot() then
+			self._can_reserve_positions = true
+		else
+			self._enemy_weapons_hot_listen_id = "VehicleDrivingEnemyWeaponsHot" .. tostring(self._unit:key())
+
+			groupai_state:add_listener(self._enemy_weapons_hot_listen_id, VehicleDrivingExt.ENEMY_WEAPONS_HOT_EVENTS, callback(self, self, "clbk_enemy_weapons_hot"))
+		end
+	end
+
 	self._interaction_allowed = true
 
 	self:_setup_states()
@@ -103,6 +120,10 @@ function VehicleDrivingExt:init(unit)
 		self._interaction_loot = true
 	end
 
+	self:enable_loot_interaction()
+	self:enable_accepting_loot()
+
+	self._refused_loot_items = {}
 	self._allow_whisper_mode = self.allow_whisper_mode or self._tweak_data.allow_whisper_mode or false
 	self._playing_slip_sound_dt = 0
 	self._playing_reverse_sound_dt = 0
@@ -165,6 +186,16 @@ function VehicleDrivingExt:set_tweak_data(data)
 	self._loot_points = deep_clone(self._tweak_data.loot_points)
 	self._secure_loot = self._tweak_data.secure_loot
 
+	if self._secure_loot then
+		self:enable_securing_loot()
+	end
+
+	if self._tweak_data.loot_filter then
+		self._loot_filter = deep_clone(self._tweak_data.loot_filter)
+	else
+		self:clear_carry_filter_items()
+	end
+
 	for _, seat in pairs(self._seats) do
 		seat.occupant = nil
 		seat.object = self._unit:get_object(Idstring(VehicleDrivingExt.SEAT_PREFIX .. seat.name))
@@ -181,6 +212,7 @@ function VehicleDrivingExt:set_tweak_data(data)
 	end
 
 	self._last_drop_position = self._unit:get_object(Idstring(self._tweak_data.loot_drop_point)):position()
+	self._pos_rsrv_radius = data.pos_rsrv_radius
 end
 
 function VehicleDrivingExt:get_view()
@@ -188,7 +220,9 @@ function VehicleDrivingExt:get_view()
 end
 
 function VehicleDrivingExt:update(unit, t, dt)
-	self:_manage_position_reservation()
+	if self._can_reserve_positions then
+		self:_manage_position_reservation()
+	end
 
 	if Network:is_server() then
 		if self._vehicle:is_active() then
@@ -216,12 +250,12 @@ function VehicleDrivingExt:update(unit, t, dt)
 end
 
 function VehicleDrivingExt:_create_position_reservation()
-	self._pos_reservation_id = managers.navigation:get_pos_reservation_id()
+	self._pos_reservation_id = self._pos_reservation_id or managers.navigation:get_pos_reservation_id()
 
 	if self._pos_reservation_id then
 		self._pos_reservation = {
-			radius = 500,
 			position = self._unit:position(),
+			radius = self._pos_rsrv_radius,
 			filter = self._pos_reservation_id
 		}
 
@@ -230,22 +264,43 @@ function VehicleDrivingExt:_create_position_reservation()
 end
 
 function VehicleDrivingExt:_manage_position_reservation()
-	if not self._pos_reservation_id and managers.navigation and managers.navigation:is_data_ready() then
-		self:_create_position_reservation()
+	if not self._pos_reservation or not self._pos_reservation_id then
+		if managers.navigation and managers.navigation:is_data_ready() then
+			self:_create_position_reservation()
+		end
 
 		return
 	end
 
-	if self._pos_reservation then
-		local pos = self._unit:position()
-		local distance = mvector3.distance(pos, self._pos_reservation.position)
+	local pos = self._unit:m_position(tmp_vec1)
+	local distance = mvector3.distance_sq(tmp_vec1, self._pos_reservation.position)
 
-		if distance > 100 then
-			self._pos_reservation.position = pos
-
-			managers.navigation:move_pos_rsrv(self._pos_reservation)
-		end
+	if distance > 100 then
+		mvector3.set(self._pos_reservation.position, tmp_vec1)
+		managers.navigation:move_pos_rsrv(self._pos_reservation)
 	end
+end
+
+function VehicleDrivingExt:_release_position_reservation()
+	if self._pos_reservation then
+		managers.navigation:unreserve_pos(self._pos_reservation)
+
+		self._pos_reservation = nil
+	end
+
+	if self._pos_reservation_id then
+		managers.navigation:release_pos_reservation_id(self._pos_reservation_id)
+
+		self._pos_reservation_id = nil
+	end
+end
+
+function VehicleDrivingExt:clbk_enemy_weapons_hot()
+	self._can_reserve_positions = true
+
+	managers.groupai:state():remove_listener(self._enemy_weapons_hot_listen_id)
+
+	self._enemy_weapons_hot_listen_id = nil
 end
 
 function VehicleDrivingExt:get_action_for_interaction(pos, locator)
@@ -395,6 +450,12 @@ function VehicleDrivingExt:add_loot(carry_id, multiplier, instigator)
 		self._unit:damage():has_then_run_sequence_simple("action_add_bag", {
 			unit = instigator
 		})
+	end
+
+	if Network:is_server() and self:is_securing_loot_enabled() then
+		local silent = self._secure_loot == "secure_silent"
+
+		managers.loot:secure(carry_id, multiplier, silent)
 	end
 end
 
@@ -558,6 +619,31 @@ function VehicleDrivingExt:sync_store_loot_in_vehicle(unit, carry_id, multiplier
 	unit:damage():has_then_run_sequence_simple("secured")
 end
 
+function VehicleDrivingExt:_refuse_loot(instigator)
+	if Network:is_server() then
+		self:sync_refuse_loot_in_vehicle(instigator)
+		managers.network:session():send_to_peers_synched("sync_refuse_loot_in_vehicle", self._unit, instigator)
+	end
+end
+
+function VehicleDrivingExt:sync_refuse_loot_in_vehicle(instigator)
+	if alive(instigator) then
+		local carry_ext = instigator:carry_data()
+		local carry_id = carry_ext:carry_id()
+		local bag_type_seq = "action_refuse_bag_" .. carry_id
+
+		if self._unit:damage():has_then_run_sequence_simple(bag_type_seq, {
+			unit = instigator
+		}) then
+			-- Nothing
+		else
+			self._unit:damage():has_then_run_sequence_simple("action_refuse_bag", {
+				unit = instigator
+			})
+		end
+	end
+end
+
 function VehicleDrivingExt:_loot_filter_func(carry_data)
 	local linked_to_unit = carry_data:is_linked_to_unit()
 
@@ -567,14 +653,21 @@ function VehicleDrivingExt:_loot_filter_func(carry_data)
 
 	local carry_id = carry_data:carry_id()
 
-	if carry_id == "gold" or carry_id == "goat" or carry_id == "present" or carry_id == "mad_master_server_value_1" or carry_id == "mad_master_server_value_2" or carry_id == "mad_master_server_value_3" or carry_id == "mad_master_server_value_4" or carry_id == "ranc_weapon" or carry_id == "corp_papers" or carry_id == "corp_prototype" or carry_id == "old_wine" or carry_id == "money" or carry_id == "diamonds" or carry_id == "coke" or carry_id == "weapon" or carry_id == "painting" or carry_id == "circuit" or carry_id == "diamonds" or carry_id == "engine_01" or carry_id == "engine_02" or carry_id == "engine_03" or carry_id == "engine_04" or carry_id == "engine_05" or carry_id == "engine_06" or carry_id == "engine_07" or carry_id == "engine_08" or carry_id == "engine_09" or carry_id == "engine_10" or carry_id == "engine_11" or carry_id == "engine_12" or carry_id == "meth" or carry_id == "lance_bag" or carry_id == "lance_bag_large" or carry_id == "grenades" or carry_id == "ammo" or carry_id == "cage_bag" or carry_id == "turret" or carry_id == "artifact_statue" or carry_id == "samurai_suit" or carry_id == "equipment_bag" or carry_id == "cro_loot1" or carry_id == "cro_loot2" or carry_id == "ladder_bag" or carry_id == "warhead" or carry_id == "paper_roll" or carry_id == "counterfeit_money" or carry_id == "safe_wpn" or carry_id == "safe_ovk" or carry_id == "prototype" or carry_id == "master_server" or carry_id == "lost_artifact" or carry_id == "masterpiece_painting" then
-		return true
-	elseif tweak_data.carry[carry_data:carry_id()].is_unique_loot then
-		return true
+	if self._loot_filter and not not self._loot_filter[carry_id] then
+		return self._loot_filter[carry_id]
 	end
+
+	local carry_data = tweak_data.carry[carry_id]
+	local carry_id_allowed = not self._tweak_data.allow_only_filtered and (carry_data.is_unique_loot or carry_data.bag_value)
+
+	return carry_id_allowed
 end
 
 function VehicleDrivingExt:_catch_loot()
+	if not self:is_accepting_loot_enabled() then
+		return false
+	end
+
 	if self._tweak_data and #self._loot >= self._tweak_data.max_loot_bags or not self._interaction_loot then
 		return false
 	end
@@ -584,16 +677,26 @@ function VehicleDrivingExt:_catch_loot()
 			local pos = loot_point.object:position()
 			local caught_units = World:find_units_quick("sphere", pos, 100, 14)
 
-			for _, unit in ipairs(caught_units) do
-				if alive(unit) then
-					local carry_data = unit:carry_data()
+			if #caught_units > 0 then
+				for _, unit in ipairs(caught_units) do
+					if alive(unit) then
+						local carry_data = unit:carry_data()
 
-					if carry_data and carry_data:can_secure() and self:_loot_filter_func(carry_data) then
-						self:_store_loot(unit)
+						if carry_data and carry_data:can_secure() then
+							if self:_loot_filter_func(carry_data) then
+								self:_store_loot(unit)
 
-						break
+								break
+							elseif not self._refused_loot_items[unit:key()] then
+								self:_refuse_loot(unit)
+
+								self._refused_loot_items[unit:key()] = true
+							end
+						end
 					end
 				end
+			elseif #self._refused_loot_items > 0 then
+				self._refused_loot_items = {}
 			end
 		end
 	end
@@ -616,6 +719,46 @@ function VehicleDrivingExt:get_nearest_loot_point(pos)
 	end
 
 	return nearest_loot_point, min_distance
+end
+
+function VehicleDrivingExt:enable_securing_loot()
+	if Network:is_server() then
+		managers.network:session():send_to_peers_synched("sync_vehicle_securing_loot", self._unit, true)
+	end
+
+	self._securing_loot_enabled = true
+	self._secure_loot = self._tweak_data.secure_loot or "secure"
+end
+
+function VehicleDrivingExt:disable_securing_loot()
+	if Network:is_server() then
+		managers.network:session():send_to_peers_synched("sync_vehicle_securing_loot", self._unit, false)
+	end
+
+	self._securing_loot_enabled = false
+	self._secure_loot = false
+end
+
+function VehicleDrivingExt:is_securing_loot_enabled()
+	return self._securing_loot_enabled
+end
+
+function VehicleDrivingExt:set_carry_filter_item(carry_id, allowed)
+	self._loot_filter[carry_id] = allowed or nil
+end
+
+function VehicleDrivingExt:set_carry_filter_items(carry_ids, allowed)
+	for _, carry_id in ipairs(carry_ids or {}) do
+		self:set_carry_filter_item(carry_id, allowed)
+	end
+end
+
+function VehicleDrivingExt:clear_carry_filter_items()
+	self._loot_filter = {}
+end
+
+function VehicleDrivingExt:carry_filter_item(carry_id)
+	return self._loot_filter[carry_id] or false
 end
 
 function VehicleDrivingExt:enter_vehicle(player)
@@ -1044,7 +1187,10 @@ function VehicleDrivingExt:activate_vehicle()
 
 		if was_not_enabled then
 			call_on_next_update(function()
-				self._unit:set_enabled(false)
+				if alive(self._unit) then
+					self:_release_position_reservation()
+					self._unit:set_enabled(false)
+				end
 			end)
 		end
 	end
@@ -1881,14 +2027,16 @@ function VehicleDrivingExt:_number_in_the_vehicle()
 end
 
 function VehicleDrivingExt:pre_destroy(unit)
-	if self._registered then
-		self._registered = nil
+	self:_release_position_reservation()
 
-		managers.vehicle:remove_vehicle(self._unit)
+	self._can_reserve_positions = nil
+
+	if self._enemy_weapons_hot_listen_id then
+		managers.groupai:state():remove_listener(self._enemy_weapons_hot_listen_id)
+
+		self._enemy_weapons_hot_listen_id = nil
 	end
-end
 
-function VehicleDrivingExt:destroy(unit)
 	if self._registered then
 		self._registered = nil
 
@@ -1896,4 +2044,25 @@ function VehicleDrivingExt:destroy(unit)
 	end
 
 	managers.hud:_remove_name_label(self._unit:unit_data().name_label_id)
+end
+
+function VehicleDrivingExt:save(data)
+	data.vehicle_driving = {
+		loot_interaction_enabled = self._loot_interaction_enabled,
+		accepting_loot_enabled = self._accepting_loot_enabled
+	}
+end
+
+function VehicleDrivingExt:load(data)
+	if data.vehicle_driving and data.vehicle_driving.loot_interaction_enabled then
+		self:enable_loot_interaction()
+	else
+		self:disable_loot_interaction()
+	end
+
+	if data.vehicle_driving and data.vehicle_driving.accepting_loot_enabled then
+		self:enable_accepting_loot()
+	else
+		self:disable_accepting_loot()
+	end
 end

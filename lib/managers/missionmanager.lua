@@ -130,6 +130,7 @@ require("lib/managers/mission/ElementEnemyDummyTrigger")
 require("lib/managers/mission/ElementMotionpathMarker")
 require("lib/managers/mission/ElementVehicleTrigger")
 require("lib/managers/mission/ElementVehicleOperator")
+require("lib/managers/mission/ElementVehicleCarryOperator")
 require("lib/managers/mission/ElementVehicleSpawner")
 require("lib/managers/mission/ElementVehicleBoarding")
 require("lib/managers/mission/ElementEnvironmentOperator")
@@ -255,7 +256,9 @@ function MissionManager:init(...)
 		"pku_crafted_weapon",
 		"pku_corp_papers",
 		"on_peer_dropin",
-		"pku_luggage_money"
+		"pku_luggage_money",
+		"pku_rfid_tag",
+		"pku_auction_item"
 	})
 
 	self._mission_filter = {}

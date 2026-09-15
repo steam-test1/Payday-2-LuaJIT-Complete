@@ -1072,6 +1072,19 @@ function AchievementsTweakData:init(tweak_data)
 		pda10_musket_post_objective = {
 			stat = "pda10_musket_post_objective",
 			weapon_type = "snp"
+		},
+		auc_12 = {
+			award = "auc_12",
+			job = "auc",
+			loud = true,
+			weapon = "bleckert",
+			masks = {
+				"venetian_comedy",
+				"venetian_tragedy"
+			},
+			enemies = {
+				"auctioneer_boss"
+			}
 		}
 	}
 	self.enemy_melee_hit_achievements = {
@@ -5605,6 +5618,77 @@ function AchievementsTweakData:init(tweak_data)
 				"smo_08"
 			}
 		},
+		auc_1 = {
+			award = "auc_1",
+			job = "auc",
+			difficulty = normal_and_above
+		},
+		auc_2 = {
+			award = "auc_2",
+			job = "auc",
+			difficulty = hard_and_above
+		},
+		auc_3 = {
+			award = "auc_3",
+			job = "auc",
+			difficulty = veryhard_and_above
+		},
+		auc_4 = {
+			award = "auc_4",
+			job = "auc",
+			difficulty = overkill_and_above
+		},
+		auc_5 = {
+			award = "auc_5",
+			job = "auc",
+			difficulty = easywish_and_above
+		},
+		auc_6 = {
+			award = "auc_6",
+			job = "auc",
+			difficulty = deathwish_and_above
+		},
+		auc_7 = {
+			award = "auc_7",
+			job = "auc",
+			difficulty = sm_wish_and_above
+		},
+		auc_8 = {
+			award = "auc_8",
+			job = "auc",
+			one_down = true,
+			difficulty = sm_wish_and_above
+		},
+		auc_10 = {
+			award = "auc_10",
+			job = "auc",
+			stealth = true,
+			timer = 360,
+			difficulty = overkill_and_above,
+			equipped_team = {
+				deployable = "ecm_jammer",
+				reverse_deployable = true
+			}
+		},
+		auc_11 = {
+			award = "auc_11",
+			everyone_killed_by_grenade = 0,
+			everyone_killed_by_melee = 0,
+			everyone_killed_by_weapons = 0,
+			job = "auc",
+			no_alarm_pager = true,
+			job_value = {
+				key = "auc_11_dominated",
+				value = 1
+			}
+		},
+		auc_14 = {
+			award = "auc_14",
+			job = "auc",
+			loud = true,
+			phalanx_vip_alive = true,
+			difficulty = overkill_and_above
+		},
 		bain_jobs = {
 			challenge_stat = "bain_jobs",
 			complete_job = true,
@@ -5682,6 +5766,26 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = overkill_and_above,
 			equipped_team = {
 				armor = "level_1",
+				num_skills = 0,
+				primaries = {
+					"wpn_fps_ass_amcar"
+				},
+				secondaries = {
+					"wpn_fps_pis_g17"
+				}
+			}
+		},
+		monthly_prison = {
+			challenge_award = "monthly_prison",
+			everyone_killed_by_grenade = 0,
+			everyone_killed_by_weapons = 0,
+			job = "help",
+			difficulty = overkill_and_above
+		},
+		monthly_tabula = {
+			challenge_award = "monthly_tabula",
+			crime_spree = 100,
+			equipped_team = {
 				num_skills = 0,
 				primaries = {
 					"wpn_fps_ass_amcar"
@@ -5838,26 +5942,6 @@ function AchievementsTweakData:init(tweak_data)
 				{
 					id = "MutatorEnemyReplacer",
 					override_enemy = "medic"
-				}
-			}
-		},
-		monthly_prison = {
-			challenge_award = "monthly_prison",
-			everyone_killed_by_grenade = 0,
-			everyone_killed_by_weapons = 0,
-			job = "help",
-			difficulty = overkill_and_above
-		},
-		monthly_tabula = {
-			challenge_award = "monthly_tabula",
-			crime_spree = 100,
-			equipped_team = {
-				num_skills = 0,
-				primaries = {
-					"wpn_fps_ass_amcar"
-				},
-				secondaries = {
-					"wpn_fps_pis_g17"
 				}
 			}
 		},
@@ -6891,7 +6975,8 @@ function AchievementsTweakData:init(tweak_data)
 		"rat",
 		"cage",
 		"arena",
-		"rvd"
+		"rvd",
+		"auc"
 	}
 	self.job_list.the_dentist = {
 		"big",
@@ -8527,7 +8612,11 @@ function AchievementsTweakData:init(tweak_data)
 		wpn_fps_upg_ak_fg_trax = ameno_8_achievement,
 		wpn_fps_upg_ak_fg_krebs = ameno_8_achievement,
 		wpn_fps_upg_ak_b_ak105 = ameno_8_achievement,
-		wpn_fps_upg_charm_cloaker = tawp_1_achievement
+		wpn_fps_upg_charm_cloaker = tawp_1_achievement,
+		wpn_fps_upg_o_dardar = {
+			award = "auc_13",
+			text_id = "bm_wpn_fps_upg_o_dardar_achievment"
+		}
 	}
 	self.collection_achievements = {
 		xm20_1 = {
@@ -8845,7 +8934,11 @@ function AchievementsTweakData:_init_visual(tweak_data)
 			"mask",
 			"weapon",
 			"skill_slot",
-			"character"
+			"character",
+			"outfit",
+			"weapon_color",
+			"gloves",
+			"weapon_charm"
 		},
 		tactics = {
 			"loud",
@@ -8858,19 +8951,14 @@ function AchievementsTweakData:_init_visual(tweak_data)
 			"weapon",
 			"armor",
 			"skill",
-			"equipment"
+			"equipment",
+			"outfit"
 		},
 		teamwork = {
 			"players_1_to_4",
 			"players_4"
 		}
 	}
-
-	table.insert(self.tags.inventory, "outfit")
-	table.insert(self.tags.unlock, "outfit")
-	table.insert(self.tags.unlock, "weapon_color")
-	table.insert(self.tags.unlock, "gloves")
-	table.insert(self.tags.unlock, "weapon_charm")
 
 	local contacts = {}
 

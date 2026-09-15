@@ -88,6 +88,7 @@ logic_variants.security_undominatable = security_variant
 logic_variants.mute_security_undominatable = security_variant
 logic_variants.captain = security_variant
 logic_variants.captain_female = security_variant
+logic_variants.auctioneer_boss = security_variant
 
 for _, tweak_table_name in pairs({
 	"shield",

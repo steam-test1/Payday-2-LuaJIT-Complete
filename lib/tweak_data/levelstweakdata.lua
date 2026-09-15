@@ -2166,6 +2166,21 @@ function LevelsTweakData:init()
 		}
 	}
 	self.deep.teams = deep_clone(self.corp.teams)
+	self.auc = {
+		briefing_dialog = "Play_pln_auc_brf_01",
+		briefing_id = "heist_auc_briefing",
+		ghost_bonus = 0.1,
+		intro_event = "Play_pln_auc_intro_01",
+		load_screen = "guis/dlcs/auc/textures/loading/job_auc_01_df",
+		max_bags = 20,
+		music = "heist",
+		name_id = "heist_auc_hl",
+		narrator = "bain",
+		outro_event = "Play_pln_auc_end",
+		package = "packages/job_auc",
+		world_name = "narratives/bain/auc",
+		ai_group_type = america
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -2294,7 +2309,8 @@ function LevelsTweakData:init()
 		"ranc",
 		"trai",
 		"corp",
-		"deep"
+		"deep",
+		"auc"
 	}
 
 	table.insert(self._level_index, "roberts")

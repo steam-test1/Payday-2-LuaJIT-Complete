@@ -387,6 +387,10 @@ function TweakDataVR:init(tweak_data)
 			},
 			bonk2 = {
 				position = Vector3(0, 0, 0)
+			},
+			order = {
+				position = Vector3(0, -15, 0),
+				rotation = Rotation(0, 0, 90)
 			}
 		},
 		bayonets = {

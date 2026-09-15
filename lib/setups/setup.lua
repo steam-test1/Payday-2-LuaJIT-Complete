@@ -10,7 +10,7 @@ core:register_module("lib/managers/DebugManager")
 core:register_module("lib/utils/game_state_machine/GameState")
 core:register_module("lib/utils/dev/FreeFlight")
 
-Global.DEBUG_MENU_ON = Application:debug_enabled()
+Global.DEBUG_MENU_ON = false
 Global.SKIP_OVERKILL_290 = false
 Global.DISCORD_APP_ID = "364785249202208768"
 

@@ -15035,6 +15035,132 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_D0 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			89,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_D2 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			176,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_D3 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			263,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_D4 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			350,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_D5 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_AllDiffs_OD_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			176,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_Junior = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			263,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_SunTan = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			350,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_DealOfTheDay = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_FlashAuction = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_CuratedCrew = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			176,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_UnderTheHammer_Doppelganger = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_auc",
+		texture_rect = {
+			263,
+			176,
+			85,
+			85
+		}
+	}
 	self.C_Bain_H_Arena_Holdout_3 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_shl",
 		texture_rect = {

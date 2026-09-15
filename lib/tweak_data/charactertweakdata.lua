@@ -101,6 +101,8 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_marshal_marksman(presets)
 	self:_init_marshal_shield(presets)
 	self:_init_ranchmanager(presets)
+	self:_init_lead_curator(presets)
+	self:_init_auctioneer_boss(presets)
 
 	self._prefix_data = nil
 	self._prefix_data_p1 = nil
@@ -3881,6 +3883,35 @@ end
 function CharacterTweakData:_init_ranchmanager(presets)
 	self.ranchmanager = deep_clone(self.bolivian)
 	self.ranchmanager.access = "security_patrol"
+end
+
+function CharacterTweakData:_init_lead_curator(presets)
+	self.lead_curator = deep_clone(self.civilian_female)
+	self.lead_curator.flee_type = "hide"
+	self.lead_curator.run_away_delay = nil
+end
+
+function CharacterTweakData:_init_auctioneer_boss(presets)
+	self.auctioneer_boss = deep_clone(self.security)
+	self.auctioneer_boss.HEALTH_INIT = 100
+	self.auctioneer_boss.weapon = presets.weapon.good
+	self.auctioneer_boss.suppression = nil
+	self.auctioneer_boss.surrender = nil
+	self.auctioneer_boss.allowed_poses = {
+		stand = true
+	}
+	self.auctioneer_boss.crouch_move = false
+	self.auctioneer_boss.no_arrest = true
+	self.auctioneer_boss.rescue_hostages = false
+	self.auctioneer_boss.steal_loot = nil
+	self.auctioneer_boss.calls_in = nil
+	self.auctioneer_boss.chatter = presets.enemy_chatter.no_chatter
+	self.auctioneer_boss.use_radio = nil
+	self.auctioneer_boss.has_alarm_pager = false
+	self.auctioneer_boss.die_sound_event = "Play_ban_auc_12"
+	self.auctioneer_boss.melee_weapon = "fists"
+
+	table.insert(self._enemy_list, "auctioneer_boss")
 end
 
 function CharacterTweakData:_init_team_ai(presets)
@@ -10899,6 +10930,7 @@ function CharacterTweakData:_create_table_structure()
 		"heavy_zeal_sniper",
 		"smoke",
 		"flamethrower",
+		"bleckert",
 		"dmr",
 		"deagle",
 		"sko12_conc",
@@ -10938,6 +10970,7 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_heavy_zeal_sniper/wpn_npc_heavy_zeal_sniper"),
 		Idstring("units/pd2_dlc_uno/weapons/wpn_npc_smoke/wpn_npc_smoke"),
 		Idstring("units/pd2_dlc_pent/weapons/wpn_npc_flamethrower/wpn_npc_flamethrower"),
+		Idstring("units/pd2_dlc_auc/weapons/wpn_npc_bleckert/wpn_npc_bleckert"),
 		Idstring("units/pd2_dlc_usm1/weapons/wpn_npc_dmr/wpn_npc_dmr"),
 		Idstring("units/pd2_dlc_usm2/weapons/wpn_npc_deagle/wpn_npc_deagle"),
 		Idstring("units/pd2_dlc_usm2/weapons/wpn_npc_sko12_conc/wpn_npc_sko12_conc"),
@@ -13905,6 +13938,8 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		self.deep_boss.headshot_dmg_mul = self.deep_boss.headshot_dmg_mul * hs_mul
 	end
 
+	self.auctioneer_boss.HEALTH_INIT = self.auctioneer_boss.HEALTH_INIT * hp_mul
+
 	if self.marshal_marksman.headshot_dmg_mul then
 		self.marshal_marksman.headshot_dmg_mul = self.marshal_marksman.headshot_dmg_mul * hs_mul
 	end
@@ -14784,6 +14819,27 @@ function CharacterTweakData:character_map()
 				"civ_male_deep_dockworker_01",
 				"civ_male_deep_dockworker_02",
 				"civ_male_deep_dockworker_03"
+			}
+		},
+		auc = {
+			path = "units/pd2_dlc_auc/characters/",
+			list = {
+				"civ_male_auc_brother_1",
+				"civ_male_auc_brother_2",
+				"civ_male_auc_worker_1",
+				"civ_male_auc_worker_2",
+				"civ_male_auc_worker_3",
+				"civ_female_auc_worker_1",
+				"civ_female_auc_worker_2",
+				"civ_female_auc_worker_3",
+				"civ_female_auc_lead_curator_1",
+				"ene_male_auc_security_1",
+				"ene_male_auc_security_2",
+				"ene_male_auc_security_3",
+				"ene_male_auc_security_4",
+				"ene_male_auc_security_5",
+				"ene_male_auc_security_6",
+				"ene_male_auc_auctioneer_1"
 			}
 		}
 	}

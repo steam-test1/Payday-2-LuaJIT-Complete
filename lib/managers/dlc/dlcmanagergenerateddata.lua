@@ -22,6 +22,10 @@ function GenericDLCManager:has_atw()
 	return self:is_dlc_unlocked("atw")
 end
 
+function GenericDLCManager:has_auc()
+	return self:is_dlc_unlocked("auc")
+end
+
 function GenericDLCManager:has_bex()
 	return self:is_dlc_unlocked("bex")
 end
@@ -477,6 +481,10 @@ function WINDLCManager:init_generated()
 	Global.dlc_manager.all_dlc_data.atw.epic_id = "7ae51c06cfce4adb9870352bb6909b14"
 	Global.dlc_manager.all_dlc_data.atw.no_install = true
 	Global.dlc_manager.all_dlc_data.atw.webpage = "https://pd2.link/pexwpyb"
+	Global.dlc_manager.all_dlc_data.auc = {}
+	Global.dlc_manager.all_dlc_data.auc.app_id = "5149580"
+	Global.dlc_manager.all_dlc_data.auc.epic_id = "f4535706331641f5a2503f3eb9f122d5"
+	Global.dlc_manager.all_dlc_data.auc.no_install = true
 	Global.dlc_manager.all_dlc_data.bex = {}
 	Global.dlc_manager.all_dlc_data.bex.app_id = "1252200"
 	Global.dlc_manager.all_dlc_data.bex.epic_id = "d530394a24f5418ebdccf8140912d836"

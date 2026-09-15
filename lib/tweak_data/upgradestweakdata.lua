@@ -5449,7 +5449,8 @@ function UpgradesTweakData:init(tweak_data)
 			"dingdong",
 			"tenderizer",
 			"hailstorm",
-			"hcar"
+			"hcar",
+			"order"
 		}
 	}
 	self.level_tree[50] = {
@@ -5486,7 +5487,8 @@ function UpgradesTweakData:init(tweak_data)
 		name_id = "weapons",
 		upgrades = {
 			"uzi",
-			"x_uzi"
+			"x_uzi",
+			"bleckert"
 		}
 	}
 	self.level_tree[60] = {
@@ -5927,6 +5929,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_speen_weapon_definitions()
 	self:_dart_weapon_definitions()
 	self:_flun_weapon_definitions()
+	self:_bleckert_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -12400,6 +12403,10 @@ function UpgradesTweakData:_melee_weapon_definitions()
 	self.definitions.bonk2 = {
 		category = "melee_weapon"
 	}
+	self.definitions.order = {
+		category = "melee_weapon",
+		dlc = "auc"
+	}
 end
 
 function UpgradesTweakData:_grenades_definitions()
@@ -16977,5 +16984,14 @@ function UpgradesTweakData:_flun_weapon_definitions()
 		category = "weapon",
 		factory_id = "wpn_fps_spe_flun",
 		weapon_id = "flun"
+	}
+end
+
+function UpgradesTweakData:_bleckert_weapon_definitions()
+	self.definitions.bleckert = {
+		category = "weapon",
+		dlc = "auc",
+		factory_id = "wpn_fps_sho_bleckert",
+		weapon_id = "bleckert"
 	}
 end

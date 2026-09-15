@@ -1013,6 +1013,55 @@ function CarryTweakData:init(tweak_data)
 		SO_category = "enemies"
 	}
 	self.cg22_bag_yellow.no_area_trigger_detection = true
+	self.auc_cutter_part = {
+		name_id = "hud_carry_auc_cutter_part",
+		skip_exit_secure = true,
+		type = "slightly_heavy",
+		unit = "units/pd2_dlc_cane/pickups/gen_pku_toolbag_global_event/gen_pku_toolbag_global_event",
+		visual_object = "g_toolsbag_large",
+		visual_unit_name = "units/payday2/characters/npc_acc_tools_bag_1/npc_acc_tools_bag_1"
+	}
+	self.auc_statue_special_01 = {
+		bag_value = "weapon",
+		name_id = "hud_carry_auc_statue_special_01",
+		type = "light",
+		unit = "units/payday2/pickups/gen_pku_cage_bag/gen_pku_cage_bag",
+		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.auc_statue_special_02 = deep_clone(self.auc_statue_special_01)
+	self.auc_statue_special_02.name_id = "hud_carry_auc_statue_special_02"
+	self.auc_statue_special_02.type = "medium"
+	self.auc_statue_special_03 = deep_clone(self.auc_statue_special_01)
+	self.auc_statue_special_03.name_id = "hud_carry_auc_statue_special_03"
+	self.auc_statue_special_03.type = "heavy"
+	self.auc_statue_special_04 = deep_clone(self.auc_statue_special_01)
+	self.auc_statue_special_04.name_id = "hud_carry_auc_statue_special_04"
+	self.auc_statue_special_04.type = "medium"
+	self.auc_auction_item = {
+		bag_value = "diamonds",
+		name_id = "hud_carry_auc_auction_item",
+		type = "light",
+		visual_unit_name = self.default_visual_unit,
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.vehicle_kubelwagen = {
+		bag_value = "vehicle_falcogini",
+		is_vehicle = true,
+		name_id = "hud_carry_vehicle_kubelwagen",
+		no_area_trigger_detection = true,
+		skip_exit_secure = false,
+		type = "light",
+		unit = "",
+		visual_object = "",
+		AI_carry = {
+			SO_category = ""
+		}
+	}
 end
 
 function CarryTweakData:get_carry_ids()

@@ -155,6 +155,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(107, "tap_to_interact_time", 1)
 	self:setup_setting(108, "tap_to_interact_show_text", false)
 	self:setup_setting(109, "alt_hud_ammo", false)
+	self:setup_setting(111, "sound_output_device", nil)
 	self:setup_setting(200, "use_telemetry", false)
 	self:setup_setting(201, "use_gamesight", false)
 	self:setup_setting(300, "adaptive_quality", true)
@@ -265,7 +266,8 @@ function GenericUserManager:reset_sound_setting_map()
 		"voice_volume",
 		"voice_chat",
 		"push_to_talk",
-		"mute_heist_vo"
+		"mute_heist_vo",
+		"sound_output_device"
 	}
 
 	for _, name in pairs(settings) do
@@ -905,6 +907,24 @@ function GenericUserManager:sanitize_settings()
 
 	if not color_grading_valid then
 		self:set_setting("video_color_grading", nil)
+	end
+
+	local wanted_device = self:get_setting("sound_output_device")
+
+	if wanted_device ~= nil then
+		local exists = false
+
+		for _, device_data in ipairs(SoundDevice:output_devices()) do
+			if wanted_device == device_data.device_id then
+				exists = true
+
+				break
+			end
+		end
+
+		if not exists then
+			self:set_setting("sound_output_device", nil)
+		end
 	end
 end
 

@@ -10,6 +10,7 @@ function DLCTweakData:init(tweak_data)
 			alienware_alpha = true,
 			animal = true,
 			apa = true,
+			auc = true,
 			bbq = true,
 			big_bank = true,
 			born = true,
@@ -8291,6 +8292,37 @@ function DLCTweakData:init(tweak_data)
 	self.victor_mods_pack_2.content.loot_global_value = "victor_mods_pack_2"
 	self.victor_mods_pack_2.content.loot_drops = {}
 	self.victor_mods_pack_2.content.upgrades = {}
+	self.auc = {
+		content = {
+			loot_global_value = "auc",
+			loot_drops = {
+				{
+					amount = 1,
+					item_entry = "venetian_comedy",
+					type_items = "masks"
+				},
+				{
+					amount = 1,
+					item_entry = "venetian_tragedy",
+					type_items = "masks"
+				}
+			}
+		}
+	}
+	self.ach_auc_13 = {
+		achievement_id = "auc_13",
+		dlc = "has_achievement",
+		content = {
+			loot_global_value = "normal",
+			loot_drops = {
+				{
+					amount = 1,
+					item_entry = "wpn_fps_upg_o_dardar",
+					type_items = "weapon_mods"
+				}
+			}
+		}
+	}
 	self.ach_lrfo_1 = {}
 	self.ach_lrfo_1.content = {}
 	self.ach_lrfo_1.dlc = "has_achievement"

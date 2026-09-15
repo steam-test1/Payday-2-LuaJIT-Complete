@@ -1506,6 +1506,10 @@ function TweakData:init()
 	self.pickups.corp_access_tag = {
 		unit = Idstring("units/pd2_dlc_corp/pickups/corp_pku_security_fob/corp_pku_security_fob")
 	}
+	self.pickups.rfid_tag = {
+		unit = Idstring("units/pd2_dlc_auc/pickups/pku_auc_rfid_tag/pku_auc_rfid_tag"),
+		acc_obj = Idstring("g_acc_rfid_tag")
+	}
 	self.danger_zones = {
 		0.6,
 		0.5,
@@ -1857,6 +1861,9 @@ function TweakData:init()
 		},
 		{
 			track = "track_80"
+		},
+		{
+			track = "track_81"
 		},
 		{
 			lock = "payday",
@@ -2505,7 +2512,7 @@ function TweakData:init()
 	self.projectiles.launcher_frag_china.damage = 100
 	self.projectiles.launcher_incendiary_china = deep_clone(self.projectiles.launcher_incendiary)
 	self.projectiles.launcher_frag_arbiter = {}
-	self.projectiles.launcher_frag_arbiter.damage = 48
+	self.projectiles.launcher_frag_arbiter.damage = 50
 	self.projectiles.launcher_frag_arbiter.launch_speed = 7000
 	self.projectiles.launcher_frag_arbiter.curve_pow = 0.1
 	self.projectiles.launcher_frag_arbiter.player_damage = 8

@@ -3987,21 +3987,23 @@ function UnitNetworkHandler:sync_drill_upgrades(unit, autorepair_level_1, autore
 	end
 end
 
-function UnitNetworkHandler:sync_vehicle_driving(action, unit, player)
-	Application:debug("[DRIVING_NET] sync_vehicle_driving " .. action)
-
-	if not alive(unit) then
+function UnitNetworkHandler:sync_vehicle_driving(action, vehicle_unit, player, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
 		return
 	end
 
-	local ext = unit:npc_vehicle_driving()
+	local driving_ext = alive(vehicle_unit) and vehicle_unit:vehicle_driving()
 
-	ext = ext or unit:vehicle_driving()
+	if not driving_ext then
+		return
+	end
 
 	if action == "start" then
-		ext:sync_start(player)
-	elseif action == "stop" then
-		ext:sync_stop()
+		if driving_ext.sync_start then
+			driving_ext:sync_start(player)
+		end
+	elseif action == "stop" and driving_ext.sync_stop then
+		driving_ext:sync_stop()
 	end
 end
 
@@ -4101,14 +4103,74 @@ function UnitNetworkHandler:sync_ai_vehicle_action(action, vehicle, data, unit)
 	end
 end
 
-function UnitNetworkHandler:server_store_loot_in_vehicle(vehicle, loot_bag)
-	Application:debug("[DRIVING_NET] server_store_loot_in_vehicle")
-
-	if not alive(vehicle) or not alive(loot_bag) then
+function UnitNetworkHandler:server_store_loot_in_vehicle(vehicle_unit, loot_unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
 		return
 	end
 
-	vehicle:vehicle_driving():server_store_loot_in_vehicle(loot_bag)
+	loot_unit = alive(loot_unit) and loot_unit or nil
+	vehicle_unit = alive(vehicle_unit) and vehicle_unit or nil
+
+	local driving_ext = vehicle_unit and vehicle_unit:vehicle_driving() or nil
+
+	if vehicle_unit and not driving_ext then
+		Application:error("[UnitNetworkHandler] server_store_loot_in_vehicle() - no \"vehicle_driving\" extension on vehicle unit:", vehicle_unit)
+
+		vehicle_unit = nil
+	end
+
+	if loot_unit and not loot_unit:carry_data() then
+		Application:error("[UnitNetworkHandler] server_store_loot_in_vehicle() - no \"carry_data\" extension on loot unit:", loot_unit)
+
+		loot_unit = nil
+	end
+
+	if not vehicle_unit or not loot_unit then
+		return
+	end
+
+	if driving_ext.server_store_loot_in_vehicle then
+		driving_ext:server_store_loot_in_vehicle(loot_unit)
+	else
+		local str = "[UnitNetworkHandler] server_store_loot_in_vehicle() - no \"server_store_loot_in_vehicle\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
+	end
+end
+
+function UnitNetworkHandler:sync_refuse_loot_in_vehicle(vehicle_unit, loot_unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	loot_unit = alive(loot_unit) and loot_unit or nil
+	vehicle_unit = alive(vehicle_unit) and vehicle_unit or nil
+
+	local driving_ext = vehicle_unit and vehicle_unit:vehicle_driving() or nil
+
+	if vehicle_unit and not driving_ext then
+		Application:error("[UnitNetworkHandler] sync_refuse_loot_in_vehicle() - no \"vehicle_driving\" extension on vehicle unit:", vehicle_unit)
+
+		vehicle_unit = nil
+	end
+
+	if loot_unit and not loot_unit:carry_data() then
+		Application:error("[UnitNetworkHandler] sync_refuse_loot_in_vehicle() - no \"carry_data\" extension on loot unit:", loot_unit)
+
+		loot_unit = nil
+	end
+
+	if not vehicle_unit or not loot_unit then
+		return
+	end
+
+	if driving_ext.sync_refuse_loot_in_vehicle then
+		driving_ext:sync_refuse_loot_in_vehicle(loot_unit)
+	else
+		local str = "[UnitNetworkHandler] sync_refuse_loot_in_vehicle() - no \"sync_refuse_loot_in_vehicle\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
+	end
 end
 
 function UnitNetworkHandler:sync_vehicle_change_stance(shooting_unit, stance)
@@ -4150,6 +4212,75 @@ function UnitNetworkHandler:sync_vehicle_interact_trunk(vehicle_unit, sender_rpc
 
 	if driving_ext and driving_ext._interact_trunk then
 		driving_ext:_interact_trunk()
+	end
+end
+
+function UnitNetworkHandler:sync_vehicle_loot_enabled(vehicle_unit, enabled, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local driving_ext = alive(vehicle_unit) and vehicle_unit:vehicle_driving()
+
+	if not driving_ext then
+		return
+	end
+
+	local fn_name = (enabled and "enable" or "disable") .. "_loot_interaction"
+	local fn = driving_ext[fn_name]
+
+	if fn then
+		fn(driving_ext)
+	else
+		local str = "[UnitNetworkHandler] sync_vehicle_loot_enabled() - no \"" .. fn_name .. "\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
+	end
+end
+
+function UnitNetworkHandler:sync_vehicle_accepting_loot(vehicle_unit, enabled, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local driving_ext = alive(vehicle_unit) and vehicle_unit:vehicle_driving()
+
+	if not driving_ext then
+		return
+	end
+
+	local fn_name = (enabled and "enable" or "disable") .. "_accepting_loot"
+	local fn = driving_ext[fn_name]
+
+	if fn then
+		fn(driving_ext)
+	else
+		local str = "[UnitNetworkHandler] sync_vehicle_accepting_loot() - no \"" .. fn_name .. "\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
+	end
+end
+
+function UnitNetworkHandler:sync_vehicle_securing_loot(vehicle_unit, enabled, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local driving_ext = alive(vehicle_unit) and vehicle_unit:vehicle_driving()
+
+	if not driving_ext then
+		return
+	end
+
+	local fn_name = (enabled and "enable" or "disable") .. "_securing_loot"
+	local fn = driving_ext[fn_name]
+
+	if fn then
+		fn(driving_ext)
+	else
+		local str = "[UnitNetworkHandler] sync_vehicle_securing_loot() - no \"" .. fn_name .. "\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
 	end
 end
 

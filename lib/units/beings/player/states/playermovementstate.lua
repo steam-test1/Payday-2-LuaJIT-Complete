@@ -22,6 +22,7 @@ PlayerMovementState.settings_clbks_to_add = {
 
 function PlayerMovementState:init(unit)
 	self._unit = unit
+	self._is_server = Network:is_server()
 
 	managers.user:check_add_setting_clbks_to_obj(self)
 end

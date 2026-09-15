@@ -9147,6 +9147,163 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			Rotation(-0, -0, -0)
 		}
 	}
+	self.masks.venetian_comedy_common = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_comedy",
+		preview_oobb_object = "g_happy",
+		skip_mask_on_sequence = false,
+		sort_number = 0,
+		texture_bundle_folder = "auc",
+		type = "helmet",
+		unit = "units/pd2_dlc_auc/masks/msk_comedy/msk_comedy",
+		value = 0,
+		pcs = {},
+		offsets = {
+			sydney = {
+				Vector3(-0.3, -1.01118, 0.6),
+				Rotation(0, 0, 0)
+			}
+		}
+	}
+	self.masks.venetian_comedy_hila = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_comedy",
+		preview_oobb_object = "g_happy",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_comedy_hila/msk_comedy_hila"
+	}
+	self.masks.venetian_comedy_ethan = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_comedy",
+		preview_oobb_object = "g_happy",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_comedy_ethan/msk_comedy_ethan"
+	}
+	self.masks.venetian_comedy_jimmy = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_comedy",
+		preview_oobb_object = "g_happy",
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_comedy_jimmy/msk_comedy_jimmy"
+	}
+	self.masks.venetian_comedy_sokol = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_comedy",
+		preview_oobb_object = "g_happy",
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_comedy_sokol/msk_comedy_sokol"
+	}
+	self.masks.venetian_comedy_sidney = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_comedy",
+		preview_oobb_object = "g_happy",
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_comedy_sidney/msk_comedy_sidney"
+	}
+	self.masks.venetian_comedy = {
+		dlc = "auc",
+		name_id = "bm_msk_venetian_comedy",
+		preview_oobb_object = "g_happy",
+		sort_number = 0,
+		texture_bundle_folder = "auc",
+		type = "glasses",
+		value = 0,
+		pcs = {},
+		characters = {
+			bodhi = "venetian_comedy_common",
+			bonnie = "venetian_comedy_common",
+			chains = "venetian_comedy_common",
+			chico = "venetian_comedy_common",
+			dallas = "venetian_comedy_common",
+			dragan = "venetian_comedy_common",
+			dragon = "venetian_comedy_common",
+			ecp_female = "venetian_comedy_hila",
+			ecp_male = "venetian_comedy_ethan",
+			female_1 = "venetian_comedy_common",
+			hoxton = "venetian_comedy_common",
+			jacket = "venetian_comedy_common",
+			jimmy = "venetian_comedy_jimmy",
+			jowi = "venetian_comedy_common",
+			joy = "venetian_comedy_common",
+			max = "venetian_comedy_common",
+			myh = "venetian_comedy_common",
+			old_hoxton = "venetian_comedy_common",
+			sokol = "venetian_comedy_sokol",
+			sydney = "venetian_comedy_sidney",
+			wild = "venetian_comedy_common",
+			wolf = "venetian_comedy_common"
+		}
+	}
+	self.masks.venetian_tragedy_common = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_tragedy",
+		preview_oobb_object = "g_mask",
+		sort_number = 0,
+		texture_bundle_folder = "auc",
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_tragedy/msk_tragedy",
+		value = 0,
+		pcs = {}
+	}
+	self.masks.venetian_tragedy_hila = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_tragedy",
+		preview_oobb_object = "g_mask",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_tragedy_hila/msk_tragedy_hila"
+	}
+	self.masks.venetian_tragedy_ethan = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_tragedy",
+		preview_oobb_object = "g_mask",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_tragedy_ethan/msk_tragedy_ethan"
+	}
+	self.masks.venetian_tragedy_jimmy = {
+		inaccessible = true,
+		name_id = "bm_msk_venetian_tragedy",
+		preview_oobb_object = "g_mask",
+		type = "glasses",
+		unit = "units/pd2_dlc_auc/masks/msk_tragedy_jimmy/msk_tragedy_jimmy"
+	}
+	self.masks.venetian_tragedy = {
+		dlc = "auc",
+		name_id = "bm_msk_venetian_tragedy",
+		preview_oobb_object = "g_mask",
+		sort_number = 0,
+		texture_bundle_folder = "auc",
+		type = "glasses",
+		value = 0,
+		pcs = {},
+		characters = {
+			bodhi = "venetian_tragedy_common",
+			bonnie = "venetian_tragedy_common",
+			chains = "venetian_tragedy_common",
+			chico = "venetian_tragedy_common",
+			dallas = "venetian_tragedy_common",
+			dragan = "venetian_tragedy_common",
+			dragon = "venetian_tragedy_common",
+			ecp_female = "venetian_tragedy_hila",
+			ecp_male = "venetian_tragedy_ethan",
+			female_1 = "venetian_tragedy_common",
+			hoxton = "venetian_tragedy_common",
+			jacket = "venetian_tragedy_common",
+			jimmy = "venetian_tragedy_jimmy",
+			jowi = "venetian_tragedy_common",
+			joy = "venetian_tragedy_common",
+			max = "venetian_tragedy_common",
+			myh = "venetian_tragedy_common",
+			old_hoxton = "venetian_tragedy_common",
+			sokol = "venetian_tragedy_common",
+			sydney = "venetian_tragedy_common",
+			wild = "venetian_tragedy_common",
+			wolf = "venetian_tragedy_common"
+		}
+	}
 
 	local free_dlcs = tweak_data:free_dlc_list()
 

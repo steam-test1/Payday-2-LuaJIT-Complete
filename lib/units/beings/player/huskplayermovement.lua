@@ -305,6 +305,7 @@ HuskPlayerMovement.clean_states = {
 
 function HuskPlayerMovement:init(unit)
 	self._unit = unit
+	self._is_server = Network:is_server()
 	self._machine = unit:anim_state_machine()
 	self._crouch_detection_offset_z = mvec3_z(tweak_data.player.stances.default.crouched.head.translation)
 	self._m_pos = unit:position()
@@ -406,12 +407,21 @@ function HuskPlayerMovement:post_init()
 
 	self._attention_handler:setup_attention_positions(self._m_detect_pos, self._m_newest_pos)
 
+	local groupai_state = managers.groupai:state()
+
+	self._can_reserve_positions = self._is_server and groupai_state:enemy_weapons_hot() and true or nil
 	self._enemy_weapons_hot_listen_id = "PlayerMovement" .. tostring(self._unit:key())
 
-	managers.groupai:state():add_listener(self._enemy_weapons_hot_listen_id, {
+	groupai_state:add_listener(self._enemy_weapons_hot_listen_id, {
 		"enemy_weapons_hot"
-	}, callback(self, PlayerMovement, "clbk_enemy_weapons_hot"))
+	}, callback(self, self, "clbk_enemy_weapons_hot"))
 	self._unit:network():send("set_arm_setting", ArmSetting.SET_ARM_ANIMATOR_PRESENT, self._arm_animation_enabled and 1 or 0)
+end
+
+function HuskPlayerMovement:clbk_enemy_weapons_hot()
+	PlayerMovement.clbk_enemy_weapons_hot(self)
+
+	self._can_reserve_positions = self._is_server or nil
 end
 
 function HuskPlayerMovement:set_character_anim_variables()
@@ -933,42 +943,48 @@ function HuskPlayerMovement:_calculate_m_pose()
 
 	mvec3_set_z(det_pos, mvec3_z(det_pos) + offset_z)
 
-	if upd_nav_data then
-		if self._nav_tracker then
-			self._nav_tracker:move(self._m_newest_pos)
+	if not upd_nav_data then
+		return
+	end
 
-			local nav_seg_id = self._nav_tracker:nav_segment()
+	if self._nav_tracker then
+		self._nav_tracker:move(self._m_newest_pos)
 
-			if self._standing_nav_seg_id ~= nav_seg_id then
-				self._standing_nav_seg_id = nav_seg_id
+		local nav_seg_id = self._nav_tracker:nav_segment()
 
-				local metadata = managers.navigation:get_nav_seg_metadata(nav_seg_id)
+		if self._standing_nav_seg_id ~= nav_seg_id then
+			self._standing_nav_seg_id = nav_seg_id
 
-				self._unit:base():set_suspicion_multiplier("area", metadata.suspicion_mul)
-				self._unit:base():set_detection_multiplier("area", metadata.detection_mul and 1 / metadata.detection_mul or nil)
+			local metadata = managers.navigation:get_nav_seg_metadata(nav_seg_id)
+
+			self._unit:base():set_suspicion_multiplier("area", metadata.suspicion_mul)
+			self._unit:base():set_detection_multiplier("area", metadata.detection_mul and 1 / metadata.detection_mul or nil)
+
+			if self._is_server then
 				managers.groupai:state():on_criminal_nav_seg_change(self._unit, nav_seg_id)
 			end
 		end
+	end
 
-		if Network:is_server() then
-			if not self._pos_reservation then
-				self._pos_reservation = {
-					radius = 100,
-					position = self._m_newest_pos,
-					filter = self._pos_rsrv_id
-				}
-				self._pos_reservation_slow = {
-					radius = 100,
-					position = mvector3.copy(self._m_newest_pos),
-					filter = self._pos_rsrv_id
-				}
+	if self._can_reserve_positions and self._pos_rsrv_id then
+		if not self._pos_reservation then
+			self._pos_reservation = {
+				radius = 100,
+				position = mvector3.copy(self._m_newest_pos),
+				filter = self._pos_rsrv_id
+			}
+			self._pos_reservation_slow = {
+				radius = 100,
+				position = mvector3.copy(self._m_newest_pos),
+				filter = self._pos_rsrv_id
+			}
 
-				managers.navigation:add_pos_reservation(self._pos_reservation)
-				managers.navigation:add_pos_reservation(self._pos_reservation_slow)
-			else
-				managers.navigation:move_pos_rsrv(self._pos_reservation)
-				self:_upd_slow_pos_reservation()
-			end
+			managers.navigation:add_pos_reservation(self._pos_reservation)
+			managers.navigation:add_pos_reservation(self._pos_reservation_slow)
+		else
+			mvec3_set(self._pos_reservation.position, self._m_newest_pos)
+			managers.navigation:move_pos_rsrv(self._pos_reservation)
+			self:_upd_slow_pos_reservation()
 		end
 	end
 end
@@ -5018,6 +5034,8 @@ function HuskPlayerMovement:pre_destroy(unit)
 		self._pos_reservation_slow = nil
 	end
 
+	self._can_reserve_positions = nil
+
 	self:set_need_revive(false)
 	self:set_need_assistance(false)
 
@@ -5031,6 +5049,12 @@ function HuskPlayerMovement:pre_destroy(unit)
 		managers.groupai:state():remove_listener(self._enemy_weapons_hot_listen_id)
 
 		self._enemy_weapons_hot_listen_id = nil
+	end
+
+	if self._pos_rsrv_id then
+		managers.navigation:release_pos_reservation_id(self._pos_rsrv_id)
+
+		self._pos_rsrv_id = nil
 	end
 
 	self:anim_cbk_unspawn_melee_item()

@@ -161,6 +161,7 @@ function MenuManager:init(is_start_menu)
 	managers.user:add_setting_changed_callback("music_volume", callback(self, self, "music_volume_changed"), true)
 	managers.user:add_setting_changed_callback("sfx_volume", callback(self, self, "sfx_volume_changed"), true)
 	managers.user:add_setting_changed_callback("voice_volume", callback(self, self, "voice_volume_changed"), true)
+	managers.user:add_setting_changed_callback("sound_output_device", callback(self, self, "sound_output_device_changed"), true)
 	managers.user:add_setting_changed_callback("effect_quality", callback(self, self, "effect_quality_changed"), true)
 	managers.user:add_setting_changed_callback("dof_setting", callback(self, self, "dof_setting_changed"), true)
 	managers.user:add_setting_changed_callback("chromatic_setting", callback(self, self, "chromatic_setting_changed"), true)
@@ -827,6 +828,56 @@ function MenuManager:voice_volume_changed(name, old_value, new_value)
 	end
 end
 
+function MenuManager:sound_output_device_changed(name, old_value, new_value)
+	local devices = SoundDevice:output_devices()
+	local wanted_device = new_value
+
+	if wanted_device ~= nil then
+		local exists = false
+
+		for _, device_data in ipairs(devices) do
+			if wanted_device == device_data.device_id then
+				if device_data.is_current_output then
+					return
+				else
+					exists = true
+
+					break
+				end
+			end
+		end
+
+		if not exists then
+			Application:error("[MenuManager:sound_output_device_changed] Couldn't find device in list of devices, using default. Missing device ID:", wanted_device)
+			Application:error(inspect(devices))
+
+			wanted_device = nil
+		end
+	end
+
+	if wanted_device == nil then
+		for _, device_data in ipairs(devices) do
+			if device_data.is_default then
+				if device_data.is_current_output then
+					return
+				else
+					wanted_device = device_data.device_id
+
+					break
+				end
+			end
+		end
+
+		if wanted_device == nil then
+			Application:error("[MenuManager:sound_output_device_changed] No default device found..?", inspect(devices))
+		end
+	end
+
+	if wanted_device ~= nil then
+		SoundDevice:set_output_device(wanted_device)
+	end
+end
+
 function MenuManager:lightfx_changed(name, old_value, new_value)
 	if managers.network and managers.network.account then
 		managers.network.account:set_lightfx()
@@ -1119,55 +1170,12 @@ function MenuManager:show_global_success(node)
 		local stack = managers.menu:active_menu().renderer._node_gui_stack
 
 		node_gui = stack[#stack]
-
-		if not node_gui.set_mini_info then
-			print("No mini info to set!")
-
-			return
-		end
 	end
 
-	if not managers.network.account.get_win_ratio then
-		if node_gui then
-			node_gui:set_mini_info("")
-		end
+	if node_gui and node_gui.set_mini_info then
+		local mini_info_text = ""
 
-		return
-	end
-
-	local rate = managers.network.account:get_win_ratio(Global.game_settings.difficulty, Global.game_settings.level_id)
-
-	if not rate then
-		if node_gui then
-			node_gui:set_mini_info("")
-		end
-
-		return
-	end
-
-	rate = rate * 100
-
-	local rate_str
-
-	if rate >= 10 then
-		rate_str = string.format("%.0f", rate)
-	else
-		rate_str = string.format("%.1f", rate)
-	end
-
-	local diff_str = string.upper(managers.localization:text("menu_difficulty_" .. Global.game_settings.difficulty))
-	local heist_str = string.upper(managers.localization:text(tweak_data.levels[Global.game_settings.level_id].name_id))
-
-	rate_str = managers.localization:text("menu_global_success", {
-		COUNT = rate_str,
-		HEIST = heist_str,
-		DIFFICULTY = diff_str
-	})
-
-	if node then
-		node.mini_info = rate_str
-	else
-		node_gui:set_mini_info(rate_str)
+		node_gui:set_mini_info(mini_info_text)
 	end
 end
 
@@ -3740,6 +3748,40 @@ function MenuCallbackHandler:set_voice_volume(item)
 	end
 end
 
+function MenuCallbackHandler:set_sound_output_device(item)
+	local new_device = item:parameter("device_id")
+	local is_default = new_device == nil
+	local exists = false
+	local devices = SoundDevice:output_devices()
+
+	for _, device_data in ipairs(devices) do
+		if is_default then
+			if device_data.is_default then
+				exists = true
+
+				break
+			end
+		elseif new_device == device_data.device_id then
+			exists = true
+
+			break
+		end
+	end
+
+	if not exists then
+		Application:error("[MenuCallbackHandler:set_sound_output_device] Couldn't find device in list of devices, using default. Missing device ID:", new_device)
+		Application:error(inspect(devices))
+
+		new_device = nil
+	end
+
+	managers.user:set_setting("sound_output_device", new_device)
+end
+
+function MenuCallbackHandler:is_current_sound_output_device(item)
+	return item:parameter("device_id") == managers.user:get_setting("sound_output_device")
+end
+
 function MenuCallbackHandler:set_brightness(item)
 	local brightness = item:value()
 
@@ -5400,6 +5442,82 @@ function MenuSoundCreator:modify_node(node)
 end
 
 function MenuSoundCreator:refresh_node(node)
+	return self:modify_node(node)
+end
+
+MenuSoundOutputDeviceCreator = MenuSoundOutputDeviceCreator or class()
+MenuSoundOutputDeviceCreator.MAX_SOUND_DEVICE_NAME_LENGTH = 45
+MenuSoundOutputDeviceCreator.DEFAULT_DEVICE_NODE_NAME = "sound_device_default"
+
+function MenuSoundOutputDeviceCreator:modify_node(node)
+	local new_node = deep_clone(node)
+	local devices = SoundDevice:output_devices()
+	local max_str_length = self.MAX_SOUND_DEVICE_NAME_LENGTH
+	local default_node_name = self.DEFAULT_DEVICE_NODE_NAME
+
+	if not new_node:item(default_node_name) then
+		local default_device_name = ""
+
+		for _, device_data in ipairs(devices) do
+			if device_data.is_default then
+				default_device_name = device_data.device_name
+
+				break
+			end
+		end
+
+		local localized_default_name = managers.localization:text("menu_" .. default_node_name)
+
+		default_device_name = localized_default_name .. " - " .. default_device_name
+
+		if max_str_length < utf8.len(default_device_name) then
+			default_device_name = utf8.sub(default_device_name, 1, max_str_length - 3) .. "..."
+		end
+
+		local params = {
+			callback = "set_sound_output_device",
+			icon = "guis/textures/scrollarrow",
+			icon_rotation = 90,
+			icon_visible_callback = "is_current_sound_output_device",
+			localize = false,
+			name = default_node_name,
+			text_id = default_device_name
+		}
+		local new_item = new_node:create_item(nil, params)
+
+		new_node:add_item(new_item)
+	end
+
+	for _, device_data in ipairs(devices) do
+		local device_name = device_data.device_name
+
+		if max_str_length < utf8.len(device_name) then
+			device_name = utf8.sub(device_name, 1, max_str_length - 3) .. "..."
+		end
+
+		if not new_node:item(device_name) then
+			local params = {
+				callback = "set_sound_output_device",
+				icon = "guis/textures/scrollarrow",
+				icon_rotation = 90,
+				icon_visible_callback = "is_current_sound_output_device",
+				localize = false,
+				name = device_name,
+				text_id = device_name,
+				device_id = device_data.device_id
+			}
+			local new_item = new_node:create_item(nil, params)
+
+			new_node:add_item(new_item)
+		end
+	end
+
+	managers.menu:add_back_button(new_node)
+
+	return new_node
+end
+
+function MenuSoundOutputDeviceCreator:refresh_node(node)
 	return self:modify_node(node)
 end
 

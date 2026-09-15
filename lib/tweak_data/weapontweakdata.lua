@@ -287,6 +287,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_dart_crew()
 	self:_init_data_speen_crew()
 	self:_init_data_flun_crew()
+	self:_init_data_bleckert_crew()
 	self:_init_ranc_heavy_machine_gun()
 	self:_precalculate_values()
 end
@@ -5735,6 +5736,30 @@ function WeaponTweakData:_init_data_flun_crew()
 	self.flun_crew.FIRE_MODE = "single"
 end
 
+function WeaponTweakData:_init_data_bleckert_crew()
+	self.bleckert_crew.categories = clone(self.bleckert.categories)
+	self.bleckert_crew.sounds.prefix = "bleckert_npc"
+	self.bleckert_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.bleckert_crew.DAMAGE = 6
+	self.bleckert_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.bleckert_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.bleckert_crew.CLIP_AMMO_MAX = 5
+	self.bleckert_crew.NR_CLIPS_MAX = 5
+	self.bleckert_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.bleckert_crew.looped_reload_speed = 0.5
+	self.bleckert_crew.reload = "looped"
+	self.bleckert_crew.auto.fire_rate = 0.4285
+	self.bleckert_crew.alert_size = 3000
+	self.bleckert_crew.suppression = 2
+	self.bleckert_crew.FIRE_MODE = "single"
+	self.bleckert_crew.is_shotgun = true
+	self.bleckert_crew.rays = 12
+	self.bleckert_crew.spread = 3
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default
 
@@ -6682,6 +6707,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_speen(weapon_data)
 	self:_init_dart(weapon_data)
 	self:_init_flun(weapon_data)
+	self:_init_bleckert(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -20329,7 +20355,7 @@ function WeaponTweakData:_init_arbiter(weapon_data)
 	self.arbiter.stats = {
 		alert_size = 7,
 		concealment = 18,
-		damage = 48,
+		damage = 50,
 		extra_ammo = 51,
 		recoil = 25,
 		reload = 11,
@@ -29446,6 +29472,144 @@ function WeaponTweakData:_init_flun(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_bleckert(weapon_data)
+	self.bleckert = {}
+	self.bleckert.categories = {
+		"shotgun"
+	}
+	self.bleckert.upgrade_blocks = {
+		weapon = {
+			"clip_ammo_increase"
+		}
+	}
+	self.bleckert.name_id = "bm_w_bleckert"
+	self.bleckert.desc_id = "bm_w_bleckert_desc"
+	self.bleckert.description_id = "des_bleckert"
+	self.bleckert.texture_bundle_folder = "auc"
+	self.bleckert.global_value = "auc"
+	self.bleckert.use_data = {
+		align_place = "left_hand",
+		selection_index = SELECTION.PRIMARY
+	}
+	self.bleckert.sounds = {
+		dryfire = "shotgun_dryfire",
+		enter_steelsight = "primary_steel_sight_enter",
+		fire = "bleckert_fire",
+		leave_steelsight = "primary_steel_sight_exit"
+	}
+	self.bleckert.use_shotgun_reload = true
+	self.bleckert.timers = {
+		equip = 0.6,
+		unequip = 0.6,
+		shotgun_reload = {
+			not_empty = {
+				reload_enter = 1,
+				reload_exit = 0.5666666666666667,
+				reload_first_shell_offset = 0,
+				reload_shell = 0.9
+			},
+			empty = {
+				reload_enter = 0.7,
+				reload_exit = 0.5666666666666667,
+				reload_first_shell_offset = 0,
+				reload_shell = 0.9
+			}
+		}
+	}
+	self.bleckert.animations = {
+		equip_id = "equip_bleckert",
+		recoil_steelsight = true,
+		reload_not_empty_enter = "reload_not_empty_enter",
+		reload_shell_data = {
+			align = "right"
+		}
+	}
+	self.bleckert.autohit = weapon_data.autohit_shotgun_default
+	self.bleckert.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.bleckert.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.bleckert.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.bleckert.DAMAGE = 6
+	self.bleckert.damage_near = 2000
+	self.bleckert.damage_far = 3000
+	self.bleckert.rays = 10
+	self.bleckert.damage_falloff = {
+		far_falloff = 1000,
+		far_multiplier = 0.5,
+		near_falloff = 0,
+		near_multiplier = 1,
+		optimal_distance = 1000,
+		optimal_range = 3000
+	}
+	self.bleckert.damage_melee = weapon_data.damage_melee_default
+	self.bleckert.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	self.bleckert.panic_suppression_chance = 0.2
+	self.bleckert.CLIP_AMMO_MAX = 5
+	self.bleckert.NR_CLIPS_MAX = 5
+	self.bleckert.AMMO_MAX = self.bleckert.CLIP_AMMO_MAX * self.bleckert.NR_CLIPS_MAX
+	self.bleckert.AMMO_PICKUP = self:_pickup_chance(self.bleckert.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
+	self.bleckert.FIRE_MODE = "single"
+	self.bleckert.fire_mode_data = {
+		fire_rate = 0.4285
+	}
+	self.bleckert.single = {
+		fire_rate = 0.4285
+	}
+	self.bleckert.CAN_TOGGLE_FIREMODE = false
+	self.bleckert.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.bleckert.kick = {}
+	self.bleckert.kick.standing = {
+		2.9,
+		3,
+		-0.5,
+		0.5
+	}
+	self.bleckert.kick.crouching = self.bleckert.kick.standing
+	self.bleckert.kick.steelsight = self.bleckert.kick.standing
+	self.bleckert.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.bleckert.crosshair = {
+		standing = {
+			kick_offset = 0.8,
+			moving_offset = 0.7,
+			offset = 0.7
+		},
+		crouching = {
+			kick_offset = 0.75,
+			moving_offset = 0.65,
+			offset = 0.65
+		},
+		steelsight = {
+			hidden = true,
+			kick_offset = 0,
+			moving_offset = 0,
+			offset = 0
+		}
+	}
+	self.bleckert.stats = {
+		alert_size = 7,
+		concealment = 18,
+		damage = 155,
+		extra_ammo = 51,
+		recoil = 6,
+		reload = 11,
+		spread = 16,
+		spread_moving = 15,
+		suppression = 5,
+		total_ammo_mod = 21,
+		value = 7,
+		zoom = 1
+	}
+end
+
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
 		usage = "is_pistol",
@@ -31089,6 +31253,12 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.flun_crew = {
 		usage = "is_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.bleckert_crew = {
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}

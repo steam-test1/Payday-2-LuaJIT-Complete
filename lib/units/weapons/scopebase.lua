@@ -46,7 +46,7 @@ function NewRaycastWeaponBase:configure_scope()
 		if parts_tweak[part_id] and parts_tweak[part_id].camera then
 			local camera = parts_tweak[part_id] and parts_tweak[part_id].camera
 
-			if camera then
+			if camera and camera.a_camera and camera.a_screen then
 				local config = {}
 
 				config.a_camera = part.unit:get_object(Idstring(camera.a_camera))

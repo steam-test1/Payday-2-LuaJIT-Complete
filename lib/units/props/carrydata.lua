@@ -1283,20 +1283,24 @@ function CarryData:unlink()
 end
 
 function CarryData:_add_body_activation_clbk()
-	if not self._link_body or self._has_body_activation_clbk and self._has_body_activation_clbk[self._link_body:key()] then
+	if not self._link_body or self._linked_to or self._zipline_unit then
 		return
 	end
 
-	if not self._linked_to and not self._zipline_unit then
-		local clbk = callback(self, self, "clbk_body_active_state")
+	local key = self._link_body:key()
 
-		self._has_body_activation_clbk = self._has_body_activation_clbk or {}
-		self._has_body_activation_clbk[self._link_body:key()] = clbk
-
-		self._unit:add_body_activation_callback(clbk)
-		self._link_body:set_activate_tag(IDS_BAG_MOVING)
-		self._link_body:set_deactivate_tag(IDS_BAG_STILL)
+	if self._has_body_activation_clbk and self._has_body_activation_clbk[key] then
+		return
 	end
+
+	local clbk = callback(self, self, "clbk_body_active_state")
+
+	self._has_body_activation_clbk = self._has_body_activation_clbk or {}
+	self._has_body_activation_clbk[key] = clbk
+
+	self._unit:add_body_activation_callback(clbk)
+	self._link_body:set_activate_tag(IDS_BAG_MOVING)
+	self._link_body:set_deactivate_tag(IDS_BAG_STILL)
 end
 
 function CarryData:_remove_body_activation_clbk()
@@ -1306,22 +1310,24 @@ function CarryData:_remove_body_activation_clbk()
 
 	local key = self._link_body:key()
 
-	if self._has_body_activation_clbk[key] then
-		self._unit:remove_body_activation_callback(self._has_body_activation_clbk[key])
+	if not self._has_body_activation_clbk[key] then
+		return
+	end
 
-		self._has_body_activation_clbk[key] = nil
+	self._unit:remove_body_activation_callback(self._has_body_activation_clbk[key])
 
-		self._link_body:set_activate_tag(IDS_EMPTY)
-		self._link_body:set_deactivate_tag(IDS_EMPTY)
+	self._has_body_activation_clbk[key] = nil
 
-		if next(self._has_body_activation_clbk) == nil then
-			self._has_body_activation_clbk = nil
-		end
+	self._link_body:set_activate_tag(IDS_EMPTY)
+	self._link_body:set_deactivate_tag(IDS_EMPTY)
+
+	if not next(self._has_body_activation_clbk) then
+		self._has_body_activation_clbk = nil
 	end
 end
 
 function CarryData:clbk_body_active_state(tag, unit, body, activated)
-	if not self._has_body_activation_clbk[body:key()] then
+	if not self._has_body_activation_clbk or not self._has_body_activation_clbk[body:key()] then
 		return
 	end
 

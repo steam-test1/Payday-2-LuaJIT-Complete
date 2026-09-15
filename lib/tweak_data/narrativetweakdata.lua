@@ -6902,6 +6902,78 @@ function NarrativeTweakData:init(tweak_data)
 		1,
 		23
 	}
+	self.stages.auc = {
+		dlc = "auc",
+		level_id = "auc",
+		type = "d",
+		type_id = "heist_type_assault"
+	}
+	self.jobs.auc = {}
+	self.jobs.auc.name_id = "heist_auc"
+	self.jobs.auc.briefing_id = "heist_auc_crimenet"
+	self.jobs.auc.contact = "bain"
+	self.jobs.auc.region = "street"
+	self.jobs.auc.jc = 50
+	self.jobs.auc.dlc = "auc"
+	self.jobs.auc.chain = {
+		self.stages.auc
+	}
+	self.jobs.auc.briefing_event = "Play_pln_auc_cbf_01"
+	self.jobs.auc.debrief_event = nil
+	self.jobs.auc.crimenet_callouts = {
+		"Play_pln_auc_cnc_01"
+	}
+	self.jobs.auc.crimenet_videos = {
+		"cn_branchbank1",
+		"cn_branchbank2",
+		"cn_branchbank3"
+	}
+	self.jobs.auc.payout = {
+		70000,
+		95000,
+		125000,
+		200000,
+		250000,
+		250000,
+		250000
+	}
+	self.jobs.auc.contract_cost = {
+		62000,
+		124000,
+		310000,
+		620000,
+		800000,
+		800000,
+		800000
+	}
+	self.jobs.auc.contract_visuals = {}
+	self.jobs.auc.contract_visuals.min_mission_xp = {
+		20000,
+		20000,
+		20000,
+		20000,
+		20000,
+		20000,
+		20000
+	}
+	self.jobs.auc.contract_visuals.max_mission_xp = {
+		41000,
+		42000,
+		43000,
+		44000,
+		44000,
+		44000,
+		44000
+	}
+	self.jobs.auc.contract_visuals.preview_image = {
+		folder = "auc",
+		id = "auc"
+	}
+	self.jobs.auc.date_added = {
+		2026,
+		9,
+		15
+	}
 	self.stages.lbe_lobby_end = {
 		level_id = "lbe_lobby_end",
 		type = "d",
@@ -7692,7 +7764,8 @@ function NarrativeTweakData:init(tweak_data)
 		"ranc",
 		"trai",
 		"corp",
-		"deep"
+		"deep",
+		"auc"
 	}
 	self.forced_jobs = {
 		arm_cro = true,

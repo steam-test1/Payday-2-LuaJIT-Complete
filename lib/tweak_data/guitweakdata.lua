@@ -5207,6 +5207,12 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		epic_url = "https://pd2.link/UnderTheHammerE",
+		name_id = "menu_nh_auc_dlc",
+		texture_path = "guis/dlcs/auc/textures/pd2/new_heists/auc_dlc_banner",
+		url = "https://pd2.link/UnderTheHammerS"
+	})
+	table.insert(self.new_heists, {
 		epic_url = "https://pd2.link/EspionageWeaponPackE",
 		name_id = "menu_nh_esp_dlc",
 		texture_path = "guis/dlcs/esp/textures/pd2/new_heists/esp_dlc_banner",

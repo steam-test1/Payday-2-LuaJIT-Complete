@@ -724,6 +724,10 @@ function PlayerMovement.clbk_msg_overwrite_suspicion(overwrite_data, msg_queue, 
 end
 
 function PlayerMovement:clbk_enemy_weapons_hot()
+	if self._current_state and self._current_state.on_enemy_weapons_hot then
+		self._current_state:on_enemy_weapons_hot()
+	end
+
 	if self._current_state_name == "mask_off" then
 		self:on_uncovered(nil)
 	end
@@ -973,6 +977,12 @@ end
 function PlayerMovement:pre_destroy(unit)
 	self._attention_handler:set_attention(nil)
 	self._current_state:pre_destroy(unit)
+
+	if self._pos_rsrv_id then
+		managers.navigation:release_pos_reservation_id(self._pos_rsrv_id)
+
+		self._pos_rsrv_id = nil
+	end
 
 	if self._nav_tracker then
 		managers.navigation:destroy_nav_tracker(self._nav_tracker)

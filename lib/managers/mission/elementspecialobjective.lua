@@ -624,6 +624,10 @@ function ElementSpecialObjective:_get_misc_SO_params()
 	return pose, stance, attitude, path_style, pos, rot, interrupt_dis, interrupt_health, haste, trigger_on, interaction_voice
 end
 
+function ElementSpecialObjective:needs_pos_rsrv()
+	return self._values.needs_pos_rsrv or false
+end
+
 function ElementSpecialObjective:nav_link_end_pos()
 	return self._values.search_position
 end
@@ -765,6 +769,7 @@ function ElementSpecialObjective:choose_followup_SO(unit, skip_element_ids)
 
 	local total_weight = 0
 	local pool = {}
+	local backup_pool = {}
 
 	for _, followup_element_id in ipairs(self._values.followup_elements) do
 		local weight
@@ -773,30 +778,40 @@ function ElementSpecialObjective:choose_followup_SO(unit, skip_element_ids)
 		if followup_element:enabled() then
 			followup_element, weight = followup_element:get_as_followup(unit, skip_element_ids)
 
-			if followup_element and followup_element:enabled() and weight > 0 then
-				table.insert(pool, {
-					element = followup_element,
-					weight = weight
-				})
+			if followup_element and followup_element:enabled() then
+				if weight > 0 then
+					table.insert(pool, {
+						element = followup_element,
+						weight = weight
+					})
 
-				total_weight = total_weight + weight
+					total_weight = total_weight + weight
+				else
+					table.insert(backup_pool, followup_element)
+				end
 			end
 		end
 	end
 
-	if not next(pool) or total_weight <= 0 then
-		return
+	if #pool > 0 and total_weight > 0 then
+		local lucky_w = math.random() * total_weight
+		local accumulated_w = 0
+
+		for i, followup_data in ipairs(pool) do
+			accumulated_w = accumulated_w + followup_data.weight
+
+			if lucky_w <= accumulated_w then
+				return pool[i].element
+			end
+		end
 	end
 
-	local lucky_w = math.random() * total_weight
-	local accumulated_w = 0
+	local nr_backups = #backup_pool
 
-	for i, followup_data in ipairs(pool) do
-		accumulated_w = accumulated_w + followup_data.weight
+	if nr_backups > 0 then
+		local random_backup = nr_backups == 1 and 1 or math.random(nr_backups)
 
-		if lucky_w <= accumulated_w then
-			return pool[i].element
-		end
+		return backup_pool[random_backup]
 	end
 end
 

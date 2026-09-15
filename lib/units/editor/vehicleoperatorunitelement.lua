@@ -11,7 +11,13 @@ VehicleOperatorUnitElement.ACTIONS = {
 	"deactivate",
 	"block",
 	"enable_player_exit",
-	"disable_player_exit"
+	"disable_player_exit",
+	"disable_loot_interaction",
+	"enable_loot_interaction",
+	"disable_accepting_loot",
+	"enable_accepting_loot",
+	"disable_securing_loot",
+	"enable_securing_loot"
 }
 
 table.list_append(VehicleOperatorUnitElement.ACTIONS, {

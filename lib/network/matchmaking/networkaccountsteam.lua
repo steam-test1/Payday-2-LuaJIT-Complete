@@ -73,21 +73,7 @@ function NetworkAccountSTEAM:set_presences_peer_id(peer_id)
 end
 
 function NetworkAccountSTEAM:get_win_ratio(difficulty, level)
-	local plays = Steam:sa_handler():get_global_stat(difficulty .. "_" .. level .. "_plays", 30)
-	local wins = Steam:sa_handler():get_global_stat(difficulty .. "_" .. level .. "_wins", 30)
-	local ratio = {}
-
-	if #plays == 0 or #wins == 0 then
-		return
-	end
-
-	for i, plays_n in pairs(plays) do
-		ratio[i] = wins[i] / (plays_n == 0 and 1 or plays_n)
-	end
-
-	table.sort(ratio)
-
-	return ratio[#ratio / 2]
+	return 1
 end
 
 function NetworkAccountSTEAM._on_troll_group_recieved(success, page)

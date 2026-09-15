@@ -490,7 +490,9 @@ function ElementLaserTrigger:_set_dummies_visible(visible)
 	self._dummies_visible = visible
 
 	for _, unit in ipairs(self._dummy_units) do
-		unit:set_enabled(self._dummies_visible)
+		if alive(unit) then
+			unit:set_enabled(self._dummies_visible)
+		end
 	end
 end
 

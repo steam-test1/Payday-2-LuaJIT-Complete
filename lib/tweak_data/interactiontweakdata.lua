@@ -1,4 +1,5 @@
 InteractionTweakData = InteractionTweakData or class()
+InteractionTweakData = InteractionTweakData or class()
 
 function InteractionTweakData:init(tweak_data)
 	self.DEFAULT_INTERACTION_DOT = 0.9
@@ -7344,4 +7345,144 @@ function InteractionTweakData:init(tweak_data)
 		text_id = "hud_interact_enter_spy_camera",
 		timer = 0.15
 	}
+	self.auc_cutter = {
+		sound_done = "bar_huge_lance_fix_finished",
+		sound_interupt = "bar_huge_lance_fix_cancel",
+		sound_start = "bar_huge_lance_fix",
+		text_id = "hud_int_cutter_start",
+		timer = 3
+	}
+	self.auc_cutter_jammed = {
+		sound_done = "bar_drill_fix_finished",
+		sound_interupt = "bar_drill_fix_cancel",
+		sound_start = "bar_drill_fix",
+		text_id = "hud_int_cutter_jammed",
+		timer = 10
+	}
+	self.auc_cutter_remove = {
+		sound_done = "bar_steal_circuit_finished",
+		sound_interupt = "bar_steal_circuit_cancel",
+		sound_start = "bar_steal_circuit",
+		text_id = "hud_int_cutter_remove",
+		timer = 5
+	}
+	self.auc_add_coolant = {
+		interact_distance = 200,
+		sound_done = "bar_liquid_nitrogen_attach_finished",
+		text_id = "hud_int_add_coolant"
+	}
+	self.auc_add_hydrogen = deep_clone(self.auc_add_coolant)
+	self.auc_add_hydrogen.text_id = "hud_int_add_hydrogen"
+	self.auc_pku_statue = {
+		blocked_hint = "carry_block",
+		interact_distance = 150,
+		sound_done = "bar_bag_armor_finished",
+		sound_interupt = "bar_bag_armor_cancel",
+		sound_start = "bar_bag_armor",
+		start_active = true,
+		text_id = "hud_int_hold_take_auction_item",
+		timer = 3
+	}
+	self.auc_pku_statue_special = {
+		blocked_hint = "carry_block",
+		sound_done = "bar_bag_armor_finished",
+		sound_interupt = "bar_bag_armor_cancel",
+		sound_start = "bar_bag_armor",
+		start_active = false,
+		text_id = "hud_int_hold_take_artpiece",
+		timer = 3
+	}
+	self.auc_hold_pku_c4 = {
+		contour = "interactable",
+		interact_distance = 150,
+		start_active = false,
+		text_id = "hud_int_take_c4"
+	}
+	self.auc_rfid_shutter_close = {
+		axis = "x",
+		equipment_consume = false,
+		equipment_text_id = "hud_equipment_evidance_find_a_tag",
+		interact_distance = 150,
+		special_equipment = "auc_rfid_tag",
+		start_active = true,
+		text_id = "hud_int_hold_close_shutters",
+		timer = 1
+	}
+	self.auc_car_keys = {
+		contour = "interactable",
+		interact_distance = 75,
+		text_id = "hud_int_take_keys"
+	}
+	self.auc_rfid_shutter_open = deep_clone(self.auc_rfid_shutter_close)
+	self.auc_rfid_shutter_open.text_id = "hud_int_hold_open_shutters"
+	self.auc_rfid_security = deep_clone(self.auc_rfid_shutter_close)
+	self.auc_rfid_security.text_id = "debug_interact_security_station"
+	self.auc_rfid_code = {
+		action_text_id = "hud_action_using_evidance_tag",
+		equipment_consume = false,
+		equipment_text_id = "hud_equipment_evidance_find_a_tag",
+		interact_distance = 150,
+		special_equipment = "auc_rfid_tag",
+		start_active = true,
+		text_id = "hud_hold_use_evidance_tag",
+		timer = 1
+	}
+	self.auc_remove_cover = {
+		action_text_id0 = "hud_action_removing_cover",
+		interact_distance = 150,
+		sound_done = "bar_secure_winch_finished",
+		sound_interupt = "bar_secure_winch_cancel",
+		sound_start = "bar_secure_winch",
+		start_active = false,
+		text_id = "hud_int_hold_remove_cover",
+		timer = 10
+	}
+	self.auc_cutter_tool = {
+		interact_distance = 200,
+		special_equipment_block = "auc_cutter_tool",
+		start_active = false,
+		text_id = "hud_take_cutter_tool"
+	}
+	self.auc_fix_cutter = {
+		equipment_consume = true,
+		equipment_text_id = "hint_no_cutter_tool",
+		interact_distance = 150,
+		sound_done = "bar_drill_fix_finished",
+		sound_interupt = "bar_drill_fix_cancel",
+		sound_start = "bar_drill_fix",
+		special_equipment = "auc_cutter_tool",
+		start_active = false,
+		text_id = "hud_int_cutter_jammed",
+		timer = 10
+	}
+	self.auc_search_clues = {
+		action_text_id = "hud_action_searching_clues",
+		axis = "x",
+		interact_distance = 150,
+		sound_done = "bar_shuffle_papers_finished",
+		sound_interupt = "bar_shuffle_papers_cancel",
+		sound_start = "bar_shuffle_papers",
+		start_active = true,
+		text_id = "hud_int_hold_search_clues",
+		timer = 1
+	}
+	self.auc_search_clues_tablet = {
+		action_text_id = "hud_action_searching_clues",
+		axis = "x",
+		interact_distance = 150,
+		sound_done = "bar_keyboard_finished",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_start = "bar_keyboard",
+		start_active = true,
+		text_id = "hud_int_hold_search_clues",
+		timer = 2
+	}
+	self.auc_search_keys = {
+		interact_distance = 150,
+		start_active = true,
+		text_id = "hud_int_hold_search_keys",
+		timer = 1
+	}
+	self.auc_send_tablet_message = deep_clone(self.pickup_tablet)
+	self.auc_send_tablet_message.text_id = "hud_int_send_tablet_message"
 end

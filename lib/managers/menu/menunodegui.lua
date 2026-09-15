@@ -1885,51 +1885,49 @@ function MenuNodeMainGui:_add_version_string()
 		self._version_string = nil
 	end
 
-	if Application:debug_enabled() or IS_PC then
-		local version = Application:version()
+	local version = Application:version()
 
-		if IS_STEAM_MM then
-			version = version .. " SteamMM"
-		elseif IS_EPIC_MM then
-			version = version .. " EpicMM"
-		end
-
-		self._version_string = self.ws:panel():text({
-			align = "left",
-			alpha = 0.5,
-			name = "version_string",
-			vertical = "bottom",
-			text = version,
-			font = tweak_data.menu.pd2_small_font,
-			font_size = tweak_data.menu.pd2_small_font_size
-		})
-
-		local function fade_in(o)
-			local from = Color(0, 1, 1, 1)
-			local to = Color(1, 1, 1, 1)
-			local t = 0
-
-			o:set_color(from)
-
-			while t < 4 do
-				local dt = coroutine.yield()
-
-				t = t + dt
-			end
-
-			t = 0
-
-			while t < 1 do
-				local dt = coroutine.yield()
-
-				t = t + dt
-
-				o:set_color(from * (1 - t) + to * t)
-			end
-
-			o:set_color(to)
-		end
-
-		self._version_string:animate(fade_in)
+	if IS_STEAM_MM then
+		version = version .. " SteamMM"
+	elseif IS_EPIC_MM then
+		version = version .. " EpicMM"
 	end
+
+	self._version_string = self.ws:panel():text({
+		align = "left",
+		alpha = 0.5,
+		name = "version_string",
+		vertical = "bottom",
+		text = version,
+		font = tweak_data.menu.pd2_small_font,
+		font_size = tweak_data.menu.pd2_small_font_size
+	})
+
+	local function fade_in(o)
+		local from = Color(0, 1, 1, 1)
+		local to = Color(1, 1, 1, 1)
+		local t = 0
+
+		o:set_color(from)
+
+		while t < 4 do
+			local dt = coroutine.yield()
+
+			t = t + dt
+		end
+
+		t = 0
+
+		while t < 1 do
+			local dt = coroutine.yield()
+
+			t = t + dt
+
+			o:set_color(from * (1 - t) + to * t)
+		end
+
+		o:set_color(to)
+	end
+
+	self._version_string:animate(fade_in)
 end

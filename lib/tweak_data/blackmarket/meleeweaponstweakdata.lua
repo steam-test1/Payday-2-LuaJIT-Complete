@@ -3092,6 +3092,18 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.bonk2.info_id = "bm_melee_bonk2_info"
 	self.melee_weapons.bonk2.unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk2/wpn_fps_mel_bonk2"
 	self.melee_weapons.bonk2.third_unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk2/wpn_tps_mel_bonk2"
+	self.melee_weapons.order = deep_clone(self.melee_weapons.dingdong)
+	self.melee_weapons.order.name_id = "bm_melee_order"
+	self.melee_weapons.order.unit = "units/pd2_dlc_auc/weapons/wpn_fps_mel_order/wpn_fps_mel_order"
+	self.melee_weapons.order.third_unit = "units/pd2_dlc_auc/weapons/wpn_fps_mel_order/wpn_third_mel_order"
+	self.melee_weapons.order.dlc = "auc"
+	self.melee_weapons.order.texture_bundle_folder = "auc"
+	self.melee_weapons.order.sounds = {}
+	self.melee_weapons.order.sounds.equip = "bat_equip"
+	self.melee_weapons.order.sounds.hit_air = "bat_hit_air"
+	self.melee_weapons.order.sounds.hit_gen = "baseballbat_hit_gen"
+	self.melee_weapons.order.sounds.hit_body = "baseballbat_hit_body"
+	self.melee_weapons.order.sounds.charge = "bat_charge"
 
 	local free_dlcs = tweak_data:free_dlc_list()
 

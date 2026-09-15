@@ -205,21 +205,9 @@ function PlayerStandard:enter(state_data, enter_data)
 
 	self._ext_camera:clbk_fp_enter(self._unit:rotation():y())
 
-	if self._ext_movement:nav_tracker() then
-		self._pos_reservation = {
-			radius = 100,
-			position = self._ext_movement:m_pos(),
-			filter = self._ext_movement:pos_rsrv_id()
-		}
-		self._pos_reservation_slow = {
-			radius = 100,
-			position = mvector3.copy(self._ext_movement:m_pos()),
-			filter = self._ext_movement:pos_rsrv_id()
-		}
+	local groupai_state = managers.groupai:state()
 
-		managers.navigation:add_pos_reservation(self._pos_reservation)
-		managers.navigation:add_pos_reservation(self._pos_reservation_slow)
-	end
+	self._can_reserve_positions = self._is_server and groupai_state:enemy_weapons_hot() and true or nil
 
 	for _, data in ipairs(self._ext_inventory._available_selections) do
 		local unit = data.unit
@@ -257,7 +245,7 @@ function PlayerStandard:_enter(enter_data)
 
 	local nav_tracker = self._ext_movement:nav_tracker()
 
-	if Network:is_server() and nav_tracker then
+	if nav_tracker and self._is_server then
 		managers.groupai:state():on_player_weapons_hot()
 	end
 
@@ -448,26 +436,52 @@ end
 local temp_vec1 = Vector3()
 
 function PlayerStandard:_upd_nav_data()
-	if mvec3_dis_sq(self._m_pos, self._pos) > 1 then
-		if self._ext_movement:nav_tracker() then
-			self._ext_movement:nav_tracker():move(self._pos)
+	if not (mvec3_dis_sq(self._m_pos, self._pos) > 1) then
+		return
+	end
 
-			local nav_seg_id = self._ext_movement:nav_tracker():nav_segment()
+	local tracker = self._ext_movement:nav_tracker()
 
-			if self._standing_nav_seg_id ~= nav_seg_id then
-				self._standing_nav_seg_id = nav_seg_id
+	if tracker then
+		tracker:move(self._pos)
 
-				local metadata = managers.navigation:get_nav_seg_metadata(nav_seg_id)
-				local location_id = metadata.location_id
+		local nav_seg_id = tracker:nav_segment()
 
-				managers.hud:set_player_location(location_id)
-				self._unit:base():set_suspicion_multiplier("area", metadata.suspicion_mul)
-				self._unit:base():set_detection_multiplier("area", metadata.detection_mul and 1 / metadata.detection_mul or nil)
+		if self._standing_nav_seg_id ~= nav_seg_id then
+			self._standing_nav_seg_id = nav_seg_id
+
+			local metadata = managers.navigation:get_nav_seg_metadata(nav_seg_id)
+			local location_id = metadata.location_id
+
+			managers.hud:set_player_location(location_id)
+			self._unit:base():set_suspicion_multiplier("area", metadata.suspicion_mul)
+			self._unit:base():set_detection_multiplier("area", metadata.detection_mul and 1 / metadata.detection_mul or nil)
+
+			if self._is_server then
 				managers.groupai:state():on_criminal_nav_seg_change(self._unit, nav_seg_id)
 			end
 		end
+	end
 
-		if self._pos_reservation then
+	local pos_rsrv_id = self._can_reserve_positions and self._ext_movement:pos_rsrv_id()
+
+	if pos_rsrv_id then
+		if not self._pos_reservation then
+			self._pos_reservation = {
+				radius = 100,
+				position = mvector3.copy(self._pos),
+				filter = pos_rsrv_id
+			}
+			self._pos_reservation_slow = {
+				radius = 100,
+				position = mvector3.copy(self._pos),
+				filter = pos_rsrv_id
+			}
+
+			managers.navigation:add_pos_reservation(self._pos_reservation)
+			managers.navigation:add_pos_reservation(self._pos_reservation_slow)
+		else
+			mvec3_set(self._pos_reservation.position, self._pos)
 			managers.navigation:move_pos_rsrv(self._pos_reservation)
 
 			local slow_dist = 100
@@ -482,9 +496,13 @@ function PlayerStandard:_upd_nav_data()
 				managers.navigation:move_pos_rsrv(self._pos_reservation_slow)
 			end
 		end
-
-		self._ext_movement:set_m_pos(self._pos)
 	end
+
+	self._ext_movement:set_m_pos(self._pos)
+end
+
+function PlayerStandard:on_enemy_weapons_hot()
+	self._can_reserve_positions = self._is_server or nil
 end
 
 function PlayerStandard:_calculate_standard_variables(t, dt)
@@ -5420,12 +5438,19 @@ function PlayerStandard:_start_action_reload_enter(t)
 			local speed_multiplier = weapon:reload_speed_multiplier()
 			local tweak_data = weapon:weapon_tweak_data()
 			local reload_name_id = tweak_data.animations.reload_name_id or weapon.name_id
+			local reload_anim = "reload_enter"
 
-			self._ext_camera:play_redirect(Idstring("reload_enter_" .. reload_name_id), speed_multiplier)
+			if is_reload_not_empty and tweak_data.animations.reload_not_empty_enter then
+				reload_anim = "reload_not_empty_enter"
+			end
+
+			local redirect_name = string.format("%s_%s", reload_anim, reload_name_id)
+
+			self._ext_camera:play_redirect(Idstring(redirect_name), speed_multiplier)
 
 			self._state_data.reload_enter_expire_t = t + base_reload_enter_expire_t / speed_multiplier
 
-			weapon:tweak_data_anim_play("reload_enter", speed_multiplier)
+			weapon:tweak_data_anim_play(reload_anim, speed_multiplier)
 
 			return
 		end
@@ -5956,6 +5981,8 @@ function PlayerStandard:pre_destroy(...)
 
 		self._pos_reservation_slow = nil
 	end
+
+	self._can_reserve_positions = nil
 
 	self:set_night_vision_state(false)
 end

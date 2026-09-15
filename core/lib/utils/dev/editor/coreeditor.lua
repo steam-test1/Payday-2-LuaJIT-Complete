@@ -4063,13 +4063,17 @@ end
 function CoreEditor:load_markers(world_holder, offset)
 	local markers = world_holder:create_world("world", "markers", offset)
 
-	for _, marker in pairs(markers) do
-		local n = marker._name
-		local p = marker._pos
-		local r = marker._rot
+	if markers then
+		for _, marker in pairs(markers) do
+			local n = marker._name
+			local p = marker._pos
+			local r = marker._rot
 
-		self:create_marker(n, p, r)
-		self._ews_markers:append(n)
+			self:create_marker(n, p, r)
+			self._ews_markers:append(n)
+		end
+	else
+		Application:error("[CoreEditor:load_markers] No markers to load!", markers)
 	end
 end
 

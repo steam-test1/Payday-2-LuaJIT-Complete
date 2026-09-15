@@ -974,4 +974,15 @@ function EquipmentsTweakData:init()
 		text_id = "hud_equipment_int_deep_oil_sample",
 		transfer_quantity = 1
 	}
+	self.specials.auc_rfid_tag = {
+		icon = "equipment_rfid_tag_01",
+		sync_possession = true,
+		text_id = "hud_equipment_loaded_card"
+	}
+	self.specials.auc_cutter_tool = {
+		icon = "equipment_hammer",
+		sync_possession = true,
+		text_id = "hud_equipment_cutter_tool",
+		transfer_quantity = 4
+	}
 end

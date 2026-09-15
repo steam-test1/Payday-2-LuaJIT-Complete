@@ -188,6 +188,11 @@ function DLCTweakData:init_generated()
 			type_items = "weapon_mods"
 		}
 	}
+	self.auc_bundle = {}
+	self.auc_bundle.dlc = "has_auc"
+	self.auc_bundle.content = {}
+	self.auc_bundle.content.loot_global_value = "auc"
+	self.auc_bundle.content.loot_drops = {}
 	self.bex_bundle = {}
 	self.bex_bundle.dlc = "has_bex"
 	self.bex_bundle.content = {}

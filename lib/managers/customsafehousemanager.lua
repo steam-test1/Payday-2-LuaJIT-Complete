@@ -143,8 +143,6 @@ function CustomSafehouseManager:load(data, version)
 			if room then
 				room.tier_current = math.clamp(room_data.current, 1, self._highest_tier)
 				room.unlocked_tiers = room_data.unlocked
-			else
-				print("couldn't find room for room_id: ", room_data.room_id)
 			end
 		end
 
@@ -810,14 +808,12 @@ end
 
 function CustomSafehouseManager:mark_daily_as_seen()
 	if not self:has_daily_been_accepted_from_heister() then
-		print("CustomSafehouseManager:mark_daily_as_seen()")
 		self:_set_daily_state("seen")
 	end
 end
 
 function CustomSafehouseManager:accept_daily()
 	if not self:has_daily_been_accepted_from_heister() then
-		print("CustomSafehouseManager:accept_daily()")
 		self:_set_daily_state("accepted")
 	end
 end
@@ -826,8 +822,6 @@ function CustomSafehouseManager:complete_daily()
 	if not self:unlocked() then
 		return
 	end
-
-	print("CustomSafehouseManager:complete_daily()")
 
 	if not self._global.daily.trophy.completed then
 		self:_set_daily_state("completed")
@@ -895,13 +889,13 @@ function CustomSafehouseManager:_get_random_daily()
 end
 
 function CustomSafehouseManager:set_active_daily(id)
-	if tweak_data.safehouse.daily_redirects[id] then
+	if tweak_data.safehouse.daily_redirects and tweak_data.safehouse.daily_redirects[id] then
 		id = tweak_data.safehouse.daily_redirects[id]
 	end
 
 	local daily = self:get_daily_challenge()
 
-	if daily and daily.id ~= id and daily.tag ~= "debug" then
+	if not daily or daily and daily.id ~= id and daily.tag ~= "debug" then
 		self:generate_daily(id)
 	end
 end
@@ -932,7 +926,7 @@ function CustomSafehouseManager:generate_daily(id, tag)
 		state = "unstarted",
 		id = daily.id,
 		tag = tag or nil,
-		contractor = contractor.character,
+		contractor = contractor.character or "aldstone",
 		timestamp = self:get_timestamp(),
 		rewards = {
 			{

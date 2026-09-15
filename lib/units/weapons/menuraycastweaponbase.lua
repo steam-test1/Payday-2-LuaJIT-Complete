@@ -462,7 +462,8 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 	local data = tweak_data.weapon.factory[self._factory_id]
 
 	if data.animations and data.animations[anim] then
-		local anim_name = data.animations[anim]
+		local animation_data = data.animations[anim]
+		local anim_name = type(animation_data) == "table" and animation_data.anim or animation_data
 		local length = self._unit:anim_length(Idstring(anim_name))
 
 		speed_multiplier = speed_multiplier or 1
@@ -473,7 +474,8 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 
 	for part_id, data in pairs(self._parts) do
 		if data.animations and data.animations[anim] then
-			local anim_name = data.animations[anim]
+			local animation_data = data.animations[anim]
+			local anim_name = type(animation_data) == "table" and animation_data.anim or animation_data
 			local length = data.unit:anim_length(Idstring(anim_name))
 
 			speed_multiplier = speed_multiplier or 1
@@ -490,14 +492,16 @@ function NewRaycastWeaponBase:tweak_data_anim_stop(anim)
 	local data = tweak_data.weapon.factory[self._factory_id]
 
 	if data.animations and data.animations[anim] then
-		local anim_name = data.animations[anim]
+		local animation_data = data.animations[anim]
+		local anim_name = type(animation_data) == "table" and animation_data.anim or animation_data
 
 		self._unit:anim_stop(Idstring(anim_name))
 	end
 
 	for part_id, data in pairs(self._parts) do
 		if data.unit and data.animations and data.animations[anim] then
-			local anim_name = data.animations[anim]
+			local animation_data = data.animations[anim]
+			local anim_name = type(animation_data) == "table" and animation_data.anim or animation_data
 
 			data.unit:anim_stop(Idstring(anim_name))
 		end
