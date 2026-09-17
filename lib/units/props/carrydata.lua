@@ -1,3 +1,4 @@
+local IDS_CARRY_DATA = Idstring("carry_data")
 local IDS_BAG_STILL = Idstring("bag_still")
 local IDS_BAG_MOVING = Idstring("bag_moving")
 
@@ -115,7 +116,7 @@ function CarryData:init(unit)
 	if not Network:is_server() then
 		self._link_body = unit:body("hinge_body_1") or unit:body(0)
 
-		unit:set_extension_update_enabled(Idstring("carry_data"), false)
+		unit:set_extension_update_enabled(IDS_CARRY_DATA, false)
 
 		return
 	end
@@ -171,7 +172,7 @@ function CarryData:init(unit)
 		enable_update = false
 	end
 
-	unit:set_extension_update_enabled(Idstring("carry_data"), enable_update)
+	unit:set_extension_update_enabled(IDS_CARRY_DATA, enable_update)
 	self:_set_expire_enabled(true)
 end
 
@@ -188,7 +189,7 @@ function CarryData:trigger_load(instigator)
 end
 
 function CarryData:enable_update()
-	self._unit:set_extension_update_enabled(Idstring("carry_data"), true)
+	self._unit:set_extension_update_enabled(IDS_CARRY_DATA, true)
 end
 
 function CarryData:update(unit, t, dt)
@@ -203,7 +204,7 @@ function CarryData:update(unit, t, dt)
 	end
 
 	if not needs_updating then
-		unit:set_extension_update_enabled(Idstring("carry_data"), false)
+		unit:set_extension_update_enabled(IDS_CARRY_DATA, false)
 	end
 end
 

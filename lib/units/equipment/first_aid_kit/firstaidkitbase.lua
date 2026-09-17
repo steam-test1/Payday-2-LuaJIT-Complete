@@ -178,9 +178,15 @@ function FirstAidKitBase:sync_net_event(event_id)
 end
 
 function FirstAidKitBase:_set_dynamic()
-	self._is_dynamic = true
+	local dyn_body = self._unit:body("dynamic")
 
-	self._unit:body("dynamic"):set_enabled(true)
+	if dyn_body then
+		self._is_dynamic = true
+
+		dyn_body:set_enabled(true)
+	else
+		Application:warn("[FirstAidKitBase:_set_dynamic] Failed to set dynamic, no body called 'dynamic'", self._unit)
+	end
 end
 
 function FirstAidKitBase:take(unit)

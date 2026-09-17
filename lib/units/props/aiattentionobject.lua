@@ -336,6 +336,12 @@ function AIAttentionObject:on_enemy_weapons_hot()
 end
 
 function AIAttentionObject:link(parent_unit, obj_name, local_pos)
+	if not self._is_extension then
+		Application:error("[AIAttentionObject] link() - can only be called when the class is initialized as an extension", self._unit)
+
+		return
+	end
+
 	self._unit:unlink()
 
 	if parent_unit then
@@ -360,7 +366,7 @@ function AIAttentionObject:link(parent_unit, obj_name, local_pos)
 				debug_pause_unit(self._parent_unit, "[AIAttentionObject:set_parent_unit] attention object parent is not network synched", self._parent_unit)
 			end
 
-			managers.network:session():send_to_peers_synched("link_attention_no_rot", self._parent_unit, self._unit, obj_name, local_pos)
+			managers.network:send_to_peers_synched("link_attention_no_rot", self._parent_unit, self._unit, obj_name, local_pos)
 		end
 
 		if self._registered then
@@ -379,7 +385,7 @@ function AIAttentionObject:link(parent_unit, obj_name, local_pos)
 		self._parent_unit_key = nil
 
 		if Network:is_server() then
-			managers.network:session():send_to_peers_synched("unlink_attention", self._unit)
+			managers.network:send_to_peers_synched("unlink_attention", self._unit)
 		end
 
 		if had_parent and self._registered then

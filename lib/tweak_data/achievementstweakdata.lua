@@ -5665,9 +5665,9 @@ function AchievementsTweakData:init(tweak_data)
 			stealth = true,
 			timer = 360,
 			difficulty = overkill_and_above,
-			equipped_team = {
-				deployable = "ecm_jammer",
-				reverse_deployable = true
+			job_value = {
+				key = "auc_10_ecm",
+				value = 1
 			}
 		},
 		auc_11 = {

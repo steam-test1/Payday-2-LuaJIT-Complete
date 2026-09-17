@@ -3724,12 +3724,7 @@ function WeaponFactoryTweakData:_init_sights()
 		third_unit = "units/pd2_dlc_auc/weapons/wpn_third_upg_o_dardar/wpn_third_upg_o_dardar",
 		type = "sight",
 		unit = "units/pd2_dlc_auc/weapons/wpn_fps_upg_o_dardar/wpn_fps_upg_o_dardar",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
+		pcs = {},
 		stats = {
 			concealment = -1,
 			recoil = 1,
@@ -12722,7 +12717,9 @@ function WeaponFactoryTweakData:_init_mp9()
 		"wpn_fps_upg_o_hamr",
 		"wpn_fps_upg_o_atibal",
 		"wpn_fps_upg_o_health",
-		"wpn_fps_upg_o_dardar"
+		"wpn_fps_upg_o_dardar",
+		"wpn_fps_lmg_kacchainsaw_ns_muzzle",
+		"wpn_fps_lmg_kacchainsaw_ns_suppressor"
 	}
 	self.wpn_fps_smg_mp9_npc = deep_clone(self.wpn_fps_smg_mp9)
 	self.wpn_fps_smg_mp9_npc.unit = "units/payday2/weapons/wpn_fps_smg_mp9/wpn_fps_smg_mp9_npc"
@@ -30659,7 +30656,8 @@ function WeaponFactoryTweakData:_init_jowi()
 		"wpn_fps_upg_ns_ass_filter",
 		"wpn_fps_upg_ns_pis_jungle",
 		"wpn_fps_pis_g18c_m_mag_33rnd",
-		"wpn_fps_upg_ns_pis_typhoon"
+		"wpn_fps_upg_ns_pis_typhoon",
+		"wpn_fps_upg_ns_pis_putnik"
 	}
 	self.wpn_fps_jowi_npc = deep_clone(self.wpn_fps_jowi)
 	self.wpn_fps_jowi_npc.unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_jowi/wpn_fps_jowi_npc"
@@ -46918,27 +46916,26 @@ function WeaponFactoryTweakData:_init_pm9()
 		"wpn_fps_smg_pm9_g_standard",
 		"wpn_fps_smg_pm9_g_wood",
 		"wpn_fps_smg_pm9_s_tactical",
-		"wpn_fps_lmg_kacchainsaw_ns_muzzle",
-		"wpn_fps_lmg_kacchainsaw_ns_suppressor",
-		"wpn_fps_upg_o_docter",
-		"wpn_fps_upg_o_t1micro",
-		"wpn_fps_upg_ns_ass_smg_large",
-		"wpn_fps_upg_ns_ass_smg_medium",
-		"wpn_fps_upg_ns_ass_smg_small",
 		"wpn_fps_upg_i_singlefire",
 		"wpn_fps_upg_i_autofire",
+		"wpn_fps_upg_o_docter",
+		"wpn_fps_upg_o_t1micro",
 		"wpn_fps_upg_o_eotech_xps",
 		"wpn_fps_upg_o_reflex",
+		"wpn_fps_upg_o_fc1",
+		"wpn_fps_upg_o_health",
 		"wpn_fps_upg_fl_pis_laser",
 		"wpn_fps_upg_fl_pis_tlr1",
 		"wpn_fps_upg_fl_pis_perst",
 		"wpn_fps_upg_fl_pis_crimson",
 		"wpn_fps_upg_fl_pis_x400v",
 		"wpn_fps_upg_fl_pis_m3x",
-		"wpn_fps_upg_o_fc1",
+		"wpn_fps_upg_ns_ass_smg_large",
+		"wpn_fps_upg_ns_ass_smg_medium",
+		"wpn_fps_upg_ns_ass_smg_small",
 		"wpn_fps_upg_ns_pis_putnik",
-		"wpn_fps_upg_o_health",
-		"wpn_fps_upg_o_dardar"
+		"wpn_fps_lmg_kacchainsaw_ns_muzzle",
+		"wpn_fps_lmg_kacchainsaw_ns_suppressor"
 	}
 	self.wpn_fps_smg_pm9_npc = deep_clone(self.wpn_fps_smg_pm9)
 	self.wpn_fps_smg_pm9_npc.unit = "units/pd2_dlc_sawp/weapons/wpn_fps_smg_pm9/wpn_fps_smg_pm9_npc"
@@ -46987,9 +46984,6 @@ function WeaponFactoryTweakData:_init_x_pm9()
 		"wpn_fps_smg_pm9_g_standard",
 		"wpn_fps_smg_pm9_g_wood",
 		"wpn_fps_smg_pm9_s_tactical",
-		"wpn_fps_upg_ns_ass_smg_large",
-		"wpn_fps_upg_ns_ass_smg_medium",
-		"wpn_fps_upg_ns_ass_smg_small",
 		"wpn_fps_upg_i_singlefire",
 		"wpn_fps_upg_i_autofire",
 		"wpn_fps_upg_fl_pis_laser",
@@ -46998,7 +46992,11 @@ function WeaponFactoryTweakData:_init_x_pm9()
 		"wpn_fps_upg_fl_pis_crimson",
 		"wpn_fps_upg_fl_pis_x400v",
 		"wpn_fps_upg_fl_pis_m3x",
-		"wpn_fps_upg_ns_pis_putnik"
+		"wpn_fps_upg_ns_ass_smg_large",
+		"wpn_fps_upg_ns_ass_smg_medium",
+		"wpn_fps_upg_ns_ass_smg_small",
+		"wpn_fps_upg_ns_pis_putnik",
+		"wpn_fps_lmg_kacchainsaw_ns_suppressor"
 	}
 	self.wpn_fps_smg_x_pm9_npc = deep_clone(self.wpn_fps_smg_x_pm9)
 	self.wpn_fps_smg_x_pm9_npc.unit = "units/pd2_dlc_sawp/weapons/wpn_fps_smg_x_pm9/wpn_fps_smg_x_pm9_npc"
@@ -47544,7 +47542,7 @@ function WeaponFactoryTweakData:_init_groza()
 			"wpn_fps_ass_groza_fl_adapter"
 		},
 		wpn_fps_upg_o_dardar = {
-			"wpn_fps_ass_groza_fl_adapter"
+			"wpn_fps_ass_groza_o_adapter"
 		}
 	}
 	self.wpn_fps_ass_groza.default_blueprint = {
@@ -58795,7 +58793,8 @@ function WeaponFactoryTweakData:_init_x_hajk()
 		"wpn_fps_m4_upg_m_quick",
 		"wpn_fps_upg_ns_ass_smg_v6",
 		"wpn_fps_lmg_hk51b_ns_jcomp",
-		"wpn_fps_upg_ns_pis_putnik"
+		"wpn_fps_upg_ns_pis_putnik",
+		"wpn_fps_m4_uupg_m_strike"
 	}
 	self.wpn_fps_smg_x_hajk_npc = deep_clone(self.wpn_fps_smg_x_hajk)
 	self.wpn_fps_smg_x_hajk_npc.unit = "units/pd2_dlc_osa/weapons/wpn_fps_smg_x_hajk/wpn_fps_smg_x_hajk_npc"

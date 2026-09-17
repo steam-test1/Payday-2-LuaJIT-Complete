@@ -11,12 +11,13 @@ local mvec3_add = mvector3.add
 local mvec3_mul = mvector3.multiply
 local mvec3_div = mvector3.divide
 local mvec3_lerp = mvector3.lerp
-local mvec3_cpy = mvector3.copy
+local mvec3_copy = mvector3.copy
 local mvec3_set_l = mvector3.set_length
 local mvec3_dot = mvector3.dot
 local mvec3_cross = mvector3.cross
 local mvec3_dis = mvector3.distance
 local mvec3_rot = mvector3.rotate_with
+local mrot_set_look_at = mrotation.set_look_at
 local math_abs = math.abs
 local math_max = math.max
 local math_clamp = math.clamp
@@ -25,8 +26,11 @@ local math_floor = math.floor
 local math_lerp = math.lerp
 local temp_vec1 = Vector3()
 local temp_vec2 = Vector3()
+local temp_vec3 = Vector3()
+local temp_rot1 = Rotation()
 local cone_height = Vector3(0, 0, 80)
 local arrow_height = Vector3(0, 0, 1)
+local IDS_HELP_BLOCKER = Idstring("help_blocker")
 
 NavigationManager = NavigationManager or class()
 NavigationManager.nav_states = {
@@ -38,6 +42,7 @@ NavigationManager.nav_meta_operations = {
 	"force_civ_submission",
 	"relieve_forced_civ_submission"
 }
+NavigationManager.nav_meta_operations_lookup = table.list_to_set(NavigationManager.nav_meta_operations)
 NavigationManager.COVER_POSITION = 1
 NavigationManager.COVER_FORWARD = 2
 NavigationManager.COVER_TRACKER = 3
@@ -125,7 +130,11 @@ function NavigationManager:_init_draw_data()
 			coarse_graph = Draw:brush(Color(0.2, 0.05, 0.2, 0.9)),
 			vis_graph_rooms = Draw:brush(Color(0.6, 0.5, 0.2, 0.9), duration),
 			vis_graph_node = Draw:brush(Color(1, 0.6, 0, 0.9), duration),
-			vis_graph_links = Draw:brush(Color(0.2, 0.8, 0.1, 0.6), duration)
+			vis_graph_links = Draw:brush(Color(0.2, 0.8, 0.1, 0.6), duration),
+			pos_rsvr_unit = Draw:brush(Color(1, 1, 0, 0)),
+			pos_rsvr = Draw:brush(Color(0.3, 1, 1, 0)),
+			nav_blocker = Draw:brush(Color(0.1, 1, 0, 0)),
+			nav_blocker_help = Draw:brush(Color(0.1, 0, 1, 0))
 		},
 		offsets = {
 			Vector3(-1, -1),
@@ -173,12 +182,12 @@ function NavigationManager:_draw_pos_reservations(t)
 		if not entry.expire_t then
 			if res.unit then
 				if alive(res.unit) then
-					Draw:brush(Color(1, 1, 0, 0), 0):cylinder(entry.position, res.unit:movement():m_pos(), 3)
+					self._draw_data.brush.pos_rsvr_unit:cylinder(entry.position, res.unit:movement():m_pos(), 3)
 				else
-					Draw:brush(Color(1, 1, 0, 0), 0):sphere(entry.position, entry.radius + 5)
+					self._draw_data.brush.pos_rsvr_unit:sphere(entry.position, entry.radius + 5)
 				end
 			else
-				Draw:brush(Color(0.3, 1, 1, 0), 0):sphere(entry.position, entry.radius + 5)
+				self._draw_data.brush.pos_rsvr:sphere(entry.position, entry.radius + 5)
 			end
 		end
 	end
@@ -323,7 +332,7 @@ function NavigationManager:_resolve_segment_neighbours(both_ways)
 			segment.neighbours[other_id] = {}
 
 			for _, door_pos in ipairs(doors) do
-				table.insert(segment.neighbours[other_id], mvector3.copy(door_pos))
+				table.insert(segment.neighbours[other_id], mvec3_copy(door_pos))
 
 				if both_ways then
 					local other_segment = self._nav_segments[other_id]
@@ -333,7 +342,7 @@ function NavigationManager:_resolve_segment_neighbours(both_ways)
 							other_segment.neighbours[segment.id] = {}
 						end
 
-						table.insert(other_segment.neighbours[segment.id], mvector3.copy(door_pos))
+						table.insert(other_segment.neighbours[segment.id], mvec3_copy(door_pos))
 					end
 				end
 			end
@@ -528,6 +537,12 @@ function NavigationManager:perform_nav_segment_meta_operation(id, operation)
 	end
 end
 
+function NavigationManager:perform_graph_operation(id, operation, ...)
+	local fn = self.nav_meta_operations_lookup[operation] and self.perform_nav_segment_meta_operation or self.set_nav_segment_state
+
+	fn(self, id, operation, ...)
+end
+
 function NavigationManager:delete_nav_segment(id)
 	local draw_options = self._debug_draw_options
 
@@ -615,35 +630,39 @@ function NavigationManager:set_selected_segment(unit)
 end
 
 function NavigationManager:_draw_nav_blockers()
-	if self._load_data and self._load_data.helper_blockers then
-		local obj_name = Idstring("help_blocker")
-		local nav_segments = self._nav_segments
-		local registered_blockers = self._load_data.helper_blockers
-		local all_blockers = World:find_units_quick("all", 15)
+	if not self._load_data or not self._load_data.helper_blockers then
+		return
+	end
 
-		for _, blocker_unit in ipairs(all_blockers) do
-			local id = blocker_unit:unit_data().unit_id
+	local Application = Application
+	local nav_segments = self._nav_segments
+	local registered_blockers = self._load_data.helper_blockers
+	local all_blockers = World:find_units_quick("all", 15)
 
-			if registered_blockers[id] then
-				local help_blocker_object = blocker_unit:get_object(obj_name)
-				local draw_pos = blocker_unit:oobb():center()
-				local r, g, b = 1, 0, 0
+	for _, blocker_unit in ipairs(all_blockers) do
+		local id = blocker_unit:unit_data().unit_id
 
-				if help_blocker_object then
-					draw_pos = help_blocker_object:oobb():center()
-					r, g, b = 0, 1, 0
-				end
+		if registered_blockers[id] then
+			local help_blocker_object = blocker_unit:get_object(IDS_HELP_BLOCKER)
+			local draw_pos = blocker_unit:oobb():center()
+			local brush = self._draw_data.brush.nav_blocker
+			local r, g, b = 1, 0, 0
 
-				local owner_segment_id = registered_blockers[id]
+			if help_blocker_object then
+				draw_pos = help_blocker_object:oobb():center()
+				brush = self._draw_data.brush.nav_blocker_help
+				r, g, b = 0, 1, 0
+			end
 
-				for _, segment in pairs(self._nav_segments) do
-					if segment.id == owner_segment_id and (not self._selected_segment_id or self._selected_segment_id == segment.id) then
-						Draw:brush(Color(0.1, r, g, b)):unit(blocker_unit)
-						Application:draw(blocker_unit, r, g, b)
-						Application:draw_cylinder(draw_pos, segment.pos + math.UP * 5, 2, r, g, b)
+			local owner_segment_id = registered_blockers[id]
 
-						break
-					end
+			for _, segment in pairs(self._nav_segments) do
+				if segment.id == owner_segment_id and (not self._selected_segment_id or self._selected_segment_id == segment.id) then
+					brush:unit(blocker_unit)
+					Application:draw(blocker_unit, r, g, b)
+					Application:draw_cylinder(draw_pos, segment.pos + math.UP * 5, 2, r, g, b)
+
+					break
 				end
 			end
 		end
@@ -711,26 +730,39 @@ function NavigationManager:_draw_anim_nav_links()
 end
 
 function NavigationManager:_draw_covers()
-	local reserved = self.COVER_RESERVED
+	local Application = Application
+	local COVER_TRACKER = self.COVER_TRACKER
+	local COVER_FORWARD = self.COVER_FORWARD
+	local COVER_POSITION = self.COVER_POSITION
+	local COVER_RESERVED = self.COVER_RESERVED
+	local UP = math.UP
 
 	for i_cover, cover in ipairs(self._covers) do
-		local draw_pos = cover[NavigationManager.COVER_POSITION]
-		local tracker = cover[NavigationManager.COVER_TRACKER]
+		local draw_pos = cover[COVER_POSITION]
+		local tracker = cover[COVER_TRACKER]
+		local draw_to = temp_vec1
+
+		mvec3_set(draw_to, draw_pos)
+		mvec3_add(draw_to, cone_height)
 
 		if tracker:lost() then
-			Application:draw_cone(draw_pos, draw_pos + cone_height, 30, 1, 0, 0)
+			Application:draw_cone(draw_pos, draw_to, 30, 1, 0, 0)
 
-			local placed_pos = tracker:position()
+			local placed_pos = temp_vec2
 
+			tracker:m_position(placed_pos)
 			Application:draw_sphere(placed_pos, 20, 1, 0, 0)
 			Application:draw_line(placed_pos, draw_pos, 1, 0, 0)
 		else
-			Application:draw_cone(draw_pos, draw_pos + cone_height, 30, 0, 1, 0)
+			Application:draw_cone(draw_pos, draw_to, 30, 0, 1, 0)
 		end
 
-		Application:draw_rotation(draw_pos + arrow_height, Rotation(cover[NavigationManager.COVER_FORWARD], math.UP))
+		mvec3_set(draw_to, draw_pos)
+		mvec3_add(draw_to, arrow_height)
+		mrot_set_look_at(temp_rot1, cover[COVER_FORWARD], UP)
+		Application:draw_rotation(draw_to, temp_rot1)
 
-		if cover[reserved] then
+		if cover[COVER_RESERVED] then
 			Application:draw_sphere(draw_pos, 18, 0, 0, 0)
 		end
 	end
@@ -787,13 +819,13 @@ function NavigationManager:register_cover_units()
 			for i, yaw in ipairs(cover_data.rotations) do
 				mrotation.set_yaw_pitch_roll(tmp_rot, yaw, 0, 0)
 				mrotation.y(tmp_rot, temp_vec1)
-				_register_cover(cover_data.positions[i], mvector3.copy(temp_vec1))
+				_register_cover(cover_data.positions[i], mvec3_copy(temp_vec1))
 			end
 		else
 			for _, cover_desc in ipairs(cover_data) do
 				mrotation.set_yaw_pitch_roll(tmp_rot, cover_desc[2], 0, 0)
 				mrotation.y(tmp_rot, temp_vec1)
-				_register_cover(cover_desc[1], mvector3.copy(temp_vec1))
+				_register_cover(cover_desc[1], mvec3_copy(temp_vec1))
 			end
 		end
 	else
@@ -1410,7 +1442,7 @@ function NavigationManager:search_coarse(params)
 				},
 				{
 					end_i_seg,
-					mvec3_cpy(pos_to)
+					mvec3_copy(pos_to)
 				}
 			})
 
@@ -1422,7 +1454,7 @@ function NavigationManager:search_coarse(params)
 				},
 				{
 					end_i_seg,
-					mvec3_cpy(pos_to)
+					mvec3_copy(pos_to)
 				}
 			}
 		end
@@ -1444,7 +1476,7 @@ function NavigationManager:search_coarse(params)
 
 	local new_search_data = {
 		id = params.id,
-		to_pos = mvec3_cpy(pos_to),
+		to_pos = mvec3_copy(pos_to),
 		start_i_seg = start_i_seg,
 		end_i_seg = end_i_seg,
 		seg_searched = {},
@@ -1597,7 +1629,7 @@ end
 
 function NavigationManager:reserve_pos(start_t, duration, pos, step_clbk, radius, filter)
 	local entry = {
-		position = mvec3_cpy(pos),
+		position = mvec3_copy(pos),
 		radius = radius,
 		start_t = start_t,
 		expire_t = start_t and duration and start_t + duration,
@@ -1625,7 +1657,7 @@ end
 
 function NavigationManager:add_pos_reservation(desc)
 	if self._debug and not desc.filter then
-		print("[NavigationManager:add_pos_reservation] No filter added")
+		Application:warn("[NavigationManager:add_pos_reservation] No filter added")
 	end
 
 	desc.id = self._quad_field:add_position_reservation(desc)
@@ -1643,21 +1675,29 @@ function NavigationManager:add_pos_reservation(desc)
 	}
 
 	if self._debug and desc.filter then
-		for u_key, u_data in pairs(managers.enemy:all_enemies()) do
-			if u_data.unit:movement():pos_rsrv_id() == desc.filter then
-				self._pos_reservations[desc.id].unit = u_data.unit
-				self._pos_reservations[desc.id].u_name = u_data.unit:name()
-				self._pos_reservations[desc.id].stack = Application:stack()
+		local all_ai = {
+			managers.groupai:state():all_AI_criminals(),
+			managers.enemy:all_enemies(),
+			managers.enemy:all_civilians()
+		}
 
-				return
+		for _, ai_group in ipairs(all_ai) do
+			for u_key, u_data in pairs(ai_group) do
+				if u_data.unit:movement():pos_rsrv_id() == desc.filter then
+					self._pos_reservations[desc.id].unit = u_data.unit
+					self._pos_reservations[desc.id].u_name = u_data.unit:name()
+					self._pos_reservations[desc.id].stack = Application:stack()
+
+					return
+				end
 			end
 		end
 	end
 end
 
 function NavigationManager:unreserve_pos(desc)
-	if not desc or desc.unreserved then
-		Application:error("[NavigationManager:unreserve_pos] Reservation already unreserved:", desc.id)
+	if not desc or not desc.id then
+		Application:error("[NavigationManager:unreserve_pos] Reservation already unreserved:", desc)
 
 		return
 	end
@@ -1673,8 +1713,6 @@ end
 
 function NavigationManager:move_pos_rsrv(desc)
 	if self._pos_reservations[desc.id] then
-		self._pos_reservations[desc.id].position = desc.position
-
 		self._quad_field:move_position_reservation(desc.id, desc.position)
 	end
 end
@@ -1910,6 +1948,10 @@ function NavigationManager:upgrade_access_filter(access_filter_bitmask_old, vers
 	return access_filter_bitmask_new
 end
 
+function NavigationManager:get_all_nav_segments()
+	return self._nav_segments
+end
+
 function NavigationManager:get_nav_seg_metadata(nav_seg_id)
 	return self._nav_segments[nav_seg_id]
 end
@@ -2017,77 +2059,89 @@ end
 
 function NavigationManager:clbk_navfield(event_name, args, args2, args3)
 	if event_name == "add_nav_seg_neighbours" then
+		local update_in_group_ai = {}
+
 		for nav_seg_id, add_neighbours in pairs(args) do
 			local nav_seg = self._nav_segments[nav_seg_id]
 
-			if not nav_seg then
-				return
-			end
+			if nav_seg then
+				update_in_group_ai[nav_seg_id] = add_neighbours
 
-			for _, other_nav_seg_id in ipairs(add_neighbours) do
-				if nav_seg.disabled_neighbours[other_nav_seg_id] then
-					nav_seg.neighbours[other_nav_seg_id] = nav_seg.neighbours[other_nav_seg_id] or {}
+				if not nav_seg.disabled_neighbours then
+					debug_pause("[NavigationManager] clbk_navfield() - add_nav_seg_neighbours - no disabled neighbours to enable. Something went wrong, possibly in mission script.", nav_seg_id, inspect(nav_seg))
+				else
+					for _, other_nav_seg_id in ipairs(add_neighbours) do
+						if nav_seg.disabled_neighbours[other_nav_seg_id] then
+							nav_seg.neighbours[other_nav_seg_id] = nav_seg.neighbours[other_nav_seg_id] or {}
+
+							local i_door = 1
+
+							while i_door <= #nav_seg.disabled_neighbours[other_nav_seg_id] do
+								local door = table.remove(nav_seg.disabled_neighbours[other_nav_seg_id], i_door)
+
+								if door.x then
+									table.insert(nav_seg.neighbours[other_nav_seg_id], door)
+								else
+									i_door = i_door + 1
+								end
+							end
+
+							if not next(nav_seg.disabled_neighbours[other_nav_seg_id]) then
+								nav_seg.disabled_neighbours[other_nav_seg_id] = nil
+							end
+
+							if not next(nav_seg.disabled_neighbours) then
+								nav_seg.disabled_neighbours = nil
+							end
+						end
+					end
+				end
+			end
+		end
+
+		local groupai_state = managers.groupai:state()
+
+		for nav_seg_id, add_neighbours in pairs(update_in_group_ai) do
+			groupai_state:on_nav_seg_neighbours_state(nav_seg_id, add_neighbours, true)
+		end
+	elseif event_name == "remove_nav_seg_neighbours" then
+		local update_in_group_ai = {}
+
+		for nav_seg_id, rem_neighbours in pairs(args) do
+			local nav_seg = self._nav_segments[nav_seg_id]
+
+			if nav_seg then
+				update_in_group_ai[nav_seg_id] = rem_neighbours
+
+				for _, other_nav_seg_id in ipairs(rem_neighbours) do
+					local other_nav_seg = self._nav_segments[other_nav_seg_id]
+
+					nav_seg.disabled_neighbours = nav_seg.disabled_neighbours or {}
+					nav_seg.disabled_neighbours[other_nav_seg_id] = nav_seg.disabled_neighbours[other_nav_seg_id] or {}
 
 					local i_door = 1
 
-					while i_door <= #nav_seg.disabled_neighbours[other_nav_seg_id] do
-						local door = table.remove(nav_seg.disabled_neighbours[other_nav_seg_id], i_door)
+					while i_door <= #nav_seg.neighbours[other_nav_seg_id] do
+						if nav_seg.neighbours[other_nav_seg_id][i_door].x then
+							local door = table.remove(nav_seg.neighbours[other_nav_seg_id], i_door)
 
-						if door.x then
-							table.insert(nav_seg.neighbours[other_nav_seg_id], door)
+							table.insert(nav_seg.disabled_neighbours[other_nav_seg_id], door)
 						else
 							i_door = i_door + 1
 						end
 					end
 
-					if not next(nav_seg.disabled_neighbours[other_nav_seg_id]) then
-						nav_seg.disabled_neighbours[other_nav_seg_id] = nil
-					end
-
-					if not next(nav_seg.disabled_neighbours) then
-						nav_seg.disabled_neighbours = nil
+					if not next(nav_seg.neighbours[other_nav_seg_id]) then
+						nav_seg.neighbours[other_nav_seg_id] = nil
 					end
 				end
 			end
 		end
 
-		for nav_seg_id, add_neighbours in pairs(args) do
-			managers.groupai:state():on_nav_seg_neighbours_state(nav_seg_id, args, true)
-		end
-	elseif event_name == "remove_nav_seg_neighbours" then
-		for nav_seg_id, rem_neighbours in pairs(args) do
-			local nav_seg = self._nav_segments[nav_seg_id]
+		local groupai_state = managers.groupai:state()
 
-			if not nav_seg then
-				return
-			end
-
-			for _, other_nav_seg_id in ipairs(rem_neighbours) do
-				local other_nav_seg = self._nav_segments[other_nav_seg_id]
-
-				nav_seg.disabled_neighbours = nav_seg.disabled_neighbours or {}
-				nav_seg.disabled_neighbours[other_nav_seg_id] = nav_seg.disabled_neighbours[other_nav_seg_id] or {}
-
-				local i_door = 1
-
-				while i_door <= #nav_seg.neighbours[other_nav_seg_id] do
-					if nav_seg.neighbours[other_nav_seg_id][i_door].x then
-						local door = table.remove(nav_seg.neighbours[other_nav_seg_id], i_door)
-
-						table.insert(nav_seg.disabled_neighbours[other_nav_seg_id], door)
-					else
-						i_door = i_door + 1
-					end
-				end
-
-				if not next(nav_seg.neighbours[other_nav_seg_id]) then
-					nav_seg.neighbours[other_nav_seg_id] = nil
-				end
-			end
-		end
-
-		for nav_seg_id, rem_neighbours in pairs(args) do
-			managers.groupai:state():on_nav_seg_neighbours_state(nav_seg_id, args, false)
+		for nav_seg_id, rem_neighbours in pairs(update_in_group_ai) do
+			groupai_state:on_nav_seg_neighbours_state(nav_seg_id, rem_neighbours, false)
 		end
 	elseif event_name == "invalidated_script_data" then
 		if args.covers then
@@ -2135,14 +2189,22 @@ function NavigationManager:clbk_navfield(event_name, args, args2, args3)
 				end
 			end
 		end
+
+		debug_pause("[NavigationManager] clbk_navfield() - unobstruct_nav_link - couldn't find nav_link", args, args2, args3)
 	elseif event_name == "obstruct_nav_link" then
 		local nav_seg_from_id = args
 		local nav_seg_to_id = args2
 		local nav_link_id = args3
 		local nav_seg_from = self._nav_segments[nav_seg_from_id]
 
+		if not nav_seg_from then
+			debug_pause("[NavigationManager] clbk_navfield() - obstruct_nav_link - nav segment not found", args, args2, args3)
+
+			return
+		end
+
 		if not nav_seg_from.neighbours[nav_seg_to_id] then
-			debug_pause("[NavigationManager:clbk_navfield] did not have such neighbour", event_name, args, args2, args3)
+			debug_pause("[NavigationManager] clbk_navfield() - obstruct_nav_link - neighbour of nav segment not found", args, args2, args3, inspect(nav_seg_from.neighbours))
 
 			return
 		end
@@ -2168,7 +2230,7 @@ function NavigationManager:clbk_navfield(event_name, args, args2, args3)
 			end
 		end
 
-		debug_pause("[NavigationManager:clbk_navfield] did not find nav_link", event_name, args, args2, args3)
+		debug_pause("[NavigationManager] clbk_navfield() - obstruct_nav_link - couldn't find nav_link", args, args2, args3)
 	end
 end
 

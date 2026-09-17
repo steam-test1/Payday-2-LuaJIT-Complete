@@ -9,6 +9,7 @@ local PICKUP = {
 	LMG_CAPACITY = 9,
 	OTHER = 1,
 	SHOTGUN_HIGH_CAPACITY = 4,
+	SHOTGUN_LOW_CAPACITY = 10,
 	SNIPER_HIGH_DAMAGE = 6,
 	SNIPER_LOW_DAMAGE = 5
 }
@@ -6422,6 +6423,9 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 		elseif selection_index == PICKUP.SHOTGUN_HIGH_CAPACITY then
 			low = 0.05
 			high = 0.075
+		elseif selection_index == PICKUP.SHOTGUN_LOW_CAPACITY then
+			low = 0.015
+			high = 0.045
 		elseif selection_index == PICKUP.SNIPER_LOW_DAMAGE then
 			low = 0.05
 			high = 0.075
@@ -6462,6 +6466,9 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	elseif selection_index == PICKUP.SHOTGUN_HIGH_CAPACITY then
 		low = 0.05
 		high = 0.075
+	elseif selection_index == PICKUP.SHOTGUN_LOW_CAPACITY then
+		low = 0.015
+		high = 0.045
 	elseif selection_index == PICKUP.SHOTGUN_SECOND_CAPACITY then
 		low = 0.03
 		high = 0.055
@@ -19697,7 +19704,7 @@ function WeaponTweakData:_init_boot(weapon_data)
 	self.boot.CLIP_AMMO_MAX = 7
 	self.boot.NR_CLIPS_MAX = 4
 	self.boot.AMMO_MAX = self.boot.CLIP_AMMO_MAX * self.boot.NR_CLIPS_MAX
-	self.boot.AMMO_PICKUP = self:_pickup_chance(self.boot.AMMO_MAX, PICKUP.OTHER)
+	self.boot.AMMO_PICKUP = self:_pickup_chance(self.boot.AMMO_MAX, PICKUP.SHOTGUN_LOW_CAPACITY)
 	self.boot.FIRE_MODE = "single"
 	self.boot.fire_mode_data = {}
 	self.boot.fire_mode_data.fire_rate = 0.75
@@ -29546,7 +29553,7 @@ function WeaponTweakData:_init_bleckert(weapon_data)
 	self.bleckert.CLIP_AMMO_MAX = 5
 	self.bleckert.NR_CLIPS_MAX = 5
 	self.bleckert.AMMO_MAX = self.bleckert.CLIP_AMMO_MAX * self.bleckert.NR_CLIPS_MAX
-	self.bleckert.AMMO_PICKUP = self:_pickup_chance(self.bleckert.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
+	self.bleckert.AMMO_PICKUP = self:_pickup_chance(self.bleckert.AMMO_MAX * 1.25, PICKUP.SHOTGUN_LOW_CAPACITY)
 	self.bleckert.FIRE_MODE = "single"
 	self.bleckert.fire_mode_data = {
 		fire_rate = 0.4285

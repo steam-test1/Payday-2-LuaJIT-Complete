@@ -26,9 +26,11 @@ function SentryGunMovement:init(unit)
 
 	if managers.navigation:is_data_ready() then
 		self._nav_tracker = managers.navigation:create_nav_tracker(self._unit:position())
+		self._pos_rsrv_id = managers.navigation:get_pos_reservation_id()
 		self._pos_reservation = {
 			radius = 30,
-			position = self._unit:position()
+			position = self._unit:position(),
+			filter = self._pos_rsrv_id
 		}
 
 		managers.navigation:add_pos_reservation(self._pos_reservation)
@@ -54,6 +56,10 @@ function SentryGunMovement:post_init()
 	end
 
 	self:set_team(managers.groupai:state():team_data(tweak_data.levels:get_default_team_ID("player")))
+end
+
+function SentryGunMovement:pos_rsrv_id()
+	return self._pos_rsrv_id
 end
 
 function SentryGunMovement:update(unit, t, dt)
@@ -829,5 +835,11 @@ function SentryGunMovement:pre_destroy()
 		managers.navigation:unreserve_pos(self._pos_reservation)
 
 		self._pos_reservation = nil
+	end
+
+	if self._pos_rsrv_id then
+		managers.navigation:release_pos_reservation_id(self._pos_rsrv_id)
+
+		self._pos_rsrv_id = nil
 	end
 end
