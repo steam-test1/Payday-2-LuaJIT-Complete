@@ -123,9 +123,11 @@ function PlayerProfileGuiObject:init(ws)
 			level_text:set_w(max_w)
 			level_text:set_font_size(level_text:font_size() * scale)
 
-			local x, y, w, h = level_text:text_rect()
+			do
+				local x, y, w, h = level_text:text_rect()
 
-			level_text:set_h(math.ceil(h - height_reduction))
+				level_text:set_h(math.ceil(h - height_reduction))
+			end
 
 			if rank_text then
 				rank_text:set_w(max_w)

@@ -28,11 +28,14 @@ function PlayerTased:enter(state_data, enter_data)
 	self:_interupt_action_reload()
 	self:_interupt_action_steelsight()
 
-	local t = managers.player:player_timer():time()
+	do
+		local t = managers.player:player_timer():time()
 
-	self:_interupt_action_melee(t)
-	self:_interupt_action_ladder(t)
-	self:_interupt_action_charging_weapon(t)
+		self:_interupt_action_melee(t)
+		self:_interupt_action_ladder(t)
+		self:_interupt_action_charging_weapon(t)
+	end
+
 	self:_start_action_tased(managers.player:player_timer():time(), state_data.non_lethal_electrocution)
 
 	local non_lethal = state_data.non_lethal_electrocution

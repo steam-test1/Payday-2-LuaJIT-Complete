@@ -6,17 +6,19 @@ function PlayerAction.AmmoEfficiency.Function(player_manager, target_headshots, 
 	local time = Application:time()
 	local headshots = 1
 
-	local function on_headshot()
-		headshots = headshots + 1
+	do
+		local function on_headshot()
+			headshots = headshots + 1
 
-		if headshots == target_headshots then
-			player_manager:on_ammo_increase(bullet_refund)
+			if headshots == target_headshots then
+				player_manager:on_ammo_increase(bullet_refund)
 
-			time = target_time
+				time = target_time
+			end
 		end
-	end
 
-	player_manager:register_message(Message.OnHeadShot, co, on_headshot)
+		player_manager:register_message(Message.OnHeadShot, co, on_headshot)
+	end
 
 	while time < target_time do
 		time = Application:time()

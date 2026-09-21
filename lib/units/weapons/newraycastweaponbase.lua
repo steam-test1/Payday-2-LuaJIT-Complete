@@ -977,23 +977,25 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 		end
 	end
 
-	local damage_falloff = {
-		optimal_distance = self._optimal_distance,
-		optimal_range = self._optimal_range,
-		near_falloff = self._near_falloff,
-		far_falloff = self._far_falloff,
-		near_multiplier = self._near_multiplier,
-		far_multiplier = self._far_multiplier
-	}
+	do
+		local damage_falloff = {
+			optimal_distance = self._optimal_distance,
+			optimal_range = self._optimal_range,
+			near_falloff = self._near_falloff,
+			far_falloff = self._far_falloff,
+			near_multiplier = self._near_multiplier,
+			far_multiplier = self._far_multiplier
+		}
 
-	managers.blackmarket:modify_damage_falloff(damage_falloff, custom_stats)
+		managers.blackmarket:modify_damage_falloff(damage_falloff, custom_stats)
 
-	self._optimal_distance = damage_falloff.optimal_distance
-	self._optimal_range = damage_falloff.optimal_range
-	self._near_falloff = damage_falloff.near_falloff
-	self._far_falloff = damage_falloff.far_falloff
-	self._near_multiplier = damage_falloff.near_multiplier
-	self._far_multiplier = damage_falloff.far_multiplier
+		self._optimal_distance = damage_falloff.optimal_distance
+		self._optimal_range = damage_falloff.optimal_range
+		self._near_falloff = damage_falloff.near_falloff
+		self._far_falloff = damage_falloff.far_falloff
+		self._near_multiplier = damage_falloff.near_multiplier
+		self._far_multiplier = damage_falloff.far_multiplier
+	end
 
 	if self._ammo_data then
 		if self._ammo_data.can_shoot_through_shield ~= nil then

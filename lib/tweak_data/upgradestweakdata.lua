@@ -2168,79 +2168,82 @@ function UpgradesTweakData:_init_pd2_values()
 		true
 	}
 
-	local health_boost = 0.2
-	local armor_boost = 0.05
-	local dodge_boost = 0.05
-	local crouch_speed_multiplier = 0.1
-	local carry_speed_multiplier = 0.1
+	do
+		local health_boost = 0.2
+		local armor_boost = 0.05
+		local dodge_boost = 0.05
+		local crouch_speed_multiplier = 0.1
+		local carry_speed_multiplier = 0.1
 
-	self.values.player.mrwi_health_multiplier = {
-		1 + health_boost * 1,
-		1 + health_boost * 2,
-		1 + health_boost * 3,
-		1 + health_boost * 4
-	}
-	self.values.player.mrwi_armor_multiplier = {
-		1 + armor_boost * 1,
-		1 + armor_boost * 2,
-		1 + armor_boost * 3,
-		1 + armor_boost * 4
-	}
-	self.values.player.mrwi_dodge_chance = {
-		dodge_boost * 1,
-		dodge_boost * 2,
-		dodge_boost * 3,
-		dodge_boost * 4
-	}
-	self.values.player.mrwi_crouch_speed_multiplier = {
-		1 + crouch_speed_multiplier * 1,
-		1 + crouch_speed_multiplier * 2,
-		1 + crouch_speed_multiplier * 3,
-		1 + crouch_speed_multiplier * 4
-	}
-	self.values.player.mrwi_carry_speed_multiplier = {
-		1 + carry_speed_multiplier * 1,
-		1 + carry_speed_multiplier * 2,
-		1 + carry_speed_multiplier * 3,
-		1 + carry_speed_multiplier * 4
-	}
-
-	local auto_reload_kills = 10
-
-	self.values.player.primary_reload_secondary = {
-		auto_reload_kills
-	}
-	self.values.player.secondary_reload_primary = {
-		auto_reload_kills
-	}
-
-	local auto_reload_swap_duration = 3
-
-	self.values.weapon.primary_reload_swap_secondary = {
-		auto_reload_swap_duration
-	}
-	self.values.weapon.secondary_reload_swap_primary = {
-		auto_reload_swap_duration
-	}
-	self.values.weapon.mrwi_swap_speed_multiplier = {
-		2.6
-	}
-	self.values.player.dodge_ricochet_bullets = {
-		{
-			1,
-			0
+		self.values.player.mrwi_health_multiplier = {
+			1 + health_boost * 1,
+			1 + health_boost * 2,
+			1 + health_boost * 3,
+			1 + health_boost * 4
 		}
-	}
-	self.values.player.headshot_regen_health_bonus = {
-		1
-	}
-	self.values.temporary.mrwi_health_invulnerable = {
-		{
-			0.5,
-			2,
-			15
+		self.values.player.mrwi_armor_multiplier = {
+			1 + armor_boost * 1,
+			1 + armor_boost * 2,
+			1 + armor_boost * 3,
+			1 + armor_boost * 4
 		}
-	}
+		self.values.player.mrwi_dodge_chance = {
+			dodge_boost * 1,
+			dodge_boost * 2,
+			dodge_boost * 3,
+			dodge_boost * 4
+		}
+		self.values.player.mrwi_crouch_speed_multiplier = {
+			1 + crouch_speed_multiplier * 1,
+			1 + crouch_speed_multiplier * 2,
+			1 + crouch_speed_multiplier * 3,
+			1 + crouch_speed_multiplier * 4
+		}
+		self.values.player.mrwi_carry_speed_multiplier = {
+			1 + carry_speed_multiplier * 1,
+			1 + carry_speed_multiplier * 2,
+			1 + carry_speed_multiplier * 3,
+			1 + carry_speed_multiplier * 4
+		}
+
+		local auto_reload_kills = 10
+
+		self.values.player.primary_reload_secondary = {
+			auto_reload_kills
+		}
+		self.values.player.secondary_reload_primary = {
+			auto_reload_kills
+		}
+
+		local auto_reload_swap_duration = 3
+
+		self.values.weapon.primary_reload_swap_secondary = {
+			auto_reload_swap_duration
+		}
+		self.values.weapon.secondary_reload_swap_primary = {
+			auto_reload_swap_duration
+		}
+		self.values.weapon.mrwi_swap_speed_multiplier = {
+			2.6
+		}
+		self.values.player.dodge_ricochet_bullets = {
+			{
+				1,
+				0
+			}
+		}
+		self.values.player.headshot_regen_health_bonus = {
+			1
+		}
+		self.values.temporary.mrwi_health_invulnerable = {
+			{
+				0.5,
+				2,
+				15
+			}
+		}
+	end
+
 	self.values.player.warp_health = {
 		{
 			0,
@@ -4627,199 +4630,208 @@ function UpgradesTweakData:_init_pd2_values()
 			}
 		}
 	}
-	local delayed_percentage = self.values.player.damage_control_passive[1][1]
-	local tick_percentage = self.values.player.damage_control_passive[1][2] * 0.01 * delayed_percentage
-	local damage_duration = math.ceil(delayed_percentage / tick_percentage)
-	local auto_shrug_time = self.values.player.damage_control_auto_shrug[1]
-	local health_threshold = self.values.player.damage_control_cooldown_drain[2][1]
-	local cooldown_drain_1 = self.values.player.damage_control_cooldown_drain[1][2]
-	local cooldown_drain_2 = self.values.player.damage_control_cooldown_drain[2][2]
-	local heal_percentage = self.values.player.damage_control_healing[1]
 
-	table.insert(editable_specialization_descs, {
-		{
-			tostring(delayed_percentage) .. "%",
-			damage_duration,
-			"10"
-		},
-		{
-			"25%"
-		},
-		{},
-		{
-			"+1",
-			"15%",
-			"45%"
-		},
-		{
-			auto_shrug_time
-		},
-		{
-			"135%"
-		},
-		{
-			tostring(health_threshold) .. "%",
-			cooldown_drain_2,
-			cooldown_drain_1
-		},
-		{
-			"5%",
-			"20%"
-		},
-		{
-			tostring(heal_percentage) .. "%",
-			"10%"
+	do
+		local delayed_percentage = self.values.player.damage_control_passive[1][1]
+		local tick_percentage = self.values.player.damage_control_passive[1][2] * 0.01 * delayed_percentage
+		local damage_duration = math.ceil(delayed_percentage / tick_percentage)
+		local auto_shrug_time = self.values.player.damage_control_auto_shrug[1]
+		local health_threshold = self.values.player.damage_control_cooldown_drain[2][1]
+		local cooldown_drain_1 = self.values.player.damage_control_cooldown_drain[1][2]
+		local cooldown_drain_2 = self.values.player.damage_control_cooldown_drain[2][2]
+		local heal_percentage = self.values.player.damage_control_healing[1]
+
+		table.insert(editable_specialization_descs, {
+			{
+				tostring(delayed_percentage) .. "%",
+				damage_duration,
+				"10"
+			},
+			{
+				"25%"
+			},
+			{},
+			{
+				"+1",
+				"15%",
+				"45%"
+			},
+			{
+				auto_shrug_time
+			},
+			{
+				"135%"
+			},
+			{
+				tostring(health_threshold) .. "%",
+				cooldown_drain_2,
+				cooldown_drain_1
+			},
+			{
+				"5%",
+				"20%"
+			},
+			{
+				tostring(heal_percentage) .. "%",
+				"10%"
+			}
+		})
+	end
+
+	do
+		local distance = self.values.player.tag_team_base[1].distance
+		local heal_amount = self.values.player.tag_team_base[1].kill_health_gain * 10
+		local heal_amount_tagged = heal_amount * self.values.player.tag_team_base[1].tagged_health_gain_ratio
+		local kill_extension = self.values.player.tag_team_base[1].kill_extension
+		local duration = self.values.player.tag_team_base[1].duration
+		local cooldown = 60
+		local cooldown_drain_owner = self.values.player.tag_team_cooldown_drain[1].owner
+		local cooldown_drain_tagged = self.values.player.tag_team_cooldown_drain[2].tagged
+		local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
+		local kill_absorption = self.values.player.tag_team_damage_absorption[1].kill_gain * 10
+		local kill_absorption_max = self.values.player.tag_team_damage_absorption[1].max * 10
+
+		table.insert(editable_specialization_descs, {
+			{
+				distance,
+				heal_amount,
+				heal_amount_tagged,
+				kill_extension,
+				duration,
+				cooldown
+			},
+			{
+				"25%"
+			},
+			{
+				health_bonus_1 .. "%"
+			},
+			{
+				"+1",
+				"15%",
+				"45%"
+			},
+			{
+				kill_absorption,
+				kill_absorption_max
+			},
+			{
+				"135%"
+			},
+			{
+				health_bonus_2 .. "%"
+			},
+			{
+				"5%",
+				"20%"
+			},
+			{
+				cooldown_drain_tagged,
+				"10%"
+			}
+		})
+	end
+
+	do
+		local duration = self.values.player.pocket_ecm_jammer_base[1].duration
+		local charges = 2
+		local cooldown = 100
+		local cooldown_drain = self.values.player.pocket_ecm_jammer_base[1].cooldown_drain
+		local health_bonus = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local kill_health_gain = self.values.player.pocket_ecm_heal_on_kill[1] * 10
+		local kill_health_gain_team = self.values.team.pocket_ecm_heal_on_kill[1] * 10
+		local kill_dodge_bonus_count = 1
+		local kill_dodge_bonus = 20
+		local kill_dodge_bonus_duration = 30
+
+		table.insert(editable_specialization_descs, {
+			{
+				duration,
+				charges,
+				cooldown,
+				cooldown_drain
+			},
+			{
+				"25%"
+			},
+			{
+				health_bonus .. "%"
+			},
+			{
+				"+1",
+				"15%",
+				"45%"
+			},
+			{
+				kill_health_gain,
+				"15%"
+			},
+			{
+				"135%"
+			},
+			{
+				kill_dodge_bonus_count,
+				kill_dodge_bonus,
+				kill_dodge_bonus_duration
+			},
+			{
+				"5%",
+				"20%"
+			},
+			{
+				kill_health_gain_team,
+				"15%",
+				"10%"
+			}
+		})
+	end
+
+	do
+		local activation_health_restore = self.values.player.copr_activate_bonus_health_ratio[1] * 100
+		local ability_cooldown = self.copr_ability_cooldown
+		local duration_1 = self.values.temporary.copr_ability[1][2]
+		local duration_2 = self.values.temporary.copr_ability[2][2]
+		local out_of_health_movement_slow = (1 - self.values.player.copr_out_of_health_move_slow[1]) * 100
+		local speed_up_on_kill = self.values.player.copr_speed_up_on_kill[1]
+		local teammate_heal_1 = self.values.player.copr_teammate_heal[1] * 100
+		local teammate_heal_2 = self.values.player.copr_teammate_heal[2] * 100
+		local static_damage_1 = self.values.player.copr_static_damage_ratio[1] * 100
+		local static_damage_2 = self.values.player.copr_static_damage_ratio[2] * 100
+		local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
+		local health_bonus_3 = (self.values.player.passive_health_multiplier[4] - 1) * 100 - health_bonus_2
+		local kill_life_leech_1 = self.values.player.copr_kill_life_leech[1]
+		local copr_specialization = deep_clone(editable_specialization_template)
+
+		copr_specialization[1] = {
+			tostring(activation_health_restore) .. "%",
+			tostring(static_damage_1) .. "%",
+			tostring(kill_life_leech_1),
+			tostring(teammate_heal_1) .. "%",
+			tostring(duration_1),
+			tostring(ability_cooldown)
 		}
-	})
-
-	local distance = self.values.player.tag_team_base[1].distance
-	local heal_amount = self.values.player.tag_team_base[1].kill_health_gain * 10
-	local heal_amount_tagged = heal_amount * self.values.player.tag_team_base[1].tagged_health_gain_ratio
-	local kill_extension = self.values.player.tag_team_base[1].kill_extension
-	local duration = self.values.player.tag_team_base[1].duration
-	local cooldown = 60
-	local cooldown_drain_owner = self.values.player.tag_team_cooldown_drain[1].owner
-	local cooldown_drain_tagged = self.values.player.tag_team_cooldown_drain[2].tagged
-	local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
-	local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
-	local kill_absorption = self.values.player.tag_team_damage_absorption[1].kill_gain * 10
-	local kill_absorption_max = self.values.player.tag_team_damage_absorption[1].max * 10
-
-	table.insert(editable_specialization_descs, {
-		{
-			distance,
-			heal_amount,
-			heal_amount_tagged,
-			kill_extension,
-			duration,
-			cooldown
-		},
-		{
-			"25%"
-		},
-		{
-			health_bonus_1 .. "%"
-		},
-		{
-			"+1",
-			"15%",
-			"45%"
-		},
-		{
-			kill_absorption,
-			kill_absorption_max
-		},
-		{
-			"135%"
-		},
-		{
-			health_bonus_2 .. "%"
-		},
-		{
-			"5%",
-			"20%"
-		},
-		{
-			cooldown_drain_tagged,
-			"10%"
+		copr_specialization[3] = {
+			tostring(health_bonus_1) .. "%",
+			tostring(out_of_health_movement_slow) .. "%"
 		}
-	})
-
-	local duration = self.values.player.pocket_ecm_jammer_base[1].duration
-	local charges = 2
-	local cooldown = 100
-	local cooldown_drain = self.values.player.pocket_ecm_jammer_base[1].cooldown_drain
-	local health_bonus = (self.values.player.passive_health_multiplier[2] - 1) * 100
-	local kill_health_gain = self.values.player.pocket_ecm_heal_on_kill[1] * 10
-	local kill_health_gain_team = self.values.team.pocket_ecm_heal_on_kill[1] * 10
-	local kill_dodge_bonus_count = 1
-	local kill_dodge_bonus = 20
-	local kill_dodge_bonus_duration = 30
-
-	table.insert(editable_specialization_descs, {
-		{
-			duration,
-			charges,
-			cooldown,
-			cooldown_drain
-		},
-		{
-			"25%"
-		},
-		{
-			health_bonus .. "%"
-		},
-		{
-			"+1",
-			"15%",
-			"45%"
-		},
-		{
-			kill_health_gain,
-			"15%"
-		},
-		{
-			"135%"
-		},
-		{
-			kill_dodge_bonus_count,
-			kill_dodge_bonus,
-			kill_dodge_bonus_duration
-		},
-		{
-			"5%",
-			"20%"
-		},
-		{
-			kill_health_gain_team,
-			"15%",
-			"10%"
+		copr_specialization[5] = {
+			tostring(duration_2),
+			tostring(speed_up_on_kill),
+			tostring(teammate_heal_2) .. "%"
 		}
-	})
+		copr_specialization[7] = {
+			tostring(health_bonus_2) .. "%"
+		}
+		copr_specialization[9] = {
+			tostring(static_damage_2) .. "%",
+			tostring(health_bonus_3) .. "%"
+		}
 
-	local activation_health_restore = self.values.player.copr_activate_bonus_health_ratio[1] * 100
-	local ability_cooldown = self.copr_ability_cooldown
-	local duration_1 = self.values.temporary.copr_ability[1][2]
-	local duration_2 = self.values.temporary.copr_ability[2][2]
-	local out_of_health_movement_slow = (1 - self.values.player.copr_out_of_health_move_slow[1]) * 100
-	local speed_up_on_kill = self.values.player.copr_speed_up_on_kill[1]
-	local teammate_heal_1 = self.values.player.copr_teammate_heal[1] * 100
-	local teammate_heal_2 = self.values.player.copr_teammate_heal[2] * 100
-	local static_damage_1 = self.values.player.copr_static_damage_ratio[1] * 100
-	local static_damage_2 = self.values.player.copr_static_damage_ratio[2] * 100
-	local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
-	local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
-	local health_bonus_3 = (self.values.player.passive_health_multiplier[4] - 1) * 100 - health_bonus_2
-	local kill_life_leech_1 = self.values.player.copr_kill_life_leech[1]
-	local copr_specialization = deep_clone(editable_specialization_template)
-
-	copr_specialization[1] = {
-		tostring(activation_health_restore) .. "%",
-		tostring(static_damage_1) .. "%",
-		tostring(kill_life_leech_1),
-		tostring(teammate_heal_1) .. "%",
-		tostring(duration_1),
-		tostring(ability_cooldown)
-	}
-	copr_specialization[3] = {
-		tostring(health_bonus_1) .. "%",
-		tostring(out_of_health_movement_slow) .. "%"
-	}
-	copr_specialization[5] = {
-		tostring(duration_2),
-		tostring(speed_up_on_kill),
-		tostring(teammate_heal_2) .. "%"
-	}
-	copr_specialization[7] = {
-		tostring(health_bonus_2) .. "%"
-	}
-	copr_specialization[9] = {
-		tostring(static_damage_2) .. "%",
-		tostring(health_bonus_3) .. "%"
-	}
-
-	table.insert(copr_specialization[9], editable_specialization_lootdrop_drop_multiplier)
-	table.insert(editable_specialization_descs, copr_specialization)
+		table.insert(copr_specialization[9], editable_specialization_lootdrop_drop_multiplier)
+		table.insert(editable_specialization_descs, copr_specialization)
+	end
 
 	do
 		local health_boost = (self.values.player.mrwi_health_multiplier[1] - 1) * 100

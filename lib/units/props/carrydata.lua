@@ -475,75 +475,77 @@ CarryData.EXPLOSION_CUSTOM_PARAMS = {
 	effect = CarryData.EXPLOSION_SETTINGS.effect
 }
 
-local mvec1 = Vector3()
-local mvec3_set = mvector3.set
-local mvec3_dis = mvector3.distance
-local math_lerp = math.lerp
-local math_rand = math.rand
+do
+	local mvec1 = Vector3()
+	local mvec3_set = mvector3.set
+	local mvec3_dis = mvector3.distance
+	local math_lerp = math.lerp
+	local math_rand = math.rand
 
-function CarryData:_explode()
-	managers.mission:call_global_event("loot_exploded")
+	function CarryData:_explode()
+		managers.mission:call_global_event("loot_exploded")
 
-	local pos = self._unit:position()
-	local normal = math.UP
-	local range = self.EXPLOSION_SETTINGS.range
-	local slot_mask = managers.slot:get_mask("explosion_targets")
+		local pos = self._unit:position()
+		local normal = math.UP
+		local range = self.EXPLOSION_SETTINGS.range
+		local slot_mask = managers.slot:get_mask("explosion_targets")
 
-	self:_local_player_explosion_damage()
-	managers.explosion:play_sound_and_effects(pos, normal, range, self.EXPLOSION_CUSTOM_PARAMS)
-	QuickFlashGrenade:make_flash(pos, range, {
-		self._unit
-	})
+		self:_local_player_explosion_damage()
+		managers.explosion:play_sound_and_effects(pos, normal, range, self.EXPLOSION_CUSTOM_PARAMS)
+		QuickFlashGrenade:make_flash(pos, range, {
+			self._unit
+		})
 
-	local hit_units, splinters = managers.explosion:detect_and_give_dmg({
-		player_damage = 0,
-		hit_pos = pos,
-		range = range,
-		collision_slotmask = slot_mask,
-		curve_pow = self.EXPLOSION_SETTINGS.curve_pow,
-		damage = self.EXPLOSION_SETTINGS.damage,
-		ignore_unit = self._unit
-	})
+		local hit_units, splinters = managers.explosion:detect_and_give_dmg({
+			player_damage = 0,
+			hit_pos = pos,
+			range = range,
+			collision_slotmask = slot_mask,
+			curve_pow = self.EXPLOSION_SETTINGS.curve_pow,
+			damage = self.EXPLOSION_SETTINGS.damage,
+			ignore_unit = self._unit
+		})
 
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "carry_data", CarryData.EVENT_IDS.explode)
+		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "carry_data", CarryData.EVENT_IDS.explode)
 
-	local to_explode = {}
+		local to_explode = {}
 
-	do
-		local chance, distance, carry_ext
-		local raycast_f = Unit.raycast
-		local splinter_slotmask = managers.slot:get_mask("world_geometry")
+		do
+			local chance, distance, carry_ext
+			local raycast_f = Unit.raycast
+			local splinter_slotmask = managers.slot:get_mask("world_geometry")
 
-		for _, unit in pairs(hit_units) do
-			carry_ext = alive(unit) and unit:carry_data()
+			for _, unit in pairs(hit_units) do
+				carry_ext = alive(unit) and unit:carry_data()
 
-			if carry_ext and not carry_ext:is_tagged_for_explosion() and carry_ext:can_explode() then
-				unit:m_position(mvec1)
+				if carry_ext and not carry_ext:is_tagged_for_explosion() and carry_ext:can_explode() then
+					unit:m_position(mvec1)
 
-				distance = mvec3_dis(pos, mvec1)
-				chance = math_lerp(1, 0, math.max(distance - range / 2, 0) / range)
+					distance = mvec3_dis(pos, mvec1)
+					chance = math_lerp(1, 0, math.max(distance - range / 2, 0) / range)
 
-				if chance > math_rand(1) then
-					for i_splinter, s_pos in ipairs(splinters) do
-						if not raycast_f(self._unit, "ray", s_pos, mvec1, "slot_mask", splinter_slotmask, "ignore_unit", {
-							unit
-						}, "report") then
-							to_explode[unit:key()] = carry_ext
+					if chance > math_rand(1) then
+						for i_splinter, s_pos in ipairs(splinters) do
+							if not raycast_f(self._unit, "ray", s_pos, mvec1, "slot_mask", splinter_slotmask, "ignore_unit", {
+								unit
+							}, "report") then
+								to_explode[unit:key()] = carry_ext
 
-							carry_ext:tag_for_explosion()
+								carry_ext:tag_for_explosion()
 
-							break
+								break
+							end
 						end
 					end
 				end
 			end
 		end
-	end
 
-	self:_handle_hiding_and_destruction(true)
+		self:_handle_hiding_and_destruction(true)
 
-	for u_key, carry_ext in pairs(to_explode) do
-		carry_ext:start_explosion(true)
+		for u_key, carry_ext in pairs(to_explode) do
+			carry_ext:start_explosion(true)
+		end
 	end
 end
 

@@ -259,9 +259,12 @@ function HUDStatsScreen:recreate_left()
 					difficulty_text:set_range_color(#difficulty_string + 1, math.huge, tweak_data.screen_colors.one_down)
 				end
 
-				local _, _, tw, th = difficulty_text:text_rect()
+				do
+					local _, _, tw, th = difficulty_text:text_rect()
 
-				difficulty_text:set_size(tw, th)
+					difficulty_text:set_size(tw, th)
+				end
+
 				placer:add_right(difficulty_text)
 			end
 

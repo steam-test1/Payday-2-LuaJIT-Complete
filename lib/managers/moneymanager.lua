@@ -653,10 +653,13 @@ function MoneyManager:get_weapon_price(weapon_id)
 
 	local cost = self:get_tweak_value("money_manager", "weapon_cost", pc)
 	local cost_multiplier = 1
-	local weapon_tweak_data = tweak_data.weapon[weapon_id]
-	local category = weapon_tweak_data and weapon_tweak_data.categories[1]
 
-	cost_multiplier = cost_multiplier * (category and tweak_data.upgrades.weapon_cost_multiplier[category] or 1)
+	do
+		local weapon_tweak_data = tweak_data.weapon[weapon_id]
+		local category = weapon_tweak_data and weapon_tweak_data.categories[1]
+
+		cost_multiplier = cost_multiplier * (category and tweak_data.upgrades.weapon_cost_multiplier[category] or 1)
+	end
 
 	return math.round(cost * cost_multiplier)
 end
@@ -678,10 +681,12 @@ function MoneyManager:get_weapon_price_modified(weapon_id)
 	cost_multiplier = cost_multiplier * managers.player:upgrade_value("player", "buy_cost_multiplier", 1)
 	cost_multiplier = cost_multiplier * managers.player:upgrade_value("player", "crime_net_deal", 1)
 
-	local weapon_tweak_data = tweak_data.weapon[weapon_id]
-	local category = weapon_tweak_data and weapon_tweak_data.categories[1]
+	do
+		local weapon_tweak_data = tweak_data.weapon[weapon_id]
+		local category = weapon_tweak_data and weapon_tweak_data.categories[1]
 
-	cost_multiplier = cost_multiplier * (category and tweak_data.upgrades.weapon_cost_multiplier[category] or 1)
+		cost_multiplier = cost_multiplier * (category and tweak_data.upgrades.weapon_cost_multiplier[category] or 1)
+	end
 
 	return math.round(cost * cost_multiplier)
 end
@@ -839,10 +844,12 @@ function MoneyManager:get_weapon_modify_price(weapon_id, part_id, global_value)
 	crafting_multiplier = crafting_multiplier * managers.player:upgrade_value("player", "buy_cost_multiplier", 1)
 	crafting_multiplier = crafting_multiplier * managers.player:upgrade_value("player", "crime_net_deal", 1)
 
-	local weapon_tweak_data = tweak_data.weapon[weapon_id]
-	local category = weapon_tweak_data and weapon_tweak_data.categories[1]
+	do
+		local weapon_tweak_data = tweak_data.weapon[weapon_id]
+		local category = weapon_tweak_data and weapon_tweak_data.categories[1]
 
-	cost_multiplier = cost_multiplier * (category and tweak_data.upgrades.weapon_cost_multiplier[category] or 1)
+		cost_multiplier = cost_multiplier * (category and tweak_data.upgrades.weapon_cost_multiplier[category] or 1)
+	end
 
 	local total_price = mod_price * crafting_multiplier * global_value_multiplier * cost_multiplier
 

@@ -1384,14 +1384,16 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	num_players_text:set_left(10)
 	num_players_text:set_top(10)
 
-	local blur_object = self._panel:bitmap({
-		name = "num_players_blur",
-		render_template = "VertexColorTexturedBlur3D",
-		texture = "guis/textures/test_blur_df",
-		layer = num_players_text:layer() - 1
-	})
+	do
+		local blur_object = self._panel:bitmap({
+			name = "num_players_blur",
+			render_template = "VertexColorTexturedBlur3D",
+			texture = "guis/textures/test_blur_df",
+			layer = num_players_text:layer() - 1
+		})
 
-	blur_object:set_shape(num_players_text:shape())
+		blur_object:set_shape(num_players_text:shape())
+	end
 
 	local legends_button = self._panel:text({
 		blend_mode = "add",
@@ -1410,14 +1412,16 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	legends_button:set_top(10)
 	legends_button:set_align("right")
 
-	local blur_object = self._panel:bitmap({
-		name = "legends_button_blur",
-		render_template = "VertexColorTexturedBlur3D",
-		texture = "guis/textures/test_blur_df",
-		layer = legends_button:layer() - 1
-	})
+	do
+		local blur_object = self._panel:bitmap({
+			name = "legends_button_blur",
+			render_template = "VertexColorTexturedBlur3D",
+			texture = "guis/textures/test_blur_df",
+			layer = legends_button:layer() - 1
+		})
 
-	blur_object:set_shape(legends_button:shape())
+		blur_object:set_shape(legends_button:shape())
+	end
 
 	if managers.menu:is_pc_controller() then
 		legends_button:set_color(tweak_data.screen_colors.button_stage_3)
@@ -3111,28 +3115,36 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 	end
 
-	local _, _, w, h = job_name:text_rect()
+	do
+		local _, _, w, h = job_name:text_rect()
 
-	job_name:set_size(w, h)
-	job_name:set_position(0, host_name:bottom() - 2)
+		job_name:set_size(w, h)
+		job_name:set_position(0, host_name:bottom() - 2)
+	end
 
-	local _, _, w, h = contact_name:text_rect()
+	do
+		local _, _, w, h = contact_name:text_rect()
 
-	contact_name:set_size(w, h)
-	contact_name:set_top(job_name:top())
-	contact_name:set_right(0)
+		contact_name:set_size(w, h)
+		contact_name:set_top(job_name:top())
+		contact_name:set_right(0)
+	end
 
-	local _, _, w, h = info_name:text_rect()
+	do
+		local _, _, w, h = info_name:text_rect()
 
-	info_name:set_size(w, h - 3)
-	info_name:set_top(contact_name:bottom() - 3)
-	info_name:set_right(0)
+		info_name:set_size(w, h - 3)
+		info_name:set_top(contact_name:bottom() - 3)
+		info_name:set_right(0)
+	end
 
-	local _, _, w, h = difficulty_name:text_rect()
+	do
+		local _, _, w, h = difficulty_name:text_rect()
 
-	difficulty_name:set_size(w, h)
-	difficulty_name:set_top(info_name:bottom() - 3)
-	difficulty_name:set_right(0)
+		difficulty_name:set_size(w, h)
+		difficulty_name:set_top(info_name:bottom() - 3)
+		difficulty_name:set_right(0)
+	end
 
 	if one_down_active then
 		local _, _, w, h = one_down_label:text_rect()
@@ -3142,11 +3154,13 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		one_down_label:set_right(0)
 	end
 
-	local _, _, w, h = heat_name:text_rect()
+	do
+		local _, _, w, h = heat_name:text_rect()
 
-	heat_name:set_size(w, h - 4)
-	heat_name:set_top(one_down_active and one_down_label:bottom() - 3 or difficulty_name:bottom() - 3)
-	heat_name:set_right(0)
+		heat_name:set_size(w, h - 4)
+		heat_name:set_top(one_down_active and one_down_label:bottom() - 3 or difficulty_name:bottom() - 3)
+		heat_name:set_right(0)
+	end
 
 	if not got_heat_text then
 		heat_name:set_text(" ")

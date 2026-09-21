@@ -926,69 +926,73 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		self._legends_panel:set_righttop(self._panel:w(), 0)
 
 		if not managers.menu:is_steam_controller() then
-			local panel = self._legends_panel:panel({
-				name = "select",
-				visible = false
-			})
-			local icon = panel:bitmap({
-				blend_mode = "add",
-				h = 23,
-				name = "icon",
-				texture = "guis/textures/pd2/mouse_buttons",
-				w = 17,
-				texture_rect = {
-					1,
-					1,
-					17,
-					23
-				}
-			})
-			local text = panel:text({
-				blend_mode = "add",
-				text = managers.localization:to_upper_text("menu_mouse_select"),
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				color = tweak_data.screen_colors.text
-			})
+			do
+				local panel = self._legends_panel:panel({
+					name = "select",
+					visible = false
+				})
+				local icon = panel:bitmap({
+					blend_mode = "add",
+					h = 23,
+					name = "icon",
+					texture = "guis/textures/pd2/mouse_buttons",
+					w = 17,
+					texture_rect = {
+						1,
+						1,
+						17,
+						23
+					}
+				})
+				local text = panel:text({
+					blend_mode = "add",
+					text = managers.localization:to_upper_text("menu_mouse_select"),
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					color = tweak_data.screen_colors.text
+				})
 
-			make_fine_text(text)
-			text:set_left(icon:right() + 2)
-			text:set_center_y(icon:center_y())
-			panel:set_w(text:right())
+				make_fine_text(text)
+				text:set_left(icon:right() + 2)
+				text:set_center_y(icon:center_y())
+				panel:set_w(text:right())
 
-			self._legends.select = panel
+				self._legends.select = panel
+			end
 
-			local panel = self._legends_panel:panel({
-				name = "preview",
-				visible = false
-			})
-			local icon = panel:bitmap({
-				blend_mode = "add",
-				h = 23,
-				name = "icon",
-				texture = "guis/textures/pd2/mouse_buttons",
-				w = 17,
-				texture_rect = {
-					18,
-					1,
-					17,
-					23
-				}
-			})
-			local text = panel:text({
-				blend_mode = "add",
-				text = managers.localization:to_upper_text("menu_mouse_preview"),
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				color = tweak_data.screen_colors.text
-			})
+			do
+				local panel = self._legends_panel:panel({
+					name = "preview",
+					visible = false
+				})
+				local icon = panel:bitmap({
+					blend_mode = "add",
+					h = 23,
+					name = "icon",
+					texture = "guis/textures/pd2/mouse_buttons",
+					w = 17,
+					texture_rect = {
+						18,
+						1,
+						17,
+						23
+					}
+				})
+				local text = panel:text({
+					blend_mode = "add",
+					text = managers.localization:to_upper_text("menu_mouse_preview"),
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					color = tweak_data.screen_colors.text
+				})
 
-			make_fine_text(text)
-			text:set_left(icon:right() + 2)
-			text:set_center_y(icon:center_y())
-			panel:set_w(text:right())
+				make_fine_text(text)
+				text:set_left(icon:right() + 2)
+				text:set_center_y(icon:center_y())
+				panel:set_w(text:right())
 
-			self._legends.preview = panel
+				self._legends.preview = panel
+			end
 
 			local panel = self._legends_panel:panel({
 				name = "switch",
@@ -1022,41 +1026,45 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 
 			self._legends.switch = panel
 		else
-			local panel = self._legends_panel:panel({
-				name = "select",
-				visible = false
-			})
-			local text = panel:text({
-				blend_mode = "add",
-				text = managers.localization:steam_btn("grip_l") .. " " .. managers.localization:to_upper_text("menu_mouse_select"),
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				color = tweak_data.screen_colors.text
-			})
+			do
+				local panel = self._legends_panel:panel({
+					name = "select",
+					visible = false
+				})
+				local text = panel:text({
+					blend_mode = "add",
+					text = managers.localization:steam_btn("grip_l") .. " " .. managers.localization:to_upper_text("menu_mouse_select"),
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					color = tweak_data.screen_colors.text
+				})
 
-			make_fine_text(text)
-			text:set_center_y(panel:h() / 2)
-			panel:set_w(text:right())
+				make_fine_text(text)
+				text:set_center_y(panel:h() / 2)
+				panel:set_w(text:right())
 
-			self._legends.select = panel
+				self._legends.select = panel
+			end
 
-			local panel = self._legends_panel:panel({
-				name = "preview",
-				visible = false
-			})
-			local text = panel:text({
-				blend_mode = "add",
-				text = managers.localization:steam_btn("grip_r") .. " " .. managers.localization:to_upper_text("menu_mouse_preview"),
-				font = tweak_data.menu.pd2_small_font,
-				font_size = tweak_data.menu.pd2_small_font_size,
-				color = tweak_data.screen_colors.text
-			})
+			do
+				local panel = self._legends_panel:panel({
+					name = "preview",
+					visible = false
+				})
+				local text = panel:text({
+					blend_mode = "add",
+					text = managers.localization:steam_btn("grip_r") .. " " .. managers.localization:to_upper_text("menu_mouse_preview"),
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					color = tweak_data.screen_colors.text
+				})
 
-			make_fine_text(text)
-			text:set_center_y(panel:h() / 2)
-			panel:set_w(text:right())
+				make_fine_text(text)
+				text:set_center_y(panel:h() / 2)
+				panel:set_w(text:right())
 
-			self._legends.preview = panel
+				self._legends.preview = panel
+			end
 
 			local panel = self._legends_panel:panel({
 				name = "switch",

@@ -62,10 +62,12 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		color = tweak_data.screen_colors.text
 	})
 
-	local x, y, w, h = self._contact_text_header:text_rect()
+	do
+		local x, y, w, h = self._contact_text_header:text_rect()
 
-	self._contact_text_header:set_size(width, h)
-	self._contact_text_header:set_center_x(self._panel:w() * 0.5)
+		self._contact_text_header:set_size(width, h)
+		self._contact_text_header:set_center_x(self._panel:w() * 0.5)
+	end
 
 	self._contract_panel = self._panel:panel({
 		layer = 5,
@@ -254,9 +256,13 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		font = font,
 		color = tweak_data.screen_colors.text
 	})
-	local x, y, w, h = contact_text:text_rect()
 
-	contact_text:set_size(w, h)
+	do
+		local x, y, w, h = contact_text:text_rect()
+
+		contact_text:set_size(w, h)
+	end
+
 	contact_text:set_position(contact_panel:left(), contact_panel:bottom() + half_padding)
 	BoxGuiObject:new(contact_panel, {
 		sides = {

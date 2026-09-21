@@ -84,16 +84,19 @@ function PlayerStandard:init(unit)
 	self._tweak_data = tweak_data.player.movement_state.standard
 	self._obj_com = self._unit:get_object(Idstring("rp_mover"))
 
-	local slot_manager = managers.slot
+	do
+		local slot_manager = managers.slot
 
-	self._slotmask_gnd_ray = slot_manager:get_mask("player_ground_check")
-	self._slotmask_fwd_ray = slot_manager:get_mask("bullet_impact_targets")
-	self._slotmask_foley_ray = slot_manager:get_mask("bullet_impact_targets")
-	self._slotmask_bullet_impact_targets = slot_manager:get_mask("bullet_impact_targets")
-	self._slotmask_bullet_impact_targets = managers.mutators:modify_value("PlayerStandard:modify_melee_slot_mask", self._slotmask_bullet_impact_targets)
-	self._slotmask_pickups = slot_manager:get_mask("pickups")
-	self._slotmask_AI_visibility = slot_manager:get_mask("AI_visibility")
-	self._slotmask_long_distance_interaction = slot_manager:get_mask("long_distance_interaction")
+		self._slotmask_gnd_ray = slot_manager:get_mask("player_ground_check")
+		self._slotmask_fwd_ray = slot_manager:get_mask("bullet_impact_targets")
+		self._slotmask_foley_ray = slot_manager:get_mask("bullet_impact_targets")
+		self._slotmask_bullet_impact_targets = slot_manager:get_mask("bullet_impact_targets")
+		self._slotmask_bullet_impact_targets = managers.mutators:modify_value("PlayerStandard:modify_melee_slot_mask", self._slotmask_bullet_impact_targets)
+		self._slotmask_pickups = slot_manager:get_mask("pickups")
+		self._slotmask_AI_visibility = slot_manager:get_mask("AI_visibility")
+		self._slotmask_long_distance_interaction = slot_manager:get_mask("long_distance_interaction")
+	end
+
 	self._ext_camera = unit:camera()
 	self._ext_movement = unit:movement()
 	self._ext_damage = unit:character_damage()
@@ -3409,64 +3412,66 @@ function PlayerStandard:is_equipping()
 	return self._equip_weapon_expire_t
 end
 
-local tmp_interact_vec1 = Vector3()
-local tmp_interact_vec2 = Vector3()
+do
+	local tmp_interact_vec1 = Vector3()
+	local tmp_interact_vec2 = Vector3()
 
-function PlayerStandard:_add_unit_to_char_table(char_table, unit, unit_type, interaction_dist, interaction_through_walls, tight_area, priority, my_head_pos, cam_fwd, ray_ignore_units, ray_types)
-	if unit:unit_data().disable_shout and not unit:brain():interaction_voice() then
-		return
-	end
-
-	local u_head_pos = tmp_interact_vec1
-
-	if unit_type == 3 then
-		unit:base():get_mark_check_position(u_head_pos)
-	else
-		mvec3_set(u_head_pos, unit:movement():m_head_pos())
-		mvec3_set(tmp_interact_vec2, math.UP)
-		mvec3_mul(tmp_interact_vec2, 30)
-		mvec3_add(u_head_pos, tmp_interact_vec2)
-	end
-
-	local vec = tmp_interact_vec2
-
-	mvec3_set(vec, u_head_pos)
-	mvec3_sub(vec, my_head_pos)
-
-	local dis = mvec3_norm(vec)
-
-	if not interaction_dist or dis < interaction_dist then
-		local lerp1, lerp2
-
-		if type(tight_area) == "table" then
-			lerp1 = tight_area[1] or 30
-			lerp2 = tight_area[2] or 10
-		else
-			lerp1 = tight_area and 30 or 90
-			lerp2 = tight_area and 10 or 30
+	function PlayerStandard:_add_unit_to_char_table(char_table, unit, unit_type, interaction_dist, interaction_through_walls, tight_area, priority, my_head_pos, cam_fwd, ray_ignore_units, ray_types)
+		if unit:unit_data().disable_shout and not unit:brain():interaction_voice() then
+			return
 		end
 
-		local max_angle = math.max(8, math.lerp(lerp1, lerp2, dis / 1200))
-		local angle = vec:angle(cam_fwd)
+		local u_head_pos = tmp_interact_vec1
 
-		if angle < max_angle then
-			local ing_wgt = dis * dis * (1 - vec:dot(cam_fwd)) / priority
+		if unit_type == 3 then
+			unit:base():get_mark_check_position(u_head_pos)
+		else
+			mvec3_set(u_head_pos, unit:movement():m_head_pos())
+			mvec3_set(tmp_interact_vec2, math.UP)
+			mvec3_mul(tmp_interact_vec2, 30)
+			mvec3_add(u_head_pos, tmp_interact_vec2)
+		end
 
-			if interaction_through_walls then
-				table.insert(char_table, {
-					unit = unit,
-					inv_wgt = ing_wgt,
-					unit_type = unit_type
-				})
+		local vec = tmp_interact_vec2
+
+		mvec3_set(vec, u_head_pos)
+		mvec3_sub(vec, my_head_pos)
+
+		local dis = mvec3_norm(vec)
+
+		if not interaction_dist or dis < interaction_dist then
+			local lerp1, lerp2
+
+			if type(tight_area) == "table" then
+				lerp1 = tight_area[1] or 30
+				lerp2 = tight_area[2] or 10
 			else
-				local ray = World:raycast("ray", my_head_pos, u_head_pos, "slot_mask", self._slotmask_AI_visibility, "ray_type", ray_types or "ai_vision", "ignore_unit", ray_ignore_units or {})
+				lerp1 = tight_area and 30 or 90
+				lerp2 = tight_area and 10 or 30
+			end
 
-				if not ray or mvec3_dis_sq(ray.position, u_head_pos) < 900 then
+			local max_angle = math.max(8, math.lerp(lerp1, lerp2, dis / 1200))
+			local angle = vec:angle(cam_fwd)
+
+			if angle < max_angle then
+				local ing_wgt = dis * dis * (1 - vec:dot(cam_fwd)) / priority
+
+				if interaction_through_walls then
 					table.insert(char_table, {
 						unit = unit,
 						inv_wgt = ing_wgt,
 						unit_type = unit_type
 					})
+				else
+					local ray = World:raycast("ray", my_head_pos, u_head_pos, "slot_mask", self._slotmask_AI_visibility, "ray_type", ray_types or "ai_vision", "ignore_unit", ray_ignore_units or {})
+
+					if not ray or mvec3_dis_sq(ray.position, u_head_pos) < 900 then
+						table.insert(char_table, {
+							unit = unit,
+							inv_wgt = ing_wgt,
+							unit_type = unit_type
+						})
+					end
 				end
 			end
 		end

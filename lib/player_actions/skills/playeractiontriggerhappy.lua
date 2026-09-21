@@ -6,25 +6,28 @@ function PlayerAction.TriggerHappy.Function(player_manager, damage_bonus, max_st
 	local co = coroutine.running()
 	local current_time = Application:time()
 	local end_time = Application:time() + max_time
-	local current_stacks = 1
 
-	local function on_hit(unit, attack_data)
-		local attacker_unit = attack_data.attacker_unit
-		local variant = attack_data.variant
+	do
+		local current_stacks = 1
 
-		if attacker_unit == player_manager:player_unit() and variant == "bullet" then
-			end_time = current_time + max_time
+		local function on_hit(unit, attack_data)
+			local attacker_unit = attack_data.attacker_unit
+			local variant = attack_data.variant
 
-			if current_stacks < max_stacks then
-				current_stacks = current_stacks + 1
+			if attacker_unit == player_manager:player_unit() and variant == "bullet" then
+				end_time = current_time + max_time
 
-				player_manager:mul_to_property(property_name, damage_bonus)
+				if current_stacks < max_stacks then
+					current_stacks = current_stacks + 1
+
+					player_manager:mul_to_property(property_name, damage_bonus)
+				end
 			end
 		end
-	end
 
-	player_manager:mul_to_property(property_name, damage_bonus)
-	player_manager:register_message(Message.OnEnemyShot, co, on_hit)
+		player_manager:mul_to_property(property_name, damage_bonus)
+		player_manager:register_message(Message.OnEnemyShot, co, on_hit)
+	end
 
 	while current_time < end_time do
 		current_time = Application:time()

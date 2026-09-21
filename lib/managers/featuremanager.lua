@@ -273,15 +273,18 @@ function FeatureManager:join_pd2_clan()
 		table.insert(button_list, joining_pd2_clan_button)
 	end
 
-	local joining_nebula_button = {}
+	do
+		local joining_nebula_button = {}
 
-	joining_nebula_button.text = managers.localization:text("menu_no_sbz_account")
+		joining_nebula_button.text = managers.localization:text("menu_no_sbz_account")
 
-	function joining_nebula_button.callback_func()
-		managers.network.account:overlay_activate("url", tweak_data.gui.sbz_account_webpage)
+		function joining_nebula_button.callback_func()
+			managers.network.account:overlay_activate("url", tweak_data.gui.sbz_account_webpage)
+		end
+
+		table.insert(button_list, joining_nebula_button)
 	end
 
-	table.insert(button_list, joining_nebula_button)
 	table.insert(button_list, ok_button)
 
 	params.button_list = button_list

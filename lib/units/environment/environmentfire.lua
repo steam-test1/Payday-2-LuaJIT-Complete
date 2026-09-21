@@ -56,9 +56,12 @@ function EnvironmentFire:on_spawn(data, normal, user_unit, weapon_unit, added_ti
 	self._added_time = added_time
 	self._range_multiplier = range_multiplier
 
-	local dot_data = data.dot_data_name and tweak_data.dot:get_dot_data(data.dot_data_name)
+	do
+		local dot_data = data.dot_data_name and tweak_data.dot:get_dot_data(data.dot_data_name)
 
-	self._dot_data = dot_data and deep_clone(dot_data)
+		self._dot_data = dot_data and deep_clone(dot_data)
+	end
+
 	self._user_unit = user_unit
 	self._weapon_unit = weapon_unit
 	self._burn_duration = data.burn_duration + added_time

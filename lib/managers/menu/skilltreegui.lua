@@ -605,9 +605,13 @@ function SkillTreePage:init(tree, data, parent_panel, fullscreen_panel, tree_tab
 			h = tweak_data.menu.pd2_small_font_size,
 			color = tweak_data.screen_colors.item_stage_3
 		})
-		local x, y, w, h = cost_text:text_rect()
 
-		cost_text:set_size(w, h)
+		do
+			local x, y, w, h = cost_text:text_rect()
+
+			cost_text:set_size(w, h)
+		end
+
 		cost_text:set_world_bottom(tree_panel:child("rect" .. tostring(tier)):world_top() + 2)
 		cost_text:set_x(debug_text:right() + tw * 3)
 
@@ -876,9 +880,12 @@ function SkillTreeGui:_setup(add_skilltree, add_specialization)
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
 	})
-	local x, y, w, h = skilltree_text:text_rect()
 
-	skilltree_text:set_size(w, h)
+	do
+		local x, y, w, h = skilltree_text:text_rect()
+
+		skilltree_text:set_size(w, h)
+	end
 
 	local separator = self._panel:text({
 		align = "left",
@@ -892,9 +899,11 @@ function SkillTreeGui:_setup(add_skilltree, add_specialization)
 
 	separator:set_left(skilltree_text:right() + 7.5)
 
-	local x, y, w, h = separator:text_rect()
+	do
+		local x, y, w, h = separator:text_rect()
 
-	separator:set_size(w, h)
+		separator:set_size(w, h)
+	end
 
 	local specialization_text = self._panel:text({
 		align = "left",
@@ -909,9 +918,11 @@ function SkillTreeGui:_setup(add_skilltree, add_specialization)
 
 	specialization_text:set_left(separator:right() + 7.5)
 
-	local x, y, w, h = specialization_text:text_rect()
+	do
+		local x, y, w, h = specialization_text:text_rect()
 
-	specialization_text:set_size(w, h)
+		specialization_text:set_size(w, h)
+	end
 
 	self._skilltree_text_highlighted = false
 	self._specialization_text_highlighted = false
@@ -1061,9 +1072,12 @@ function SkillTreeGui:_setup(add_skilltree, add_specialization)
 		color = Color.black,
 		w = self._skill_tree_panel:w() * WIDTH_MULTIPLIER * 1 / 3 - 10
 	})
-	local _, _, _, h = skill_switch_button:text_rect()
 
-	skill_switch_button:set_h(h)
+	do
+		local _, _, _, h = skill_switch_button:text_rect()
+
+		skill_switch_button:set_h(h)
+	end
 
 	local black_rect = self._fullscreen_panel:rect({
 		layer = 1,

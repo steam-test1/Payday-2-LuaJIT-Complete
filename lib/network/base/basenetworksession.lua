@@ -1251,9 +1251,11 @@ function BaseNetworkSession:spawn_players(is_drop_in)
 			end
 		end
 
-		local local_character = self._local_peer:character()
+		do
+			local local_character = self._local_peer:character()
 
-		self._local_peer:spawn_unit(id, false, local_character ~= "random" and local_character)
+			self._local_peer:spawn_unit(id, false, local_character ~= "random" and local_character)
+		end
 
 		for _, peer in pairs(self._peers) do
 			local character = peer:character()

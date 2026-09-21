@@ -215,34 +215,46 @@ function ContractBoxGui:create_contract_box()
 			font = font,
 			color = tweak_data.screen_colors.text
 		})
-		local _, _, tw, th = self._contract_text_header:text_rect()
 
-		self._contract_text_header:set_size(tw, th)
+		do
+			local _, _, tw, th = self._contract_text_header:text_rect()
+
+			self._contract_text_header:set_size(tw, th)
+		end
 
 		local w = 0
-		local _, _, tw, th = length_text_header:text_rect()
 
-		w = math.max(w, tw)
+		do
+			local _, _, tw, th = length_text_header:text_rect()
 
-		length_text_header:set_size(tw, th)
+			w = math.max(w, tw)
 
-		local _, _, tw, th = risk_text_header:text_rect()
+			length_text_header:set_size(tw, th)
+		end
 
-		w = math.max(w, tw)
+		do
+			local _, _, tw, th = risk_text_header:text_rect()
 
-		risk_text_header:set_size(tw, th)
+			w = math.max(w, tw)
 
-		local _, _, tw, th = exp_text_header:text_rect()
+			risk_text_header:set_size(tw, th)
+		end
 
-		w = math.max(w, tw)
+		do
+			local _, _, tw, th = exp_text_header:text_rect()
 
-		exp_text_header:set_size(tw, th)
+			w = math.max(w, tw)
 
-		local _, _, tw, th = payout_text_header:text_rect()
+			exp_text_header:set_size(tw, th)
+		end
 
-		w = math.max(w, tw)
+		do
+			local _, _, tw, th = payout_text_header:text_rect()
 
-		payout_text_header:set_size(tw, th)
+			w = math.max(w, tw)
+
+			payout_text_header:set_size(tw, th)
+		end
 
 		w = w + 10
 
@@ -268,11 +280,13 @@ function ContractBoxGui:create_contract_box()
 
 		length_text:set_position(length_text_header:right() + 5, length_text_header:top())
 
-		local _, _, tw, th = length_text:text_rect()
+		do
+			local _, _, tw, th = length_text:text_rect()
 
-		w = math.max(w, tw)
+			w = math.max(w, tw)
 
-		length_text:set_size(tw, th)
+			length_text:set_size(tw, th)
+		end
 
 		if managers.job:is_job_ghostable(managers.job:current_job_id()) then
 			local ghost_icon = self._contract_panel:bitmap({
@@ -323,9 +337,12 @@ function ContractBoxGui:create_contract_box()
 			difficulty_text:set_range_color(utf8.len(difficulty_string) + 1, utf8.len(text_string), tweak_data.screen_colors.one_down)
 		end
 
-		local _, _, tw, th = difficulty_text:text_rect()
+		do
+			local _, _, tw, th = difficulty_text:text_rect()
 
-		difficulty_text:set_size(tw, th)
+			difficulty_text:set_size(tw, th)
+		end
+
 		difficulty_text:set_x(math.round(sx))
 		difficulty_text:set_center_y(cy)
 		difficulty_text:set_y(math.round(difficulty_text:y()))
@@ -357,9 +374,13 @@ function ContractBoxGui:create_contract_box()
 			text = job_xp_text,
 			color = tweak_data.screen_colors.text
 		})
-		local _, _, tw, th = job_xp:text_rect()
 
-		job_xp:set_size(tw, th)
+		do
+			local _, _, tw, th = job_xp:text_rect()
+
+			job_xp:set_size(tw, th)
+		end
+
 		job_xp:set_position(math.round(exp_text_header:right() + 5), math.round(exp_text_header:top()))
 
 		local risk_xp = self._contract_panel:text({
@@ -368,9 +389,13 @@ function ContractBoxGui:create_contract_box()
 			text = " +" .. tostring(math.round(0)),
 			color = risk_color
 		})
-		local _, _, tw, th = risk_xp:text_rect()
 
-		risk_xp:set_size(tw, th)
+		do
+			local _, _, tw, th = risk_xp:text_rect()
+
+			risk_xp:set_size(tw, th)
+		end
+
 		risk_xp:set_position(math.round(job_xp:right()), job_xp:top())
 		risk_xp:hide()
 
@@ -397,9 +422,12 @@ function ContractBoxGui:create_contract_box()
 				color = ghost_color
 			})
 
-			local _, _, tw, th = ghost_xp_text:text_rect()
+			do
+				local _, _, tw, th = ghost_xp_text:text_rect()
 
-			ghost_xp_text:set_size(tw, th)
+				ghost_xp_text:set_size(tw, th)
+			end
+
 			ghost_xp_text:set_position(math.round(risk_xp:visible() and risk_xp:right() or job_xp:right()), job_xp:top())
 		end
 
@@ -428,9 +456,12 @@ function ContractBoxGui:create_contract_box()
 				color = heat_color
 			})
 
-			local _, _, tw, th = heat_xp_text:text_rect()
+			do
+				local _, _, tw, th = heat_xp_text:text_rect()
 
-			heat_xp_text:set_size(tw, th)
+				heat_xp_text:set_size(tw, th)
+			end
+
 			heat_xp_text:set_position(math.round(ghost_xp_text and ghost_xp_text:right() or risk_xp:visible() and risk_xp:right() or job_xp:right()), job_xp:top())
 		end
 
@@ -453,9 +484,13 @@ function ContractBoxGui:create_contract_box()
 			text = total_payout_text,
 			color = tweak_data.screen_colors.text
 		})
-		local _, _, tw, th = job_money:text_rect()
 
-		job_money:set_size(tw, th)
+		do
+			local _, _, tw, th = job_money:text_rect()
+
+			job_money:set_size(tw, th)
+		end
+
 		job_money:set_position(math.round(payout_text_header:right() + 5), math.round(payout_text_header:top()))
 
 		local risk_money = self._contract_panel:text({
@@ -464,9 +499,13 @@ function ContractBoxGui:create_contract_box()
 			text = " +" .. managers.experience:cash_string(math.round(risk_payout_min)),
 			color = risk_color
 		})
-		local _, _, tw, th = risk_money:text_rect()
 
-		risk_money:set_size(tw, th)
+		do
+			local _, _, tw, th = risk_money:text_rect()
+
+			risk_money:set_size(tw, th)
+		end
+
 		risk_money:set_position(math.round(job_money:right()), job_money:top())
 		risk_money:hide()
 		self._contract_panel:set_h(payout_text_header:bottom() + 10)

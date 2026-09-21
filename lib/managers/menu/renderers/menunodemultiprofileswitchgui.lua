@@ -163,39 +163,41 @@ function MenuNodeMultiProfileSwitchGui:_create_legends(node)
 	if managers.menu:is_pc_controller() then
 		self._legends = {}
 
-		local panel = self._legends_panel:panel({
-			name = "select",
-			visible = false
-		})
-		local icon = panel:bitmap({
-			blend_mode = "add",
-			h = 18,
-			name = "icon",
-			texture = "guis/textures/pd2/mouse_buttons",
-			w = 13,
-			texture_rect = {
-				1,
-				1,
-				17,
-				23
-			}
-		})
-		local text = panel:text({
-			blend_mode = "add",
-			name = "text",
-			text = managers.localization:to_upper_text("menu_mouse_select"),
-			font = tweak_data.menu.pd2_tiny_font,
-			font_size = tweak_data.menu.pd2_tiny_font_size,
-			color = tweak_data.screen_colors.text
-		})
+		do
+			local panel = self._legends_panel:panel({
+				name = "select",
+				visible = false
+			})
+			local icon = panel:bitmap({
+				blend_mode = "add",
+				h = 18,
+				name = "icon",
+				texture = "guis/textures/pd2/mouse_buttons",
+				w = 13,
+				texture_rect = {
+					1,
+					1,
+					17,
+					23
+				}
+			})
+			local text = panel:text({
+				blend_mode = "add",
+				name = "text",
+				text = managers.localization:to_upper_text("menu_mouse_select"),
+				font = tweak_data.menu.pd2_tiny_font,
+				font_size = tweak_data.menu.pd2_tiny_font_size,
+				color = tweak_data.screen_colors.text
+			})
 
-		self.make_fine_text(text)
-		text:set_left(icon:right() + 2)
-		text:set_center_y(icon:center_y())
-		panel:set_w(text:right())
-		panel:set_h(text:bottom())
+			self.make_fine_text(text)
+			text:set_left(icon:right() + 2)
+			text:set_center_y(icon:center_y())
+			panel:set_w(text:right())
+			panel:set_h(text:bottom())
 
-		self._legends.select = panel
+			self._legends.select = panel
+		end
 
 		local panel = self._legends_panel:panel({
 			name = "move",

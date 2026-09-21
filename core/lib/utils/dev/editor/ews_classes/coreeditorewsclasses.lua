@@ -2051,14 +2051,17 @@ function UnitTransformDialog:init()
 	self._ay = self:_create_ctrl_position("Y", "y", 0, position_sizer)
 	self._az = self:_create_ctrl_position("Z", "z", 0, position_sizer)
 
-	local actions_toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER")
+	do
+		local actions_toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER")
 
-	actions_toolbar:add_tool("COPY_POSITION", "Copy position", CoreEws.image_path("toolbar\\copy_16x16.png"))
-	actions_toolbar:connect("COPY_POSITION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_copy_position"), nil)
-	actions_toolbar:add_tool("PASTE_POSITION", "Paste position", CoreEws.image_path("toolbar\\paste_16x16.png"))
-	actions_toolbar:connect("PASTE_POSITION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_paste_position"), nil)
-	actions_toolbar:realize()
-	position_sizer:add(actions_toolbar, 0, 1, "EXPAND,LEFT")
+		actions_toolbar:add_tool("COPY_POSITION", "Copy position", CoreEws.image_path("toolbar\\copy_16x16.png"))
+		actions_toolbar:connect("COPY_POSITION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_copy_position"), nil)
+		actions_toolbar:add_tool("PASTE_POSITION", "Paste position", CoreEws.image_path("toolbar\\paste_16x16.png"))
+		actions_toolbar:connect("PASTE_POSITION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_paste_position"), nil)
+		actions_toolbar:realize()
+		position_sizer:add(actions_toolbar, 0, 1, "EXPAND,LEFT")
+	end
+
 	self._panel_sizer:add(position_sizer, 0, 1, "EXPAND")
 
 	local rotation_sizer = EWS:StaticBoxSizer(self._panel, "HORIZONTAL", "Rotation")
@@ -2067,14 +2070,17 @@ function UnitTransformDialog:init()
 	self._ry = self:_create_ctrl_rotation("Pitch", "y", 0, rotation_sizer)
 	self._rz = self:_create_ctrl_rotation("Roll", "z", 0, rotation_sizer)
 
-	local actions_toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER")
+	do
+		local actions_toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER")
 
-	actions_toolbar:add_tool("COPY_ROTATION", "Copy rotation", CoreEws.image_path("toolbar\\copy_16x16.png"))
-	actions_toolbar:connect("COPY_ROTATION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_copy_rotation"), nil)
-	actions_toolbar:add_tool("PASTE_ROTATION", "Paste rotation", CoreEws.image_path("toolbar\\paste_16x16.png"))
-	actions_toolbar:connect("PASTE_ROTATION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_paste_rotation"), nil)
-	actions_toolbar:realize()
-	rotation_sizer:add(actions_toolbar, 0, 1, "EXPAND,LEFT")
+		actions_toolbar:add_tool("COPY_ROTATION", "Copy rotation", CoreEws.image_path("toolbar\\copy_16x16.png"))
+		actions_toolbar:connect("COPY_ROTATION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_copy_rotation"), nil)
+		actions_toolbar:add_tool("PASTE_ROTATION", "Paste rotation", CoreEws.image_path("toolbar\\paste_16x16.png"))
+		actions_toolbar:connect("PASTE_ROTATION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_paste_rotation"), nil)
+		actions_toolbar:realize()
+		rotation_sizer:add(actions_toolbar, 0, 1, "EXPAND,LEFT")
+	end
+
 	self._panel_sizer:add(rotation_sizer, 0, 1, "EXPAND")
 	self._dialog_sizer:add(self._panel, 1, 5, "EXPAND,ALL")
 	self._panel:set_enabled(false)

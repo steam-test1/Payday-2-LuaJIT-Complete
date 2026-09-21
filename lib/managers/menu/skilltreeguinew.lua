@@ -85,9 +85,12 @@ function NewSkillTreeGui:_setup()
 		font_size = large_font_size,
 		color = tweak_data.screen_colors.text
 	})
-	local x, y, w, h = skilltree_text:text_rect()
 
-	skilltree_text:set_size(w, h)
+	do
+		local x, y, w, h = skilltree_text:text_rect()
+
+		skilltree_text:set_size(w, h)
+	end
 
 	local title_bg_text = self._fullscreen_panel:text({
 		align = "left",

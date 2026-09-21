@@ -846,26 +846,32 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 
 	local result = {}
 	local ray_distance = self:weapon_range()
-	local spread_x, spread_y = self:_get_spread(user_unit)
 
-	spread_y = spread_y or spread_x
-	spread_mul = spread_mul or 1
+	do
+		local spread_x, spread_y = self:_get_spread(user_unit)
 
-	mvector3.cross(mvec_right_ax, direction, math.UP)
-	mvec3_norm(mvec_right_ax)
-	mvector3.cross(mvec_up_ay, direction, mvec_right_ax)
-	mvec3_norm(mvec_up_ay)
-	mvec3_set(mvec_spread_direction, direction)
+		spread_y = spread_y or spread_x
+		spread_mul = spread_mul or 1
 
-	local theta = math.random() * 360
+		mvector3.cross(mvec_right_ax, direction, math.UP)
+		mvec3_norm(mvec_right_ax)
+		mvector3.cross(mvec_up_ay, direction, mvec_right_ax)
+		mvec3_norm(mvec_up_ay)
+		mvec3_set(mvec_spread_direction, direction)
 
-	mvec3_mul(mvec_right_ax, math.rad(math.sin(theta) * (math.random() * spread_x) * spread_mul))
-	mvec3_mul(mvec_up_ay, math.rad(math.cos(theta) * (math.random() * spread_y) * spread_mul))
-	mvec3_add(mvec_spread_direction, mvec_right_ax)
-	mvec3_add(mvec_spread_direction, mvec_up_ay)
-	mvec3_set(mvec_to, mvec_spread_direction)
-	mvec3_mul(mvec_to, ray_distance)
-	mvec3_add(mvec_to, from_pos)
+		do
+			local theta = math.random() * 360
+
+			mvec3_mul(mvec_right_ax, math.rad(math.sin(theta) * (math.random() * spread_x) * spread_mul))
+			mvec3_mul(mvec_up_ay, math.rad(math.cos(theta) * (math.random() * spread_y) * spread_mul))
+		end
+
+		mvec3_add(mvec_spread_direction, mvec_right_ax)
+		mvec3_add(mvec_spread_direction, mvec_up_ay)
+		mvec3_set(mvec_to, mvec_spread_direction)
+		mvec3_mul(mvec_to, ray_distance)
+		mvec3_add(mvec_to, from_pos)
+	end
 
 	local ray_hits, hit_enemy, enemies_hit = self:_collect_hits(from_pos, mvec_to)
 

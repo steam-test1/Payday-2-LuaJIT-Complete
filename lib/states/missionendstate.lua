@@ -187,10 +187,13 @@ function MissionEndState:at_enter(old_state, params)
 	self._sound_listener:activate(true)
 
 	local total_killed = managers.statistics:session_total_killed()
-	local spending_kills, spendings = managers.money:on_spend_session_moneythrower()
 
-	self._moneythrower_spending_kills = spending_kills
-	self._moneythrower_spendings = spendings
+	do
+		local spending_kills, spendings = managers.money:on_spend_session_moneythrower()
+
+		self._moneythrower_spending_kills = spending_kills
+		self._moneythrower_spendings = spendings
+	end
 
 	if managers.mutators:is_mutator_active(MutatorCG22) then
 		local mutator = managers.mutators:get_mutator(MutatorCG22)

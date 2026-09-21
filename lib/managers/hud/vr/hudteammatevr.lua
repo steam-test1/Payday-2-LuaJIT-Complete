@@ -268,68 +268,71 @@ function HUDTeammateVR:_create_radial_health(radial_health_panel)
 			radial_rip_bg:hide()
 		end
 
-		local radial_absorb_shield_active = radial_health_panel:bitmap({
-			alpha = 1,
-			blend_mode = "normal",
-			layer = 5,
-			name = "radial_absorb_shield_active",
-			render_template = "VertexColorTexturedRadial",
-			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
-			w = radial_health_panel:w(),
-			h = radial_health_panel:h()
-		})
+		do
+			local radial_absorb_shield_active = radial_health_panel:bitmap({
+				alpha = 1,
+				blend_mode = "normal",
+				layer = 5,
+				name = "radial_absorb_shield_active",
+				render_template = "VertexColorTexturedRadial",
+				texture = "guis/dlcs/coco/textures/pd2/hud_absorb_shield",
+				w = radial_health_panel:w(),
+				h = radial_health_panel:h()
+			})
 
-		radial_absorb_shield_active:set_color(Color(1, 0, 0, 0))
-		radial_absorb_shield_active:hide()
+			radial_absorb_shield_active:set_color(Color(1, 0, 0, 0))
+			radial_absorb_shield_active:hide()
 
-		local radial_absorb_health_active = radial_health_panel:bitmap({
-			alpha = 1,
-			blend_mode = "normal",
-			layer = 5,
-			name = "radial_absorb_health_active",
-			render_template = "VertexColorTexturedRadial",
-			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_health",
-			w = radial_health_panel:w(),
-			h = radial_health_panel:h()
-		})
+			local radial_absorb_health_active = radial_health_panel:bitmap({
+				alpha = 1,
+				blend_mode = "normal",
+				layer = 5,
+				name = "radial_absorb_health_active",
+				render_template = "VertexColorTexturedRadial",
+				texture = "guis/dlcs/coco/textures/pd2/hud_absorb_health",
+				w = radial_health_panel:w(),
+				h = radial_health_panel:h()
+			})
 
-		radial_absorb_health_active:set_color(Color(1, 0, 0, 0))
-		radial_absorb_health_active:hide()
-		radial_absorb_health_active:animate(callback(self, self, "animate_update_absorb_active"))
+			radial_absorb_health_active:set_color(Color(1, 0, 0, 0))
+			radial_absorb_health_active:hide()
+			radial_absorb_health_active:animate(callback(self, self, "animate_update_absorb_active"))
 
-		local radial_info_meter = radial_health_panel:bitmap({
-			alpha = 1,
-			blend_mode = "add",
-			layer = 3,
-			name = "radial_info_meter",
-			render_template = "VertexColorTexturedRadial",
-			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_fg",
-			w = radial_health_panel:w(),
-			h = radial_health_panel:h()
-		})
+			local radial_info_meter = radial_health_panel:bitmap({
+				alpha = 1,
+				blend_mode = "add",
+				layer = 3,
+				name = "radial_info_meter",
+				render_template = "VertexColorTexturedRadial",
+				texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_fg",
+				w = radial_health_panel:w(),
+				h = radial_health_panel:h()
+			})
 
-		radial_info_meter:set_color(Color(1, 0, 0, 0))
-		radial_info_meter:hide()
+			radial_info_meter:set_color(Color(1, 0, 0, 0))
+			radial_info_meter:hide()
 
-		local radial_info_meter_bg = radial_health_panel:bitmap({
-			alpha = 1,
-			blend_mode = "normal",
-			layer = 1,
-			name = "radial_info_meter_bg",
-			render_template = "VertexColorTexturedRadial",
-			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_bg",
-			texture_rect = {
-				128,
-				0,
-				-128,
-				128
-			},
-			w = radial_health_panel:w(),
-			h = radial_health_panel:h()
-		})
+			local radial_info_meter_bg = radial_health_panel:bitmap({
+				alpha = 1,
+				blend_mode = "normal",
+				layer = 1,
+				name = "radial_info_meter_bg",
+				render_template = "VertexColorTexturedRadial",
+				texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_bg",
+				texture_rect = {
+					128,
+					0,
+					-128,
+					128
+				},
+				w = radial_health_panel:w(),
+				h = radial_health_panel:h()
+			})
 
-		radial_info_meter_bg:set_color(Color(1, 0, 0, 0))
-		radial_info_meter_bg:hide()
+			radial_info_meter_bg:set_color(Color(1, 0, 0, 0))
+			radial_info_meter_bg:hide()
+		end
+
 		self:_create_condition(radial_health_panel)
 	end
 end

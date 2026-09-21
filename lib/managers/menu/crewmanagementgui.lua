@@ -369,31 +369,33 @@ function CrewManagementGui:init(ws, fullscreen_ws, node)
 
 	char_btn:_selected_changed(false, true)
 
-	local v = cc_panel
+	do
+		local v = cc_panel
 
-	BoxGuiObject:new(v, {
-		sides = {
-			1,
-			1,
-			1,
-			1
-		}
-	})
-	v:bitmap({
-		alpha = 1,
-		halign = "scale",
-		layer = -1,
-		render_template = "VertexColorTexturedBlur3D",
-		texture = "guis/textures/test_blur_df",
-		valign = "scale",
-		w = v:w(),
-		h = v:h()
-	})
-	v:rect({
-		alpha = 0.4,
-		layer = -1,
-		color = Color.black
-	})
+		BoxGuiObject:new(v, {
+			sides = {
+				1,
+				1,
+				1,
+				1
+			}
+		})
+		v:bitmap({
+			alpha = 1,
+			halign = "scale",
+			layer = -1,
+			render_template = "VertexColorTexturedBlur3D",
+			texture = "guis/textures/test_blur_df",
+			valign = "scale",
+			w = v:w(),
+			h = v:h()
+		})
+		v:rect({
+			alpha = 0.4,
+			layer = -1,
+			color = Color.black
+		})
+	end
 
 	for _, v in pairs(self._btn_panels) do
 		BoxGuiObject:new(v, {

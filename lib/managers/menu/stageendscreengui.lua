@@ -610,28 +610,30 @@ function StageEndScreenGui:init(saferect_ws, fullrect_ws, statistics_data)
 		MenuBackdropGUI.animate_bg_text(self, big_text)
 	end
 
-	local text = managers.menu:is_pc_controller() and "" or managers.localization:get_default_macro("BTN_BOTTOM_L")
-	local color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
-	local prev_page = self._panel:text({
-		layer = 2,
-		name = "prev_page",
-		vertical = "top",
-		w = 0,
-		y = 0,
-		h = tweak_data.menu.pd2_medium_font_size,
-		font_size = tweak_data.menu.pd2_medium_font_size,
-		font = tweak_data.menu.pd2_medium_font,
-		text = text,
-		color = color
-	})
-	local _, _, w, h = prev_page:text_rect()
+	do
+		local text = managers.menu:is_pc_controller() and "" or managers.localization:get_default_macro("BTN_BOTTOM_L")
+		local color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
+		local prev_page = self._panel:text({
+			layer = 2,
+			name = "prev_page",
+			vertical = "top",
+			w = 0,
+			y = 0,
+			h = tweak_data.menu.pd2_medium_font_size,
+			font_size = tweak_data.menu.pd2_medium_font_size,
+			font = tweak_data.menu.pd2_medium_font,
+			text = text,
+			color = color
+		})
+		local _, _, w, h = prev_page:text_rect()
 
-	prev_page:set_size(w, h + 10)
-	prev_page:set_left(0)
+		prev_page:set_size(w, h + 10)
+		prev_page:set_left(0)
 
-	self._prev_page = prev_page
+		self._prev_page = prev_page
 
-	self._scroll_panel:move(w, 0)
+		self._scroll_panel:move(w, 0)
+	end
 
 	self._items = {}
 
@@ -716,27 +718,30 @@ function StageEndScreenGui:init(saferect_ws, fullrect_ws, statistics_data)
 	end
 
 	local scroll_w = self._panel:w() - self._scroll_panel:x()
-	local text = managers.menu:is_pc_controller() and "" or managers.localization:get_default_macro("BTN_BOTTOM_R")
-	local color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
-	local next_page = self._panel:text({
-		layer = 2,
-		vertical = "top",
-		w = 0,
-		y = 0,
-		name = "tab_text_" .. tostring(#self._items + 1),
-		h = tweak_data.menu.pd2_medium_font_size,
-		font_size = tweak_data.menu.pd2_medium_font_size,
-		font = tweak_data.menu.pd2_medium_font,
-		text = text,
-		color = color
-	})
-	local _, _, w, h = next_page:text_rect()
 
-	next_page:set_size(w, h + 10)
-	next_page:set_right(self._panel:w())
+	do
+		local text = managers.menu:is_pc_controller() and "" or managers.localization:get_default_macro("BTN_BOTTOM_R")
+		local color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
+		local next_page = self._panel:text({
+			layer = 2,
+			vertical = "top",
+			w = 0,
+			y = 0,
+			name = "tab_text_" .. tostring(#self._items + 1),
+			h = tweak_data.menu.pd2_medium_font_size,
+			font_size = tweak_data.menu.pd2_medium_font_size,
+			font = tweak_data.menu.pd2_medium_font,
+			text = text,
+			color = color
+		})
+		local _, _, w, h = next_page:text_rect()
 
-	self._next_page = next_page
-	scroll_w = scroll_w - next_page:w() - 5
+		next_page:set_size(w, h + 10)
+		next_page:set_right(self._panel:w())
+
+		self._next_page = next_page
+		scroll_w = scroll_w - next_page:w() - 5
+	end
 
 	local ix, iy, iw, ih = self._items[#self._items]:tab_text_shape()
 

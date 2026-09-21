@@ -80,11 +80,13 @@ function InventoryIconCreator:_create_weapon(factory_id, blueprint, weapon_skin_
 		cosmetics = weapon_skin_or_cosmetics
 	end
 
-	local n = ""
+	do
+		local n = ""
 
-	n = factory_id
-	n = n .. (cosmetics and "_" .. cosmetics.id or "")
-	self._current_texture_name = n
+		n = factory_id
+		n = n .. (cosmetics and "_" .. cosmetics.id or "")
+		self._current_texture_name = n
+	end
 
 	local factory_data = tweak_data.weapon.factory[factory_id]
 
@@ -2728,49 +2730,58 @@ function InventoryIconCreator:_create_poser_page(notebook)
 		"true",
 		"false"
 	}
-	local _, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Character")
 
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "character_id", self:_get_all_characters())
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "anim_pose", self:_get_all_anim_poses(), "generic_stance")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "play_animation", boolean_options, "true")
-	self:_add_poser_slider_ctrl(lower_panel, box_sizer, "anim_time", 0, 1, 0)
+	do
+		local _, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Character")
 
-	local masks = self:_get_all_masks()
-	local patterns = table.map_keys(tweak_data.blackmarket.textures)
-	local materials = table.map_keys(tweak_data.blackmarket.materials)
-	local _, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Mask")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "character_id", self:_get_all_characters())
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "anim_pose", self:_get_all_anim_poses(), "generic_stance")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "play_animation", boolean_options, "true")
+		self:_add_poser_slider_ctrl(lower_panel, box_sizer, "anim_time", 0, 1, 0)
+	end
 
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_mask", boolean_options, "false")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_backstraps", boolean_options, "true")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "mask_id", masks)
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "pattern", patterns, "no_color_no_material")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "material", materials, "plastic")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "color_a", materials, "strip_paint")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "color_b", materials, "strip_paint")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "color_c", materials, "strip_paint")
+	do
+		local masks = self:_get_all_masks()
+		local patterns = table.map_keys(tweak_data.blackmarket.textures)
+		local materials = table.map_keys(tweak_data.blackmarket.materials)
+		local _, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Mask")
 
-	local player_styles = self:_get_all_player_style()
-	local material_variations = self._get_all_suit_variations(player_styles[1])
-	local gloves = self:_get_all_gloves()
-	local collapse_box, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Outfit and Glvoes")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_mask", boolean_options, "false")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_backstraps", boolean_options, "true")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "mask_id", masks)
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "pattern", patterns, "no_color_no_material")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "material", materials, "plastic")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "color_a", materials, "strip_paint")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "color_b", materials, "strip_paint")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "color_c", materials, "strip_paint")
+	end
 
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "enable_player_style", boolean_options, "false")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "player_style", player_styles)
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "material_variation", material_variations)
+	do
+		local player_styles = self:_get_all_player_style()
+		local material_variations = self._get_all_suit_variations(player_styles[1])
+		local gloves = self:_get_all_gloves()
+		local collapse_box, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Outfit and Glvoes")
 
-	local line = EWS:StaticLine(lower_panel, "", "")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "enable_player_style", boolean_options, "false")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "player_style", player_styles)
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "material_variation", material_variations)
 
-	box_sizer:add(line, 0, 4, "ALL,EXPAND")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_gloves", boolean_options, "false")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "glove_id", gloves)
+		local line = EWS:StaticLine(lower_panel, "", "")
 
-	local armor_ids = table.map_keys(tweak_data.blackmarket.armors)
-	local armor_skins = self:_get_all_armor_skins()
-	local _, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Armor")
+		box_sizer:add(line, 0, 4, "ALL,EXPAND")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_gloves", boolean_options, "false")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "glove_id", gloves)
+	end
 
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "armor_id", armor_ids, "level_1")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_armor_skin", boolean_options, "false")
-	self:_add_poser_combo_ctrl(lower_panel, box_sizer, "armor_skin", armor_skins)
+	do
+		local armor_ids = table.map_keys(tweak_data.blackmarket.armors)
+		local armor_skins = self:_get_all_armor_skins()
+		local _, lower_panel, box_sizer = self:_add_poser_collapse_box(panel, panel_sizer, "Armor")
+
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "armor_id", armor_ids, "level_1")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "show_armor_skin", boolean_options, "false")
+		self:_add_poser_combo_ctrl(lower_panel, box_sizer, "armor_skin", armor_skins)
+	end
 
 	return panel
 end

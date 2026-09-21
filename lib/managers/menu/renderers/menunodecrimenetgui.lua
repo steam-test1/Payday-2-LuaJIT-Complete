@@ -2037,44 +2037,46 @@ function MenuNodeCrimenetContactShortGui:_setup_layout()
 		}
 	})
 
-	local header_panel = self._panel:panel({
-		layer = 51,
-		h = height,
-		w = width
-	})
+	do
+		local header_panel = self._panel:panel({
+			layer = 51,
+			h = height,
+			w = width
+		})
 
-	header_panel:move(self.PADDING * 0.5, self.PADDING * 0.5)
+		header_panel:move(self.PADDING * 0.5, self.PADDING * 0.5)
 
-	local header_text = header_panel:text({
-		layer = 51,
-		name = "header_text",
-		text = managers.localization:to_upper_text("short_basics_header"),
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		color = tweak_data.screen_colors.text
-	})
+		local header_text = header_panel:text({
+			layer = 51,
+			name = "header_text",
+			text = managers.localization:to_upper_text("short_basics_header"),
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			color = tweak_data.screen_colors.text
+		})
 
-	make_fine_text(header_text)
+		make_fine_text(header_text)
 
-	local desc_panel = self._panel:panel({
-		layer = 51,
-		h = height * 0.5,
-		w = width * 0.5
-	})
+		local desc_panel = self._panel:panel({
+			layer = 51,
+			h = height * 0.5,
+			w = width * 0.5
+		})
 
-	desc_panel:move(self.PADDING * 2, 90)
+		desc_panel:move(self.PADDING * 2, 90)
 
-	local desc_text = desc_panel:text({
-		layer = 51,
-		name = "desc_text",
-		wrap = true,
-		text = managers.localization:text("short_basics_desc"),
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		color = tweak_data.screen_colors.text
-	})
+		local desc_text = desc_panel:text({
+			layer = 51,
+			name = "desc_text",
+			wrap = true,
+			text = managers.localization:text("short_basics_desc"),
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			color = tweak_data.screen_colors.text
+		})
 
-	make_fine_text(header_text)
+		make_fine_text(header_text)
+	end
 
 	local reward_panel_w_offs = -50
 	local reward_panel_h_offs = 20
@@ -2604,44 +2606,47 @@ function MenuNodeCrimenetContactChillGui:_setup_layout()
 
 	local reward_panel_w_offs = -50
 	local reward_panel_h_offs = 20
-	local header_panel = self._panel:panel({
-		layer = 51,
-		h = height,
-		w = width
-	})
 
-	header_panel:move(self.PADDING * 0.5, self.PADDING * 0.5)
+	do
+		local header_panel = self._panel:panel({
+			layer = 51,
+			h = height,
+			w = width
+		})
 
-	local header_text = header_panel:text({
-		layer = 51,
-		name = "header_text",
-		text = managers.localization:to_upper_text("chill_combat_header"),
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		color = tweak_data.screen_colors.text
-	})
+		header_panel:move(self.PADDING * 0.5, self.PADDING * 0.5)
 
-	make_fine_text(header_text)
+		local header_text = header_panel:text({
+			layer = 51,
+			name = "header_text",
+			text = managers.localization:to_upper_text("chill_combat_header"),
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			color = tweak_data.screen_colors.text
+		})
 
-	local desc_panel = self._panel:panel({
-		layer = 51,
-		h = height * 0.5,
-		w = width * 0.5
-	})
+		make_fine_text(header_text)
 
-	desc_panel:move(self.WIDTH * 0.5, 10)
+		local desc_panel = self._panel:panel({
+			layer = 51,
+			h = height * 0.5,
+			w = width * 0.5
+		})
 
-	local desc_text = desc_panel:text({
-		layer = 51,
-		name = "desc_text",
-		wrap = true,
-		text = managers.localization:text("chill_combat_desc"),
-		font = tweak_data.menu.pd2_small_font,
-		font_size = tweak_data.menu.pd2_small_font_size,
-		color = tweak_data.screen_colors.text
-	})
+		desc_panel:move(self.WIDTH * 0.5, 10)
 
-	make_fine_text(header_text)
+		local desc_text = desc_panel:text({
+			layer = 51,
+			name = "desc_text",
+			wrap = true,
+			text = managers.localization:text("chill_combat_desc"),
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			color = tweak_data.screen_colors.text
+		})
+
+		make_fine_text(header_text)
+	end
 
 	local reward_panel = self._panel:panel({
 		layer = 51,

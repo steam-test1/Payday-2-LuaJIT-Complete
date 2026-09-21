@@ -7,14 +7,16 @@ function PlayerAction.UnseenStrike.Function(player_manager, min_time, max_durati
 	local target_time = Application:time() + min_time
 	local can_activate = true
 
-	local function on_damage_taken()
-		if not player_manager:has_activate_temporary_upgrade("temporary", "unseen_strike") then
-			target_time = Application:time() + min_time
-			can_activate = true
+	do
+		local function on_damage_taken()
+			if not player_manager:has_activate_temporary_upgrade("temporary", "unseen_strike") then
+				target_time = Application:time() + min_time
+				can_activate = true
+			end
 		end
-	end
 
-	player_manager:register_message(Message.OnPlayerDamage, co, on_damage_taken)
+		player_manager:register_message(Message.OnPlayerDamage, co, on_damage_taken)
+	end
 
 	while true do
 		current_time = Application:time()

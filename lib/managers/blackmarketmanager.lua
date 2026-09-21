@@ -1850,9 +1850,11 @@ function BlackMarketManager:signature()
 end
 
 function BlackMarketManager:load_equipped_weapons()
-	local weapon = self:equipped_primary()
+	do
+		local weapon = self:equipped_primary()
 
-	managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, false, callback(self, self, "resource_loaded_callback", "primaries"), false)
+		managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, false, callback(self, self, "resource_loaded_callback", "primaries"), false)
+	end
 
 	local weapon = self:equipped_secondary()
 

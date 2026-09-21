@@ -396,50 +396,54 @@ function MenuItemGrid:setup_gui(node_gui, row_item)
 	local scroll_item = row_item.scroll_panel:scroll_item()
 	local scroll_canvas = row_item.scroll_panel:canvas()
 	local scroll_placer = scroll_canvas:placer()
-	local box = BoxGuiObject:new(scroll_item:scroll_panel(), {
-		w = scroll_canvas:w(),
-		sides = {
-			0,
-			0,
-			0,
-			0
-		}
-	})
 
-	scroll_item.scroll_indicators = {
-		up_no_scroll = BoxGuiObject:new(box._panel, {
+	do
+		local box = BoxGuiObject:new(scroll_item:scroll_panel(), {
+			w = scroll_canvas:w(),
 			sides = {
 				0,
 				0,
 				0,
 				0
-			}
-		}),
-		up_scroll = BoxGuiObject:new(box._panel, {
-			sides = {
-				0,
-				0,
-				2,
-				0
-			}
-		}),
-		down_no_scroll = BoxGuiObject:new(box._panel, {
-			sides = {
-				0,
-				0,
-				0,
-				0
-			}
-		}),
-		down_scroll = BoxGuiObject:new(box._panel, {
-			sides = {
-				0,
-				0,
-				0,
-				2
 			}
 		})
-	}
+
+		scroll_item.scroll_indicators = {
+			up_no_scroll = BoxGuiObject:new(box._panel, {
+				sides = {
+					0,
+					0,
+					0,
+					0
+				}
+			}),
+			up_scroll = BoxGuiObject:new(box._panel, {
+				sides = {
+					0,
+					0,
+					2,
+					0
+				}
+			}),
+			down_no_scroll = BoxGuiObject:new(box._panel, {
+				sides = {
+					0,
+					0,
+					0,
+					0
+				}
+			}),
+			down_scroll = BoxGuiObject:new(box._panel, {
+				sides = {
+					0,
+					0,
+					0,
+					2
+				}
+			})
+		}
+	end
+
 	row_item.marker_panel = row_item.grid_panel:panel({
 		name = "marker_panel",
 		layer = node_gui.layers.items + 3

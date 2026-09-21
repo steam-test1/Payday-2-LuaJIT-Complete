@@ -160,27 +160,31 @@ function MenuNodeGui:_setup_panels(node)
 		layer = self.layers.items + 2
 	})
 
-	local x = math.random(1, 255)
-	local y = math.random(0, math.round(self._list_arrows.up:texture_height() / 2 - 1)) * 2
-	local w = aw
-	local h = 2
+	do
+		local x = math.random(1, 255)
+		local y = math.random(0, math.round(self._list_arrows.up:texture_height() / 2 - 1)) * 2
+		local w = aw
+		local h = 2
 
-	mvector3.set_static(mvector_tl, x, y, 0)
-	mvector3.set_static(mvector_tr, x + w, y, 0)
-	mvector3.set_static(mvector_bl, x, y + h, 0)
-	mvector3.set_static(mvector_br, x + w, y + h, 0)
-	self._list_arrows.up:set_texture_coordinates(mvector_tl, mvector_tr, mvector_bl, mvector_br)
+		mvector3.set_static(mvector_tl, x, y, 0)
+		mvector3.set_static(mvector_tr, x + w, y, 0)
+		mvector3.set_static(mvector_bl, x, y + h, 0)
+		mvector3.set_static(mvector_br, x + w, y + h, 0)
+		self._list_arrows.up:set_texture_coordinates(mvector_tl, mvector_tr, mvector_bl, mvector_br)
+	end
 
-	local x = math.random(1, 255)
-	local y = math.random(0, math.round(self._list_arrows.down:texture_height() / 2 - 1)) * 2
-	local w = aw
-	local h = 2
+	do
+		local x = math.random(1, 255)
+		local y = math.random(0, math.round(self._list_arrows.down:texture_height() / 2 - 1)) * 2
+		local w = aw
+		local h = 2
 
-	mvector3.set_static(mvector_tl, x, y, 0)
-	mvector3.set_static(mvector_tr, x + w, y, 0)
-	mvector3.set_static(mvector_bl, x, y + h, 0)
-	mvector3.set_static(mvector_br, x + w, y + h, 0)
-	self._list_arrows.down:set_texture_coordinates(mvector_tl, mvector_tr, mvector_bl, mvector_br)
+		mvector3.set_static(mvector_tl, x, y, 0)
+		mvector3.set_static(mvector_tr, x + w, y, 0)
+		mvector3.set_static(mvector_bl, x, y + h, 0)
+		mvector3.set_static(mvector_br, x + w, y + h, 0)
+		self._list_arrows.down:set_texture_coordinates(mvector_tl, mvector_tr, mvector_bl, mvector_br)
+	end
 
 	self._info_bg_rect = self.safe_rect_panel:rect({
 		visible = false,

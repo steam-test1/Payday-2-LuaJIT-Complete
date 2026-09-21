@@ -186,30 +186,35 @@ function MenuCustomizeWeaponColorInitiator:setup_node(node, node_data)
 	self:create_divider(node, "end", nil, 8)
 
 	local new_item
-	local apply_params = {
-		align = "right",
-		callback = "apply_weapon_color",
-		name = "apply",
-		text_id = "dialog_apply",
-		visible_callback = "should_show_weapon_color_apply"
-	}
 
-	new_item = node:create_item({}, apply_params)
+	do
+		local apply_params = {
+			align = "right",
+			callback = "apply_weapon_color",
+			name = "apply",
+			text_id = "dialog_apply",
+			visible_callback = "should_show_weapon_color_apply"
+		}
 
-	new_item:set_enabled(false)
-	node:add_item(new_item)
+		new_item = node:create_item({}, apply_params)
 
-	local buy_dlc_params = {
-		align = "right",
-		callback = "buy_weapon_color_dlc",
-		name = "buy_dlc",
-		text_id = "menu_dlc_buy_weapon_color",
-		visible_callback = "should_show_weapon_color_buy"
-	}
+		new_item:set_enabled(false)
+		node:add_item(new_item)
+	end
 
-	new_item = node:create_item({}, buy_dlc_params)
+	do
+		local buy_dlc_params = {
+			align = "right",
+			callback = "buy_weapon_color_dlc",
+			name = "buy_dlc",
+			text_id = "menu_dlc_buy_weapon_color",
+			visible_callback = "should_show_weapon_color_buy"
+		}
 
-	node:add_item(new_item)
+		new_item = node:create_item({}, buy_dlc_params)
+
+		node:add_item(new_item)
+	end
 
 	if managers.menu:is_pc_controller() then
 		local back_params = {

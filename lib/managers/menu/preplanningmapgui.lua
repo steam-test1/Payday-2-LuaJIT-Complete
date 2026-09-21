@@ -1892,19 +1892,24 @@ function PrePlanningMapGui:setup(saferect_ws, fullscreen_ws, node)
 	grid_height = grid_height * 2 + gh * gh_mul
 
 	local tx, ty, tw, th
-	local M = grid_width
-	local L = self._location_size
-	local C = 1280
 
-	tw = M * C / L
-	tx = -(tw - C) / 2
+	do
+		local M = grid_width
+		local L = self._location_size
+		local C = 1280
 
-	local M = grid_height
-	local L = self._location_size
-	local C = 1280
+		tw = M * C / L
+		tx = -(tw - C) / 2
+	end
 
-	th = M * C / L
-	ty = -(th - C) / 2
+	do
+		local M = grid_height
+		local L = self._location_size
+		local C = 1280
+
+		th = M * C / L
+		ty = -(th - C) / 2
+	end
 
 	local grid_texture_rect = {
 		tx,

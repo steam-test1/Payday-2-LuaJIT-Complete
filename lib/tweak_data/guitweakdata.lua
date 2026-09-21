@@ -2377,19 +2377,22 @@ function GuiTweakData:init(tweak_data)
 		}
 	}
 
-	local padding = 10
-	local panel_width = 900
-	local panel_height = 600
-	local text_width = 500
-	local contact_width = panel_width - text_width - 3 * padding
+	do
+		local padding = 10
+		local panel_width = 900
+		local panel_height = 600
+		local text_width = 500
+		local contact_width = panel_width - text_width - 3 * padding
 
-	self.crime_net.contract_gui = {
-		width = panel_width,
-		height = panel_height,
-		padding = padding,
-		text_width = text_width,
-		contact_width = contact_width
-	}
+		self.crime_net.contract_gui = {
+			width = panel_width,
+			height = panel_height,
+			padding = padding,
+			text_width = text_width,
+			contact_width = contact_width
+		}
+	end
+
 	self.crime_net.locations = {}
 
 	if not Application:production_build() or not IS_PC then

@@ -311,14 +311,17 @@ function ChatGui:init(ws)
 		chat_button:set_right(chat_button_panel:w() / 2)
 		chat_button:set_bottom(chat_button_panel:h() - 11)
 
-		local blur_object = chat_button_panel:bitmap({
-			name = "chat_button_blur",
-			render_template = "VertexColorTexturedBlur3D",
-			texture = "guis/textures/test_blur_df",
-			layer = chat_button:layer() - 2
-		})
+		do
+			local blur_object = chat_button_panel:bitmap({
+				name = "chat_button_blur",
+				render_template = "VertexColorTexturedBlur3D",
+				texture = "guis/textures/test_blur_df",
+				layer = chat_button:layer() - 2
+			})
 
-		blur_object:set_shape(chat_button:shape())
+			blur_object:set_shape(chat_button:shape())
+		end
+
 		chat_button_panel:hide()
 
 		local new_msg_flash = chat_button_panel:bitmap({

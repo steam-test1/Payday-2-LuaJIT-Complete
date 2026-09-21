@@ -548,9 +548,11 @@ function LeakedRecordingMissionGui:create_mission_box()
 		self._dlc_locked = true
 	end
 
-	local _, _, w, h = self.start_text:text_rect()
+	do
+		local _, _, w, h = self.start_text:text_rect()
 
-	start_button:set_size(w, h)
+		start_button:set_size(w, h)
+	end
 
 	placer_y = placer_y + start_button:h()
 	self._cog_is_rotating = false

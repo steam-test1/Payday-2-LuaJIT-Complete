@@ -2984,69 +2984,72 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		}
 	}
 
-	local funder_strike_stats = {
-		charge_time = 3.5,
-		concealment = 30,
-		max_damage = 2,
-		max_damage_effect = 1,
-		min_damage = 2,
-		min_damage_effect = 1,
-		range = 200,
-		remove_weapon_movement_penalty = true,
-		weapon_type = "blunt"
-	}
-	local funder_strike_sounds = {
-		charge = "buzzer_charge",
-		equip = "buzzer_detector_equip",
-		hit_air = "buzzer_detector_hit_air",
-		hit_body = "buzzer_detector_hit_body",
-		hit_gen = "buzzer_detector_hit_gen"
-	}
-	local anim_start_no_loop = {
-		anim = "menu",
-		loop = false,
-		start_time = 0.2
-	}
-	local anim_attack_snap_end = {
-		anim = "menu",
-		from = 1
-	}
+	do
+		local funder_strike_stats = {
+			charge_time = 3.5,
+			concealment = 30,
+			max_damage = 2,
+			max_damage_effect = 1,
+			min_damage = 2,
+			min_damage_effect = 1,
+			range = 200,
+			remove_weapon_movement_penalty = true,
+			weapon_type = "blunt"
+		}
+		local funder_strike_sounds = {
+			charge = "buzzer_charge",
+			equip = "buzzer_detector_equip",
+			hit_air = "buzzer_detector_hit_air",
+			hit_body = "buzzer_detector_hit_body",
+			hit_gen = "buzzer_detector_hit_gen"
+		}
+		local anim_start_no_loop = {
+			anim = "menu",
+			loop = false,
+			start_time = 0.2
+		}
+		local anim_attack_snap_end = {
+			anim = "menu",
+			from = 1
+		}
 
-	self.melee_weapons.funder_strike = {
-		anim_global_param = "melee_axe",
-		expire_t = 0.7,
-		info_id = "bm_melee_funder_strike_info",
-		melee_damage_delay = 0.13333333333333333,
-		menu_scene_anim = "menu",
-		name_id = "bm_melee_funder_strike",
-		repeat_expire_t = 0.7,
-		texture_bundle_folder = "fun",
-		third_unit = "units/pd2_dlc_fun/weapons/wpn_tps_mel_funder_strike/wpn_tps_mel_funder_strike",
-		type = "blunt",
-		unit = "units/pd2_dlc_fun/weapons/wpn_fps_mel_funder_strike/wpn_fps_mel_funder_strike",
-		sounds = funder_strike_sounds,
-		stats = funder_strike_stats,
-		tase_data = {
-			tase_strength = "light"
-		},
-		anim_attack_vars = {
-			"var1",
-			"var2",
-			"var3",
-			"var4"
-		},
-		anims = {
-			charge = anim_start_no_loop,
-			var1_attack = anim_attack_snap_end,
-			var2_attack = anim_attack_snap_end,
-			var3_attack = anim_attack_snap_end,
-			var4_attack = anim_attack_snap_end
-		},
-		align_objects = {
-			"a_weapon_right"
-		},
-		menu_scene_params = anim_attack_snap_end
-	}
+		self.melee_weapons.funder_strike = {
+			anim_global_param = "melee_axe",
+			expire_t = 0.7,
+			info_id = "bm_melee_funder_strike_info",
+			melee_damage_delay = 0.13333333333333333,
+			menu_scene_anim = "menu",
+			name_id = "bm_melee_funder_strike",
+			repeat_expire_t = 0.7,
+			texture_bundle_folder = "fun",
+			third_unit = "units/pd2_dlc_fun/weapons/wpn_tps_mel_funder_strike/wpn_tps_mel_funder_strike",
+			type = "blunt",
+			unit = "units/pd2_dlc_fun/weapons/wpn_fps_mel_funder_strike/wpn_fps_mel_funder_strike",
+			sounds = funder_strike_sounds,
+			stats = funder_strike_stats,
+			tase_data = {
+				tase_strength = "light"
+			},
+			anim_attack_vars = {
+				"var1",
+				"var2",
+				"var3",
+				"var4"
+			},
+			anims = {
+				charge = anim_start_no_loop,
+				var1_attack = anim_attack_snap_end,
+				var2_attack = anim_attack_snap_end,
+				var3_attack = anim_attack_snap_end,
+				var4_attack = anim_attack_snap_end
+			},
+			align_objects = {
+				"a_weapon_right"
+			},
+			menu_scene_params = anim_attack_snap_end
+		}
+	end
+
 	self.melee_weapons.bonk = {
 		anim_global_param = "melee_baseballbat",
 		dlc = "unk",

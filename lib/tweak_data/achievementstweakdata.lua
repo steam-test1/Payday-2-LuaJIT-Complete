@@ -8652,101 +8652,103 @@ function AchievementsTweakData:init(tweak_data)
 		self.weapon_part_tracker = {}
 	end
 
-	local default = "guis/dlcs/ami/textures/pd2/milestone_trophy_icon"
+	do
+		local default = "guis/dlcs/ami/textures/pd2/milestone_trophy_icon"
 
-	self.milestones = {
-		{
-			at = 20,
-			coins = 4,
-			id = "ami_0",
-			texture = default
-		},
-		{
-			at = 50,
-			coins = 8,
-			id = "ami_1",
-			texture = default
-		},
-		{
-			at = 90,
-			coins = 12,
-			has_drop = true,
-			id = "ami_2",
-			texture = default
-		},
-		{
-			at = 140,
-			coins = 16,
-			id = "ami_3",
-			texture = default
-		},
-		{
-			at = 200,
-			coins = 20,
-			has_drop = true,
-			id = "ami_4",
-			texture = default
-		},
-		{
-			at = 270,
-			coins = 24,
-			id = "ami_5",
-			texture = default
-		},
-		{
-			at = 350,
-			coins = 28,
-			has_drop = true,
-			id = "ami_6",
-			texture = default
-		},
-		{
-			at = 450,
-			coins = 36,
-			id = "ami_7",
-			texture = default
-		},
-		{
-			at = 550,
-			coins = 36,
-			has_drop = true,
-			id = "ami_8",
-			texture = default
-		},
-		{
-			at = 650,
-			coins = 36,
-			id = "ami_9",
-			texture = default
-		},
-		{
-			at = 750,
-			coins = 36,
-			has_drop = true,
-			id = "ami_10",
-			texture = default
-		},
-		{
-			at = 850,
-			coins = 36,
-			id = "ami_11",
-			texture = default
-		},
-		{
-			at = 950,
-			coins = 36,
-			has_drop = true,
-			id = "ami_12",
-			texture = default
-		},
-		{
-			at = 1000,
-			coins = 36,
-			has_drop = true,
-			id = "ami_13",
-			texture = default
+		self.milestones = {
+			{
+				at = 20,
+				coins = 4,
+				id = "ami_0",
+				texture = default
+			},
+			{
+				at = 50,
+				coins = 8,
+				id = "ami_1",
+				texture = default
+			},
+			{
+				at = 90,
+				coins = 12,
+				has_drop = true,
+				id = "ami_2",
+				texture = default
+			},
+			{
+				at = 140,
+				coins = 16,
+				id = "ami_3",
+				texture = default
+			},
+			{
+				at = 200,
+				coins = 20,
+				has_drop = true,
+				id = "ami_4",
+				texture = default
+			},
+			{
+				at = 270,
+				coins = 24,
+				id = "ami_5",
+				texture = default
+			},
+			{
+				at = 350,
+				coins = 28,
+				has_drop = true,
+				id = "ami_6",
+				texture = default
+			},
+			{
+				at = 450,
+				coins = 36,
+				id = "ami_7",
+				texture = default
+			},
+			{
+				at = 550,
+				coins = 36,
+				has_drop = true,
+				id = "ami_8",
+				texture = default
+			},
+			{
+				at = 650,
+				coins = 36,
+				id = "ami_9",
+				texture = default
+			},
+			{
+				at = 750,
+				coins = 36,
+				has_drop = true,
+				id = "ami_10",
+				texture = default
+			},
+			{
+				at = 850,
+				coins = 36,
+				id = "ami_11",
+				texture = default
+			},
+			{
+				at = 950,
+				coins = 36,
+				has_drop = true,
+				id = "ami_12",
+				texture = default
+			},
+			{
+				at = 1000,
+				coins = 36,
+				has_drop = true,
+				id = "ami_13",
+				texture = default
+			}
 		}
-	}
+	end
 
 	local last_at = 0
 

@@ -6,16 +6,18 @@ function PlayerAction.ExpertHandling.Function(player_manager, accuracy_bonus, ma
 	local current_time = Application:time()
 	local current_stacks = 0
 
-	local function on_hit()
-		current_stacks = current_stacks + 1
+	do
+		local function on_hit()
+			current_stacks = current_stacks + 1
 
-		if current_stacks <= max_stacks then
-			player_manager:mul_to_property("desperado", accuracy_bonus)
+			if current_stacks <= max_stacks then
+				player_manager:mul_to_property("desperado", accuracy_bonus)
+			end
 		end
-	end
 
-	on_hit()
-	player_manager:register_message(Message.OnEnemyShot, co, on_hit)
+		on_hit()
+		player_manager:register_message(Message.OnEnemyShot, co, on_hit)
+	end
 
 	while current_time < max_time do
 		current_time = Application:time()

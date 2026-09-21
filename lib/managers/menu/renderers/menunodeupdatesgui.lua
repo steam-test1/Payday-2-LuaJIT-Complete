@@ -328,14 +328,20 @@ function MenuNodeUpdatesGui:setup()
 		color = tweak_data.screen_colors.text,
 		x = self.PADDING
 	})
-	local x, y, w, h = title_text:text_rect()
 
-	title_text:set_size(w, h)
+	do
+		local x, y, w, h = title_text:text_rect()
 
-	local x, y, w, h = date_text:text_rect()
+		title_text:set_size(w, h)
+	end
 
-	date_text:set_size(w, h)
-	date_text:set_top(title_text:bottom())
+	do
+		local x, y, w, h = date_text:text_rect()
+
+		date_text:set_size(w, h)
+		date_text:set_top(title_text:bottom())
+	end
+
 	desc_text:set_top(date_text:bottom())
 	desc_text:set_size(latest_desc_panel:w() - self.PADDING * 2, latest_desc_panel:h() - desc_text:top() - self.PADDING)
 
@@ -798,15 +804,21 @@ function MenuNodeUpdatesGui:set_latest_text()
 
 	title_text:set_text(title_string)
 
-	local x, y, w, h = title_text:text_rect()
+	do
+		local x, y, w, h = title_text:text_rect()
 
-	title_text:set_size(w, h)
+		title_text:set_size(w, h)
+	end
+
 	date_text:set_text(date_string)
 
-	local x, y, w, h = date_text:text_rect()
+	do
+		local x, y, w, h = date_text:text_rect()
 
-	date_text:set_size(w, h)
-	date_text:set_top(title_text:bottom())
+		date_text:set_size(w, h)
+		date_text:set_top(title_text:bottom())
+	end
+
 	desc_text:set_text(desc_string)
 	desc_text:set_top(date_text:bottom())
 	desc_text:set_size(latest_desc_panel:w() - self.PADDING * 2, latest_desc_panel:h() - desc_text:top() - self.PADDING)

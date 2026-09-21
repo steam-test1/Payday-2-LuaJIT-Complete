@@ -178,17 +178,20 @@ function CoreCutsceneExporter:_get_final_animation(unit_name)
 		if final_animation and unit_type ~= nil and unit_type ~= "locator" then
 			local patches = self.__animation_patches and self.__animation_patches[unit_name] or {}
 			local unit_animatable_set = self:_get_animatable_set_name_for_unit_type(unit_type)
-			local original_bones = AnimationManager:animatable_set_bones(unit_animatable_set)
-			local replaced_blend_sets = table.map_keys(patches)
-			local kept_bones = table.inject(replaced_blend_sets, original_bones, function(result, blend_set)
-				local blend_set_bones = AnimationManager:animatable_set_bones(unit_animatable_set, blend_set)
 
-				return table.find_all_values(result, function(bone)
-					return not table.contains(blend_set_bones, bone)
+			do
+				local original_bones = AnimationManager:animatable_set_bones(unit_animatable_set)
+				local replaced_blend_sets = table.map_keys(patches)
+				local kept_bones = table.inject(replaced_blend_sets, original_bones, function(result, blend_set)
+					local blend_set_bones = AnimationManager:animatable_set_bones(unit_animatable_set, blend_set)
+
+					return table.find_all_values(result, function(bone)
+						return not table.contains(blend_set_bones, bone)
+					end)
 				end)
-			end)
 
-			final_animation = self:_process_animation("strip", final_animation, kept_bones)
+				final_animation = self:_process_animation("strip", final_animation, kept_bones)
+			end
 
 			for blend_set, animation_name in pairs(patches) do
 				local blend_set_bones = AnimationManager:animatable_set_bones(unit_animatable_set, blend_set)

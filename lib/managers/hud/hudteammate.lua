@@ -494,45 +494,47 @@ function HUDTeammate:_create_radial_health(radial_health_panel)
 		h = radial_health_panel:h()
 	})
 
-	local radial_absorb_health_active = radial_health_panel:bitmap({
-		layer = 5,
-		name = "radial_absorb_health_active",
-		render_template = "VertexColorTexturedRadial",
-		texture = "guis/dlcs/coco/textures/pd2/hud_absorb_health",
-		visible = false,
-		color = Color(1, 0, 0, 0),
-		w = radial_health_panel:w(),
-		h = radial_health_panel:h()
-	})
+	do
+		local radial_absorb_health_active = radial_health_panel:bitmap({
+			layer = 5,
+			name = "radial_absorb_health_active",
+			render_template = "VertexColorTexturedRadial",
+			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_health",
+			visible = false,
+			color = Color(1, 0, 0, 0),
+			w = radial_health_panel:w(),
+			h = radial_health_panel:h()
+		})
 
-	radial_absorb_health_active:animate(callback(self, self, "animate_update_absorb_active"))
-	radial_health_panel:bitmap({
-		blend_mode = "add",
-		layer = 3,
-		name = "radial_info_meter",
-		render_template = "VertexColorTexturedRadial",
-		texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_fg",
-		visible = false,
-		color = Color(1, 0, 0, 0),
-		w = radial_health_panel:w(),
-		h = radial_health_panel:h()
-	})
-	radial_health_panel:bitmap({
-		layer = 1,
-		name = "radial_info_meter_bg",
-		render_template = "VertexColorTexturedRadial",
-		texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_bg",
-		visible = false,
-		texture_rect = {
-			128,
-			0,
-			-128,
-			128
-		},
-		color = Color(1, 0, 0, 0),
-		w = radial_health_panel:w(),
-		h = radial_health_panel:h()
-	})
+		radial_absorb_health_active:animate(callback(self, self, "animate_update_absorb_active"))
+		radial_health_panel:bitmap({
+			blend_mode = "add",
+			layer = 3,
+			name = "radial_info_meter",
+			render_template = "VertexColorTexturedRadial",
+			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_fg",
+			visible = false,
+			color = Color(1, 0, 0, 0),
+			w = radial_health_panel:w(),
+			h = radial_health_panel:h()
+		})
+		radial_health_panel:bitmap({
+			layer = 1,
+			name = "radial_info_meter_bg",
+			render_template = "VertexColorTexturedRadial",
+			texture = "guis/dlcs/coco/textures/pd2/hud_absorb_stack_bg",
+			visible = false,
+			texture_rect = {
+				128,
+				0,
+				-128,
+				128
+			},
+			color = Color(1, 0, 0, 0),
+			w = radial_health_panel:w(),
+			h = radial_health_panel:h()
+		})
+	end
 
 	local copr_overlay_panel = radial_health_panel:panel({
 		layer = 3,
