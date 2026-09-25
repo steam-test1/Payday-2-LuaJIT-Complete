@@ -1166,17 +1166,29 @@ function NetworkMatchMakingSTEAM:set_attributes(settings)
 end
 
 function NetworkMatchMakingSTEAM:_lobby_to_numbers(lobby)
+	local level = tonumber(lobby:key_value("level")) or 0
+	local job_id = tonumber(lobby:key_value("job_id")) or 1
+	local difficulty = tonumber(lobby:key_value("difficulty")) or 1
+	local permission = tonumber(lobby:key_value("permission")) or 1
+	local state = tonumber(lobby:key_value("state")) or 1
+	local num_players = tonumber(lobby:key_value("num_players")) or 1
+	local drop_in = tonumber(lobby:key_value("drop_in")) or 1
+	local min_level = tonumber(lobby:key_value("min_level")) or 0
+	local kick_option = tonumber(lobby:key_value("kick_option")) or 1
+	local job_class = tonumber(lobby:key_value("job_class")) or 10
+	local job_plan = tonumber(lobby:key_value("job_plan")) or -1
+
 	return {
-		tonumber(lobby:key_value("level")) + 1000 * tonumber(lobby:key_value("job_id")),
-		tonumber(lobby:key_value("difficulty")),
-		tonumber(lobby:key_value("permission")),
-		tonumber(lobby:key_value("state")),
-		tonumber(lobby:key_value("num_players")),
-		tonumber(lobby:key_value("drop_in")),
-		tonumber(lobby:key_value("min_level")),
-		tonumber(lobby:key_value("kick_option")),
-		tonumber(lobby:key_value("job_class")),
-		tonumber(lobby:key_value("job_plan"))
+		level + 1000 * job_id,
+		difficulty,
+		permission,
+		state,
+		num_players,
+		drop_in,
+		min_level,
+		kick_option,
+		job_class,
+		job_plan
 	}
 end
 

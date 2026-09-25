@@ -8,10 +8,12 @@ function JobValueUnitElement:init(unit)
 	self._hed.key = "none"
 	self._hed.value = 0
 	self._hed.save = nil
+	self._hed.sync = nil
 
 	table.insert(self._save_values, "key")
 	table.insert(self._save_values, "value")
 	table.insert(self._save_values, "save")
+	table.insert(self._save_values, "sync")
 end
 
 function JobValueUnitElement:_build_panel(panel, panel_sizer)
@@ -60,6 +62,7 @@ function JobValueUnitElement:_build_panel(panel, panel_sizer)
 		ctrlr = value
 	})
 	self:_build_value_checkbox(panel, panel_sizer, "save")
+	self:_build_value_checkbox(panel, panel_sizer, "sync")
 end
 
 JobValueFilterUnitElement = JobValueFilterUnitElement or class(MissionElement)

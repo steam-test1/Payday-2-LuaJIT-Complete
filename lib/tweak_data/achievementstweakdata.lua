@@ -5677,6 +5677,8 @@ function AchievementsTweakData:init(tweak_data)
 			everyone_killed_by_weapons = 0,
 			job = "auc",
 			no_alarm_pager = true,
+			stealth = true,
+			difficulty = overkill_and_above,
 			job_value = {
 				key = "auc_11_dominated",
 				value = 1

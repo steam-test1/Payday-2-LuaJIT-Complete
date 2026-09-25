@@ -94,7 +94,7 @@ function ManageSpawnedUnits:_clbk_drop_in_sync(data)
 end
 
 function ManageSpawnedUnits:save(data)
-	if not alive(self._unit) or self._unit:id() == -1 or self.local_only then
+	if not alive(self._unit) or self._unit:id() == -1 then
 		data.ManageSpawnedUnits = nil
 
 		return
@@ -108,15 +108,17 @@ function ManageSpawnedUnits:save(data)
 			local joint_table = spawn_link_entry and spawn_link_entry.joint_table or nil
 
 			if unit_entry.unit:id() ~= -1 then
-				networked_units[unit_id] = {
-					unit = unit_entry.unit,
-					align_obj_name = unit_entry.align_obj_name
-				}
+				if not self.local_only then
+					networked_units[unit_id] = {
+						unit = unit_entry.unit,
+						align_obj_name = unit_entry.align_obj_name
+					}
 
-				if joint_table then
-					networked_units[unit_id].joint_table = joint_table
+					if joint_table then
+						networked_units[unit_id].joint_table = joint_table
+					end
 				end
-			elseif false and unit_entry.unit_name then
+			elseif not unit_entry.no_dropin_sync then
 				local_units[unit_id] = {
 					unit_name = unit_entry.unit_name
 				}
@@ -155,8 +157,6 @@ function ManageSpawnedUnits:load(data)
 
 		self._link_after_load = nil
 		self._loaded = nil
-
-		return
 	end
 
 	local save_data = data.ManageSpawnedUnits or data.managed_spawned_units
@@ -169,7 +169,13 @@ function ManageSpawnedUnits:load(data)
 		self._loaded = true
 
 		for unit_id, synced_entry in pairs(save_data.local_units) do
-			if synced_entry.joint_table then
+			local name_ids = Idstring(synced_entry.unit_name)
+
+			if not DB:has(IDS_UNIT, name_ids) then
+				Application:error("[ManageSpawnedUnits] load() - attempted to spawn local unit \"" .. tostring(synced_entry.unit_name) .. "\" which doesn't exist.")
+			elseif not PackageManager:has(IDS_UNIT, name_ids) then
+				Application:error("[ManageSpawnedUnits] load() - attempted to spawn local unit \"" .. tostring(synced_entry.unit_name) .. "\" that isn't loaded.", self._unit)
+			elseif synced_entry.joint_table then
 				self:spawn_and_link_unit(synced_entry.joint_table, unit_id, synced_entry.unit_name)
 			else
 				self:spawn_unit(unit_id, synced_entry.align_obj_name, synced_entry.unit_name)
@@ -264,7 +270,11 @@ function ManageSpawnedUnits:_spawn_run_sequence(unit_id, sequence_name)
 	end
 end
 
-function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
+function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit, no_local_unit_dropin)
+	if self._spawned_units[unit_id] then
+		return
+	end
+
 	local obj_name_ids = Idstring(align_obj_name)
 	local align_obj = self._unit:get_object(obj_name_ids)
 	local spawn_unit, unit_name
@@ -312,6 +322,10 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 		align_obj_name = align_obj_name
 	}
 
+	if no_local_unit_dropin and spawn_unit:id() == -1 then
+		unit_entry.no_dropin_sync = true
+	end
+
 	self._spawned_units[unit_id] = unit_entry
 
 	if self._is_server and not self.local_only and self._unit:id() ~= -1 and spawn_unit:id() ~= -1 then
@@ -319,7 +333,7 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 	end
 end
 
-function ManageSpawnedUnits:spawn_and_link_unit(joint_table, unit_id, unit)
+function ManageSpawnedUnits:spawn_and_link_unit(joint_table, unit_id, unit, no_local_unit_dropin)
 	if self._spawned_units[unit_id] then
 		return
 	end
@@ -354,7 +368,7 @@ function ManageSpawnedUnits:spawn_and_link_unit(joint_table, unit_id, unit)
 		return
 	end
 
-	self:spawn_unit(unit_id, self[joint_table][1], unit)
+	self:spawn_unit(unit_id, self[joint_table][1], unit, no_local_unit_dropin)
 
 	self._sync_spawn_and_link[unit_id] = {
 		unit = unit,

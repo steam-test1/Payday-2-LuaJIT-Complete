@@ -7,7 +7,7 @@ function ElementJobValue:init(...)
 end
 
 function ElementJobValue:client_on_executed(...)
-	if self._values.save then
+	if self._values.save or self._values.sync then
 		self:on_executed(...)
 	end
 end

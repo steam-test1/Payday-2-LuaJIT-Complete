@@ -473,7 +473,7 @@ function NavigationManager:_create_load_data_from_builder()
 	load_data.door_low_rooms = {}
 	load_data.door_high_rooms = {}
 
-	for i_door, door in ipairs(self._builder._room_doors) do
+	for _, door in ipairs(self._builder._room_doors) do
 		t_ins(load_data.door_low_pos, Vector3(door.pos.x / grid_size, door.pos.y / grid_size, door.pos.z))
 		t_ins(load_data.door_high_pos, Vector3(door.pos1.x / grid_size, door.pos1.y / grid_size, door.pos1.z))
 		t_ins(load_data.door_low_rooms, door.rooms[1])
@@ -549,10 +549,12 @@ function NavigationManager:delete_nav_segment(id)
 	self:set_debug_draw_state(false)
 	self._builder:delete_segment(id)
 
+	self._nav_segments[tostring(id)] = nil
+
 	if self._builder:is_data_complete() then
 		self:_create_load_data_from_builder()
 
-		local data = self._load_data
+		local data = deep_clone(self._load_data)
 
 		if data.version < 6 then
 			data = self:_convert_nav_data_v5_to_v6(self._load_data)

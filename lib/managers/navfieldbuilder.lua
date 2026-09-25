@@ -131,14 +131,18 @@ function NavFieldBuilder:load(data)
 
 	for i_door = 1, #data.door_low_pos do
 		local door = {
-			pos = data.door_low_pos[i_door] * grid_size,
-			pos1 = data.door_high_pos[i_door] * grid_size,
+			pos = mvector3.copy(data.door_low_pos[i_door]),
+			pos1 = mvector3.copy(data.door_high_pos[i_door]),
 			rooms = {
 				data.door_low_rooms[i_door],
 				data.door_high_rooms[i_door]
 			}
 		}
 
+		mvector3.set_x(door.pos, mvector3.x(door.pos) * grid_size)
+		mvector3.set_y(door.pos, mvector3.y(door.pos) * grid_size)
+		mvector3.set_x(door.pos1, mvector3.x(door.pos1) * grid_size)
+		mvector3.set_y(door.pos1, mvector3.y(door.pos1) * grid_size)
 		t_ins(self._room_doors, door)
 
 		local door_dimention = door.pos.y == door.pos1.y and "x" or "y"
@@ -347,9 +351,8 @@ function NavFieldBuilder:delete_segment(id)
 	local all_vis_groups = self._visibility_groups
 	local all_rooms = self._rooms
 	local all_blockers = self._helper_blockers
-	local i_room = #self._rooms
 
-	while i_room > 0 do
+	for i_room = #self._rooms, 1, -1 do
 		local room = all_rooms[i_room]
 
 		if room.segment then
@@ -357,12 +360,10 @@ function NavFieldBuilder:delete_segment(id)
 				self:_trash_room(i_room)
 				self:_destroy_room(i_room)
 			end
-		elseif all_vis_groups[room.vis_group].seg == id then
+		elseif room.vis_group and all_vis_groups[room.vis_group].seg == id then
 			self:_trash_room(i_room)
 			self:_destroy_room(i_room)
 		end
-
-		i_room = i_room - 1
 	end
 
 	local all_nav_segments = self._nav_segments
@@ -375,7 +376,9 @@ function NavFieldBuilder:delete_segment(id)
 	all_nav_segments[id] = nil
 
 	for test_seg_id, test_seg in pairs(all_nav_segments) do
-		test_seg.neighbours[id] = nil
+		if test_seg.neighbours then
+			test_seg.neighbours[id] = nil
+		end
 	end
 
 	local owned_vis_groups = seg.vis_groups
@@ -1716,13 +1719,13 @@ function NavFieldBuilder:_trash_room(i_room)
 		for side, neighbour_list in pairs(room.neighbours) do
 			local opp_side = self._opposite_side_str[side]
 
-			for i_neighbour, neighbour_data in pairs(neighbour_list) do
+			for _, neighbour_data in pairs(neighbour_list) do
 				self:_update_neighbour_data(neighbour_data.room, i_room, nil, opp_side)
 			end
 		end
 	end
 
-	for i_door, door in pairs(self._room_doors) do
+	for _, door in pairs(self._room_doors) do
 		if i_room < door.rooms[1] then
 			door.rooms[1] = door.rooms[1] - 1
 		end
@@ -1730,6 +1733,20 @@ function NavFieldBuilder:_trash_room(i_room)
 		if i_room < door.rooms[2] then
 			door.rooms[2] = door.rooms[2] - 1
 		end
+	end
+
+	for _, vis_grp in ipairs(self._visibility_groups) do
+		local rooms = {}
+
+		for old_i_room, _ in pairs(vis_grp.rooms) do
+			if i_room < old_i_room then
+				rooms[old_i_room - 1] = true
+			else
+				rooms[old_i_room] = true
+			end
+		end
+
+		vis_grp.rooms = rooms
 	end
 end
 

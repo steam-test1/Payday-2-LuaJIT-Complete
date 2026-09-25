@@ -374,6 +374,18 @@ function PortalManager:unit_in_any_unit_group(unit)
 	return false
 end
 
+function PortalManager:unit_included_in_unit_groups(unit)
+	local tbl = {}
+
+	for name, group in pairs(self._unit_groups) do
+		if group:unit_in_group(unit) then
+			table.insert(tbl, name)
+		end
+	end
+
+	return tbl
+end
+
 function PortalManager:save(t)
 	local t = t or ""
 	local s = ""

@@ -7444,7 +7444,7 @@ function InteractionTweakData:init(tweak_data)
 		sound_start = "bar_secure_winch",
 		start_active = false,
 		text_id = "hud_int_hold_remove_cover",
-		timer = 10
+		timer = 6
 	}
 	self.auc_cutter_tool = {
 		interact_distance = 200,

@@ -223,7 +223,7 @@ function CriminalsManager:_remove(id)
 end
 
 function CriminalsManager:add_character(name, unit, peer_id, ai, ai_loadout)
-	print("[CriminalsManager]:add_character", name, unit, peer_id, ai)
+	print("[CriminalsManager:add_character]", name, unit, peer_id, ai)
 
 	local character = self:character_by_name(name)
 
@@ -396,8 +396,31 @@ function CriminalsManager:update_character_visual_state(character_name, visual_s
 	}
 end
 
+CriminalsManager.visual_mesh_damage_taken_events_list = {
+	"hurt",
+	"none"
+}
+
+function CriminalsManager.chk_camera_unit(unit)
+	local camera = unit:camera()
+
+	if camera then
+		local camera_unit = camera:camera_unit()
+
+		if alive(camera_unit) and camera_unit:damage() then
+			unit = camera_unit
+		end
+	end
+
+	return unit
+end
+
 function CriminalsManager.set_character_visual_state(unit, character_name, visual_state)
 	print("[CriminalsManager.set_character_visual_state]", unit, character_name, inspect(visual_state))
+
+	if not alive(unit) then
+		return
+	end
 
 	local is_local_peer = visual_state.is_local_peer
 	local visual_seed = visual_state.visual_seed
@@ -409,19 +432,13 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	local armor_skin = visual_state.armor_skin
 	local deployable_id = visual_state.deployable_id
 
-	if not alive(unit) then
-		return
-	end
-
 	if _G.IS_VR and unit:camera() then
 		return
 	end
 
 	local character_unit = unit
 
-	if unit:camera() and alive(unit:camera():camera_unit()) and unit:camera():camera_unit():damage() then
-		unit = unit:camera():camera_unit()
-	end
+	unit = CriminalsManager.chk_camera_unit(unit)
 
 	local unit_damage = unit:damage()
 
@@ -429,7 +446,11 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 		return
 	end
 
-	if unit:inventory() and unit:inventory().mask_visibility and not unit:inventory():mask_visibility() then
+	local blackmarket_manager = managers.blackmarket
+	local blackmarket_tweak_data = tweak_data.blackmarket
+	local inv_ext = unit:inventory()
+
+	if inv_ext and inv_ext.mask_visibility and not inv_ext:mask_visibility() then
 		mask_id = nil
 	end
 
@@ -459,7 +480,7 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	math.random()
 	math.random()
 
-	local material = managers.blackmarket:character_material_by_character_name(character_name)
+	local material = blackmarket_manager:character_material_by_character_name(character_name)
 	local material_config = material and (is_local_peer and material.fps or material.npc)
 
 	if not is_local_peer and material_config and armor_skin ~= "none" then
@@ -470,12 +491,12 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 		unit_damage:set_variable("var_material_config", material_config)
 	end
 
-	local body_replacement = tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("body_replacement")) or {}
+	local body_replacement = blackmarket_tweak_data:get_player_style_value(player_style, character_name, get_value_string("body_replacement")) or {}
 
 	unit_damage:set_variable("var_head_replace", body_replacement.head and 1 or 0)
 	unit_damage:set_variable("var_body_replace", body_replacement.body and 1 or 0)
 
-	local gloves_unit_name = tweak_data.blackmarket:get_glove_value(glove_id, character_name, "unit", player_style, suit_variation)
+	local gloves_unit_name = blackmarket_tweak_data:get_glove_value(glove_id, character_name, "unit", player_style, suit_variation)
 	local replace_character_hands = not not gloves_unit_name or gloves_unit_name == false and body_replacement.hands
 
 	unit_damage:set_variable("var_hands_replace", replace_character_hands and 1 or 0)
@@ -483,52 +504,57 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	unit_damage:set_variable("var_vest_replace", body_replacement.vest and 1 or 0)
 	unit_damage:set_variable("var_armor_replace", body_replacement.armor and 1 or 0)
 
-	local material_sequence = managers.blackmarket:character_sequence_by_character_name(character_name)
+	local material_sequence = blackmarket_manager:character_sequence_by_character_name(character_name)
 
 	run_sequence_safe(material_sequence)
 
 	if not is_local_peer then
-		local armor_sequence = tweak_data.blackmarket.armors[armor_id] and tweak_data.blackmarket.armors[armor_id].sequence
+		local armor_tweak = blackmarket_tweak_data.armors[armor_id]
+		local armor_sequence = armor_tweak and armor_tweak.sequence
 
 		run_sequence_safe(armor_sequence)
 	end
 
-	local mask_data = tweak_data.blackmarket.masks[mask_id]
+	local mask_data = blackmarket_tweak_data.masks[mask_id]
 
 	if not is_local_peer and mask_data then
 		if mask_data.skip_mask_on_sequence then
-			local mask_off_sequence = managers.blackmarket:character_mask_off_sequence_by_character_name(character_name)
+			local mask_off_sequence = blackmarket_manager:character_mask_off_sequence_by_character_name(character_name)
 
 			run_sequence_safe(mask_off_sequence)
 		else
-			local mask_on_sequence = managers.blackmarket:character_mask_on_sequence_by_character_name(character_name)
+			local mask_on_sequence = blackmarket_manager:character_mask_on_sequence_by_character_name(character_name)
 
 			run_sequence_safe(mask_on_sequence)
 		end
 
 		if mask_data.use_face_mask_on_sequence then
-			local face_mask_on_sequence = managers.blackmarket:character_face_mask_on_sequence_by_character_name(character_name)
+			local face_mask_on_sequence = blackmarket_manager:character_face_mask_on_sequence_by_character_name(character_name)
 
 			run_sequence_safe(face_mask_on_sequence)
 		else
-			local face_mask_off_sequence = managers.blackmarket:character_face_mask_off_sequence_by_character_name(character_name)
+			local face_mask_off_sequence = blackmarket_manager:character_face_mask_off_sequence_by_character_name(character_name)
 
 			run_sequence_safe(face_mask_off_sequence)
 		end
 	end
 
+	local sequence_value_str = get_value_string("sequence")
+
 	if spawn_manager then
 		spawn_manager:remove_unit("char_mesh")
 
-		if character_unit:character_damage() then
-			character_unit:character_damage():remove_listener("visual_mesh")
+		local character_char_dmg_ext = character_unit:character_damage()
+
+		if character_char_dmg_ext then
+			character_char_dmg_ext:remove_listener("visual_mesh")
 		end
 
-		local unit_name = tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("unit"))
+		local unit_name = blackmarket_tweak_data:get_player_style_value(player_style, character_name, get_value_string("unit"))
 		local char_mesh_unit
 
 		if unit_name then
-			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_mesh", unit_name)
+			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_mesh", unit_name, true)
 
 			char_mesh_unit = spawn_manager:get_unit("char_mesh")
 		end
@@ -536,40 +562,41 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 		if alive(char_mesh_unit) then
 			char_mesh_unit:unit_data().original_material_config = char_mesh_unit:material_config()
 
-			local unit_sequence = tweak_data.blackmarket:get_suit_variation_value(player_style, suit_variation, character_name, get_value_string("sequence"))
+			local unit_sequence = blackmarket_tweak_data:get_suit_variation_value(player_style, suit_variation, character_name, sequence_value_str)
 
 			if unit_sequence then
 				run_sequence_safe(unit_sequence, char_mesh_unit)
 			else
-				unit_sequence = tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("sequence"))
+				unit_sequence = blackmarket_tweak_data:get_player_style_value(player_style, character_name, sequence_value_str)
 
 				run_sequence_safe(unit_sequence, char_mesh_unit)
 			end
 
-			local variation_material_config = tweak_data.blackmarket:get_suit_variation_value(player_style, suit_variation, character_name, get_value_string("material"))
+			local variation_material_config = blackmarket_tweak_data:get_suit_variation_value(player_style, suit_variation, character_name, get_value_string("material"))
 			local wanted_config_ids = variation_material_config and Idstring(variation_material_config) or char_mesh_unit:unit_data().original_material_config
 
 			if wanted_config_ids and char_mesh_unit:material_config() ~= wanted_config_ids then
 				managers.dyn_resource:change_material_config(wanted_config_ids, char_mesh_unit, true)
 			end
 
-			if char_mesh_unit:damage() then
-				if char_mesh_unit:damage():has_sequence("on_damage_taken") and character_unit:character_damage() then
-					character_unit:character_damage():add_listener("visual_mesh", {
-						"hurt",
-						"none"
-					}, CriminalsManager.character_mesh_damage_clbk)
+			local char_mesh_damage_ext = char_mesh_unit:damage()
+
+			if char_mesh_damage_ext then
+				if character_char_dmg_ext and char_mesh_damage_ext:has_sequence("on_damage_taken") then
+					character_char_dmg_ext:add_listener("visual_mesh", CriminalsManager.visual_mesh_damage_taken_events_list, CriminalsManager.character_mesh_damage_clbk)
 				end
 
-				if char_mesh_unit:damage():has_sequence("on_destroyed") and character_unit:base().add_destroy_listener then
-					character_unit:base():add_destroy_listener("visual_mesh", CriminalsManager.character_mesh_destroy_clbk)
+				local base_ext = character_unit:base()
+
+				if base_ext and base_ext.add_destroy_listener and char_mesh_damage_ext:has_sequence("on_destroyed") then
+					base_ext:add_destroy_listener("visual_mesh", CriminalsManager.character_mesh_destroy_clbk)
 				end
 			end
 
 			if managers.game_play_central then
 				managers.game_play_central:remove_decal_unit_redirect(unit)
 
-				if tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("redirect_decals")) then
+				if blackmarket_tweak_data:get_player_style_value(player_style, character_name, get_value_string("redirect_decals")) then
 					managers.game_play_central:add_decal_unit_redirect(unit, char_mesh_unit)
 				end
 			end
@@ -582,7 +609,7 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 		local char_gloves_unit
 
 		if gloves_unit_name then
-			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_gloves", gloves_unit_name)
+			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_gloves", gloves_unit_name, true)
 
 			char_gloves_unit = spawn_manager:get_unit("char_gloves")
 		end
@@ -591,7 +618,7 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 			if not is_local_peer then
 				char_gloves_unit:unit_data().original_material_config = char_gloves_unit:material_config()
 
-				local third_material_config = tweak_data.blackmarket:get_glove_value(glove_id, character_name, "third_material", player_style, suit_variation)
+				local third_material_config = blackmarket_tweak_data:get_glove_value(glove_id, character_name, "third_material", player_style, suit_variation)
 				local wanted_config_ids = third_material_config and Idstring(third_material_config) or char_gloves_unit:unit_data().original_material_config
 
 				if wanted_config_ids and char_gloves_unit:material_config() ~= wanted_config_ids then
@@ -599,7 +626,7 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 				end
 			end
 
-			local unit_sequence = tweak_data.blackmarket:get_glove_value(glove_id, character_name, "sequence", player_style, suit_variation)
+			local unit_sequence = blackmarket_tweak_data:get_glove_value(glove_id, character_name, "sequence", player_style, suit_variation)
 
 			run_sequence_safe(unit_sequence, char_gloves_unit)
 			char_gloves_unit:set_enabled(unit:enabled())
@@ -607,10 +634,10 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 
 		spawn_manager:remove_unit("char_glove_adapter")
 
-		local adapter_tweak = tweak_data.blackmarket.glove_adapter
+		local adapter_tweak = blackmarket_tweak_data.glove_adapter
 
-		if not table.contains(adapter_tweak.player_style_exclude_list, player_style) and adapter_tweak.unit then
-			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_glove_adapter", adapter_tweak.unit)
+		if adapter_tweak.unit and not table.contains(adapter_tweak.player_style_exclude_list, player_style) then
+			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_glove_adapter", adapter_tweak.unit, true)
 
 			local glove_adapter_unit = spawn_manager:get_unit("char_glove_adapter")
 
@@ -634,7 +661,8 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	end
 
 	if not is_local_peer then
-		local old_deployable_id = unit:base().current_deployable_object
+		local base_ext = unit:base()
+		local old_deployable_id = base_ext.current_deployable_object
 
 		if old_deployable_id then
 			local deployable_tweak_data = tweak_data.equipments[old_deployable_id]
@@ -660,17 +688,17 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 			local style_name = deployable_tweak_data.visual_style
 
 			if style_name and spawn_manager then
-				local unit_name = tweak_data.blackmarket:get_player_style_value(style_name, character_name, get_value_string("unit"))
+				local unit_name = blackmarket_tweak_data:get_player_style_value(style_name, character_name, get_value_string("unit"))
 				local char_mesh_unit
 
 				if unit_name then
-					spawn_manager:spawn_and_link_unit("_char_joint_names", "deployable_mesh", unit_name)
+					spawn_manager:spawn_and_link_unit("_char_joint_names", "deployable_mesh", unit_name, true)
 
 					char_mesh_unit = spawn_manager:get_unit("deployable_mesh")
 				end
 
 				if alive(char_mesh_unit) then
-					local unit_sequence = tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("sequence"))
+					local unit_sequence = blackmarket_tweak_data:get_player_style_value(player_style, character_name, sequence_value_str)
 
 					run_sequence_safe(unit_sequence, char_mesh_unit)
 					char_mesh_unit:set_enabled(unit:enabled())
@@ -678,20 +706,26 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 			end
 		end
 
-		unit:base().current_deployable_object = deployable_id
+		base_ext.current_deployable_object = deployable_id
 	end
 
-	if unit:armor_skin() and unit:armor_skin().set_armor_id then
-		unit:armor_skin():set_armor_id(armor_id)
-		unit:armor_skin():set_cosmetics_data(armor_skin, true)
+	local additional_ext = unit:armor_skin()
+
+	if additional_ext and additional_ext.set_armor_id then
+		additional_ext:set_armor_id(armor_id)
+		additional_ext:set_cosmetics_data(armor_skin, true)
 	end
 
-	if unit:interaction() then
-		unit:interaction():refresh_material()
+	additional_ext = unit:interaction()
+
+	if additional_ext then
+		additional_ext:refresh_material()
 	end
 
-	if unit:contour() then
-		unit:contour():update_materials()
+	additional_ext = unit:contour()
+
+	if additional_ext then
+		additional_ext:update_materials()
 	end
 
 	math.randomseed(time_seed)
@@ -701,37 +735,39 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 end
 
 function CriminalsManager.character_mesh_damage_clbk(character_unit, damage_info)
-	if alive(character_unit) and damage_info then
-		local unit = character_unit
-
-		if unit:camera() and alive(unit:camera():camera_unit()) and unit:camera():camera_unit():damage() then
-			unit = unit:camera():camera_unit()
-		end
-
-		local char_mesh = unit:spawn_manager():get_unit("char_mesh")
-
-		if alive(char_mesh) then
-			local pos = mvec1
-			local rot = mrot1
-
-			mvector3.set(pos, damage_info.pos or character_unit:movement():m_head_pos())
-
-			local dir = mvec2
-
-			mvector3.set(dir, damage_info.attack_dir or math.X)
-			mvector3.normalize(dir)
-			mrotation.set_look_at(rot, dir, math.UP)
-
-			local vel = mvec2
-
-			mvector3.set_zero(vel)
-
-			local normal = math.UP
-			local pos = mvector3.copy(damage_info.col_ray and damage_info.col_ray.position or pos)
-
-			char_mesh:damage():run_sequence("on_damage_taken", damage_info.result.variant, damage_info.attacker_unit, nil, normal, pos, rot, 0, vel, nil)
-		end
+	if not damage_info or not alive(character_unit) then
+		return
 	end
+
+	local unit = CriminalsManager.chk_camera_unit(character_unit)
+	local spawn_manager_ext = unit:spawn_manager()
+	local char_mesh = spawn_manager_ext and spawn_manager_ext:get_unit("char_mesh")
+
+	if not alive(char_mesh) then
+		return
+	end
+
+	local pos = mvec1
+	local rot = mrot1
+
+	mvector3.set(pos, damage_info.pos or character_unit:movement():m_head_pos())
+
+	local dir = mvec2
+
+	mvector3.set(dir, damage_info.attack_dir or math.X)
+	mvector3.normalize(dir)
+	mrotation.set_look_at(rot, dir, math.UP)
+
+	rot = mrotation.copy(rot)
+
+	local vel = mvec2
+
+	mvector3.set_zero(vel)
+
+	local normal = math.UP
+	local pos = mvector3.copy(damage_info.col_ray and damage_info.col_ray.position or pos)
+
+	char_mesh:damage():run_sequence("on_damage_taken", damage_info.result.variant, damage_info.attacker_unit, nil, normal, pos, rot, 0, vel, nil)
 end
 
 function CriminalsManager.character_mesh_destroy_clbk(character_unit)
@@ -739,13 +775,9 @@ function CriminalsManager.character_mesh_destroy_clbk(character_unit)
 		return
 	end
 
-	local unit = character_unit
-
-	if unit:camera() and alive(unit:camera():camera_unit()) and unit:camera():camera_unit():damage() then
-		unit = unit:camera():camera_unit()
-	end
-
-	local char_mesh = unit:spawn_manager():get_unit("char_mesh")
+	local unit = CriminalsManager.chk_camera_unit(character_unit)
+	local spawn_manager_ext = unit:spawn_manager()
+	local char_mesh = spawn_manager_ext and spawn_manager_ext:get_unit("char_mesh")
 
 	if alive(char_mesh) then
 		char_mesh:damage():run_sequence("on_destroyed")

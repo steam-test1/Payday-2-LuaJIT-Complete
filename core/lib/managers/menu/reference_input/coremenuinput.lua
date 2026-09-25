@@ -314,7 +314,8 @@ function MenuInput:create_controller()
 		return
 	end
 
-	local controller = managers.controller:create_controller("menu_input", nil, false)
+	local controller_id = "menu_input_" .. (self._menu_name or "")
+	local controller = managers.controller:create_controller(controller_id, nil, false)
 
 	controller:add_trigger("cancel", callback(self, self, "back"))
 	controller:set_enabled(true)

@@ -247,7 +247,7 @@ function MissionScriptElement:_reduce_trigger_times()
 		self._values.trigger_times = self._values.trigger_times - 1
 
 		if self._values.trigger_times <= 0 then
-			self._values.enabled = false
+			self:set_enabled(false)
 		end
 	end
 end
