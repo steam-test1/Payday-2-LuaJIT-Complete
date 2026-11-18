@@ -18,10 +18,13 @@ TeamAIDamage._RESULT_INDEX_TABLE = {
 	hurt = 1,
 	light_hurt = 4
 }
+TeamAIDamage._RESULT_NAME_TABLE = table.reverse_map(TeamAIDamage._RESULT_INDEX_TABLE)
 TeamAIDamage._HEALTH_GRANULARITY = CopDamage._HEALTH_GRANULARITY
 TeamAIDamage.set_invulnerable = CopDamage.set_invulnerable
 TeamAIDamage._hurt_severities = CopDamage._hurt_severities
 TeamAIDamage.get_damage_type = CopDamage.get_damage_type
+TeamAIDamage._ATTACK_VARIANTS = CopDamage._ATTACK_VARIANTS
+TeamAIDamage._get_attack_variant_index = CopDamage._get_attack_variant_index
 TeamAIDamage.get_impact_segment = CopDamage.get_impact_segment
 TeamAIDamage._impact_bones = CopDamage._impact_bones
 TeamAIDamage.can_kill = CopDamage.can_kill
@@ -942,7 +945,7 @@ function TeamAIDamage:sync_damage_explosion(attacker_unit, damage, i_attack_vari
 		return
 	end
 
-	local variant = CopDamage._ATTACK_VARIANTS[i_attack_variant]
+	local variant = self._ATTACK_VARIANTS[i_attack_variant]
 
 	damage = damage * self._HEALTH_TOTAL_PERCENT
 
@@ -983,7 +986,7 @@ function TeamAIDamage:sync_damage_fire(attacker_unit, damage, i_attack_variant)
 		return
 	end
 
-	local variant = CopDamage._ATTACK_VARIANTS[i_attack_variant]
+	local variant = self._ATTACK_VARIANTS[i_attack_variant]
 
 	damage = damage * self._HEALTH_TOTAL_PERCENT
 
@@ -1197,7 +1200,7 @@ function TeamAIDamage:_send_explosion_attack_result(attack_data)
 
 	local result_index = self._RESULT_INDEX_TABLE[attack_data.result.type] or 0
 
-	self._unit:network():send("from_server_damage_explosion_fire", attacker, result_index, CopDamage._get_attack_variant_index(self, attack_data.variant))
+	self._unit:network():send("from_server_damage_explosion_fire", attacker, result_index, self:_get_attack_variant_index(attack_data.variant))
 end
 
 function TeamAIDamage:_send_fire_attack_result(attack_data)
@@ -1209,7 +1212,7 @@ function TeamAIDamage:_send_fire_attack_result(attack_data)
 
 	local result_index = self._RESULT_INDEX_TABLE[attack_data.result.type] or 0
 
-	self._unit:network():send("from_server_damage_explosion_fire", attacker, result_index, CopDamage._get_attack_variant_index(self, attack_data.variant))
+	self._unit:network():send("from_server_damage_explosion_fire", attacker, result_index, self:_get_attack_variant_index(attack_data.variant))
 end
 
 function TeamAIDamage:_send_melee_attack_result(attack_data, hit_offset_height)

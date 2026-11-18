@@ -814,6 +814,10 @@ function MutatorPiggyRevenge:add_buff_hud(buff_td)
 end
 
 function MutatorPiggyRevenge:activate_drill_speed_buff(buff_td)
+	if TimerGui ~= nil then
+		TimerGui.set_piggy_buff_mul(self._tweakdata.buffs.drill_speed.drill_speed_multiplier)
+	end
+
 	self:add_buff_hud(buff_td)
 end
 

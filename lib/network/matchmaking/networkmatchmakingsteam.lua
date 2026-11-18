@@ -1171,7 +1171,7 @@ function NetworkMatchMakingSTEAM:_lobby_to_numbers(lobby)
 	local difficulty = tonumber(lobby:key_value("difficulty")) or 1
 	local permission = tonumber(lobby:key_value("permission")) or 1
 	local state = tonumber(lobby:key_value("state")) or 1
-	local num_players = tonumber(lobby:key_value("num_players")) or 1
+	local num_players = lobby:num_members()
 	local drop_in = tonumber(lobby:key_value("drop_in")) or 1
 	local min_level = tonumber(lobby:key_value("min_level")) or 0
 	local kick_option = tonumber(lobby:key_value("kick_option")) or 1

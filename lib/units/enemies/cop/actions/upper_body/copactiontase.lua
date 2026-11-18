@@ -42,7 +42,7 @@ end
 
 function CopActionTase:on_attention(attention)
 	if self._expired then
-		self._attention = attention
+		return
 	elseif Network:is_server() then
 		if self._attention then
 			if self._discharging then
@@ -60,6 +60,11 @@ function CopActionTase:on_attention(attention)
 			self._expired = true
 			self.update = self._upd_empty
 			self._attention = attention
+
+			return
+		elseif not attention or not attention.unit then
+			self._expired = true
+			self.update = self._upd_empty
 
 			return
 		end

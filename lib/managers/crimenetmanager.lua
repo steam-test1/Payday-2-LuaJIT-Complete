@@ -1022,7 +1022,8 @@ function CrimeNetManager:join_quick_play_game()
 		local player_level = managers.experience:current_level()
 		local level_diff_min = self._global.quickplay.level_diff_min or tweak_data.quickplay.default_level_diff[1]
 		local level_diff_max = self._global.quickplay.level_diff_max or tweak_data.quickplay.default_level_diff[2]
-		local min_level, max_level = math.max(player_level - level_diff_min, 0), math.min(player_level + level_diff_max, 100)
+		local min_level = math.max(player_level - level_diff_min, 0)
+		local max_level = math.min(player_level + level_diff_max, 100)
 		local was_stealth_enabled = managers.user:get_setting("quickplay_stealth")
 		local stealth_enabled = was_stealth_enabled
 		local loud_enabled = managers.user:get_setting("quickplay_loud")
@@ -1599,7 +1600,6 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 		mw = math.max(mw, self:make_fine_text(ghost_text))
 		next_y = ghost_text:bottom()
 
-		local add_xmas = false
 		local add_xmas = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
 
 		if add_xmas then
@@ -1825,9 +1825,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 			end
 		end
 
-		local add_limited = false
-
-		add_limited = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
+		local add_limited = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
 
 		if add_limited then
 			local limited_bonus = (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
@@ -2098,23 +2096,18 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	self._special_contracts_id = {}
 
 	self:add_special_contracts(node:parameters().no_casino, no_servers)
+	managers.features:announce_feature("crimenet_welcome")
 
-	if false and managers.features:can_announce("crimenet_hacked") then
-		-- Nothing
-	else
-		managers.features:announce_feature("crimenet_welcome")
+	if is_win32 then
+		managers.features:announce_feature("thq_feature")
 
-		if is_win32 then
-			managers.features:announce_feature("thq_feature")
-
-			if not managers.dlc:is_dlc_unlocked("pd2_clan") and math.random() < 0.2 then
-				managers.features:announce_feature("join_pd2_clan")
-			end
+		if not managers.dlc:is_dlc_unlocked("pd2_clan") and math.random() < 0.2 then
+			managers.features:announce_feature("join_pd2_clan")
 		end
+	end
 
-		if managers.dlc:is_dlc_unlocked("gage_pack_jobs") then
-			managers.features:announce_feature("dlc_gage_pack_jobs")
-		end
+	if managers.dlc:is_dlc_unlocked("gage_pack_jobs") then
+		managers.features:announce_feature("dlc_gage_pack_jobs")
 	end
 
 	local player_rank = managers.experience:current_rank()
@@ -2616,23 +2609,7 @@ function CrimeNetGui:set_getting_hacked(hacked)
 end
 
 function CrimeNetGui:add_special_contracts(no_casino, no_quickplay)
-	do return end
-
-	for index, special_contract in ipairs(tweak_data.gui.crime_net.special_contracts) do
-		local skip = false
-
-		if managers.custom_safehouse:unlocked() and special_contract.id == "challenge" or not managers.custom_safehouse:unlocked() and special_contract.id == "safehouse" then
-			skip = true
-		end
-
-		skip = skip or special_contract.sp_only and not Global.game_settings.single_player
-		skip = skip or special_contract.mp_only and Global.game_settings.single_player
-		skip = skip or special_contract.no_session_only and managers.network:session()
-
-		if not skip then
-			self:add_special_contract(special_contract, no_casino, no_quickplay)
-		end
-	end
+	return
 end
 
 function CrimeNetGui:add_special_contract(special_contract, no_casino, no_quickplay)
@@ -2640,10 +2617,7 @@ function CrimeNetGui:add_special_contract(special_contract, no_casino, no_quickp
 	local allow = id and not self._jobs[id] and (not special_contract.unlock or special_contract.unlock and managers.experience:current_level() >= tweak_data:get_value(special_contract.id, special_contract.unlock)) and (special_contract.id ~= "casino" or not no_casino) and (special_contract.id ~= "quickplay" or not no_quickplay) and (special_contract.id ~= "crime_spree" or managers.crime_spree:unlocked())
 
 	if allow then
-		local type = "special"
-
-		type = id == "crime_spree" and "crime_spree" or type
-
+		local type = id == "crime_spree" and "crime_spree" or "special"
 		local gui_data = self:_create_job_gui(special_contract, type)
 
 		gui_data.server = true
@@ -3392,7 +3366,6 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		next_icon_right = next_icon_right - 12
 	end
 
-	local add_christmas = false
 	local add_christmas = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
 	local christmas_icon
 
@@ -3999,7 +3972,7 @@ function CrimeNetGui:update(t, dt)
 	self._rasteroverlay:set_texture_rect(0, -math.mod(Application:time() * 5, 32), 32, 640)
 
 	if self._getting_hacked then
-		self._hacked_t = self._hacked_t - dt
+		self._hacked_t = (self._hacked_t or 0) - dt
 
 		if self._hacked_t <= 0 then
 			managers.crimenet:set_getting_hacked(false)
@@ -4057,9 +4030,7 @@ function CrimeNetGui:update(t, dt)
 		end
 	end
 
-	local update_controller_snap = true
-
-	update_controller_snap = self:input_focus()
+	local update_controller_snap = self:input_focus()
 
 	if update_controller_snap and not managers.menu:is_pc_controller() and managers.mouse_pointer:mouse_move_x() == 0 and managers.mouse_pointer:mouse_move_y() == 0 then
 		local closest_job

@@ -635,11 +635,11 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			},
 			murkywater = {
 				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_1"),
-				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_2")
+				Idstring("units/payday2/characters/ene_fbi_2/ene_fbi_2")
 			},
 			federales = {
 				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_1"),
-				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_2")
+				Idstring("units/payday2/characters/ene_fbi_2/ene_fbi_2")
 			}
 		}
 	}
@@ -660,11 +660,11 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			},
 			murkywater = {
 				Idstring("units/payday2/characters/ene_fbi_2/ene_fbi_2"),
-				Idstring("units/payday2/characters/ene_fbi_2/ene_fbi_3")
+				Idstring("units/payday2/characters/ene_fbi_3/ene_fbi_3")
 			},
 			federales = {
-				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_2"),
-				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_3")
+				Idstring("units/payday2/characters/ene_fbi_2/ene_fbi_2"),
+				Idstring("units/payday2/characters/ene_fbi_3/ene_fbi_3")
 			}
 		}
 	}
@@ -3588,6 +3588,10 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 	}
 	self.phalanx.check_spawn_intervall = 120
 	self.phalanx.chance_increase_intervall = 120
+	self.phalanx.allowed_assault_phases = table.list_to_set({
+		"build",
+		"sustain"
+	})
 
 	if difficulty_index == DIFF_ID_4_VERYHARD then
 		self.phalanx.spawn_chance = {

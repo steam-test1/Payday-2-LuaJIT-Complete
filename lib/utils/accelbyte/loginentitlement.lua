@@ -3,17 +3,18 @@ local json = require("lib/utils/accelbyte/json")
 local ClientId = "3c25c4f86e4d4ec48f727e5c4b8bf9c2"
 local ClientSecret = ""
 local BaseUrl = "https://nebula.starbreeze.com"
+local AccountUrl = "https://account.starbreeze.com"
 local Namespace = "PD2"
 local PublisherNamespace = "starbreeze"
 local LambdaUrl = "https://jji485ris4.execute-api.us-west-2.amazonaws.com/prod-pd2-account/prod_check_iam_steamlinking"
 local SteamPlatformId = "steam"
-local IamSteamPlatformUrl = string.format("%s/iam/oauth/platforms/%s/token", BaseUrl, SteamPlatformId)
+local IamSteamPlatformUrl = string.format("%s/iam/oauth/platforms/%s/token", AccountUrl, SteamPlatformId)
 local EpicPlatformId = "epicgames"
-local IamEpicPlatformUrl = string.format("%s/iam/v3/oauth/platforms/%s/token", BaseUrl, EpicPlatformId)
-local IamServerUrl = string.format("%s/iam/oauth/token", BaseUrl)
+local IamEpicPlatformUrl = string.format("%s/iam/v3/oauth/platforms/%s/token", AccountUrl, EpicPlatformId)
+local IamServerUrl = string.format("%s/iam/oauth/token", AccountUrl)
 
 if IS_EPIC then
-	IamServerUrl = string.format("%s/iam/v3/oauth/token", BaseUrl)
+	IamServerUrl = string.format("%s/iam/v3/oauth/token", AccountUrl)
 end
 
 local publisher_user_id

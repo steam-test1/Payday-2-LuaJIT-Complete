@@ -35,7 +35,6 @@ function HuskPlayerBase:post_init()
 	local spawn_state = self._spawn_state or "std/stand/still/idle/look"
 
 	self._unit:movement():play_state(spawn_state)
-	self:prevent_main_bones_disabling(true)
 end
 
 function HuskPlayerBase:load(data)

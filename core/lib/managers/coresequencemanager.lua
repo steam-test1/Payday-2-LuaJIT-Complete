@@ -4082,6 +4082,17 @@ BodyElement.FUNC_MAP = BodyElement.FUNC_MAP or {
 	pushed_by_mover = "set_pushed_by_mover",
 	remove_ray_type = "remove_ray_type"
 }
+BodyElement.FUNC_MAP_ORDER = BodyElement.FUNC_MAP_ORDER or {
+	"motion",
+	"enabled",
+	"body_collision",
+	"mover_collision",
+	"pushed_by_mover",
+	"mover",
+	"interpolate",
+	"add_ray_type",
+	"remove_ray_type"
+}
 BodyElement.VALID_MOVER_MAP = BodyElement.VALID_MOVER_MAP or {
 	callback = "callback",
 	none = ""
@@ -4096,6 +4107,16 @@ function BodyElement:init(node, unit_element)
 	for attribute, func_name in pairs(self.FUNC_MAP) do
 		self._set_function_map[attribute] = self:get(attribute, self[func_name])
 	end
+
+	self._set_function_list = {}
+
+	for _, attribute in ipairs(self.FUNC_MAP_ORDER) do
+		local func = self._set_function_map[attribute]
+
+		if func then
+			table.insert(self._set_function_list, func)
+		end
+	end
 end
 
 function BodyElement:activate_callback(env)
@@ -4105,7 +4126,7 @@ function BodyElement:activate_callback(env)
 		local body = env.dest_unit:body(name)
 
 		if alive(body) then
-			for _, func in pairs(self._set_function_map) do
+			for _, func in ipairs(self._set_function_list) do
 				func(env, body)
 			end
 

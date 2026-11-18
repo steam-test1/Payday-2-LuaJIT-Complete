@@ -181,7 +181,12 @@ function NewRaycastWeaponBase:_update_materials()
 							part.unit:set_material_config(new_material_config_ids, true)
 						end
 					elseif use_cc_material_config then
-						part.unit:set_material_config(Idstring(part_data.unit), true)
+						local ids_material_config = Idstring(part_data.unit)
+
+						if DB:has(IDS_MATERIAL_CONFIG, ids_material_config) then
+							part.unit:set_material_config(ids_material_config, true)
+						end
+
 						part.unit:set_material_config(new_material_config_ids, true)
 					end
 				end

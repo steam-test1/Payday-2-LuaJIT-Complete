@@ -113,12 +113,14 @@ function ShieldFlashBase:init(...)
 	self._flash_shape = shield_tweak_data.flash_shape or "cylinder"
 	self._flash_shape_radius = shield_tweak_data.flash_shape_radius
 	self._flash_slotmask = managers.slot:make_slot_mask(shield_tweak_data.flash_slotmask or "explosion_targets")
+	self._flash_alert_radius = shield_tweak_data.flash_alert_radius or 5000
 	self._flash_effect = shield_tweak_data.flash_effect and Idstring(shield_tweak_data.flash_effect) or nil
 	self._flash_sound = shield_tweak_data.flash_sound
 	self._flash_charge_range = shield_tweak_data.flash_charge_range
 	self._flash_charge_timer = shield_tweak_data.flash_charge_timer
 	self._flash_charge_cooldown = shield_tweak_data.flash_charge_cooldown or 0
 	self._flash_charge_stun_range = shield_tweak_data.flash_charge_stun_range
+	self._flash_charge_stun_alert_radius = shield_tweak_data.flash_charge_stun_alert_radius or self._flash_alert_radius
 	self._flash_charge_stun_slotmask = managers.slot:make_slot_mask(shield_tweak_data.flash_charge_stun_slotmask or "explosion_targets")
 	self._flash_charge_stun_effect = shield_tweak_data.flash_charge_stun_effect or nil
 	self._flash_charge_stun_sound = shield_tweak_data.flash_charge_stun_sound
@@ -161,16 +163,7 @@ function ShieldFlashBase:init(...)
 		self._beep_light_fade_speed = light_data.beep_fade_speed
 	end
 
-	if self._flash_sound or self._flash_charge_stun_sound or self._beep_sound then
-		self._snd_src = self._unit:sound_source()
-
-		if not self._snd_src then
-			self._snd_src_dispose = true
-			self._snd_src = SoundDevice:create_source("ShieldFlashBase")
-
-			self._snd_src:link(parent_obj)
-		end
-	end
+	self._snd_src = self._unit:sound_source()
 end
 
 function ShieldFlashBase:get_use_data()
@@ -276,10 +269,6 @@ function ShieldFlashBase:clbk_seq_flash_start(parent_obj, priority_counter_body,
 	end
 
 	if parent_obj and parent_obj ~= self._effect_parent_obj then
-		if self._snd_src and self._snd_src_dispose then
-			self._snd_src:link(parent_obj)
-		end
-
 		if self._beep_light_obj then
 			self._beep_light_obj:unlink()
 			self._beep_light_obj:link(parent_obj)
@@ -327,11 +316,7 @@ function ShieldFlashBase:clbk_seq_flash(pos, dir)
 	end
 
 	if self._snd_src and self._flash_sound then
-		if self._snd_src_dispose then
-			self._snd_event_flash = self._snd_src:post_event(self._flash_sound, callback(self, self, "_clbk_snd_event_end", "flash"), nil, "end_of_event")
-		else
-			self._snd_src:post_event(self._flash_sound)
-		end
+		self._snd_src:post_event(self._flash_sound)
 	end
 
 	if self._flash_effect then
@@ -346,8 +331,11 @@ function ShieldFlashBase:clbk_seq_flash(pos, dir)
 	self:_flash_local_player(pos, dir, range)
 
 	if Network:is_server() then
+		local parent = self._unit:parent()
+		local brain_ext = parent and parent:brain()
+		local alert_filter = brain_ext and brain_ext:SO_access() or managers.groupai:state():get_unit_type_filter("law_enforcer")
+
 		managers.explosion:detect_and_stun({
-			alert_radius = 10000,
 			curve_pow = 1,
 			damage = 0,
 			player_damage = 0,
@@ -357,9 +345,11 @@ function ShieldFlashBase:clbk_seq_flash(pos, dir)
 			radius = self._flash_shape_radius,
 			shape = self._flash_shape,
 			collision_slotmask = self._flash_slotmask,
-			ignore_unit = self._unit:parent(),
-			user = self._unit:parent(),
+			ignore_unit = parent,
+			user = parent,
 			owner = self._unit,
+			alert_radius = self._flash_alert_radius,
+			alert_filter = alert_filter,
 			verify_callback = callback(self, self, "_can_flash_unit")
 		})
 	end
@@ -384,11 +374,7 @@ function ShieldFlashBase:clbk_seq_chk_interrupt_flash(parent_obj)
 	end
 
 	if self._snd_src and self._flash_charge_stun_sound then
-		if self._snd_src_dispose then
-			self._snd_event_stun = self._snd_src:post_event(self._flash_charge_stun_sound, callback(self, self, "_clbk_snd_event_end", "stun"), nil, "end_of_event")
-		else
-			self._snd_src:post_event(self._flash_charge_stun_sound)
-		end
+		self._snd_src:post_event(self._flash_charge_stun_sound)
 	end
 end
 
@@ -436,9 +422,18 @@ function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync
 	if Network:is_server() then
 		local parent = self._unit:parent()
 		local parent_key = parent and parent:key() or nil
+		local mov_ext = attacker_unit:movement()
+		local attacker_access = mov_ext and mov_ext.SO_access and mov_ext:SO_access()
+
+		if not attacker_access then
+			local brain_ext = attacker_unit:brain()
+
+			attacker_access = brain_ext and brain_ext:SO_access()
+		end
+
+		local alert_filter = attacker_access or managers.groupai:state():get_unit_type_filter("combatant")
 
 		managers.explosion:detect_and_stun({
-			alert_radius = 10000,
 			curve_pow = 1,
 			damage = 0,
 			player_damage = 0,
@@ -446,6 +441,8 @@ function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync
 			range = range,
 			collision_slotmask = slot_mask,
 			user = attacker_unit or nil,
+			alert_radius = self._flash_charge_stun_alert_radius,
+			alert_filter = attacker_access,
 			verify_callback = callback(self, self, "_can_stun_unit", parent_key)
 		})
 	end
@@ -556,11 +553,7 @@ function ShieldFlashBase:_beep()
 	end
 
 	if self._snd_src and self._beep_sound then
-		if self._snd_src_dispose then
-			self._snd_event_beep = self._snd_src:post_event(self._beep_sound, callback(self, self, "_clbk_snd_event_end", "beep"), nil, "end_of_event")
-		else
-			self._snd_src:post_event(self._beep_sound)
-		end
+		self._snd_src:post_event(self._beep_sound)
 	end
 
 	self._beep_t = self:_get_next_beep_time(self._beep_speeds)
@@ -571,20 +564,6 @@ function ShieldFlashBase:_get_next_beep_time(speeds)
 	return self._timer / speeds[1] * speeds[2]
 end
 
-function ShieldFlashBase:_clbk_snd_event_end(event_type)
-	local event = self["_snd_event" .. event_type]
-
-	if event then
-		self["_snd_event" .. event_type] = nil
-
-		event:stop()
-
-		if self._del_src_on_event_end then
-			self:destroy_sound_source()
-		end
-	end
-end
-
 function ShieldFlashBase:pre_destroy(...)
 	ShieldFlashBase.super.pre_destroy(self, ...)
 
@@ -592,7 +571,6 @@ function ShieldFlashBase:pre_destroy(...)
 	self._priority_counter_body_ids_key = nil
 
 	self:destroy_light()
-	self:destroy_sound_source()
 end
 
 function ShieldFlashBase:destroy(...)
@@ -602,35 +580,12 @@ function ShieldFlashBase:destroy(...)
 	self._priority_counter_body_ids_key = nil
 
 	self:destroy_light()
-	self:destroy_sound_source()
 end
 
 function ShieldFlashBase:destroy_light()
-	local light = self._beep_light_obj
+	if alive(self._beep_light_obj) then
+		World:delete_light(self._beep_light_obj)
+	end
 
 	self._beep_light_obj = nil
-
-	if alive(light) then
-		World:delete_light(light)
-	end
-end
-
-function ShieldFlashBase:destroy_sound_source()
-	if not self._snd_src_dispose then
-		return
-	end
-
-	local sound_source = self._snd_src
-
-	if sound_source then
-		if self._snd_event_flash or self._snd_event_stun or self._snd_event_beep then
-			self._del_src_on_event_end = true
-		else
-			self._snd_src = nil
-			self._del_src_on_event_end = nil
-
-			sound_source:stop()
-			sound_source:delete()
-		end
-	end
 end

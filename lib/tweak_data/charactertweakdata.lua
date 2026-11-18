@@ -2781,6 +2781,7 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank.immune_to_concussion = true
 	self.tank.no_headshot_add_mul = true
 	self.tank_hw = deep_clone(self.tank)
+	self.tank_hw.melee_weapon = "helloween"
 	self.tank_hw.move_speed = presets.move_speed.extremely_slow
 	self.tank_hw.HEALTH_INIT = 200
 	self.tank_hw.headshot_dmg_mul = 1
@@ -3915,52 +3916,34 @@ function CharacterTweakData:_init_auctioneer_boss(presets)
 end
 
 function CharacterTweakData:_init_team_ai(presets)
-	local team_ai_tweak_names = {
-		"russian",
-		"german",
-		"spanish",
-		"american",
-		"jowi",
-		"old_hoxton",
-		"female_1",
-		"dragan",
-		"jacket",
-		"bonnie",
-		"sokol",
-		"dragon",
-		"bodhi",
-		"jimmy",
-		"sydney",
-		"wild",
-		"chico",
-		"max",
-		"joy",
-		"myh",
-		"ecp_female",
-		"ecp_male"
-	}
-	local char_weapon_tables = self.char_wep_tables
+	local damage_tweak = presets.gang_member_damage
+	local detection_tweak = presets.detection.gang_member
+	local move_speed_tweak = presets.move_speed.very_fast
+	local weapon_tweak = clone(presets.weapon.gang_member)
 
-	for _, tweak_name in ipairs(team_ai_tweak_names) do
+	weapon_tweak.weapons_of_choice = {
+		primary = "wpn_fps_ass_m4_npc"
+	}
+
+	local arrest_tweak = {
+		aggression_timeout = 6,
+		arrest_timeout = 240,
+		timeout = 240
+	}
+
+	for _, tweak_name in pairs(self.tweak_data.criminals.character_names) do
 		local char_tweaks = {}
 
 		self[tweak_name] = char_tweaks
-		char_tweaks.damage = presets.gang_member_damage
-		char_tweaks.weapon = clone(presets.weapon.gang_member)
-		char_tweaks.weapon.weapons_of_choice = {
-			primary = "wpn_fps_ass_m4_npc"
-		}
-		char_tweaks.detection = presets.detection.gang_member
-		char_tweaks.move_speed = presets.move_speed.very_fast
+		char_tweaks.damage = damage_tweak
+		char_tweaks.detection = detection_tweak
+		char_tweaks.move_speed = move_speed_tweak
+		char_tweaks.weapon = weapon_tweak
+		char_tweaks.arrest = arrest_tweak
 		char_tweaks.crouch_move = false
 		char_tweaks.speech_prefix = "rb2"
 		char_tweaks.weapon_voice = "1"
 		char_tweaks.access = "teamAI1"
-		char_tweaks.arrest = {
-			aggression_timeout = 6,
-			arrest_timeout = 240,
-			timeout = 240
-		}
 	end
 
 	self.german.weapon_voice = "2"
@@ -10983,8 +10966,15 @@ function CharacterTweakData:_process_weapon_usage_table(weap_usage_table)
 		if type(unit_data) == "table" and unit_data.weapon then
 			for weapon_id, data in pairs(unit_data.weapon) do
 				if data.FALLOFF and not data.FALLOFF.normalized then
+					local has_autofire
+					local has_autofire_rounds = data.autofire_rounds ~= nil
+
 					for i_range, range_data in ipairs(data.FALLOFF) do
 						local modes = range_data.mode
+
+						has_autofire_rounds = has_autofire_rounds or range_data.autofire_rounds ~= nil
+						has_autofire = has_autofire or modes[4] and modes[4] > 0
+
 						local total = 0
 
 						for i_firemode, value in ipairs(modes) do
@@ -11000,6 +10990,10 @@ function CharacterTweakData:_process_weapon_usage_table(weap_usage_table)
 					end
 
 					data.FALLOFF.normalized = true
+
+					if has_autofire and not has_autofire_rounds then
+						Application:warn("[CharacterTweakData] _process_weapon_usage_table() - weapon usage tweak data with autofire lacks autofire_rounds table, in both usage and falloff!", weapon_id)
+					end
 				end
 			end
 		end

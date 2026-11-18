@@ -10,6 +10,7 @@ end
 
 function HuskCopInventory:add_unit_by_name(new_unit_name, equip)
 	local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
+	local base_ext = new_unit:base()
 
 	managers.mutators:modify_value("CopInventory:add_unit_by_name", self)
 	CopInventory._chk_spawn_shield(self, new_unit)
@@ -32,12 +33,13 @@ function HuskCopInventory:add_unit_by_name(new_unit_name, equip)
 	setup_data.expend_ammo = false
 	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI")
 	setup_data.hit_player = true
-	setup_data.user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice
+	setup_data.user_sound_variant = self._unit:base():char_tweak().weapon_voice
 
-	new_unit:base():setup(setup_data)
+	self:_chk_setup_data(setup_data)
+	base_ext:setup(setup_data)
 
-	if new_unit:base().AKIMBO then
-		new_unit:base():create_second_gun(new_unit_name)
+	if base_ext.AKIMBO then
+		base_ext:create_second_gun(new_unit_name)
 	end
 
 	CopInventory.add_unit(self, new_unit, equip)

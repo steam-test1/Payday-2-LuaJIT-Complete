@@ -1,6 +1,7 @@
 core:import("CoreMissionScriptElement")
 
 ElementMissionFilter = ElementMissionFilter or class(CoreMissionScriptElement.MissionScriptElement)
+ElementMissionFilter.MAX_FLAGS = 5
 
 function ElementMissionFilter:init(...)
 	ElementMissionFilter.super.init(self, ...)
@@ -23,24 +24,10 @@ function ElementMissionFilter:on_executed(instigator)
 end
 
 function ElementMissionFilter:_check_mission_filters()
-	if self._values[1] and managers.mission:check_mission_filter(1) then
-		return true
-	end
-
-	if self._values[2] and managers.mission:check_mission_filter(2) then
-		return true
-	end
-
-	if self._values[3] and managers.mission:check_mission_filter(3) then
-		return true
-	end
-
-	if self._values[4] and managers.mission:check_mission_filter(4) then
-		return true
-	end
-
-	if self._values[5] and managers.mission:check_mission_filter(5) then
-		return true
+	for idx = 1, ElementMissionFilter.MAX_FLAGS do
+		if self._values[idx] and managers.mission:check_mission_filter(idx) then
+			return true
+		end
 	end
 
 	return false

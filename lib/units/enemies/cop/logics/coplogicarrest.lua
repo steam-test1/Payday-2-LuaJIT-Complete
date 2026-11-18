@@ -522,6 +522,8 @@ function CopLogicArrest.damage_clbk(data, damage_info)
 	local enemy = damage_info.attacker_unit
 
 	if enemy then
+		local t = TimerManager:game():time()
+
 		for enemy_key, arrest_data in pairs(my_data.arrest_targets) do
 			managers.groupai:state():on_arrest_end(data.key, enemy_key)
 
@@ -530,7 +532,7 @@ function CopLogicArrest.damage_clbk(data, damage_info)
 			local record = managers.groupai:state():criminal_record(enemy_key)
 
 			if record then
-				record.arrest_timeout = data.t + arrest_data.attention_obj.unit:base():arrest_settings().arrest_timeout
+				record.arrest_timeout = t + arrest_data.attention_obj.unit:base():arrest_settings().arrest_timeout
 			end
 		end
 	end

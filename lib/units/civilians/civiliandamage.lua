@@ -150,32 +150,20 @@ function CivilianDamage:damage_fire(attack_data)
 end
 
 function CivilianDamage:stun_hit(attack_data)
-	if self._dead or self._invulnerable then
+	if self._dead or self._invulnerable or self._char_tweak.is_escort then
 		return
 	end
 
-	if not self._lie_down_clbk_id then
-		self._lie_down_clbk_id = "lie_down_" .. tostring(self._unit:key())
+	local attacker_unit = attack_data.attacker_unit
+	local base_ext = alive(attacker_unit) and attacker_unit:base() or nil
 
-		local rnd = math.random()
-		local t = TimerManager:game():time()
+	attacker_unit = base_ext and base_ext.thrower_unit and base_ext:thrower_unit() or attacker_unit
 
-		if not self._char_tweak.is_escort then
-			managers.enemy:add_delayed_clbk(self._lie_down_clbk_id, callback(self, self, "_lie_down_clbk", attack_data.attacker_unit), t + rnd)
-		end
-	end
+	self._unit:brain():on_intimidated(1, attacker_unit)
 end
 
 function CivilianDamage:_lie_down_clbk(attacker_unit)
-	if alive(attacker_unit) and alive(self._unit) then
-		local params = {
-			force_lie_down = true
-		}
-
-		self._unit:brain():set_logic("surrender", params)
-
-		self._lie_down_clbk_id = nil
-	end
+	return
 end
 
 function CivilianDamage:damage_melee(attack_data)
@@ -201,12 +189,28 @@ function CivilianDamage:damage_tase(attack_data)
 		return
 	end
 
-	self._unit:brain():on_intimidated(1, attack_data.attacker_unit)
+	if Network:is_server() then
+		local attacker_unit = attack_data.attacker_unit
+		local base_ext = alive(attacker_unit) and attacker_unit:base() or nil
+
+		attacker_unit = base_ext and base_ext.thrower_unit and base_ext:thrower_unit() or attacker_unit
+
+		self._unit:brain():on_intimidated(1, attacker_unit)
+	end
+
 	self:_play_civilian_tase_effect()
 	self:_send_tase_attack_result(attack_data, 0, 0)
 end
 
 function CivilianDamage:sync_damage_tase(attacker_unit, damage_percent, variant, death)
+	if Network:is_server() then
+		local base_ext = alive(attacker_unit) and attacker_unit:base() or nil
+
+		attacker_unit = base_ext and base_ext.thrower_unit and base_ext:thrower_unit() or attacker_unit
+
+		self._unit:brain():on_intimidated(1, attacker_unit)
+	end
+
 	self:_play_civilian_tase_effect()
 end
 

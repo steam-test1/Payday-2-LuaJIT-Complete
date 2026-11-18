@@ -1,3 +1,5 @@
+local IDS_UNIT_DATA = Idstring("unit_data")
+
 CoreScriptUnitData = CoreScriptUnitData or class()
 CoreScriptUnitData.world_pos = Vector3(0, 0, 0)
 CoreScriptUnitData.local_pos = Vector3(0, 0, 0)
@@ -31,10 +33,10 @@ if Application:editor() then
 	function CoreScriptUnitData:init(unit)
 		self.unit_groups = {}
 
-		unit:set_extension_update_enabled(Idstring("unit_data"), false)
+		unit:set_extension_update_enabled(IDS_UNIT_DATA, false)
 	end
 else
 	function CoreScriptUnitData:init(unit)
-		unit:set_extension_update_enabled(Idstring("unit_data"), false)
+		unit:set_extension_update_enabled(IDS_UNIT_DATA, false)
 	end
 end

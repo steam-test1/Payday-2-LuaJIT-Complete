@@ -1,3 +1,5 @@
+local IDS_BRAIN = Idstring("brain")
+
 require("lib/units/enemies/cop/logics/CopLogicBase")
 require("lib/units/enemies/cop/logics/CopLogicInactive")
 require("lib/units/enemies/cop/logics/CopLogicIdle")
@@ -35,104 +37,47 @@ local logic_variants = {
 		phalanx = CopLogicPhalanxMinion
 	}
 }
+
+CopBrain._logic_variants = logic_variants
+
 local security_variant = logic_variants.security
 
-logic_variants.gensec = security_variant
-logic_variants.cop = security_variant
-logic_variants.cop_female = security_variant
-logic_variants.fbi = security_variant
-logic_variants.fbi_female = security_variant
-logic_variants.swat = security_variant
-logic_variants.heavy_swat = security_variant
-logic_variants.fbi_swat = security_variant
-logic_variants.fbi_heavy_swat = security_variant
-logic_variants.zeal_swat = security_variant
-logic_variants.zeal_heavy_swat = security_variant
-logic_variants.nathan = security_variant
-logic_variants.sniper = security_variant
-logic_variants.gangster = security_variant
-logic_variants.biker = security_variant
-logic_variants.biker_female = security_variant
-logic_variants.mobster = security_variant
-logic_variants.mobster_boss = security_variant
-logic_variants.hector_boss = security_variant
-logic_variants.hector_boss_no_armor = security_variant
-logic_variants.dealer = security_variant
-logic_variants.biker_escape = security_variant
-logic_variants.city_swat = security_variant
-logic_variants.old_hoxton_mission = security_variant
-logic_variants.inside_man = security_variant
-logic_variants.inside_woman = security_variant
-logic_variants.medic = security_variant
-logic_variants.triad = security_variant
-logic_variants.triad_boss_no_armor = security_variant
-logic_variants.triad_boss = clone(security_variant)
-logic_variants.triad_boss.attack = BossLogicAttack
-logic_variants.snowman_boss = clone(security_variant)
-logic_variants.snowman_boss.attack = BossLogicAttack
-logic_variants.piggydozer = clone(security_variant)
-logic_variants.piggydozer.attack = BossLogicAttack
-logic_variants.biker_boss = security_variant
-logic_variants.chavez_boss = security_variant
-logic_variants.bolivian = security_variant
-logic_variants.bolivian_indoors = security_variant
-logic_variants.drug_lord_boss = security_variant
-logic_variants.drug_lord_boss_stealth = security_variant
-logic_variants.spa_vip = security_variant
-logic_variants.ranchmanager = security_variant
-logic_variants.bolivian_indoors_mex = security_variant
-logic_variants.security_mex = security_variant
-logic_variants.security_mex_no_pager = security_variant
-logic_variants.cop_scared = security_variant
-logic_variants.security_undominatable = security_variant
-logic_variants.mute_security_undominatable = security_variant
-logic_variants.captain = security_variant
-logic_variants.captain_female = security_variant
-logic_variants.auctioneer_boss = security_variant
-
-for _, tweak_table_name in pairs({
-	"shield",
-	"tank",
-	"spooc",
-	"taser",
-	"shadow_spooc"
-}) do
-	logic_variants[tweak_table_name] = clone(security_variant)
-end
-
+logic_variants.shield = clone(security_variant)
 logic_variants.shield.attack = ShieldLogicAttack
 logic_variants.shield.intimidated = nil
 logic_variants.shield.flee = nil
 logic_variants.phalanx_minion = clone(logic_variants.shield)
 logic_variants.phalanx_vip = clone(logic_variants.shield)
 logic_variants.phalanx_vip.phalanx = CopLogicPhalanxVip
+logic_variants.tank = clone(security_variant)
 logic_variants.tank.attack = TankCopLogicAttack
 logic_variants.tank_hw = logic_variants.tank
-logic_variants.spooc.idle = SpoocLogicIdle
-logic_variants.spooc.attack = SpoocLogicAttack
-logic_variants.shadow_spooc.idle = SpoocLogicIdle
-logic_variants.shadow_spooc.attack = SpoocLogicAttack
-logic_variants.taser.attack = TaserLogicAttack
 logic_variants.tank_medic = logic_variants.tank
 logic_variants.tank_mini = logic_variants.tank
+logic_variants.taser = clone(security_variant)
+logic_variants.taser.attack = TaserLogicAttack
+logic_variants.spooc = clone(security_variant)
+logic_variants.spooc.idle = SpoocLogicIdle
+logic_variants.spooc.attack = SpoocLogicAttack
+logic_variants.shadow_spooc = logic_variants.spooc
+logic_variants.triad_boss = clone(security_variant)
+logic_variants.triad_boss.attack = BossLogicAttack
 logic_variants.deep_boss = clone(security_variant)
 logic_variants.deep_boss.attack = DeepBossLogicAttack
-logic_variants.heavy_swat_sniper = logic_variants.heavy_swat
-logic_variants.marshal_marksman = clone(logic_variants.heavy_swat)
+logic_variants.marshal_marksman = clone(security_variant)
 logic_variants.marshal_marksman.attack = MarshalLogicAttack
 logic_variants.marshal_shield = clone(logic_variants.shield)
-logic_variants.marshal_shield_break = logic_variants.swat
-security_variant = nil
-CopBrain._logic_variants = logic_variants
+logic_variants.snowman_boss = clone(security_variant)
+logic_variants.snowman_boss.attack = BossLogicAttack
+logic_variants.piggydozer = clone(security_variant)
+logic_variants.piggydozer.attack = BossLogicAttack
+CopBrain._default_logic_variant = "security"
 logic_variants = nil
-
-local reload
-
-if CopBrain._reload_clbks then
-	reload = true
-else
-	CopBrain._reload_clbks = {}
-end
+security_variant = nil
+CopBrain._tweak_data_clbk_id = "CopBrainTweakDataChange"
+CopBrain._weapons_hot_clbk_event_list = {
+	"enemy_weapons_hot"
+}
 
 function CopBrain:init(unit)
 	self._unit = unit
@@ -143,23 +88,27 @@ function CopBrain:init(unit)
 	self._current_logic = nil
 	self._current_logic_name = nil
 	self._active = true
-	self._SO_access = managers.navigation:convert_access_flag(tweak_data.character[unit:base()._tweak_table].access)
-	self._slotmask_enemies = managers.slot:get_mask("criminals")
-	self._reload_clbks[unit:key()] = callback(self, self, "on_reload")
 
-	if unit:base().add_tweak_data_changed_listener then
-		unit:base():add_tweak_data_changed_listener("CopBrainTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_tweak_data_changed"))
+	local unit_key = unit:key()
+	local base_ext = unit:base()
+
+	self._SO_access = managers.navigation:convert_access_flag(tweak_data.character[base_ext:char_tweak_name()].access)
+	self._slotmask_enemies = managers.slot:get_mask("criminals")
+
+	if self._tweak_data_clbk_id and base_ext.add_tweak_data_changed_listener then
+		base_ext:add_tweak_data_changed_listener(self._tweak_data_clbk_id .. tostring(unit_key), callback(self, self, "_clbk_tweak_data_changed"))
 	end
 end
 
 function CopBrain:post_init()
-	self._logics = CopBrain._logic_variants[self._unit:base()._tweak_table]
+	self._logics = self._logic_variants[self._unit:base()._tweak_table] or self._logic_variants[self._default_logic_variant]
 
 	self:_reset_logic_data()
 
 	local my_key = tostring(self._unit:key())
+	local char_dmg_ext = self._unit:character_damage()
 
-	self._unit:character_damage():add_listener("CopBrain_hurt" .. my_key, {
+	char_dmg_ext:add_listener("CopBrain_hurt" .. my_key, {
 		"dmg_rcv",
 		"hurt",
 		"light_hurt",
@@ -170,7 +119,7 @@ function CopBrain:post_init()
 		"taser_tased",
 		"concussion"
 	}, callback(self, self, "clbk_damage"))
-	self._unit:character_damage():add_listener("CopBrain_death" .. my_key, {
+	char_dmg_ext:add_listener("CopBrain_death" .. my_key, {
 		"death"
 	}, callback(self, self, "clbk_death"))
 	self:_setup_attention_handler()
@@ -179,23 +128,17 @@ function CopBrain:post_init()
 		self:set_init_logic("idle")
 	end
 
-	if Network:is_server() then
-		self:add_pos_rsrv("stand", {
-			radius = 30,
-			position = mvector3.copy(self._unit:movement():m_pos())
-		})
+	self:add_pos_rsrv("stand", {
+		radius = 30,
+		position = mvector3.copy(self._unit:movement():m_pos())
+	})
 
-		if not managers.groupai:state():enemy_weapons_hot() then
-			self._enemy_weapons_hot_listen_id = "CopBrain" .. my_key
+	local groupai_state = managers.groupai:state()
 
-			managers.groupai:state():add_listener(self._enemy_weapons_hot_listen_id, {
-				"enemy_weapons_hot"
-			}, callback(self, self, "clbk_enemy_weapons_hot"))
-		end
-	end
+	if not groupai_state:enemy_weapons_hot() then
+		self._enemy_weapons_hot_listen_id = "CopBrain" .. my_key
 
-	if not self._unit:contour() then
-		debug_pause_unit(self._unit, "[CopBrain:post_init] character missing contour extension", self._unit)
+		groupai_state:add_listener(self._enemy_weapons_hot_listen_id, self._weapons_hot_clbk_event_list, callback(self, self, "clbk_enemy_weapons_hot"))
 	end
 end
 
@@ -213,7 +156,7 @@ function CopBrain:update(unit, t, dt)
 end
 
 function CopBrain:set_update_enabled_state(state)
-	self._unit:set_extension_update_enabled(Idstring("brain"), state)
+	self._unit:set_extension_update_enabled(IDS_BRAIN, state)
 end
 
 function CopBrain:set_spawn_ai(spawn_ai)
@@ -418,24 +361,29 @@ function CopBrain:is_available_for_assignment(objective)
 end
 
 function CopBrain:_reset_logic_data()
+	local base_ext = self._unit:base()
+	local mov_ext = self._unit:movement()
+	local char_tweak = base_ext:char_tweak()
+	local groupai_state = managers.groupai:state()
+
 	self._logic_data = {
 		unit = self._unit,
 		brain = self,
 		active_searches = {},
-		m_pos = self._unit:movement():m_pos(),
-		char_tweak = tweak_data.character[self._unit:base()._tweak_table],
-		key = self._unit:key(),
-		pos_rsrv = {},
-		pos_rsrv_id = self._unit:movement():pos_rsrv_id(),
-		SO_access = self._SO_access,
-		SO_access_str = tweak_data.character[self._unit:base()._tweak_table].access,
 		detected_attention_objects = {},
+		pos_rsrv = {},
+		pos_rsrv_id = mov_ext:pos_rsrv_id(),
+		m_pos = mov_ext:m_pos(),
+		char_tweak = char_tweak,
+		key = self._unit:key(),
+		SO_access = self._SO_access,
+		SO_access_str = char_tweak.access,
 		attention_handler = self._attention_handler,
 		visibility_slotmask = managers.slot:get_mask("AI_visibility"),
 		enemy_slotmask = self._slotmask_enemies,
-		cool = self._unit:movement():cool(),
-		objective_complete_clbk = callback(managers.groupai:state(), managers.groupai:state(), "on_objective_complete"),
-		objective_failed_clbk = callback(managers.groupai:state(), managers.groupai:state(), "on_objective_failed")
+		cool = mov_ext:cool(),
+		objective_complete_clbk = callback(groupai_state, groupai_state, "on_objective_complete"),
+		objective_failed_clbk = callback(groupai_state, groupai_state, "on_objective_failed")
 	}
 end
 
@@ -829,9 +777,8 @@ end
 
 function CopBrain:on_reload()
 	self._logic_data.char_tweak = tweak_data.character[self._unit:base()._tweak_table]
-	self._logics = CopBrain._logic_variants[self._unit:base()._tweak_table]
+	self._logics = self._logic_variants[self._unit:base()._tweak_table] or self._logic_variants[self._default_logic_variant]
 	self._current_logic = self._logics[self._current_logic_name]
-	self._logic_data.char_tweak = tweak_data.character[self._unit:base()._tweak_table]
 end
 
 function CopBrain:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
@@ -1093,6 +1040,10 @@ function CopBrain:on_suppressed(state)
 	end
 end
 
+function CopBrain:current_attention_object()
+	return self._logic_data.attention_obj
+end
+
 function CopBrain:attention_objects()
 	return
 end
@@ -1136,10 +1087,6 @@ end
 function CopBrain:convert_to_criminal(mastermind_criminal)
 	self._logic_data.is_converted = true
 	self._logic_data.group = nil
-
-	local mover_col_body = self._unit:body("mover_blocker")
-
-	mover_col_body:set_enabled(false)
 
 	local attention_preset = PlayerMovement._create_attention_setting_from_descriptor(self, tweak_data.attention.settings.team_enemy_cbt, "team_enemy_cbt")
 
@@ -1190,10 +1137,12 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 	self:set_objective(nil)
 	self:set_logic("idle", nil)
 
-	self._logic_data.objective_complete_clbk = callback(managers.groupai:state(), managers.groupai:state(), "on_criminal_objective_complete")
-	self._logic_data.objective_failed_clbk = callback(managers.groupai:state(), managers.groupai:state(), "on_criminal_objective_failed")
+	local groupai_state = managers.groupai:state()
 
-	managers.groupai:state():on_criminal_jobless(self._unit)
+	self._logic_data.objective_complete_clbk = callback(groupai_state, groupai_state, "on_criminal_objective_complete")
+	self._logic_data.objective_failed_clbk = callback(groupai_state, groupai_state, "on_criminal_objective_failed")
+
+	groupai_state:on_criminal_jobless(self._unit)
 	self._unit:base():set_slot(self._unit, 16)
 	self._unit:movement():set_stance("hos")
 	self._unit:brain():action_request({
@@ -1264,19 +1213,21 @@ function CopBrain:add_pos_rsrv(rsrv_name, pos_rsrv)
 
 	if pos_reservations[rsrv_name] then
 		managers.navigation:unreserve_pos(pos_reservations[rsrv_name])
+
+		pos_reservations[rsrv_name] = nil
 	end
 
 	pos_rsrv.filter = self._logic_data.pos_rsrv_id
 
 	managers.navigation:add_pos_reservation(pos_rsrv)
 
-	pos_reservations[rsrv_name] = pos_rsrv
-
 	if not pos_rsrv.id then
 		debug_pause_unit(self._unit, "[CopBrain:add_pos_rsrv] missing id", inspect(pos_rsrv))
 
 		return
 	end
+
+	pos_reservations[rsrv_name] = pos_rsrv
 end
 
 function CopBrain:set_pos_rsrv(rsrv_name, pos_rsrv)
@@ -1288,6 +1239,8 @@ function CopBrain:set_pos_rsrv(rsrv_name, pos_rsrv)
 
 	if pos_reservations[rsrv_name] then
 		managers.navigation:unreserve_pos(pos_reservations[rsrv_name])
+
+		pos_reservations[rsrv_name] = nil
 	end
 
 	if not pos_rsrv.id then
@@ -1545,9 +1498,6 @@ end
 
 function CopBrain:pre_destroy(unit)
 	self:set_active(false)
-
-	self._reload_clbks[unit:key()] = nil
-
 	self._attention_handler:set_attention(nil)
 	self._unit:movement():set_attention(nil)
 	self:rem_all_pos_rsrv()
@@ -1579,17 +1529,9 @@ end
 function CopBrain:_get_radio_id(id)
 	local tweak = tweak_data.character[self._unit:base()._tweak_table]
 
-	print("_get_radio_id", id, tweak and tweak.radio_prefix)
-
 	if tweak and tweak.radio_prefix then
 		return tweak.radio_prefix .. id
 	else
 		return id
-	end
-end
-
-if reload then
-	for k, clbk in pairs(CopBrain._reload_clbks) do
-		clbk()
 	end
 end

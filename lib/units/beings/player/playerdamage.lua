@@ -1368,10 +1368,13 @@ function PlayerDamage:damage_bullet(attack_data)
 	end
 
 	local smoke_dodge = 0
+	local m_pos = self._unit:movement():m_pos()
 
-	for _, smoke_screen in ipairs(managers.player._smoke_screen_effects or {}) do
-		if smoke_screen:is_in_smoke(self._unit) then
-			smoke_dodge = tweak_data.projectiles.smoke_screen_grenade.dodge_chance
+	for _, smoke_screen in pairs(managers.player:smoke_screens()) do
+		local in_smoke, variant, tweak_entry = smoke_screen:is_in_smoke(m_pos)
+
+		if in_smoke then
+			smoke_dodge = tweak_entry.dodge_chance
 
 			break
 		end

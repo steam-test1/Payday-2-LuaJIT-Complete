@@ -10,7 +10,7 @@ function StatisticsGenerator.generate(dataXML)
 		table.insert(join_stinger_list, index)
 	end
 
-	local xml_path = StatisticsGenerator._root_path() .. "aux_assets\\config\\win32\\statistics.xml"
+	local xml_path = StatisticsGenerator._root_path() .. "statistics.xml"
 	local xml = SystemFS:open(xml_path, "w")
 
 	if dataXML ~= false then
@@ -48,7 +48,7 @@ function StatisticsGenerator._generate_group(group, list, xml)
 end
 
 function StatisticsGenerator._root_path()
-	local path = Application:base_path() .. (CoreApp.arg_value("-assetslocation") or "..\\..\\")
+	local path = Application:base_path() .. (CoreApp.arg_value("-assetslocation") or "")
 
 	path = Application:nice_path(path, true)
 

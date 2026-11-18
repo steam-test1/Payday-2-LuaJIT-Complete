@@ -279,7 +279,7 @@ function CopBase:prevent_invisibility(state)
 		return
 	end
 
-	if self._prevent_invisible and (not self.lod_stage or not self:lod_stage()) and not self._lod_stage then
+	if self._prevent_invisible and not self._lod_stage then
 		self:set_visibility_state(false)
 	end
 end
@@ -296,7 +296,7 @@ function CopBase:set_force_invisible(state)
 	elseif self._force_invisible then
 		self._force_invisible = false
 
-		local new_lod = self.lod_stage and self:lod_stage() or self._lod_stage
+		local new_lod = self._lod_stage
 
 		self._lod_stage = false
 
@@ -366,7 +366,7 @@ function CopBase:set_anim_lod(stage)
 
 	if stage == 1 then
 		self._unit:set_animatable_enabled(ids_lod1, true)
-	elseif (self.lod_stage and self:lod_stage() or self._lod_stage) == 1 then
+	elseif self._lod_stage == 1 then
 		if self._ext_anim.recoil_auto and not self.is_husk_player then
 			self._ext_movement:play_redirect("up_idle")
 		end
@@ -380,7 +380,7 @@ function CopBase:on_death_exit()
 end
 
 function CopBase:chk_freeze_anims()
-	if (self._force_invisible or (not self.lod_stage or not self:lod_stage()) and not self._lod_stage or (self.lod_stage and self:lod_stage() or self._lod_stage) > 1) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
+	if (self._force_invisible or not self._lod_stage or self._lod_stage > 1) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
 		if not self._anims_frozen then
 			self._anims_frozen = true
 

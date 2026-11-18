@@ -1,4 +1,5 @@
 TripMineBase = TripMineBase or class(UnitBase)
+TripMineBase.DEFAULT_ALERT_FILTER = "criminal"
 TripMineBase.EVENT_IDS = {}
 TripMineBase.EVENT_IDS.sensor_beep = 1
 TripMineBase.EVENT_IDS.explosion_beep = 2
@@ -6,8 +7,11 @@ TripMineBase.EVENT_IDS.explosion_beep = 2
 function TripMineBase.spawn(pos, rot, sensor_upgrade, peer_id)
 	local unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_tripmine/gen_equipment_tripmine"), pos, rot)
 
-	managers.network:session():send_to_peers_synched("sync_trip_mine_setup", unit, sensor_upgrade, peer_id or 0)
-	unit:base():setup(sensor_upgrade)
+	managers.network:send_to_peers_synched("sync_trip_mine_setup", unit, sensor_upgrade, peer_id or 0)
+
+	local owner = managers.network:get_peer_unit_safe(peer_id)
+
+	unit:base():setup(sensor_upgrade, owner)
 
 	return unit
 end
@@ -94,10 +98,18 @@ function TripMineBase:sync_setup(sensor_upgrade)
 		self._validate_clbk_id = nil
 	end
 
-	self:setup(sensor_upgrade)
+	self:setup(sensor_upgrade, nil)
 end
 
-function TripMineBase:setup(sensor_upgrade)
+function TripMineBase:setup(sensor_upgrade, owner)
+	if Network:is_server() then
+		if owner then
+			self._alert_filter = owner:movement():SO_access()
+		else
+			self._alert_filter = managers.groupai:state():get_unit_type_filter(self.DEFAULT_ALERT_FILTER or "criminal")
+		end
+	end
+
 	self._slotmask = managers.slot:get_mask("trip_mine_targets")
 	self._first_armed = false
 	self._armed = false
@@ -154,8 +166,6 @@ function TripMineBase:set_active(active, owner)
 			self._attached_data.index = 1
 			self._attached_data.max_index = 3
 		end
-
-		self._alert_filter = owner:movement():SO_access()
 	elseif self._use_draw_laser then
 		local from_pos = self._unit:position() + self._unit:rotation():y() * 10
 		local to_pos = from_pos + self._unit:rotation():y() * self._init_length
@@ -485,17 +495,16 @@ function TripMineBase:_explode(col_ray)
 		end
 	end
 
-	local alert_event = {
-		"aggression",
-		self._position,
-		tweak_data.weapon.trip_mines.alert_radius,
-		self._alert_filter,
-		self._unit
-	}
-
-	managers.groupai:state():propagate_alert(alert_event)
-
 	if Network:is_server() then
+		local alert_event = {
+			"explosion",
+			self._position,
+			tweak_data.weapon.trip_mines.alert_radius,
+			self._alert_filter,
+			self._unit
+		}
+
+		managers.groupai:state():propagate_alert(alert_event)
 		managers.mission:call_global_event("tripmine_exploded")
 	end
 
@@ -549,6 +558,15 @@ function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage
 	end
 
 	if Network:is_server() then
+		local alert_event = {
+			"explosion",
+			self._position,
+			tweak_data.weapon.trip_mines.alert_radius,
+			self._alert_filter,
+			self._unit
+		}
+
+		managers.groupai:state():propagate_alert(alert_event)
 		managers.mission:call_global_event("tripmine_exploded")
 	end
 

@@ -22,6 +22,13 @@ function TeamAIInventory:is_mask_unit_loaded()
 	return self._mask_unit_loaded
 end
 
+function TeamAIInventory:_chk_setup_data(setup_data)
+	setup_data.alert_AI = true
+	setup_data.alert_filter = self._unit:brain():SO_access()
+	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets")
+	setup_data.user_sound_variant = setup_data.user_sound_variant or self._unit:base():char_tweak().weapon_voice
+end
+
 function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	if not new_unit_name then
 		return
@@ -45,13 +52,13 @@ function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
 		user_unit = self._unit,
 		ignore_units = ignore_units,
 		hit_slotmask = managers.slot:get_mask("bullet_impact_targets"),
-		user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice,
+		user_sound_variant = self._unit:base():char_tweak().weapon_voice,
 		alert_filter = self._unit:brain():SO_access()
 	}
 
+	self:_chk_setup_data(setup_data)
 	new_unit:base():setup(setup_data)
 	self:add_unit(new_unit, equip)
-	new_unit:set_enabled(false)
 end
 
 function TeamAIInventory:has_ap_ammo()
@@ -75,13 +82,14 @@ end
 function TeamAIInventory:add_unit(new_unit, equip)
 	TeamAIInventory.super.add_unit(self, new_unit, equip)
 
-	if new_unit:base().set_user_is_team_ai then
-		print("Set as team ai")
-		new_unit:base():set_user_is_team_ai(true)
+	local base_ext = new_unit:base()
+
+	if base_ext.set_user_is_team_ai then
+		base_ext:set_user_is_team_ai(true)
 	end
 
-	if new_unit:base().set_team_ai_ap_rounds then
-		new_unit:base():set_team_ai_ap_rounds(managers.player:has_category_upgrade("team", "crew_ai_ap_ammo"))
+	if base_ext.set_team_ai_ap_rounds then
+		base_ext:set_team_ai_ap_rounds(managers.player:has_category_upgrade("team", "crew_ai_ap_ammo"))
 	end
 
 	new_unit:set_enabled(false)

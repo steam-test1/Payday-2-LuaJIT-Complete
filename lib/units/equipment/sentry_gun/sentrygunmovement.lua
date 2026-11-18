@@ -4,8 +4,8 @@ local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 
 SentryGunMovement = SentryGunMovement or class()
-SentryGunMovement.set_friendly_fire = PlayerMovement.set_friendly_fire
 SentryGunMovement.friendly_fire = PlayerMovement.friendly_fire
+SentryGunMovement.set_friendly_fire = PlayerMovement.set_friendly_fire
 
 function SentryGunMovement:init(unit)
 	self._unit = unit

@@ -155,10 +155,14 @@ function FireTweakData:_init_dot_entries(...)
 end
 
 function FireTweakData:_init_dot_entries_fire(entries)
+	local variant = "fire"
 	local fire_entries = {}
 
-	entries.fire = fire_entries
-	fire_entries.default_fire = {
+	entries[variant] = fire_entries
+
+	local default_name = "default_" .. variant
+
+	fire_entries[default_name] = {
 		PROCESSED = true,
 		damage_class = "FlameBulletBase",
 		dot_damage = 13,
@@ -167,8 +171,8 @@ function FireTweakData:_init_dot_entries_fire(entries)
 		dot_tick_period = 0.5,
 		dot_trigger_chance = 0.35,
 		dot_trigger_max_distance = 3000,
-		name = "default",
-		variant = "fire"
+		variant = variant,
+		name = default_name
 	}
 	fire_entries.weapon_kacchainsaw_flamethrower = {
 		dot_damage = 4,
@@ -202,30 +206,14 @@ function FireTweakData:_init_dot_entries_fire(entries)
 		dot_trigger_chance = 1,
 		dot_trigger_max_distance = 1400
 	}
-	fire_entries.ammo_flamethrower_mk2_rare = {
-		dot_damage = 15,
-		dot_length = 1.5,
-		dot_trigger_chance = 0.75,
-		dot_trigger_max_distance = false
-	}
-	fire_entries.ammo_flamethrower_mk2_welldone = {
-		dot_damage = 25,
-		dot_length = 1.5,
-		dot_trigger_chance = 0.75,
-		dot_trigger_max_distance = false
-	}
-	fire_entries.ammo_system_low = {
-		dot_damage = 10,
-		dot_length = 1.5,
-		dot_trigger_chance = 0.75,
-		dot_trigger_max_distance = false
-	}
-	fire_entries.ammo_system_high = {
-		dot_damage = 20,
-		dot_length = 1.5,
-		dot_trigger_chance = 0.75,
-		dot_trigger_max_distance = false
-	}
+	fire_entries.ammo_flamethrower_mk2_rare = table.map_copy(fire_entries.weapon_flamethrower_mk2)
+	fire_entries.ammo_flamethrower_mk2_rare.dot_damage = 15
+	fire_entries.ammo_flamethrower_mk2_welldone = table.map_copy(fire_entries.weapon_flamethrower_mk2)
+	fire_entries.ammo_flamethrower_mk2_welldone.dot_damage = 25
+	fire_entries.ammo_system_low = table.map_copy(fire_entries.weapon_system)
+	fire_entries.ammo_system_low.dot_damage = 15
+	fire_entries.ammo_system_high = table.map_copy(fire_entries.weapon_system)
+	fire_entries.ammo_system_high.dot_damage = 25
 	fire_entries.melee_spoon_gold = {
 		dot_damage = 7,
 		dot_length = 3,
@@ -263,15 +251,15 @@ function FireTweakData:_init_dot_entries_fire(entries)
 	fire_entries.proj_launcher_incendiary_groundfire = {
 		dot_trigger_max_distance = false
 	}
-	fire_entries.proj_launcher_incendiary_arbiter_groundfire = clone(fire_entries.proj_launcher_incendiary_groundfire)
-	fire_entries.equipment_tripmine_groundfire = clone(fire_entries.proj_launcher_incendiary_groundfire)
-	fire_entries.enemy_triad_boss_groundfire = clone(fire_entries.proj_launcher_incendiary_groundfire)
-	fire_entries.enemy_mutator_cloaker_groundfire = {
-		dot_trigger_max_distance = false
-	}
+	fire_entries.proj_launcher_incendiary_arbiter_groundfire = table.map_copy(fire_entries.proj_launcher_incendiary_groundfire)
+	fire_entries.equipment_tripmine_groundfire = table.map_copy(fire_entries.proj_launcher_incendiary_groundfire)
+	fire_entries.enemy_triad_boss_groundfire = table.map_copy(fire_entries.proj_launcher_incendiary_groundfire)
+	fire_entries.enemy_mutator_cloaker_groundfire = table.map_copy(fire_entries.proj_launcher_incendiary_groundfire)
 end
 
 function FireTweakData:_process_dot_entries()
+	local t_set_defaults = table.set_defaults
+
 	for variant, dot_tweaks in pairs(self.dot_entries) do
 		local default_entry = dot_tweaks["default_" .. variant]
 
@@ -282,11 +270,7 @@ function FireTweakData:_process_dot_entries()
 				dot_tweak_data.variant = variant
 
 				if default_entry then
-					for var_name, var in pairs(default_entry) do
-						if dot_tweak_data[var_name] == nil then
-							dot_tweak_data[var_name] = default_entry[var_name]
-						end
-					end
+					t_set_defaults(dot_tweak_data, default_entry)
 				end
 			end
 		end
@@ -301,4 +285,31 @@ function FireTweakData:has_dot(tweak_name)
 	end
 
 	return false
+end
+
+function FireTweakData:mod_add_dot_tweak_entries(new_entries)
+	for dot_type, dot_tweak_entries in pairs(new_entries) do
+		local entries = self.dot_entries[dot_type]
+
+		if not entries then
+			entries = {}
+			self.dot_entries[dot_type] = entries
+		end
+
+		for dot_name, dot_tweak_data in pairs(dot_tweak_entries) do
+			dot_tweak_data.MODDED = true
+
+			if entries[dot_name] then
+				Application:error("[FireTweakData] mod_add_dot_tweak_entries() - dot entry with name \"" .. tostring(dot_name) .. "\" already exists!")
+			else
+				entries[dot_name] = dot_tweak_data
+			end
+		end
+	end
+
+	self:_process_dot_entries()
+
+	if tweak_data.dot then
+		tweak_data.dot:mod_add_dot_tweak_entries(new_entries)
+	end
 end

@@ -1,4 +1,5 @@
 DOTTweakData = DOTTweakData or class()
+DOTTweakData.MAX_DOT_ENTRIES_READ_ONLY = 512
 
 function DOTTweakData:init(tweak_data)
 	self:_init_tweak_data()
@@ -23,30 +24,36 @@ end
 function DOTTweakData:_init_dot_entries_fire(entries, tweak_data)
 	local fire_entries = tweak_data.fire.dot_entries
 
-	if fire_entries then
-		for dot_type, dot_entry in pairs(fire_entries) do
-			if entries[dot_type] then
-				Application:error("[DOTTweakData:_init_dot_entries_fire] A dot entry for type '" .. tostring(dot_type) .. "' already exists.", inspect(entries[dot_type]), inspect(dot_entry))
-			end
+	if not fire_entries then
+		return
+	end
 
-			entries[dot_type] = dot_entry
+	for dot_type, dot_entry in pairs(fire_entries) do
+		if entries[dot_type] then
+			Application:error("[DOTTweakData] _init_dot_entries_fire() - dot entry for type '" .. tostring(dot_type) .. "' already exists.", inspect(entries[dot_type]), inspect(dot_entry))
 		end
+
+		entries[dot_type] = dot_entry
 	end
 end
 
 function DOTTweakData:_init_dot_entries_poison(entries)
+	local variant = "poison"
 	local poison_entries = {}
 
-	entries.poison = poison_entries
-	poison_entries.default_poison = {
+	entries[variant] = poison_entries
+
+	local default_name = "default_" .. variant
+
+	poison_entries[default_name] = {
 		PROCESSED = true,
 		damage_class = "PoisonBulletBase",
 		dot_damage = 25,
 		dot_grace_period = 1,
 		dot_length = 6,
 		dot_tick_period = 0.5,
-		name = "default",
-		variant = "poison"
+		variant = variant,
+		name = default_name
 	}
 	poison_entries.weapon_dotbulletbase = {
 		dot_damage = 0.5
@@ -54,13 +61,13 @@ function DOTTweakData:_init_dot_entries_poison(entries)
 	poison_entries.ammo_proj_bow = {
 		damage_class = "ProjectilesPoisonBulletBase"
 	}
-	poison_entries.ammo_proj_crossbow = clone(poison_entries.ammo_proj_bow)
-	poison_entries.ammo_proj_arblast = clone(poison_entries.ammo_proj_bow)
-	poison_entries.ammo_proj_frankish = clone(poison_entries.ammo_proj_bow)
-	poison_entries.ammo_proj_long = clone(poison_entries.ammo_proj_bow)
-	poison_entries.ammo_proj_ecp = clone(poison_entries.ammo_proj_bow)
-	poison_entries.ammo_proj_elastic = clone(poison_entries.ammo_proj_bow)
-	poison_entries.ammo_proj_dart = clone(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_crossbow = table.map_copy(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_arblast = table.map_copy(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_frankish = table.map_copy(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_long = table.map_copy(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_ecp = table.map_copy(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_elastic = table.map_copy(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_dart = table.map_copy(poison_entries.ammo_proj_bow)
 	poison_entries.ammo_rip = {
 		dot_damage = 12,
 		dot_length = 5,
@@ -98,6 +105,8 @@ function DOTTweakData:_init_dot_entries_poison(entries)
 end
 
 function DOTTweakData:_process_dot_entries()
+	local t_set_defaults = table.set_defaults
+
 	for variant, dot_tweaks in pairs(self.dot_entries) do
 		local default_entry = dot_tweaks["default_" .. variant]
 
@@ -108,11 +117,7 @@ function DOTTweakData:_process_dot_entries()
 				dot_tweak_data.variant = variant
 
 				if default_entry then
-					for var_name, var in pairs(default_entry) do
-						if dot_tweak_data[var_name] == nil then
-							dot_tweak_data[var_name] = default_entry[var_name]
-						end
-					end
+					t_set_defaults(dot_tweak_data, default_entry)
 				end
 			end
 		end
@@ -124,38 +129,32 @@ function DOTTweakData:_setup_networking()
 
 	self._idx_to_name = names_lookup
 
-	if self.dot_entries and next(self.dot_entries) then
-		local idx = 0
+	if self.dot_entries then
+		local modded_entries = {}
+		local t_ins = table.insert
 
 		for variant, dot_tweaks in pairs(self.dot_entries) do
 			for dot_tweak_name, dot_tweak_data in pairs(dot_tweaks) do
-				idx = idx + 1
-				names_lookup[idx] = dot_tweak_name
+				if dot_tweak_data.MODDED then
+					t_ins(modded_entries, dot_tweak_name)
+				else
+					t_ins(names_lookup, dot_tweak_name)
+				end
 			end
 		end
 
 		table.sort(names_lookup)
+		table.sort(modded_entries)
+		table.list_append(names_lookup, modded_entries)
 	end
 
-	local indexes_lookup = {}
+	local limit = DOTTweakData.MAX_DOT_ENTRIES_READ_ONLY
 
-	self._name_to_idx = indexes_lookup
-
-	local tweak_name
-
-	for idx = 1, #names_lookup do
-		tweak_name = names_lookup[idx]
-
-		if indexes_lookup[tweak_name] then
-			Application:error("[DOTTweakData:_setup_networking] Duplicate tweak entry with name '" .. tostring(tweak_name) .. "'. This will cause issues both locally and when syncing if not addressed.")
-		end
-
-		indexes_lookup[tweak_name] = idx
+	if limit < #names_lookup then
+		Application:error("[DOTTweakData] _setup_networking() - amount of tweak entries exceeds limit set for RPC in network_settings.", tostring(#names_lookup) .. " > " .. tostring(limit))
 	end
 
-	if #indexes_lookup > 512 then
-		Application:error("[DOTTweakData:_setup_networking] Total amount of tweak entries exceeds limit set for RPC in network.network_settings. Amount: " .. tostring(#indexes_lookup) .. " | Max amount: " .. tostring(512))
-	end
+	self._name_to_idx = table.reverse_map(names_lookup)
 end
 
 function DOTTweakData:get_sync_index_from_name(tweak_name)
@@ -174,4 +173,28 @@ function DOTTweakData:get_dot_data(tweak_name)
 	end
 
 	return nil
+end
+
+function DOTTweakData:mod_add_dot_tweak_entries(new_entries)
+	for dot_type, dot_tweak_entries in pairs(new_entries) do
+		local entries = self.dot_entries[dot_type]
+
+		if not entries then
+			entries = {}
+			self.dot_entries[dot_type] = entries
+		end
+
+		for dot_name, dot_tweak_data in pairs(dot_tweak_entries) do
+			dot_tweak_data.MODDED = true
+
+			if entries[dot_name] then
+				Application:error("[DOTTweakData] mod_add_dot_tweak_entries() - dot entry with name \"" .. tostring(dot_name) .. "\" already exists!")
+			else
+				entries[dot_name] = dot_tweak_data
+			end
+		end
+	end
+
+	self:_process_dot_entries()
+	self:_setup_networking()
 end

@@ -357,7 +357,7 @@ function CopActionWalk:init(action_desc, common_data)
 	self._sync = Network:is_server()
 	self._skipped_frames = 1
 
-	if self._ext_anim.needs_idle then
+	if not self._was_interrupted and self._ext_anim.needs_idle then
 		self._waiting_full_blend = true
 
 		self:_set_updator("_upd_wait_for_full_blend")
@@ -375,8 +375,6 @@ function CopActionWalk:init(action_desc, common_data)
 	end
 
 	self._ext_movement:enable_update()
-
-	self._is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
 
 	return true
 end
@@ -419,10 +417,6 @@ function CopActionWalk:_init()
 
 	local action_desc = self._action_desc
 	local common_data = self._common_data
-
-	if self._is_civilian then
-		print("common_data ", inspect(common_data))
-	end
 
 	if self._sync then
 		if managers.groupai:state():all_AI_criminals()[common_data.unit:key()] then

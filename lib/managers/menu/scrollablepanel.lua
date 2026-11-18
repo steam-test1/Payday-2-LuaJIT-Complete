@@ -12,6 +12,7 @@ function ScrollablePanel:init(parent_panel, name, data)
 	self._x_padding = data.x_padding ~= nil and data.x_padding or data.padding ~= nil and data.padding or PANEL_PADDING
 	self._y_padding = data.y_padding ~= nil and data.y_padding or data.padding ~= nil and data.padding or PANEL_PADDING
 	self._scrollbar_y_padding = data.scrollbar_y_padding
+	self._scroll_speed = data.scroll_speed or self.SCROLL_SPEED
 	self._update = data.update ~= nil and data.update or self._default_update
 	self._force_scroll_indicators = data.force_scroll_indicators
 
@@ -328,7 +329,7 @@ end
 
 function ScrollablePanel:scroll(x, y, direction)
 	if self:panel():inside(x, y) then
-		self:perform_scroll(SCROLL_SPEED * TimerManager:main():delta_time() * 200, direction)
+		self:perform_scroll(self._scroll_speed * TimerManager:main():delta_time() * 200, direction)
 
 		return true
 	end
@@ -480,13 +481,13 @@ function ScrollablePanel:mouse_moved(button, x, y)
 		return true, "hand"
 	elseif alive(self:panel():child("scroll_up_indicator_arrow")) and self:panel():child("scroll_up_indicator_arrow"):inside(x, y) then
 		if self._pressing_arrow_up then
-			self:perform_scroll(SCROLL_SPEED * 0.1, 1)
+			self:perform_scroll(self._scroll_speed * 0.1, 1)
 		end
 
 		return true, self:panel():child("scroll_up_indicator_arrow"):alpha() > 0 and "link" or "arrow"
 	elseif alive(self:panel():child("scroll_down_indicator_arrow")) and self:panel():child("scroll_down_indicator_arrow"):inside(x, y) then
 		if self._pressing_arrow_down then
-			self:perform_scroll(SCROLL_SPEED * 0.1, -1)
+			self:perform_scroll(self._scroll_speed * 0.1, -1)
 		end
 
 		return true, self:panel():child("scroll_down_indicator_arrow"):alpha() > 0 and "link" or "arrow"
@@ -543,6 +544,7 @@ function HorizontalScrollablePanel:init(parent_panel, name, data)
 	self._y_padding = data.y_padding ~= nil and data.y_padding or data.padding ~= nil and data.padding or PANEL_PADDING
 	self._scrollbar_y_padding = data.scrollbar_y_padding
 	self._update = data.update ~= nil and data.update or self._default_update
+	self._scroll_speed = data.scroll_speed or self.SCROLL_SPEED
 	self._force_scroll_indicators = data.force_scroll_indicators
 
 	local layer = data.layer ~= nil and data.layer or 50
@@ -922,13 +924,13 @@ function HorizontalScrollablePanel:mouse_moved(button, x, y)
 		return true, "hand"
 	elseif self:panel():child("scroll_left_indicator_arrow"):inside(x, y) then
 		if self._pressing_arrow_left then
-			self:perform_scroll(SCROLL_SPEED * 0.1, 1)
+			self:perform_scroll(self._scroll_speed * 0.1, 1)
 		end
 
 		return true, self:panel():child("scroll_left_indicator_arrow"):alpha() > 0 and "link" or "arrow"
 	elseif self:panel():child("scroll_right_indicator_arrow"):inside(x, y) then
 		if self._pressing_arrow_right then
-			self:perform_scroll(SCROLL_SPEED * 0.1, -1)
+			self:perform_scroll(self._scroll_speed * 0.1, -1)
 		end
 
 		return true, self:panel():child("scroll_right_indicator_arrow"):alpha() > 0 and "link" or "arrow"

@@ -586,7 +586,9 @@ end
 function MenuManager:brightness_changed(name, old_value, new_value)
 	local brightness = math.clamp(new_value, _G.tweak_data.menu.MIN_BRIGHTNESS, _G.tweak_data.menu.MAX_BRIGHTNESS)
 
-	Application:set_brightness(brightness)
+	if managers.environment_controller then
+		managers.environment_controller:set_brightness_setting(brightness)
+	end
 end
 
 function MenuManager:effect_quality_changed(name, old_value, new_value)

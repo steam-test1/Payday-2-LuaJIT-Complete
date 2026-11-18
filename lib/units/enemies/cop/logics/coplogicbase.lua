@@ -5,10 +5,11 @@ local mvec3_dir = mvector3.direction
 local mvec3_dot = mvector3.dot
 local mvec3_dis = mvector3.distance
 local mvec3_dis_sq = mvector3.distance_sq
+local mvec3_step = mvector3.step
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 
-CopLogicBase = class()
+CopLogicBase = CopLogicBase or class()
 CopLogicBase._AGGRESSIVE_ALERT_TYPES = {
 	aggression = true,
 	bullet = true,
@@ -115,33 +116,33 @@ function CopLogicBase.draw_reserved_positions(data)
 	local rsrv_pos = data.pos_rsrv
 
 	if rsrv_pos.path then
-		Application:draw_cylinder(rsrv_pos.path.pos, my_pos, 6, 0, 0.3, 0.3)
+		Application:draw_cylinder(rsrv_pos.path.position, my_pos, 6, 0, 0.3, 0.3)
 	end
 
 	if rsrv_pos.move_dest then
-		Application:draw_cylinder(rsrv_pos.move_dest.pos, my_pos, 6, 0.3, 0.3, 0)
+		Application:draw_cylinder(rsrv_pos.move_dest.position, my_pos, 6, 0.3, 0.3, 0)
 	end
 
 	if rsrv_pos.stand then
-		Application:draw_cylinder(rsrv_pos.stand.pos, my_pos, 6, 0.3, 0, 0.3)
+		Application:draw_cylinder(rsrv_pos.stand.position, my_pos, 6, 0.3, 0, 0.3)
 	end
 
 	if my_data.best_cover then
-		local cover_pos = my_data.best_cover[1][5].pos
+		local cover_pos = my_data.best_cover[1][5].position
 
 		Application:draw_cylinder(cover_pos, my_pos, 2, 0.2, 0.3, 0.6)
 		Application:draw_sphere(cover_pos, 10, 0.2, 0.3, 0.6)
 	end
 
 	if my_data.nearest_cover then
-		local cover_pos = my_data.nearest_cover[1][5].pos
+		local cover_pos = my_data.nearest_cover[1][5].position
 
 		Application:draw_cylinder(cover_pos, my_pos, 2, 0.2, 0.6, 0.3)
 		Application:draw_sphere(cover_pos, 8, 0.2, 0.6, 0.3)
 	end
 
 	if my_data.moving_to_cover then
-		local cover_pos = my_data.moving_to_cover[1][5].pos
+		local cover_pos = my_data.moving_to_cover[1][5].position
 
 		Application:draw_cylinder(cover_pos, my_pos, 2, 0.3, 0.6, 0.2)
 		Application:draw_sphere(cover_pos, 8, 0.3, 0.6, 0.2)
@@ -153,21 +154,21 @@ function CopLogicBase.draw_reserved_covers(data)
 	local my_data = data.internal_data
 
 	if my_data.best_cover then
-		local cover_pos = my_data.best_cover[1][5].pos
+		local cover_pos = my_data.best_cover[1][5].position
 
 		Application:draw_cylinder(cover_pos, my_pos, 2, 0.2, 0.3, 0.6)
 		Application:draw_sphere(cover_pos, 10, 0.2, 0.3, 0.6)
 	end
 
 	if my_data.nearest_cover then
-		local cover_pos = my_data.nearest_cover[1][5].pos
+		local cover_pos = my_data.nearest_cover[1][5].position
 
 		Application:draw_cylinder(cover_pos, my_pos, 2, 0.2, 0.6, 0.3)
 		Application:draw_sphere(cover_pos, 8, 0.2, 0.6, 0.3)
 	end
 
 	if my_data.moving_to_cover then
-		local cover_pos = my_data.moving_to_cover[1][5].pos
+		local cover_pos = my_data.moving_to_cover[1][5].position
 
 		Application:draw_cylinder(cover_pos, my_pos, 2, 0.3, 0.6, 0.2)
 		Application:draw_sphere(cover_pos, 8, 0.3, 0.6, 0.2)
@@ -1060,7 +1061,7 @@ function CopLogicBase._am_i_important_to_player(record, my_key)
 end
 
 function CopLogicBase.should_duck_on_alert(data, alert_data)
-	if not data.important or data.char_tweak.allowed_poses and not data.char_tweak.allowed_poses.crouch or alert_data[1] == "voice" or data.unit:anim_data().crouch or data.unit:movement():chk_action_forbidden("walk") then
+	if not data.important or data.char_tweak.allowed_poses and not data.char_tweak.allowed_poses.crouch or data.unit:anim_data().crouch or data.unit:movement():chk_action_forbidden("walk") then
 		return
 	end
 
@@ -1306,6 +1307,7 @@ function CopLogicBase._chk_call_the_police(data)
 end
 
 function CopLogicBase.identify_attention_obj_instant(data, att_u_key)
+	local t = TimerManager:game():time()
 	local att_obj_data = data.detected_attention_objects[att_u_key]
 	local is_new = not att_obj_data
 
@@ -1316,7 +1318,7 @@ function CopLogicBase.identify_attention_obj_instant(data, att_u_key)
 
 		if not att_obj_data.identified then
 			att_obj_data.identified = true
-			att_obj_data.identified_t = data.t
+			att_obj_data.identified_t = t
 			att_obj_data.notice_progress = nil
 			att_obj_data.prev_notice_chk_t = nil
 
@@ -1337,9 +1339,9 @@ function CopLogicBase.identify_attention_obj_instant(data, att_u_key)
 			local settings = attention_info.handler:get_attention(data.SO_access, nil, nil, data.team)
 
 			if settings then
-				att_obj_data = CopLogicBase._create_detected_attention_object_data(data.t, data.unit, att_u_key, attention_info, settings)
+				att_obj_data = CopLogicBase._create_detected_attention_object_data(t, data.unit, att_u_key, attention_info, settings)
 				att_obj_data.identified = true
-				att_obj_data.identified_t = data.t
+				att_obj_data.identified_t = t
 				att_obj_data.notice_progress = nil
 				att_obj_data.prev_notice_chk_t = nil
 
@@ -1778,21 +1780,29 @@ function CopLogicBase.chk_am_i_aimed_at(data, attention_obj, max_dot)
 end
 
 function CopLogicBase._chk_alert_obstructed(my_listen_pos, alert_data)
-	if alert_data[3] then
-		local alert_epicenter
+	local alert_type = alert_data[1]
 
-		if alert_data[1] == "bullet" then
-			alert_epicenter = tmp_vec1
-
-			mvector3.step(alert_epicenter, alert_data[2], alert_data[6], 50)
-		else
-			alert_epicenter = alert_data[2]
-		end
-
-		local ray = World:raycast("ray", my_listen_pos, alert_epicenter, "slot_mask", managers.slot:get_mask("AI_visibility"), "ray_type", "ai_vision", "report")
-
-		if ray and alert_data[1] == "footstep" then
-			return true
-		end
+	if alert_type ~= "footstep" then
+		return false
 	end
+
+	local alert_epicenter = alert_data[2]
+	local alert_radius = alert_data[3]
+
+	if not alert_epicenter or not alert_radius then
+		return false
+	end
+
+	local alert_head_pos = alert_data[6]
+	local epicenter = alert_epicenter
+
+	if alert_head_pos then
+		epicenter = tmp_vec1
+
+		mvec3_step(epicenter, alert_epicenter, alert_head_pos, 50)
+	end
+
+	local ray = data.unit:raycast("ray", my_listen_pos, alert_epicenter, "slot_mask", managers.slot:get_mask("AI_visibility"), "ray_type", "ai_vision", "report")
+
+	return ray and true or false
 end

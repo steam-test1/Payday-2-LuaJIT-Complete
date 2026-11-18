@@ -44,7 +44,7 @@ function RaycastWeaponBase:init(unit)
 	self._reload_part_types = td.part_drop_types
 	self._aim_assist_data = td.aim_assist
 	self._autohit_data = td.autohit
-	self._autohit_current = self._autohit_data and self._autohit_data.INIT_RATIO
+	self._autohit_current = self._autohit_data and 1 - (self._autohit_data.INIT_RATIO or 0) or nil
 	self._can_shoot_through_shield = td.can_shoot_through_shield
 	self._can_shoot_through_enemy = td.can_shoot_through_enemy
 	self._can_shoot_through_wall = td.can_shoot_through_wall
@@ -270,6 +270,13 @@ function RaycastWeaponBase:get_use_data(character_setup)
 end
 
 function RaycastWeaponBase:setup(setup_data, damage_multiplier)
+	setup_data.ignore_units = setup_data.ignore_units or {}
+	setup_data.ignore_units_map = {}
+
+	for _, unit in ipairs(setup_data.ignore_units) do
+		setup_data.ignore_units_map[unit:key()] = true
+	end
+
 	self._autoaim = setup_data.autoaim
 
 	local td = tweak_data.weapon[self._name_id]
@@ -422,6 +429,10 @@ function RaycastWeaponBase:_fire_sound()
 	end
 
 	self:play_tweak_data_sound(self:fire_mode() == "auto" and not self:weapon_tweak_data().sounds.fire_single and "fire_auto" or "fire_single", "fire")
+end
+
+function RaycastWeaponBase:get_next_firing_allowed_t()
+	return self._next_fire_allowed
 end
 
 function RaycastWeaponBase:start_shooting_allowed()
@@ -611,7 +622,10 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 	end
 
 	self:_build_suppression(ray_res.enemies_in_cone, suppr_mul)
-	managers.player:send_message(Message.OnWeaponFired, nil, self._unit, ray_res)
+
+	if self._on_fired_message_id then
+		managers.player:send_message(self._on_fired_message_id, nil, self._unit, ray_res)
+	end
 
 	return ray_res
 end
@@ -1082,7 +1096,11 @@ function RaycastWeaponBase:_check_tango_achievements(cop_kill_count)
 end
 
 function RaycastWeaponBase:get_current_autohit_chance_for_roll()
-	return self._autohit_data and 1 - math_clamp((self._autohit_current - self._autohit_data.MIN_RATIO) / (self._autohit_data.MAX_RATIO - self._autohit_data.MIN_RATIO), 0, 1)
+	if not self._autohit_data then
+		return 0
+	end
+
+	return 1 - math_clamp((self._autohit_current - self._autohit_data.MIN_RATIO) / (self._autohit_data.MAX_RATIO - self._autohit_data.MIN_RATIO), 0, 1)
 end
 
 function RaycastWeaponBase:get_aim_assist(...)
@@ -1450,7 +1468,7 @@ function RaycastWeaponBase:damage_player(col_ray, from_pos, direction, params)
 			unit:character_damage():build_suppression(self._suppression)
 		end
 
-		if proj_len_sq < 900 and (not params or not params.guaranteed_miss) then
+		if (not params or not params.guaranteed_miss) and not self._setup.ignore_units_map[unit:key()] and proj_len_sq < 900 then
 			if World:raycast("ray", from_pos, head_pos, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "report") then
 				return nil, ray_data
 			else
@@ -1490,7 +1508,7 @@ function RaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
 	return animations and animations[anim]
 end
 
-function RaycastWeaponBase:_get_anim_legth_modifier(anim)
+function RaycastWeaponBase:_get_anim_legth_modifier(anim, length)
 	return length
 end
 
@@ -2297,23 +2315,31 @@ function RaycastWeaponBase:_get_sound_event(event, alternative_event)
 end
 
 function RaycastWeaponBase:add_ignore_unit(unit)
-	local ignore_units = self._setup.ignore_units
+	local u_key = unit:key()
 
-	if not ignore_units or table.contains(ignore_units, unit) then
-		return
+	if self._setup.ignore_units_map[u_key] then
+		return false
 	end
 
-	table.insert(ignore_units, unit)
+	self._setup.ignore_units_map[u_key] = true
+
+	table.insert(self._setup.ignore_units, unit)
+
+	return true
 end
 
 function RaycastWeaponBase:remove_ignore_unit(unit)
-	local ignore_units = self._setup.ignore_units
+	local u_key = unit:key()
 
-	if not ignore_units then
-		return
+	if not self._setup.ignore_units_map[u_key] then
+		return false
 	end
 
-	table.delete(ignore_units, unit)
+	self._setup.ignore_units_map[u_key] = nil
+
+	table.delete(self._setup.ignore_units, unit)
+
+	return true
 end
 
 function RaycastWeaponBase:pre_destroy(unit)
@@ -2743,6 +2769,22 @@ function InstantBulletBase:play_impact_sound_and_effects(weapon_unit, col_ray, n
 	managers.game_play_central:play_impact_sound_and_effects(self:_get_sound_and_effects_params(weapon_unit, col_ray, no_sound))
 end
 
+function InstantBulletBase.determine_origin_safe(col_ray, weapon_unit, user_unit)
+	local origin
+
+	if alive(user_unit) then
+		origin = user_unit:position()
+	elseif alive(weapon_unit) then
+		origin = weapon_unit:position()
+	elseif col_ray.ray and col_ray.distance then
+		origin = -col_ray.ray * col_ray.distance
+	else
+		origin = -col_ray.unit:rotation():y() * 5
+	end
+
+	return origin
+end
+
 function InstantBulletBase:give_impact_damage(col_ray, weapon_unit, user_unit, damage, armor_piercing, shield_knock, knock_down, stagger, variant)
 	local action_data = {}
 
@@ -2753,7 +2795,7 @@ function InstantBulletBase:give_impact_damage(col_ray, weapon_unit, user_unit, d
 	action_data.col_ray = col_ray
 	action_data.armor_piercing = armor_piercing
 	action_data.shield_knock = shield_knock
-	action_data.origin = alive(user_unit) and user_unit:position() or Vector3()
+	action_data.origin = self.determine_origin_safe(col_ray, weapon_unit, user_unit)
 	action_data.knock_down = knock_down
 	action_data.stagger = stagger
 
@@ -3252,7 +3294,7 @@ function DragonBreathBulletBase:give_impact_damage(col_ray, weapon_unit, user_un
 	action_data.col_ray = col_ray
 	action_data.armor_piercing = armor_piercing
 	action_data.shield_knock = shield_knock
-	action_data.origin = alive(user_unit) and user_unit:position() or Vector3()
+	action_data.origin = self.determine_origin_safe(col_ray, weapon_unit, user_unit)
 	action_data.knock_down = knock_down
 	action_data.stagger = stagger
 
@@ -3498,7 +3540,7 @@ function DazingInstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, d
 				damage = 0,
 				variant = "hurt_sick",
 				attacker_unit = user_unit,
-				origin = alive(user_unit) and user_unit:position() or Vector3(),
+				origin = self.determine_origin_safe(col_ray, weapon_unit, user_unit),
 				weapon_unit = weapon_unit,
 				col_ray = col_ray
 			}

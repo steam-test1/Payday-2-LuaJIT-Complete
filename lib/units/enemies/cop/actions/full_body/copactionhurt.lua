@@ -1803,7 +1803,7 @@ end
 
 function CopActionHurt:save(save_data)
 	for i, k in pairs(self._action_desc) do
-		if type_name(k) ~= "Unit" or alive(k) then
+		if type_name(k) ~= "Unit" then
 			save_data[i] = k
 		end
 	end
@@ -1989,7 +1989,7 @@ function CopActionHurt:clbk_shooting_hurt()
 	local fire_obj = self._weapon_unit:base().fire_object and self._weapon_unit:base():fire_object()
 
 	if fire_obj then
-		self._weapon_unit:base():singleshot(fire_obj:position(), fire_obj:rotation(), 1, false, nil, nil, nil, nil)
+		self._weapon_unit:base():singleshot(fire_obj:position(), fire_obj:rotation():y(), 1, false, nil, nil, nil, nil)
 	end
 end
 

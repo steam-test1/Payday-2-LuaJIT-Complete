@@ -2552,26 +2552,30 @@ function LevelsTweakData:get_music_event_ext_ghost()
 	return table.random(ghost_music_exts), level_data.music_ext_start
 end
 
-function LevelsTweakData:get_default_team_ID(type)
-	local lvl_tweak = self[Global.level_data.level_id]
+LevelsTweakData.DEFAULT_ID_MAP = {
+	combatant = "law1",
+	converted_enemy = "converted_enemy",
+	escort = "escort",
+	gangster = "mobster1",
+	hacked_turret = "hacked_turret",
+	mobster_boss = "mobster_boss",
+	non_combatant = "neutral1",
+	player = "criminal1"
+}
 
-	if lvl_tweak and lvl_tweak.default_teams and lvl_tweak.default_teams[type] then
-		if lvl_tweak.teams[lvl_tweak.default_teams[type]] then
-			return lvl_tweak.default_teams[type]
+function LevelsTweakData:get_default_team_ID(team_type)
+	local lvl_tweak = self[Global.level_data.level_id]
+	local lvl_default_teams = lvl_tweak and lvl_tweak.default_teams and lvl_tweak.default_teams[team_type]
+
+	if lvl_default_teams then
+		if lvl_tweak.teams and lvl_tweak.teams[lvl_default_teams] then
+			return lvl_tweak.default_teams[team_type]
 		else
-			debug_pause("[LevelsTweakData:get_default_player_team_ID] Team not defined ", lvl_tweak.default_teams[type], "in", Global.level_data.level_id)
+			debug_pause("[LevelsTweakData:get_default_player_team_ID] Team not defined ", lvl_tweak.default_teams[team_type], "in", Global.level_data.level_id)
 		end
 	end
 
-	if type == "player" then
-		return "criminal1"
-	elseif type == "combatant" then
-		return "law1"
-	elseif type == "non_combatant" then
-		return "neutral1"
-	else
-		return "mobster1"
-	end
+	return self.DEFAULT_ID_MAP[team_type] or "mobster1"
 end
 
 function LevelsTweakData:get_team_setup()
@@ -2657,12 +2661,7 @@ function LevelsTweakData:get_default_team_IDs()
 
 	local default_team_IDs = lvl_tweak and lvl_tweak.default_teams
 
-	default_team_IDs = default_team_IDs or {
-		player = self:get_default_team_ID("player"),
-		combatant = self:get_default_team_ID("combatant"),
-		non_combatant = self:get_default_team_ID("non_combatant"),
-		gangster = self:get_default_team_ID("gangster")
-	}
+	default_team_IDs = default_team_IDs or table.map_copy(self.DEFAULT_ID_MAP)
 
 	return default_team_IDs
 end

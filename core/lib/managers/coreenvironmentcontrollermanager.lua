@@ -420,6 +420,8 @@ local ids_LUT_settings = Idstring("lut_settings")
 local ids_LUT_settings_a = Idstring("LUT_settings_a")
 local ids_LUT_settings_b = Idstring("LUT_settings_b")
 local ids_LUT_contrast = Idstring("contrast")
+local ids_brightness_post = Idstring("brightness_post_processor")
+local ids_brightness_value = Idstring("brightness")
 
 function CoreEnvironmentControllerManager:refresh_render_settings(vp)
 	if not alive(self._vp) then
@@ -432,7 +434,7 @@ function CoreEnvironmentControllerManager:refresh_render_settings(vp)
 		color_grading = managers.user:get_setting("video_color_grading") or self._default_color_grading
 	end
 
-	self._vp:vp():set_post_processor_effect("World", Idstring("color_grading_post"), Idstring(color_grading))
+	self._vp:vp():set_post_processor_effect("World", ids_LUT_post, Idstring(color_grading))
 	self._vp:vp():set_post_processor_effect("World", ids_hdr_post_processor, Idstring(managers.user:get_setting("light_adaption") and "default" or "no_light_adaption"))
 end
 
@@ -615,6 +617,7 @@ function CoreEnvironmentControllerManager:_update_post_effects()
 	self:set_ao_setting(managers.user:get_setting("video_ao"))
 	self:set_parallax_setting(managers.user:get_setting("parallax_mapping"))
 	self:set_aa_setting(managers.user:get_setting("video_aa"))
+	self:set_brightness_setting(managers.user:get_setting("brightness"))
 end
 
 function CoreEnvironmentControllerManager:_create_dof_tweak_data()
@@ -783,6 +786,10 @@ function CoreEnvironmentControllerManager:set_ao_setting(setting, vp)
 			end
 		end
 	end
+end
+
+function CoreEnvironmentControllerManager:set_brightness_setting(value)
+	set_post_material_parameter(ids_brightness_post, "brightness", ids_brightness_value, value)
 end
 
 function CoreEnvironmentControllerManager:remove_dof_tweak_data(remove_setting_name)

@@ -13,6 +13,7 @@ function LookAtTriggerUnitElement:init(unit)
 	table.insert(self._save_values, "sensitivity")
 	table.insert(self._save_values, "distance")
 	table.insert(self._save_values, "in_front")
+	table.insert(self._save_values, "raycheck")
 end
 
 function LookAtTriggerUnitElement:update_selected(t, dt)
@@ -21,7 +22,7 @@ function LookAtTriggerUnitElement:update_selected(t, dt)
 
 		brush:set_color(Color(0.15, 1, 1, 1))
 
-		local pen = Draw:pen(Color(0.15, 0.5, 0.5, 0.5))
+		local pen = Draw:pen(self._hed.raycheck and Color(0.15, 0.3, 0.5, 0.3) or Color(0.15, 0.5, 0.5, 0.5))
 
 		if not self._hed.in_front then
 			brush:sphere(self._unit:position(), self._hed.distance, 4)
@@ -80,5 +81,6 @@ function LookAtTriggerUnitElement:_build_panel(panel, panel_sizer)
 		min = 0
 	}, "(Optional) Sets a distance to use with the check (in meters)")
 	self:_build_value_checkbox(panel, panel_sizer, "in_front", "Only in front")
+	self:_build_value_checkbox(panel, panel_sizer, "raycheck", "Check visible with raycast")
 	self:_add_help_text("Interval defines how offen the check should be done. Sensitivity defines how precise the look angle must be. A sensitivity of 0.999 means that you need to look almost directly at it, 0.5 means that you will get the trigger somewhere at the edge of the screen (might be outside or inside). \n\nDistance(in meters) can be used as a filter to the trigger (0 means no distance filtering)")
 end

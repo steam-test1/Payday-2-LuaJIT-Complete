@@ -84,6 +84,18 @@ function InstancesLayer:do_spawn_unit(name, pos, rot)
 	return
 end
 
+function InstancesLayer:get_preview_unit(name)
+	name = name or self._selected_predefined_instance
+
+	if not name then
+		return
+	end
+
+	local preview_unit = self._predefined_instances[name].preview_unit or nil
+
+	return preview_unit
+end
+
 function InstancesLayer:_mouse_create_instance()
 	if not self._grab and not self:condition() and self._wants_to_create then
 		self._wants_to_create = false

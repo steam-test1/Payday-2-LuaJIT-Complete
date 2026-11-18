@@ -9,31 +9,35 @@ end
 function SyncMaterials:save(data)
 	data.materials = {}
 
-	for _, name in pairs(self._materials) do
-		local material = self._unit:material(Idstring(name))
+	if self._materials then
+		for _, name in pairs(self._materials) do
+			local material = self._unit:material(Idstring(name))
 
-		if material then
-			local serialized = {}
+			if material then
+				local serialized = {}
 
-			serialized.time = material:time()
-			serialized.playing_speed = material:is_playing() and material:playing_speed()
-			serialized.diffuse_color = material:diffuse_color()
-			serialized.diffuse_color_alpha = material:diffuse_color_alpha()
-			serialized.glossiness = material:glossiness()
-			serialized.render_template = material:render_template()
-			serialized.variables = {}
+				serialized.time = material:time()
+				serialized.playing_speed = material:is_playing() and material:playing_speed()
+				serialized.diffuse_color = material:diffuse_color()
+				serialized.diffuse_color_alpha = material:diffuse_color_alpha()
+				serialized.glossiness = material:glossiness()
+				serialized.render_template = material:render_template()
+				serialized.variables = {}
 
-			for _, variable in ipairs(material:variables()) do
-				table.insert(serialized.variables, {
-					name = variable.name,
-					value = material:get_variable(variable.name)
-				})
+				for _, variable in ipairs(material:variables()) do
+					table.insert(serialized.variables, {
+						name = variable.name,
+						value = material:get_variable(variable.name)
+					})
+				end
+
+				data.materials[name] = serialized
+			else
+				debug_pause("[SyncMaterials:save] Failed to find material with name " .. tostring(name) .. " in unit", self._unit)
 			end
-
-			data.materials[name] = serialized
-		else
-			debug_pause("[SyncMaterials:save] Failed to find material with name " .. tostring(name) .. " in unit", self._unit)
 		end
+	else
+		debug_pause("[SyncMaterials:save] _materials is missing from unit", self._unit)
 	end
 end
 

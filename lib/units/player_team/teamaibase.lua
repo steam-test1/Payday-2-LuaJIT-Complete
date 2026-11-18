@@ -1,4 +1,5 @@
 TeamAIBase = TeamAIBase or class(CopBase)
+TeamAIBase._is_team_ai = true
 
 function TeamAIBase:post_init()
 	self._ext_movement = self._unit:movement()

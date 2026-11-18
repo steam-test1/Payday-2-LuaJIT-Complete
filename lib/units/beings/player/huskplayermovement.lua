@@ -424,6 +424,10 @@ function HuskPlayerMovement:clbk_enemy_weapons_hot()
 	self._can_reserve_positions = self._is_server or nil
 end
 
+function HuskPlayerMovement:pos_rsrv_id()
+	return self._pos_rsrv_id
+end
+
 function HuskPlayerMovement:set_character_anim_variables()
 	local char_name = managers.criminals:character_name_by_unit(self._unit)
 

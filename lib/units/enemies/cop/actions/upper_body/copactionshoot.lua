@@ -688,6 +688,20 @@ function CopActionShoot:_get_unit_shoot_pos(t, pos, dis, w_tweak, falloff, i_ran
 		hit_chance = 0
 	end
 
+	local smoke_spread
+
+	if self._ext_movement.in_smoke then
+		local in_smoke, variant, smoke_tweak = self._ext_movement:in_smoke()
+
+		if in_smoke and math.random() > smoke_tweak.accuracy_roll_chance then
+			hit_chance = 0
+
+			local extra_spread = smoke_tweak.accuracy_fail_spread
+
+			smoke_spread = math.random(extra_spread[1], extra_spread[2])
+		end
+	end
+
 	if hit_chance > math.random() then
 		mvec3_set(shoot_hist.m_last_pos, pos)
 	else
@@ -703,7 +717,7 @@ function CopActionShoot:_get_unit_shoot_pos(t, pos, dis, w_tweak, falloff, i_ran
 		mvec3_rot(error_vec, temp_rot1)
 
 		local miss_min_dis = shooting_local_player and 31 or 150
-		local error_vec_len = miss_min_dis + w_tweak.spread + w_tweak.miss_dis * (1 - focus_prog)
+		local error_vec_len = miss_min_dis + w_tweak.spread + w_tweak.miss_dis * (1 - focus_prog) + (smoke_spread or 0)
 
 		mvec3_set_l(error_vec, error_vec_len)
 		mvec3_add(error_vec, pos)

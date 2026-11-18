@@ -3,9 +3,29 @@ if core then
 	core:import("CoreClass")
 end
 
-nice = math.nice
+local mvec3_set = mvector3.set
+local mvec3_add = mvector3.add
+local mvec3_sub = mvector3.subtract
+local mvec3_mul = mvector3.multiply
+local mvec3_neg = mvector3.negate
+local mvec3_norm = mvector3.normalize
+local mvec3_cross = mvector3.cross
+local mvec3_rot = mvector3.rotate_with
+local mvec3_set_stat = mvector3.set_static
+local mrot_x = mrotation.x
+local mrot_y = mrotation.y
+local mrot_z = mrotation.z
+local mrot_invert = mrotation.invert
+local mrot_set_xyz = mrotation.set_xyz
+local mrot_set_look_at = mrotation.set_look_at
+local tmp_vec1 = Vector3()
+local tmp_vec2 = Vector3()
+local tmp_vec3 = Vector3()
+local tmp_vec4 = Vector3()
+local tmp_vec5 = Vector3()
+local tmp_rot1 = Rotation()
 
-local temp_vec = Vector3()
+nice = math.nice
 
 function rgb_to_hsv(r, g, b)
 	local max = math.max(r, g, b)
@@ -120,19 +140,44 @@ function width_mul(aspect_ratio)
 	return 0.75 * aspect_ratio
 end
 
+local IDS_CO_CABLE = Idstring("co_cable")
+
 function wire_set_midpoint(unit, source, target, middle)
-	local s_pos = unit:get_object(source):position()
-	local e_pos = unit:get_object(target):position()
-	local n = (e_pos - s_pos):normalized():cross(Vector3(0, 0, 1))
-	local dir = (e_pos - s_pos):normalized():cross(n)
-	local m_point = s_pos + (e_pos - s_pos) * 0.5
+	local s_pos = tmp_vec1
+	local e_pos = tmp_vec2
 
-	unit:get_object(middle):set_position(m_point + dir * unit:wire_data().slack)
+	unit:get_object(source):m_position(s_pos)
+	unit:get_object(target):m_position(e_pos)
 
-	local co = unit:get_object(Idstring("co_cable"))
+	local from_to = e_pos
+
+	mvec3_sub(from_to, s_pos)
+
+	local norm = tmp_vec3
+
+	mvec3_set(norm, from_to)
+	mvec3_norm(norm)
+
+	local up = math.UP
+	local dir_offset = tmp_vec4
+
+	mvec3_cross(dir_offset, norm, up)
+	mvec3_cross(dir_offset, norm, dir_offset)
+	mvec3_mul(dir_offset, unit:wire_data().slack)
+
+	local m_point = tmp_vec5
+
+	mvec3_set(m_point, from_to)
+	mvec3_mul(m_point, 0.5)
+	mvec3_add(m_point, s_pos)
+	mvec3_add(m_point, dir_offset)
+	unit:get_object(middle):set_position(m_point)
+
+	local co = unit:get_object(IDS_CO_CABLE)
 
 	if co then
-		co:set_rotation(Rotation:look_at((e_pos - s_pos):normalized(), math.UP))
+		mrot_set_look_at(tmp_rot1, norm, up)
+		co:set_rotation(tmp_rot1)
 	end
 end
 
@@ -300,14 +345,41 @@ function math.spline(points, t)
 	return a0 * t * mu + a1 * mu + a2 * t + a3
 end
 
+function math.spline_vec3(points, t)
+	local mu = t * t
+
+	mvec3_set(tmp_vec1, points[4])
+	mvec3_sub(tmp_vec1, points[3])
+	mvec3_sub(tmp_vec1, points[1])
+	mvec3_add(tmp_vec1, points[2])
+	mvec3_set(tmp_vec2, points[1])
+	mvec3_sub(tmp_vec2, points[2])
+	mvec3_add(tmp_vec2, tmp_vec1)
+	mvec3_set(tmp_vec3, points[3])
+	mvec3_sub(tmp_vec3, points[1])
+
+	local tmp_vec4 = points[2]
+
+	mvec3_mul(tmp_vec1, t * mu)
+	mvec3_mul(tmp_vec2, mu)
+	mvec3_mul(tmp_vec3, t)
+	mvec3_add(tmp_vec1, tmp_vec2)
+	mvec3_add(tmp_vec1, tmp_vec3)
+
+	return tmp_vec1 + tmp_vec4
+end
+
 function math.spline_len(points, n)
 	local len = 0
 	local old_p = points[1]
 
 	for i = 1, n do
-		local p = math.spline(points, i / n)
+		local p = math.spline_vec3(points, i / n)
 
-		len = len + (p - old_p):length()
+		mvec3_set(tmp_vec1, p)
+		mvec3_sub(tmp_vec1, old_p)
+
+		len = len + tmp_vec1:length()
 		old_p = p
 	end
 
@@ -315,18 +387,36 @@ function math.spline_len(points, n)
 end
 
 function math.bezier(points, t)
+	local t_squared = t * t
+	local t_cubed = t_squared * t
 	local p1 = points[1]
 	local p2 = points[2]
 	local p3 = points[3]
 	local p4 = points[4]
-	local t_squared = t * t
-	local t_cubed = t_squared * t
 	local a1 = p1 * ((1 - t) * (1 - t) * (1 - t))
 	local a2 = 3 * p2 * t * (1 - t) * (1 - t)
 	local a3 = 3 * p3 * t_squared * (1 - t)
 	local a4 = p4 * t_cubed
 
 	return a1 + a2 + a3 + a4
+end
+
+function math.bezier_vec3(points, t)
+	local t_squared = t * t
+	local t_cubed = t_squared * t
+
+	mvec3_set(tmp_vec1, points[1])
+	mvec3_set(tmp_vec2, points[2])
+	mvec3_set(tmp_vec3, points[3])
+	mvec3_set(tmp_vec4, points[4])
+	mvec3_mul(tmp_vec1, (1 - t) * (1 - t) * (1 - t))
+	mvec3_mul(tmp_vec2, 3 * (t * (1 - t) * (1 - t)))
+	mvec3_mul(tmp_vec3, 3 * t_squared * (1 - t))
+	mvec3_mul(tmp_vec4, t_cubed)
+	mvec3_add(tmp_vec1, tmp_vec2)
+	mvec3_add(tmp_vec1, tmp_vec3)
+
+	return tmp_vec1 + tmp_vec4
 end
 
 function math.linear_bezier(points, t)
@@ -349,26 +439,34 @@ function math.bezier_len(points, n)
 	local old_p = points[1]
 
 	for i = 1, n do
-		local p = math.bezier(points, i / n)
+		local p = math.bezier_vec3(points, i / n)
 
-		len = len + (p - old_p):length()
+		mvec3_set(tmp_vec1, p)
+		mvec3_sub(tmp_vec1, old_p)
+
+		len = len + tmp_vec1:length()
 		old_p = p
 	end
 
 	return len
 end
 
-function math.point_on_line(l1, l2, p, ret_vector)
+function math.point_on_line(l1, l2, p, m_vector)
+	mvec3_set(tmp_vec1, l2)
+	mvec3_sub(tmp_vec1, l1)
+
 	local u = (p.x - l1.x) * (l2.x - l1.x) + (p.y - l1.y) * (l2.y - l1.y) + (p.z - l1.z) * (l2.z - l1.z)
-	local u = math.clamp(u / math.pow((l2 - l1):length(), 2), 0, 1)
+
+	u = math.clamp(u / math.pow(tmp_vec1:length(), 2), 0, 1)
+
 	local x = l1.x + u * (l2.x - l1.x)
 	local y = l1.y + u * (l2.y - l1.y)
 	local z = l1.z + u * (l2.z - l1.z)
 
-	if ret_vector then
-		mvector3.set_static(ret_vector, x, y, z)
+	if m_vector then
+		mvec3_set_stat(m_vector, x, y, z)
 
-		return
+		return m_vector
 	end
 
 	return Vector3(x, y, z)
@@ -377,7 +475,10 @@ end
 function math.distance_to_line(l1, l2, p)
 	local closest_point = math.point_on_line(l1, l2, p)
 
-	return (closest_point - p):length(), closest_point
+	mvec3_set(tmp_vec1, closest_point)
+	mvec3_sub(tmp_vec1, p)
+
+	return tmp_vec2:length(), closest_point
 end
 
 function math.limitangle(angle)
@@ -395,9 +496,13 @@ function math.world_to_obj(obj, point)
 		return point
 	end
 
-	local vec = point - obj:position()
+	obj:m_position(tmp_vec1)
+	obj:m_rotation(tmp_rot1)
+	mrot_invert(tmp_rot1)
+	mvec3_set(tmp_vec2, point)
+	mvec3_sub(tmp_vec2, tmp_vec1)
 
-	return vec:rotate_with(obj:rotation():inverse())
+	return tmp_vec2:rotate_with(tmp_rot1)
 end
 
 function math.obj_to_world(obj, point)
@@ -405,9 +510,35 @@ function math.obj_to_world(obj, point)
 		return point
 	end
 
-	local vec = point:rotate_with(obj:rotation())
+	obj:m_position(tmp_vec1)
+	obj:m_rotation(tmp_rot1)
+	mvec3_set(tmp_vec2, point)
+	mvec3_rot(tmp_vec2, tmp_rot1)
 
-	return vec + obj:position()
+	return tmp_vec1 + tmp_vec2
+end
+
+function math.obj_to_light_rotation(obj, m_rot)
+	local obj_rot = m_rot or Rotation()
+
+	obj:m_rotation(obj_rot)
+
+	local light_rot_x = tmp_vec1
+
+	mrot_x(obj_rot, light_rot_x)
+	mvec3_neg(light_rot_x)
+
+	local light_rot_y = tmp_vec2
+
+	mrot_y(obj_rot, light_rot_y)
+	mvec3_neg(light_rot_y)
+
+	local light_rot_z = tmp_vec3
+
+	mrot_z(obj_rot, light_rot_z)
+	mrot_set_xyz(obj_rot, light_rot_z, light_rot_x, light_rot_y)
+
+	return obj_rot
 end
 
 function math.within(x, min, max)

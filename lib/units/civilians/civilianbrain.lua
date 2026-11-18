@@ -9,7 +9,7 @@ require("lib/units/civilians/logics/CivilianLogicTrade")
 
 CivilianBrain = CivilianBrain or class(CopBrain)
 CivilianBrain.set_attention_settings = PlayerMovement.set_attention_settings
-CivilianBrain._logics = {
+CivilianBrain._logic_variants.civilian = {
 	inactive = CivilianLogicInactive,
 	idle = CivilianLogicIdle,
 	surrender = CivilianLogicSurrender,
@@ -18,37 +18,8 @@ CivilianBrain._logics = {
 	travel = CivilianLogicTravel,
 	trade = CivilianLogicTrade
 }
-
-function CivilianBrain:init(unit)
-	self._unit = unit
-	self._timer = TimerManager:game()
-
-	self:set_update_enabled_state(false)
-
-	self._current_logic = nil
-	self._current_logic_name = nil
-	self._active = true
-	self._SO_access = managers.navigation:convert_access_flag(tweak_data.character[unit:base()._tweak_table].access)
-	self._slotmask_enemies = managers.slot:get_mask("criminals")
-	CopBrain._reload_clbks[unit:key()] = callback(self, self, "on_reload")
-
-	if unit:base().add_tweak_data_changed_listener then
-		unit:base():add_tweak_data_changed_listener("CivilianBrainTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_tweak_data_changed"))
-	end
-end
-
-function CivilianBrain:update(unit, t, dt)
-	local logic = self._current_logic
-
-	if logic.update then
-		local l_data = self._logic_data
-
-		l_data.t = t
-		l_data.dt = dt
-
-		logic.update(l_data)
-	end
-end
+CivilianBrain._default_logic_variant = "civilian"
+CivilianBrain._tweak_data_clbk_id = "CivilianBrainTweakDataChange"
 
 function CivilianBrain:_reset_logic_data()
 	CopBrain._reset_logic_data(self)

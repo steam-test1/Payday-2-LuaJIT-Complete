@@ -2,9 +2,19 @@ HuskTeamAIInventory = HuskTeamAIInventory or class(HuskCopInventory)
 HuskTeamAIInventory.preload_mask = TeamAIInventory.preload_mask
 HuskTeamAIInventory.clbk_mask_unit_loaded = TeamAIInventory.clbk_mask_unit_loaded
 HuskTeamAIInventory._reset_mask_visibility = TeamAIInventory._reset_mask_visibility
+HuskTeamAIInventory.set_visibility_state = TeamAIInventory.set_visibility_state
 HuskTeamAIInventory.update_ap_ammo = TeamAIInventory.update_ap_ammo
 HuskTeamAIInventory._ensure_weapon_visibility = TeamAIInventory._ensure_weapon_visibility
-HuskTeamAIInventory.set_visibility_state = TeamAIInventory.set_visibility_state
+
+function HuskTeamAIInventory:_chk_setup_data(setup_data)
+	if setup_data.alert_filter then
+		setup_data.alert_filter = nil
+	end
+
+	setup_data.alert_AI = false
+	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI")
+	setup_data.user_sound_variant = setup_data.user_sound_variant or self._unit:base():char_tweak().weapon_voice
+end
 
 function HuskTeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
@@ -26,8 +36,9 @@ function HuskTeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	setup_data.expend_ammo = false
 	setup_data.hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI")
 	setup_data.hit_player = false
-	setup_data.user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice
+	setup_data.user_sound_variant = self._unit:base():char_tweak().weapon_voice
 
+	self:_chk_setup_data(setup_data)
 	new_unit:base():setup(setup_data)
 	TeamAIInventory.add_unit(self, new_unit, equip)
 end

@@ -743,7 +743,7 @@ function TweakData:init()
 
 	self._init_wip_upgrades(self.upgrades)
 
-	self.skilltree = SkillTreeTweakData:new()
+	self.skilltree = SkillTreeTweakData:new(self)
 
 	self._init_wip_skilltree(self.skilltree)
 

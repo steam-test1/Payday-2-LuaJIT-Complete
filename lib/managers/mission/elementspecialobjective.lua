@@ -374,7 +374,11 @@ end
 function ElementSpecialObjective:on_set_enabled()
 	if self:value("interrupt_objective") then
 		if self:enabled() then
-			self:add_element_objective(nil)
+			if self.add_element_objective then
+				self:add_element_objective(nil)
+			else
+				Application:error("[ElementSpecialObjective:on_set_enabled] add_element_objective is not implemented on this")
+			end
 		else
 			self:operation_remove()
 		end
@@ -872,29 +876,9 @@ ElementSpecialObjective._stealth_idles = {
 	"e_so_ntl_stretch_shoulders",
 	"e_so_ntl_watch_look_calm"
 }
-ElementSpecialObjective._stealth_idles_no_loop = {
-	"e_so_ntl_idle_kickpebble",
-	"e_so_ntl_idle_look",
-	"e_so_ntl_idle_look2",
-	"e_so_ntl_idle_clock",
-	"e_so_ntl_idle_brush",
-	"e_so_ntl_idle_stickygum",
-	"e_so_ntl_idle_tired",
-	"e_so_ntl_brush_jacket",
-	"e_so_ntl_brush_shoe",
-	"e_so_ntl_clear_throat",
-	"e_so_ntl_idle_breath",
-	"e_so_ntl_idle_stand",
-	"e_so_ntl_idle_thinking",
-	"e_so_ntl_jawn",
-	"e_so_ntl_look_around",
-	"e_so_ntl_look_behind",
-	"e_so_ntl_look_up",
-	"e_so_ntl_restless",
-	"e_so_ntl_scratches_chin",
-	"e_so_ntl_stretch_shoulders",
-	"e_so_ntl_watch_look_calm"
-}
+ElementSpecialObjective._stealth_idles_no_loop = table.list_copy(ElementSpecialObjective._stealth_idles)
+
+table.delete(ElementSpecialObjective._stealth_idles_no_loop, "e_so_ntl_idle_look3")
 
 function ElementSpecialObjective:_check_new_stealth_idle()
 	if self._values.so_action then

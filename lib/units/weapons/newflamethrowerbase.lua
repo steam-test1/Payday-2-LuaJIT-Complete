@@ -562,25 +562,20 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 	do
 		local units_hit = {}
 		local hit_body, hit_unit, hit_u_key
-		local ignore_units = self._setup.ignore_units
-		local t_contains = table.contains
+		local ignore_units_map = self._setup.ignore_units_map
 		local in_slot_f = Unit.in_slot
 		local enemy_mask = self.enemy_mask
 
 		for i = 1, #hit_bodies do
 			hit_body = hit_bodies[i]
 			hit_unit = hit_body:unit()
+			hit_u_key = hit_unit:key()
 
-			if not t_contains(ignore_units, hit_unit) then
-				hit_u_key = hit_unit:key()
+			if not ignore_units_map[hit_u_key] and not units_hit[hit_u_key] then
+				valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
 
-				if not units_hit[hit_u_key] then
-					units_hit[hit_u_key] = true
-					valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
-
-					if in_slot_f(hit_unit, enemy_mask) then
-						enemies_hit[hit_u_key] = hit_unit
-					end
+				if in_slot_f(hit_unit, enemy_mask) then
+					enemies_hit[hit_u_key] = hit_unit
 				end
 			end
 		end

@@ -247,12 +247,13 @@ end
 
 function PlayerInventory:add_unit(new_unit, is_equip, equip_is_instant)
 	local new_selection = {}
-	local use_data = new_unit:base():get_use_data(self._use_data_alias)
+	local base_ext = new_unit:base()
+	local use_data = base_ext:get_use_data(self._use_data_alias)
 
 	new_selection.use_data = use_data
 	new_selection.unit = new_unit
 
-	new_unit:base():add_destroy_listener(self._listener_id, callback(self, self, "clbk_weapon_unit_destroyed"))
+	base_ext:add_destroy_listener(self._listener_id, callback(self, self, "clbk_weapon_unit_destroyed"))
 
 	local selection_index = use_data.selection_index
 
@@ -313,6 +314,10 @@ function PlayerInventory:get_latest_addition_hud_data()
 	}
 end
 
+function PlayerInventory:_chk_setup_data(setup_data)
+	return
+end
+
 function PlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 	for _, selection in pairs(self._available_selections) do
 		if selection.unit:name() == new_unit_name then
@@ -343,6 +348,7 @@ function PlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 	setup_data.alert_AI = true
 	setup_data.alert_filter = self._unit:movement():SO_access()
 
+	self:_chk_setup_data(setup_data)
 	new_unit:base():setup(setup_data)
 	self:add_unit(new_unit, equip, instant)
 end
@@ -353,15 +359,16 @@ function PlayerInventory:add_unit_by_factory_name(factory_name, equip, instant, 
 	managers.dyn_resource:load(ids_unit, ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 
 	local new_unit = World:spawn_unit(ids_unit_name, Vector3(), Rotation())
+	local base_ext = new_unit:base()
 
-	new_unit:base():set_factory_data(factory_name)
-	new_unit:base():set_cosmetics_data(cosmetics)
-	new_unit:base():set_texture_switches(texture_switches)
+	base_ext:set_factory_data(factory_name)
+	base_ext:set_cosmetics_data(cosmetics)
+	base_ext:set_texture_switches(texture_switches)
 
 	if blueprint then
-		new_unit:base():assemble_from_blueprint(factory_name, blueprint)
+		base_ext:assemble_from_blueprint(factory_name, blueprint)
 	else
-		new_unit:base():assemble(factory_name)
+		base_ext:assemble(factory_name)
 	end
 
 	local ignore_units = {
@@ -389,11 +396,12 @@ function PlayerInventory:add_unit_by_factory_name(factory_name, equip, instant, 
 		setup_data.panic_suppression_skill = not managers.weapon_factory:has_perk("silencer", factory_name, blueprint) and managers.player:has_category_upgrade("player", "panic_suppression") or false
 	end
 
-	new_unit:base():setup(setup_data)
+	self:_chk_setup_data(setup_data)
+	base_ext:setup(setup_data)
 	self:add_unit(new_unit, equip, instant)
 
-	if new_unit:base().AKIMBO then
-		new_unit:base():create_second_gun()
+	if base_ext.AKIMBO then
+		base_ext:create_second_gun()
 	end
 end
 

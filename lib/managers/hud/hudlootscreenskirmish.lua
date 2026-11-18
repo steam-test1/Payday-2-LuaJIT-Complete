@@ -192,7 +192,7 @@ function HUDLootScreenSkirmish:create_peers()
 	self._peer_width = peer_panel_width
 
 	for peer_id = 1, max_peers do
-		peer_color = tweak_data.chat_colors[peer_id] or tweak_data.chat_colors[#tweak_data.chat_colors]
+		peer_color = tweak_data.chat_colors[peer_id] or tweak_data.chat_colors[#tweak_data.chat_colors] or nil
 		placer = UiPlacer:new(SMALL_PADDING, SMALL_PADDING, SMALL_PADDING, PADDING)
 		peer_panel = ExtendedPanel:new(self._peers_panel, {
 			visible = false,
@@ -202,8 +202,18 @@ function HUDLootScreenSkirmish:create_peers()
 			h = peer_panel_height
 		})
 
+		BoxGuiObject:new(peer_panel:panel({
+			layer = 100
+		}), {
+			sides = {
+				1,
+				1,
+				2,
+				2
+			}
+		})
 		peer_panel:rect({
-			alpha = 0.1,
+			alpha = 0.25,
 			layer = -1,
 			color = Color.black
 		})
@@ -377,6 +387,8 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 		return
 	end
 
+	print("[HUDLootScreenSkirmish] making lootdrop", data.reward_list and #data.reward_list)
+
 	data.active = true
 
 	local reward_list = data.reward_list
@@ -465,7 +477,10 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 		elseif category == "xp" then
 			text = false
 			value_id = tweak_data.blackmarket.xp[item_id].value_id
-			xp = xp + (tweak_data:get_value("experience_manager", "loot_drop_value", value_id) or 0)
+
+			local amount = tweak_data:get_value("experience_manager", "loot_drop_value", value_id) or 0
+
+			xp = xp + amount
 		elseif category == "safes" then
 			td = tweak_data.economy.safes[item_id]
 		elseif category == "drills" then
@@ -687,7 +702,7 @@ function HUDLootScreenSkirmish:show()
 
 	self._active = true
 
-	if not self._video then
+	if not self._video and SystemInfo:platform() ~= Idstring("X360") then
 		local variant
 
 		variant = managers.dlc:is_installing() and 1 or math.random(8)
@@ -861,14 +876,18 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 		category = "weapon_color_skins"
 	end
 
-	local texture_loaded_clbk = callback(self, self, "_texture_loaded_clbk", {
+	local texture_loaded_clbk_params = {
 		panel = panel,
 		is_pattern = category == "textures" and true or false
-	})
-	local texture_path, rarity_path
+	}
+	local texture_loaded_clbk = callback(self, self, "_texture_loaded_clbk", texture_loaded_clbk_params)
+	local texture_path, rarity_path, texture_color
 
 	if category == "textures" then
 		texture_path = tweak_data.blackmarket.textures[item_id].texture
+	elseif category == "materials" then
+		texture_path, texture_color = managers.blackmarket:get_mask_materials_icon(item_id)
+		texture_loaded_clbk_params.texture_color = texture_color
 	elseif category == "cash" then
 		texture_path = "guis/textures/pd2/blackmarket/cash_drop"
 
@@ -1001,6 +1020,7 @@ end
 function HUDLootScreenSkirmish:_texture_loaded_clbk(params, texture_idstring)
 	local is_pattern = params.is_pattern
 	local panel = params.panel
+	local texture_color = params.texture_color
 
 	if not alive(panel) then
 		TextureCache:unretrieve(texture_idstring)
@@ -1011,7 +1031,8 @@ function HUDLootScreenSkirmish:_texture_loaded_clbk(params, texture_idstring)
 	local item = panel:bitmap({
 		blend_mode = "normal",
 		layer = 1,
-		texture = texture_idstring
+		texture = texture_idstring,
+		color = texture_color
 	})
 
 	TextureCache:unretrieve(texture_idstring)

@@ -131,6 +131,8 @@ function PlayerManager:init()
 	self._melee_dmg_mul = 1
 	self._accuracy_multiplier = 1
 	self._damage_absorption = {}
+	self._smoke_screen_effects = {}
+	self._poison_gas_effects = {}
 	self._consumable_upgrades = {}
 end
 
@@ -1248,6 +1250,55 @@ function PlayerManager:aquire_weapon(upgrade, id)
 	if not player then
 		return
 	end
+end
+
+function PlayerManager:is_player_looking_at(target_pos, data)
+	local player = data and data.player_unit or managers.player:player_unit()
+	local sensitivity = data and data.sensitivity or 0.65
+
+	if alive(player) and player:camera() then
+		local camera_fwd = player:camera():forward()
+		local camera_pos = player:camera():position()
+		local dir = target_pos - camera_pos
+
+		if data then
+			if data.distance and data.distance > 0 then
+				local distance = dir:length()
+
+				if distance > data.distance then
+					return false
+				end
+			end
+
+			if data.at_facing then
+				local dot = camera_fwd:dot(data.at_facing)
+
+				if dot > 0 then
+					return false
+				end
+			end
+
+			if data.raycheck then
+				local ray = World:raycast("ray", camera_pos, target_pos, "ray_type", "ai_vision", "slot_mask", managers.slot:get_mask("world_geometry"), "report")
+
+				if ray then
+					return false
+				end
+			end
+		end
+
+		dir = dir:normalized()
+
+		local dot = camera_fwd:dot(dir)
+
+		if sensitivity <= dot then
+			return true
+		else
+			return false
+		end
+	end
+
+	return false
 end
 
 function PlayerManager:unaquire_weapon(upgrade, id)
@@ -2682,14 +2733,19 @@ function PlayerManager:skill_dodge_chance(running, crouching, on_zipline, overri
 	chance = chance + self:upgrade_value("player", "mrwi_dodge_chance", 0)
 
 	local dodge_shot_gain = self:_dodge_shot_gain()
+	local player_unit = self:player_unit()
 
-	for _, smoke_screen in ipairs(self._smoke_screen_effects or {}) do
-		if smoke_screen:is_in_smoke(self:player_unit()) then
-			if smoke_screen:mine() then
-				chance = chance * self:upgrade_value("player", "sicario_multiplier", 1)
-				dodge_shot_gain = dodge_shot_gain * self:upgrade_value("player", "sicario_multiplier", 1)
-			else
-				chance = chance + smoke_screen:dodge_bonus()
+	if player_unit then
+		local m_pos = player_unit:movement():m_pos()
+
+		for _, smoke_screen in pairs(self:smoke_screens()) do
+			if smoke_screen:is_in_smoke(m_pos) then
+				if smoke_screen:mine() then
+					chance = chance * self:upgrade_value("player", "sicario_multiplier", 1)
+					dodge_shot_gain = dodge_shot_gain * self:upgrade_value("player", "sicario_multiplier", 1)
+				else
+					chance = chance + smoke_screen:dodge_bonus()
+				end
 			end
 		end
 	end
@@ -6449,11 +6505,12 @@ function PlayerManager:reset_ability_hud()
 end
 
 function PlayerManager:update_smoke_screens(t, dt)
-	if self._smoke_screen_effects and #self._smoke_screen_effects > 0 then
-		for i, smoke_screen_effect in dpairs(self._smoke_screen_effects) do
+	if #self._smoke_screen_effects > 0 then
+		for i, smoke_screen_effect in table.reverse_ipairs(self._smoke_screen_effects) do
 			smoke_screen_effect:update(t, dt)
 
 			if not smoke_screen_effect:alive() then
+				smoke_screen_effect:destroy()
 				table.remove(self._smoke_screen_effects, i)
 			end
 		end
@@ -6461,21 +6518,11 @@ function PlayerManager:update_smoke_screens(t, dt)
 end
 
 function PlayerManager:smoke_screens()
-	return self._smoke_screen_effects or {}
+	return self._smoke_screen_effects
 end
 
 function PlayerManager:spawn_smoke_screen(position, normal, grenade_unit, has_dodge_bonus)
-	local time = tweak_data.projectiles.smoke_screen_grenade.duration
-
-	self._smoke_screen_effects = self._smoke_screen_effects or {}
-
-	table.insert(self._smoke_screen_effects, SmokeScreenEffect:new(position, normal, time, has_dodge_bonus, grenade_unit))
-
-	if alive(self._smoke_grenade) and Network:is_server() then
-		self._smoke_grenade:set_slot(0)
-	end
-
-	self._smoke_grenade = grenade_unit
+	table.insert(self._smoke_screen_effects, SmokeScreenEffect:new(position, normal, nil, has_dodge_bonus, grenade_unit))
 end
 
 function PlayerManager:_dodge_shot_gain(gain_value)
@@ -6491,17 +6538,15 @@ function PlayerManager:_dodge_replenish_armor()
 end
 
 function PlayerManager:spawn_poison_gas(position, normal, projectile_tweak, grenade_unit)
-	self._poison_gas_effects = self._poison_gas_effects or {}
-
 	table.insert(self._poison_gas_effects, PoisonGasEffect:new(position, normal, projectile_tweak, grenade_unit))
 end
 
 function PlayerManager:update_poison_gas(t, dt)
-	if self._poison_gas_effects and #self._poison_gas_effects > 0 then
-		for i, poison_gas_effect in dpairs(self._poison_gas_effects) do
-			if alive(poison_gas_effect) then
-				poison_gas_effect:update(t, dt)
-			else
+	if #self._poison_gas_effects > 0 then
+		for i, poison_gas_effect in table.reverse_ipairs(self._poison_gas_effects) do
+			poison_gas_effect:update(t, dt)
+
+			if not poison_gas_effect:alive() then
 				poison_gas_effect:destroy()
 				table.remove(self._poison_gas_effects, i)
 			end

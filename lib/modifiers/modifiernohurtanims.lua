@@ -11,7 +11,8 @@ ModifierNoHurtAnims.PreventedHurtTypes = table.list_to_set({
 })
 ModifierNoHurtAnims.IgnoredVariants = table.list_to_set({
 	"melee",
-	"stun"
+	"stun",
+	"counter_spooc"
 })
 
 function ModifierNoHurtAnims:modify_value(id, value, variant)

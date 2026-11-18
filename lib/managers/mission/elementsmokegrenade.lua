@@ -15,12 +15,16 @@ function ElementSmokeGrenade:on_executed(instigator)
 		return
 	end
 
+	local id = tostring(self:id())
+	local shooter_pos = self._values.shooter_position
 	local is_flashbang = self._values.effect_type == "flash"
+	local instant = self._values.instant_detonation
+	local state = managers.groupai:state()
 
-	managers.groupai:state():queue_smoke_grenade(self:id(), self._values.position, nil, self._values.duration, self._values.ignore_control, is_flashbang)
+	state:queue_smoke_grenade(id, self._values.position, shooter_pos, self._values.duration, self._values.ignore_control, is_flashbang, instant)
 
-	if self._values.immediate and (managers.groupai:state():get_assault_mode() or self._values.ignore_control) then
-		managers.groupai:state():detonate_world_smoke_grenade(self:id())
+	if self._values.immediate and (self._values.ignore_control or state:get_assault_mode()) then
+		state:detonate_world_smoke_grenade(id, true)
 	end
 
 	ElementSmokeGrenade.super.on_executed(self, instigator)

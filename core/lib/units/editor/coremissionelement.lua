@@ -1074,7 +1074,7 @@ function CoreMissionElement:_get_delay_string(element)
 end
 
 function CoreMissionElement:add_on_executed(unit, prevent_undo)
-	if self:remove_on_execute(unit, true) then
+	if self:remove_on_execute(unit, prevent_undo) then
 		return
 	end
 
@@ -1206,9 +1206,9 @@ function CoreMissionElement:set_on_executed_element(index)
 	end
 
 	if self._elements_list then
+		self._elements_list:select_index(index - 1)
 		self:set_on_executed_data()
 		self:_set_on_execute_ctrlrs_enabled(true)
-		self._elements_list:select_index(index - 1)
 	end
 end
 

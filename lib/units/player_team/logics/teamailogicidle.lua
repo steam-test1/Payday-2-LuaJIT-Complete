@@ -271,56 +271,13 @@ function TeamAILogicIdle.damage_clbk(data, damage_info)
 	local attacker_unit = damage_info.attacker_unit
 
 	if attacker_unit and attacker_unit:in_slot(data.enemy_slotmask) then
-		local my_data = data.internal_data
-		local attacker_key = attacker_unit:key()
-		local enemy_data = data.detected_attention_objects[attacker_key]
-		local t = TimerManager:game():time()
+		local att_obj_data, is_new = CopLogicBase.identify_attention_obj_instant(data, attacker_unit:key())
 
-		if enemy_data then
-			enemy_data.verified_t = t
-			enemy_data.verified = true
+		if att_obj_data then
+			local t = TimerManager:game():time()
 
-			mvector3.set(enemy_data.verified_pos, attacker_unit:movement():m_stand_pos())
-
-			enemy_data.verified_dis = mvector3.distance(enemy_data.verified_pos, data.unit:movement():m_stand_pos())
-			enemy_data.dmg_t = t
-			enemy_data.alert_t = t
-			enemy_data.notice_delay = nil
-
-			if not enemy_data.identified then
-				enemy_data.identified = true
-				enemy_data.identified_t = t
-				enemy_data.notice_progress = nil
-				enemy_data.prev_notice_chk_t = nil
-
-				if enemy_data.settings.notice_clbk then
-					enemy_data.settings.notice_clbk(data.unit, true)
-				end
-			end
-		else
-			local attention_info = managers.groupai:state():get_AI_attention_objects_by_filter(data.SO_access_str)[attacker_key]
-
-			if attention_info then
-				local settings = attention_info.handler:get_attention(data.SO_access, nil, nil, data.team)
-
-				if settings then
-					enemy_data = CopLogicBase._create_detected_attention_object_data(t, data.unit, attacker_key, attention_info, settings)
-					enemy_data.verified_t = t
-					enemy_data.verified = true
-					enemy_data.dmg_t = t
-					enemy_data.alert_t = t
-					enemy_data.notice_progress = nil
-					enemy_data.prev_notice_chk_t = nil
-					enemy_data.identified = true
-					enemy_data.identified_t = t
-
-					if enemy_data.settings.notice_clbk then
-						enemy_data.settings.notice_clbk(data.unit, true)
-					end
-
-					data.detected_attention_objects[attacker_key] = enemy_data
-				end
-			end
+			att_obj_data.dmg_t = t
+			att_obj_data.alert_t = t
 		end
 	end
 

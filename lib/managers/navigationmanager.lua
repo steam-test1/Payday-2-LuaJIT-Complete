@@ -104,10 +104,10 @@ function NavigationManager:init()
 
 	self._quad_field:set_nav_link_filter(NavigationManager.ACCESS_FLAGS)
 
-	self._pos_rsrv_filters = {}
 	self._obstacles = {}
 	self._pos_rsrv_filters = {}
 	self._pos_reservations = {}
+	self._pos_reservations_expire = {}
 
 	self:_init_draw_data()
 end
@@ -146,6 +146,8 @@ function NavigationManager:_init_draw_data()
 end
 
 function NavigationManager:update(t, dt)
+	self:_flush_expired_pos_reservations(t)
+
 	if self._debug then
 		self._builder:update(t, dt)
 
@@ -169,31 +171,39 @@ function NavigationManager:update(t, dt)
 	self:_commence_coarce_searches(t)
 end
 
-function NavigationManager:_draw_pos_reservations(t)
-	local to_remove = {}
+function NavigationManager:_flush_expired_pos_reservations(t)
+	local to_remove
 
-	for key, res in pairs(self._pos_reservations) do
-		local entry = res[1]
-
-		if entry.expire_t and t > entry.expire_t then
-			table.insert(to_remove, key)
-		end
-
-		if not entry.expire_t then
-			if res.unit then
-				if alive(res.unit) then
-					self._draw_data.brush.pos_rsvr_unit:cylinder(entry.position, res.unit:movement():m_pos(), 3)
-				else
-					self._draw_data.brush.pos_rsvr_unit:sphere(entry.position, entry.radius + 5)
-				end
-			else
-				self._draw_data.brush.pos_rsvr:sphere(entry.position, entry.radius + 5)
-			end
+	for id, expire_t in pairs(self._pos_reservations_expire) do
+		if expire_t < t then
+			to_remove = to_remove or {}
+			to_remove[id] = true
 		end
 	end
 
-	for _, key in ipairs(to_remove) do
-		self._pos_reservations[key] = nil
+	if to_remove then
+		for id in pairs(to_remove) do
+			self._pos_reservations[id] = nil
+			self._pos_reservations_expire[id] = nil
+		end
+	end
+end
+
+function NavigationManager:_draw_pos_reservations(t)
+	for id, res in pairs(self._pos_reservations) do
+		local entry = res[1]
+
+		if res.unit then
+			if alive(res.unit) then
+				local radius = not entry.expire_t and 3 or math.lerp(0.1, 3, entry.expire_t - t)
+
+				self._draw_data.brush.pos_rsvr_unit:cylinder(entry.position, res.m_pos, radius)
+			else
+				self._draw_data.brush.pos_rsvr_unit:sphere(entry.position, entry.radius + 5)
+			end
+		else
+			self._draw_data.brush.pos_rsvr:sphere(entry.position, entry.radius + 5)
+		end
 	end
 end
 
@@ -1629,9 +1639,9 @@ function NavigationManager:on_simulation_started()
 	self:remove_AI_blocker_units()
 end
 
-function NavigationManager:reserve_pos(start_t, duration, pos, step_clbk, radius, filter)
+function NavigationManager:reserve_pos(start_t, duration, position, step_clbk, radius, filter)
 	local entry = {
-		position = mvec3_copy(pos),
+		position = mvec3_copy(position),
 		radius = radius,
 		start_t = start_t,
 		expire_t = start_t and duration and start_t + duration,
@@ -1659,22 +1669,31 @@ end
 
 function NavigationManager:add_pos_reservation(desc)
 	if self._debug and not desc.filter then
-		Application:warn("[NavigationManager:add_pos_reservation] No filter added")
+		Application:warn("[NavigationManager] add_pos_reservation() - no filter added")
 	end
 
-	desc.id = self._quad_field:add_position_reservation(desc)
+	local rsrv_id = self._quad_field:add_position_reservation(desc)
 
-	if self._pos_reservations[desc.id] and not self._pos_reservations[desc.id][1].expire_t then
-		if not Application:editor() then
-			debug_pause("[NavigationManager:add_pos_reservation] LEAKING POS RESERVATION!!", inspect(self._pos_reservations[desc.id]))
+	if self._pos_reservations[rsrv_id] then
+		local old_desc = self._pos_reservations[rsrv_id][1]
+
+		if not old_desc.expire_t and not Application:editor() then
+			debug_pause("[NavigationManager] add_pos_reservation() - LEAKING POS RESERVATION IN LUA!!", inspect(self._pos_reservations[desc.id]))
 		end
 
-		return
+		old_desc.id = nil
 	end
 
-	self._pos_reservations[desc.id] = {
+	desc.id = rsrv_id
+	self._pos_reservations[rsrv_id] = {
 		desc
 	}
+
+	if desc.expire_t then
+		self._pos_reservations_expire[rsrv_id] = desc.expire_t
+	elseif self._pos_reservations_expire[rsrv_id] then
+		self._pos_reservations_expire[rsrv_id] = nil
+	end
 
 	if self._debug and desc.filter then
 		local all_ai = {
@@ -1685,10 +1704,13 @@ function NavigationManager:add_pos_reservation(desc)
 
 		for _, ai_group in ipairs(all_ai) do
 			for u_key, u_data in pairs(ai_group) do
-				if u_data.unit:movement():pos_rsrv_id() == desc.filter then
-					self._pos_reservations[desc.id].unit = u_data.unit
-					self._pos_reservations[desc.id].u_name = u_data.unit:name()
-					self._pos_reservations[desc.id].stack = Application:stack()
+				local mov_ext = u_data.unit:movement()
+
+				if mov_ext and mov_ext:pos_rsrv_id() == desc.filter then
+					self._pos_reservations[rsrv_id].unit = u_data.unit
+					self._pos_reservations[rsrv_id].m_pos = mov_ext:m_pos()
+					self._pos_reservations[rsrv_id].u_name = u_data.unit:name()
+					self._pos_reservations[rsrv_id].stack = Application:stack()
 
 					return
 				end
@@ -1699,13 +1721,15 @@ end
 
 function NavigationManager:unreserve_pos(desc)
 	if not desc or not desc.id then
-		Application:error("[NavigationManager:unreserve_pos] Reservation already unreserved:", desc)
-
 		return
 	end
 
-	if self._pos_reservations then
+	if self._pos_reservations[desc.id] then
 		self._pos_reservations[desc.id] = nil
+
+		if self._pos_reservations_expire[desc.id] then
+			self._pos_reservations_expire[desc.id] = nil
+		end
 	end
 
 	self._quad_field:remove_position_reservation(desc.id)
@@ -2037,12 +2061,9 @@ function NavigationManager:remove_obstacle(obstacle_unit, obstacle_obj_name)
 		local removed = false
 
 		if not alive(obs_data.unit) then
-			Application:debug("[NavigationManager:remove_obstacle] Found dead unit in obstacle list, removing it:", i)
-
 			removed = true
 			removed_any = true
 		elseif obs_data.unit:key() == u_key and obs_data.obstacle_obj_name == obstacle_obj_name then
-			Application:debug("[NavigationManager:remove_obstacle] obstacle removed", obs_data.obstacle_obj_name, obs_data.id)
 			self._quad_field:remove_obstacle(obs_data.id)
 
 			removed = true
@@ -2053,8 +2074,6 @@ function NavigationManager:remove_obstacle(obstacle_unit, obstacle_obj_name)
 			table.insert(temp_array, self._obstacles[i])
 		end
 	end
-
-	Application:debug("[NavigationManager:remove_obstacle] Inspecting obstacles removed:", removed_any, removed_any and inspect(temp_array) or nil)
 
 	self._obstacles = temp_array
 end

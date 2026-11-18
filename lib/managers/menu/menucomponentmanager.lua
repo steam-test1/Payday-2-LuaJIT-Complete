@@ -72,6 +72,7 @@ require("lib/managers/social_hub/LobbyCodeMenuComponent")
 require("lib/managers/social_hub/UserCodeMenuComponent")
 require("lib/managers/social_hub/SocialHubNotificationMenuComponent")
 require("lib/managers/social_hub/CrimenetSearchLobbyCodeGui")
+require("lib/managers/menu/ModWorkshopMenuGui")
 
 MenuComponentManager = MenuComponentManager or class()
 
@@ -377,6 +378,7 @@ function MenuComponentManager:init()
 		close = callback(self, self, "close_crimenet_search_lobby_code_gui")
 	}
 	self._alive_components = {}
+	self._active_components.modworkshop_menu = self:create_component_callback("ModWorkshopMenuGui", "modworkshop_menu")
 
 	if _G.IS_VR and managers.menu._is_start_menu then
 		local vr_bg = self._fullscreen_ws:panel():bitmap({

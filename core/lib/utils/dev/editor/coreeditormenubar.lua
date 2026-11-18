@@ -509,6 +509,16 @@ function CoreEditor:confirm_on_new()
 	end
 end
 
+function CoreEditor:confirm_on_exit_to_desktop()
+	local confirm = EWS:message_box(Global.frame_panel, "Do you really want to exit?", "Bringer of World", "YES_NO,ICON_QUESTION", Vector3(-1, -1, 0))
+
+	if confirm == "YES" then
+		return true
+	end
+
+	return false
+end
+
 function CoreEditor:on_new()
 	if self:confirm_on_new() then
 		return

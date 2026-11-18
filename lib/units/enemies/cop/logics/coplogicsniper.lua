@@ -307,10 +307,14 @@ function CopLogicSniper._upd_aim(data, my_data)
 
 				my_data.attention_unit = focus_enemy.unit:key()
 			end
-		elseif my_data.attention_unit ~= focus_enemy.verified_pos then
-			CopLogicBase._set_attention_on_pos(data, mvector3.copy(focus_enemy.verified_pos))
+		else
+			local look_pos = focus_enemy.last_verified_pos or focus_enemy.verified_pos
 
-			my_data.attention_unit = mvector3.copy(focus_enemy.verified_pos)
+			if my_data.attention_unit ~= look_pos then
+				CopLogicBase._set_attention_on_pos(data, mvector3.copy(look_pos))
+
+				my_data.attention_unit = mvector3.copy(look_pos)
+			end
 		end
 
 		if not my_data.shooting and not data.unit:anim_data().reload and not data.unit:movement():chk_action_forbidden("action") then

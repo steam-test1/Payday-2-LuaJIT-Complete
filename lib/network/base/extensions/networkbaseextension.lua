@@ -5,29 +5,21 @@ function NetworkBaseExtension:init(unit)
 end
 
 function NetworkBaseExtension:send(func, ...)
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched(func, self._unit, ...)
-	end
+	managers.network:send_to_peers_synched(func, self._unit, ...)
 end
 
 function NetworkBaseExtension:send_to_host(func, ...)
-	if managers.network:session() then
-		managers.network:session():send_to_host(func, self._unit, ...)
-	end
+	managers.network:send_to_host(func, self._unit, ...)
 end
 
 function NetworkBaseExtension:send_to_unit(params)
-	if managers.network:session() then
-		local peer = managers.network:session():peer_by_unit(self._unit)
+	local peer = managers.network:get_peer_by_unit_safe(self._unit)
 
-		if peer then
-			managers.network:session():send_to_peer(peer, unpack(params))
-		end
+	if peer then
+		managers.network:send_to_peer(peer, unpack(params))
 	end
 end
 
 function NetworkBaseExtension:peer()
-	if managers.network:session() then
-		return managers.network:session():peer_by_unit(self._unit)
-	end
+	return managers.network:get_peer_by_unit_safe(self._unit)
 end

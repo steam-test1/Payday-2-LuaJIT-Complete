@@ -80,11 +80,13 @@ function NewRaycastWeaponBase:init(unit)
 	self._alt_fire_active = false
 
 	if managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot") then
+		self._stagger_message_key = "NewRaycastWeaponBase" .. tostring(self._unit:key())
+
 		local function clbk(value)
 			self:set_stagger(value)
 		end
 
-		managers.player:register_message(Message.SetWeaponStagger, self, clbk)
+		managers.player:register_message(Message.SetWeaponStagger, self._stagger_message_key, clbk)
 	end
 
 	if self:weapon_tweak_data().bipod_deploy_multiplier then
@@ -206,6 +208,12 @@ function NewRaycastWeaponBase:setup(setup_data, multiplier)
 		self:setup_underbarrel_data()
 
 		if self._setup then
+			local base_ext = alive(self._setup.user_unit) and self._setup.user_unit:base()
+
+			if base_ext and base_ext.is_local_player then
+				self._on_fired_message_id = Message.OnWeaponFired
+			end
+
 			self:_chk_has_charms(self._parts, self._setup)
 		end
 	end
@@ -3224,6 +3232,12 @@ end
 
 function NewRaycastWeaponBase:pre_destroy(unit)
 	NewRaycastWeaponBase.super.pre_destroy(self, unit)
+
+	if self._stagger_message_key then
+		managers.player:unregister_message(Message.SetWeaponStagger, self._stagger_message_key)
+
+		self._stagger_message_key = nil
+	end
 
 	if self._parts_texture_switches then
 		for part_id, texture_ids in pairs(self._parts_texture_switches) do

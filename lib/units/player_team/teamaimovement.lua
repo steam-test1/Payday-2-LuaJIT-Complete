@@ -1,9 +1,9 @@
-TeamAIMovement = TeamAIMovement or class(CopMovement)
-
-local mvec3_set = mvector3.set
-local mvec3_sub = mvector3.subtract
 local mvec3_norm = mvector3.normalize
 local mvec3_len = mvector3.length
+
+TeamAIMovement = TeamAIMovement or class(CopMovement)
+TeamAIMovement._action_variant = "team_ai"
+TeamAIMovement._default_action_variant = TeamAIMovement._action_variant
 
 function TeamAIMovement:_post_init()
 	if managers.groupai:state():whisper_mode() then
@@ -23,8 +23,6 @@ function TeamAIMovement:_post_init()
 	self._standing_nav_seg_id = self._nav_tracker:nav_segment()
 
 	self:play_redirect("idle")
-
-	self._last_position = Vector3()
 end
 
 function TeamAIMovement:set_character_anim_variables()
@@ -97,7 +95,9 @@ function TeamAIMovement:_upd_location()
 	if self._standing_nav_seg_id ~= nav_seg_id then
 		self._standing_nav_seg_id = nav_seg_id
 
-		managers.groupai:state():on_criminal_nav_seg_change(self._unit, nav_seg_id)
+		if self._m_host_stop_pos == nil then
+			managers.groupai:state():on_criminal_nav_seg_change(self._unit, nav_seg_id)
+		end
 	end
 end
 
@@ -347,10 +347,6 @@ function TeamAIMovement:chk_action_forbidden(action_type)
 	return TeamAIMovement.super.chk_action_forbidden(self, action_type)
 end
 
-function TeamAIMovement:update(...)
-	TeamAIMovement.super.update(self, ...)
-
-	if self._pre_destroyed then
-		return
-	end
+function TeamAIMovement:in_smoke()
+	return false, nil, nil
 end

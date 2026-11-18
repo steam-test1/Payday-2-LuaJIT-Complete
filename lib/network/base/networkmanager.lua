@@ -496,24 +496,45 @@ function NetworkManager:on_peer_added(peer, peer_id)
 	end
 end
 
-function NetworkManager:get_peer_safe(peer_id)
-	return self._session and self._session:peer(peer_id) or nil
+function NetworkManager:get_peer_safe(...)
+	return self._session and self._session:peer(...) or nil
 end
 
-function NetworkManager:get_local_peer_safe()
-	return self._session and self._session:local_peer() or nil
+function NetworkManager:get_local_peer_safe(...)
+	return self._session and self._session:local_peer(...) or nil
 end
 
-function NetworkManager:get_server_peer_safe()
-	return self._session and self._session:server_peer() or nil
+function NetworkManager:get_server_peer_safe(...)
+	return self._session and self._session:server_peer(...) or nil
 end
 
-function NetworkManager:get_peer_by_unit_safe(unit)
-	return self._session and self._session:peer_by_unit(unit) or nil
+function NetworkManager:get_peer_by_unit_safe(...)
+	return self._session and self._session:peer_by_unit(...) or nil
 end
 
-function NetworkManager:get_dropin_peer_safe()
-	return self._session and self._session:dropin_peer() or nil
+function NetworkManager:get_peer_by_unit_key_safe(...)
+	return self._session and self._session:peer_by_unit_key(...) or nil
+end
+
+function NetworkManager:get_dropin_peer_safe(...)
+	return self._session and self._session:dropin_peer(...) or nil
+end
+
+function NetworkManager:get_local_peer_id_safe(...)
+	local peer = self:get_local_peer_safe(...)
+
+	return peer and peer:id() or nil
+end
+
+function NetworkManager:get_peer_unit_safe(...)
+	local peer = self:get_peer_safe(...)
+	local unit = peer and peer:unit() or nil
+
+	if unit and not alive(unit) then
+		unit = nil
+	end
+
+	return unit
 end
 
 local function PrintError(fn_name, ...)

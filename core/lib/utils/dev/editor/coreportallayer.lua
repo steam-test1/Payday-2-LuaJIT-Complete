@@ -595,7 +595,7 @@ function PortalLayer:click_select_unit()
 			sample = true
 		})
 
-		if ray and ray.unit then
+		if ray and ray.unit and ray.unit:unit_data() and not ray.unit:unit_data().instance then
 			self._current_group:add_unit_id(ray.unit)
 		end
 
@@ -617,6 +617,11 @@ function PortalLayer:hover_highlight()
 			local is_in = self._current_group:unit_in_group(ray.unit)
 			local alpha = portal_brush_alpha * 4
 			local rgb = is_in and Color(1, 0.3, 0.3) or Color(0.7, 0.6, 1)
+
+			if ray.unit:unit_data() and ray.unit:unit_data().instance then
+				rgb = Color(1, 0, 0)
+				alpha = alpha / 10
+			end
 
 			self._portal_brush:set_color(rgb:with_alpha(alpha))
 			self._portal_brush:unit(ray.unit)

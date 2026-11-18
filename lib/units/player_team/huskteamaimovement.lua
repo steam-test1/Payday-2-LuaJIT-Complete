@@ -8,6 +8,8 @@ function HuskTeamAIMovement:init(unit)
 end
 
 function HuskTeamAIMovement:_post_init()
+	self._standing_nav_seg_id = self._nav_tracker:nav_segment()
+
 	self:play_redirect("idle")
 end
 

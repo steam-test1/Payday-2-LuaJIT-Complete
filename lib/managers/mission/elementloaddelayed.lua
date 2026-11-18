@@ -36,12 +36,13 @@ function ElementLoadDelayed:_create_units()
 end
 
 function ElementLoadDelayed:save(data)
-	data.enabled = self._values.enabled
+	ElementLoadDelayed.super.save(self, data)
+
 	data.created_units = self._created_units
 end
 
 function ElementLoadDelayed:load(data)
-	self:set_enabled(data.enabled)
+	ElementLoadDelayed.super.load(self, data)
 
 	if data.created_units then
 		self:_create_units()

@@ -69,6 +69,7 @@ function VehicleDrivingExt:init(unit)
 		Application:error("[VehicleDrivingExt:init] Unit doesn't contain driver view point object 'v_driver'.", self._unit)
 	end
 
+	self._is_server = Network:is_server()
 	self._drop_time_delay = nil
 	self._last_synced_position = Vector3(0, 0, 0)
 	self._shooting_stance_allowed = true
@@ -92,7 +93,7 @@ function VehicleDrivingExt:init(unit)
 	self._unit:set_body_collision_callback(callback(self, self, "collision_callback"))
 	self:set_tweak_data(tweak_data.vehicle[self.tweak_data])
 
-	if Network:is_server() and self._pos_rsrv_radius then
+	if self._is_server and self._pos_rsrv_radius then
 		local groupai_state = managers.groupai:state()
 
 		if groupai_state:enemy_weapons_hot() then
@@ -224,7 +225,7 @@ function VehicleDrivingExt:update(unit, t, dt)
 		self:_manage_position_reservation()
 	end
 
-	if Network:is_server() then
+	if self._is_server then
 		if self._vehicle:is_active() then
 			self:drop_loot()
 		end
@@ -342,31 +343,32 @@ function VehicleDrivingExt:set_state(name, do_not_sync)
 		return
 	end
 
+	local new_state = self._states[name]
+
+	if not new_state then
+		name = VehicleDrivingExt.STATE_PARKED
+
+		if name == self._current_state_name then
+			return
+		end
+
+		new_state = self._states[name]
+	end
+
 	local exit_data
 
 	if self._current_state then
 		exit_data = self._current_state:exit(self._state_data, name)
 	end
 
-	local new_state = self._states[name]
+	self._current_state = new_state
+	self._current_state_name = name
+	self._state_enter_t = managers.player:player_timer():time()
 
-	if not new_state then
-		new_state = self._states[VehicleDrivingExt.STATE_PARKED]
-		self._current_state = new_state
-		self._current_state_name = VehicleDrivingExt.STATE_PARKED
-		self._state_enter_t = managers.player:player_timer():time()
+	new_state:enter(self._state_data, exit_data)
 
-		new_state:enter(self._state_data, exit_data)
-	else
-		self._current_state = new_state
-		self._current_state_name = name
-		self._state_enter_t = managers.player:player_timer():time()
-
-		new_state:enter(self._state_data, exit_data)
-	end
-
-	if managers.network and managers.network:session() and not do_not_sync then
-		managers.network:session():send_to_peers_synched("sync_ai_vehicle_action", "state", self._unit, name, nil)
+	if not do_not_sync and managers.network then
+		managers.network:send_to_peers_synched("sync_ai_vehicle_action", "state", self._unit, name, nil)
 	end
 end
 
@@ -389,7 +391,7 @@ end
 function VehicleDrivingExt:secure()
 	local carry_ext = self._unit:carry_data()
 
-	if Network:is_server() then
+	if self._is_server then
 		local silent = false
 		local carry_id = carry_ext:carry_id()
 		local multiplier = carry_ext:multiplier()
@@ -452,7 +454,7 @@ function VehicleDrivingExt:add_loot(carry_id, multiplier, instigator)
 		})
 	end
 
-	if Network:is_server() and self:is_securing_loot_enabled() then
+	if self._is_server and self:is_securing_loot_enabled() then
 		local silent = self._secure_loot == "secure_silent"
 
 		managers.loot:secure(carry_id, multiplier, silent)
@@ -528,34 +530,52 @@ function VehicleDrivingExt:get_loot_data()
 end
 
 function VehicleDrivingExt:give_vehicle_loot_to_player(peer_id)
-	if Network:is_server() then
+	if self._is_server then
+		if not managers.network:get_peer_safe(peer_id) then
+			Application:error("[VehicleDrivingExt] give_vehicle_loot_to_player() - invalid peer!", peer_id)
+
+			return
+		end
+
 		self:server_give_vehicle_loot_to_player(peer_id)
-	else
-		managers.network:session():send_to_host("server_give_vehicle_loot_to_player", self._unit, peer_id)
+	elseif peer_id == managers.network:get_local_peer_safe():id() then
+		managers.network:send_to_host("server_give_vehicle_loot_to_player", self._unit)
 	end
 end
 
 function VehicleDrivingExt:server_give_vehicle_loot_to_player(peer_id)
 	local loot = self:get_loot_data()
 
-	if loot then
-		managers.network:session():send_to_peers_synched("sync_give_vehicle_loot_to_player", self._unit, loot.carry_id, loot.multiplier, peer_id)
-		self:sync_give_vehicle_loot_to_player(loot.carry_id, loot.multiplier, peer_id)
+	if not loot then
+		return
 	end
+
+	managers.network:send_to_peers_synched("sync_give_vehicle_loot_to_player", self._unit, loot.carry_id, loot.multiplier, peer_id)
+	self:sync_give_vehicle_loot_to_player(loot.carry_id, loot.multiplier, peer_id)
 end
 
 function VehicleDrivingExt:sync_give_vehicle_loot_to_player(carry_id, multiplier, peer_id)
 	if not self:remove_loot(carry_id, multiplier) then
-		Application:error("[VehicleDrivingExt] Trying to remove loot that is not in the vehicle: ", carry_id)
+		Application:error("[VehicleDrivingExt] sync_give_vehicle_loot_to_player() - loot isn't in vehicle:", carry_id)
 
 		return
 	end
 
-	if peer_id == managers.network:session():local_peer():id() then
+	if not self._is_server then
+		local peer = managers.network:get_peer_safe(peer_id)
+
+		if not peer then
+			Application:error("[VehicleDrivingExt] sync_give_vehicle_loot_to_player() - invalid peer!", peer_id)
+
+			return
+		end
+	end
+
+	if peer_id == managers.network:get_local_peer_safe():id() then
 		managers.player:set_carry(carry_id, multiplier, true, false, 1)
 	end
 
-	managers.player:register_carry(managers.network:session():peer(peer_id), carry_id)
+	managers.player:register_carry(peer, carry_id)
 end
 
 function VehicleDrivingExt:drop_loot()
@@ -584,20 +604,20 @@ function VehicleDrivingExt:_should_drop_loot()
 	return false
 end
 
-function VehicleDrivingExt:_store_loot(unit)
+function VehicleDrivingExt:_store_loot(loot_unit)
 	if self._tweak_data and #self._loot >= self._tweak_data.max_loot_bags then
 		return
 	end
 
-	if Network:is_server() then
-		self:server_store_loot_in_vehicle(unit)
+	if self._is_server then
+		self:server_store_loot_in_vehicle(loot_unit)
 	else
-		managers.network:session():send_to_host("server_store_loot_in_vehicle", self._unit, unit)
+		managers.network:send_to_host("server_store_loot_in_vehicle", self._unit, loot_unit)
 	end
 end
 
-function VehicleDrivingExt:server_store_loot_in_vehicle(unit)
-	local carry_ext = unit:carry_data()
+function VehicleDrivingExt:server_store_loot_in_vehicle(loot_unit)
+	local carry_ext = loot_unit:carry_data()
 	local carry_id = carry_ext:carry_id()
 	local multiplier = carry_ext:multiplier()
 
@@ -605,42 +625,56 @@ function VehicleDrivingExt:server_store_loot_in_vehicle(unit)
 		carry_ext:unlink()
 	end
 
-	managers.network:session():send_to_peers_synched("sync_store_loot_in_vehicle", self._unit, unit, carry_id, multiplier)
-	self:sync_store_loot_in_vehicle(unit, carry_id, multiplier)
+	managers.network:send_to_peers_synched("sync_store_loot_in_vehicle", self._unit, loot_unit, carry_id, multiplier)
+	self:sync_store_loot_in_vehicle(loot_unit, carry_id, multiplier)
 end
 
-function VehicleDrivingExt:sync_store_loot_in_vehicle(unit, carry_id, multiplier)
-	local carry_ext = unit:carry_data()
+function VehicleDrivingExt:sync_store_loot_in_vehicle(loot_unit, carry_id, multiplier)
+	local carry_ext = loot_unit:carry_data()
 
 	carry_ext:disarm()
-	self:add_loot(carry_id, multiplier, unit)
-	unit:set_slot(0)
-	carry_ext:set_value(0)
-	unit:damage():has_then_run_sequence_simple("secured")
-end
+	self:add_loot(carry_id, multiplier, loot_unit)
+	loot_unit:set_visible(false)
+	loot_unit:set_enabled(false)
 
-function VehicleDrivingExt:_refuse_loot(instigator)
-	if Network:is_server() then
-		self:sync_refuse_loot_in_vehicle(instigator)
-		managers.network:session():send_to_peers_synched("sync_refuse_loot_in_vehicle", self._unit, instigator)
+	local int_ext = loot_unit:interaction()
+
+	if int_ext then
+		int_ext:set_active(false, false)
+	end
+
+	if self._is_server or loot_unit:id() == -1 then
+		loot_unit:set_slot(0)
+	end
+
+	carry_ext:set_value(0)
+
+	local dmg_ext = loot_unit:damage()
+
+	if dmg_ext then
+		dmg_ext:has_then_run_sequence_simple("secured")
 	end
 end
 
-function VehicleDrivingExt:sync_refuse_loot_in_vehicle(instigator)
-	if alive(instigator) then
-		local carry_ext = instigator:carry_data()
-		local carry_id = carry_ext:carry_id()
-		local bag_type_seq = "action_refuse_bag_" .. carry_id
+function VehicleDrivingExt:_refuse_loot(instigator)
+	if not self._is_server or not alive(instigator) then
+		return
+	end
 
-		if self._unit:damage():has_then_run_sequence_simple(bag_type_seq, {
+	managers.network:send_to_peers_synched("sync_refuse_loot_in_vehicle", self._unit, instigator)
+	self:sync_refuse_loot_in_vehicle(instigator)
+end
+
+function VehicleDrivingExt:sync_refuse_loot_in_vehicle(instigator)
+	local bag_type_seq = "action_refuse_bag_" .. instigator:carry_data():carry_id()
+	local dmg_ext = self._unit:damage()
+
+	if not dmg_ext:has_then_run_sequence_simple(bag_type_seq, {
+		unit = instigator
+	}) then
+		dmg_ext:has_then_run_sequence_simple("action_refuse_bag", {
 			unit = instigator
-		}) then
-			-- Nothing
-		else
-			self._unit:damage():has_then_run_sequence_simple("action_refuse_bag", {
-				unit = instigator
-			})
-		end
+		})
 	end
 end
 
@@ -722,8 +756,8 @@ function VehicleDrivingExt:get_nearest_loot_point(pos)
 end
 
 function VehicleDrivingExt:enable_securing_loot()
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_securing_loot", self._unit, true)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_vehicle_securing_loot", self._unit, true)
 	end
 
 	self._securing_loot_enabled = true
@@ -731,8 +765,8 @@ function VehicleDrivingExt:enable_securing_loot()
 end
 
 function VehicleDrivingExt:disable_securing_loot()
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_securing_loot", self._unit, false)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_vehicle_securing_loot", self._unit, false)
 	end
 
 	self._securing_loot_enabled = false
@@ -901,32 +935,41 @@ function VehicleDrivingExt:_evacuate_vehicle()
 end
 
 function VehicleDrivingExt:_evacuate_seat(seat)
-	seat.occupant:unlink()
+	local occupant = seat.occupant
 
-	seat.occupant:movement().vehicle_unit = nil
-	seat.occupant:movement().vehicle_seat = nil
+	seat.occupant = nil
 
-	if seat.occupant:character_damage():dead() then
-		-- Nothing
-	elseif Network:is_server() then
-		seat.occupant:movement():action_request({
+	if not occupant or not occupant:brain() then
+		return
+	end
+
+	occupant:unlink()
+
+	local char_dmg_tweak = occupant:character_damage()
+	local mov_ext = occupant:movement()
+
+	mov_ext.vehicle_unit = nil
+	mov_ext.vehicle_seat = nil
+
+	if self._is_server and not char_dmg_tweak:dead() then
+		local action_desc = {
 			body_part = 1,
 			sync = true,
 			type = "idle"
-		})
+		}
+
+		mov_ext:action_request(action_desc)
 	end
 
 	local rot = seat.SO_object:rotation()
 	local pos = seat.SO_object:position()
 
-	seat.occupant:movement():set_rotation(rot)
-	seat.occupant:movement():set_position(pos)
+	mov_ext:set_rotation(rot)
+	mov_ext:set_position(pos)
 
-	if self.team_ai_invulnerable then
-		seat.occupant:character_damage():set_invulnerable(false)
+	if self._is_server and self.team_ai_invulnerable then
+		char_dmg_tweak:set_invulnerable(false)
 	end
-
-	seat.occupant = nil
 end
 
 function VehicleDrivingExt:find_exit_position(player)
@@ -1075,63 +1118,74 @@ function VehicleDrivingExt:num_players_inside()
 	return num_players
 end
 
-function VehicleDrivingExt:place_team_ai_in_vehicle(unit)
-	if managers.groupai:state():whisper_mode() and not self._allow_whisper_mode then
+function VehicleDrivingExt:place_team_ai_in_vehicle(ai_unit)
+	if not self._allow_whisper_mode and managers.groupai:state():whisper_mode() then
 		return
 	end
 
-	local movement_ext = unit:movement()
-	local brain_ext = unit:brain()
-	local damage_ext = unit:character_damage()
+	local available_seat
 
 	for _, seat in pairs(self._seats) do
 		if not seat.driving and not alive(seat.occupant) and (not seat.drive_SO_data or not seat.drive_SO_data.unit) then
-			self:_create_seat_SO(seat, true)
+			available_seat = seat
 
-			local so_data = seat.drive_SO_data
-
-			so_data.unit = unit
-			so_data.ride_objective.action.align_sync = true
-
-			damage_ext:revive_instant()
-			brain_ext:set_objective(so_data.ride_objective)
-			managers.network:session():send_to_peers("sync_ai_vehicle_action", "enter", self._unit, seat.name, unit)
-
-			movement_ext.vehicle_unit = self._unit
-			movement_ext.vehicle_seat = seat
-
-			movement_ext:set_position(seat.object:position())
-			movement_ext:set_rotation(seat.object:rotation())
-			movement_ext:action_request(so_data.ride_objective.action)
-			managers.groupai:state():remove_special_objective(so_data.SO_id)
-
-			return
+			break
 		end
 	end
+
+	if not available_seat then
+		Application:error("[VehicleDrivingExt] place_team_ai_in_vehicle() - couldn't find a seat for team AI!", self._unit)
+
+		return
+	end
+
+	self:_create_seat_SO(available_seat, true)
+
+	local so_data = available_seat.drive_SO_data
+
+	so_data.unit = ai_unit
+	so_data.ride_objective.action.align_sync = true
+
+	ai_unit:character_damage():revive_instant()
+	ai_unit:brain():set_objective(so_data.ride_objective)
+	managers.network:send_to_peers("sync_ai_vehicle_action", "enter", self._unit, available_seat.name, ai_unit)
+
+	local mov_ext = ai_unit:movement()
+
+	mov_ext.vehicle_unit = self._unit
+	mov_ext.vehicle_seat = available_seat
+
+	mov_ext:set_position(available_seat.object:position())
+	mov_ext:set_rotation(available_seat.object:rotation())
+	mov_ext:action_request(so_data.ride_objective.action)
+	managers.groupai:state():remove_special_objective(so_data.SO_id)
 end
 
 function VehicleDrivingExt:on_team_ai_enter(ai_unit)
-	ai_unit:movement().vehicle_unit:link(Idstring(VehicleDrivingExt.THIRD_PREFIX .. ai_unit:movement().vehicle_seat.name), ai_unit, ai_unit:orientation_object():name())
+	local mov_ext = ai_unit:movement()
 
-	ai_unit:movement().vehicle_seat.occupant = ai_unit
+	mov_ext.vehicle_unit:link(Idstring(VehicleDrivingExt.THIRD_PREFIX .. mov_ext.vehicle_seat.name), ai_unit, ai_unit:orientation_object():name())
 
-	if ai_unit:movement():carrying_bag() then
-		local carry_tweak_data = ai_unit:movement():carry_tweak()
-		local skip_exit_secure = carry_tweak_data and carry_tweak_data.skip_exit_secure
+	mov_ext.vehicle_seat.occupant = ai_unit
 
-		if self.secure_carry_on_enter and not skip_exit_secure then
-			ai_unit:movement():bank_carry()
-		else
-			ai_unit:movement():throw_bag()
+	if self._is_server then
+		if mov_ext:carrying_bag() then
+			local carry_tweak_data = mov_ext:carry_tweak()
+			local skip_exit_secure = carry_tweak_data and carry_tweak_data.skip_exit_secure
+
+			if self.secure_carry_on_enter and not skip_exit_secure then
+				mov_ext:bank_carry()
+			else
+				mov_ext:throw_bag()
+			end
+		end
+
+		if self.team_ai_invulnerable then
+			ai_unit:character_damage():set_invulnerable(true)
 		end
 	end
 
-	if self.team_ai_invulnerable then
-		ai_unit:character_damage():set_invulnerable(true)
-	end
-
-	Application:debug("VehicleDrivingExt:sync_ai_vehicle_action")
-	self._door_soundsource:set_position(ai_unit:movement().vehicle_seat.object:position())
+	self._door_soundsource:set_position(mov_ext.vehicle_seat.object:position())
 	self._door_soundsource:post_event(self._tweak_data.sound.door_close)
 end
 
@@ -1150,10 +1204,7 @@ end
 
 function VehicleDrivingExt:start(player)
 	self:_start(player)
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_driving", "start", self._unit, player)
-	end
+	managers.network:send_to_peers_synched("sync_vehicle_driving", "start", self._unit, player)
 end
 
 function VehicleDrivingExt:sync_start(player)
@@ -1181,15 +1232,15 @@ function VehicleDrivingExt:activate_vehicle()
 		self._unit:damage():run_sequence_simple("driving")
 		self._vehicle:set_active(true)
 
-		if Network:is_server() then
+		if self._is_server then
 			self:set_state(VehicleDrivingExt.STATE_DRIVING)
 		end
 
 		if was_not_enabled then
 			call_on_next_update(function()
 				if alive(self._unit) then
-					self:_release_position_reservation()
 					self._unit:set_enabled(false)
+					self:_release_position_reservation()
 				end
 			end)
 		end
@@ -1201,10 +1252,7 @@ end
 
 function VehicleDrivingExt:stop()
 	self:_stop()
-
-	if managers.network:session() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_driving", "stop", self._unit, nil)
-	end
+	managers.network:send_to_peers_synched("sync_vehicle_driving", "stop", self._unit, nil)
 end
 
 function VehicleDrivingExt:sync_stop()
@@ -1212,7 +1260,6 @@ function VehicleDrivingExt:sync_stop()
 end
 
 function VehicleDrivingExt:_stop()
-	print("[DRIVING] VehicleDrivingExt: _stop()")
 	self:stop_all_sound_events()
 	self._unit:damage():run_sequence_simple("not_driving")
 	self._vehicle:set_active(false)
@@ -1236,19 +1283,14 @@ function VehicleDrivingExt:set_input(accelerate, steer, brake, handbrake, gear_u
 	end
 
 	self:_set_input(accelerate, steer, brake, handbrake, gear_up, gear_down, forced_gear)
+	managers.network:send_to_peers_synched("sync_vehicle_set_input", self._unit, accelerate, steer, brake, handbrake, gear_up, gear_down, forced_gear)
 
-	if managers.network:session() then
-		local pos = self._vehicle:position()
+	local pos = self._vehicle:position()
+	local distance = mvector3.distance_sq(self._last_synced_position, pos)
 
-		managers.network:session():send_to_peers_synched("sync_vehicle_set_input", self._unit, accelerate, steer, brake, handbrake, gear_up, gear_down, forced_gear)
-
-		local distance = mvector3.distance(self._last_synced_position, pos)
-
-		if distance > 1 then
-			managers.network:session():send_to_peers_synched("sync_vehicle_state", self._unit, self._vehicle:position(), self._vehicle:rotation(), self._vehicle:velocity())
-
-			self._last_synced_position = pos
-		end
+	if distance > 1 then
+		managers.network:send_to_peers_synched("sync_vehicle_state", self._unit, pos, self._vehicle:rotation(), self._vehicle:velocity())
+		mvector3.set(self._last_synced_position, pos)
 	end
 end
 
@@ -1729,7 +1771,7 @@ function VehicleDrivingExt:_unregister_drive_SO(seat)
 end
 
 function VehicleDrivingExt:_chk_register_drive_SO()
-	if not Network:is_server() or not managers.navigation:is_data_ready() then
+	if not self._is_server or not managers.navigation:is_data_ready() then
 		return
 	end
 
@@ -1825,39 +1867,21 @@ function VehicleDrivingExt:on_drive_SO_administered(seat, unit)
 
 	seat.drive_SO_data.unit = unit
 	seat.drive_SO_data.SO_registered = false
-	unit:movement().vehicle_unit = self._unit
-	unit:movement().vehicle_seat = seat
 
-	managers.network:session():send_to_peers_synched("sync_ai_vehicle_action", "enter", self._unit, seat.name, unit)
+	local mov_ext = unit:movement()
+
+	mov_ext.vehicle_unit = self._unit
+	mov_ext.vehicle_seat = seat
+
+	managers.network:send_to_peers_synched("sync_ai_vehicle_action", "enter", self._unit, seat.name, unit)
 end
 
 function VehicleDrivingExt:on_drive_SO_started(seat, unit)
-	local rot = seat.third_object:rotation()
-	local pos = seat.third_object:position()
-
-	if managers.network:session() then
-		-- Nothing
-	end
+	return
 end
 
 function VehicleDrivingExt:on_drive_SO_completed(seat, unit)
-	Application:debug("[VehicleDrivingExt:on_drive_SO_completed]", seat.name)
-
-	local rot = seat.third_object:rotation()
-	local pos = seat.third_object:position()
-
-	unit:set_rotation(rot)
-	unit:set_position(pos)
-
-	seat.occupant = unit
-
-	self._unit:link(Idstring(VehicleDrivingExt.THIRD_PREFIX .. seat.name), unit)
-
-	if managers.network:session() then
-		-- Nothing
-	end
-
-	unit:brain():set_active(false)
+	return
 end
 
 function VehicleDrivingExt:on_drive_SO_failed(seat, unit)
@@ -1952,7 +1976,7 @@ function VehicleDrivingExt:shooting_stance_allowed()
 end
 
 function VehicleDrivingExt:interact_trunk()
-	managers.network:session():send_to_peers_synched("sync_vehicle_interact_trunk", self._unit)
+	managers.network:send_to_peers_synched("sync_vehicle_interact_trunk", self._unit)
 	self:_interact_trunk()
 end
 
@@ -1971,16 +1995,16 @@ function VehicleDrivingExt:_interact_trunk()
 end
 
 function VehicleDrivingExt:enable_loot_interaction()
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_loot_enabled", self._unit, true)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_vehicle_loot_enabled", self._unit, true)
 	end
 
 	self._loot_interaction_enabled = true
 end
 
 function VehicleDrivingExt:disable_loot_interaction()
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_loot_enabled", self._unit, false)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_vehicle_loot_enabled", self._unit, false)
 	end
 
 	self._loot_interaction_enabled = false
@@ -1993,8 +2017,8 @@ end
 function VehicleDrivingExt:enable_accepting_loot()
 	Application:trace("[VehicleDrivingExt][enable_accepting_loot] Accepting loot enabled")
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_accepting_loot", self._unit, true)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_vehicle_accepting_loot", self._unit, true)
 	end
 
 	self._accepting_loot_enabled = true
@@ -2003,8 +2027,8 @@ end
 function VehicleDrivingExt:disable_accepting_loot()
 	Application:trace("[VehicleDrivingExt][enable_accepting_loot] Accepting loot disabled")
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_vehicle_accepting_loot", self._unit, false)
+	if self._is_server then
+		managers.network:send_to_peers_synched("sync_vehicle_accepting_loot", self._unit, false)
 	end
 
 	self._accepting_loot_enabled = false

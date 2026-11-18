@@ -11,7 +11,7 @@ function ElementTimer:init(...)
 end
 
 function ElementTimer:on_script_activated()
-	self._timer = self:get_random_table_value_float(self:value("timer"))
+	self._timer = self:get_random_table_value(self:value("timer"))
 
 	if not Network:is_server() then
 		return
@@ -116,7 +116,7 @@ function ElementTimer:timer_operation_subtract_time(time)
 end
 
 function ElementTimer:timer_operation_reset()
-	self._timer = self:get_random_table_value_float(self:value("timer"))
+	self._timer = self:get_random_table_value(self:value("timer"))
 
 	self:_update_digital_guis_timer()
 end
@@ -194,7 +194,7 @@ function ElementTimerOperator:on_executed(instigator)
 		return
 	end
 
-	local time = self:get_random_table_value_float(self:value("time"))
+	local time = self:get_random_table_value(self:value("time"))
 
 	for _, id in ipairs(self._values.elements) do
 		local element = self:get_mission_element(id)

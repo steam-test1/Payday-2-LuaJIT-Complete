@@ -149,13 +149,13 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		vertical = "top",
 		wrap = true,
 		wrap_word = true,
-		text = managers.localization:text(narrative.briefing_id),
-		w = text_w,
-		font_size = font_size,
-		font = font,
-		color = tweak_data.screen_colors.text,
 		x = padding,
-		y = padding
+		y = padding,
+		w = text_w,
+		text = managers.localization:text(narrative.briefing_id),
+		font = font,
+		font_size = font_size,
+		color = tweak_data.screen_colors.text
 	})
 
 	do
@@ -199,12 +199,12 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 			vertical = "top",
 			wrap = true,
 			wrap_word = true,
+			w = text_w,
 			text = managers.localization:to_upper_text("menu_ghostable_job", {
 				bonus = ghost_bonus_string
 			}),
-			w = text_w,
-			font_size = font_size,
 			font = font,
+			font_size = font_size,
 			color = tweak_data.screen_colors.ghost_color
 		})
 

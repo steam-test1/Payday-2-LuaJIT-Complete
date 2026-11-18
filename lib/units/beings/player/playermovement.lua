@@ -30,6 +30,16 @@ if _G.IS_VR then
 	require("lib/units/beings/player/states/vr/PlayerParachutingVR")
 end
 
+local mvec3_set = mvector3.set
+local mvec3_set_z = mvector3.set_z
+local mvec3_set_zero = mvector3.set_zero
+local mvec3_sub = mvector3.subtract
+local mvec3_lerp = mvector3.lerp
+local mvec3_dist_sq = mvector3.distance_sq
+local mvec3_copy = mvector3.copy
+local temp_vec = Vector3()
+local mrot_x = mrotation.x
+local mrot_y = mrotation.y
 local IDS_NONE = Idstring("")
 
 PlayerMovement = PlayerMovement or class()
@@ -50,9 +60,9 @@ function PlayerMovement:init(unit)
 	self:set_driving("script")
 
 	self._m_pos = unit:position()
-	self._m_stand_pos = mvector3.copy(self._m_pos)
+	self._m_stand_pos = mvec3_copy(self._m_pos)
 
-	mvector3.set_z(self._m_stand_pos, self._m_pos.z + 140)
+	mvec3_set_z(self._m_stand_pos, self._m_pos.z + 140)
 
 	self._m_com = math.lerp(self._m_pos, self._m_stand_pos, 0.5)
 	self._m_rot = unit:rotation()
@@ -110,7 +120,10 @@ function PlayerMovement:post_init()
 
 	if managers.navigation:is_data_ready() and (not Global.running_simulation or Global.running_simulation_with_mission) then
 		self._nav_tracker = managers.navigation:create_nav_tracker(self._unit:position())
-		self._pos_rsrv_id = managers.navigation:get_pos_reservation_id()
+
+		if Network:is_server() then
+			self._pos_rsrv_id = managers.navigation:get_pos_reservation_id()
+		end
 	end
 
 	self._unit:inventory():add_listener("PlayerMovement" .. tostring(self._unit:key()), {
@@ -269,9 +282,9 @@ function PlayerMovement:set_position(pos)
 end
 
 function PlayerMovement:set_m_pos(pos)
-	mvector3.set(self._m_pos, pos)
-	mvector3.set(self._m_stand_pos, pos)
-	mvector3.set_z(self._m_stand_pos, pos.z + 140)
+	mvec3_set(self._m_pos, pos)
+	mvec3_set(self._m_stand_pos, pos)
+	mvec3_set_z(self._m_stand_pos, pos.z + 140)
 end
 
 function PlayerMovement:m_pos()
@@ -294,14 +307,14 @@ end
 
 function PlayerMovement:m_fwd()
 	self._unit:m_rotation(self._m_rot)
-	mrotation.y(self._m_rot, self._m_fwd)
+	mrot_y(self._m_rot, self._m_fwd)
 
 	return self._m_fwd
 end
 
 function PlayerMovement:m_right()
 	self._unit:m_rotation(self._m_rot)
-	mrotation.x(self._m_rot, self._m_right)
+	mrot_x(self._m_rot, self._m_right)
 
 	return self._m_right
 end
@@ -343,14 +356,14 @@ function PlayerMovement:current_state()
 end
 
 function PlayerMovement:_calculate_m_pose()
-	mvector3.lerp(self._m_com, self._m_pos, self._m_head_pos, 0.5)
+	mvec3_lerp(self._m_com, self._m_pos, self._m_head_pos, 0.5)
 end
 
 function PlayerMovement:_check_out_of_world(t)
 	if t > self._next_check_out_of_world_t then
 		self._next_check_out_of_world_t = t + 1
 
-		if mvector3.z(self._m_pos) < PlayerMovement.OUT_OF_WORLD_Z then
+		if self._m_pos.z < PlayerMovement.OUT_OF_WORLD_Z then
 			managers.player:on_out_of_world()
 
 			return true
@@ -800,7 +813,7 @@ function PlayerMovement:_upd_underdog_skill(t)
 		end
 
 		local attacker_pos = attacker_unit:movement():m_pos()
-		local dis_sq = mvector3.distance_sq(attacker_pos, my_pos)
+		local dis_sq = mvec3_dist_sq(attacker_pos, my_pos)
 
 		if dis_sq < data.max_dis_sq and math.abs(attacker_pos.z - my_pos.z) < data.max_vert_dis then
 			nr_guys = nr_guys + 1
@@ -1198,13 +1211,13 @@ function PlayerMovement:_update_vr(unit, t, dt)
 
 	local hmd_pos = VRManager:hmd_position()
 
-	mvector3.set(self._hmd_delta, hmd_pos)
-	mvector3.subtract(self._hmd_delta, self._hmd_pos)
-	mvector3.set(self._hmd_pos, hmd_pos)
+	mvec3_set(self._hmd_delta, hmd_pos)
+	mvec3_sub(self._hmd_delta, self._hmd_pos)
+	mvec3_set(self._hmd_pos, hmd_pos)
 end
 
 function PlayerMovement:_post_init_vr()
-	self._ghost_position = mvector3.copy(self._m_pos)
+	self._ghost_position = mvec3_copy(self._m_pos)
 	self._hmd_pos = VRManager:hmd_position()
 	self._hmd_delta = Vector3()
 
@@ -1220,7 +1233,7 @@ function PlayerMovement:hmd_position()
 end
 
 function PlayerMovement:set_ghost_position(pos, unit_position)
-	mvector3.set(self._ghost_position, pos)
+	mvec3_set(self._ghost_position, pos)
 	self._unit:set_position(unit_position and unit_position or pos)
 end
 
@@ -1257,8 +1270,8 @@ function PlayerMovement:set_block_input(block)
 end
 
 function PlayerMovement:reset_hmd_position()
-	mvector3.set(self._hmd_pos, VRManager:hmd_position())
-	mvector3.set_zero(self._hmd_delta)
+	mvec3_set(self._hmd_pos, VRManager:hmd_position())
+	mvec3_set_zero(self._hmd_delta)
 end
 
 function PlayerMovement:trigger_teleport(data)

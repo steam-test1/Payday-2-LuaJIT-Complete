@@ -12,6 +12,7 @@ end
 function QuickSmokeGrenade:update(unit, t, dt)
 	if self._remove_t then
 		if t > self._remove_t then
+			self._unit:sound_source():post_event("grenade_gas_stop")
 			self._unit:set_slot(0)
 		end
 
@@ -75,12 +76,15 @@ function QuickSmokeGrenade:detonate()
 	self._remove_t = TimerManager:game():time() + self._duration
 end
 
-function QuickSmokeGrenade:sound_playback_complete_clbk(event_instance, sound_source, event_type, sound_source_again)
+function QuickSmokeGrenade:sound_playback_complete_clbk()
 	return
 end
 
 function QuickSmokeGrenade:preemptive_kill()
-	self._unit:sound_source():post_event("grenade_gas_stop")
+	if self._state == 4 then
+		self._unit:sound_source():post_event("grenade_gas_stop")
+	end
+
 	self._unit:set_slot(0)
 end
 
@@ -90,7 +94,7 @@ function QuickSmokeGrenade:_play_sound_and_effects()
 			local sound_source = SoundDevice:create_source("grenade_fire_source")
 
 			sound_source:set_position(self._shoot_position)
-			sound_source:post_event("grenade_gas_npc_fire")
+			sound_source:post_event("grenade_gas_npc_fire", callback(self, self, "sound_playback_complete_clbk", sound_source), sound_source, "end_of_event")
 		end
 	elseif self._state == 2 then
 		if self._shoot_position then
@@ -102,7 +106,7 @@ function QuickSmokeGrenade:_play_sound_and_effects()
 			local sound_source = SoundDevice:create_source("grenade_bounce_source")
 
 			sound_source:set_position(bounce_point)
-			sound_source:post_event("grenade_gas_bounce", callback(self, self, "sound_playback_complete_clbk"), sound_source, "end_of_event")
+			sound_source:post_event("grenade_gas_bounce", callback(self, self, "sound_playback_complete_clbk", sound_source), sound_source, "end_of_event")
 		else
 			self._unit:sound_source():post_event("grenade_gas_bounce")
 		end
@@ -125,7 +129,7 @@ function QuickSmokeGrenade:_play_sound_and_effects()
 	end
 end
 
-function QuickSmokeGrenade:destroy()
+function QuickSmokeGrenade:destroy(unit)
 	if self._smoke_effect then
 		World:effect_manager():fade_kill(self._smoke_effect)
 

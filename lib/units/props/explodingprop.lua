@@ -91,12 +91,6 @@ function ExplodingProp:_check_detonation_ready()
 		return
 	end
 
-	if self._detonated then
-		return
-	end
-
-	self._detonated = true
-
 	local data = table.remove(self._data_list, 1)
 
 	managers.explosion:give_local_player_dmg(data.pos, data.range, data.player_damage)

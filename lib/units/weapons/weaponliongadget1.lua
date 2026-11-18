@@ -12,13 +12,21 @@ function WeaponLionGadget1:init(unit)
 		self:get_offsets()
 	end
 
-	managers.player:register_message(Message.OnCashInspectWeapon, self, on_cash_inspect_weapon)
+	self._cash_inspect_message_key = "WeaponLionGadget1" .. tostring(self._unit:key())
+
+	managers.player:register_message(Message.OnCashInspectWeapon, self._cash_inspect_message_key, on_cash_inspect_weapon)
 
 	self._deployed = false
 end
 
 function WeaponLionGadget1:set_npc()
 	self._is_npc = true
+
+	if self._cash_inspect_message_key then
+		managers.player:unregister_message(Message.OnCashInspectWeapon, self._cash_inspect_message_key)
+
+		self._cash_inspect_message_key = nil
+	end
 end
 
 function WeaponLionGadget1:is_bipod()
@@ -336,5 +344,10 @@ end
 
 function WeaponLionGadget1:pre_destroy(unit)
 	WeaponLionGadget1.super.pre_destroy(self, unit)
-	managers.player:unregister_message(Message.OnCashInspectWeapon, self)
+
+	if self._cash_inspect_message_key then
+		managers.player:unregister_message(Message.OnCashInspectWeapon, self._cash_inspect_message_key)
+
+		self._cash_inspect_message_key = nil
+	end
 end

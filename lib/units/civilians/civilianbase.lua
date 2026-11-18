@@ -1,4 +1,5 @@
 CivilianBase = CivilianBase or class(CopBase)
+CivilianBase._is_civilian = true
 
 function CivilianBase:post_init()
 	self._ext_movement = self._unit:movement()

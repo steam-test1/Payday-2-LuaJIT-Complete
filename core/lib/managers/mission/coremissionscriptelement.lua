@@ -5,6 +5,24 @@ core:import("CoreClass")
 
 MissionScriptElement = MissionScriptElement or class()
 
+local DEBUG_PRINT_COLOR_ELEMENT = Color(1, 0.75, 0.75, 0.75)
+
+function MissionScriptElement:save(data)
+	data.enabled = self._values.enabled
+
+	if self._orientation_index_history then
+		data.orientation_index_history = self._orientation_index_history
+	end
+end
+
+function MissionScriptElement:load(data)
+	self:set_enabled(data.enabled)
+
+	if data.orientation_index_history then
+		self._orientation_index_history = data.orientation_index_history
+	end
+end
+
 function MissionScriptElement:init(mission_script, data)
 	self._mission_script = mission_script
 	self._id = data.id
@@ -26,6 +44,8 @@ function MissionScriptElement:on_script_activated()
 			table.insert(self._rules_elements, element)
 		end
 	end
+
+	self._mission_script:add_save_state_cb(self._id)
 end
 
 function MissionScriptElement:get_mission_element(id)
@@ -63,17 +83,9 @@ end
 function MissionScriptElement:get_random_table_value(value)
 	if tonumber(value) then
 		return value
+	else
+		return value[1] + math.random(value[#value] + 1) - 1
 	end
-
-	return value[1] + math.random(value[2] + 1) - 1
-end
-
-function MissionScriptElement:get_random_table_value_float(value)
-	if tonumber(value) then
-		return value
-	end
-
-	return value[1] + math.rand(value[2])
 end
 
 function MissionScriptElement:enabled()

@@ -8,7 +8,7 @@ require("lib/units/player_team/logics/TeamAILogicSurrender")
 
 TeamAIBrain = TeamAIBrain or class(CopBrain)
 TeamAIBrain._create_attention_setting_from_descriptor = PlayerMovement._create_attention_setting_from_descriptor
-TeamAIBrain._logics = {
+TeamAIBrain._logic_variants.team_ai = {
 	inactive = TeamAILogicInactive,
 	idle = TeamAILogicIdle,
 	surrender = TeamAILogicSurrender,
@@ -16,34 +16,24 @@ TeamAIBrain._logics = {
 	assault = TeamAILogicAssault,
 	disabled = TeamAILogicDisabled
 }
-
-local reload
-
-if TeamAIBrain._reload_clbks then
-	reload = true
-else
-	TeamAIBrain._reload_clbks = {}
-end
+TeamAIBrain._default_logic_variant = "team_ai"
+TeamAIBrain._tweak_data_clbk_id = nil
 
 function TeamAIBrain:init(unit)
-	self._unit = unit
-	self._timer = TimerManager:game()
+	TeamAIBrain.super.init(self, unit)
 
-	self:set_update_enabled_state(false)
-
-	self._current_logic = nil
-	self._current_logic_name = nil
-	self._active = true
-	self._SO_access = managers.navigation:convert_access_flag(tweak_data.character[unit:base()._tweak_table].access)
-	self._reload_clbks[unit:key()] = callback(self, self, "on_reload")
+	self._slotmask_enemies = managers.slot:get_mask("enemies")
 end
 
 function TeamAIBrain:post_init()
+	self._logics = self._logic_variants[self._unit:base()._tweak_table] or self._logic_variants[self._default_logic_variant]
+
 	self:_reset_logic_data()
 
 	local my_key = tostring(self._unit:key())
+	local char_dmg_ext = self._unit:character_damage()
 
-	self._unit:character_damage():add_listener("TeamAIBrain_hurt" .. my_key, {
+	char_dmg_ext:add_listener("TeamAIBrain_hurt" .. my_key, {
 		"bleedout",
 		"hurt",
 		"light_hurt",
@@ -51,12 +41,17 @@ function TeamAIBrain:post_init()
 		"fatal",
 		"none"
 	}, callback(self, self, "clbk_damage"))
-	self._unit:character_damage():add_listener("TeamAIBrain_death" .. my_key, {
+	char_dmg_ext:add_listener("TeamAIBrain_death" .. my_key, {
 		"death"
 	}, callback(self, self, "clbk_death"))
-	managers.groupai:state():add_listener("TeamAIBrain" .. my_key, {
-		"enemy_weapons_hot"
-	}, callback(self, self, "clbk_heat"))
+
+	local groupai_state = managers.groupai:state()
+
+	if not groupai_state:enemy_weapons_hot() then
+		self._enemy_weapons_hot_listen_id = "TeamAIBrain" .. my_key
+
+		groupai_state:add_listener(self._enemy_weapons_hot_listen_id, self._weapons_hot_clbk_event_list, callback(self, self, "clbk_heat"))
+	end
 
 	if not self._current_logic then
 		self:set_init_logic("idle")
@@ -77,9 +72,10 @@ end
 function TeamAIBrain:_reset_logic_data()
 	TeamAIBrain.super._reset_logic_data(self)
 
-	self._logic_data.enemy_slotmask = managers.slot:get_mask("enemies")
-	self._logic_data.objective_complete_clbk = callback(managers.groupai:state(), managers.groupai:state(), "on_criminal_objective_complete")
-	self._logic_data.objective_failed_clbk = callback(managers.groupai:state(), managers.groupai:state(), "on_criminal_objective_failed")
+	local groupai_state = managers.groupai:state()
+
+	self._logic_data.objective_complete_clbk = callback(groupai_state, groupai_state, "on_criminal_objective_complete")
+	self._logic_data.objective_failed_clbk = callback(groupai_state, groupai_state, "on_criminal_objective_failed")
 end
 
 function TeamAIBrain:set_spawn_ai(spawn_ai)
@@ -114,12 +110,13 @@ function TeamAIBrain:on_recovered(reviving_unit)
 end
 
 function TeamAIBrain:clbk_heat()
-	self._current_logic.clbk_heat(self._logic_data)
-end
+	if self._enemy_weapons_hot_listen_id then
+		managers.groupai:state():remove_listener(self._enemy_weapons_hot_listen_id)
 
-function TeamAIBrain:pre_destroy(unit)
-	TeamAIBrain.super.pre_destroy(self, unit)
-	managers.groupai:state():remove_listener("TeamAIBrain" .. tostring(self._unit:key()))
+		self._enemy_weapons_hot_listen_id = nil
+	end
+
+	self._current_logic.clbk_heat(self._logic_data)
 end
 
 function TeamAIBrain:set_active(state)

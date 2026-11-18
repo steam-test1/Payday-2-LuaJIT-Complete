@@ -243,6 +243,7 @@ function WorldEditor:project_run_simulation(simulation_mode)
 	managers.motion_path:on_simulation_started()
 	managers.music:check_music_switch()
 	managers.music:post_event(tweak_data.levels:get_music_event("intro"))
+	managers.mission:set_mission_filter(self:layer("Level Settings"):get_mission_filter())
 	managers.mission:on_simulation_started()
 
 	if not with_mission then
@@ -261,8 +262,6 @@ function WorldEditor:project_run_simulation(simulation_mode)
 	else
 		managers.network:session():spawn_players()
 	end
-
-	managers.mission:set_mission_filter(self:layer("Level Settings"):get_mission_filter())
 
 	local level_id = self:layer("Level Settings"):get_setting("simulation_level_id")
 

@@ -18,10 +18,6 @@ function PoisonGasEffect:init(position, normal, projectile_tweak, grenade_unit)
 	self._damage_tick_timer = projectile_tweak.poison_gas_tick_time or 0.1
 	self._fade_time = projectile_tweak.poison_gas_fade_time or 2
 	self._dot_data = projectile_tweak.poison_gas_dot_data_name and tweak_data.dot:get_dot_data(projectile_tweak.poison_gas_dot_data_name) or tweak_data.dot:get_dot_data("weapon_dotbulletbase")
-	self._sound_source = SoundDevice:create_source("ExplosionManager")
-
-	self._sound_source:set_position(position)
-
 	self._unit_list = {}
 	self._effect = World:effect_manager():spawn({
 		effect = self._tweak_data.poison_gas_effect and Idstring(self._tweak_data.poison_gas_effect) or Idstring("effects/particles/explosions/poison_gas"),
@@ -39,8 +35,6 @@ function PoisonGasEffect:alive()
 end
 
 function PoisonGasEffect:remove_grenade_unit()
-	print("remove_grenade_unit")
-
 	if alive(self._grenade_unit) then
 		self._grenade_unit:set_slot(0)
 	end

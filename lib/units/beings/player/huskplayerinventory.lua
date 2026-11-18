@@ -121,6 +121,7 @@ function HuskPlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 	setup_data.alert_AI = false
 	setup_data.user_sound_variant = "1"
 
+	self:_chk_setup_data(setup_data)
 	new_unit:base():setup(setup_data)
 	self:add_unit(new_unit, equip, instant)
 end
@@ -148,11 +149,12 @@ function HuskPlayerInventory:add_unit_by_factory_blueprint(factory_name, equip, 
 	managers.dyn_resource:load(ids_unit, ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 
 	local new_unit = World:spawn_unit(Idstring(factory_weapon.unit), Vector3(), Rotation())
+	local base_ext = new_unit:base()
 
-	new_unit:base():set_factory_data(factory_name)
-	new_unit:base():set_cosmetics_data(cosmetics)
-	new_unit:base():assemble_from_blueprint(factory_name, blueprint)
-	new_unit:base():check_npc()
+	base_ext:set_factory_data(factory_name)
+	base_ext:set_cosmetics_data(cosmetics)
+	base_ext:assemble_from_blueprint(factory_name, blueprint)
+	base_ext:check_npc()
 
 	local ignore_units = {
 		self._unit,
@@ -171,15 +173,15 @@ function HuskPlayerInventory:add_unit_by_factory_blueprint(factory_name, equip, 
 	setup_data.ignore_units = ignore_units
 	setup_data.expend_ammo = false
 	setup_data.autoaim = false
-	setup_data.alert_AI = false
 	setup_data.user_sound_variant = "1"
 
-	new_unit:base():setup(setup_data)
+	self:_chk_setup_data(setup_data)
+	base_ext:setup(setup_data)
 
-	if new_unit:base().AKIMBO then
+	if base_ext.AKIMBO then
 		local first, second = self:_align_place(equip, new_unit, "left_hand")
 
-		new_unit:base():create_second_gun(nil, second and second.obj3d_name or first.obj3d_name)
+		base_ext:create_second_gun(nil, second and second.obj3d_name or first.obj3d_name)
 	end
 
 	self:add_unit(new_unit, equip, instant)

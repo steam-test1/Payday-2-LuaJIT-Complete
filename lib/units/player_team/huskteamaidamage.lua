@@ -1,17 +1,4 @@
 HuskTeamAIDamage = HuskTeamAIDamage or class(TeamAIDamage)
-TeamAIDamage._RESULT_NAME_TABLE = {
-	"hurt",
-	"bleedout",
-	"death",
-	"light_hurt",
-	"heavy_hurt",
-	"fatal"
-}
-TeamAIDamage._ATTACK_VARIANTS = CopDamage._ATTACK_VARIANTS
-
-function HuskTeamAIDamage:update(unit, t, dt)
-	return
-end
 
 function HuskTeamAIDamage:damage_bullet(attack_data)
 	if self._dead or self._fatal then

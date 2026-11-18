@@ -133,6 +133,12 @@ function SentryGunWeapon:_init()
 end
 
 function SentryGunWeapon:setup(setup_data)
+	setup_data.ignore_units_map = {}
+
+	for _, unit in ipairs(setup_data.ignore_units or {}) do
+		setup_data.ignore_units_map[unit:key()] = true
+	end
+
 	self:_init()
 
 	self._setup = setup_data
@@ -548,9 +554,11 @@ function SentryGunWeapon:_set_laser_state(state)
 			self._laser_unit:base():add_ray_ignore_unit(self._unit)
 			self._laser_unit:set_visible(false)
 		end
-	elseif alive(self._laser_unit) then
-		self._laser_unit:base():set_off()
-		self._laser_unit:set_slot(0)
+	elseif self._laser_unit then
+		if alive(self._laser_unit) then
+			self._laser_unit:base():set_off()
+			self._laser_unit:set_slot(0)
+		end
 
 		self._laser_unit = nil
 	end
@@ -620,6 +628,9 @@ function SentryGunWeapon:load(save_data)
 		ignore_units = {
 			self._unit
 		}
+	}
+	self._setup.ignore_units_map = {
+		[self._unit:key()] = true
 	}
 
 	if not my_save_data.alert then

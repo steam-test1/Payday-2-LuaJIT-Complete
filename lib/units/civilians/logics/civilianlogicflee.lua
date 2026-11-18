@@ -431,13 +431,14 @@ end
 
 function CivilianLogicFlee._run_away_from_alert(data, alert_data)
 	local my_data = data.internal_data
+	local alert_head_pos = alert_data[6]
 	local avoid_pos
 
-	if alert_data[1] == "bullet" then
+	if alert_head_pos then
 		local tail = alert_data[2]
-		local head = alert_data[6]
-		local alert_dir = head - tail
-		local alert_len = mvector3.normalize(alert_dir)
+		local alert_dir = alert_head_pos - tail
+
+		mvector3.normalize(alert_dir)
 
 		avoid_pos = data.m_pos - tail
 

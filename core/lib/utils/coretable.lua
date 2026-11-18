@@ -574,6 +574,30 @@ function table.list_to_set(list)
 	return rtn
 end
 
+function table.reverse_map(t)
+	local map = {}
+
+	for k, v in pairs(t) do
+		if map[v] then
+			Application:error("[table] reverse_map() - duplicate value:", v, "key/index " .. tostring(map[v]) .. " will be lost.")
+		end
+
+		map[v] = k
+	end
+
+	return map
+end
+
+function table.map_keys_to_set(map)
+	local rtn = {}
+
+	for k in pairs(map) do
+		rtn[k] = true
+	end
+
+	return rtn
+end
+
 function table.map_to_list(map)
 	local list = {}
 

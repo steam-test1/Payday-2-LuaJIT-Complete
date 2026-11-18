@@ -1,3 +1,16 @@
+local mvec3_set = mvector3.set
+local mvec3_set_z = mvector3.set_z
+local mvec3_add = mvector3.add
+local mvec3_mul = mvector3.multiply
+local mvec3_dist = mvector3.distance
+local mvec3_dir = mvector3.direction
+local mrot_y = mrotation.y
+local tmp_vec1 = Vector3()
+local tmp_vec2 = Vector3()
+local tmp_rot1 = Rotation()
+local IDS_E_DRILL_PARTICLES = Idstring("e_drill_particles")
+local IDS_EFFECT_DRILL_JAMMED = Idstring("effects/payday2/environment/drill_jammed")
+
 Drill = Drill or class(UnitBase)
 Drill.EVENT_IDS = {
 	autorepair = 1,
@@ -8,10 +21,14 @@ Drill.active_drills = Drill.active_drills or 0
 Drill.jammed_drills = Drill.jammed_drills or 0
 Drill.on_hit_autorepair_chance = 0.5
 Drill._drill_remind_clbk_id = "_drill_remind_clbk"
+Drill._weapons_hot_clbk_event_list = {
+	"enemy_weapons_hot"
+}
 
 function Drill.get_upgrades(drill_unit, player)
-	local is_drill = drill_unit:base() and drill_unit:base().is_drill
-	local is_saw = drill_unit:base() and drill_unit:base().is_saw
+	local base_ext = drill_unit:base()
+	local is_drill = base_ext and base_ext.is_drill
+	local is_saw = base_ext and base_ext.is_saw
 	local upgrades
 
 	if is_drill or is_saw then
@@ -50,48 +67,57 @@ function Drill:init(unit)
 	self._active_effect_name = "effects/payday2/environment/drill"
 	self._pos = unit:position()
 	self._skill_upgrades = {}
-
-	managers.groupai:state():on_editor_sim_unit_spawned(unit)
-
 	self._peer_ids = {}
 	self._auto_restart_chance = false
+
+	managers.groupai:state():on_editor_sim_unit_spawned(unit)
 end
 
 function Drill:start()
 	self:_start_drill_effect()
 
-	if not self.started then
-		self.started = true
-		Drill.active_drills = Drill.active_drills + 1
+	if self.started then
+		return
+	end
 
-		if Network:is_server() then
-			if not self._nav_tracker and managers.navigation:is_data_ready() then
-				if self._sabotage_align_obj_name then
-					self._nav_tracker = managers.navigation:create_nav_tracker(self._unit:get_object(Idstring(self._sabotage_align_obj_name)):position())
-				else
-					self._nav_tracker = managers.navigation:create_nav_tracker(self._pos)
-				end
-			end
+	self.started = true
+	Drill.active_drills = Drill.active_drills + 1
 
-			self:_register_sabotage_SO()
-		end
+	if Network:is_server() then
+		if not self._nav_tracker and managers.navigation:is_data_ready() then
+			local sabotage_align_obj = self._sabotage_align_obj_name and self._unit:get_object(Idstring(self._sabotage_align_obj_name))
 
-		if not managers.groupai:state():enemy_weapons_hot() then
-			self:_set_attention_state(true)
-			self:_set_alert_state(true)
+			if sabotage_align_obj then
+				local pos = tmp_vec1
 
-			if self.is_drill and self._alert_radius then
-				managers.dialog:queue_narrator_dialog("drl_wrn_snd", {})
-			end
+				sabotage_align_obj:m_position(pos)
 
-			if not self._ene_weap_hot_listen_id then
-				self._ene_weap_hot_listen_id = "Drill_ene_w_hot" .. tostring(self._unit:key())
-
-				managers.groupai:state():add_listener(self._ene_weap_hot_listen_id, {
-					"enemy_weapons_hot"
-				}, callback(self, self, "clbk_enemy_weapons_hot"))
+				self._nav_tracker = managers.navigation:create_nav_tracker(pos)
+			else
+				self._nav_tracker = managers.navigation:create_nav_tracker(self._pos)
 			end
 		end
+
+		self:_register_sabotage_SO()
+	end
+
+	local groupai_state = managers.groupai:state()
+
+	if groupai_state:enemy_weapons_hot() then
+		return
+	end
+
+	self:_set_attention_state(true)
+	self:_set_alert_state(true)
+
+	if self.is_drill and self._alert_radius then
+		managers.dialog:queue_narrator_dialog("drl_wrn_snd", {})
+	end
+
+	if not self._ene_weap_hot_listen_id then
+		self._ene_weap_hot_listen_id = "Drill_ene_w_hot" .. tostring(self._unit:key())
+
+		groupai_state:add_listener(self._ene_weap_hot_listen_id, self._weapons_hot_clbk_event_list, callback(self, self, "clbk_enemy_weapons_hot"))
 	end
 end
 
@@ -126,7 +152,7 @@ function Drill:_start_drill_effect()
 		local params = {}
 
 		params.effect = Idstring(self._active_effect_name)
-		params.parent = self._unit:get_object(Idstring("e_drill_particles"))
+		params.parent = self._unit:get_object(IDS_E_DRILL_PARTICLES)
 		self._drill_effect = World:effect_manager():spawn(params)
 	end
 end
@@ -136,9 +162,7 @@ function Drill:_kill_drill_effect()
 		return
 	end
 
-	if self._use_effect then
-		World:effect_manager():fade_kill(self._drill_effect)
-	end
+	World:effect_manager():fade_kill(self._drill_effect)
 
 	self._drill_effect = nil
 end
@@ -148,9 +172,7 @@ function Drill:_kill_jammed_effect()
 		return
 	end
 
-	if self._use_effect then
-		World:effect_manager():fade_kill(self._jammed_effect)
-	end
+	World:effect_manager():fade_kill(self._jammed_effect)
 
 	self._jammed_effect = nil
 end
@@ -172,36 +194,41 @@ function Drill:set_jammed(jammed)
 		if self._use_effect then
 			local params = {}
 
-			params.effect = Idstring("effects/payday2/environment/drill_jammed")
-			params.parent = self._unit:get_object(Idstring("e_drill_particles"))
+			params.effect = IDS_EFFECT_DRILL_JAMMED
+			params.parent = self._unit:get_object(IDS_E_DRILL_PARTICLES)
 			self._jammed_effect = World:effect_manager():spawn(params)
 		end
 
 		self:_reset_melee_autorepair()
 
-		if self._autorepair_chance and not self._autorepair_clbk_id and math.random() < self._autorepair_chance then
+		if Network:is_server() and self._autorepair_chance and not self._autorepair_clbk_id and math.random() < self._autorepair_chance then
+			local delay = TimerManager:game():time() + 5 + 15 * math.random()
+
 			self._autorepair_clbk_id = "Drill_autorepair" .. tostring(self._unit:key())
 
-			managers.enemy:add_delayed_clbk(self._autorepair_clbk_id, callback(self, self, "clbk_autorepair"), TimerManager:game():time() + 5 + 15 * math.random())
+			managers.enemy:add_delayed_clbk(self._autorepair_clbk_id, callback(self, self, "clbk_autorepair"), delay)
 		end
 	elseif self._jammed_effect then
 		self:_kill_jammed_effect()
-		self:_start_drill_effect()
 
-		if not self.is_hacking_device and not self.is_saw and not managers.groupai:state():whisper_mode() then
-			managers.groupai:state():teammate_comment(nil, "g22", self._unit:position(), true, 500, false)
-		end
+		if not self._destroying then
+			self:_start_drill_effect()
 
-		if self._autorepair_clbk_id then
-			managers.enemy:remove_delayed_clbk(self._autorepair_clbk_id)
+			if self.is_drill and not managers.groupai:state():whisper_mode() then
+				managers.groupai:state():teammate_comment(nil, "g22", self._unit:position(), true, 500, false)
+			end
 
-			self._autorepair_clbk_id = nil
-		end
+			if self._autorepair_clbk_id then
+				managers.enemy:remove_delayed_clbk(self._autorepair_clbk_id)
 
-		if self._bain_report_sabotage_clbk_id then
-			managers.enemy:remove_delayed_clbk(self._bain_report_sabotage_clbk_id)
+				self._autorepair_clbk_id = nil
+			end
 
-			self._bain_report_sabotage_clbk_id = nil
+			if self._bain_report_sabotage_clbk_id then
+				managers.enemy:remove_delayed_clbk(self._bain_report_sabotage_clbk_id)
+
+				self._bain_report_sabotage_clbk_id = nil
+			end
 		end
 	end
 
@@ -210,25 +237,29 @@ function Drill:set_jammed(jammed)
 	if Network:is_server() then
 		if jammed then
 			self:_unregister_sabotage_SO()
-		else
+		elseif not self._destroying then
 			self:_register_sabotage_SO()
 		end
 	end
 end
 
 function Drill:_change_num_jammed_drills(d)
-	Drill.jammed_drills = Drill.jammed_drills + d
+	local drill_class = Drill
 
-	if Drill.jammed_drills > 0 and not Drill._drll_remind_clbk then
-		Drill._drll_remind_clbk = callback(self, self, "_drill_remind_clbk")
+	drill_class.jammed_drills = drill_class.jammed_drills + d
 
-		managers.enemy:add_delayed_clbk(Drill._drill_remind_clbk_id, Drill._drll_remind_clbk, Application:time() + 20)
+	if drill_class.jammed_drills > 0 and not drill_class._drll_remind_clbk then
+		local delay = TimerManager:game():time() + 20
+
+		drill_class._drll_remind_clbk = callback(self, self, "_drill_remind_clbk")
+
+		managers.enemy:add_delayed_clbk(drill_class._drill_remind_clbk_id, drill_class._drll_remind_clbk, delay)
 	end
 
-	if Drill.jammed_drills <= 0 and Drill._drll_remind_clbk then
-		managers.enemy:remove_delayed_clbk(Drill._drill_remind_clbk_id)
+	if drill_class.jammed_drills <= 0 and drill_class._drll_remind_clbk then
+		managers.enemy:remove_delayed_clbk(drill_class._drill_remind_clbk_id)
 
-		Drill._drll_remind_clbk = nil
+		drill_class._drll_remind_clbk = nil
 	end
 end
 
@@ -292,7 +323,7 @@ function Drill:set_powered(powered)
 	else
 		self:_start_drill_effect()
 
-		if not self.is_hacking_device and not self.is_saw and not managers.groupai:state():whisper_mode() then
+		if self.is_drill and not managers.groupai:state():whisper_mode() then
 			managers.groupai:state():teammate_comment(nil, "g22", self._unit:position(), true, 500, false)
 		end
 	end
@@ -307,19 +338,24 @@ function Drill:set_powered(powered)
 end
 
 function Drill:_register_sabotage_SO()
-	if self._sabotage_SO_id or not managers.navigation:is_data_ready() or not self._unit:timer_gui() or not self._unit:timer_gui()._can_jam or not self._sabotage_align_obj_name or not self._nav_tracker then
+	if self._destroying or self._sabotage_SO_id or not self._sabotage_align_obj_name or not self._nav_tracker or not managers.navigation:is_data_ready() then
 		return
 	end
 
-	local field_pos = self._nav_tracker:field_position()
-	local field_z = self._nav_tracker:field_z() - 25
-	local height = self._pos.z - field_z
-	local act_anim = "sabotage_device_" .. (height > 100 and "high" or height > 60 and "mid" or "low")
+	local timer_gui_ext = self._unit:timer_gui()
+
+	if not timer_gui_ext or not timer_gui_ext._can_jam then
+		return
+	end
+
+	local height_diff = self._pos.z - (self._nav_tracker:field_z() - 25)
+	local act_anim = "sabotage_device_" .. (height_diff > 100 and "high" or height_diff > 60 and "mid" or "low")
 	local align_obj = self._unit:get_object(Idstring(self._sabotage_align_obj_name))
 	local objective_rot = align_obj:rotation()
 	local objective_pos = align_obj:position()
+	local nav_seg = self._nav_tracker:nav_segment()
 
-	self._SO_area = managers.groupai:state():get_area_from_nav_seg_id(self._nav_tracker:nav_segment())
+	self._SO_area = managers.groupai:state():get_area_from_nav_seg_id(nav_seg)
 
 	local followup_objective = {
 		attitude = "avoid",
@@ -328,7 +364,7 @@ function Drill:_register_sabotage_SO()
 		scan = true,
 		stance = "hos",
 		type = "defend_area",
-		nav_seg = self._nav_tracker:nav_segment(),
+		nav_seg = nav_seg,
 		area = self._SO_area
 	}
 	local objective = {
@@ -338,7 +374,7 @@ function Drill:_register_sabotage_SO()
 		scan = true,
 		stance = "hos",
 		type = "act",
-		nav_seg = self._nav_tracker:nav_segment(),
+		nav_seg = nav_seg,
 		area = self._SO_area,
 		pos = objective_pos,
 		rot = objective_rot,
@@ -366,7 +402,7 @@ function Drill:_register_sabotage_SO()
 		search_dis_sq = 1000000,
 		usage_amount = 1,
 		objective = objective,
-		search_pos = field_pos,
+		search_pos = self._nav_tracker:field_position(),
 		verification_clbk = callback(self, self, "clbk_sabotage_SO_verification"),
 		access = managers.navigation:convert_access_filter_to_number({
 			"gangster",
@@ -446,14 +482,20 @@ function Drill:clbk_sabotage_SO_verification(candidate_unit)
 	if not self._sabotage_SO_id then
 		debug_pause_unit(self._unit, "[Drill:clbk_sabotage_SO_verification] SO is not registered", self._unit, candidate_unit)
 
-		return
+		return false
 	end
 
-	local nav_seg = candidate_unit:movement():nav_tracker():nav_segment()
+	local mov_ext = candidate_unit:movement()
 
-	if self._SO_area.nav_segs[nav_seg] and not candidate_unit:movement():cool() then
+	if mov_ext:cool() then
+		return false
+	end
+
+	if self._SO_area.nav_segs[mov_ext:nav_tracker():nav_segment()] then
 		return true
 	end
+
+	return false
 end
 
 function Drill:_set_attention_state(state)
@@ -639,7 +681,10 @@ function Drill:get_skill_upgrades()
 end
 
 function Drill:set_autorepair(chance)
-	if self._skill_upgrades.auto_repair_level_1 and self._skill_upgrades.auto_repair_level_1 > 0 or self._skill_upgrades.auto_repair_level_2 and self._skill_upgrades.auto_repair_level_2 > 0 then
+	local lvl1 = self._skill_upgrades.auto_repair_level_1
+	local lvl2 = self._skill_upgrades.auto_repair_level_2
+
+	if lvl1 and lvl1 > 0 or lvl2 and lvl2 > 0 then
 		self._autorepair_chance = chance
 
 		return
@@ -649,9 +694,11 @@ function Drill:set_autorepair(chance)
 
 	if chance then
 		if self._jammed and not self._autorepair_clbk_id and chance > math.random() then
+			local delay = TimerManager:game():time() + 5 + 15 * math.random()
+
 			self._autorepair_clbk_id = "Drill_autorepair" .. tostring(self._unit:key())
 
-			managers.enemy:add_delayed_clbk(self._autorepair_clbk_id, callback(self, self, "clbk_autorepair"), TimerManager:game():time() + 5 + 15 * math.random())
+			managers.enemy:add_delayed_clbk(self._autorepair_clbk_id, callback(self, self, "clbk_autorepair"), delay)
 		end
 	elseif self._autorepair_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._autorepair_clbk_id)
@@ -684,7 +731,7 @@ function Drill:on_autorepair()
 end
 
 function Drill:_set_alert_state(state)
-	if self.ignore_detection then
+	if self.ignore_detection or managers.groupai:state():enemy_weapons_hot() then
 		state = false
 	end
 
@@ -699,9 +746,15 @@ end
 
 function Drill:set_alert_radius(radius)
 	if radius then
+		local differs = self._alert_radius ~= radius
+
 		self._alert_radius = radius
 
 		if self._alert_state then
+			if differs and self._investigate_SO_data and self._investigate_SO_data.SO_registered then
+				self:_unregister_investigate_SO()
+			end
+
 			self:_register_investigate_SO()
 		end
 	else
@@ -713,7 +766,7 @@ function Drill:set_alert_radius(radius)
 end
 
 function Drill:_register_investigate_SO()
-	if self._investigate_SO_data then
+	if self._destroying or self._investigate_SO_data or not self._alert_radius or not self._nav_tracker then
 		return
 	end
 
@@ -721,25 +774,24 @@ function Drill:_register_investigate_SO()
 		return
 	end
 
-	local SO_category = "enemies"
-	local SO_filter = managers.navigation:convert_SO_AI_group_to_access(SO_category)
 	local investigate_pos = Vector3()
-	local my_rot = self._unit:rotation()
+	local my_field_pos = tmp_vec1
 
-	mrotation.y(my_rot, investigate_pos)
-	mvector3.multiply(investigate_pos, -200)
-	mvector3.add(investigate_pos, self._unit:position())
-	mvector3.set_z(investigate_pos, mvector3.z(self._nav_tracker:field_position()))
+	self._nav_tracker:field_m_position(my_field_pos)
+	self._unit:m_rotation(tmp_rot1)
+	mrot_y(tmp_rot1, investigate_pos)
+	mvec3_mul(investigate_pos, -200)
+	mvec3_add(investigate_pos, self._pos)
+	mvec3_set_z(investigate_pos, my_field_pos.z)
 
 	local investigate_pos_tracker = managers.navigation:create_nav_tracker(investigate_pos, true)
 
-	investigate_pos = investigate_pos_tracker:field_position()
-
+	investigate_pos_tracker:field_m_position(investigate_pos)
 	managers.navigation:destroy_nav_tracker(investigate_pos_tracker)
 
-	local investigate_fwd = Vector3()
+	local investigate_fwd = tmp_vec2
 
-	mvector3.direction(investigate_fwd, investigate_pos, self._nav_tracker:field_position())
+	mvec3_dir(investigate_fwd, investigate_pos, my_field_pos)
 
 	local investigate_rot = Rotation(investigate_fwd, math.UP)
 	local investigate_nav_seg = self._nav_tracker:nav_segment()
@@ -767,6 +819,7 @@ function Drill:_register_investigate_SO()
 		usage_amount = 1,
 		objective = investigate_objective,
 		search_pos = self._nav_tracker:field_position(),
+		search_dis_sq = self._alert_radius * self._alert_radius,
 		verification_clbk = callback(self, self, "clbk_investigate_SO_verification"),
 		admin_clbk = callback(self, self, "on_investigate_SO_administered")
 	}
@@ -804,22 +857,29 @@ function Drill:clbk_investigate_SO_verification(candidate_unit)
 	if not self._investigate_SO_data or not self._investigate_SO_data.SO_id then
 		debug_pause_unit(self._unit, "[Drill:clbk_investigate_SO_verification] SO is not registered", self._unit, candidate_unit, inspect(self._investigate_SO_data))
 
-		return
+		return false
 	end
 
-	if not candidate_unit:movement():cool() then
-		return
+	local mov_ext = candidate_unit:movement()
+
+	if not mov_ext:cool() then
+		return false
 	end
 
-	local candidate_listen_pos = candidate_unit:movement():m_head_pos()
-	local sound_source_pos = self._unit:position()
-	local ray = self._unit:raycast("ray", candidate_listen_pos, sound_source_pos, "slot_mask", managers.slot:get_mask("AI_visibility"), "ray_type", "ai_vision", "report")
+	local candidate_listen_pos = mov_ext:m_head_pos()
+	local sound_source_pos = self._pos
+	local my_dis = mvec3_dist(candidate_listen_pos, sound_source_pos)
+	local need_ray = my_dis > (self._alert_radius or 900) * 0.5
 
-	if ray then
-		local my_dis = mvector3.distance(candidate_listen_pos, sound_source_pos)
+	if need_ray then
+		if self._AI_visibility_mask == nil then
+			Drill._AI_visibility_mask = managers.slot:get_mask("AI_visibility")
+		end
 
-		if my_dis > (self._alert_radius or 900) * 0.5 then
-			return
+		local ray = self._unit:raycast("ray", candidate_listen_pos, sound_source_pos, "slot_mask", self._AI_visibility_mask, "ray_type", "ai_vision", "report")
+
+		if ray then
+			return false
 		end
 	end
 
@@ -842,6 +902,8 @@ function Drill:on_investigate_SO_completed(receiver_unit)
 		return
 	end
 
+	self._investigate_SO_data = nil
+
 	self:_register_investigate_SO()
 end
 
@@ -851,7 +913,7 @@ function Drill:on_investigate_SO_failed(receiver_unit)
 	end
 
 	if receiver_unit ~= self._investigate_SO_data.receiver_unit then
-		debug_pause_unit(receiver_unit, "[CarryData:on_pickup_SO_failed] idiot thinks he is investigating", receiver_unit)
+		debug_pause_unit(receiver_unit, "[Drill:on_investigate_SO_failed] idiot thinks he is investigating", receiver_unit)
 
 		return
 	end
@@ -874,16 +936,18 @@ function Drill:clbk_bain_report_sabotage()
 end
 
 function Drill:set_attention_state(state)
+	if managers.groupai:state():enemy_weapons_hot() then
+		state = false
+	end
+
 	self:_set_attention_state(state)
 end
 
 function Drill:destroy(...)
 	Drill.super.destroy(self, ...)
 
-	local nav_tracker = self._nav_tracker
-
-	if nav_tracker then
-		managers.navigation:destroy_nav_tracker(nav_tracker)
+	if self._nav_tracker then
+		managers.navigation:destroy_nav_tracker(self._nav_tracker)
 
 		self._nav_tracker = nil
 	end
@@ -941,9 +1005,7 @@ function Drill:on_melee_hit(peer_id)
 		end
 	end
 
-	local registered_peers = self._peer_ids
-
-	registered_peers[#registered_peers + 1] = peer_id
+	table.insert(self._peer_ids, peer_id)
 
 	if Network:is_client() then
 		managers.network:send_to_host("sync_unit_event_id_16", unit, "base", Drill.EVENT_IDS.melee_restart_client)
@@ -978,10 +1040,8 @@ function Drill:on_melee_hit_success()
 end
 
 function Drill:_does_peer_exist(peer_id)
-	local count = #self._peer_ids
-
-	for i = 1, count do
-		if self._peer_ids[i] == peer_id then
+	for i, v in ipairs(self._peer_ids) do
+		if v == peer_id then
 			return true
 		end
 	end

@@ -103,6 +103,13 @@ function NewNPCRaycastWeaponBase:non_npc_name_id()
 end
 
 function NewNPCRaycastWeaponBase:setup(setup_data)
+	setup_data.ignore_units = setup_data.ignore_units or {}
+	setup_data.ignore_units_map = {}
+
+	for _, unit in ipairs(setup_data.ignore_units) do
+		setup_data.ignore_units_map[unit:key()] = true
+	end
+
 	self._autoaim = setup_data.autoaim
 	self._alert_events = setup_data.alert_AI and {} or nil
 	self._alert_size = tweak_data.weapon[self._name_id].alert_size
@@ -171,7 +178,7 @@ end
 function NewNPCRaycastWeaponBase:start_autofire(nr_shots)
 	self:_sound_autofire_start(nr_shots)
 
-	self._next_fire_allowed = math.max(self._next_fire_allowed, Application:time())
+	self._next_fire_allowed = Application:time()
 	self._shooting = true
 end
 

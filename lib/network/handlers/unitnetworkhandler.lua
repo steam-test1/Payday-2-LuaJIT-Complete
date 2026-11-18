@@ -4,8 +4,6 @@ local tmp_rot1 = Rotation()
 UnitNetworkHandler = UnitNetworkHandler or class(BaseNetworkHandler)
 
 function UnitNetworkHandler:set_unit(unit, character_name, outfit_string, outfit_version, peer_id, team_id, visual_seed)
-	print("[UnitNetworkHandler:set_unit]", unit, character_name, peer_id, team_id, visual_seed)
-
 	if not alive(unit) then
 		return
 	end
@@ -1108,12 +1106,16 @@ function UnitNetworkHandler:action_aim_state(unit, state, sender_rpc)
 end
 
 function UnitNetworkHandler:action_melee_attack(unit, body_part, sender_rpc)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) or not self._verify_character(unit) then
+	local peer = self._verify_sender(sender_rpc)
+
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer or not self._verify_character(unit) then
 		return
 	end
 
-	if unit:movement() and unit:movement().sync_action_melee_attack then
-		unit:movement():sync_action_melee_attack(body_part)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_melee_attack then
+		mov_ext:sync_action_melee_attack(body_part)
 	end
 end
 
@@ -1912,19 +1914,28 @@ end
 function UnitNetworkHandler:sync_unit_event_id_16(unit, ext_name, event_id, rpc)
 	local peer = self._verify_sender(rpc)
 
-	if not peer or not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	local extension = unit[ext_name](unit)
+	if not alive(unit) then
+		return
+	end
+
+	local ext_fn_name = "sync_net_event"
+	local extension = self._get_unit_extension_safe(unit, ext_name, peer)
 
 	if not extension then
-		debug_pause("[UnitNetworkHandler:sync_unit_event_id_16] unit", unit, "does not have extension", ext_name)
-
 		return
 	end
 
-	extension:sync_net_event(event_id, peer)
+	local fn = extension[ext_fn_name]
+
+	if fn then
+		fn(extension, event_id, peer)
+	else
+		Application:error("[UnitNetworkHandler] sync_unit_event_id_16() - no \"" .. ext_fn_name .. "\" function in extension \"" .. ext_name .. "\" for unit:", unit)
+	end
 end
 
 function UnitNetworkHandler:m79grenade_explode_on_client(position, normal, user, damage, range, curve_pow, sender)
@@ -2125,8 +2136,10 @@ function UnitNetworkHandler:turret_repair_shield(unit)
 	unit:character_damage():repair_shield()
 end
 
-function UnitNetworkHandler:sync_unit_module(parent_unit, module_unit, align_obj_name, module_id, parent_extension_name)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+function UnitNetworkHandler:sync_unit_module(parent_unit, module_unit, align_obj_name, module_id, parent_extension_name, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
@@ -2134,11 +2147,23 @@ function UnitNetworkHandler:sync_unit_module(parent_unit, module_unit, align_obj
 		return
 	end
 
-	parent_unit[parent_extension_name](parent_unit):spawn_module(module_unit, align_obj_name, module_id)
+	local extension = self._get_unit_extension_safe(parent_unit, parent_extension_name, peer)
+
+	if not extension then
+		return
+	end
+
+	if extension.spawn_module then
+		extension:spawn_module(module_unit, align_obj_name, module_id)
+	else
+		Application:error("[UnitNetworkHandler] sync_unit_module() - no \"spawn_module\" function in extension \"" .. parent_extension_name .. "\" for unit:", parent_unit)
+	end
 end
 
-function UnitNetworkHandler:run_unit_module_function(parent_unit, module_id, parent_extension_name, module_extension_name, func_name, params)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+function UnitNetworkHandler:run_unit_module_function(parent_unit, module_id, parent_extension_name, module_extension_name, func_name, params, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
@@ -2146,9 +2171,19 @@ function UnitNetworkHandler:run_unit_module_function(parent_unit, module_id, par
 		return
 	end
 
-	local params_split = string.split(params, " ")
+	local extension = self._get_unit_extension_safe(parent_unit, parent_extension_name, peer)
 
-	parent_unit[parent_extension_name](parent_unit):run_module_function_unsafe(module_id, module_extension_name, func_name, params_split[1], params_split[2])
+	if not extension then
+		return
+	end
+
+	if extension.run_module_function_unsafe then
+		local params_split = string.split(params, " ")
+
+		extension:run_module_function_unsafe(module_id, module_extension_name, func_name, params_split[1], params_split[2])
+	else
+		Application:error("[UnitNetworkHandler] run_unit_module_function() - no \"run_module_function_unsafe\" function in extension \"" .. parent_extension_name .. "\" for unit:", parent_unit)
+	end
 end
 
 function UnitNetworkHandler:sync_equipment_setup(unit, upgrade_lvl, peer_id)
@@ -2426,11 +2461,23 @@ function UnitNetworkHandler:play_distance_interact_redirect_delay(unit, redirect
 end
 
 function UnitNetworkHandler:start_timer_gui(unit, timer, sender)
-	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return
 	end
 
-	unit:timer_gui():sync_start(timer)
+	if not alive(unit) then
+		return
+	end
+
+	local timer_ext = unit:timer_gui()
+
+	if timer_ext then
+		if timer_ext.sync_start then
+			timer_ext:sync_start(timer)
+		end
+	else
+		Application:error("[UnitNetworkHandler:start_timer_gui] Unit has no timer_gui extension.", inspect(unit))
+	end
 end
 
 function UnitNetworkHandler:give_equipment(equipment, amount, transfer, sender)
@@ -2913,8 +2960,6 @@ function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup,
 	local peer = self._verify_sender(sender)
 
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
-		print("_verify failed!!!")
-
 		return
 	end
 
@@ -2925,21 +2970,47 @@ function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup,
 	end
 
 	local world_position = parent_object and local_pos:rotate_with(parent_object:rotation()) + parent_object:position() or local_pos
+	local projectile_base_ext
 
 	if Network:is_server() then
+		peer_id = peer:id()
+
 		local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
+
+		if type(tweak_entry.unit) ~= "string" then
+			Application:error("[UnitNetworkHandler] sync_attach_projectile() - \"" .. projectile_type .. "\" isn't an actual projectile.")
+
+			return
+		end
+
 		local unit_name = Idstring(tweak_entry.unit)
 		local synced_unit = World:spawn_unit(unit_name, world_position, Rotation(dir, math.UP))
 
-		managers.network:session():send_to_peers_synched("sync_attach_projectile", synced_unit, instant_dynamic_pickup, alive(parent_unit) and parent_unit:id() ~= -1 and parent_unit or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_body or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_object or nil, local_pos, dir, projectile_type_index, peer_id)
-		synced_unit:base():set_thrower_unit_by_peer_id(peer_id)
-		synced_unit:base():set_projectile_entry(projectile_type)
-		synced_unit:base():sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir)
-	elseif unit then
-		unit:set_position(world_position)
-		unit:base():set_thrower_unit_by_peer_id(peer_id)
-		unit:base():set_projectile_entry(projectile_type)
-		unit:base():sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir)
+		managers.network:send_to_peers_synched("sync_attach_projectile", synced_unit, instant_dynamic_pickup, alive(parent_unit) and parent_unit:id() ~= -1 and parent_unit or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_body or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_object or nil, local_pos, dir, projectile_type_index, peer_id)
+
+		projectile_base_ext = synced_unit:base()
+	else
+		local server_peer = managers.network:get_server_peer_safe()
+
+		if peer ~= server_peer then
+			peer_id = peer:id()
+		end
+
+		if alive(unit) then
+			projectile_base_ext = unit:base()
+
+			if projectile_base_ext and projectile_base_ext.sync_attach_to_unit then
+				unit:set_position(world_position)
+			end
+		end
+	end
+
+	if projectile_base_ext and projectile_base_ext.sync_attach_to_unit then
+		projectile_base_ext:set_thrower_unit_by_peer_id(peer_id)
+		projectile_base_ext:set_projectile_entry(projectile_type)
+		projectile_base_ext:sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir)
+	else
+		return
 	end
 
 	if peer_id ~= 1 then
@@ -2976,37 +3047,49 @@ end
 function UnitNetworkHandler:sync_detonate_incendiary_grenade(unit, ext_name, event_id, normal, rpc)
 	local peer = self._verify_sender(rpc)
 
-	if not peer or not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	local extension = unit[ext_name](unit)
+	if not alive(unit) then
+		return
+	end
+
+	local extension = self._get_unit_extension_safe(unit, ext_name, peer)
 
 	if not extension then
-		debug_pause("[UnitNetworkHandler:sync_detonate_incendiary_grenade] unit", unit, "does not have extension", ext_name)
-
 		return
 	end
 
-	extension:sync_detonate_incendiary_grenade(event_id, normal, peer)
+	if extension.sync_detonate_incendiary_grenade then
+		extension:sync_detonate_incendiary_grenade(event_id, normal, peer)
+	else
+		Application:error("[UnitNetworkHandler] sync_detonate_incendiary_grenade() - no \"sync_detonate_incendiary_grenade\" function in extension \"" .. ext_name .. "\" for unit:", unit)
+	end
 end
 
 function UnitNetworkHandler:sync_detonate_molotov_grenade(unit, ext_name, event_id, normal, rpc)
 	local peer = self._verify_sender(rpc)
 
-	if not peer or not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	local extension = unit[ext_name](unit)
+	if not alive(unit) then
+		return
+	end
+
+	local extension = self._get_unit_extension_safe(unit, ext_name, peer)
 
 	if not extension then
-		debug_pause("[UnitNetworkHandler:sync_detonate_molotov_grenade] unit", unit, "does not have extension", ext_name)
-
 		return
 	end
 
-	extension:sync_detonate_molotov_grenade(event_id, normal, peer)
+	if extension.sync_detonate_molotov_grenade then
+		extension:sync_detonate_molotov_grenade(event_id, normal, peer)
+	else
+		Application:error("[UnitNetworkHandler] sync_detonate_molotov_grenade() - no \"sync_detonate_molotov_grenade\" function in extension \"" .. ext_name .. "\" for unit:", unit)
+	end
 end
 
 function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, weapon_unit, is_melee, hurt_anim, tweak_sync_idx, selection_idx, sender_rpc)
@@ -3024,8 +3107,8 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 		return
 	end
 
-	if not target_unit:character_damage() or not target_unit:character_damage().damage_dot then
-		Application:error("[UnitNetworkHandler:sync_add_doted_enemy] Target unit lacks 'character_damage' extension or said extension lacks 'damage_dot' function.", target_unit)
+	if not target_unit:character_damage().damage_dot then
+		Application:error("[UnitNetworkHandler] sync_add_doted_enemy() - target unit's \"character_damage\" extension lacks \"damage_dot\" function.", target_unit)
 
 		return
 	end
@@ -3033,7 +3116,7 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 	local dot_tweak_name = tweak_data.dot:get_name_from_sync_index(tweak_sync_idx)
 
 	if not dot_tweak_name then
-		Application:error("[UnitNetworkHandler:sync_add_doted_enemy] No tweak name found from sync index: ", tweak_sync_idx)
+		Application:error("[UnitNetworkHandler] sync_add_doted_enemy() - no tweak name found from sync index: ", tweak_sync_idx)
 
 		return
 	end
@@ -3041,7 +3124,7 @@ function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, wea
 	local dot_data = tweak_data.dot:get_dot_data(dot_tweak_name)
 
 	if not dot_data then
-		Application:error("[UnitNetworkHandler:sync_add_doted_enemy] No dot data found with tweak name '" .. tostring(dot_tweak_name) .. "'.")
+		Application:error("[UnitNetworkHandler] sync_add_doted_enemy() - no dot data found with tweak name \"" .. tostring(dot_tweak_name) .. "\".")
 
 		return
 	end
@@ -3969,10 +4052,14 @@ function UnitNetworkHandler:sync_char_team(unit, team_index, sender)
 		return
 	end
 
-	local team_id = tweak_data.levels:get_team_names_indexed()[team_index]
-	local team_data = managers.groupai:state():team_data(team_id)
+	local mov_ext = unit:movement()
 
-	unit:movement():set_team(team_data)
+	if mov_ext and mov_ext.set_team then
+		local team_id = tweak_data.levels:get_team_names_indexed()[team_index]
+		local team_data = managers.groupai:state():team_data(team_id)
+
+		mov_ext:set_team(team_data)
+	end
 end
 
 function UnitNetworkHandler:sync_drill_upgrades(unit, autorepair_level_1, autorepair_level_2, drill_speed_level, silent, reduced_alert, sender_rpc)
@@ -4173,34 +4260,119 @@ function UnitNetworkHandler:sync_refuse_loot_in_vehicle(vehicle_unit, loot_unit,
 	end
 end
 
-function UnitNetworkHandler:sync_vehicle_change_stance(shooting_unit, stance)
-	Application:debug("[DRIVING_NET] sync_vehicle_change_stance")
+function UnitNetworkHandler:sync_vehicle_change_stance(stance, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	local shooting_unit = peer:unit()
 
 	if not alive(shooting_unit) then
 		return
 	end
 
-	shooting_unit:movement():sync_vehicle_change_stance(stance)
+	local mov_ext = shooting_unit:movement()
+
+	if move_ext and mov_ext.sync_vehicle_change_stance then
+		mov_ext:sync_vehicle_change_stance(stance)
+	end
 end
 
-function UnitNetworkHandler:sync_store_loot_in_vehicle(vehicle, loot_bag, carry_id, multiplier)
-	Application:debug("[DRIVING_NET] sync_store_loot_in_vehicle")
-
-	if not alive(vehicle) or not alive(loot_bag) then
+function UnitNetworkHandler:sync_store_loot_in_vehicle(vehicle_unit, loot_unit, carry_id, multiplier, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
 		return
 	end
 
-	vehicle:vehicle_driving():sync_store_loot_in_vehicle(loot_bag, carry_id, multiplier)
+	loot_unit = alive(loot_unit) and loot_unit or nil
+	vehicle_unit = alive(vehicle_unit) and vehicle_unit or nil
+
+	local driving_ext = vehicle_unit and vehicle_unit:vehicle_driving() or nil
+
+	if vehicle_unit and not driving_ext then
+		Application:error("[UnitNetworkHandler] sync_store_loot_in_vehicle() - no \"vehicle_driving\" extension on vehicle unit:", vehicle_unit)
+
+		vehicle_unit = nil
+	end
+
+	if loot_unit and not loot_unit:carry_data() then
+		Application:error("[UnitNetworkHandler] sync_store_loot_in_vehicle() - no \"carry_data\" extension on loot unit:", loot_unit)
+
+		loot_unit = nil
+	end
+
+	if not vehicle_unit or not loot_unit then
+		return
+	end
+
+	if driving_ext.sync_store_loot_in_vehicle then
+		driving_ext:sync_store_loot_in_vehicle(loot_unit, carry_id, multiplier)
+	else
+		local str = "[UnitNetworkHandler] sync_store_loot_in_vehicle() - no \"sync_store_loot_in_vehicle\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
+	end
 end
 
-function UnitNetworkHandler:server_give_vehicle_loot_to_player(vehicle, peer_id)
-	Application:debug("[DRIVING_NET] server_give_vehicle_loot_to_player")
-	vehicle:vehicle_driving():server_give_vehicle_loot_to_player(peer_id)
+function UnitNetworkHandler:server_give_vehicle_loot_to_player(vehicle_unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer or not alive(vehicle_unit) then
+		return
+	end
+
+	local driving_ext = vehicle_unit:vehicle_driving()
+
+	if not driving_ext then
+		Application:error("[UnitNetworkHandler] server_give_vehicle_loot_to_player() - no \"vehicle_driving\" extension on unit:", vehicle_unit)
+
+		return
+	end
+
+	if driving_ext.server_give_vehicle_loot_to_player then
+		driving_ext:server_give_vehicle_loot_to_player(peer:id())
+	else
+		local str = "[UnitNetworkHandler] server_give_vehicle_loot_to_player() - no \"server_give_vehicle_loot_to_player\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
+	end
 end
 
-function UnitNetworkHandler:sync_give_vehicle_loot_to_player(vehicle, carry_id, multiplier, peer_id)
-	Application:debug("[DRIVING_NET] sync_give_vehicle_loot_to_player")
-	vehicle:vehicle_driving():sync_give_vehicle_loot_to_player(carry_id, multiplier, peer_id)
+function UnitNetworkHandler:sync_give_vehicle_loot_to_player(vehicle_unit, carry_id, multiplier, peer_id, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer or not alive(vehicle_unit) then
+		return
+	end
+
+	local driving_ext = vehicle_unit:vehicle_driving()
+
+	if not driving_ext then
+		Application:error("[UnitNetworkHandler] sync_give_vehicle_loot_to_player() - no \"vehicle_driving\" extension on unit:", vehicle_unit)
+
+		return
+	end
+
+	if driving_ext.sync_give_vehicle_loot_to_player then
+		driving_ext:sync_give_vehicle_loot_to_player(carry_id, multiplier, peer_id)
+	else
+		local str = "[UnitNetworkHandler] sync_give_vehicle_loot_to_player() - no \"sync_give_vehicle_loot_to_player\" function in \"vehicle_driving\" extension on unit:"
+
+		Application:error(str, vehicle_unit)
+	end
 end
 
 function UnitNetworkHandler:sync_vehicle_interact_trunk(vehicle_unit, sender_rpc)
@@ -4358,7 +4530,7 @@ function UnitNetworkHandler:sync_player_swansong(unit, active, sender)
 end
 
 function UnitNetworkHandler:special_eq_response(unit, sender)
-	if unit:interaction().apply_item_pickup then
+	if alive(unit) and unit:interaction() and unit:interaction().apply_item_pickup then
 		unit:interaction():apply_item_pickup()
 	end
 end
@@ -4661,18 +4833,6 @@ function UnitNetworkHandler:sync_carried_bag_unit(ai_unit, carry_unit, sender)
 	end
 end
 
-function UnitNetworkHandler:sync_unit_spawn(parent_unit, spawn_unit, align_obj_name, unit_id, parent_extension_name)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	if not alive(parent_unit) or not alive(spawn_unit) then
-		return
-	end
-
-	parent_unit[parent_extension_name](parent_unit):spawn_unit(unit_id, align_obj_name, spawn_unit)
-end
-
 function UnitNetworkHandler:sync_unit_surrendered(unit, surrendered)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
@@ -4697,20 +4857,34 @@ function UnitNetworkHandler:sync_unit_converted(unit)
 	unit:brain():sync_converted()
 end
 
-function UnitNetworkHandler:sync_link_spawned_unit(parent_unit, unit_id, joint_table, parent_extension_name)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+function UnitNetworkHandler:sync_unit_spawn(parent_unit, spawn_unit, align_obj_name, unit_id, parent_extension_name, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	if not alive(parent_unit) then
+	if not alive(parent_unit) or not alive(spawn_unit) then
 		return
 	end
 
-	parent_unit[parent_extension_name](parent_unit):_link_joints(unit_id, joint_table)
+	local extension = self._get_unit_extension_safe(parent_unit, parent_extension_name, peer)
+
+	if not extension then
+		return
+	end
+
+	if extension.spawn_unit then
+		extension:spawn_unit(unit_id, align_obj_name, spawn_unit)
+	else
+		Application:error("[UnitNetworkHandler] sync_unit_spawn() - no \"spawn_unit\" function in extension \"" .. parent_extension_name .. "\" for unit:", parent_unit)
+	end
 end
 
-function UnitNetworkHandler:run_spawn_unit_sequence(parent_unit, parent_extension_name, unit_id, sequence_name)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+function UnitNetworkHandler:sync_link_spawned_unit(parent_unit, unit_id, joint_table, parent_extension_name, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
@@ -4718,11 +4892,23 @@ function UnitNetworkHandler:run_spawn_unit_sequence(parent_unit, parent_extensio
 		return
 	end
 
-	parent_unit[parent_extension_name](parent_unit):_spawn_run_sequence(unit_id, sequence_name)
+	local extension = self._get_unit_extension_safe(parent_unit, parent_extension_name, peer)
+
+	if not extension then
+		return
+	end
+
+	if extension.link_spawned_unit then
+		extension:link_spawned_unit(unit_id, joint_table)
+	else
+		Application:error("[UnitNetworkHandler] sync_link_spawned_unit() - no \"link_spawned_unit\" function in extension \"" .. parent_extension_name .. "\" for unit:", parent_unit)
+	end
 end
 
-function UnitNetworkHandler:run_local_push_child_unit(parent_unit, parent_extension_name, unit_id, mass, pow, vec3_a, vec3_b)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+function UnitNetworkHandler:run_spawn_unit_sequence(parent_unit, parent_extension_name, unit_id, sequence_name, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
@@ -4730,7 +4916,41 @@ function UnitNetworkHandler:run_local_push_child_unit(parent_unit, parent_extens
 		return
 	end
 
-	parent_unit[parent_extension_name](parent_unit):local_push_child_unit(unit_id, mass, pow, vec3_a, vec3_b)
+	local extension = self._get_unit_extension_safe(parent_unit, parent_extension_name, peer)
+
+	if not extension then
+		return
+	end
+
+	if extension.spawn_run_sequence then
+		extension:spawn_run_sequence(unit_id, sequence_name)
+	else
+		Application:error("[UnitNetworkHandler] run_spawn_unit_sequence() - no \"spawn_run_sequence\" function in extension \"" .. parent_extension_name .. "\" for unit:", parent_unit)
+	end
+end
+
+function UnitNetworkHandler:run_local_push_child_unit(parent_unit, parent_extension_name, unit_id, mass, pow, vec3_a, vec3_b, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	if not alive(parent_unit) then
+		return
+	end
+
+	local extension = self._get_unit_extension_safe(parent_unit, parent_extension_name, peer)
+
+	if not extension then
+		return
+	end
+
+	if extension.local_push_child_unit then
+		extension:local_push_child_unit(unit_id, mass, pow, vec3_a, vec3_b)
+	else
+		Application:error("[UnitNetworkHandler] run_local_push_child_unit() - no \"local_push_child_unit\" function in extension \"" .. parent_extension_name .. "\" for unit:", parent_unit)
+	end
 end
 
 function UnitNetworkHandler:sync_special_character_material(character_unit, material_name)

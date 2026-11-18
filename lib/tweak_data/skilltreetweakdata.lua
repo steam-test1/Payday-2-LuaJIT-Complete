@@ -1,6 +1,6 @@
 SkillTreeTweakData = SkillTreeTweakData or class()
 
-function SkillTreeTweakData:init()
+function SkillTreeTweakData:init(tweak_data)
 	local function digest(value)
 		return Application:digest_value(value, true)
 	end
@@ -5358,7 +5358,7 @@ function SkillTreeTweakData:init()
 			}
 		}
 		local deck9_multi_choice = {}
-		local deck9_options = UpgradesTweakData.mrwi_deck9_options()
+		local deck9_options = tweak_data.upgrades:mrwi_deck9_options()
 
 		for _, options in pairs(deck9_options) do
 			local data
@@ -5547,7 +5547,7 @@ end
 function SkillTreeTweakData:get_tree(tree_name)
 	local list = {}
 
-	for i, tree in ipairs(self.trees) do
+	for _, tree in ipairs(self.trees) do
 		if tree.skill == tree_name then
 			table.insert(list, tree)
 		end

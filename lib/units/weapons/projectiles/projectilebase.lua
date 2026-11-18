@@ -899,7 +899,7 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 
 	managers.network:session():send_to_peers_synched("sync_throw_projectile", unit:id() ~= -1 and unit or nil, pos, dir, projectile_type_index, owner_peer_id or 0)
 
-	if tweak_data.blackmarket.projectiles[projectile_type].impact_detonation then
+	if tweak_entry.impact_detonation then
 		unit:damage():add_body_collision_callback(callback(unit:base(), unit:base(), "clbk_impact"))
 		unit:base():create_sweep_data()
 	end

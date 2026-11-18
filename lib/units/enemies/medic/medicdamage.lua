@@ -169,7 +169,7 @@ function MedicDamage:die(...)
 	self:_unregister_healing()
 end
 
-function MedicDamage:destroy(...)
-	MedicDamage.super.destroy(self, ...)
+function MedicDamage:pre_destroy(...)
+	MedicDamage.super.pre_destroy(self, ...)
 	self:_unregister_healing()
 end

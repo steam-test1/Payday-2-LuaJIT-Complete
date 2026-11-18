@@ -136,10 +136,14 @@ function ElementInstancePoint:_create()
 end
 
 function ElementInstancePoint:save(data)
+	ElementInstancePoint.super.save(self, data)
+
 	data.has_created = self._has_created
 end
 
 function ElementInstancePoint:load(data)
+	ElementInstancePoint.super.load(self, data)
+
 	if data.has_created then
 		self:_create()
 	end

@@ -185,7 +185,7 @@ function ElementStopwatchOperator:on_executed(instigator)
 		return
 	end
 
-	local time = self:get_random_table_value_float(self:value("time"))
+	local time = self:get_random_table_value(self:value("time"))
 
 	for _, id in ipairs(self._values.elements) do
 		local element = self:get_mission_element(id)

@@ -22,6 +22,7 @@ require("lib/units/menu/MenuArmourBase")
 require("lib/units/ArmorSkinExt")
 require("lib/managers/EnvironmentEffectsManager")
 require("lib/units/characters/PlayerBodyBoneMergeBase")
+require("lib/managers/ModWorkshopManager")
 require("lib/units/MenuDummyExtensions")
 require("lib/wip")
 core:import("SequenceManager")
@@ -191,6 +192,7 @@ function MenuSetup:init_managers(managers)
 	managers.money = MoneyManager:new()
 	managers.statistics = StatisticsManager:new()
 	managers.network = NetworkManager:new()
+	managers.modworkshop = ModWorkshopManager:new()
 end
 
 function MenuSetup:init_finalize()
@@ -257,6 +259,7 @@ end
 function MenuSetup:destroy()
 	MenuSetup.super.destroy(self)
 	managers.menu_scene:destroy()
+	managers.modworkshop:destroy()
 end
 
 return MenuSetup

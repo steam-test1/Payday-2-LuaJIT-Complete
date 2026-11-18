@@ -3894,973 +3894,951 @@ function UpgradesTweakData:_init_pd2_values()
 		end
 	end
 
-	local editable_specialization_lootdrop_drop_multiplier = "10%"
+	local function pr(value, format)
+		return string.format(format or "%g%%", value)
+	end
+
+	local t2_headshot_multiplier = (self.values.weapon.passive_headshot_damage_multiplier[1] - 1) * 100
+	local t4_concealment_modifier = self.values.player.passive_concealment_modifier[1]
+	local t4_armor_movement_multiplier = (1 - self.values.player.passive_armor_movement_penalty_multiplier[1]) * 100
+	local t4_xp_multiplier = (self.values.player.passive_xp_multiplier[1] - 1) * 100
+	local t6_ammo_pickup = self.values.player.pick_up_ammo_multiplier[1] * 100
+	local t8_damage_multiplier = (self.values.weapon.passive_damage_multiplier[1] - 1) * 100
+	local t8_doctor_bag_multiplier = (1 - self.values.doctor_bag.interaction_speed_multiplier[1]) * 100
+	local t9_lootdrop_multiplier = (self.values.player.passive_loot_drop_multiplier[1] - 1) * 100
 	local editable_specialization_template = {
 		{},
 		{
-			"25%"
+			pr(t2_headshot_multiplier)
 		},
 		{},
 		{
-			"+1",
-			"15%",
-			"45%"
+			pr(t4_concealment_modifier, "+%g"),
+			pr(t4_armor_movement_multiplier),
+			pr(t4_xp_multiplier)
 		},
 		{},
 		{
-			"135%"
+			pr(t6_ammo_pickup)
 		},
 		{},
 		{
-			"5%",
-			"20%"
+			pr(t8_damage_multiplier),
+			pr(t8_doctor_bag_multiplier)
 		},
 		{
-			editable_specialization_lootdrop_drop_multiplier
+			pr(t9_lootdrop_multiplier)
 		}
 	}
 	local editable_multi_choice_specialization_descs = {}
-	local editable_specialization_descs = {
-		{
-			{
-				"10%",
-				"8%",
-				"50%"
-			},
-			{
-				"25%"
-			},
-			{
-				"50%",
-				"25%",
-				"6%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"10%",
-				"20%"
-			},
-			{
-				"135%"
-			},
-			{
-				"10%",
-				"5%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"6%",
-				"12%",
-				"4",
-				"8%",
-				"10%"
-			}
-		},
-		{
-			{
-				"10%"
-			},
-			{
-				"25%"
-			},
-			{
-				"15%",
-				"10%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"20%"
-			},
-			{
-				"135%"
-			},
-			{},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"60%",
-				"3%",
-				"5",
-				"10%"
-			}
-		},
-		{
-			{
-				"10%"
-			},
-			{
-				"25%"
-			},
-			{
-				"10%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"10%"
-			},
-			{
-				"135%"
-			},
-			{
-				"10%",
-				"2",
-				"15"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"5%",
-				"10%",
-				"10%"
-			}
-		},
-		{
-			{
-				"15%"
-			},
-			{
-				"25%"
-			},
-			{
-				"15%",
-				"45%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"15%",
-				"135%"
-			},
-			{
-				"135%"
-			},
-			{
-				"15%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"25%",
-				"80%",
-				"10%"
-			}
-		},
-		{
-			{
-				"5%"
-			},
-			{
-				"25%"
-			},
-			{
-				"10%",
-				"5%",
-				"-24",
-				"50%",
-				"-16"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"10%",
-				"5%"
-			},
-			{
-				"135%"
-			},
-			{
-				"10%",
-				"5%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"10%",
-				"5%",
-				"-16",
-				"125%",
-				"10%",
-				"1.5"
-			}
-		},
-		{
-			{
-				"15%"
-			},
-			{
-				"25%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"10%",
-				"20%"
-			},
-			{
-				"135%"
-			},
-			{
-				"10%",
-				"25%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"10%",
-				"10%"
-			}
-		},
-		{
-			{
-				"20%"
-			},
-			{
-				"25%"
-			},
-			{
-				"10%",
-				"20%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"5%",
-				"5%",
-				"20%"
-			},
-			{
-				"135%"
-			},
-			{
-				"5%",
-				"5%",
-				"10%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"20%",
-				"10%"
-			}
-		},
-		{
-			{
-				"12%",
-				"1",
-				"10"
-			},
-			{
-				"25%"
-			},
-			{
-				"8%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"8%",
-				"10%",
-				"7",
-				"4"
-			},
-			{
-				"135%"
-			},
-			{
-				"8%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"20%",
-				"10",
-				"10%"
-			}
-		},
-		{
-			{
-				"12%",
-				"1",
-				"10"
-			},
-			{
-				"25%"
-			},
-			{
-				"30",
-				"1",
-				"10%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"10%",
-				"1",
-				"8%"
-			},
-			{
-				"135%"
-			},
-			{
-				"30",
-				"1",
-				"10%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"75%",
-				"1",
-				"10%"
-			}
-		},
-		{
-			{
-				"16",
-				"24",
-				"3",
-				"20%"
-			},
-			{
-				"25%"
-			},
-			{
-				"50%",
-				"5",
-				"20%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"50%",
-				"20%"
-			},
-			{
-				"135%"
-			},
-			{
-				"8"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"8",
-				"10%"
-			}
-		},
-		{
-			{
-				"1",
-				"0.3",
-				"3",
-				"1.5"
-			},
-			{
-				"25%"
-			},
-			{
-				"2",
-				"0.3",
-				"3",
-				"20%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"3",
-				"0.3",
-				"3",
-				"10%"
-			},
-			{
-				"135%"
-			},
-			{
-				"4",
-				"0.3",
-				"3",
-				"20%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"4",
-				"0.3",
-				"4.2",
-				"20%",
-				"10%"
-			}
-		},
-		{
-			{
-				"25%",
-				"20%"
-			},
-			{
-				"25%"
-			},
-			{
-				"25%",
-				"20%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"25%",
-				"20%"
-			},
-			{
-				"135%"
-			},
-			{
-				"25%",
-				"20%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"50%",
-				"25%",
-				"10%"
-			}
-		},
-		{
-			{
-				"4",
-				"1"
-			},
-			{
-				"25%"
-			},
-			{
-				"4",
-				"10%",
-				"10%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"50%",
-				"10%",
-				"10%"
-			},
-			{
-				"135%"
-			},
-			{
-				"4",
-				"20%",
-				"10%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"20%",
-				"10%"
-			}
-		},
-		{
-			{
-				"100%",
-				"240",
-				"4",
-				"600",
-				"1",
-				"30",
-				"60% + 80",
-				"8"
-			},
-			{
-				"25%"
-			},
-			{},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"60% + 40",
-				"8"
-			},
-			{
-				"135%"
-			},
-			{
-				"1",
-				"25"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"100%",
-				"10%"
-			}
-		},
-		{
-			{
-				"2",
-				"15"
-			},
-			{
-				"25%"
-			},
-			{
-				"50%",
-				"100%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"50%",
-				"110%"
-			},
-			{
-				"135%"
-			},
-			{
-				"50%",
-				"120%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"10",
-				"1.5",
-				"10%"
-			}
-		},
-		{
-			{
-				"5",
-				"5",
-				"4",
-				"4"
-			},
-			{
-				"25%"
-			},
-			{
-				"10%",
-				"1"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"10%",
-				"4",
-				"0.1"
-			},
-			{
-				"135%"
-			},
-			{
-				"10%",
-				"1"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"10%",
-				"4",
-				"0.1",
-				"10%"
-			}
-		},
-		{
-			{
-				"75%",
-				"6",
-				"30"
-			},
-			{
-				"25%"
-			},
-			{
-				"10%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"10%"
-			},
-			{
-				"135%"
-			},
-			{
-				"20%",
-				"50%",
-				"25%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"40%",
-				"100%",
-				"5",
-				"1",
-				"10%"
-			}
-		},
-		{
-			{
-				"10",
-				"50%",
-				"60",
-				"50%",
-				"1"
-			},
-			{
-				"25%"
-			},
-			{
-				"20%",
-				"4"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				"15%"
-			},
-			{
-				"135%"
-			},
-			{},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				"100%",
-				"10%",
-				"10%"
-			}
-		}
-	}
+	local editable_specialization_descs = {}
 
 	do
-		local delayed_percentage = self.values.player.damage_control_passive[1][1]
-		local tick_percentage = self.values.player.damage_control_passive[1][2] * 0.01 * delayed_percentage
-		local damage_duration = math.ceil(delayed_percentage / tick_percentage)
-		local auto_shrug_time = self.values.player.damage_control_auto_shrug[1]
-		local health_threshold = self.values.player.damage_control_cooldown_drain[2][1]
-		local cooldown_drain_1 = self.values.player.damage_control_cooldown_drain[1][2]
-		local cooldown_drain_2 = self.values.player.damage_control_cooldown_drain[2][2]
-		local heal_percentage = self.values.player.damage_control_healing[1]
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_team_damage_reduction = (1 - self.values.team.damage_dampener.team_damage_reduction[1]) * 100
+		local t1_damage_reduction = self.values.player.passive_damage_reduction[1] * 100
+		local t3_stamina_multiplier = (self.values.team.stamina.passive_multiplier[1] - 1) * 100
+		local t3_intimidate_multiplier = (self.values.player.passive_intimidate_range_mul[1] - 1) * 100
+		local t3_damage_reduction = (1 - self.values.temporary.dmg_dampener_close_contact[1][1]) * 100
+		local t5_team_health_multiplier = (self.values.team.health.passive_multiplier[1] - 1) * 100
+		local t5_health_multiplier = (self.values.player.passive_health_multiplier[1] - 1) * 100
+		local t7_team_armor_multiplier = (self.values.team.armor.multiplier[1] - 1) * 100
+		local t7_armor_multiplier = (self.values.player.tier_armor_multiplier[1] - 1) * 100
+		local t9_health_multiplier = (self.values.team.health.hostage_multiplier[1] - 1) * 100
+		local t9_stamina_multiplier = (self.values.team.stamina.hostage_multiplier[1] - 1) * 100
+		local t9_max_hostages = self.hostage_max_num.health
+		local t9_damage_reduction = (1 - self.values.team.damage_dampener.hostage_multiplier[1]) * 100
 
-		table.insert(editable_specialization_descs, {
-			{
-				tostring(delayed_percentage) .. "%",
-				damage_duration,
-				"10"
-			},
-			{
-				"25%"
-			},
-			{},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				auto_shrug_time
-			},
-			{
-				"135%"
-			},
-			{
-				tostring(health_threshold) .. "%",
-				cooldown_drain_2,
-				cooldown_drain_1
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				tostring(heal_percentage) .. "%",
-				"10%"
-			}
-		})
+		specialization[1] = {
+			"10%",
+			pr(t1_team_damage_reduction),
+			pr(t1_damage_reduction)
+		}
+		specialization[3] = {
+			pr(t3_stamina_multiplier),
+			pr(t3_intimidate_multiplier),
+			pr(t3_damage_reduction)
+		}
+		specialization[5] = {
+			pr(t5_team_health_multiplier),
+			pr(t5_team_health_multiplier + t5_health_multiplier)
+		}
+		specialization[7] = {
+			pr(t7_team_armor_multiplier + t7_armor_multiplier),
+			pr(t7_team_armor_multiplier)
+		}
+		specialization[9] = {
+			pr(t9_health_multiplier),
+			pr(t9_stamina_multiplier),
+			t9_max_hostages,
+			pr(t9_damage_reduction),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
 	end
 
 	do
-		local distance = self.values.player.tag_team_base[1].distance
-		local heal_amount = self.values.player.tag_team_base[1].kill_health_gain * 10
-		local heal_amount_tagged = heal_amount * self.values.player.tag_team_base[1].tagged_health_gain_ratio
-		local kill_extension = self.values.player.tag_team_base[1].kill_extension
-		local duration = self.values.player.tag_team_base[1].duration
-		local cooldown = 60
-		local cooldown_drain_owner = self.values.player.tag_team_cooldown_drain[1].owner
-		local cooldown_drain_tagged = self.values.player.tag_team_cooldown_drain[2].tagged
-		local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
-		local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
-		local kill_absorption = self.values.player.tag_team_damage_absorption[1].kill_gain * 10
-		local kill_absorption_max = self.values.player.tag_team_damage_absorption[1].max * 10
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_health_multiplier = (self.values.player.passive_health_multiplier[1] - 1) * 100
+		local t3_uncover_multiplier = (self.values.player.uncover_multiplier[1] - 1) * 100
+		local t3_health_multiplier = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t5_health_multiplier = (self.values.player.passive_health_multiplier[3] - 1) * 100
+		local t9_health_multiplier = (self.values.player.passive_health_multiplier[5] - 1) * 100
+		local t9_health_regen = self.values.player.passive_health_regen[1] * 100
 
-		table.insert(editable_specialization_descs, {
-			{
-				distance,
-				heal_amount,
-				heal_amount_tagged,
-				kill_extension,
-				duration,
-				cooldown
-			},
-			{
-				"25%"
-			},
-			{
-				health_bonus_1 .. "%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				kill_absorption,
-				kill_absorption_max
-			},
-			{
-				"135%"
-			},
-			{
-				health_bonus_2 .. "%"
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				cooldown_drain_tagged,
-				"10%"
-			}
-		})
+		specialization[1] = {
+			pr(t1_health_multiplier)
+		}
+		specialization[3] = {
+			pr(t3_uncover_multiplier),
+			pr(t3_health_multiplier - t1_health_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_health_multiplier - t3_health_multiplier)
+		}
+		specialization[7] = {}
+		specialization[9] = {
+			pr(t9_health_multiplier - t5_health_multiplier),
+			pr(t9_health_regen),
+			"5",
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
 	end
 
 	do
-		local duration = self.values.player.pocket_ecm_jammer_base[1].duration
-		local charges = 2
-		local cooldown = 100
-		local cooldown_drain = self.values.player.pocket_ecm_jammer_base[1].cooldown_drain
-		local health_bonus = (self.values.player.passive_health_multiplier[2] - 1) * 100
-		local kill_health_gain = self.values.player.pocket_ecm_heal_on_kill[1] * 10
-		local kill_health_gain_team = self.values.team.pocket_ecm_heal_on_kill[1] * 10
-		local kill_dodge_bonus_count = 1
-		local kill_dodge_bonus = 20
-		local kill_dodge_bonus_duration = 30
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_armor_multiplier = (self.values.player.tier_armor_multiplier[2] - 1) * 100
+		local t3_armor_multiplier = (self.values.player.tier_armor_multiplier[3] - 1) * 100
+		local t5_armor_multiplier = (self.values.player.tier_armor_multiplier[4] - 1) * 100
+		local t7_armor_recovery_reduction = (1 - self.values.player.armor_regen_timer_multiplier_passive[1]) * 100
+		local t7_armor_gate_timer = self.values.temporary.armor_break_invulnerable[1][1]
+		local t7_armor_gate_cooldown = self.values.temporary.armor_break_invulnerable[1][2]
+		local t9_armor_multiplier = (self.values.player.tier_armor_multiplier[6] - 1) * 100
+		local t9_armor_recovery_reduction = (1 - self.values.team.armor.passive_regen_time_multiplier[1]) * 100
 
-		table.insert(editable_specialization_descs, {
-			{
-				duration,
-				charges,
-				cooldown,
-				cooldown_drain
-			},
-			{
-				"25%"
-			},
-			{
-				health_bonus .. "%"
-			},
-			{
-				"+1",
-				"15%",
-				"45%"
-			},
-			{
-				kill_health_gain,
-				"15%"
-			},
-			{
-				"135%"
-			},
-			{
-				kill_dodge_bonus_count,
-				kill_dodge_bonus,
-				kill_dodge_bonus_duration
-			},
-			{
-				"5%",
-				"20%"
-			},
-			{
-				kill_health_gain_team,
-				"15%",
-				"10%"
-			}
-		})
+		specialization[1] = {
+			pr(t1_armor_multiplier)
+		}
+		specialization[3] = {
+			pr(t3_armor_multiplier - t1_armor_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_armor_multiplier - t3_armor_multiplier)
+		}
+		specialization[7] = {
+			pr(t7_armor_recovery_reduction),
+			t7_armor_gate_timer,
+			t7_armor_gate_cooldown
+		}
+		specialization[9] = {
+			pr(t9_armor_multiplier - t5_armor_multiplier),
+			pr(t9_armor_recovery_reduction),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
 	end
 
 	do
-		local activation_health_restore = self.values.player.copr_activate_bonus_health_ratio[1] * 100
-		local ability_cooldown = self.copr_ability_cooldown
-		local duration_1 = self.values.temporary.copr_ability[1][2]
-		local duration_2 = self.values.temporary.copr_ability[2][2]
-		local out_of_health_movement_slow = (1 - self.values.player.copr_out_of_health_move_slow[1]) * 100
-		local speed_up_on_kill = self.values.player.copr_speed_up_on_kill[1]
-		local teammate_heal_1 = self.values.player.copr_teammate_heal[1] * 100
-		local teammate_heal_2 = self.values.player.copr_teammate_heal[2] * 100
-		local static_damage_1 = self.values.player.copr_static_damage_ratio[1] * 100
-		local static_damage_2 = self.values.player.copr_static_damage_ratio[2] * 100
-		local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
-		local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
-		local health_bonus_3 = (self.values.player.passive_health_multiplier[4] - 1) * 100 - health_bonus_2
-		local kill_life_leech_1 = self.values.player.copr_kill_life_leech[1]
-		local copr_specialization = deep_clone(editable_specialization_template)
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_dodge_addition = self.values.player.passive_dodge_chance[1] * 100
+		local t3_targeting_reduction = (1 - self.values.player.camouflage_multiplier[1]) * 100
+		local t5_dodge_addition = self.values.player.passive_dodge_chance[2] * 100
+		local t7_dodge_addition = self.values.player.passive_dodge_chance[3] * 100
+		local t9_armor_piercing_chance = self.values.weapon.armor_piercing_chance[1] * 100
+		local t9_swap_speed_multiplier = (self.values.weapon.passive_swap_speed_multiplier[1] - 1) * 100
 
-		copr_specialization[1] = {
-			tostring(activation_health_restore) .. "%",
-			tostring(static_damage_1) .. "%",
-			tostring(kill_life_leech_1),
-			tostring(teammate_heal_1) .. "%",
-			tostring(duration_1),
-			tostring(ability_cooldown)
+		specialization[1] = {
+			pr(t1_dodge_addition)
 		}
-		copr_specialization[3] = {
-			tostring(health_bonus_1) .. "%",
-			tostring(out_of_health_movement_slow) .. "%"
+		specialization[3] = {
+			pr(t3_targeting_reduction)
 		}
-		copr_specialization[5] = {
-			tostring(duration_2),
-			tostring(speed_up_on_kill),
-			tostring(teammate_heal_2) .. "%"
+		specialization[5] = {
+			pr(t5_dodge_addition - t1_dodge_addition)
 		}
-		copr_specialization[7] = {
-			tostring(health_bonus_2) .. "%"
+		specialization[7] = {
+			pr(t7_dodge_addition - t5_dodge_addition)
 		}
-		copr_specialization[9] = {
-			tostring(static_damage_2) .. "%",
-			tostring(health_bonus_3) .. "%"
+		specialization[9] = {
+			pr(t9_armor_piercing_chance),
+			pr(t9_swap_speed_multiplier),
+			pr(t9_lootdrop_multiplier)
 		}
 
-		table.insert(copr_specialization[9], editable_specialization_lootdrop_drop_multiplier)
-		table.insert(editable_specialization_descs, copr_specialization)
+		table.insert(editable_specialization_descs, specialization)
 	end
 
 	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_armor_regen_multiplier = (1 - self.values.player.perk_armor_regen_timer_multiplier[1]) * 100
+		local t3_recoil_reduction = -16
+		local t3_armor_regen_multiplier = (1 - self.values.player.perk_armor_regen_timer_multiplier[2]) * 100
+		local t3_ammo_multiplier = (self.values.akimbo.extra_ammo_multiplier[1] - 1) * 100
+		local t5_armor_regen_multiplier = (1 - self.values.player.perk_armor_regen_timer_multiplier[3]) * 100
+		local t7_armor_regen_multiplier = (1 - self.values.player.perk_armor_regen_timer_multiplier[4]) * 100
+		local t9_armor_regen_multiplier = (1 - self.values.player.perk_armor_regen_timer_multiplier[5]) * 100
+		local t9_armor_regen_timer = self.values.player.passive_always_regen_armor[1]
+
+		specialization[1] = {
+			pr(t1_armor_regen_multiplier)
+		}
+		specialization[3] = {
+			pr(t3_armor_regen_multiplier - t1_armor_regen_multiplier),
+			"50",
+			"-24",
+			pr(t3_ammo_multiplier),
+			t3_recoil_reduction
+		}
+		specialization[5] = {
+			pr(t5_armor_regen_multiplier - t3_armor_regen_multiplier)
+		}
+		specialization[7] = {
+			pr(t7_armor_regen_multiplier - t5_armor_regen_multiplier)
+		}
+		specialization[9] = {
+			pr(t9_armor_regen_multiplier - t7_armor_regen_multiplier),
+			"5%",
+			"-16",
+			"125%",
+			pr(t9_lootdrop_multiplier),
+			t9_armor_regen_timer
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_dodge_addition = self.values.player.passive_dodge_chance[1] * 100
+		local t3_dodge_addition = self.values.player.level_2_dodge_addend[1] * 100
+		local t3_armor_multiplier = (self.values.player.level_2_armor_multiplier[1] - 1) * 100
+		local t5_dodge_addition = self.values.player.level_2_dodge_addend[2] * 100
+		local t5_armor_multiplier = (self.values.player.level_2_armor_multiplier[2] - 1) * 100
+		local t7_dodge_addition = self.values.player.level_2_dodge_addend[3] * 100
+		local t7_armor_multiplier = (self.values.player.level_2_armor_multiplier[3] - 1) * 100
+		local t9_armor_regen_timer = (1 - self.values.player.armor_regen_timer_multiplier_tier[1]) * 100
+
+		specialization[1] = {
+			pr(t1_dodge_addition)
+		}
+		specialization[3] = {
+			pr(t3_dodge_addition),
+			pr(t3_armor_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_dodge_addition - t3_dodge_addition),
+			pr(t5_armor_multiplier - t3_armor_multiplier)
+		}
+		specialization[7] = {
+			pr(t7_dodge_addition - t5_dodge_addition),
+			pr(t7_armor_multiplier - t5_armor_multiplier)
+		}
+		specialization[9] = {
+			pr(t9_armor_regen_timer),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_dodge_chance = self.values.player.tier_dodge_chance[1] * 100
+		local t3_targeting_reduction = (1 - self.values.player.stand_still_crouch_camouflage_bonus[1]) * 100
+		local t3_corpse_speed_multiplier = (1 - self.values.player.corpse_dispose_speed_multiplier[1]) * 100
+		local t5_dodge_chance = self.values.player.tier_dodge_chance[2] * 100
+		local t5_targeting_reduction = (1 - self.values.player.stand_still_crouch_camouflage_bonus[2]) * 100
+		local t5_lockpick_speed_multiplier = (1 - self.values.player.pick_lock_speed_multiplier[1]) * 100
+		local t7_dodge_chance = self.values.player.tier_dodge_chance[3] * 100
+		local t7_targeting_reduction = (1 - self.values.player.stand_still_crouch_camouflage_bonus[3]) * 100
+		local t5_pager_speed_multiplier = (1 - self.values.player.alarm_pager_speed_multiplier[1]) * 100
+		local t9_armor_regen_multiplier = (1 - self.values.player.armor_regen_timer_stand_still_multiplier[1]) * 100
+		local t9_crouch_speed_multiplier_1 = (self.values.player.crouch_speed_multiplier[1] - 1) * 100
+		local t9_crouch_speed_multiplier_2 = (self.values.player.crouch_speed_multiplier[2] - 1) * 100
+
+		specialization[1] = {
+			pr(t1_dodge_chance)
+		}
+		specialization[3] = {
+			pr(t3_targeting_reduction),
+			pr(t3_corpse_speed_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_dodge_chance - t1_dodge_chance),
+			pr(t5_targeting_reduction - t3_targeting_reduction),
+			pr(t5_lockpick_speed_multiplier)
+		}
+		specialization[7] = {
+			pr(t7_dodge_chance - t5_dodge_chance),
+			pr(t7_targeting_reduction - t5_targeting_reduction),
+			pr(t5_pager_speed_multiplier)
+		}
+		specialization[9] = {
+			pr(t9_armor_regen_multiplier),
+			pr(t9_crouch_speed_multiplier_2 - t9_crouch_speed_multiplier_1),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_damage_reduction = (1 - self.values.temporary.dmg_dampener_outnumbered_strong[1][1]) * 100
+		local t1_melee_damage_cooldown = 1
+		local t1_melee_damage_multiplier = self.values.melee.stacking_hit_damage_multiplier[1]
+		local t3_damage_reduction = (1 - self.values.temporary.dmg_dampener_close_contact[1][1]) * 100
+		local t5_damage_reduction = (1 - self.values.temporary.dmg_dampener_close_contact[2][1]) * 100
+		local t5_melee_damage_cooldown = self.values.melee.stacking_hit_expire_t[1]
+		local t7_damage_reduction = (1 - self.values.temporary.dmg_dampener_close_contact[3][1]) * 100
+		local t9_health_regeneration = self.values.temporary.melee_life_leech[1][1] * 100
+		local t9_health_cooldown = self.values.temporary.melee_life_leech[1][2]
+
+		specialization[1] = {
+			pr(t1_damage_reduction),
+			t1_melee_damage_cooldown,
+			t1_melee_damage_multiplier
+		}
+		specialization[3] = {
+			pr(t3_damage_reduction)
+		}
+		specialization[5] = {
+			pr(t5_damage_reduction - t3_damage_reduction),
+			"10%",
+			t5_melee_damage_cooldown
+		}
+		specialization[7] = {
+			pr(t7_damage_reduction - t5_damage_reduction)
+		}
+		specialization[9] = {
+			pr(t9_health_regeneration),
+			t9_health_cooldown,
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local armor_regen_cooldown = self.on_killshot_cooldown
+		local t1_damage_reduction = (1 - self.values.temporary.dmg_dampener_outnumbered_strong[1][1]) * 100
+		local t1_melee_damage_timer = 1
+		local t1_melee_damage_multiplier = self.values.melee.stacking_hit_damage_multiplier[1]
+		local t3_armor_regen = self.values.player.killshot_regen_armor_bonus[1] * 10
+		local t3_armor_multiplier = (self.values.player.tier_armor_multiplier[2] - 1) * 100
+		local t5_health_regen = self.values.player.melee_kill_life_leech[1] * 100
+		local t5_damage_reduction = (1 - self.values.temporary.dmg_dampener_close_contact[1][1]) * 100
+		local t7_armor_regen = self.values.player.killshot_close_regen_armor_bonus[1] * 10
+		local t7_armor_multiplier = (self.values.player.tier_armor_multiplier[3] - 1) * 100
+		local t9_panic_chance = self.values.player.killshot_close_panic_chance[1] * 100
+
+		specialization[1] = {
+			pr(t1_damage_reduction),
+			t1_melee_damage_timer,
+			t1_melee_damage_multiplier
+		}
+		specialization[3] = {
+			t3_armor_regen,
+			armor_regen_cooldown,
+			pr(t3_armor_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_health_regen),
+			armor_regen_cooldown,
+			pr(t5_damage_reduction)
+		}
+		specialization[7] = {
+			t7_armor_regen,
+			armor_regen_cooldown,
+			pr(t7_armor_multiplier - t3_armor_multiplier)
+		}
+		specialization[9] = {
+			pr(t9_panic_chance),
+			armor_regen_cooldown,
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local health_gain_multiplier = self.loose_ammo_restore_health_values.multiplier
+		local t1_health_gain_min = self.values.temporary.loose_ammo_restore_health[1][1][1] * health_gain_multiplier * 10
+		local t1_health_gain_max = self.values.temporary.loose_ammo_restore_health[1][1][2] * health_gain_multiplier * 10
+		local t1_cooldown = self.loose_ammo_restore_health_values.cd
+		local t1_player_health_multiplier = self.values.player.gain_life_per_players[1] * 100
+		local t3_team_ammo = self.loose_ammo_give_team_ratio * 100
+		local t3_cooldown = self.values.temporary.loose_ammo_give_team[1][2]
+		local t3_health_multiplier = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t5_team_health = self.loose_ammo_give_team_health_ratio * 100
+		local t5_health_multiplier = (self.values.player.passive_health_multiplier[3] - 1) * 100
+		local t7_health_gain = self.values.temporary.loose_ammo_restore_health[2][1][1] * health_gain_multiplier * 10
+		local t9_health_gain = self.values.temporary.loose_ammo_restore_health[3][1][1] * health_gain_multiplier * 10
+
+		specialization[1] = {
+			t1_health_gain_min,
+			t1_health_gain_max,
+			t1_cooldown,
+			pr(t1_player_health_multiplier)
+		}
+		specialization[3] = {
+			pr(t3_team_ammo),
+			t3_cooldown,
+			pr(t3_health_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_team_health),
+			pr(t5_health_multiplier - t3_health_multiplier)
+		}
+		specialization[7] = {
+			t7_health_gain - t1_health_gain_min
+		}
+		specialization[9] = {
+			t9_health_gain - t7_health_gain,
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local hot_data = self.damage_to_hot_data
+		local t1_healing = self.values.player.damage_to_hot[1] * 10
+		local t3_healing = self.values.player.damage_to_hot[2] * 10
+		local t3_health_multiplier = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t5_healing = self.values.player.damage_to_hot[3] * 10
+		local t3_piercing_chance = self.values.player.armor_piercing_chance[1] * 100
+		local t7_healing = self.values.player.damage_to_hot[4] * 10
+		local t7_health_multiplier = (self.values.player.passive_health_multiplier[3] - 1) * 100
+		local t9_extra_ticks = self.values.player.damage_to_hot_extra_ticks[1]
+		local t9_piercing_chance = self.values.player.armor_piercing_chance[2] * 100
+
+		specialization[1] = {
+			t1_healing,
+			hot_data.tick_time,
+			hot_data.total_ticks * hot_data.tick_time,
+			hot_data.stacking_cooldown
+		}
+		specialization[3] = {
+			t3_healing,
+			hot_data.tick_time,
+			hot_data.total_ticks * hot_data.tick_time,
+			pr(t3_health_multiplier)
+		}
+		specialization[5] = {
+			t5_healing,
+			hot_data.tick_time,
+			hot_data.total_ticks * hot_data.tick_time,
+			pr(t3_piercing_chance)
+		}
+		specialization[7] = {
+			t7_healing,
+			hot_data.tick_time,
+			hot_data.total_ticks * hot_data.tick_time,
+			pr(t7_health_multiplier - t3_health_multiplier)
+		}
+		specialization[9] = {
+			t7_healing,
+			hot_data.tick_time,
+			(hot_data.total_ticks + t9_extra_ticks) * hot_data.tick_time,
+			pr(t9_piercing_chance - t3_piercing_chance),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local ratio_threshold = self.player_damage_health_ratio_threshold * 100
+		local t1_armor_recovery_reduction = self.values.player.armor_regen_damage_health_ratio_multiplier[1] * 100
+		local t3_speed_multiplier = self.values.player.movement_speed_damage_health_ratio_multiplier[1] * 100
+		local t5_armor_recovery_reduction = self.values.player.armor_regen_damage_health_ratio_multiplier[2] * 100
+		local t7_armor_recovery_reduction = self.values.player.armor_regen_damage_health_ratio_multiplier[3] * 100
+		local t9_threshold_multiplier = self.values.player.armor_regen_damage_health_ratio_threshold_multiplier[1]
+
+		specialization[1] = {
+			pr(ratio_threshold),
+			pr(t1_armor_recovery_reduction)
+		}
+		specialization[3] = {
+			pr(ratio_threshold),
+			pr(t3_speed_multiplier)
+		}
+		specialization[5] = {
+			pr(ratio_threshold),
+			pr(t5_armor_recovery_reduction - t1_armor_recovery_reduction)
+		}
+		specialization[7] = {
+			pr(ratio_threshold),
+			pr(t7_armor_recovery_reduction - t5_armor_recovery_reduction)
+		}
+		specialization[9] = {
+			pr(ratio_threshold * t9_threshold_multiplier),
+			pr(ratio_threshold),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_health_storage = self.values.player.armor_health_store_amount[1] * 10
+		local t1_enemy_threshold = 1
+		local t3_health_storage = self.values.player.armor_health_store_amount[2] * 10
+		local t3_health_multiplier = (self.values.player.passive_health_multiplier[1] - 1) * 100
+		local t5_storage_multiplier = (self.values.player.armor_max_health_store_multiplier[1] - 1) * 100
+		local t5_health_multiplier = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t5_dodge_addition = self.values.player.passive_dodge_chance[1] * 100
+		local t7_health_storage = self.values.player.armor_health_store_amount[3] * 10
+		local t7_health_multiplier = (self.values.player.passive_health_multiplier[3] - 1) * 100
+
+		specialization[1] = {
+			t1_health_storage,
+			t1_enemy_threshold
+		}
+		specialization[3] = {
+			t3_health_storage - t1_health_storage,
+			pr(t3_health_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_storage_multiplier),
+			pr(t5_health_multiplier - t3_health_multiplier),
+			pr(t5_dodge_addition)
+		}
+		specialization[7] = {
+			t7_health_storage - t3_health_storage,
+			pr(t7_health_multiplier - t5_health_multiplier)
+		}
+		specialization[9] = {
+			"20%",
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_damage_percent = 100
+		local t1_max_tick_stacks = self.max_cocaine_stacks_per_tick
+		local t1_stack_tick_time = self.cocaine_stacks_tick_t
+		local t1_max_stacks = self.max_total_cocaine_stacks
+		local t1_absorb_amount = self.cocaine_stacks_dmg_absorption_value * 10
+		local t1_absorb_per_stack = self.cocaine_stacks_convert_levels[1]
+		local t1_stack_decay_percentage = self.cocaine_stacks_decay_percentage_per_tick * 100
+		local t1_stack_decay_amount = self.cocaine_stacks_decay_amount_per_tick
+		local t1_stack_decay_time = self.cocaine_stacks_decay_t
+		local t5_stack_decay_amount = t1_stack_decay_amount * self.values.player.cocaine_stacks_decay_multiplier[1]
+		local t7_absorb_per_stack = self.cocaine_stacks_convert_levels[2]
+		local t9_absorb_multiplier = (self.values.player.cocaine_stack_absorption_multiplier[1] - 1) * 100
+
+		specialization[1] = {
+			pr(t1_damage_percent),
+			t1_max_tick_stacks,
+			t1_stack_tick_time,
+			t1_max_stacks,
+			t1_absorb_amount,
+			t1_absorb_per_stack,
+			pr(t1_stack_decay_percentage) .. " + " .. t1_stack_decay_amount,
+			t1_stack_decay_time
+		}
+		specialization[3] = {}
+		specialization[5] = {
+			pr(t1_stack_decay_percentage) .. " + " .. t5_stack_decay_amount,
+			t1_stack_decay_time
+		}
+		specialization[7] = {
+			t1_absorb_amount,
+			t7_absorb_per_stack
+		}
+		specialization[9] = {
+			pr(t9_absorb_multiplier),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_armor_gate_timer = self.values.temporary.armor_break_invulnerable[1][1]
+		local t1_armor_gate_cooldown = self.values.temporary.armor_break_invulnerable[1][2]
+		local t3_health_reduction = self.values.player.health_decrease[1] * 100
+		local t3_armor_multiplier = self.values.player.armor_increase[1] * 100
+		local t5_armor_multiplier = self.values.player.armor_increase[2] * 100
+		local t7_armor_multiplier = self.values.player.armor_increase[3] * 100
+		local t9_armor_gain = self.values.player.damage_to_armor[1][1][1] * 10
+		local t9_armor_gain_cooldown = self.values.player.damage_to_armor[1][1][2]
+
+		specialization[1] = {
+			t1_armor_gate_timer,
+			t1_armor_gate_cooldown
+		}
+		specialization[3] = {
+			pr(t3_health_reduction),
+			pr(t3_armor_multiplier)
+		}
+		specialization[5] = {
+			pr(t3_health_reduction),
+			pr(t5_armor_multiplier)
+		}
+		specialization[7] = {
+			pr(t3_health_reduction),
+			pr(t7_armor_multiplier)
+		}
+		specialization[9] = {
+			t9_armor_gain,
+			t9_armor_gain_cooldown,
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_health_amount = self.values.player.wild_health_amount[1] * 10
+		local t1_armor_amount = self.values.player.wild_armor_amount[1] * 10
+		local t1_trigger_times = self.wild_trigger_time
+		local t1_trigger_interval = self.wild_max_triggers_per_time
+		local t3_health_threshold = self.values.player.less_health_wild_armor[1][1] * 100
+		local t3_amount_increase = self.values.player.less_health_wild_armor[1][2] * 10
+		local t5_health_threshold = self.values.player.less_health_wild_cooldown[1][1] * 100
+		local t5_cooldown_reduction = self.values.player.less_health_wild_cooldown[1][2]
+		local t7_armor_threshold = self.values.player.less_armor_wild_health[1][1] * 100
+		local t7_amount_increase = self.values.player.less_armor_wild_health[1][2] * 10
+		local t9_armor_threshold = self.values.player.less_health_wild_cooldown[1][1] * 100
+		local t9_cooldown_reduction = self.values.player.less_health_wild_cooldown[1][2]
+
+		specialization[1] = {
+			t1_health_amount,
+			t1_armor_amount,
+			t1_trigger_times,
+			t1_trigger_interval
+		}
+		specialization[3] = {
+			pr(t3_health_threshold),
+			t3_amount_increase
+		}
+		specialization[5] = {
+			pr(t5_health_threshold),
+			t1_trigger_interval,
+			t5_cooldown_reduction
+		}
+		specialization[7] = {
+			pr(t7_armor_threshold),
+			t7_amount_increase
+		}
+		specialization[9] = {
+			pr(t9_armor_threshold),
+			t1_trigger_interval,
+			t9_cooldown_reduction,
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_healing_amount = self.values.temporary.chico_injector[1][1] * 100
+		local t1_duration = self.values.temporary.chico_injector[1][2]
+		local t1_cooldown = 30
+		local t1_cooldown_kill_reduction = 1
+		local t3_health_multiplier = (self.values.player.passive_health_multiplier[1] - 1) * 100
+		local t5_health_multiplier = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t7_health_multiplier = (self.values.player.passive_health_multiplier[3] - 1) * 100
+		local t7_healing_multiplier = self.values.player.chico_injector_low_health_multiplier[1][2] * 100
+		local t7_healing_threshold = self.values.player.chico_injector_low_health_multiplier[1][1] * 100
+		local t9_health_multiplier = (self.values.player.passive_health_multiplier[4] - 1) * 100
+		local t9_cooldown_threshold = self.values.player.chico_injector_health_to_speed[1][1] * 10
+		local t9_cooldown_reduction = self.values.player.chico_injector_health_to_speed[1][2]
+
+		specialization[1] = {
+			pr(t1_healing_amount),
+			t1_duration,
+			t1_cooldown,
+			t1_cooldown_kill_reduction
+		}
+		specialization[3] = {
+			pr(t3_health_multiplier)
+		}
+		specialization[5] = {
+			pr(t5_health_multiplier - t3_health_multiplier)
+		}
+		specialization[7] = {
+			pr(t7_health_multiplier - t5_health_multiplier),
+			pr(t7_healing_threshold),
+			pr(t7_healing_multiplier)
+		}
+		specialization[9] = {
+			pr(t9_health_multiplier - t7_health_multiplier),
+			"",
+			t9_cooldown_threshold,
+			t9_cooldown_reduction,
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_duration = 10
+		local t1_dodge_chance = 50
+		local t1_accuracy_debuff = 50
+		local t1_cooldown = 60
+		local t1_cooldown_kill_reduction = 1
+		local t3_dodge_chance = self.values.player.dodge_shot_gain[1][1] * 100
+		local t3_dodge_chance_cooldown = self.values.player.dodge_shot_gain[1][2]
+		local t5_dodge_chance = self.values.player.passive_dodge_chance[1] * 100
+		local t9_multiplier = (self.values.player.sicario_multiplier[1] - 1) * 100
+		local t9_team_dodge_chance = self.values.player.smoke_screen_ally_dodge_bonus[1] * 100
+
+		specialization[1] = {
+			t1_duration,
+			pr(t1_dodge_chance),
+			t1_cooldown,
+			pr(t1_accuracy_debuff),
+			t1_cooldown_kill_reduction
+		}
+		specialization[3] = {
+			pr(t3_dodge_chance),
+			t3_dodge_chance_cooldown
+		}
+		specialization[5] = {
+			pr(t5_dodge_chance)
+		}
+		specialization[7] = {}
+		specialization[9] = {
+			pr(t9_multiplier),
+			pr(t9_team_dodge_chance),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_delayed_percentage = self.values.player.damage_control_passive[1][1]
+		local tick_percentage = self.values.player.damage_control_passive[1][2] * 0.01 * t1_delayed_percentage
+		local t1_damage_duration = math.ceil(t1_delayed_percentage / tick_percentage)
+		local t1_cooldown = 10
+		local t5_auto_shrug_time = self.values.player.damage_control_auto_shrug[1]
+		local t7_health_threshold = self.values.player.damage_control_cooldown_drain[2][1]
+		local t7_cooldown_drain_1 = self.values.player.damage_control_cooldown_drain[1][2]
+		local t7_cooldown_drain_2 = self.values.player.damage_control_cooldown_drain[2][2]
+		local t9_heal_percentage = self.values.player.damage_control_healing[1]
+
+		specialization[1] = {
+			pr(t1_delayed_percentage),
+			t1_damage_duration,
+			t1_cooldown
+		}
+		specialization[5] = {
+			t5_auto_shrug_time
+		}
+		specialization[7] = {
+			pr(t7_health_threshold),
+			t7_cooldown_drain_2,
+			t7_cooldown_drain_1
+		}
+		specialization[9] = {
+			pr(t9_heal_percentage),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local tag_team_base = self.values.player.tag_team_base[1]
+		local t1_distance = tag_team_base.distance
+		local t1_heal_amount = tag_team_base.kill_health_gain * 10
+		local t1_heal_amount_tagged = t1_heal_amount * tag_team_base.tagged_health_gain_ratio
+		local t1_kill_extension = tag_team_base.kill_extension
+		local t1_duration = tag_team_base.duration
+		local t1_cooldown = 60
+		local t3_health_bonus = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t5_kill_absorption = self.values.player.tag_team_damage_absorption[1].kill_gain * 10
+		local t5_kill_absorption_max = self.values.player.tag_team_damage_absorption[1].max * 10
+		local t7_health_bonus = (self.values.player.passive_health_multiplier[3] - 1) * 100
+		local t9_cooldown_drain_tagged = self.values.player.tag_team_cooldown_drain[2].tagged
+
+		specialization[1] = {
+			t1_distance,
+			t1_heal_amount,
+			t1_heal_amount_tagged,
+			t1_kill_extension,
+			t1_duration,
+			t1_cooldown
+		}
+		specialization[3] = {
+			pr(t3_health_bonus)
+		}
+		specialization[5] = {
+			t5_kill_absorption,
+			t5_kill_absorption_max
+		}
+		specialization[7] = {
+			pr(t7_health_bonus - t3_health_bonus)
+		}
+		specialization[9] = {
+			t9_cooldown_drain_tagged,
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_duration = self.values.player.pocket_ecm_jammer_base[1].duration
+		local t1_charges = 2
+		local t1_cooldown = 100
+		local t1_cooldown_drain = self.values.player.pocket_ecm_jammer_base[1].cooldown_drain
+		local t3_health_bonus = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t5_kill_health_gain = self.values.player.pocket_ecm_heal_on_kill[1] * 10
+		local t5_dodge_chance = self.values.player.passive_dodge_chance[1] * 100
+		local t1_kill_dodge_bonus_count = self.values.temporary.pocket_ecm_kill_dodge[1][3]
+		local t1_kill_dodge_bonus = self.values.temporary.pocket_ecm_kill_dodge[1][1] * 100
+		local t1_kill_dodge_bonus_duration = self.values.temporary.pocket_ecm_kill_dodge[1][2]
+		local t9_kill_health_gain_team = self.values.team.pocket_ecm_heal_on_kill[1] * 10
+		local t9_dodge_chance = self.values.player.passive_dodge_chance[2] * 100
+
+		specialization[1] = {
+			t1_duration,
+			t1_charges,
+			t1_cooldown,
+			t1_cooldown_drain
+		}
+		specialization[3] = {
+			pr(t3_health_bonus)
+		}
+		specialization[5] = {
+			t5_kill_health_gain,
+			pr(t5_dodge_chance)
+		}
+		specialization[7] = {
+			t1_kill_dodge_bonus_count,
+			t1_kill_dodge_bonus,
+			t1_kill_dodge_bonus_duration
+		}
+		specialization[9] = {
+			t9_kill_health_gain_team,
+			pr(t9_dodge_chance - t5_dodge_chance),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_activation_health_restore = self.values.player.copr_activate_bonus_health_ratio[1] * 100
+		local t1_static_damage = self.values.player.copr_static_damage_ratio[1] * 100
+		local t1_kill_life_leech = self.values.player.copr_kill_life_leech[1]
+		local t1_teammate_heal = self.values.player.copr_teammate_heal[1] * 100
+		local t1_duration = self.values.temporary.copr_ability[1][2]
+		local t1_cooldown = self.copr_ability_cooldown
+		local t3_health_bonus = (self.values.player.passive_health_multiplier[2] - 1) * 100
+		local t3_out_of_health_movement_slow = (1 - self.values.player.copr_out_of_health_move_slow[1]) * 100
+		local t5_duration = self.values.temporary.copr_ability[2][2]
+		local t5_speed_up_on_kill = self.values.player.copr_speed_up_on_kill[1]
+		local t5_teammate_heal = self.values.player.copr_teammate_heal[2] * 100
+		local t7_health_bonus = (self.values.player.passive_health_multiplier[3] - 1) * 100
+		local t9_static_damage = self.values.player.copr_static_damage_ratio[2] * 100
+		local t9_health_bonus = (self.values.player.passive_health_multiplier[4] - 1) * 100
+
+		specialization[1] = {
+			pr(t1_activation_health_restore),
+			pr(t1_static_damage),
+			t1_kill_life_leech,
+			pr(t1_teammate_heal),
+			t1_duration,
+			t1_cooldown
+		}
+		specialization[3] = {
+			pr(t3_health_bonus),
+			pr(t3_out_of_health_movement_slow)
+		}
+		specialization[5] = {
+			t5_duration,
+			t5_speed_up_on_kill,
+			pr(t5_teammate_heal)
+		}
+		specialization[7] = {
+			pr(t7_health_bonus - t3_health_bonus)
+		}
+		specialization[9] = {
+			pr(t9_static_damage),
+			pr(t9_health_bonus - t7_health_bonus),
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+	end
+
+	do
+		local specialization = deep_clone(editable_specialization_template)
+		local t1_primary_reload_secondary_kills = self.values.player.primary_reload_secondary[1]
+		local t1_weapon_swap_speed = (self.values.weapon.mrwi_swap_speed_multiplier[1] - 1) * 200
+		local t1_weapon_swap_speed_duration = self.values.weapon.primary_reload_swap_secondary[1]
+		local t3_headshot_regen_health_bonus = self.values.player.headshot_regen_health_bonus[1] * 10
+		local t3_on_headshot_dealt_cooldown = self.on_headshot_dealt_cooldown
+		local mrwi_health_invulnerable = self.values.temporary.mrwi_health_invulnerable[1]
+		local t7_invulnerable_threshold = mrwi_health_invulnerable[1] * 100
+		local t7_invulnerable_duration = mrwi_health_invulnerable[2]
+		local t7_invulnerable_cooldown = mrwi_health_invulnerable[3]
+
+		specialization[1] = {
+			t1_primary_reload_secondary_kills,
+			t1_weapon_swap_speed_duration
+		}
+		specialization[3] = {
+			t3_headshot_regen_health_bonus,
+			t3_on_headshot_dealt_cooldown
+		}
+		specialization[7] = {
+			pr(t7_invulnerable_threshold),
+			t7_invulnerable_duration,
+			t7_invulnerable_cooldown
+		}
+		specialization[9] = {
+			pr(t9_lootdrop_multiplier)
+		}
+
+		table.insert(editable_specialization_descs, specialization)
+
 		local health_boost = (self.values.player.mrwi_health_multiplier[1] - 1) * 100
 		local armor_boost = (self.values.player.mrwi_armor_multiplier[1] - 1) * 100
 		local dodge_boost = self.values.player.mrwi_dodge_chance[1] * 100
 		local crouch_and_carry_boost = (self.values.player.mrwi_crouch_speed_multiplier[1] - 1) * 100
 		local mrwi_boost = {
 			{
-				tostring(health_boost) .. "%"
+				pr(health_boost)
 			},
 			{
-				tostring(armor_boost) .. "%"
+				pr(armor_boost)
 			},
 			{
-				tostring(dodge_boost) .. "%"
+				pr(dodge_boost)
 			},
 			{
-				tostring(crouch_and_carry_boost) .. "%"
+				pr(crouch_and_carry_boost)
 			}
 		}
-		local primary_reload_secondary_kills = self.values.player.primary_reload_secondary[1]
-		local headshot_regen_health_bonus = self.values.player.headshot_regen_health_bonus[1] * 10
-		local on_headshot_dealt_cooldown = self.on_headshot_dealt_cooldown
-		local weapon_swap_speed = (self.values.weapon.mrwi_swap_speed_multiplier[1] - 1) * 200
-		local weapon_swap_speed_duration = self.values.weapon.primary_reload_swap_secondary[1]
-		local mrwi_health_invulnerable = self.values.temporary.mrwi_health_invulnerable[1]
-		local invulnerable_threshold = mrwi_health_invulnerable[1] * 100
-		local invulnerable_duration = mrwi_health_invulnerable[2]
-		local invulnerable_cooldown = mrwi_health_invulnerable[3]
 		local multi_choice_specialization_desc = {}
 
 		multi_choice_specialization_desc[1] = mrwi_boost
@@ -4869,7 +4847,7 @@ function UpgradesTweakData:_init_pd2_values()
 		multi_choice_specialization_desc[7] = mrwi_boost
 		multi_choice_specialization_desc[9] = {}
 
-		local deck9_options = UpgradesTweakData.mrwi_deck9_options()
+		local deck9_options = self:mrwi_deck9_options()
 
 		for _, options in pairs(deck9_options) do
 			local data
@@ -4886,26 +4864,6 @@ function UpgradesTweakData:_init_pd2_values()
 
 			table.insert(multi_choice_specialization_desc[9], data)
 		end
-
-		local specialization_descs = deep_clone(editable_specialization_template)
-
-		specialization_descs[1] = {
-			tostring(primary_reload_secondary_kills),
-			tostring(weapon_swap_speed_duration)
-		}
-		specialization_descs[3] = {
-			tostring(headshot_regen_health_bonus),
-			tostring(on_headshot_dealt_cooldown)
-		}
-		specialization_descs[5] = {}
-		specialization_descs[7] = {
-			tostring(invulnerable_threshold) .. "%",
-			tostring(invulnerable_duration),
-			tostring(invulnerable_cooldown)
-		}
-
-		table.insert(specialization_descs[9], editable_specialization_lootdrop_drop_multiplier)
-		table.insert(editable_specialization_descs, specialization_descs)
 
 		editable_multi_choice_specialization_descs[#editable_specialization_descs] = multi_choice_specialization_desc
 	end
@@ -5341,11 +5299,11 @@ function UpgradesTweakData:init(tweak_data)
 	self.level_tree[35] = {
 		name_id = "weapons",
 		upgrades = {
-			"r93",
-			"judge",
 			"mining_pick",
 			"wing",
-			"x_judge"
+			"judge",
+			"x_judge",
+			"r93"
 		}
 	}
 	self.level_tree[36] = {
@@ -14219,7 +14177,34 @@ function UpgradesTweakData:_mrwi_definitions()
 	}
 end
 
-function UpgradesTweakData.mrwi_deck9_options()
+function UpgradesTweakData:mrwi_deck9_options()
+	local function pr(value, format)
+		return string.format(format or "%g%%", value)
+	end
+
+	local d3_armor_multiplier = (self.values.player.tier_armor_multiplier[3] - 1) * 100
+	local d3_armor_regen_multuiplier = (1 - self.values.player.armor_regen_timer_multiplier_passive[1]) * 100
+	local d5_armor_regen_multiplier = (1 - self.values.player.perk_armor_regen_timer_multiplier[2]) * 100
+	local d7_dodge_chance = self.values.player.tier_dodge_chance[1] * 100
+	local d7_targeting_reduction = (1 - self.values.player.stand_still_crouch_camouflage_bonus[3]) * 100
+	local d7_pager_speed_multiplier = (1 - self.values.player.alarm_pager_speed_multiplier[1]) * 100
+	local d8_damage_reduction = (1 - self.values.temporary.dmg_dampener_close_contact[2][1]) * 100
+	local d11_hot_data = self.damage_to_hot_data
+	local d11_healing = self.values.player.damage_to_hot[2] * 10
+	local d11_health_multiplier = (self.values.player.passive_health_multiplier[2] - 1) * 100
+	local d13_health_storage = self.values.player.armor_health_store_amount[2] * 10
+	local d13_enemy_threshold = 1
+	local d13_health_multiplier = (self.values.player.passive_health_multiplier[1] - 1) * 100
+	local d14_damage_percent = 100
+	local d14_max_tick_stacks = self.max_cocaine_stacks_per_tick
+	local d14_stack_tick_time = self.cocaine_stacks_tick_t
+	local d14_max_stacks = self.max_total_cocaine_stacks
+	local d14_absorb_amount = self.cocaine_stacks_dmg_absorption_value * 10
+	local d14_absorb_per_stack = self.cocaine_stacks_convert_levels[1]
+	local d14_stack_decay_percentage = self.cocaine_stacks_decay_percentage_per_tick * 100
+	local d14_stack_decay_amount = self.cocaine_stacks_decay_amount_per_tick
+	local d14_stack_decay_time = self.cocaine_stacks_decay_t
+	local d15_armor_gate_cooldown = self.values.temporary.armor_break_invulnerable[2][2]
 	local deck9_options = {
 		{
 			tier = 1,
@@ -14239,8 +14224,8 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"player_armor_regen_timer_multiplier_passive"
 			},
 			custom_editable_descs = {
-				[1] = "20%",
-				[2] = "10%"
+				pr(d3_armor_multiplier),
+				(pr(d3_armor_regen_multuiplier))
 			}
 		},
 		{
@@ -14254,7 +14239,7 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"player_perk_armor_regen_timer_multiplier_1"
 			},
 			custom_editable_descs = {
-				[1] = "15%"
+				(pr(d5_armor_regen_multiplier))
 			}
 		},
 		{
@@ -14266,9 +14251,9 @@ function UpgradesTweakData.mrwi_deck9_options()
 			name_id = "menu_deck7_7",
 			short_id = "menu_deck23_9_7_short",
 			custom_editable_descs = {
-				"20%",
-				"20%",
-				"10%"
+				pr(d7_dodge_chance),
+				pr(d7_targeting_reduction),
+				pr(d7_pager_speed_multiplier)
 			},
 			icon_xy = {
 				1,
@@ -14291,7 +14276,7 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"player_damage_dampener_close_contact_2"
 			},
 			custom_editable_descs = {
-				[1] = "24%"
+				(pr(d8_damage_reduction))
 			}
 		},
 		{
@@ -14311,11 +14296,11 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"player_damage_to_hot_1"
 			},
 			custom_editable_descs = {
-				"2",
-				"0.3",
-				"3",
-				"1.5",
-				"20%"
+				d11_healing,
+				d11_hot_data.tick_time,
+				d11_hot_data.total_ticks * d11_hot_data.tick_time,
+				d11_hot_data.stacking_cooldown,
+				d11_health_multiplier
 			}
 		},
 		{
@@ -14331,9 +14316,9 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"player_armor_health_store_amount_1"
 			},
 			custom_editable_descs = {
-				"8",
-				"1",
-				"10%"
+				d13_health_storage,
+				d13_enemy_threshold,
+				d13_health_multiplier
 			}
 		},
 		{
@@ -14345,14 +14330,14 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"player_cocaine_stacking_1"
 			},
 			custom_editable_descs = {
-				"100%",
-				"240",
-				"4",
-				"600",
-				"1",
-				"30",
-				"60% + 80",
-				"8"
+				pr(d14_damage_percent),
+				d14_max_tick_stacks,
+				d14_stack_tick_time,
+				d14_max_stacks,
+				d14_absorb_amount,
+				d14_absorb_per_stack,
+				pr(d14_stack_decay_percentage) .. " + " .. d14_stack_decay_amount,
+				d14_stack_decay_time
 			}
 		},
 		{
@@ -14362,7 +14347,7 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"temporary_armor_break_invulnerable_2"
 			},
 			custom_editable_descs = {
-				[2] = "45"
+				[2] = d15_armor_gate_cooldown
 			}
 		},
 		{

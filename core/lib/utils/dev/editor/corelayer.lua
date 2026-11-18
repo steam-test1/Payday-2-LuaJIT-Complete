@@ -1721,7 +1721,13 @@ function Layer:clone_edited_values(unit, source)
 	unit:unit_data().material = source:unit_data().material
 
 	if unit:unit_data().material and unit:unit_data().material ~= "default" then
-		unit:set_material_config(unit:unit_data().material, true)
+		local material_ids = unit:unit_data().material
+
+		if type(material_ids) == "string" then
+			material_ids = Idstring(unit:unit_data().material)
+		end
+
+		unit:set_material_config(material_ids, true)
 	end
 
 	unit:unit_data().disable_shadows = source:unit_data().disable_shadows
@@ -1745,26 +1751,38 @@ function Layer:clone_edited_values(unit, source)
 	unit:unit_data().hide_on_projection_light = source:unit_data().hide_on_projection_light
 	unit:unit_data().disable_on_ai_graph = source:unit_data().disable_on_ai_graph
 
-	if unit:editable_gui() then
-		unit:editable_gui():set_text(source:editable_gui():text())
-		unit:editable_gui():set_font_size(source:editable_gui():font_size())
-		unit:editable_gui():set_font_color(source:editable_gui():font_color())
-		unit:editable_gui():set_font(source:editable_gui():font())
-		unit:editable_gui():set_align(source:editable_gui():align())
-		unit:editable_gui():set_vertical(source:editable_gui():vertical())
-		unit:editable_gui():set_blend_mode(source:editable_gui():blend_mode())
-		unit:editable_gui():set_render_template(source:editable_gui():render_template())
-		unit:editable_gui():set_wrap(source:editable_gui():wrap())
-		unit:editable_gui():set_word_wrap(source:editable_gui():word_wrap())
-		unit:editable_gui():set_alpha(source:editable_gui():alpha())
-		unit:editable_gui():set_shape(source:editable_gui():shape())
+	local editable_gui = unit:editable_gui()
+
+	if editable_gui then
+		local from_editable_gui = source:editable_gui()
+
+		if from_editable_gui then
+			editable_gui:set_text(from_editable_gui:text())
+			editable_gui:set_font_size(from_editable_gui:font_size())
+			editable_gui:set_font_color(from_editable_gui:font_color())
+			editable_gui:set_font(from_editable_gui:font())
+			editable_gui:set_align(from_editable_gui:align())
+			editable_gui:set_vertical(from_editable_gui:vertical())
+			editable_gui:set_blend_mode(from_editable_gui:blend_mode())
+			editable_gui:set_render_template(from_editable_gui:render_template())
+			editable_gui:set_wrap(from_editable_gui:wrap())
+			editable_gui:set_word_wrap(from_editable_gui:word_wrap())
+			editable_gui:set_alpha(from_editable_gui:alpha())
+			editable_gui:set_shape(from_editable_gui:shape())
+		end
 	end
 
-	if unit:ladder() then
-		unit:ladder():set_width(source:ladder():width())
-		unit:ladder():set_height(source:ladder():height())
-		unit:ladder():set_pc_disabled(source:ladder():pc_disabled())
-		unit:ladder():set_vr_disabled(source:ladder():vr_disabled())
+	local ladder = unit:ladder()
+
+	if ladder then
+		local from_ladder = source:ladder()
+
+		if from_ladder then
+			ladder:set_width(from_ladder:width())
+			ladder:set_height(from_ladder:height())
+			ladder:set_pc_disabled(from_ladder:pc_disabled())
+			ladder:set_vr_disabled(from_ladder:vr_disabled())
+		end
 	end
 end
 
@@ -1905,7 +1923,26 @@ function Layer:_add_project_unit_save_data(unit, data)
 end
 
 function Layer:selected_amount_string()
-	return "Selected " .. self._save_name .. ": " .. #self._selected_units
+	local str = "Selected " .. self._save_name .. ": " .. #self._selected_units
+	local i = 0
+
+	while true do
+		i = i + 1
+
+		if self._selected_units[i] then
+			str = str .. "\n    " .. tostring(self._selected_units[i]:unit_data().name_id)
+		else
+			break
+		end
+
+		if i == 16 then
+			str = str .. "\n    +MORE..."
+
+			break
+		end
+	end
+
+	return str
 end
 
 local idstring_wpn = Idstring("wpn")

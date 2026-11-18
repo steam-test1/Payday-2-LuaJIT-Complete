@@ -103,6 +103,11 @@ function MoneyTweakData:init(tweak_data)
 	self.bag_values.rubies = 1500
 	self.bag_values.red_diamond = 10000
 	self.bag_values.old_wine = 2000
+	self.bag_values.garden_gnome = 9.99
+	self.bag_values.ranc_weapon = 3000
+	self.bag_values.turret_part = 6000
+	self.bag_values.corp_papers = 2500
+	self.bag_values.corp_prototype = 3000
 	self.bag_value_multiplier = self._create_value_table(self.cut_lootbag_bonus / 5 / self.offshore_rate / self.bag_values.default, self.cut_lootbag_bonus / self.offshore_rate / self.bag_values.default, 7, true, 0.85)
 	self.stage_completion = self._create_value_table(self.cut_stage_complete / 7 / self.offshore_rate, self.cut_stage_complete / self.offshore_rate, 7, true, 1)
 	self.job_completion = self._create_value_table(self.cut_job_complete / 7 / self.offshore_rate, self.cut_job_complete / self.offshore_rate, 7, true, 1)
@@ -920,9 +925,4 @@ function MoneyTweakData:init(tweak_data)
 	self.moneythrower = {}
 	self.moneythrower.max_kills_per_session = 100
 	self.moneythrower.kill_to_offshore_multiplier = 1000
-	self.bag_values.garden_gnome = 9.99
-	self.bag_values.ranc_weapon = 3000
-	self.bag_values.turret_part = 6000
-	self.bag_values.corp_papers = 2500
-	self.bag_values.corp_prototype = 3000
 end

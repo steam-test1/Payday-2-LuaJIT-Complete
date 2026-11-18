@@ -1035,15 +1035,19 @@ function ConnectionNetworkHandler:sync_award_achievement(achievement_id, sender)
 	print("ConnectionNetworkHandler:sync_award_achievement():", achievement_id)
 end
 
-function ConnectionNetworkHandler:propagate_alert(type, position, range, filter, aggressor, head_position, sender)
+function ConnectionNetworkHandler:propagate_alert(alert_type, position, range, filter, aggressor, head_position, sender)
 	local peer = self._verify_sender(sender)
 
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
 		return
 	end
 
+	if mvector3.is_zero(head_position) then
+		head_position = nil
+	end
+
 	managers.groupai:state():propagate_alert({
-		type,
+		alert_type,
 		position,
 		range,
 		filter,

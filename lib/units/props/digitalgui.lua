@@ -280,6 +280,10 @@ function DigitalGui:_round(num, idp)
 end
 
 function DigitalGui:_update_timer_text()
+	if not alive(self._title_text) then
+		return
+	end
+
 	if self:timer_precision() <= 0 and math.floor(self._timer) == self._floored_last_timer then
 		return
 	end

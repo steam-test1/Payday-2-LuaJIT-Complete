@@ -36,7 +36,7 @@ end
 
 function ScriptUnitData:add_destroy_listener(key, clbk)
 	if self._destroying then
-		Application:error("[ScriptUnitData:add_destroy_listener] Attempted to add a destroy listener when unit is being destroyed!", self._unit, key)
+		Application:error("[ScriptUnitData] add_destroy_listener() - attempted to add a destroy listener when unit is being destroyed!", self._unit, key, clbk)
 
 		return
 	end

@@ -226,7 +226,11 @@ function CopDamage:init(unit)
 		self._has_been_staggered = false
 	end
 
-	managers.player:register_message(Message.ResetStagger, self, clbk)
+	local str_key = tostring(unit:key())
+
+	self._stagger_message_key = "CopDamage_ResetStagger" .. str_key
+
+	managers.player:register_message(Message.ResetStagger, self._stagger_message_key, clbk)
 
 	self._accuracy_multiplier = 1
 
@@ -235,7 +239,7 @@ function CopDamage:init(unit)
 	self:chk_has_invul_to_slotmask()
 
 	if unit:base().add_tweak_data_changed_listener then
-		unit:base():add_tweak_data_changed_listener("CopDamageTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_tweak_data_changed"))
+		unit:base():add_tweak_data_changed_listener("CopDamageTweakDataChange" .. str_key, callback(self, self, "_clbk_tweak_data_changed"))
 	end
 end
 
@@ -2567,7 +2571,7 @@ function CopDamage:damage_tase(attack_data)
 	else
 		attack_data.damage = damage
 
-		local type = (attack_data.forced or self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "none"
+		local type = (attack_data.forced or self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "dmg_rcv"
 
 		result = {
 			type = type,
@@ -4037,7 +4041,7 @@ function CopDamage:sync_damage_tase(attacker_unit, damage_percent, variant, deat
 
 		managers.statistics:killed_by_anyone(data)
 	else
-		local type = (self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "none"
+		local type = (self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "dmg_rcv"
 
 		result = {
 			type = type,
@@ -4146,7 +4150,13 @@ function CopDamage:_send_melee_attack_result(attack_data, damage_percent, damage
 	damage_percent = math.clamp(damage_percent, 0, 512)
 	damage_effect_percent = math.clamp(damage_effect_percent, 0, 512)
 
-	self._unit:network():send("damage_melee", attack_data.attacker_unit, damage_percent, damage_effect_percent, body_index, hit_offset_height, variant, self._dead and true or false)
+	local attacker = attack_data.attacker_unit
+
+	if not alive(attacker) or attacker:id() == -1 then
+		attacker = self._unit
+	end
+
+	self._unit:network():send("damage_melee", attacker, damage_percent, damage_effect_percent, body_index, hit_offset_height, variant, self._dead and true or false)
 end
 
 function CopDamage:_send_simple_attack_result(attacker, damage_percent, i_attack_variant, i_result)
@@ -4870,7 +4880,13 @@ function CopDamage:_apply_damage_reduction(damage)
 	return damage
 end
 
-function CopDamage:destroy(...)
+function CopDamage:pre_destroy(...)
+	if self._stagger_message_key then
+		managers.player:unregister_message(Message.ResetStagger, self._stagger_message_key)
+
+		self._stagger_message_key = nil
+	end
+
 	self:_remove_debug_gui()
 
 	if self._tmp_invulnerable_clbk_key then
@@ -4885,7 +4901,7 @@ function CopDamage:destroy(...)
 		self._stun_acc_clbk_id = nil
 	end
 
-	if self._invul_impact_override then
+	if self._invul_impact_override and self._invulnerable then
 		managers.game_play_central:remove_impact_override(self._unit)
 	end
 end

@@ -15,11 +15,3 @@ function HuskCopBase:post_init()
 	self:enable_leg_arm_hitbox()
 	self:hide_and_remove_collisions_for_a_few_frames()
 end
-
-function HuskCopBase:pre_destroy(unit)
-	if alive(self._headwear_unit) then
-		self._headwear_unit:set_slot(0)
-	end
-
-	UnitBase.pre_destroy(self, unit)
-end

@@ -1,4 +1,5 @@
 HuskTeamAIBase = HuskTeamAIBase or class(HuskCopBase)
+HuskTeamAIBase._is_team_ai = true
 HuskTeamAIBase.set_loadout = TeamAIBase.set_loadout
 HuskTeamAIBase.remove_upgrades = TeamAIBase.remove_upgrades
 

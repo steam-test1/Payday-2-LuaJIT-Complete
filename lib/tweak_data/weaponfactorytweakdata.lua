@@ -3415,6 +3415,7 @@ function WeaponFactoryTweakData:_init_sights()
 	}
 	self.parts.wpn_fps_upg_o_45iron = {
 		a_obj = "a_o",
+		depends_on = "sight",
 		dlc = "gage_pack_snp",
 		is_a_unlockable = true,
 		name_id = "bm_wpn_fps_upg_o_45iron",
@@ -32466,8 +32467,8 @@ function WeaponFactoryTweakData:_init_mosin()
 			zoom = 2
 		},
 		forbids = {
-			"wpn_fps_upg_o_45iron",
 			"wpn_fps_snp_mosin_rail",
+			"wpn_fps_upg_o_45iron",
 			"wpn_fps_upg_o_45rds",
 			"wpn_fps_upg_o_45rds_v2",
 			"wpn_fps_upg_o_xpsg33_magnifier",

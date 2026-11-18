@@ -1646,55 +1646,6 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.safehouse.briefing_event = nil
 	self.jobs.safehouse.debrief_event = nil
 	self.jobs.safehouse.crimenet_callouts = {}
-	self.jobs.arm_wrapper = {}
-	self.jobs.arm_wrapper = {}
-	self.jobs.arm_wrapper.name_id = "heist_arm_temp"
-	self.jobs.arm_wrapper.briefing_id = "heist_arm_crimenet"
-	self.jobs.arm_wrapper.contact = "bain"
-	self.jobs.arm_wrapper.jc = 30
-	self.jobs.arm_wrapper.chain = {
-		{}
-	}
-	self.jobs.arm_wrapper.job_wrapper = {
-		"arm_cro",
-		"arm_und",
-		"arm_hcm",
-		"arm_par",
-		"arm_fac"
-	}
-	self.jobs.arm_wrapper.briefing_event = "pln_at1_brf_01"
-	self.jobs.arm_wrapper.crimenet_callouts = {
-		"pln_at1_cnc_01"
-	}
-	self.jobs.arm_wrapper.crimenet_videos = {
-		"cn_branchbank1",
-		"cn_branchbank3"
-	}
-	self.jobs.arm_wrapper.payout = {
-		8500,
-		11000,
-		30000,
-		32000,
-		44000,
-		44000,
-		44000
-	}
-	self.jobs.arm_wrapper.experience_mul = {
-		1,
-		1,
-		1,
-		1.2,
-		1.2
-	}
-	self.jobs.arm_wrapper.contract_cost = {
-		16000,
-		32000,
-		80000,
-		160000,
-		200000,
-		200000,
-		200000
-	}
 	self.stages.arm_cro = {
 		dlc = "armored_transport",
 		level_id = "arm_cro",
@@ -4385,6 +4336,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.chill.load_screen = "guis/dlcs/pic/textures/loading/job_safehouse_new"
 	self.jobs.chill.briefing_event = "pln_sh21_cbf_01"
 	self.jobs.chill.debrief_event = nil
+	self.jobs.chill.ignore_heat = true
 	self.jobs.chill.crimenet_callouts = {
 		"pln_cs1_cnc_01",
 		"pln_cs1_cnc_02",
@@ -4420,6 +4372,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.chill_combat.load_screen = "guis/dlcs/pic/textures/loading/job_safehouse_new"
 	self.jobs.chill_combat.briefing_event = "pln_sfr_cbf_01"
 	self.jobs.chill_combat.debrief_event = nil
+	self.jobs.chill_combat.ignore_heat = true
 	self.jobs.chill_combat.crimenet_callouts = {
 		"pln_sfr_cnc_01_01"
 	}

@@ -172,14 +172,15 @@ function CivilianLogicIdle.on_alert(data, alert_data)
 		return
 	end
 
-	local my_data = data.internal_data
-	local my_dis, alert_delay
 	local my_listen_pos = data.unit:movement():m_head_pos()
-	local alert_epicenter = alert_data[2]
+	local groupai_state = managers.groupai:state()
 
-	if CopLogicBase._chk_alert_obstructed(data.unit:movement():m_head_pos(), alert_data) then
+	if CopLogicBase._chk_alert_obstructed(my_listen_pos, alert_data) then
 		return
 	end
+
+	local my_data = data.internal_data
+	local alert_epicenter = alert_data[2]
 
 	if CopLogicBase.is_alert_aggressive(alert_data[1]) and not data.unit:base().unintimidateable then
 		if not data.unit:movement():cool() then
@@ -206,7 +207,7 @@ function CivilianLogicIdle.on_alert(data, alert_data)
 			end
 		end
 
-		data.unit:movement():set_cool(false, managers.groupai:state().analyse_giveaway(data.unit:base()._tweak_table, alert_data[5], alert_data))
+		data.unit:movement():set_cool(false, groupai_state.analyse_giveaway(data.unit:base()._tweak_table, alert_data[5], alert_data))
 		data.unit:movement():set_stance(data.is_tied and "cbt" or "hos")
 	end
 
@@ -215,8 +216,8 @@ function CivilianLogicIdle.on_alert(data, alert_data)
 	end
 
 	if my_data == data.internal_data and not data.char_tweak.ignores_aggression then
-		my_dis = my_dis or alert_epicenter and mvector3.distance(my_listen_pos, alert_epicenter) or 3000
-		alert_delay = math.lerp(1, 4, math.min(1, my_dis / 2000)) * math.random()
+		local my_dis = alert_epicenter and mvector3.distance(my_listen_pos, alert_epicenter) or 3000
+		local alert_delay = math.lerp(1, 4, math.min(1, my_dis / 2000)) * math.random()
 
 		if not my_data.delayed_alert_id then
 			my_data.delayed_alert_id = "alert" .. tostring(data.key)

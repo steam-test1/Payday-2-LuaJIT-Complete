@@ -19,7 +19,9 @@ require("lib/units/player_team/actions/lower_body/CriminalActionWalk")
 require("lib/units/enemies/cop/actions/upper_body/CopActionHealed")
 require("lib/units/enemies/medic/actions/upper_body/MedicActionHeal")
 
-local ids_movement = Idstring("movement")
+local IDS_HEAD = Idstring("Head")
+local IDS_SPINE1 = Idstring("Spine1")
+local IDS_MOVEMENT = Idstring("movement")
 local mvec3_set = mvector3.set
 local mvec3_set_z = mvector3.set_z
 local mvec3_set_stat = mvector3.set_static
@@ -46,13 +48,13 @@ local stance_ctl_pts = {
 }
 
 CopMovement = CopMovement or class()
-CopMovement.set_friendly_fire = PlayerMovement.set_friendly_fire
 CopMovement.friendly_fire = PlayerMovement.friendly_fire
+CopMovement.set_friendly_fire = PlayerMovement.set_friendly_fire
 CopMovement._gadgets = {
 	aligns = {
 		hand_l = Idstring("a_weapon_left_front"),
 		hand_r = Idstring("a_weapon_right_front"),
-		head = Idstring("Head")
+		head = IDS_HEAD
 	},
 	cigarette = {
 		Idstring("units/world/props/cigarette/cigarette")
@@ -220,127 +222,75 @@ local action_variants = {
 		crouch = CopActionCrouch,
 		shoot = CopActionShoot,
 		reload = CopActionReload,
-		spooc = ActionSpooc,
+		healed = CopActionHealed,
 		tase = CopActionTase,
 		dodge = CopActionDodge,
 		warp = CopActionWarp,
-		healed = CopActionHealed
+		spooc = ActionSpooc,
+		heal = MedicActionHeal
 	}
 }
 local security_variant = action_variants.security
 
-action_variants.gensec = security_variant
-action_variants.cop = security_variant
-action_variants.cop_female = security_variant
-action_variants.fbi = security_variant
-action_variants.fbi_female = security_variant
-action_variants.swat = security_variant
-action_variants.heavy_swat = security_variant
-action_variants.fbi_swat = security_variant
-action_variants.fbi_heavy_swat = security_variant
-action_variants.zeal_swat = security_variant
-action_variants.zeal_heavy_swat = security_variant
-action_variants.nathan = security_variant
-action_variants.sniper = security_variant
-action_variants.gangster = security_variant
-action_variants.biker = security_variant
-action_variants.biker_female = security_variant
-action_variants.mobster = security_variant
-action_variants.mobster_boss = security_variant
-action_variants.hector_boss = security_variant
-action_variants.hector_boss_no_armor = security_variant
-action_variants.dealer = security_variant
-action_variants.biker_escape = security_variant
-action_variants.city_swat = security_variant
-action_variants.old_hoxton_mission = security_variant
 action_variants.shield = clone(security_variant)
 action_variants.shield.hurt = ShieldActionHurt
 action_variants.shield.turn = ShieldActionTurn
 action_variants.shield.walk = ShieldCopActionWalk
-action_variants.phalanx_minion = clone(action_variants.shield)
-action_variants.phalanx_vip = clone(action_variants.shield)
 action_variants.tank = clone(security_variant)
 action_variants.tank.walk = TankCopActionWalk
 action_variants.tank_hw = action_variants.tank
-action_variants.spooc = security_variant
-action_variants.taser = security_variant
-action_variants.inside_man = security_variant
-action_variants.inside_woman = security_variant
-action_variants.medic = clone(security_variant)
-action_variants.medic.heal = MedicActionHeal
-action_variants.triad_boss_no_armor = security_variant
-action_variants.triad_boss = clone(security_variant)
-action_variants.triad_boss.walk = TankCopActionWalk
-action_variants.snowman_boss = clone(security_variant)
-action_variants.snowman_boss.walk = TankCopActionWalk
-action_variants.piggydozer = clone(security_variant)
-action_variants.piggydozer.walk = TankCopActionWalk
-action_variants.triad = security_variant
-action_variants.biker_boss = security_variant
-action_variants.chavez_boss = security_variant
-action_variants.bolivian = security_variant
-action_variants.bolivian_indoors = security_variant
-action_variants.drug_lord_boss = security_variant
-action_variants.drug_lord_boss_stealth = security_variant
-action_variants.spa_vip = security_variant
-action_variants.ranchmanager = security_variant
-action_variants.bolivian_indoors_mex = security_variant
-action_variants.security_mex = security_variant
-action_variants.security_mex_no_pager = security_variant
-action_variants.cop_scared = security_variant
-action_variants.security_undominatable = security_variant
-action_variants.mute_security_undominatable = security_variant
-action_variants.tank_medic = clone(action_variants.tank)
-action_variants.tank_medic.heal = action_variants.medic.heal
 action_variants.tank_mini = action_variants.tank
-action_variants.deep_boss = clone(security_variant)
-action_variants.deep_boss.walk = TankCopActionWalk
-action_variants.heavy_swat_sniper = action_variants.heavy_swat
-action_variants.marshal_marksman = action_variants.swat
-action_variants.marshal_shield = clone(action_variants.shield)
-action_variants.marshal_shield_break = action_variants.swat
-action_variants.captain = security_variant
-action_variants.captain_female = security_variant
-action_variants.shadow_spooc = security_variant
+action_variants.tank_medic = action_variants.tank
+action_variants.phalanx_minion = action_variants.shield
+action_variants.phalanx_vip = action_variants.shield
+action_variants.triad_boss = action_variants.tank
+action_variants.snowman_boss = action_variants.tank
+action_variants.piggydozer = action_variants.tank
+action_variants.deep_boss = action_variants.tank
+action_variants.marshal_shield = action_variants.shield
 action_variants.civilian = {
 	idle = CopActionIdle,
 	act = CopActionAct,
-	walk = CivilianActionWalk,
 	turn = CopActionTurn,
 	hurt = CopActionHurt,
-	warp = CopActionWarp
+	warp = CopActionWarp,
+	walk = CivilianActionWalk
 }
-action_variants.civilian_female = action_variants.civilian
-action_variants.robbers_safehouse = action_variants.civilian
-action_variants.bank_manager = action_variants.civilian
-action_variants.drunk_pilot = action_variants.civilian
-action_variants.spa_vip_hurt = action_variants.civilian
-action_variants.escort_chinese_prisoner = clone(action_variants.civilian)
-action_variants.escort_chinese_prisoner.walk = EscortWithSuitcaseActionWalk
-action_variants.civilian_mariachi = action_variants.civilian
-action_variants.civilian_no_penalty = action_variants.civilian
-action_variants.boris = action_variants.civilian
-action_variants.escort = action_variants.civilian
-action_variants.escort_suitcase = clone(action_variants.civilian)
+
+local civilian_variant = action_variants.civilian
+
+action_variants.civilian_female = civilian_variant
+action_variants.robbers_safehouse = civilian_variant
+action_variants.bank_manager = civilian_variant
+action_variants.civilian_mariachi = civilian_variant
+action_variants.civilian_no_penalty = civilian_variant
+action_variants.lead_curator = civilian_variant
+action_variants.spa_vip_hurt = civilian_variant
+action_variants.escort_sand = civilian_variant
+action_variants.escort_criminal = civilian_variant
+action_variants.drunk_pilot = civilian_variant
+action_variants.boris = civilian_variant
+action_variants.escort = civilian_variant
+action_variants.escort_cfo = civilian_variant
+action_variants.escort_ralph = civilian_variant
+action_variants.escort_suitcase = clone(civilian_variant)
 action_variants.escort_suitcase.walk = EscortWithSuitcaseActionWalk
-action_variants.escort_prisoner = clone(action_variants.civilian)
+action_variants.escort_prisoner = clone(civilian_variant)
 action_variants.escort_prisoner.walk = EscortPrisonerActionWalk
-action_variants.escort_cfo = action_variants.civilian
-action_variants.escort_ralph = action_variants.civilian
-action_variants.escort_undercover = clone(action_variants.civilian)
+action_variants.escort_undercover = clone(civilian_variant)
 action_variants.escort_undercover.walk = EscortWithSuitcaseActionWalk
-action_variants.escort_criminal = action_variants.civilian
-action_variants.escort_sand = action_variants.civilian
-action_variants.lead_curator = action_variants.civilian
-action_variants.auctioneer_boss = security_variant
+action_variants.escort_chinese_prisoner = clone(civilian_variant)
+action_variants.escort_chinese_prisoner.walk = EscortWithSuitcaseActionWalk
 action_variants.team_ai = clone(security_variant)
 action_variants.team_ai.walk = CriminalActionWalk
 action_variants.german = action_variants.team_ai
 action_variants.spanish = action_variants.team_ai
 action_variants.american = action_variants.team_ai
 action_variants.russian = action_variants.team_ai
-security_variant = nil
 CopMovement._action_variants = action_variants
+CopMovement._default_action_variant = "security"
+security_variant = nil
+civilian_variant = nil
 action_variants = nil
 CopMovement._stance = {}
 CopMovement._stance.names = {
@@ -393,18 +343,22 @@ function CopMovement:init(unit)
 
 	mvec3_set_z(self._m_stand_pos, self._m_pos.z + 160)
 
-	self._obj_head = unit:get_object(Idstring("Head"))
+	self._obj_head = unit:get_object(IDS_HEAD)
 	self._m_head_pos = self._obj_head:position()
 	self._m_head_rot = self._obj_head:rotation()
 	self._m_head_fwd = self._m_head_rot:z()
-	self._obj_spine = unit:get_object(Idstring("Spine1"))
+	self._obj_spine = unit:get_object(IDS_SPINE1)
 	self._m_com = self._obj_spine:position()
 	self._m_rot = unit:rotation()
 	self._m_right = self._m_rot:x()
 	self._m_fwd = self._m_rot:y()
 	self._footstep_style = nil
 	self._footstep_event = ""
-	self._slotmask_gnd_ray = managers.slot:get_mask("AI_graph_obstacle_check")
+
+	if self._slotmask_gnd_ray == nil then
+		CopMovement._slotmask_gnd_ray = managers.slot:get_mask("AI_graph_obstacle_check")
+	end
+
 	self._cool = true
 	self._moving = false
 	self._allow_fire = false
@@ -422,7 +376,11 @@ function CopMovement:init(unit)
 
 	local base_ext = unit:base()
 
-	self._actions = self._action_variants[self._action_variant or base_ext._tweak_table]
+	if base_ext._is_civilian then
+		self._default_action_variant = "civilian"
+	end
+
+	self._actions = self._action_variants[self._action_variant or base_ext._tweak_table] or self._action_variants[self._default_action_variant]
 
 	if base_ext.add_tweak_data_changed_listener then
 		base_ext:add_tweak_data_changed_listener("CopMovementTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_tweak_data_changed"))
@@ -438,6 +396,7 @@ function CopMovement:post_init()
 	self._ext_base = unit:base()
 	self._ext_damage = unit:character_damage()
 	self._ext_inventory = unit:inventory()
+	self._ext_sound = unit:sound()
 	self._tweak_data = self._ext_base:char_tweak()
 
 	tweak_data:add_reload_callback(self, self.tweak_data_clbk_reload)
@@ -459,7 +418,6 @@ function CopMovement:post_init()
 		self._pos_rsrv_id = managers.navigation:get_pos_reservation_id()
 	else
 		Application:error("[CopMovement:post_init] Spawned AI unit with incomplete navigation data.")
-		self._unit:set_extension_update(ids_movement, false)
 	end
 
 	self._unit:kill_mover()
@@ -515,6 +473,7 @@ function CopMovement:post_init()
 		ext_base = self._ext_base,
 		ext_network = self._ext_network,
 		ext_damage = self._ext_damage,
+		ext_sound = self._ext_sound,
 		char_tweak = self._tweak_data,
 		nav_tracker = self._nav_tracker,
 		active_actions = self._active_actions,
@@ -665,7 +624,7 @@ function CopMovement:update(unit, t, dt)
 	end
 
 	if self._need_upd ~= old_need_upd then
-		unit:set_extension_update_enabled(ids_movement, self._need_upd)
+		unit:set_extension_update_enabled(IDS_MOVEMENT, self._need_upd)
 	end
 end
 
@@ -1112,7 +1071,7 @@ function CopMovement:action_request(action_desc)
 			active_actions[body_part] = false
 
 			if old_action.on_exit then
-				old_action:on_exit()
+				old_action:on_exit(action_desc)
 			end
 
 			interrupted_actions = interrupted_actions or {}
@@ -2053,10 +2012,10 @@ end
 function CopMovement:get_footstep_event()
 	local event_name
 
-	if self._footstep_style and self._unit:anim_data()[self._footstep_style] then
+	if self._footstep_style and self._ext_anim[self._footstep_style] then
 		event_name = self._footstep_event
 	else
-		self._footstep_style = self._unit:anim_data().run and "run" or "walk"
+		self._footstep_style = self._ext_anim.run and "run" or "walk"
 		event_name = "footstep_npc_" .. self._footwear .. "_" .. self._footstep_style
 		self._footstep_event = event_name
 	end
@@ -2526,14 +2485,14 @@ function CopMovement:anim_clbk_start_reload_looped()
 	local redir_res = self:play_redirect("reload_looped")
 
 	if redir_res then
+		if self._reload_speed_multiplier then
+			self._machine:set_speed(redir_res, self._reload_speed_multiplier)
+		end
+
 		for _, action in ipairs(self._active_actions) do
 			if action and action.on_looped_reload_looping then
 				action:on_looped_reload_looping()
 			end
-		end
-
-		if self._reload_speed_multiplier then
-			self._machine:set_speed(redir_res, self._reload_speed_multiplier)
 		end
 	end
 end
@@ -2912,7 +2871,7 @@ function CopMovement:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
 			self._machine:set_global("female", 1)
 		end
 
-		self._actions = self._action_variants[self._unit:base()._tweak_table]
+		self._actions = self._action_variants[new_tweak_data] or self._action_variants[self._default_action_variant]
 
 		if self._unit:unit_data().has_alarm_pager then
 			self._unit:unit_data().has_alarm_pager = new_tweak_data.has_alarm_pager
@@ -3240,7 +3199,7 @@ function CopMovement:sync_action_act_end(body_part)
 	if queued then
 		act_action.host_expired = true
 	elseif act_action then
-		self._active_actions[1] = false
+		self._active_actions[body_part] = false
 
 		if act_action.on_exit then
 			act_action:on_exit()
@@ -3355,7 +3314,7 @@ end
 
 function CopMovement:enable_update(force_head_upd)
 	if not self._need_upd then
-		self._unit:set_extension_update_enabled(ids_movement, true)
+		self._unit:set_extension_update_enabled(IDS_MOVEMENT, true)
 
 		self._need_upd = true
 	end
@@ -3488,21 +3447,19 @@ function CopMovement:get_location_id()
 end
 
 function CopMovement:in_smoke()
-	for _, smoke_screen in ipairs(managers.player:smoke_screens()) do
-		local in_smoke, variant = smoke_screen:is_in_smoke(self._unit)
+	if self._ext_brain:converted() then
+		return TeamAIMovement.in_smoke(self)
+	end
+
+	for _, smoke_screen in pairs(managers.player:smoke_screens()) do
+		local in_smoke, variant, tweak_entry = smoke_screen:is_in_smoke(self._m_pos)
 
 		if in_smoke then
-			return true, variant
+			return true, variant, tweak_entry
 		end
 	end
 
-	return false
-end
-
-IgnoreAlertsMovement = IgnoreAlertsMovement or class(CopMovement)
-
-function IgnoreAlertsMovement:set_cool(state, giveaway)
-	return
+	return false, nil, nil
 end
 
 function CopMovement:_equipped_weapon_base()
@@ -3898,5 +3855,11 @@ function CopMovement:_play_weapon_reload_animation_sfx(unit, event)
 end
 
 function CopMovement:on_weapon_add()
+	return
+end
+
+IgnoreAlertsMovement = IgnoreAlertsMovement or class(CopMovement)
+
+function IgnoreAlertsMovement:set_cool(state, giveaway)
 	return
 end

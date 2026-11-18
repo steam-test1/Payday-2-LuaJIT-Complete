@@ -61,6 +61,7 @@ local mvec_to = Vector3()
 function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit)
 	local result = {}
 	local ignore_units = self._setup.ignore_units
+	local ignore_units_map = self._setup.ignore_units_map
 	local damage_range = self._flame_max_range or self._range or 1000
 
 	mvec3_set(mvec_to, direction)
@@ -85,19 +86,15 @@ function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dm
 	local hit_bodies = World:find_bodies("intersect", "capsule", from_pos, mvec_to, self._flame_radius, self._bullet_slotmask)
 	local hit_body, hit_unit, hit_u_key
 	local units_hit, valid_hit_bodies = {}, {}
-	local t_contains = table.contains
 
 	for i = 1, #hit_bodies do
 		hit_body = hit_bodies[i]
 		hit_unit = hit_body:unit()
+		hit_u_key = hit_unit:key()
 
-		if not t_contains(ignore_units, hit_unit) then
-			hit_u_key = hit_unit:key()
-
-			if not units_hit[hit_u_key] then
-				units_hit[hit_u_key] = true
-				valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
-			end
+		if not ignore_units_map[hit_u_key] and not units_hit[hit_u_key] then
+			units_hit[hit_u_key] = true
+			valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
 		end
 	end
 
@@ -291,6 +288,7 @@ local mvec_offset2 = Vector3()
 function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit)
 	local result = {}
 	local ignore_units = self._setup.ignore_units
+	local ignore_units_map = self._setup.ignore_units_map
 	local slotmask = self._bullet_slotmask
 	local flame_radius = self._flame_radius
 	local damage = self._damage * (dmg_mul or 1)
@@ -349,7 +347,6 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 
 	local hit_body, hit_unit, hit_u_key
 	local units_hit, valid_hit_bodies = {}, {}
-	local t_contains = table.contains
 
 	for _, hit_bodies in ipairs({
 		hit_bodies1,
@@ -359,14 +356,11 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 		for i = 1, #hit_bodies do
 			hit_body = hit_bodies[i]
 			hit_unit = hit_body:unit()
+			hit_u_key = hit_unit:key()
 
-			if not t_contains(ignore_units, hit_unit) then
-				hit_u_key = hit_unit:key()
-
-				if not units_hit[hit_u_key] then
-					units_hit[hit_u_key] = true
-					valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
-				end
+			if not ignore_units_map[hit_u_key] and not units_hit[hit_u_key] then
+				units_hit[hit_u_key] = true
+				valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
 			end
 		end
 	end

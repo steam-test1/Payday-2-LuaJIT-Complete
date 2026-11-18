@@ -480,6 +480,8 @@ function ScrollItemList:mouse_moved(button, x, y)
 			elseif self._selected_item ~= v and not self._click_selection then
 				self:select_item(v)
 			end
+
+			return
 		end
 	end
 
@@ -856,6 +858,110 @@ function HorizontalScrollItemList:sort_items(sort_function, mod_placer, keep_sel
 	end
 end
 
+GridScrollItemList = GridScrollItemList or class(ScrollItemList)
+
+function GridScrollItemList:init(parent, scroll_config, canvas_config)
+	self._current_col_i = 0
+	self._cols = canvas_config.cols
+
+	GridScrollItemList.super.init(self, parent, scroll_config, canvas_config)
+end
+
+function GridScrollItemList:add_item(item, force_visible)
+	if force_visible ~= nil then
+		item:set_visible(force_visible)
+	end
+
+	if item:visible() then
+		if self._current_col_i < self._cols then
+			self._canvas:placer():add_right(item)
+
+			self._current_col_i = self._current_col_i + 1
+		else
+			self._canvas:placer():add_row(item)
+
+			self._current_col_i = 1
+		end
+
+		table.insert(self._current_items, item)
+	end
+
+	table.insert(self._all_items, item)
+
+	return item
+end
+
+function GridScrollItemList:clear()
+	self._current_col_i = 0
+
+	GridScrollItemList.super.clear(self)
+end
+
+function GridScrollItemList:move_selection(move_x, move_y)
+	if not self._selected_item then
+		self:select_index(1)
+	else
+		local index = table.index_of(self._current_items, self._selected_item)
+		local new_index = index + move_x + move_y * self._cols
+
+		new_index = math.clamp(new_index, 1, #self._current_items)
+
+		if self._current_items[new_index].skip_selection and self._current_items[new_index]:skip_selection() then
+			if new_index == #self._current_items or new_index == 1 then
+				return
+			else
+				self:move_selection(move_x + math.sign(move_x))
+			end
+		else
+			self:select_index(new_index)
+		end
+	end
+
+	if self._selected_item then
+		self:scroll_to_show(self._selected_item)
+	end
+end
+
+function GridScrollItemList:move_up()
+	if not self:input_focus() then
+		return
+	end
+
+	self:move_selection(0, -1)
+
+	return true
+end
+
+function GridScrollItemList:move_down()
+	if not self:input_focus() then
+		return
+	end
+
+	self:move_selection(0, 1)
+
+	return true
+end
+
+function GridScrollItemList:move_left()
+	if not self:input_focus() then
+		return
+	end
+
+	self:move_selection(-1, 0)
+
+	return true
+end
+
+function GridScrollItemList:move_right()
+	if not self:input_focus() then
+		return
+	end
+
+	self:move_selection(1, 0)
+
+	return true
+end
+
 ListItem = ListItem or class(ExtendedPanel)
 
 function ListItem:init(panel, config)
@@ -962,13 +1068,15 @@ function BaseButton:allow_input()
 end
 
 function BaseButton:set_hover(hover)
-	if hover ~= self._hover and self._on_hover_changed_callback then
-		self:_on_hover_changed_callback(hover)
+	if hover ~= self._hover then
+		if self._on_hover_changed_callback then
+			self:_on_hover_changed_callback(hover)
+		end
+
+		self._hover = hover
+
+		self:_hover_changed(hover)
 	end
-
-	self._hover = hover
-
-	self:_hover_changed(hover)
 end
 
 function BaseButton:mouse_moved(o, x, y)
@@ -1225,6 +1333,168 @@ function CompositeButton:register_child(item)
 	table.insert(self._child_list, item)
 
 	return item
+end
+
+TextCompositeButton = TextCompositeButton or class(CompositeButton)
+
+function TextCompositeButton:init(parent, composite_button_config, panel_config, func)
+	TextCompositeButton.super.init(self, parent, composite_button_config, panel_config, func)
+
+	local text_config = table.set_defaults(composite_button_config.text_config, {
+		text = composite_button_config.text or not composite_button_config.text_id and "ERROR" or nil,
+		text_id = composite_button_config.text_id
+	})
+
+	self._text = TextButton:new(self, text_config)
+
+	if composite_button_config.text_align == "right" then
+		self._text:set_right(self:right())
+	elseif composite_button_config.text_align == "center" then
+		self._text:set_center_x(self:w() / 2)
+	end
+
+	if not panel_config.h then
+		self:set_h(self._text:h())
+	end
+
+	self:register_child(self._text)
+end
+
+function TextCompositeButton:set_text(text)
+	self._text:set_text(text)
+end
+
+local MOUSEOVER_COLOR = tweak_data.screen_colors.button_stage_2
+local BUTTON_COLOR = tweak_data.screen_colors.button_stage_3
+
+CollapsibleListItem = CollapsibleListItem or class(ListItem)
+
+function CollapsibleListItem:init(parent, config)
+	CollapsibleListItem.super.init(self, parent, config or {})
+
+	self._content_panel = ExtendedPanel:new(self, {
+		h = small_font_size
+	})
+	self._bg = self._content_panel:rect({
+		alpha = 0.1,
+		layer = 100,
+		color = BUTTON_COLOR
+	})
+	self._press_callback = config.press_callback
+	self._text = self._content_panel:text({
+		layer = 100,
+		name = "text",
+		x = 10,
+		font = large_font,
+		font_size = small_font_size,
+		color = BUTTON_COLOR,
+		text = config.text
+	})
+
+	self._text:set_center_y(self._content_panel:center_y())
+
+	self._icon = self._content_panel:bitmap({
+		h = 20,
+		layer = 100,
+		texture = "guis/textures/scrollarrow",
+		w = 20,
+		color = BUTTON_COLOR
+	})
+
+	self._icon:set_center_y(self._content_panel:center_y())
+	self._icon:set_right(self._content_panel:right() - 5)
+
+	local padding_x = config.padding_x or 16
+
+	self._canvas = ExtendedPanel:new(self, {
+		input = true,
+		name = "canvas",
+		visible = false,
+		x = padding_x,
+		w = config.canvas_w or self:w() - padding_x * 2,
+		h = config.canvas_h,
+		y = self._content_panel:bottom()
+	})
+	self._open = config.open or false
+
+	self:set_open(self._open)
+end
+
+function CollapsibleListItem:set_text(text)
+	self._text:set_text(text)
+end
+
+function CollapsibleListItem:canvas()
+	return self._canvas
+end
+
+function CollapsibleListItem:update_size()
+	self._panel:set_h(self._content_panel:h())
+
+	if self._open then
+		self._panel:set_h(self._panel:h() + self._canvas:h())
+	end
+
+	if self._parent and self._parent.child_size_changed then
+		self._parent:child_size_changed()
+	end
+end
+
+function CollapsibleListItem:_selected_changed(state)
+	CollapsibleListItem.super._selected_changed(self, state)
+	self._text:set_color(state and MOUSEOVER_COLOR or BUTTON_COLOR)
+	self._icon:set_color(state and MOUSEOVER_COLOR or BUTTON_COLOR)
+	self._bg:set_alpha(state and 0.4 or 0)
+end
+
+function CollapsibleListItem:inside(x, y)
+	return self._bg:inside(x, y)
+end
+
+function CollapsibleListItem:mouse_pressed(button, x, y)
+	if self._content_panel:inside(x, y) then
+		self:confirm_pressed()
+
+		self._ignore_mouse_clicked_once = true
+
+		return
+	end
+
+	return CollapsibleListItem.super.mouse_pressed(self, button, x, y)
+end
+
+function CollapsibleListItem:mouse_clicked(o, button, x, y)
+	if self._ignore_mouse_clicked_once then
+		self._ignore_mouse_clicked_once = false
+
+		return
+	end
+
+	return CollapsibleListItem.super.mouse_clicked(self, o, button, x, y)
+end
+
+function CollapsibleListItem:confirm_pressed()
+	if not self._selected and not self._hover then
+		return
+	end
+
+	local open = not self._open
+
+	if self._press_callback then
+		self._press_callback(open)
+	end
+
+	self:set_open(open)
+
+	return CollapsibleListItem.super.confirm_pressed(self)
+end
+
+function CollapsibleListItem:set_open(state)
+	self._open = state
+
+	self._icon:set_rotation(self._open and 180 or 0)
+	self._canvas:set_visible(self._open)
+	self:update_size()
 end
 
 ProgressBar = ProgressBar or class(ExtendedPanel)

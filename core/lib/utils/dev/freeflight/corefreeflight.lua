@@ -658,7 +658,6 @@ function FreeFlight:_ray_inspect()
 	local ray = World:raycast("ray", cam:position(), cam:position() + cam:rotation():y() * 10000)
 
 	if ray then
-		print("ray hit", ray.unit:name():s(), ray.body:name())
 		World:select_unit(ray.unit)
 	else
 		World:select_unit(nil)
@@ -670,8 +669,6 @@ function FreeFlight:_attach_unit()
 	local ray = World:raycast("ray", cam:position(), cam:position() + cam:rotation():y() * 10000)
 
 	if ray then
-		print("ray hit", ray.unit:name():s(), ray.body:name())
-
 		if alive(self._attached_to_unit) and self._attached_to_unit == ray.unit then
 			print("[FreeFlight] Detach")
 			self:attach_to_unit(nil)

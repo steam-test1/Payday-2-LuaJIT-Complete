@@ -1,16 +1,18 @@
+local IDS_BASE = Idstring("base")
+
 UnitBase = UnitBase or class()
 
 function UnitBase:init(unit, update_enabled)
 	self._unit = unit
 
 	if not update_enabled then
-		unit:set_extension_update_enabled(Idstring("base"), false)
+		unit:set_extension_update_enabled(IDS_BASE, false)
 	end
 end
 
 function UnitBase:add_destroy_listener(key, clbk)
 	if self._destroying then
-		Application:error("[UnitBase:add_destroy_listener] Attempted to add a destroy listener when unit is being destroyed!", self._unit, key)
+		Application:error("[UnitBase] add_destroy_listener() - attempted to add a destroy listener when unit is being destroyed!", self._unit, key, clbk)
 
 		return
 	end

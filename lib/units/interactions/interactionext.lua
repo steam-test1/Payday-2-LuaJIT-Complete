@@ -808,6 +808,14 @@ function BaseInteractionExt:can_remove_item()
 	return true
 end
 
+function BaseInteractionExt:_sequence_interact_params(player)
+	local t = {
+		unit = player
+	}
+
+	return t
+end
+
 UseInteractionExt = UseInteractionExt or class(BaseInteractionExt)
 
 function UseInteractionExt:unselect()
@@ -826,12 +834,10 @@ function UseInteractionExt:interact(player)
 
 	UseInteractionExt.super.interact(self, player)
 
+	local sequence_interact_params = self:_sequence_interact_params(player)
+
 	if self._tweak_data.equipment_consume then
 		managers.player:remove_special(self._tweak_data.special_equipment)
-
-		if self._tweak_data.special_equipment == "planks" and Global.level_data.level_id == "secret_stash" then
-			UseInteractionExt._saviour_count = (UseInteractionExt._saviour_count or 0) + 1
-		end
 	end
 
 	if self._tweak_data.deployable_consume then
@@ -845,9 +851,7 @@ function UseInteractionExt:interact(player)
 	self:remove_interact()
 
 	if self._unit:damage() then
-		self._unit:damage():run_sequence_simple("interact", {
-			unit = player
-		})
+		self._unit:damage():run_sequence_simple("interact", sequence_interact_params)
 	end
 
 	if self._unit:id() ~= -1 or self._unit:unit_data() and self._unit:unit_data().unit_id then
@@ -888,9 +892,7 @@ function UseInteractionExt:sync_interacted(peer, player, status, skip_alive_chec
 	end
 
 	if self._unit:damage() then
-		self._unit:damage():run_sequence_simple("interact", {
-			unit = player
-		})
+		self._unit:damage():run_sequence_simple("interact", self:_sequence_interact_params(player))
 	end
 
 	return player
@@ -971,9 +973,7 @@ function MultipleChoiceInteractionExt:interact(player)
 		end
 
 		if self._unit:damage() then
-			self._unit:damage():run_sequence_simple("wrong", {
-				unit = player
-			})
+			self._unit:damage():run_sequence_simple("wrong", self:_sequence_interact_params(player))
 		end
 
 		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "interaction", 1)
@@ -989,9 +989,7 @@ function MultipleChoiceInteractionExt:sync_net_event(event_id, player)
 	if self._unit:damage() then
 		local seq_name = "wrong"
 
-		self._unit:damage():run_sequence_simple(seq_name, {
-			unit = player
-		})
+		self._unit:damage():run_sequence_simple(seq_name, self:_sequence_interact_params(player))
 	end
 end
 
@@ -2284,15 +2282,11 @@ function CarryInteractionExt:sync_interacted(peer, player, status, skip_alive_ch
 	end
 
 	if self._unit:damage():has_sequence("interact") then
-		self._unit:damage():run_sequence_simple("interact", {
-			unit = player
-		})
+		self._unit:damage():run_sequence_simple("interact", self:_sequence_interact_params(player))
 	end
 
 	if self._unit:damage():has_sequence("load") then
-		self._unit:damage():run_sequence_simple("load", {
-			unit = player
-		})
+		self._unit:damage():run_sequence_simple("load", self:_sequence_interact_params(player))
 	end
 
 	if self._global_event then
@@ -2441,9 +2435,7 @@ end
 function LootBankInteractionExt:sync_interacted(peer, player, status, skip_alive_check)
 	local player = player or peer:unit()
 
-	self._unit:damage():run_sequence_simple("unload", {
-		unit = player
-	})
+	self._unit:damage():run_sequence_simple("unload", self:_sequence_interact_params(player))
 end
 
 EventIDInteractionExt = EventIDInteractionExt or class(UseInteractionExt)
@@ -2586,9 +2578,7 @@ end
 
 function MissionDoorDeviceInteractionExt:sync_interacted(peer, player, status, skip_alive_check)
 	if not self._active then
-		self._unit:damage():run_sequence_simple("interact", {
-			unit = player
-		})
+		self._unit:damage():run_sequence_simple("interact", self:_sequence_interact_params(player))
 	else
 		MissionDoorDeviceInteractionExt.super.sync_interacted(self, peer, nil, nil, true)
 	end
@@ -2626,9 +2616,7 @@ function MissionDoorDeviceInteractionExt:server_place_mission_door_device(player
 	end
 
 	if self._unit:damage() then
-		self._unit:damage():run_sequence_simple("interact", {
-			unit = player
-		})
+		self._unit:damage():run_sequence_simple("interact", self:_sequence_interact_params(player))
 	end
 
 	network_session:send_to_peers_synched("sync_interacted", self._unit, -2, self.tweak_data, 1)
@@ -2743,6 +2731,10 @@ function SpecialEquipmentInteractionExt:set_give_special_equipment(special_equip
 	else
 		self._special_equipment = nil
 	end
+end
+
+function SpecialEquipmentInteractionExt:give_special_equipment()
+	return self._special_equipment
 end
 
 function SpecialEquipmentInteractionExt:apply_item_pickup()
